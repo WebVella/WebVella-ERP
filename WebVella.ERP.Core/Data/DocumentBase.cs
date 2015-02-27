@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 #endregion
 
-namespace WebVella.ERP.Data
+namespace WebVella.ERP.Core.Data
 {
 	public abstract class DocumentBase
 	{

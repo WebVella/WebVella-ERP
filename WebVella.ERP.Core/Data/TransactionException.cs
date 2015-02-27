@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace WebVella.ERP.Data
+namespace WebVella.ERP.Core.Data
 {
 	public class TransactionException : Exception
 	{

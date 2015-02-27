@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 #endregion
 
-namespace WebVella.ERP.Data
+namespace WebVella.ERP.Core.Data
 {
 	public class Transaction : IDisposable
 	{

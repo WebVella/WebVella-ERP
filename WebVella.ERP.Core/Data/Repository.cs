@@ -10,7 +10,7 @@ using MongoDB.Driver.Linq;
 
 #endregion
 
-namespace WebVella.ERP.Data
+namespace WebVella.ERP.Core.Data
 {
 	public class Repository<TDocument> : IRepository<TDocument> where TDocument : DocumentBase
 	{
