@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" ng-app="erpApp">
+<head>
+    <meta charset="utf-8" />
+    <title>WebVella ERP</title>
+    <link href="bower_components/angular-material/angular-material.css" rel="stylesheet" />
+    <link href="app.css" rel="stylesheet" />
+</head>
+<body layout="column" ng-controller="AppCtrl">
+    <div ui-view="contentView">
+        <h1>Hello World</h1>
+    </div>
+
+    <!-- Angular Material Dependencies -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+
+    <script src="app.js"></script>
+    <script src="dashboard/dashboard.js"></script>
+</body>
+</html>
