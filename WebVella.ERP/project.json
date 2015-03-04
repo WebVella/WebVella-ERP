@@ -1,0 +1,11 @@
+﻿{
+    "version": "1.0.0-*",
+
+    "frameworks": {
+        "aspnet50": {
+            "dependencies": {
+                "Microsoft.AspNet.Diagnostics": "1.0.0-beta1"               
+            }
+        }
+    }
+}

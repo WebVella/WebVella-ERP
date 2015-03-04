@@ -5,9 +5,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 #endregion
 
-namespace WebVella.ERP.Core.Data
+namespace WebVella.ERP.Storage.Mongo
 {
-	public abstract class DocumentBase
+	internal abstract class MongoDocumentBase
 	{
 		[BsonId]
 		public Guid Id { get; set; }

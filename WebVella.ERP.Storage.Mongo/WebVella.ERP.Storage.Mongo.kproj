@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\AspNet\Microsoft.Web.AspNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>08b4f01c-b9d9-485e-b256-19117f38fdae</ProjectGuid>
-    <RootNamespace>WebVella.ERP.Core</RootNamespace>
+    <ProjectGuid>06c4fcd5-2943-4502-b1e6-dd3f95a7449b</ProjectGuid>
+    <RootNamespace>WebVella.ERP.Storage.Mongo</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>

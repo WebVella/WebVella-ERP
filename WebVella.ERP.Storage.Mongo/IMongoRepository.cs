@@ -7,9 +7,9 @@ using MongoDB.Driver;
 
 #endregion
 
-namespace WebVella.ERP.Core.Data
+namespace WebVella.ERP.Storage.Mongo
 {
-	public interface IRepository<TDocument> where TDocument : DocumentBase
+	internal interface IMongoRepository<TDocument> where TDocument : MongoDocumentBase
 	{
 		MongoCollection<TDocument> Collection { get; set; }
 		bool Save(TDocument entity);

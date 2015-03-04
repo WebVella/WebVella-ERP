@@ -1,0 +1,12 @@
+﻿{
+    "version": "1.0.0-*",
+
+    "frameworks": {
+        "aspnet50": {
+            "dependencies": {
+                "mongocsharpdriver": "1.9.2",
+                "WebVella.ERP": "1.0.0-*" 
+            }
+        }
+    }
+}

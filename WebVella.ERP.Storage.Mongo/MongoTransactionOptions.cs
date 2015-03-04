@@ -1,6 +1,6 @@
-﻿namespace WebVella.ERP.Core.Data
+﻿namespace WebVella.ERP.Storage.Mongo
 {
-	public class TransactionOptions
+    internal class MongoTransactionOptions
 	{
 		/// <summary>
 		///     If TRUE, no exception will be thrown on transaction object dispose, after transaction is rolled back.
@@ -11,14 +11,14 @@
 		/// <summary>
 		///     Specifies the isolation level. Default is 'mvcc'.
 		/// </summary>
-		public TransactionIsolation Isolation { get; set; }
+		public MongoTransactionIsolation Isolation { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionOptions"/> class.
+		/// Initializes a new instance of the <see cref="MongoTransactionOptions"/> class.
 		/// </summary>
-		public TransactionOptions()
+		public MongoTransactionOptions()
 		{
-			Isolation = TransactionIsolation.Mvcc;
+			Isolation = MongoTransactionIsolation.Mvcc;
 			SilenceForgottenTransaction = false;
 		}
 	}
