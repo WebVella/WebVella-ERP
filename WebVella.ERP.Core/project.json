@@ -1,6 +1,0 @@
-﻿{
-    "version": "1.0.0-*",
-    "dependencies": {
-        "mongocsharpdriver": "1.9.2"
-    }
-}

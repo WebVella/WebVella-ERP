@@ -10,9 +10,9 @@ using MongoDB.Driver.Linq;
 
 #endregion
 
-namespace WebVella.ERP.Core.Data
+namespace WebVella.ERP.Storage.Mongo
 {
-	public class Repository<TDocument> : IRepository<TDocument> where TDocument : DocumentBase
+    internal class MongoRepository<TDocument> : IMongoRepository<TDocument> where TDocument : MongoDocumentBase
 	{
 		/// <summary>
 		///     Gets the collection.
@@ -27,7 +27,7 @@ namespace WebVella.ERP.Core.Data
 		/// </summary>
 		/// <param name="database">The database.</param>
 		/// <param name="collectionName">Name of the collection.</param>
-		public Repository(MongoDatabase database, string collectionName)
+		public MongoRepository(MongoDatabase database, string collectionName)
 		{
 			Collection = database.GetCollection<TDocument>(collectionName);
 			if (!Collection.Exists())
