@@ -2,7 +2,7 @@
 
 namespace WebVella.ERP
 {
-    public class MongoBaseField : IField
+    public abstract class MongoBaseField : IField
     {
         public Guid Id { get; set; }
 
@@ -10,12 +10,16 @@ namespace WebVella.ERP
 
         public string DisplayName { get; set; }
 
-        public bool Required { get; set; }
-
         public string PlaceholderText { get; set; }
 
         public string Description { get; set; }
 
         public string HelpText { get; set; }
+
+        public bool Required { get; set; }
+
+        public bool Unique { get; set; }
+
+        public virtual IFieldValue DefaultValue { get; set; }
     }
 }

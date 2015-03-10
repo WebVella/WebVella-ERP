@@ -17,5 +17,9 @@ namespace WebVella.ERP
         string HelpText { get; set; }
 
         bool Required { get; set; }
+
+        bool Unique { get; set; }
+
+        IFieldValue DefaultValue { get; set; }
     }
 }

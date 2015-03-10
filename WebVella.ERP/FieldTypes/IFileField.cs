@@ -4,5 +4,6 @@ namespace WebVella.ERP.Core
 {
     public interface IFileField : IField
     {
+        new IFileFieldValue DefaultValue { get; set; }
     }
 }
