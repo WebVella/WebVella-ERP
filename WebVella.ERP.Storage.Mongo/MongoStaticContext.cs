@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
+using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.DependencyInjection;
 
 #endregion
 
@@ -15,9 +17,10 @@ namespace WebVella.ERP.Storage.Mongo
         public static MongoStaticContext Context { get { return context; } }
 
 		private List<object> repositories;
-
-		public MongoServer Server { get; set; }
+        public MongoServer Server { get; set; }
 		public MongoDatabase Database { get; set; }
+
+        internal IMongoRepository<MongoEntity> Entities { get; private set; }
 
         /// <summary>
         ///     Initializes the <see cref="MongoStaticContext" /> class.
@@ -25,26 +28,26 @@ namespace WebVella.ERP.Storage.Mongo
         private MongoStaticContext()
 		{
 			repositories = new List<object>();
-		}
+            var configuration = new Configuration().AddJsonFile("config.json");
+            var connectionString = configuration.Get("Storage:ConnectionString");
 
-		/// <summary>
-		///     Initializes the specified connection string.
-		/// </summary>
-		/// <param name="connectionString">The connection string.</param>
-		public void Initialize(string connectionString)
-		{
-			MongoUrl mongoUrl = new MongoUrl(connectionString);
-			Server = new MongoClient(mongoUrl).GetServer();
-			Database = Server.GetDatabase(mongoUrl.DatabaseName);
-		}
+            if( string.IsNullOrWhiteSpace(connectionString))
+                throw new Exception("The connection string to storage (mongo database) is not specified in config.json");
 
-		/// <summary>
-		///     Registers the repository.
-		/// </summary>
-		/// <typeparam name="TEntity">The type of the entity.</typeparam>
-		/// <param name="collectionName">Name of the collection.</param>
-		/// <exception cref="System.Exception">Collection with that name has been already registered.</exception>
-		public IMongoRepository<TEntity> RegisterRepository<TEntity>(string collectionName = null)
+            MongoUrl mongoUrl = new MongoUrl(connectionString);
+            Server = new MongoClient(mongoUrl).GetServer();
+            Database = Server.GetDatabase(mongoUrl.DatabaseName);
+
+            Entities = RegisterRepository<MongoEntity>("entities");
+        }
+
+        /// <summary>
+        ///     Registers the repository.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="collectionName">Name of the collection.</param>
+        /// <exception cref="System.Exception">Collection with that name has been already registered.</exception>
+        public IMongoRepository<TEntity> RegisterRepository<TEntity>(string collectionName = null)
 			where TEntity : MongoDocumentBase
 		{
 			var colName = typeof (TEntity).Name;

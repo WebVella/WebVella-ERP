@@ -1,7 +1,5 @@
 ﻿{
-    "Data": {
-        "DefaultConnection": { 
-            "ConnectionString": "Server=(localdb)\\MSSQLLocalDB;Database=_CHANGE_ME;Trusted_Connection=True;"
-        }
+    "Storage": {
+        "ConnectionString": "mongodb://dev:dev@mongo.webvella.com:37017/wv-erp?safe=true"
     }
 }
