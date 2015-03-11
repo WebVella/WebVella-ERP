@@ -4,8 +4,9 @@
     "frameworks": {
         "aspnet50": {
             "dependencies": {
+                "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta1",
                 "mongocsharpdriver": "1.9.2",
-                "WebVella.ERP": "1.0.0-*" 
+                "WebVella.ERP": "1.0.0-*"
             }
         }
     }

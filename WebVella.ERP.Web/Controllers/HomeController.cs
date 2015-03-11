@@ -4,9 +4,18 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult Index()
+        private IERPService service;
+
+        public HomeController(IERPService service)
         {
+            this.service = service;
+        }
+
+
+        // GET: /<controller>/
+        public IActionResult Index( )
+        {
+            service.RunTests();
             return View();
         }
     }
