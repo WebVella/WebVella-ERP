@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public interface IPrimaryKeyField : IField
     {
-        new IGuidFieldValue DefaultValue { get; set; }
+        new Guid DefaultValue { get; set; }
+
+        Guid Value { get; set; }
     }
 }

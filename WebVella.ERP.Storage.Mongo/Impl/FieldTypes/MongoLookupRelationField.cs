@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public class MongoLookupRelationField : MongoBaseField, ILookupRelationField
     {
-        public new IRelationFieldValue DefaultValue { get; set; }
+        public new string DefaultValue { get; set; }
+
+        public string Value { get; set; }
     }
 }

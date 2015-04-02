@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public class MongoPrimaryKeyField : MongoBaseField, IPrimaryKeyField
     {
-        public new IGuidFieldValue DefaultValue { get; set; }
+        public new Guid DefaultValue { get; set; }
+
+        public Guid Value { get; set; }
     }
 }

@@ -4,6 +4,10 @@ namespace WebVella.ERP.Core
 {
     public interface IAutoNumberField : IField
     {
-        new INumberFieldValue DefaultValue { get; set; }
+        new decimal DefaultValue { get; set; }
+
+        string DisplayFormat { get; set; }
+
+        decimal Value { get; set; }
     }
 }

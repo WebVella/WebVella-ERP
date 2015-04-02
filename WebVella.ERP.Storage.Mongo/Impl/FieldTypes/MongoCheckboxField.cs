@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public class MongoCheckboxField : MongoBaseField, ICheckboxField
     {
-        public new IBooleanFieldValue DefaultValue { get; set; }
+        public new bool DefaultValue { get; set; }
+
+        public bool Value { get; set; }
     }
 }

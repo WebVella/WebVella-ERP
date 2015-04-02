@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public class MongoMasterDetailsRelationshipField : MongoBaseField, IMasterDetailsRelationshipField
     {
-        public new IRelationFieldValue DefaultValue { get; set; }
+        public new string DefaultValue { get; set; }
+
+        public string Value { get; set; }
     }
 }

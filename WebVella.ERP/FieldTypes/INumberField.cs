@@ -4,6 +4,12 @@ namespace WebVella.ERP.Core
 {
     public interface INumberField : IField
     {
-        new INumberFieldValue DefaultValue { get; set; }
+        new decimal DefaultValue { get; set; }
+
+        int MinValue { get; set; }
+
+        int MaxValue { get; set; }
+
+        decimal Value { get; set; }
     }
 }
