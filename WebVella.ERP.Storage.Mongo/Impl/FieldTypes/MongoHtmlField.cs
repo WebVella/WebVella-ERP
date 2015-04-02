@@ -4,6 +4,8 @@ namespace WebVella.ERP.Core
 {
     public class MongoHtmlField : MongoBaseField, IHtmlField
     {
-        public new ITextFieldValue DefaultValue { get; set; }
+        public new string DefaultValue { get; set; }
+
+        public string Value { get; set; }
     }
 }

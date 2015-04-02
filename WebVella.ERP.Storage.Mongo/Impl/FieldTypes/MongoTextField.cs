@@ -4,6 +4,10 @@ namespace WebVella.ERP.Core
 {
     public class MongoTextField : MongoBaseField, ITextField
     {
-        public new ITextFieldValue DefaultValue { get; set; }
+        public new string DefaultValue { get; set; }
+
+        public int MaxLength { get; set; }
+
+        public string Value { get; set; }
     }
 }

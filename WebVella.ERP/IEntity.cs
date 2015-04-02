@@ -6,6 +6,8 @@ namespace WebVella.ERP
     {
         string Name { get; set; }
 
+        bool System { get; set; }
+
         List<IField> Fields { get; set; }
     }
 }

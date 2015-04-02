@@ -20,6 +20,12 @@ namespace WebVella.ERP
 
         bool Unique { get; set; }
 
-        IFieldValue DefaultValue { get; set; }
+        bool Searchable { get; set; }
+
+        bool Auditable { get; set; }
+
+        bool System { get; set; }
+
+        object DefaultValue { get; set; }
     }
 }

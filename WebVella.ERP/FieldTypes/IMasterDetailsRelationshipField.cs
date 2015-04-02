@@ -5,6 +5,8 @@ namespace WebVella.ERP.Core
 {
     public interface IMasterDetailsRelationshipField : IField
     {
-        new IRelationFieldValue DefaultValue { get; set; }
+        new string DefaultValue { get; set; }
+
+        string Value { get; set; }
     }
 }

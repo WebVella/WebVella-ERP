@@ -4,6 +4,10 @@ namespace WebVella.ERP.Core
 {
     public interface IDateTimeField : IField
     {
-        new IDateTimeFieldValue DefaultValue { get; set; }
+        new DateTime DefaultValue { get; set; }
+
+        string Format { get; set; }
+
+        DateTime Value { get; set; }
     }
 }
