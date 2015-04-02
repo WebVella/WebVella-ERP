@@ -149,6 +149,8 @@ namespace WebVella.ERP.Storage.Mongo
             if (sortBy != null)
                 cursor.SetSortOrder(sortBy);
 
+            IMongoQuery t = Query.EQ("x", "x");
+
             return cursor.ToList();
         }
 
