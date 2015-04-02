@@ -1,7 +1,16 @@
-﻿namespace WebVella.ERP
+﻿using System;
+using System.Collections.Generic;
+
+namespace WebVella.ERP
 {
     public interface IEntityRepository : IRepository
     {
-        IEntity Get();
+        IEntity Empty();
+        List<IEntity> Read();
+        IEntity Read(Guid id);
+        bool Create(IEntity entity);
+        bool Update(IEntity entity);
+        bool Delete(Guid id);
+        bool Save(IEntity entity);
     }
 }

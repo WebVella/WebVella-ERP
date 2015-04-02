@@ -12,7 +12,9 @@ namespace WebVella.ERP.Storage.Mongo
 	internal interface IMongoRepository<TDocument> where TDocument : MongoDocumentBase
 	{
 		MongoCollection<TDocument> Collection { get; set; }
-		bool Save(TDocument entity);
+        bool Create(TDocument entity);
+        bool Update(TDocument entity);
+        bool Save(TDocument entity);
 		bool Delete(TDocument entity);
 		bool Delete( IMongoQuery query );
 		IList<TDocument> Get( IMongoQuery query, IMongoSortBy sortBy = null, int? skip = null, int? limit = null );
@@ -29,6 +31,6 @@ namespace WebVella.ERP.Storage.Mongo
         TDocument GetById(Guid id);
 		int Count( Expression<Func<TDocument, bool>> predicate );
 
-		void EnsureIndex(IMongoIndexKeys keys, IMongoIndexOptions options);
+		void CreateIndex(IMongoIndexKeys keys, IMongoIndexOptions options);
 	}
 }

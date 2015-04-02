@@ -4,11 +4,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    public class MongoEntity : IEntity
+    public class MongoEntity : MongoDocumentBase, IEntity
     {
-        [BsonId]
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public bool System { get; set; }
