@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebVella.ERP
+namespace WebVella.ERP.QueryDriver
 {
     public class EntityQueryDoc 
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebVella.ERP
+namespace WebVella.ERP.QueryDriver
 {
     enum EntityQueryType
     {
