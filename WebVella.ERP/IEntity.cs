@@ -9,5 +9,9 @@ namespace WebVella.ERP
         bool System { get; set; }
 
         List<IField> Fields { get; set; }
+
+        List<IView> Views { get; set; }
+
+        List<IView> Forms { get; set; }
     }
 }
