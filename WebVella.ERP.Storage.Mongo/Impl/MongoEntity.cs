@@ -11,5 +11,9 @@ namespace WebVella.ERP.Storage.Mongo
         public bool System { get; set; }
 
         public List<IField> Fields { get; set; }
+
+        public List<IView> Views { get; set; }
+
+        public List<IView> Forms { get; set; }
     }
 }
