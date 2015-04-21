@@ -34,6 +34,16 @@ namespace WebVella.ERP.Storage.Mongo
         {
             return MongoStaticContext.Context.Entities.SingleOrDefault(x=>x.Id == id);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEntity Read(string name)
+        {
+            return MongoStaticContext.Context.Entities.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant() );
+        }
 
         /// <summary>
         /// 
