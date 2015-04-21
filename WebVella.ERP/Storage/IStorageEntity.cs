@@ -12,6 +12,6 @@ namespace WebVella.ERP.Storage
 
         List<IStorageView> Views { get; set; }
 
-        List<IStorageView> Forms { get; set; }
+        List<IStorageForm> Forms { get; set; }
     }
 }

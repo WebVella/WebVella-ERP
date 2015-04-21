@@ -15,6 +15,6 @@ namespace WebVella.ERP.Storage.Mongo
 
         public List<IStorageView> Views { get; set; }
 
-        public List<IStorageView> Forms { get; set; }
+        public List<IStorageForm> Forms { get; set; }
     }
 }
