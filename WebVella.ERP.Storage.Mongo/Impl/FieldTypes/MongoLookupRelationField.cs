@@ -6,6 +6,6 @@ namespace WebVella.ERP.Core
     {
         public new string DefaultValue { get; set; }
 
-        public string Value { get; set; }
+        public Guid Value { get; set; }
     }
 }
