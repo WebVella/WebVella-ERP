@@ -1,8 +1,9 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
+using WebVella.ERP.Api;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoFormulaField : MongoBaseField, IFormulaField
+    public class MongoFormulaField : MongoBaseField, IStorageFormulaField
     {
         public FormulaReturnType ReturnType { get; set; }
 

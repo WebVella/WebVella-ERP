@@ -1,8 +1,8 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoPhoneField : MongoBaseField, IPhoneField
+    public class MongoPhoneField : MongoBaseField, IStoragePhoneField
     {
         public new string DefaultValue { get; set; }
 

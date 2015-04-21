@@ -1,8 +1,8 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoHtmlField : MongoBaseField, IHtmlField
+    public class MongoHtmlField : MongoBaseField, IStorageHtmlField
     {
         public new string DefaultValue { get; set; }
 

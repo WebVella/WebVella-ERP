@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebVella.ERP.Core;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.QueryDriver
 {
@@ -68,7 +68,7 @@ namespace WebVella.ERP.QueryDriver
         /// <param name="entity"></param>
         /// <param name="fields"></param>
         /// <returns></returns>
-        private IDictionary<string, List<string>> ProcessFields(IEntityRepository entityRepository, IEntity entity, string fields)
+        private IDictionary<string, List<string>> ProcessFields(IStorageEntityRepository entityRepository, IStorageEntity entity, string fields)
         {
             IDictionary<string, List<string>> result = new Dictionary<string, List<string>>();
             List<string> processedFields = fields.Split(PROPERTY_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -113,11 +113,11 @@ namespace WebVella.ERP.QueryDriver
                 if (string.IsNullOrWhiteSpace(relatedFieldName))
                     throw new Exception(string.Format("Invalid query result field '{0}'. The field name is not specified.", field));
 
-                ILookupRelationField relationField = entity.Fields.SingleOrDefault(x => x.Name == relationEntityFieldName) as ILookupRelationField;
+                IStorageLookupRelationField relationField = entity.Fields.SingleOrDefault(x => x.Name == relationEntityFieldName) as IStorageLookupRelationField;
                 if( relationField == null )
                     throw new Exception(string.Format("Invalid query result field '{0}'", field ));
 
-                IEntity relatedEntity = entityRepository.Read(relationField.Value);
+                IStorageEntity relatedEntity = entityRepository.Read(relationField.Value);
                 if( relatedEntity == null )
                     throw new Exception(string.Format("Invalid query result field '{0}'. Related entity is missing.", field));
 

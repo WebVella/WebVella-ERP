@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP
 {
@@ -34,10 +35,10 @@ namespace WebVella.ERP
             Debug.WriteLine("==== START ENTITY TESTS====");
             var repository = StorageService.GetEntityRepository();
 
-            IEntity entity = repository.Empty();
+            IStorageEntity entity = repository.Empty();
             entity.Id = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");
             entity.Name = "This is an initial test entity.";
-            entity.Fields = new List<IField>();
+            entity.Fields = new List<IStorageField>();
 
             try
             {

@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver.Builders;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    public class MongoEntityRepository : IEntityRepository
+    public class MongoEntityRepository : IStorageEntityRepository
     {
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEntity Empty()
+        public IStorageEntity Empty()
         {
             return new MongoEntity();
         }
@@ -20,9 +21,9 @@ namespace WebVella.ERP.Storage.Mongo
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<IEntity> Read()
+        public List<IStorageEntity> Read()
         {
-            return MongoStaticContext.Context.Entities.Get().ToList<IEntity>();
+            return MongoStaticContext.Context.Entities.Get().ToList<IStorageEntity>();
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEntity Read(Guid id)
+        public IStorageEntity Read(Guid id)
         {
             return MongoStaticContext.Context.Entities.SingleOrDefault(x=>x.Id == id);
         }
@@ -40,7 +41,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEntity Read(string name)
+        public IStorageEntity Read(string name)
         {
             return MongoStaticContext.Context.Entities.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant() );
         }
@@ -49,7 +50,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// 
         /// </summary>
         /// <param name="entity"></param>
-        public bool Create(IEntity entity)
+        public bool Create(IStorageEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("entity");
@@ -66,7 +67,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// 
         /// </summary>
         /// <param name="entity"></param>
-        public bool Update( IEntity entity)
+        public bool Update( IStorageEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("entity");
@@ -93,7 +94,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// Saves entity document
         /// </summary>
         /// <param name="entity"></param>
-        public bool Save(IEntity entity)
+        public bool Save(IStorageEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException("entity");

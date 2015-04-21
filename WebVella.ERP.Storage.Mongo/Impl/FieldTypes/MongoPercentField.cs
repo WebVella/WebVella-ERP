@@ -1,8 +1,8 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoPercentField : MongoBaseField, IPercentField
+    public class MongoPercentField : MongoBaseField, IStoragePercentField
     {
         public new decimal DefaultValue { get; set; }
 
