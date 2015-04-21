@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoSelectField : MongoBaseField, ISelectField
+    public class MongoSelectField : MongoBaseField, IStorageSelectField
     {
         public new string DefaultValue { get; set; }
 

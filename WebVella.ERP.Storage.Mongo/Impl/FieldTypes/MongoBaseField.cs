@@ -1,8 +1,10 @@
 ﻿using System;
+using WebVella.ERP.Storage;
+
 
 namespace WebVella.ERP
 {
-    public abstract class MongoBaseField : IField
+    public abstract class MongoBaseField : IStorageField
     {
         public Guid Id { get; set; }
 

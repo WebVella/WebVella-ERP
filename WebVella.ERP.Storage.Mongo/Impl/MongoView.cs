@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using WebVella.ERP.Storage;
+using WebVella.ERP.Api;
 
 namespace WebVella.ERP.Storage.Mongo.Impl
 {
-    public class MongoView : IView
+    public class MongoView : IStorageView
     {
         public Guid Id { get; set; }
 
@@ -13,12 +15,12 @@ namespace WebVella.ERP.Storage.Mongo.Impl
 
         public ViewTypes Type { get; set; }
 
-        public IList<IViewFilter> Filter { get; set; }
+        public IList<IStorageViewFilter> Filter { get; set; }
 
-        public IList<IViewField> Fields { get; set; }
+        public IList<IStorageViewField> Fields { get; set; }
     }
 
-    public class ViewFilter :  IViewFilter
+    public class MongoViewFilter :  IStorageViewFilter
     {
         public Guid LeftEntityId { get; set; }
 
@@ -31,7 +33,7 @@ namespace WebVella.ERP.Storage.Mongo.Impl
         public Guid RightFieldId { get; set; }
     }
 
-    public class ViewField :  IViewField
+    public class MongoViewField :  IStorageViewField
     {
         public Guid Id { get; set; }
 

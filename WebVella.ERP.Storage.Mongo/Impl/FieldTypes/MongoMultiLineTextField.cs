@@ -1,8 +1,8 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoMultiLineTextField : MongoBaseField, IMultiLineTextField
+    public class MongoMultiLineTextField : MongoBaseField, IStorageMultiLineTextField
     {
         public new string DefaultValue { get; set; }
 

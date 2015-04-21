@@ -11,7 +11,7 @@ namespace WebVella.ERP.Storage.Mongo
             return new MongoEntityQueryRepository();
         }
 
-        public IEntityRepository GetEntityRepository()
+        public IStorageEntityRepository GetEntityRepository()
         {
             return new MongoEntityRepository();
         }

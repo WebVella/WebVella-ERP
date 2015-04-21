@@ -1,8 +1,9 @@
-﻿using System;
+﻿using WebVella.ERP.Storage;
+using WebVella.ERP.Api;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoCurrencyField : MongoBaseField, ICurrencyField
+    public class MongoCurrencyField : MongoBaseField, IStorageCurrencyField
     {
         public new decimal DefaultValue { get; set; }
 

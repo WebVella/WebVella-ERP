@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    public class MongoEntity : MongoDocumentBase, IEntity
+    public class MongoEntity : MongoDocumentBase, IStorageEntity
     {
         public string Name { get; set; }
 
         public bool System { get; set; }
 
-        public List<IField> Fields { get; set; }
+        public List<IStorageField> Fields { get; set; }
 
-        public List<IView> Views { get; set; }
+        public List<IStorageView> Views { get; set; }
 
-        public List<IView> Forms { get; set; }
+        public List<IStorageView> Forms { get; set; }
     }
 }

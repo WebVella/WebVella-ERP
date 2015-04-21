@@ -7,6 +7,7 @@ using Microsoft.Framework.Runtime.Infrastructure;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using WebVella.ERP;
+using WebVella.ERP.Storage;
 using WebVella.ERP.Storage.Mongo;
 
 namespace WebVella.ERP.Web
