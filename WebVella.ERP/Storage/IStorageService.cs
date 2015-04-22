@@ -6,6 +6,6 @@ namespace WebVella.ERP.Storage
     public interface IStorageService
     {
         IStorageEntityRepository GetEntityRepository();
-        IEntityQueryRepository GetEntityQueryRepository();
+        IStorageQueryRepository GetQueryRepository();
     }
 }
