@@ -46,7 +46,7 @@ namespace WebVella.ERP.QueryDriver
         public IEnumerable<EntityQueryResultDoc> Find(EntityQueryDoc query, EntityQuerySortDoc sort, int page, int pageSize)
         {
             var entityRepository = ERPService.Current.StorageService.GetEntityRepository();
-            var entityQueryRepository = ERPService.Current.StorageService.GetEntityQueryRepository();
+            var entityQueryRepository = ERPService.Current.StorageService.GetQueryRepository();
 
             var entity = entityRepository.Read(entityName);
             if (entity == null)

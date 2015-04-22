@@ -6,9 +6,9 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoStorageService : IStorageService
     {
-        public IEntityQueryRepository GetEntityQueryRepository()
+        public IStorageQueryRepository GetQueryRepository()
         {
-            return new MongoEntityQueryRepository();
+            return new MongoQueryRepository();
         }
 
         public IStorageEntityRepository GetEntityRepository()
