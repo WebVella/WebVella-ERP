@@ -153,7 +153,7 @@ namespace WebVella.ERP.Utilities.Dynamic
             if (Properties.Keys.Contains(binder.Name))
             {
                 result = Properties[binder.Name];
-                return true;
+                return true; 
             }
 
 
