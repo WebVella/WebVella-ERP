@@ -2,16 +2,15 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.7.0-rc3
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 md-toast {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   position: absolute;
   box-sizing: border-box;
-  -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
@@ -22,24 +21,21 @@ md-toast {
   border-radius: 2px;
   font-size: 14px;
   cursor: default;
-  max-width: 879px;
+  max-width: 100%;
   max-height: 40px;
   height: 24px;
   z-index: 90;
   opacity: 1;
   -webkit-transform: translate3d(0, 0, 0) rotateZ(0deg);
           transform: translate3d(0, 0, 0) rotateZ(0deg);
-  -webkit-transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-          transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   /* Transition differently when swiping */ }
   md-toast.md-capsule {
     border-radius: 24px; }
   md-toast.ng-leave-active {
-    -webkit-transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
-            transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2); }
+    transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2); }
   md-toast.md-swipeleft, md-toast.md-swiperight, md-toast.md-swipeup, md-toast.md-swipedown {
-    -webkit-transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
   md-toast.ng-enter {
     -webkit-transform: translate3d(0, 100%, 0);
             transform: translate3d(0, 100%, 0);
@@ -66,10 +62,12 @@ md-toast {
               transform: translate3d(100%, 0%, 0); }
   md-toast .md-action {
     line-height: 19px;
-    padding-left: 24px;
+    margin-left: 24px;
     cursor: pointer;
     text-transform: uppercase;
     float: right; }
+    md-toast .md-action.md-button {
+      min-width: 0; }
 
 @media (max-width: 600px) {
   md-toast {
@@ -82,13 +80,12 @@ md-toast {
     bottom: 0; }
     md-toast.md-top {
       bottom: auto;
-      top: 0; }
- }
+      top: 0; } }
 
 @media (min-width: 600px) {
   md-toast {
     min-width: 288px;
-    /* 
+    /*
      * When the toast doesn't take up the whole screen,
      * make it rotate when the user swipes it away
      */ }
@@ -111,5 +108,12 @@ md-toast {
               transform: translate3d(-100%, 0, 0) rotateZ(-15deg); }
     md-toast.ng-leave.ng-leave-active.md-top.md-swiperight {
       -webkit-transform: translate3d(100%, 0, 0) rotateZ(15deg);
-              transform: translate3d(100%, 0, 0) rotateZ(15deg); }
- }
+              transform: translate3d(100%, 0, 0) rotateZ(15deg); } }
+
+@media (min-width: 1200px) {
+  md-toast {
+    max-width: 568px; } }
+
+@media screen and (-ms-high-contrast: active) {
+  md-toast {
+    border: 1px solid #fff; } }

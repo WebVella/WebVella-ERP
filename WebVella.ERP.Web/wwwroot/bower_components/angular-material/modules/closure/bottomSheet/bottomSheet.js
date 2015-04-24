@@ -2,14 +2,11 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
 goog.provide('ng.material.components.bottomSheet');
 goog.require('ng.material.components.backdrop');
 goog.require('ng.material.core');
-(function() {
-'use strict';
-
 /**
  * @ngdoc module
  * @name material.components.bottomSheet
@@ -91,8 +88,9 @@ function MdBottomSheetDirective() {
  *   - `resolve` - `{object=}`: Similar to locals, except it takes promises as values
  *   and the bottom sheet will not open until the promises resolve.
  *   - `controllerAs` - `{string=}`: An alias to assign the controller to on the scope.
- *   - `parent` - `{element=}`: The element to append the bottom sheet to. Defaults to appending
- *     to the root element of the application.
+ *   - `parent` - `{element=}`: The element to append the bottom sheet to. The `parent` may be a `function`, `string`,
+ *   `object`, or null. Defaults to appending to the body of the root element (or the root element) of the application.
+ *   e.g. angular.element(document.getElementById('content')) or "#content"
  *   - `disableParentScroll` - `{boolean=}`: Whether to disable scrolling while the bottom sheet is open.
  *     Default true.
  *
@@ -106,7 +104,7 @@ function MdBottomSheetDirective() {
  *
  * @description
  * Hide the existing bottom sheet and resolve the promise returned from
- * `$mdBottomSheet.show()`.
+ * `$mdBottomSheet.show()`. This call will close the most recently opened/current bottomsheet (if any).
  *
  * @param {*=} response An argument for the resolved promise.
  *
@@ -129,7 +127,7 @@ function MdBottomSheetProvider($$interimElementProvider) {
   var CLOSING_VELOCITY = 0.5;
   var PADDING = 80; // same as css
 
-  bottomSheetDefaults.$inject = ["$animate", "$mdConstant", "$timeout", "$$rAF", "$compile", "$mdTheming", "$mdBottomSheet", "$rootElement", "$rootScope", "$mdGesture"];
+  bottomSheetDefaults.$inject = ["$animate", "$mdConstant", "$mdUtil", "$timeout", "$compile", "$mdTheming", "$mdBottomSheet", "$rootElement", "$mdGesture"];
   return $$interimElementProvider('$mdBottomSheet')
     .setDefaults({
       methods: ['disableParentScroll', 'escapeToClose', 'targetEvent'],
@@ -137,7 +135,7 @@ function MdBottomSheetProvider($$interimElementProvider) {
     });
 
   /* @ngInject */
-  function bottomSheetDefaults($animate, $mdConstant, $timeout, $$rAF, $compile, $mdTheming, $mdBottomSheet, $rootElement, $rootScope, $mdGesture) {
+  function bottomSheetDefaults($animate, $mdConstant, $mdUtil, $timeout, $compile, $mdTheming, $mdBottomSheet, $rootElement, $mdGesture) {
     var backdrop;
 
     return {
@@ -149,13 +147,16 @@ function MdBottomSheetProvider($$interimElementProvider) {
       disableParentScroll: true
     };
 
+
     function onShow(scope, element, options) {
+
+      element = $mdUtil.extractElementByName(element, 'md-bottom-sheet');
+
       // Add a backdrop that will close on click
       backdrop = $compile('<md-backdrop class="md-opaque md-bottom-sheet-backdrop">')(scope);
       backdrop.on('click', function() {
         $timeout($mdBottomSheet.cancel);
       });
-
       $mdTheming.inherit(backdrop, options.parent);
 
       $animate.enter(backdrop, options.parent, null);
@@ -194,8 +195,8 @@ function MdBottomSheetProvider($$interimElementProvider) {
     }
 
     function onRemove(scope, element, options) {
-      var bottomSheet = options.bottomSheet;
 
+      var bottomSheet = options.bottomSheet;
 
       $animate.leave(backdrop);
       return $animate.leave(bottomSheet.element).then(function() {
@@ -263,4 +264,4 @@ function MdBottomSheetProvider($$interimElementProvider) {
 }
 MdBottomSheetProvider.$inject = ["$$interimElementProvider"];
 
-})();
+ng.material.components.bottomSheet = angular.module("material.components.bottomSheet");

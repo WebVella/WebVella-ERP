@@ -2,8 +2,9 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 @-webkit-keyframes sliderFocusThumb {
   0% {
     opacity: 0;
@@ -17,7 +18,6 @@
 
   100% {
     opacity: 0; } }
-
 @keyframes sliderFocusThumb {
   0% {
     opacity: 0;
@@ -209,3 +209,7 @@ md-slider {
             transform: scale(0.35); }
   md-slider[disabled] .md-disabled-thumb {
     display: block; }
+
+@media screen and (-ms-high-contrast: active) {
+  md-slider.md-default-theme .md-track {
+    border-bottom: 1px solid #fff; } }
