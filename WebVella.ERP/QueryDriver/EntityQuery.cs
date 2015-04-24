@@ -12,9 +12,9 @@ namespace WebVella.ERP.QueryDriver
 
             return new EntityQueryDoc { QueryType = EntityQueryType.EQ, FieldName = fieldName, FieldValue = value };
         }
-
+		
         public static EntityQueryDoc NOT(string fieldName, object value)
-        {
+        { 
             return new EntityQueryDoc { QueryType = EntityQueryType.NOT, FieldName = fieldName, FieldValue = value };
         }
 
