@@ -2,8 +2,9 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 md-toast {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -20,7 +21,7 @@ md-toast {
   border-radius: 2px;
   font-size: 14px;
   cursor: default;
-  max-width: 879px;
+  max-width: 100%;
   max-height: 40px;
   height: 24px;
   z-index: 90;
@@ -65,6 +66,8 @@ md-toast {
     cursor: pointer;
     text-transform: uppercase;
     float: right; }
+    md-toast .md-action.md-button {
+      min-width: 0; }
 
 @media (max-width: 600px) {
   md-toast {
@@ -77,13 +80,12 @@ md-toast {
     bottom: 0; }
     md-toast.md-top {
       bottom: auto;
-      top: 0; }
- }
+      top: 0; } }
 
 @media (min-width: 600px) {
   md-toast {
     min-width: 288px;
-    /* 
+    /*
      * When the toast doesn't take up the whole screen,
      * make it rotate when the user swipes it away
      */ }
@@ -106,5 +108,12 @@ md-toast {
               transform: translate3d(-100%, 0, 0) rotateZ(-15deg); }
     md-toast.ng-leave.ng-leave-active.md-top.md-swiperight {
       -webkit-transform: translate3d(100%, 0, 0) rotateZ(15deg);
-              transform: translate3d(100%, 0, 0) rotateZ(15deg); }
- }
+              transform: translate3d(100%, 0, 0) rotateZ(15deg); } }
+
+@media (min-width: 1200px) {
+  md-toast {
+    max-width: 568px; } }
+
+@media screen and (-ms-high-contrast: active) {
+  md-toast {
+    border: 1px solid #fff; } }

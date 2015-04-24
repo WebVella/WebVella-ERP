@@ -4,12 +4,35 @@ Please file issues and pull requests against that repo.
 
 ## Installing Angular Material
 
-You can install this package locally either with `npm`, `bower`, or `jspm`.
+You can install this package locally either with `npm`, `jspm`, or `bower`. 
 
 ### npm
 
 ```shell
+# To install latest formal release 
 npm install angular-material
+
+# To install latest release and update package.json
+npm install angular-material --save-dev
+
+# To install from HEAD of master
+npm install http://github.com/angular/bower-material/tarball/master
+
+# To view all installed package 
+npm list;
+```
+
+### jspm
+
+```shell
+# To install latest formal release
+jspm install angular-material;
+
+# To install from HEAD of master
+jspm install angular-material=github:angular/bower-material@master;
+
+# To view all installed package versions
+jspm inspect;
 ```
 
 Now you can use `require('angular-material')` when installing with npm or jsmp and using Browserify or Webpack.
@@ -21,7 +44,7 @@ Now you can use `require('angular-material')` when installing with npm or jsmp a
 bower install angular-material
 
 # To get the most recent, last committed-to-master version use:
-bower install angular-material#master 
+bower install angular-material#master
 
 # To save the bower settings for future use:
 bower install angular-material --save

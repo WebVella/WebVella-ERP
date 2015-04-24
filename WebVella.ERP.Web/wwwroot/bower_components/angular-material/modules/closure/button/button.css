@@ -2,12 +2,14 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 /**
  * Position a FAB button.
  */
 .md-button {
+  box-sizing: border-box;
   color: currentColor;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -16,95 +18,107 @@
   position: relative;
   outline: none;
   border: 0;
-  padding: 6px;
-  margin: 0;
+  display: inline-block;
+  padding: 0 0.6rem;
+  margin: 0.6rem 0.8rem;
+  line-height: 3.6rem;
+  height: 3.6rem;
   background: transparent;
   white-space: nowrap;
+  min-width: 8.8rem;
   text-align: center;
   text-transform: uppercase;
   font-weight: 500;
+  font-size: 1.4rem;
   font-style: inherit;
   font-variant: inherit;
-  font-size: inherit;
   font-family: inherit;
-  line-height: inherit;
   text-decoration: none;
   cursor: pointer;
   overflow: hidden;
-  transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), -webkit-transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .md-button *, .md-button *:before, .md-button *:after {
+    box-sizing: border-box; }
   .md-button:focus {
     outline: none; }
-  .md-button:hover {
+  .md-button:hover, .md-button:focus {
     text-decoration: none; }
-  .md-button.ng-hide {
+  .md-button.ng-hide, .md-button.ng-leave {
     transition: none; }
   .md-button.md-cornered {
     border-radius: 0; }
   .md-button.md-icon {
     padding: 0;
     background: none; }
-  .md-button.md-raised {
-    -webkit-transform: translate3d(0, 0, 0);
-            transform: translate3d(0, 0, 0); }
+  .md-button.md-icon-button {
+    margin: 0 0.6rem;
+    height: 4.8rem;
+    min-width: 0;
+    line-height: 4.8rem;
+    padding-left: 0;
+    padding-right: 0;
+    width: 4.8rem; }
   .md-button.md-fab {
     z-index: 20;
-    width: 56px;
-    height: 56px;
+    line-height: 5.6rem;
+    min-width: 0;
+    width: 5.6rem;
+    height: 5.6rem;
+    vertical-align: middle;
     border-radius: 50%;
-    border-radius: 50%;
+    background-clip: padding-box;
     overflow: hidden;
-    -webkit-transform: translate3d(0, 0, 0);
-            transform: translate3d(0, 0, 0);
     transition: 0.2s linear;
-    transition-property: -webkit-transform, box-shadow;
-    transition-property: transform, box-shadow; }
+    transition-property: background-color, box-shadow; }
     .md-button.md-fab.md-fab-bottom-right {
       top: auto;
-      right: 20px;
-      bottom: 20px;
+      right: 2rem;
+      bottom: 2rem;
       left: auto;
       position: absolute; }
     .md-button.md-fab.md-fab-bottom-left {
       top: auto;
       right: auto;
-      bottom: 20px;
-      left: 20px;
+      bottom: 2rem;
+      left: 2rem;
       position: absolute; }
     .md-button.md-fab.md-fab-top-right {
-      top: 20px;
-      right: 20px;
+      top: 2rem;
+      right: 2rem;
       bottom: auto;
       left: auto;
       position: absolute; }
     .md-button.md-fab.md-fab-top-left {
-      top: 20px;
+      top: 2rem;
       right: auto;
       bottom: auto;
-      left: 20px;
+      left: 2rem;
       position: absolute; }
+    .md-button.md-fab .md-ripple-container {
+      border-radius: 50%;
+      background-clip: padding-box;
+      overflow: hidden;
+      -webkit-mask-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC'); }
     .md-button.md-fab md-icon {
       margin-top: 0; }
     .md-button.md-fab.md-mini {
-      width: 40px;
-      height: 40px; }
-  .md-button:not([disabled]).md-raised:focus, .md-button:not([disabled]).md-raised:hover, .md-button:not([disabled]).md-fab:focus, .md-button:not([disabled]).md-fab:hover {
-    -webkit-transform: translate3d(0, -1px, 0);
-            transform: translate3d(0, -1px, 0); }
+      line-height: 4rem;
+      width: 4rem;
+      height: 4rem; }
 
 .md-toast-open-top .md-button.md-fab-top-left, .md-toast-open-top .md-button.md-fab-top-right {
-  -webkit-transform: translate3d(0, 42px, 0);
-          transform: translate3d(0, 42px, 0); }
-  .md-toast-open-top .md-button.md-fab-top-left:not([disabled]):focus, .md-toast-open-top .md-button.md-fab-top-left:not([disabled]):hover, .md-toast-open-top .md-button.md-fab-top-right:not([disabled]):focus, .md-toast-open-top .md-button.md-fab-top-right:not([disabled]):hover {
-    -webkit-transform: translate3d(0, 41px, 0);
-            transform: translate3d(0, 41px, 0); }
+  -webkit-transform: translate3d(0, 4.2rem, 0);
+          transform: translate3d(0, 4.2rem, 0); }
+  .md-toast-open-top .md-button.md-fab-top-left:not([disabled]).md-focused, .md-toast-open-top .md-button.md-fab-top-left:not([disabled]):hover, .md-toast-open-top .md-button.md-fab-top-right:not([disabled]).md-focused, .md-toast-open-top .md-button.md-fab-top-right:not([disabled]):hover {
+    -webkit-transform: translate3d(0, 3.2rem, 0);
+            transform: translate3d(0, 3.2rem, 0); }
 
 .md-toast-open-bottom .md-button.md-fab-bottom-left, .md-toast-open-bottom .md-button.md-fab-bottom-right {
-  -webkit-transform: translate3d(0, -42px, 0);
-          transform: translate3d(0, -42px, 0); }
-  .md-toast-open-bottom .md-button.md-fab-bottom-left:not([disabled]):focus, .md-toast-open-bottom .md-button.md-fab-bottom-left:not([disabled]):hover, .md-toast-open-bottom .md-button.md-fab-bottom-right:not([disabled]):focus, .md-toast-open-bottom .md-button.md-fab-bottom-right:not([disabled]):hover {
-    -webkit-transform: translate3d(0, -43px, 0);
-            transform: translate3d(0, -43px, 0); }
+  -webkit-transform: translate3d(0, -4.2rem, 0);
+          transform: translate3d(0, -4.2rem, 0); }
+  .md-toast-open-bottom .md-button.md-fab-bottom-left:not([disabled]).md-focused, .md-toast-open-bottom .md-button.md-fab-bottom-left:not([disabled]):hover, .md-toast-open-bottom .md-button.md-fab-bottom-right:not([disabled]).md-focused, .md-toast-open-bottom .md-button.md-fab-bottom-right:not([disabled]):hover {
+    -webkit-transform: translate3d(0, -5.2rem, 0);
+            transform: translate3d(0, -5.2rem, 0); }
 
 .md-button-group {
   display: -webkit-flex;
@@ -132,3 +146,7 @@
   .md-button-group > .md-button:last-child {
     border-right-width: 1px;
     border-radius: 0px 2px 2px 0px; }
+
+@media screen and (-ms-high-contrast: active) {
+  .md-button.md-raised, .md-button.md-fab {
+    border: 1px solid #fff; } }

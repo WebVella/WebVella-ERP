@@ -10,16 +10,32 @@ angular.module('dashboard', [
 
 /* State definition */
 .config(['$stateProvider', function ($stateProvider) {
-    $stateProvider.state('dashboard', {
-        url: '/dashboard',
-        views: {
-            "contentView": {
-                controller: 'DashboardModuleContentCtrl',
-                templateUrl: 'dashboard/dashboard.html'
-            }
-        },
-        resolve: {}
-    });
+	$stateProvider.state('dashboard', {
+		url: '/dashboard',
+		views: {
+			"AreaLocalNavView": {
+				controller: 'AreaLocalNavViewModuleCtrl',
+				templateUrl: 'navigation/area-local-nav.html'
+			},
+			"AreasNavView": {
+				controller: 'AreasNavViewModuleCtrl',
+				templateUrl: 'navigation/areas-nav.html'
+			},
+			"ActionsNavView": {
+				controller: 'ActionsNavViewModuleCtrl',
+				templateUrl: 'navigation/actions-nav.html'
+			},
+			"ActionsLocalNavView": {
+				controller: 'ActionsLocalNavViewModuleCtrl',
+				templateUrl: 'navigation/actions-local-nav.html'
+			},
+			"ContentView": {
+				controller: 'DashboardModuleContentCtrl',
+				templateUrl: 'dashboard/dashboard.html'
+			}
+		},
+		resolve: {}
+	});
 }])
 
 /**
@@ -27,4 +43,4 @@ angular.module('dashboard', [
  */
 .controller('DashboardModuleContentCtrl', ['$scope', '$rootScope', '$state', function ($scope, $rootScope, $state) {
 
-}])
+}]);

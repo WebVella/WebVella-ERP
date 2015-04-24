@@ -2,8 +2,9 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 .md-dialog-container {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -44,15 +45,17 @@ md-dialog {
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     -webkit-transform: translate3d(0, 100%, 0) scale(0.2);
             transform: translate3d(0, 100%, 0) scale(0.2); }
-  md-dialog md-content {
+  md-dialog > md-content {
     -webkit-order: 1;
         -ms-flex-order: 1;
             order: 1;
     padding: 24px;
     overflow: auto;
     -webkit-overflow-scrolling: touch; }
-    md-dialog md-content:not([layout=row]) > *:first-child:not(.md-subheader) {
-      margin-top: 0px; }
+    md-dialog > md-content:not([layout=row]) > *:first-child:not(.md-subheader) {
+      margin-top: 0; }
+    md-dialog > md-content:focus {
+      outline: none; }
   md-dialog .md-actions {
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -67,9 +70,15 @@ md-dialog {
     -webkit-justify-content: flex-end;
         -ms-flex-pack: end;
             justify-content: flex-end;
-    padding: 16px 16px;
+    padding: 8px;
+    padding-left: 24px;
     min-height: 40px; }
     md-dialog .md-actions > * {
-      margin-left: 8px; }
+      margin-left: 4px;
+      margin-right: 0; }
   md-dialog.md-content-overflow .md-actions {
     border-top: 1px solid; }
+
+@media screen and (-ms-high-contrast: active) {
+  md-dialog {
+    border: 1px solid #fff; } }
