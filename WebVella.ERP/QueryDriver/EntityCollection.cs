@@ -62,7 +62,7 @@ namespace WebVella.ERP.QueryDriver
         
         /// <summary>
         /// Processes specified field selection string and splits it to entity and field names
-        /// During the procecess validates if all specified fields are present.
+        /// During the process validates if all specified fields are present.
         /// </summary>
         /// <param name="entityRepository"></param>
         /// <param name="entity"></param>
@@ -98,7 +98,7 @@ namespace WebVella.ERP.QueryDriver
                 }
             }
 
-            foreach ( var field in processedFields )
+            foreach ( var field in processedFields ) 
             {
                 var relationData = field.Split(RELATION_PROPERTY_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
                 if (relationData.Count > 2)
@@ -134,7 +134,7 @@ namespace WebVella.ERP.QueryDriver
 
                 //if field is not already added, then add it
                 if (!relatedEntityFields.Any(x => x == relatedFieldName))
-                    relatedEntityFields.Add(relatedFieldName);
+                    relatedEntityFields.Add(relatedFieldName); 
 
                 result[relationEntityFieldName] = relatedEntityFields;
 
