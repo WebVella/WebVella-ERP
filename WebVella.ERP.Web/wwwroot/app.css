@@ -45,7 +45,7 @@
 
 
 /*
-	Toolbar
+	Topbar
 */
 
 md-toolbar {
@@ -59,7 +59,10 @@ md-toolbar {
 		color: #fff;
 	}
 
-
+	md-toolbar .md-button.md-default-theme.md-raised[disabled] md-icon,
+	md-toolbar .md-button.md-default-theme.md-raised[disabled]:hover  md-icon{
+		fill: #fff;
+	}
 
 	md-toolbar .md-button:hover {
 		background-color: rgba(255,255,255,0.2) !important;
@@ -68,6 +71,9 @@ md-toolbar {
 md-toolbar.md-default-theme md-icon {
   color: rgba(255,255,255,0.87);
 }
+
+
+
 
 /*
 Sidenav
@@ -99,9 +105,15 @@ Sidenav
 	display:flex;
 }
 
+#sidenav-user .avatar-wrapper {
+	width:50px;
+	height:50px;
+	overflow:hidden;
+	float:left;
+}
+
 #sidenav-user .avatar {
-	max-width: 50px;
-	max-height: 50px;
+	width: 50px;
 	vertical-align:middle;
 }
 
@@ -109,10 +121,18 @@ Sidenav
 	font-size: 14px;
 	line-height:1.5em;
 	padding-left:10px;
+	padding-top:4px;
 	text-align: left;
 	text-transform: capitalize;
 	white-space:normal;
 }
+
+.md-sidenav-left .searchbox {
+	padding:10px 0;
+	margin-left:16px;
+	margin-right:16px;
+}
+
 
 .menu {
 	width:100%;
@@ -124,7 +144,11 @@ Sidenav
 
 	.menu md-list-item .md-button {
 		display:flex;
+		padding-left:16px;
+		padding-right:16px;
 	}
+
+
 
 .menu .md-button {
 	width: 100%;
@@ -134,6 +158,13 @@ Sidenav
 	font-weight: normal;
 	margin:0;
 }
+
+	.menu .md-primary,
+	.menu .md-primary:hover {
+		background-color:rgba(0,0,0,0.05);
+		background-color:rgba(158, 167, 217,0.25) !important;
+		color:rgba(0, 0, 0, 0.87) !important;
+	}
 
 .menu .header > .md-button {
 	text-transform: uppercase;
@@ -147,8 +178,12 @@ Sidenav
 	vertical-align: middle;
 }
 
-.menu .menu {
-	padding-bottom: 15px;
+md-list.menu + .menu{
+	padding-top: 0;
+}
+
+md-list-item md-list {
+	padding: 0;
 }
 
 .shadow-z-1 {

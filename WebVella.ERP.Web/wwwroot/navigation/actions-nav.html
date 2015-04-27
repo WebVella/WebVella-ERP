@@ -1,2 +1,2 @@
-﻿<md-button ng-click="GoToArea('settings')" class="md-icon-button"><md-icon md-svg-src="/lib/fa/cog.svg" class="s24"></md-icon></md-button>
-<md-button ng-click="toggleRight()">Create</md-button>
+﻿<md-button ng-click="GoToAdmin()" class="md-icon-button" ng-class="{'md-raised': SetAdminActive()}" ng-disabled="SetAdminActive()" aria-label="Go to settings"><md-icon md-svg-src="/lib/fa/cog.svg"></md-icon></md-button>
+<md-button ng-click="toggleRight()" aria-label="Quick elements create">Create</md-button>
