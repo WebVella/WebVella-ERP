@@ -35,10 +35,6 @@ namespace WebVella.ERP.Web.Models
 		[JsonProperty(PropertyName = "hasDashboard")]
 		public bool HasDashboard { get; set; }
 
-		//Whether the area has a search page
-		[JsonProperty(PropertyName = "hasSearch")]
-		public bool HasSearch { get; set; }
-
 		//Area Entity sections (grouping). Entities that need to be directly linked to the area must have section with id = Guid.Empty
 		[JsonProperty(PropertyName = "sections")]
 		public List<AreaSection> Sections { get; set; }
