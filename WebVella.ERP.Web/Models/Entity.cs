@@ -15,6 +15,7 @@ namespace WebVella.ERP.Web.Models
 			Label = String.Empty;
 			LabelPlural = String.Empty;
 			IsSystem = false;
+			IsSearchable = true;
 			Weight = 0;
 		}
 
@@ -36,6 +37,10 @@ namespace WebVella.ERP.Web.Models
 		//Is the entity system- cannot be deleted
 		[JsonProperty(PropertyName = "isSystem")]
 		public bool IsSystem { get; set; }
+
+		//Is the entity system- cannot be deleted
+		[JsonProperty(PropertyName = "isSearchable")]
+		public bool IsSearchable { get; set; }
 
 		//Weight- way of sorting ares in the list, Bigger weight sinks the element down the list
 		[JsonProperty(PropertyName = "weight")]

@@ -1,9 +1,4 @@
-﻿<md-input-container class="searchbox" md-no-float ng-show="selectedArea.hasSearch">
-	<!-- Use floating label instead of placeholder -->
-	<!--<label>Search</label>-->
-	<input ng-model="user.name" type="text" placeholder="Search">
-</md-input-container>
-
+﻿<br/>
 <md-list class="menu" layout="column" ng-show="selectedArea.hasDashboard" style="padding-bottom:0;">
 	<md-list-item flex>
 		<md-button ng-click="GoToDashboard()"  ng-class="{'md-primary': SetAreaLocalActive('null','dashboard')}">Dashboard</md-button>

@@ -28,7 +28,6 @@ namespace WebVella.ERP.Web.Controllers
 			area.Label = "Area 1";
 			area.Weight = 1;
 			area.HasDashboard = true;
-			area.HasSearch = true;
 
 			//Area1 SectionNull
 			areaSection = new AreaSection();
@@ -112,7 +111,6 @@ namespace WebVella.ERP.Web.Controllers
 			area.Label = "Area 2";
 			area.Weight = 2;
 			area.HasDashboard = true;
-			area.HasSearch = true;
 
 			////Add Area to SiteMeta
 			siteMeta.Areas.Add(area);
@@ -124,7 +122,6 @@ namespace WebVella.ERP.Web.Controllers
 			area.Label = "Area 3";
 			area.Weight = 3;
 			area.HasDashboard = true;
-			area.HasSearch = true;
 
 			////Add Area to SiteMeta
 			siteMeta.Areas.Add(area);
@@ -136,7 +133,6 @@ namespace WebVella.ERP.Web.Controllers
 			area.Label = "Area 4";
 			area.Weight = 4;
 			area.HasDashboard = true;
-			area.HasSearch = false;
 
 			////Add Area to SiteMeta
 			siteMeta.Areas.Add(area);
@@ -148,7 +144,6 @@ namespace WebVella.ERP.Web.Controllers
 			area.Label = "Area 5";
 			area.Weight = 5;
 			area.HasDashboard = true;
-			area.HasSearch = true;
 
 			////Add Area to SiteMeta
 			siteMeta.Areas.Add(area);
