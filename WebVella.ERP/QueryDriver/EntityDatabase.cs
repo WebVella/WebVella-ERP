@@ -10,4 +10,4 @@ namespace WebVella.ERP.QueryDriver
             return new EntityCollection(entityName);
         }
     }
-}
+} 
