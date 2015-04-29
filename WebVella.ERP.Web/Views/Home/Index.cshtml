@@ -10,13 +10,13 @@
 	<link href="~/bower_components/angular-material/angular-material.css" rel="stylesheet" />
 	<link href="~/app.css" rel="stylesheet" />
 </head>
-<body layout="row" ng-controller="AppCtrl">
+<body layout="row" ng-controller="AppController">
 	<md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="$mdMedia('gt-md')">
 		<md-toolbar>
 			<div class="md-toolbar-tools">
-				<md-button id="sidenav-user" layout="row" layout-align="start center">
-					<img src="~/assets/mozart.jpg" class="avatar"></img>
-					<div flex layout="column" class="username">
+				<md-button id="sidenav-user" aria-label="Show user menu">
+					<div class="avatar-wrapper"><img src="~/assets/mozart.jpg" class="avatar"></img></div>
+					<div layout="column" class="username">
 						<span flex>Wolfgang</span>
 						<span flex>Mozart</span>
 					</div>
@@ -28,9 +28,9 @@
 		</md-content>
 	</md-sidenav>
 	<div layout="column" tabindex="-1" role="main" flex>
-		<md-toolbar layout="row">
+		<md-toolbar>
 			<div class="md-toolbar-tools">
-				<md-button class="md-icon-button" ng-click="toggleLeft()" hide-gt-md>
+				<md-button  class="md-icon-button" ng-click="toggleLeft()" hide-gt-md aria-label="Toggle left site menu">
 					<md-icon md-svg-src="/lib/fa/bars.svg" class="s24"></md-icon>
 				</md-button>
 				<div ui-view="AreasNavView"></div>
@@ -57,7 +57,11 @@
 
 	<!-- Application -->
 	<script src="~/app.js"></script>
-	<script src="~/dashboard/dashboard.js"></script>
+	<script src="~/services.js"></script>
+	<script src="~/config.js"></script>
+	<script src="~/areaEntity/areaEntity.js"></script>
 	<script src="~/navigation/navigation.js"></script>
+	<script src="~/adminentities/adminentities.js"></script>
+
 </body>
 </html>

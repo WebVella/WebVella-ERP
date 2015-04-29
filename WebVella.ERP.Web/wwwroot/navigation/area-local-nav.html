@@ -1,38 +1,18 @@
-﻿<md-list class="menu" flex layout="column">
+﻿<br/>
+<md-list class="menu" layout="column" ng-show="selectedArea.hasDashboard" style="padding-bottom:0;">
 	<md-list-item flex>
-		<md-button>Dashboard</md-button>
+		<md-button ng-click="GoToDashboard()"  ng-class="{'md-primary': SetAreaLocalActive('null','dashboard')}">Dashboard</md-button>
 	</md-list-item>
-	<md-list-item flex>
-		<md-button class="md-primary">Entity 1</md-button>
-	</md-list-item>
-	<md-list-item flex class="header" layout="column">
+</md-list>
+<md-list class="menu" layout="column" ng-repeat="section in selectedArea.sections">
+	<md-list-item flex class="header" layout="column" ng-show="section.name != 'null'">
 		<md-button flex layout="row">
-			Area Section 1
+			{{section.label}}
 			<span flex=""></span>
 			<md-icon md-svg-src="lib/fa/chevron-down.svg" class="s12" alt="chevron"></md-icon>
 		</md-button>
-		<md-list flex class="menu" layout="column">
-			<md-list-item flex>
-				<md-button>Entity 2</md-button>
-			</md-list-item>
-			<md-list-item flex>
-				<md-button>Entity 3</md-button>
-			</md-list-item>
-		</md-list>
 	</md-list-item>
-	<md-list-item  flex class="header" layout="column">
-		<md-button layout="row">
-			Area Section 2
-			<span flex=""></span>
-			<md-icon md-svg-src="lib/fa/chevron-down.svg" class="s12" alt="chevron"></md-icon>
-		</md-button>
-		<md-list class="menu" layout="column">
-			<md-list-item flex>
-				<md-button>Entity 4</md-button>
-			</md-list-item>
-			<md-list-item flex>
-				<md-button>Entity 5</md-button>
-			</md-list-item>
-		</md-list>
+	<md-list-item flex ng-repeat="entity in section.entities">
+		<md-button ng-click="GoToEntity(section.name,entity.name)" ng-class="{'md-primary': SetAreaLocalActive(section.name,entity.name)}">{{entity.label}}</md-button>
 	</md-list-item>
 </md-list>
