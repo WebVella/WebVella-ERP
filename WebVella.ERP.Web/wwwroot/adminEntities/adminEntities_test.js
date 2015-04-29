@@ -1,7 +1,7 @@
 ﻿describe('Dashboard module test - ', function () {
 
     browser.get(browser.erpSiteAddress);
-    browser.setLocation('dashboard');
+    browser.setLocation('areaEntity');
     var input = element(by.model('person.name'));
     input.sendKeys('123');
     it(' should insert 123 in the input with model person.name as a value', function () {
