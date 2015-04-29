@@ -1,10 +1,10 @@
-﻿using System;
-using System.Dynamic;
-using WebVella.ERP.Utilities.Dynamic;
+﻿//using System;
+//using System.Dynamic;
+//using WebVella.ERP.Utilities.Dynamic;
 
-namespace WebVella.ERP.QueryDriver
-{
-    public class EntityQueryResultDoc : Expando
-    {
-    }
-}
+//namespace WebVella.ERP.QueryDriver
+//{
+//    public class EntityQueryResultDoc : Expando
+//    {
+//    }
+//}

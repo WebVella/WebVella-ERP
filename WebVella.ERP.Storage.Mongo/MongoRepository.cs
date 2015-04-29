@@ -146,10 +146,8 @@ namespace WebVella.ERP.Storage.Mongo
                 cursor.SetSkip(skip.Value);
             if (limit.HasValue)
                 cursor.SetLimit(limit.Value);
-            if (sortBy != null)
-                cursor.SetSortOrder(sortBy);
-
-            IMongoQuery t = Query.EQ("x", "x");
+			if (sortBy != null)
+				cursor.SetSortOrder(sortBy);
 
             return cursor.ToList();
         }
