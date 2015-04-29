@@ -1,10 +1,10 @@
-﻿using System;
+﻿//using System;
 
-namespace WebVella.ERP.QueryDriver
-{
-    public enum EntityQuerySortType
-    {
-        Ascending,
-        Descending
-    }
-}
+//namespace WebVella.ERP.QueryDriver
+//{
+//    public enum EntityQuerySortType
+//    {
+//        Ascending,
+//        Descending
+//    }
+//}

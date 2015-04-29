@@ -1,8 +1,8 @@
-﻿using System;
+﻿//using System;
 
-namespace WebVella.ERP.QueryDriver
-{
-    public class EntityQuerySecurity
-    {
-    }
-}
+//namespace WebVella.ERP.QueryDriver
+//{
+//    public class EntityQuerySecurity
+//    {
+//    }
+//}

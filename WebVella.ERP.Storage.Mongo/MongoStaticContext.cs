@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver;
 using Microsoft.Framework.ConfigurationModel;
+using MongoDB.Bson;
 
 #endregion
 
@@ -79,6 +80,16 @@ namespace WebVella.ERP.Storage.Mongo
 			return (IMongoRepository<TEntity>)repositories.SingleOrDefault(x => (x as IMongoRepository<TEntity> != null)
 						&& ((IMongoRepository<TEntity>)x).Collection.Name == colName);
 		}
+
+		/// <summary>
+		///Get non generict BsonDocuments collection
+		/// </summary>
+		/// <param name="collectionName"></param>
+		/// <returns></returns>
+		internal MongoCollection<BsonDocument> GetBsonCollection(string collectionName)
+		{
+			return Database.GetCollection<BsonDocument>(collectionName);
+        }
 
 		/// <summary>
 		/// Creates new transaction
