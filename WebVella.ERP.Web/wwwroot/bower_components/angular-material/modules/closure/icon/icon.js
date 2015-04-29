@@ -2,13 +2,10 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
 goog.provide('ng.material.components.icon');
 goog.require('ng.material.core');
-(function() {
-'use strict';
-
 /**
  * @ngdoc module
  * @name material.components.icon
@@ -110,11 +107,6 @@ function mdIconDirective($mdIcon, $mdTheming, $mdAria ) {
   }
 }
 mdIconDirective.$inject = ["$mdIcon", "$mdTheming", "$mdAria"];
-
-})();
-
-(function() {
-  'use strict';
 
   angular
     .module('material.components.icon' )
@@ -333,17 +325,27 @@ mdIconDirective.$inject = ["$mdIcon", "$mdTheming", "$mdAria"];
        {
          id : 'tabs-arrow',
          url: 'tabs-arrow.svg',
-         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g id="tabs-arrow"><polygon points="15.4,7.4 14,6 8,12 14,18 15.4,16.6 10.8,12 "/></g></svg>'
+         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g><polygon points="15.4,7.4 14,6 8,12 14,18 15.4,16.6 10.8,12 "/></g></svg>'
        },
        {
          id : 'close',
          url: 'close.svg',
-         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g id="close"><path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"/></g></svg>'
+         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g><path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"/></g></svg>'
        },
        {
          id:  'cancel',
          url: 'cancel.svg',
-         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g id="cancel"><path d="M12 2c-5.53 0-10 4.47-10 10s4.47 10 10 10 10-4.47 10-10-4.47-10-10-10zm5 13.59l-1.41 1.41-3.59-3.59-3.59 3.59-1.41-1.41 3.59-3.59-3.59-3.59 1.41-1.41 3.59 3.59 3.59-3.59 1.41 1.41-3.59 3.59 3.59 3.59z"/></g></svg>'
+         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 24 24"><g><path d="M12 2c-5.53 0-10 4.47-10 10s4.47 10 10 10 10-4.47 10-10-4.47-10-10-10zm5 13.59l-1.41 1.41-3.59-3.59-3.59 3.59-1.41-1.41 3.59-3.59-3.59-3.59 1.41-1.41 3.59 3.59 3.59-3.59 1.41 1.41-3.59 3.59 3.59 3.59z"/></g></svg>'
+       },
+       {
+         id:  'menu',
+         url: 'menu.svg',
+         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 100 100"><path d="M 50 0 L 100 14 L 92 80 L 50 100 L 8 80 L 0 14 Z" fill="#b2b2b2"></path><path d="M 50 5 L 6 18 L 13.5 77 L 50 94 Z" fill="#E42939"></path><path d="M 50 5 L 94 18 L 86.5 77 L 50 94 Z" fill="#B72833"></path><path d="M 50 7 L 83 75 L 72 75 L 65 59 L 50 59 L 50 50 L 61 50 L 50 26 Z" fill="#b2b2b2"></path><path d="M 50 7 L 17 75 L 28 75 L 35 59 L 50 59 L 50 50 L 39 50 L 50 26 Z" fill="#fff"></path></svg>'
+       },
+       {
+         id:  'toggle-arrow',
+         url: 'toggle-arrow-svg',
+         svg: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48"><path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"/><path d="M0 0h48v48h-48z" fill="none"/></svg>'
        }
      ];
 
@@ -482,13 +484,7 @@ mdIconDirective.$inject = ["$mdIcon", "$mdTheming", "$mdAria"];
      return $http
        .get(url, { cache: $templateCache })
        .then(function(response) {
-         var els = angular.element(response.data);
-         // Iterate to find first svg node, allowing for comments in loaded SVG (common with auto-generated SVGs)
-         for (var i = 0; i < els.length; ++i) {
-           if (els[i].nodeName == 'svg') {
-             return els[i];
-           }
-         }
+         return angular.element('<div>').append(response.data).find('svg')[0];
        });
    }
 
@@ -531,11 +527,10 @@ mdIconDirective.$inject = ["$mdIcon", "$mdTheming", "$mdAria"];
      if (el.tagName != 'svg') {
        el = angular.element('<svg xmlns="http://www.w3.org/2000/svg">').append(el)[0];
      }
-     el = angular.element(el);
 
      // Inject the namespace if not available...
-     if ( !el.attr('xmlns') ) {
-       el.attr('xmlns', "http://www.w3.org/2000/svg");
+     if ( !el.getAttribute('xmlns') ) {
+       el.setAttribute('xmlns', "http://www.w3.org/2000/svg");
      }
 
      this.element = el;
@@ -549,29 +544,31 @@ mdIconDirective.$inject = ["$mdIcon", "$mdTheming", "$mdAria"];
     */
    function prepareAndStyle() {
      var iconSize = this.config ? this.config.iconSize : config.defaultIconSize;
-     var svg = angular.element( this.element );
-         svg.attr({
+         angular.forEach({
            'fit'   : '',
            'height': '100%',
            'width' : '100%',
            'preserveAspectRatio': 'xMidYMid meet',
-           'viewBox' : svg.attr('viewBox') || ('0 0 ' + iconSize + ' ' + iconSize)
-         })
-         .css( {
+           'viewBox' : this.element.getAttribute('viewBox') || ('0 0 ' + iconSize + ' ' + iconSize)
+         }, function(val, attr) {
+           this.element.setAttribute(attr, val);
+         }, this);
+
+         angular.forEach({
            'pointer-events' : 'none',
            'display' : 'block'
-         });
-
-     this.element = svg;
+         }, function(val, style) {
+           this.element.style[style] = val;
+         }, this);
    }
 
    /**
-    * Clone the Icon DOM element; which is stored as an angular.element()
+    * Clone the Icon DOM element.
     */
    function cloneSVG(){
-     return angular.element( this.element[0].cloneNode(true) );
+     return this.element.cloneNode(true);
    }
 
  }
 
-})();
+ng.material.components.icon = angular.module("material.components.icon");

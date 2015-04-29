@@ -1,14 +1,10 @@
-﻿using System;
-using WebVella.ERP;
-using WebVella.ERP.QueryDriver;
-
-namespace WebVella.ERP.Storage.Mongo
+﻿namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoStorageService : IStorageService
     {
-        public IEntityQueryRepository GetEntityQueryRepository()
+        public IStorageRecordRepository GetRecordRepository()
         {
-            return new MongoEntityQueryRepository();
+            return new MongoRecordRepository();
         }
 
         public IStorageEntityRepository GetEntityRepository()

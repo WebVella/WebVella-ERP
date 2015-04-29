@@ -1,11 +1,8 @@
-﻿using System;
-using WebVella.ERP.QueryDriver;
-
-namespace WebVella.ERP.Storage
+﻿namespace WebVella.ERP.Storage
 {
     public interface IStorageService
     {
         IStorageEntityRepository GetEntityRepository();
-        IEntityQueryRepository GetEntityQueryRepository();
+        IStorageRecordRepository GetRecordRepository();
     }
 }
