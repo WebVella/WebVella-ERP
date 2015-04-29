@@ -7,7 +7,7 @@ namespace WebVella.ERP.Core
         public new decimal DefaultValue { get; set; }
 
         public string DisplayFormat { get; set; }
-        
-        public decimal Value { get; set; }
+
+        public decimal StartingNumber { get; set; }
     }
 }

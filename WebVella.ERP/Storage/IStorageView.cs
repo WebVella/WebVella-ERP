@@ -7,15 +7,13 @@ namespace WebVella.ERP.Storage
 
     public interface IStorageViewFilter
     {
-        Guid LeftEntityId { get; set; }
+        Guid EntityId { get; set; }
 
-        Guid LeftFieldId { get; set; }
+        Guid FieldId { get; set; }
 
         FilterOperatorTypes Operator { get; set; }
 
-        Guid RightEntityId { get; set; }
-
-        Guid RightFieldId { get; set; }
+        string Value { get; set; }
     }
 
     public interface IStorageViewField
@@ -33,11 +31,11 @@ namespace WebVella.ERP.Storage
 
         string Name { get; set; }
 
-        string DisplayName { get; set; }
+        string Label { get; set; }
 
         ViewTypes Type { get; set; }
 
-        IList<IStorageViewFilter> Filter { get; set; }
+        IList<IStorageViewFilter> Filters { get; set; }
 
         IList<IStorageViewField> Fields { get; set; }
     }

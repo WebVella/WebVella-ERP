@@ -6,10 +6,10 @@ namespace WebVella.ERP.Core
     {
         public new decimal DefaultValue { get; set; }
 
-        public int MinValue { get; set; }
+        public decimal MinValue { get; set; }
 
-        public int MaxValue { get; set; }
+        public decimal MaxValue { get; set; }
 
-        public decimal Value { get; set; }
+        public byte DecimalPlaces { get; set; }
     }
 }

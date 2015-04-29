@@ -7,7 +7,5 @@ namespace WebVella.ERP.Storage
         new DateTime DefaultValue { get; set; }
 
         string Format { get; set; }
-
-        DateTime Value { get; set; }
     }
 }

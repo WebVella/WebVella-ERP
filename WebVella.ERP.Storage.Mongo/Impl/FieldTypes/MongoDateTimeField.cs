@@ -8,7 +8,5 @@ namespace WebVella.ERP.Core
         public new DateTime DefaultValue { get; set; }
 
         public string Format { get; set; }
-
-        public DateTime Value { get; set; }
     }
 }

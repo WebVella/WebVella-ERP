@@ -11,7 +11,5 @@ namespace WebVella.ERP.Core
         public decimal MaxValue { get; set; }
 
         public byte DecimalPlaces { get; set; }
-
-        public decimal Value { get; set; }
     }
 }

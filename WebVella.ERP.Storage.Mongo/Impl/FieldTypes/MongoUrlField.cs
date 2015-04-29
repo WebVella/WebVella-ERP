@@ -9,7 +9,5 @@ namespace WebVella.ERP.Core
         public int MaxLength { get; set; }
 
         public bool OpenTargetInNewWindow { get; set; }
-
-        public string Value { get; set; }
     }
 }
