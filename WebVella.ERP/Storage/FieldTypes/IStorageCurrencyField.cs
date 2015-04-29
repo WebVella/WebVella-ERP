@@ -11,7 +11,5 @@ namespace WebVella.ERP.Storage
         decimal MaxValue { get; set; }
 
         CurrencyTypes Currency { get; set; }
-
-        decimal Value { get; set; }
     }
 }

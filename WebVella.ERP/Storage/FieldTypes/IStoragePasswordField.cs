@@ -12,7 +12,5 @@ namespace WebVella.ERP.Storage
         PasswordFieldMaskTypes MaskType { get; set; }
 
         char MaskCharacter { get; set; }
-
-        string Value { get; set; }
     }
 }

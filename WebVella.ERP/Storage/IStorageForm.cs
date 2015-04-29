@@ -17,9 +17,11 @@ namespace WebVella.ERP.Storage
 
     public interface IStorageForm
     {
+        Guid Id { get; set; }
+
         string Name { get; set; }
 
-        string DisplayName { get; set; }
+        string Label { get; set; }
 
         IList<IStorageFormField> Fields { get; set; }
     }

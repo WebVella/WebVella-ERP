@@ -12,7 +12,5 @@ namespace WebVella.ERP.Core
         public decimal MaxValue { get; set; }
 
         public CurrencyTypes Currency { get; set; }
-
-        public decimal Value { get; set; }
     }
 }

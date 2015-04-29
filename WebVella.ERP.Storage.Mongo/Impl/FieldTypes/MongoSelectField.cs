@@ -8,7 +8,5 @@ namespace WebVella.ERP.Core
         public new string DefaultValue { get; set; }
 
         public IDictionary<string, string> Options { get; set; }
-
-        public string Value { get; set; }
     }
 }

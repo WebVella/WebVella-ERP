@@ -7,7 +7,5 @@
         string TargetEntityType { get; set; }
 
         string RelationshipName { get; set; }
-
-        string Value { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace WebVella.ERP.Storage
 
         string DisplayFormat { get; set; }
 
-        decimal Value { get; set; }
+        decimal StartingNumber { get; set; }
     }
 }

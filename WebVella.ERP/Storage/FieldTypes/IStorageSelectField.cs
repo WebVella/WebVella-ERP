@@ -7,7 +7,5 @@ namespace WebVella.ERP.Storage
         new string DefaultValue { get; set; }
 
         IDictionary<string, string> Options { get; set; }
-
-        string Value { get; set; }
     }
 }
