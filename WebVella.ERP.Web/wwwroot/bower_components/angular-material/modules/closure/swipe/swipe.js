@@ -2,14 +2,10 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
 goog.provide('ng.material.components.swipe');
-
-(function() {
-'use strict';
-
-
+goog.require('ng.material.core');
 /**
  * @ngdoc module
  * @name material.components.swipe
@@ -31,7 +27,6 @@ goog.provide('ng.material.components.swipe');
  * <div md-swipe-left="onSwipeLeft()">Swipe me left!</div>
  * </hljs>
  */
-
 /**
  * @ngdoc directive
  * @module material.components.swipe
@@ -49,31 +44,29 @@ goog.provide('ng.material.components.swipe');
  * </hljs>
  */
 
-var module = angular.module('material.components.swipe',[]);
+angular.module('material.components.swipe', ['material.core'])
+    .directive('mdSwipeLeft', getDirective('SwipeLeft'))
+    .directive('mdSwipeRight', getDirective('SwipeRight'));
 
-['SwipeLeft', 'SwipeRight'].forEach(function(name) {
+function getDirective(name) {
   var directiveName = 'md' + name;
   var eventName = '$md.' + name.toLowerCase();
 
-  module.directive(directiveName, /*@ngInject*/ ["$parse", function($parse) {
-    return {
-      restrict: 'A',
-      link: postLink
-    };
+    DirectiveFactory.$inject = ["$parse"];
+  return DirectiveFactory;
 
-    function postLink(scope, element, attr) {
-      var fn = $parse(attr[directiveName]);
-
-      element.on(eventName, function(ev) {
-        scope.$apply(function() {
-          fn(scope, {
-            $event: ev
-          });
+  /* @ngInject */
+  function DirectiveFactory($parse) {
+      return { restrict: 'A', link: postLink };
+      function postLink(scope, element, attr) {
+        var fn = $parse(attr[directiveName]);
+        element.on(eventName, function(ev) {
+          scope.$apply(function() { fn(scope, { $event: ev }); });
         });
-      });
-
+      }
     }
-  }]);
-});
+}
 
-})();
+
+
+ng.material.components.swipe = angular.module("material.components.swipe");

@@ -4,6 +4,5 @@ namespace WebVella.ERP.Storage
 {
     public interface IStorageRepository
     {
-
     }
 }

@@ -1,0 +1,34 @@
+﻿<h2><a href="javascript:void(0)"><md-icon md-svg-src="/lib/fa/thumb-tack.svg" class="s16"></md-icon></a> Entity 1 <a href="javascript:void(0)"><md-icon md-svg-src="/lib/fa/caret-down.svg" class="s16"></md-icon></a></h2>
+<div class="entity-tools" layout="row">
+	<md-button><md-icon md-svg-src="/lib/fa/plus.svg" class="s16"></md-icon> create new</md-button>
+	<md-button><md-icon md-svg-src="/lib/fa/download.svg" class="s16"></md-icon> export</md-button>
+	<span flex></span>
+	<input class="searchbox" ng-model="user.name" type="text" placeholder="search in this entity">
+
+</div>
+
+<table id="table" class="table table-hover table-bordered">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Link</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td data-title="ID">1</td>
+			<td data-title="Name">Material Design Sidebar</td>
+			<td data-title="Link">
+				<a href="http://codepen.io/zavoloklom/pen/dIgco" target="_blank">Link</a>
+			</td>
+			<td data-title="Status">Completed</td>
+		</tr>
+
+	</tbody>
+</table>
+<div layout="row" layout-align="center center" class="pager">
+	<md-button ng-disabled="true"><md-icon md-svg-src="/lib/fa/angle-double-left.svg" class="s24"></md-icon> Previous Page</md-button>
+	<md-button>Next Page <md-icon md-svg-src="/lib/fa/angle-double-right.svg" class="s24"></md-icon> </md-button>
+</div>

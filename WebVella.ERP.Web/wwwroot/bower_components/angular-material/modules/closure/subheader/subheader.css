@@ -2,15 +2,15 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
+/* mixin definition ; sets LTR and RTL within the same style call */
 @-webkit-keyframes subheaderStickyHoverIn {
   0% {
     box-shadow: 0 0 0 0 transparent; }
 
   100% {
     box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16); } }
-
 @keyframes subheaderStickyHoverIn {
   0% {
     box-shadow: 0 0 0 0 transparent; }
@@ -34,13 +34,14 @@
 
 .md-subheader {
   display: block;
-  font-size: 0.9em;
-  font-weight: 400;
+  font-size: 1.4rem;
+  font-weight: 500;
   line-height: 1em;
-  padding: 16px 0px 16px 16px;
   margin: 0 0 0 0;
   margin-right: 16px;
   position: relative; }
+  .md-subheader .md-subheader-inner {
+    padding: 16px 0px 16px 16px; }
   .md-subheader:not(.md-sticky-no-effect) {
     transition: 0.2s ease-out margin; }
     .md-subheader:not(.md-sticky-no-effect):after {
@@ -54,7 +55,7 @@
       z-index: 2; }
     .md-subheader:not(.md-sticky-no-effect)[sticky-state="active"] {
       margin-top: -2px; }
-    .md-subheader:not(.md-sticky-no-effect):not(.md-sticky-clone)[sticky-prev-state="active"]:after {
+    .md-subheader:not(.md-sticky-no-effect):not(.md-sticky-clone)[sticky-prev-state="active"] .md-subheader-inner:after {
       -webkit-animation: subheaderStickyHoverOut 0.3s ease-out both;
               animation: subheaderStickyHoverOut 0.3s ease-out both; }
   .md-subheader .md-subheader-content {

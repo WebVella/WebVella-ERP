@@ -2,14 +2,10 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.8.3-master-c9aae9b
+ * v0.9.0-rc2-master-fdcceb5
  */
 goog.provide('ng.material.components.progressLinear');
 goog.require('ng.material.core');
-(function() {
-'use strict';
-
-
 /**
  * @ngdoc module
  * @name material.components.progressLinear
@@ -127,4 +123,4 @@ var transforms = (function() {
   }
 })();
 
-})();
+ng.material.components.progressLinear = angular.module("material.components.progressLinear");
