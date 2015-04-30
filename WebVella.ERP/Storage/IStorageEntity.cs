@@ -6,6 +6,10 @@ namespace WebVella.ERP.Storage
     {
         string Name { get; set; }
 
+        string Label { get; set; }
+
+        string PluralLabel { get; set; }
+
         bool System { get; set; }
 
         List<IStorageField> Fields { get; set; }

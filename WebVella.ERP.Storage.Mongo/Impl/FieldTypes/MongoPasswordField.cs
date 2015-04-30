@@ -12,7 +12,5 @@ namespace WebVella.ERP.Core
         public PasswordFieldMaskTypes MaskType { get; set; }
 
         public char MaskCharacter { get; set; }
-
-        public string Value { get; set; }
     }
 }

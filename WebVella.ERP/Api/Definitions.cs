@@ -50,7 +50,7 @@ namespace WebVella.ERP.Api
         public CurrencyPosition Position { get; set; }
     }
 
-    public enum FormulaReturnType
+    public enum FormulaFieldReturnType
     {
         Checkbox,
         Currency,

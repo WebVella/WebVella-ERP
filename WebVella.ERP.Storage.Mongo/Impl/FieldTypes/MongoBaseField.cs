@@ -10,7 +10,7 @@ namespace WebVella.ERP
 
         public string Name { get; set; }
 
-        public string DisplayName { get; set; }
+        public string Label { get; set; }
 
         public string PlaceholderText { get; set; }
 

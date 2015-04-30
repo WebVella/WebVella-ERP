@@ -9,7 +9,5 @@ namespace WebVella.ERP.Core
         public string TargetEntityType { get; set; }
 
         public string RelationshipName { get; set; }
-
-        public string Value { get; set; }
     }
 }
