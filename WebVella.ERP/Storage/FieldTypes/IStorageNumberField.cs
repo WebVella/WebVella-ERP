@@ -4,10 +4,10 @@
     {
         new decimal DefaultValue { get; set; }
 
-        int MinValue { get; set; }
+        decimal MinValue { get; set; }
 
-        int MaxValue { get; set; }
+        decimal MaxValue { get; set; }
 
-        decimal Value { get; set; }
+        byte DecimalPlaces { get; set; }
     }
 }

@@ -11,26 +11,30 @@ namespace WebVella.ERP.Storage.Mongo.Impl
 
         public string Name { get; set; }
 
-        public string DisplayName { get; set; }
+        public string Label { get; set; }
 
         public ViewTypes Type { get; set; }
 
-        public IList<IStorageViewFilter> Filter { get; set; }
+        public IList<IStorageViewFilter> Filters { get; set; }
 
         public IList<IStorageViewField> Fields { get; set; }
+
+        public MongoView()
+        {
+            Filters = new List<IStorageViewFilter>();
+            Fields = new List<IStorageViewField>();
+        }
     }
 
     public class MongoViewFilter :  IStorageViewFilter
     {
-        public Guid LeftEntityId { get; set; }
+        public Guid EntityId { get; set; }
 
-        public Guid LeftFieldId { get; set; }
+        public Guid FieldId { get; set; }
 
         public FilterOperatorTypes Operator { get; set; }
 
-        public Guid RightEntityId { get; set; }
-
-        public Guid RightFieldId { get; set; }
+        public string Value { get; set; }
     }
 
     public class MongoViewField :  IStorageViewField

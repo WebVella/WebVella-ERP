@@ -7,7 +7,5 @@ namespace WebVella.ERP.Core
         public new string DefaultValue { get; set; }
 
         public int MaxLength { get; set; }
-
-        public string Value { get; set; }
     }
 }

@@ -7,14 +7,21 @@ namespace WebVella.ERP.Storage.Mongo.Impl
 {
     public class MongoForm : IStorageForm
     {
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
-        public string DisplayName { get; set; }
+        public string Label { get; set; }
 
         public IList<IStorageFormField> Fields { get; set; }
+
+        public MongoForm()
+        {
+            Fields = new List<IStorageFormField>();
+        }
     }
 
-    public class FormField : IStorageFormField
+    public class MongoFormField : IStorageFormField
     {
         public Guid Id { get; set; }
 

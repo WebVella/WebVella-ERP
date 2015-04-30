@@ -8,7 +8,7 @@ namespace WebVella.ERP.Storage
 
         string Name { get; set; }
 
-        string DisplayName { get; set; }
+        string Label { get; set; }
 
         string PlaceholderText { get; set; }
 

@@ -9,7 +9,5 @@
         decimal MaxValue { get; set; }
 
         byte DecimalPlaces { get; set; }
-
-        decimal Value { get; set; }
     }
 }

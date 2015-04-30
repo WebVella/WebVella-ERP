@@ -7,7 +7,5 @@
         int MaxLength { get; set; }
 
         bool OpenTargetInNewWindow { get; set; }
-
-        string Value { get; set; }
     }
 }

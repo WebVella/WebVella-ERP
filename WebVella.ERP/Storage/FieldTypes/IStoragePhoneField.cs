@@ -7,7 +7,5 @@
         string Format { get; set; }
 
         int MaxLength { get; set; }
-
-        string Value { get; set; }
     }
 }

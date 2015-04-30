@@ -102,7 +102,7 @@ namespace WebVella.ERP.Api
 				if (relationField == null)
 					throw new Exception(string.Format("Invalid query result field '{0}'", field));
 
-				IStorageEntity relatedEntity = entityRepository.Read(relationField.Value);
+				IStorageEntity relatedEntity = entityRepository.Read(relationField.RelatedEntityId);
 				if (relatedEntity == null)
 					throw new Exception(string.Format("Invalid query result field '{0}'. Related entity is missing.", field));
 
