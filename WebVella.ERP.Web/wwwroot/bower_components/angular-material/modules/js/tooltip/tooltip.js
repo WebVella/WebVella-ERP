@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 (function () {
 "use strict";
@@ -49,6 +49,7 @@ function MdTooltipDirective($timeout, $window, $$rAF, $document, $mdUtil, $mdThe
   return {
     restrict: 'E',
     transclude: true,
+    priority:210, // Before ngAria
     template: '\
         <div class="md-background"></div>\
         <div class="md-content" ng-transclude></div>',

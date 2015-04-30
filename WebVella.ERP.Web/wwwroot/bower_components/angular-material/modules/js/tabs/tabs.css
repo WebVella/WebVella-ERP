@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 /* mixin definition ; sets LTR and RTL within the same style call */
 @-webkit-keyframes md-tab-content-hide {
@@ -122,7 +122,8 @@ md-tabs-wrapper {
 md-tabs-canvas {
   position: relative;
   overflow: hidden;
-  display: block; }
+  display: block;
+  height: 48px; }
   md-tabs-canvas:after {
     content: '';
     display: table;
@@ -135,9 +136,10 @@ md-tabs-canvas {
     margin: 0 32px; }
 
 md-pagination-wrapper {
+  height: 48px;
   display: block;
   transition: left 0.5s cubic-bezier(0.35, 0, 0.25, 1);
-  position: relative;
+  position: absolute;
   width: 999999px;
   left: 0;
   -webkit-transform: translate3d(0, 0, 0);
@@ -254,3 +256,7 @@ md-tab {
     cursor: default; }
   .md-tab.ng-leave {
     transition: none; }
+
+md-toolbar + md-tabs {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }

@@ -3,3 +3,9 @@
 ################################################################################
 
 /WebVella.ERP.sln.ide
+artifacts/obj/WebVella.ERP.Storage.Mongo/Debug/ProjectRawReferences/ASP.NET 5.0/Microsoft.AspNet.Diagnostics.ICompilationException.dll
+.vs/WebVella.ERP/v14/.suo
+WebVella.ERP/WebVella.ERP.kproj.user
+WebVella.ERP.Web/WebVella.ERP.Web.kproj.user
+WebVella.ERP.v14.suo
+*.user

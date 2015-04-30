@@ -8,7 +8,7 @@
 'use strict';
 
 var ErpApp = angular.module('ErpApp', [
-    'ngMaterial', 'ngTouch', 'ui.router',
+    'ngMaterial', 'ngTouch', 'ui.router', 'ngMessages',
     'areaEntity', 'navigation',
 	'adminEntities'
 ]);

@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 (function () {
 "use strict";
@@ -48,13 +48,13 @@ angular.module('material.components.sidenav', [
  *    });
  * // Async open the given sidenav
  * $mdSidenav(componentId)
- *    .open();
+ *    .open()
  *    .then(function(){
  *      $log.debug('opened');
  *    });
  * // Async close the given sidenav
  * $mdSidenav(componentId)
- *    .close();
+ *    .close()
  *    .then(function(){
  *      $log.debug('closed');
  *    });

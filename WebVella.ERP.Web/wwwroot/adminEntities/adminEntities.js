@@ -43,12 +43,43 @@ angular.module('adminEntities', [
 /**
  * Define the Controller for this state
  */
-.controller('AdminEntitiesModuleContentController', function ($scope, $rootScope, $state, $log, $SiteMetaCache, resolveSiteMeta) {
+.controller('AdminEntitiesModuleContentController', function ($scope, $rootScope, $state, $log, $SiteMetaCache,$mdDialog, resolveSiteMeta) {
+
 	if (resolveSiteMeta.success) {
 		$SiteMetaCache.update(resolveSiteMeta.object);
 	}
 	else {
 		alert("Error getting SiteMeta")
 	}
+
+	$scope.showAdvanced = function (ev) {
+		$mdDialog.show({
+			controller: CreateEntityModalController,
+			templateUrl: 'createEntityModal.html',
+			targetEvent: ev,
+		})
+		.then(function (answer) {
+			$scope.alert = 'You said the information was "' + answer + '".';
+		}, function () {
+			$scope.alert = 'You cancelled the dialog.';
+		});
+	};
 });
+
+function CreateEntityModalController($scope, $mdDialog) {
+
+	$scope.newEntity = {};
+
+	$scope.newEntity.name = null;
+
+	$scope.hide = function () {
+		$mdDialog.hide();
+	};
+	$scope.cancel = function () {
+		$mdDialog.cancel();
+	};
+	$scope.answer = function () {
+		$mdDialog.hide($scope.newEntity);
+	};
+}
 
