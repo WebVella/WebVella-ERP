@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 /* mixin definition ; sets LTR and RTL within the same style call */
 md-icon {
@@ -10,8 +10,10 @@ md-icon {
   background-repeat: no-repeat no-repeat;
   display: inline-block;
   vertical-align: middle;
-  fill: currentcolor;
-  height: 24px;
-  width: 24px; }
+  fill: currentColor;
+  height: 2.8rem;
+  width: 2.8rem; }
   md-icon svg {
     pointer-events: none; }
+  md-icon[md-font-icon] {
+    line-height: 1; }

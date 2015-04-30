@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 /* mixin definition ; sets LTR and RTL within the same style call */
 md-input-container {
@@ -120,9 +120,6 @@ md-input-container {
   md-input-container.md-input-focused label:not(.md-no-float), md-input-container.md-input-has-value label:not(.md-no-float) {
     -webkit-transform: translate3d(0, 4px, 0) scale(0.75);
             transform: translate3d(0, 4px, 0) scale(0.75); }
-    md-input-container.md-input-focused label:not(.md-no-float).md-icon-float, md-input-container.md-input-has-value label:not(.md-no-float).md-icon-float {
-      -webkit-transform: translate3d(0, 4px, 0) scale(0.75);
-              transform: translate3d(0, 4px, 0) scale(0.75); }
   md-input-container.md-input-focused .md-input, md-input-container .md-input.ng-invalid.ng-dirty {
     padding-bottom: 0;
     border-width: 0 0 2px 0; }

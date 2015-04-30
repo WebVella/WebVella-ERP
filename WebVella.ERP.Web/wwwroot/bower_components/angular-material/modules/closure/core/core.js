@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.9.0-rc2-master-fdcceb5
+ * v0.9.0-rc3-master-d2f2765
  */
 goog.provide('ng.material.core');
 
@@ -569,7 +569,7 @@ angular.module('material.core')
       var disableStyle = $window.getComputedStyle(disableTarget[0]);
       var wrapperEl = angular.element('<div class="md-virtual-scroll-container"><div class="md-virtual-scroller"></div></div>');
       var virtualScroller = wrapperEl.children().eq(0);
-      virtualScroller.append(disableTarget.children());
+      virtualScroller.append(disableTarget[0].childNodes);
       disableTarget.append(wrapperEl);
       var originalScrollBarShow = originalWidth < scrollEl.clientWidth;
 
@@ -652,7 +652,7 @@ angular.module('material.core')
       }
 
       return function restoreScroll() {
-        disableTarget.append(virtualScroller.children());
+        disableTarget.append(virtualScroller[0].childNodes);
         wrapperEl.remove();
         angular.element($window).off('resize', computeSize);
         disableTarget.attr('style', restoreStyle || false);
@@ -932,6 +932,9 @@ angular.element.prototype.blur = angular.element.prototype.blur || function() {
 angular.module('material.core')
   .service('$mdAria', AriaService);
 
+/*
+ * @ngInject
+ */
 function AriaService($$rAF, $log, $window) {
 
   return {
@@ -3344,7 +3347,7 @@ function ThemingProvider($mdColorPalette) {
 
       self.foregroundPalette = self.isDark ? LIGHT_FOREGROUND : DARK_FOREGROUND;
       self.foregroundShadow = self.isDark ? DARK_SHADOW : LIGHT_SHADOW;
-      
+
       // Light and dark themes have different default hues.
       // Go through each existing color type for this theme, and for every
       // hue value that is still the default hue value from the previous light/dark setting,
@@ -3561,7 +3564,9 @@ function generateThemes($injector) {
 
   // Insert our newly minted styles into the DOM
   var head = document.getElementsByTagName('head')[0];
+  if (!head) return;
   var firstChild = head.firstElementChild;
+  if (!firstChild) return;
   var themeCss = $injector.has('$MD_THEME_CSS') ? $injector.get('$MD_THEME_CSS') : '';
 
     // Expose contrast colors for palettes to ensure that text is always readable
