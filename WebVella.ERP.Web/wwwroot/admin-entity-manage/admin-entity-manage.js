@@ -4,14 +4,14 @@
  * The main purpose of the module is to present and manage
  * the entities of the ERP system
  */
-angular.module('adminEntities', [
+angular.module('adminEntityManage', [
   'ui.router'
 ])
 
 /* State definition */
 .config(['$stateProvider', function ($stateProvider) {
-	$stateProvider.state('adminEntities', {
-		url: '/admin/entities',
+	$stateProvider.state('adminEntityManage', {
+		url: '/admin/entities/:entityName/manage',
 		views: {
 			"AreaLocalNavView": {
 				controller: 'AdminLocalNavViewModuleController',
@@ -30,8 +30,8 @@ angular.module('adminEntities', [
 				templateUrl: 'navigation/actions-local-nav.html'
 			},
 			"ContentView": {
-				controller: 'AdminEntitiesModuleContentController',
-				templateUrl: 'adminEntities/adminEntities.html'
+				controller: 'AdminEntityManageModuleContentController',
+				templateUrl: 'admin-entity-manage/admin-entity-manage.html'
 			}
 		},
 		resolve: {
@@ -43,7 +43,7 @@ angular.module('adminEntities', [
 /**
  * Define the Controller for this state
  */
-.controller('AdminEntitiesModuleContentController', function ($scope, $rootScope, $state, $log, $SiteMetaCache,$mdDialog, resolveSiteMeta) {
+.controller('AdminEntityManageModuleContentController', function ($scope, $rootScope, $state, $log, $SiteMetaCache, $mdDialog, $q, resolveSiteMeta) {
 
 	if (resolveSiteMeta.success) {
 		$SiteMetaCache.update(resolveSiteMeta.object);
@@ -52,34 +52,7 @@ angular.module('adminEntities', [
 		alert("Error getting SiteMeta")
 	}
 
-	$scope.showAdvanced = function (ev) {
-		$mdDialog.show({
-			controller: CreateEntityModalController,
-			templateUrl: 'createEntityModal.html',
-			targetEvent: ev,
-		})
-		.then(function (answer) {
-			$scope.alert = 'You said the information was "' + answer + '".';
-		}, function () {
-			$scope.alert = 'You cancelled the dialog.';
-		});
-	};
+
 });
 
-function CreateEntityModalController($scope, $mdDialog) {
-
-	$scope.newEntity = {};
-
-	$scope.newEntity.name = null;
-
-	$scope.hide = function () {
-		$mdDialog.hide();
-	};
-	$scope.cancel = function () {
-		$mdDialog.cancel();
-	};
-	$scope.answer = function () {
-		$mdDialog.hide($scope.newEntity);
-	};
-}
 

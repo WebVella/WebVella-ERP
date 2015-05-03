@@ -24,8 +24,8 @@ namespace WebVella.ERP.Web.Controllers
 			//Area 1
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "area1";
-			area.Label = "Area 1";
+			area.Name = "Higher Ed";
+			area.Label = "Logistics";
 			area.Weight = 1;
 			area.HasDashboard = true;
 
@@ -38,10 +38,11 @@ namespace WebVella.ERP.Web.Controllers
 			//// Entity 1
 			entity = new Entity();
 			entity.Id = Guid.NewGuid();
-			entity.Name = "entity1";
+			entity.Name = "order";
 			entity.IsSystem = false;
-			entity.Label = "entity 1";
-			entity.LabelPlural = "entity 1s";
+			entity.Label = "Order";
+			entity.LabelPlural = "Orders";
+			entity.IconName = "shopping-cart";
 			entity.Weight = 0;
 			areaSection.Entities.Add(entity);
 			//// Add Section to Area
@@ -60,6 +61,7 @@ namespace WebVella.ERP.Web.Controllers
 			entity.IsSystem = false;
 			entity.Label = "entity 2";
 			entity.LabelPlural = "entity 2s";
+			entity.IconName = "files-o";
 			entity.Weight = 1;
 			areaSection.Entities.Add(entity);
 			//// Entity 3
@@ -69,6 +71,7 @@ namespace WebVella.ERP.Web.Controllers
 			entity.IsSystem = false;
 			entity.Label = "entity 3";
 			entity.LabelPlural = "entity 3s";
+			entity.IconName = "users";
 			entity.Weight = 2;
 			areaSection.Entities.Add(entity);
 			//// Add Section to Area
@@ -87,6 +90,7 @@ namespace WebVella.ERP.Web.Controllers
 			entity.IsSystem = false;
 			entity.Label = "entity 4";
 			entity.LabelPlural = "entity 4s";
+			entity.IconName = "cog";
 			entity.Weight = 1;
 			areaSection.Entities.Add(entity);
 			//// Entity 5
@@ -96,6 +100,7 @@ namespace WebVella.ERP.Web.Controllers
 			entity.IsSystem = false;
 			entity.Label = "entity 5";
 			entity.LabelPlural = "entity 5s";
+			entity.IconName = "line-chart";
 			entity.Weight = 2;
 			areaSection.Entities.Add(entity);
 			//// Add Section to Area
