@@ -9,3 +9,5 @@ WebVella.ERP/WebVella.ERP.kproj.user
 WebVella.ERP.Web/WebVella.ERP.Web.kproj.user
 WebVella.ERP.v14.suo
 *.user
+/artifacts/*
+WebVella.ERP.Web/npm-debug.log
