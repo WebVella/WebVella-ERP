@@ -10,14 +10,14 @@
 var ErpApp = angular.module('ErpApp', [
     'ngMaterial', 'ngTouch', 'ui.router', 'ngMessages',
     'areaEntity', 'navigation',
-	'adminEntities'
+	'adminEntities', 'adminEntityManage'
 ]);
 
 
 //Application Configuration
 ErpApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider) {
 	//Set to override the default theme pallete settings
-	$mdThemingProvider.theme( 'default' ).primaryPalette( 'indigo' ).accentPalette( 'grey' );
+	$mdThemingProvider.theme('default').primaryPalette('indigo').accentPalette('grey');
 	$urlRouterProvider.otherwise('/area/area1/null/dashboard');
 
 	//The URLs will be

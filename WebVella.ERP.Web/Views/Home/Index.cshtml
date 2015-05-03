@@ -30,7 +30,7 @@
 	<div layout="column" tabindex="-1" role="main" flex>
 		<md-toolbar>
 			<div class="md-toolbar-tools">
-				<md-button  class="md-icon-button" ng-click="toggleLeft()" hide-gt-md aria-label="Toggle left site menu" style="margin-right:5px !important;">
+				<md-button class="md-icon-button" ng-click="toggleLeft()" hide-gt-md aria-label="Toggle left site menu" style="margin-right:5px !important;">
 					<md-icon md-svg-src="/lib/fa/bars.svg" class="s24"></md-icon>
 				</md-button>
 				<div ui-view="AreasNavView"></div>
@@ -38,7 +38,7 @@
 				<div ui-view="ActionsNavView"></div>
 			</div>
 		</md-toolbar>
-		<md-content  flex layout-padding id="content">
+		<md-content flex layout-padding id="content">
 			<div ui-view="ContentView"></div>
 		</md-content>
 	</div>
@@ -60,9 +60,10 @@
 	<script src="~/app.js"></script>
 	<script src="~/services.js"></script>
 	<script src="~/config.js"></script>
-	<script src="~/areaEntity/areaEntity.js"></script>
 	<script src="~/navigation/navigation.js"></script>
-	<script src="~/adminentities/adminentities.js"></script>
+	<script src="~/admin-entities/admin-entities.js"></script>
+	<script src="~/admin-entity-manage/admin-entity-manage.js"></script>
+	<script src="~/area-entity/area-entity.js"></script>
 
 </body>
 </html>

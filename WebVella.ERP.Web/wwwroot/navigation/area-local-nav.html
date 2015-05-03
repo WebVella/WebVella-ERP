@@ -1,6 +1,9 @@
 ﻿<md-list class="menu" layout="column" ng-show="selectedArea.hasDashboard" style="padding-bottom:0;">
 	<md-list-item flex>
-		<md-button ng-click="GoToDashboard()"  ng-class="{'md-primary': SetAreaLocalActive('null','dashboard')}">Dashboard</md-button>
+		<md-button layout="row" ng-click="GoToDashboard()"  ng-class="{'md-primary': SetAreaLocalActive('null','dashboard')}">
+			<md-icon md-svg-src="lib/fa/tachometer.svg" class="s16" alt="icon"></md-icon>
+			<span flex class="menu-label">Dashboard</span>
+		</md-button>
 	</md-list-item>
 </md-list>
 <md-list class="menu" layout="column" ng-repeat="section in selectedArea.sections">
@@ -12,6 +15,9 @@
 		</md-button>
 	</md-list-item>
 	<md-list-item flex ng-repeat="entity in section.entities">
-		<md-button ng-click="GoToEntity(section.name,entity.name)" ng-class="{'md-primary': SetAreaLocalActive(section.name,entity.name)}">{{entity.label}}</md-button>
+		<md-button layout="row" ng-click="GoToEntity(section.name,entity.name)" ng-class="{'md-primary': SetAreaLocalActive(section.name,entity.name)}">
+			<md-icon md-svg-src="lib/fa/{{entity.iconName}}.svg" class="s16 go-gray" alt="icon"></md-icon>
+			<span flex  class="menu-label">{{entity.labelPlural}}</span>
+		</md-button>
 	</md-list-item>
 </md-list>

@@ -1,6 +1,6 @@
-﻿<h2>Entity Definitions</h2>
+﻿<h2 class="md-title">Entity Definitions</h2>
 <div class="entity-tools" layout="row">
-	<md-button ng-click="showAdvanced($event)"><md-icon md-svg-src="/lib/fa/plus.svg" class="s16"></md-icon> create new</md-button>
+	<md-button ng-click="showCreateEntityModal($event)"><md-icon md-svg-src="/lib/fa/plus.svg" class="s16"></md-icon> create new</md-button>
 	<span flex></span>
 	<input class="searchbox" type="text" placeholder="search by name">
 
@@ -11,21 +11,23 @@
 			<th style="width:140px;">modified on</th>
 			<th>Name</th>
 			<th style="width:60px;">Fields</th>
-			<th style="width:100px;"></th>
+			<th style="width:200px;"></th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
 			<td>24 Feb 2013 12:23</td>
 			<td data-title="Name">
-				<md-icon md-svg-src="/lib/fa/lock.svg" class="md-warn"></md-icon>
 				Material Design Sidebar system
 			</td>
 			<td data-title="Fields">
 				234
 			</td>
 			<td data-title="Actions">
-				<md-button class="md-raised" aria-label="More">
+				<md-button class="md-warn" aria-label="More"  ng-click="showDeleteEntityModal($event, event)">
+					delete
+				</md-button>
+				<md-button class="" aria-label="More"  ng-click="manageEntity($event, event.name)">
 					edit
 				</md-button>
 			</td>
@@ -69,6 +71,32 @@
 		<div class="md-actions" layout="row">
 			<md-button ng-click="answer('useful')" class="md-primary md-raised">
 				Create
+			</md-button>
+			<md-button ng-click="answer('not useful')">
+				Cancel
+			</md-button>
+		</div>
+	</md-dialog>
+</script>
+
+<script type="text/ng-template" id="deleteEntityModal.html">
+	<md-dialog aria-label="Delete entity">
+		<h4 class="md-title">Delete an entity definition</h4>
+		<md-dialog-content class="sticky-container">
+			<form style="width:500px" name="createEntityForm">
+				<md-input-container>
+					<label>Type "DELETE" to confirm the deletion</label>
+					<input required name="name" ng-model="newEntity.name" pattern="^delete|DELETE|Delete$">
+					<div ng-messages="createEntityForm.name.$error">
+						<div ng-message="required">This is required.</div>
+						<div ng-message="pattern">does not match "DELETE"</div>
+					</div>
+				</md-input-container>
+			</form>
+		</md-dialog-content>
+		<div class="md-actions" layout="row">
+			<md-button ng-click="answer('useful')" class="md-warn md-raised">
+				DELETE
 			</md-button>
 			<md-button ng-click="answer('not useful')">
 				Cancel

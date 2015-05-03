@@ -30,7 +30,7 @@ angular.module('areaEntity', [
 			},
 			"ContentView": {
 				controller: 'AreaEnitityModuleContentController',
-				templateUrl: 'areaEntity/areaEntity.html'
+				templateUrl: 'area-entity/area-entity.html'
 			}
 		},
 		resolve: {

@@ -14,6 +14,7 @@ namespace WebVella.ERP.Web.Models
 			Name = String.Empty;
 			Label = String.Empty;
 			LabelPlural = String.Empty;
+			IconName = String.Empty;
 			IsSystem = false;
 			IsSearchable = true;
 			Weight = 0;
@@ -33,6 +34,10 @@ namespace WebVella.ERP.Web.Models
 		//Human readable identifier of two instances of this entity, e.g. Orders
 		[JsonProperty(PropertyName = "labelPlural")]
 		public string LabelPlural { get; set; }
+
+		//Icon representing the section
+		[JsonProperty(PropertyName = "iconName")]
+		public string IconName { get; set; }
 
 		//Is the entity system- cannot be deleted
 		[JsonProperty(PropertyName = "isSystem")]

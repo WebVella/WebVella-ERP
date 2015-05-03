@@ -1,5 +1,8 @@
 ﻿<md-list class="menu" layout="column">
 	<md-list-item flex>
-		<md-button ng-click="GoToState('adminEntities')"  ng-class="{'md-primary': SetAdminLocalActive('adminEntities')}">Entity Definitions</md-button>
+		<md-button layout="row" ng-click="GoToState('adminEntities')"  ng-class="{'md-primary': SetAdminLocalActive('adminEntities')}">
+			<md-icon md-svg-src="lib/fa/table.svg" class="s16 go-gray" alt="icon"></md-icon>
+			<span flex  class="menu-label">Entity Definitions</span>
+		</md-button>
 	</md-list-item>
 </md-list>
