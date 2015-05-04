@@ -1,0 +1,35 @@
+{
+  "name": "ngToast",
+  "version": "1.5.2",
+  "main": [
+    "dist/ngToast.js",
+    "dist/ngToast.css"
+  ],
+  "authors": [
+    "Tamer Aydin (http://tamerayd.in)",
+    "Levi Thomason (http://www.levithomason.com)"
+  ],
+  "dependencies": {
+    "angular": ">=1.2.15 <=1.4.0",
+    "angular-animate": ">=1.2.17 <=1.4.0",
+    "angular-sanitize": ">=1.2.15 <=1.4.0"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.2",
+    "Faker": "~2.1.2"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "src",
+    ".editorconfig",
+    ".gitignore",
+    ".gitattributes",
+    ".jshintrc",
+    ".travis.yml",
+    "Gruntfile.js",
+    "package.json",
+    "index.html"
+  ]
+}

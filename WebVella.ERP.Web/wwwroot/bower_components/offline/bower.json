@@ -1,0 +1,33 @@
+{
+  "name": "offline",
+  "version": "0.7.11",
+  "homepage": "http://github.hubspot.com/offline/docs/welcome",
+  "authors": [
+    "Zack Bloom <zackbloom@gmail.com>",
+    "Adam Schwartz <adam.flynn.schwartz@gmail.com>"
+  ],
+  "description": "Automatically detect when a browser is offline",
+  "main": "offline.min.js",
+  "keywords": [
+    "offline",
+    "online",
+    "internet",
+    "network",
+    "ajax",
+    "notification",
+    "javascript",
+    "client-side"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "coffee",
+    "docs",
+    "js",
+    "test",
+    "bower.json",
+    "package.json"
+  ]
+}
