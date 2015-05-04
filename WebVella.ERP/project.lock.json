@@ -1,0 +1,34 @@
+{
+  "locked": false,
+  "version": -9998,
+  "projectFileDependencyGroups": {
+    "": [],
+    "Asp.Net,Version=v5.0": [
+      "Microsoft.AspNet.Diagnostics >= 1.0.0-*",
+      "framework/System.Xml "
+    ]
+  },
+  "libraries": {
+    "Microsoft.AspNet.Diagnostics/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "OiWNg+pzKkX5Rv+vzG+7z5N5/hIzE63Lo8C8o7cvowOXlqYxMFgaecRCaZQvAVMDNzBhUH0FsW+Uku93mLCuCw==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Diagnostics.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Diagnostics.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Diagnostics.nuspec",
+        "lib/dnx451/Microsoft.AspNet.Diagnostics.dll",
+        "lib/dnx451/Microsoft.AspNet.Diagnostics.xml",
+        "lib/dnxcore50/Microsoft.AspNet.Diagnostics.dll",
+        "lib/dnxcore50/Microsoft.AspNet.Diagnostics.xml"
+      ]
+    }
+  }
+}

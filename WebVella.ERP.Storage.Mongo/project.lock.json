@@ -1,0 +1,205 @@
+{
+  "locked": false,
+  "version": -9998,
+  "projectFileDependencyGroups": {
+    "": [],
+    "Asp.Net,Version=v5.0": [
+      "Microsoft.Framework.ConfigurationModel >= 1.0.0-*",
+      "Microsoft.Framework.ConfigurationModel.Json >= 1.0.0-*",
+      "mongocsharpdriver >= 1.9.2",
+      "WebVella.ERP >= 1.0.0-*"
+    ]
+  },
+  "libraries": {
+    "Microsoft.AspNet.Diagnostics/1.0.0-beta4": {
+      "serviceable": false,
+      "sha": "OiWNg+pzKkX5Rv+vzG+7z5N5/hIzE63Lo8C8o7cvowOXlqYxMFgaecRCaZQvAVMDNzBhUH0FsW+Uku93mLCuCw==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [],
+          "compileAssemblies": []
+        }
+      },
+      "files": [
+        "Microsoft.AspNet.Diagnostics.1.0.0-beta4.nupkg",
+        "Microsoft.AspNet.Diagnostics.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.AspNet.Diagnostics.nuspec",
+        "lib/dnx451/Microsoft.AspNet.Diagnostics.dll",
+        "lib/dnx451/Microsoft.AspNet.Diagnostics.xml",
+        "lib/dnxcore50/Microsoft.AspNet.Diagnostics.dll",
+        "lib/dnxcore50/Microsoft.AspNet.Diagnostics.xml"
+      ]
+    },
+    "Microsoft.Framework.ConfigurationModel/1.0.0-beta4": {
+      "serviceable": true,
+      "sha": "VD5MhmQRhYVfxyDs1fyruPTj3pYwLMV5dXJkPUVg1KKbJ9qr/tEn3frJA1NN1jdeVBt1RrW5FXr+wWG9YoO9Yg==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Microsoft.Framework.ConfigurationModel.Interfaces": "1.0.0-beta4"
+          },
+          "frameworkAssemblies": [
+            "mscorlib",
+            "System",
+            "System.Core",
+            "Microsoft.CSharp"
+          ],
+          "runtimeAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.dll"
+          ]
+        }
+      },
+      "files": [
+        "Microsoft.Framework.ConfigurationModel.1.0.0-beta4.nupkg",
+        "Microsoft.Framework.ConfigurationModel.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.Framework.ConfigurationModel.nuspec",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.dll",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.xml",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.dll",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.xml",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.dll",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.xml",
+        "lib/portable-net451+win81+wpa81/Microsoft.Framework.ConfigurationModel.dll",
+        "lib/portable-net451+win81+wpa81/Microsoft.Framework.ConfigurationModel.xml"
+      ]
+    },
+    "Microsoft.Framework.ConfigurationModel.Interfaces/1.0.0-beta4": {
+      "serviceable": true,
+      "sha": "lU9+gyEz+jSeR+QsZxZtDf0U2DS/pl3I8/m7YeKjHMnjqoxUKFbSOpzegll7bhq0Alw7/8gF2Byrcy+PlzRc/g==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [
+            "mscorlib",
+            "System",
+            "System.Core",
+            "Microsoft.CSharp"
+          ],
+          "runtimeAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll"
+          ]
+        }
+      },
+      "files": [
+        "Microsoft.Framework.ConfigurationModel.Interfaces.1.0.0-beta4.nupkg",
+        "Microsoft.Framework.ConfigurationModel.Interfaces.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.Framework.ConfigurationModel.Interfaces.nuspec",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.Interfaces.dll",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.Interfaces.xml",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.Interfaces.dll",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.Interfaces.xml",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.dll",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.Interfaces.xml",
+        "lib/portable-net451+win81+wpa81/Microsoft.Framework.ConfigurationModel.Interfaces.dll",
+        "lib/portable-net451+win81+wpa81/Microsoft.Framework.ConfigurationModel.Interfaces.xml"
+      ]
+    },
+    "Microsoft.Framework.ConfigurationModel.Json/1.0.0-beta4": {
+      "serviceable": true,
+      "sha": "ygdShf5lzRsqe7/pMNSaiq6AcAy0eIhp8WFUtYfqQnsxhMJFcw/VlIFvie8+DkYhacdmGkXTF4OGopjjwfg02A==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {
+            "Newtonsoft.Json": "6.0.6",
+            "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4"
+          },
+          "frameworkAssemblies": [
+            "mscorlib",
+            "System",
+            "System.Core",
+            "Microsoft.CSharp"
+          ],
+          "runtimeAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.Json.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Microsoft.Framework.ConfigurationModel.Json.dll"
+          ]
+        }
+      },
+      "files": [
+        "Microsoft.Framework.ConfigurationModel.Json.1.0.0-beta4.nupkg",
+        "Microsoft.Framework.ConfigurationModel.Json.1.0.0-beta4.nupkg.sha512",
+        "Microsoft.Framework.ConfigurationModel.Json.nuspec",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.Json.dll",
+        "lib/dnx451/Microsoft.Framework.ConfigurationModel.Json.xml",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.Json.dll",
+        "lib/dnxcore50/Microsoft.Framework.ConfigurationModel.Json.xml",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.Json.dll",
+        "lib/net45/Microsoft.Framework.ConfigurationModel.Json.xml"
+      ]
+    },
+    "mongocsharpdriver/1.9.2": {
+      "serviceable": false,
+      "sha": "ieZXgcVDvgoTgzLumgkv274NuKxwSbXRLl5Oc1l5z3Bt2NW0D4aDOH2/RE1xyRcE2QBl1jdCqnG11/ej2SiB8w==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net35/MongoDB.Bson.dll",
+            "lib/net35/MongoDB.Driver.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net35/MongoDB.Bson.dll",
+            "lib/net35/MongoDB.Driver.dll"
+          ]
+        }
+      },
+      "files": [
+        "License.rtf",
+        "mongocsharpdriver.1.9.2.nupkg",
+        "mongocsharpdriver.1.9.2.nupkg.sha512",
+        "mongocsharpdriver.nuspec",
+        "lib/net35/MongoDB.Bson.dll",
+        "lib/net35/MongoDB.Bson.XML",
+        "lib/net35/MongoDB.Driver.dll",
+        "lib/net35/MongoDB.Driver.XML"
+      ]
+    },
+    "Newtonsoft.Json/6.0.6": {
+      "serviceable": false,
+      "sha": "w26uZNyCG5VeoKiEOJ4+9/o8koSofLKwHl7WLreIcp0U6r57L7WiRXmjp8MTKFw6dYNZ9AE0lw69WYbIhUsU9Q==",
+      "frameworks": {
+        "Asp.Net,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Newtonsoft.Json.dll"
+          ]
+        }
+      },
+      "files": [
+        "Newtonsoft.Json.6.0.6.nupkg",
+        "Newtonsoft.Json.6.0.6.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netcore45/Newtonsoft.Json.dll",
+        "lib/netcore45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
+        "tools/install.ps1"
+      ]
+    }
+  }
+}
