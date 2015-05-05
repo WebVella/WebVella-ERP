@@ -13,6 +13,8 @@ namespace WebVella.ERP.Web.Models
 			Name = String.Empty;
 			Label = String.Empty;
 			Weight = 0;
+            Color = "indigo";
+            IconName = "database";
 			Sections = new List<AreaSection>();
 		}
 
@@ -31,12 +33,16 @@ namespace WebVella.ERP.Web.Models
 		[JsonProperty(PropertyName = "weight")]
 		public int Weight { get; set; }
 
-		//Whether the area has a dashboard page
-		[JsonProperty(PropertyName = "hasDashboard")]
-		public bool HasDashboard { get; set; }
+		//Area color - string, should be one of the implemented in a theme or module css include
+		[JsonProperty(PropertyName = "color")]
+		public string Color { get; set; }
 
-		//Area Entity sections (grouping). Entities that need to be directly linked to the area must have section with id = Guid.Empty
-		[JsonProperty(PropertyName = "sections")]
+        //One of the available FontAwesome Icons
+        [JsonProperty(PropertyName = "iconName")]
+        public string IconName { get; set; }
+
+        //Area Entity sections (grouping). Entities that need to be directly linked to the area must have section with id = Guid.Empty
+        [JsonProperty(PropertyName = "sections")]
 		public List<AreaSection> Sections { get; set; }
 
 	}

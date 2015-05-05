@@ -12,17 +12,27 @@
         .controller('TopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = []; 
+    controller.$inject = ['$state','$rootScope']; 
 
     /* @ngInject */
-    function controller() {
+    function controller($state,$rootScope) {
         /* jshint validthis:true */
         var topnavData = this;
-
+        topnavData.currentArea = null;
 
         activate();
 
-        function activate() { }
+        function activate() {
+
+            topnavData.navigateToHome = function () {
+                $state.go('home');
+            }
+
+            $rootScope.$watch('currentArea', function (newValue, oldValue) {
+                topnavData.currentArea = newValue;
+            });
+
+        }
     }
     
 })();

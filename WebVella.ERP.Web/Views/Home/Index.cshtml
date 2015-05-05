@@ -10,13 +10,15 @@
     <link href="~/bower_components/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="~/bower_components/offline/themes/offline-theme-default.css" rel="stylesheet" />
     <link href="~/bower_components/offline/themes/offline-language-english.css" rel="stylesheet" />
+    <link href="~/bower_components/angular-loading-bar/build/loading-bar.css" rel="stylesheet" />
+
     <link href="~/app-core.styles.css" rel="stylesheet" />
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic' rel='stylesheet'
           type='text/css'>
     <!-- Plug-in modules CSS includes -->
     @ViewBag.PluginModulesCssFileStringArray
 </head>
-<body class="theme-{{appData.class}}" ng-class="{'mini-sidebar':appData.isMiniSidebar}">
+<body class="theme-{{appData.currentArea.color}}" ng-class="{'mini-sidebar':appData.isMiniSidebar}">
     <toast></toast>
     <div id="topbar"  ui-view="topbarView"></div>
     <div id="wrapper">
@@ -39,6 +41,17 @@
     <script src="~/bower_components/ngtoast/dist/ngToast.js"></script>
     <script src="~/bower_components/offline/offline.min.js"></script>
     <script src="~/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="~/bower_components/angular-loading-bar/build/loading-bar.js"></script>
+    <script>
+        Offline.options = {
+            checkOnLoad: true,
+            interceptRequests: true,
+            requests:false
+            //checks: { xhr: { url: '/assets/check-image.gif' } }
+        }
+    </script>
+
+
 
     <!-- Core Application module definition -->
     <script>
@@ -53,7 +66,7 @@
                     'ngTouch',
 
                     // 3rd Party Modules
-                    'ui.router', 'ngMessages',
+                    'ui.router', 'ngMessages', 'angular-loading-bar',
 
                     // Core modules
                     'sidebarModule', 'topnavModule', 'pageTitleModule',
@@ -73,7 +86,9 @@
     <script src="~/app-core.module.js"></script>
     <script src="~/app-core.controller.js"></script>
     <script src="~/app-core.constants.js"></script>
+    <script src="~/core-providers/resolve-site-meta.function.js"></script>
     <script src="~/core-providers/site-meta.service.js"></script>
+    <script src="~/core-providers/area.service.js"></script>
 
     <!-- Core Shared Modules -->
     <script src="~/core-modules/sidebar/sidebar.controller.js"></script>

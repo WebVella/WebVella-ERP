@@ -28,7 +28,7 @@
     			}
     		},
     		resolve: {
-    			resolvedData:resolingFunction
+    		    resolvedSiteMeta: ResolveSiteMeta
     		}
     	});
     };

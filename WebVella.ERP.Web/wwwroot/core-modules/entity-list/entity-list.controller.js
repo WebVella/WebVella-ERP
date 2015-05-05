@@ -17,7 +17,7 @@
     
     /* @ngInject */
     function config($stateProvider) {
-    	$stateProvider.state('entity-list', {
+    	$stateProvider.state('entityList', {
     	    url: '/area/:areaName/:sectionName/:entityName',
     		views: {
     		    "sidebarView": {
@@ -41,24 +41,33 @@
                     controllerAs: 'entityListData'
     			}
     		},
-    		resolve: {}
+    		resolve: {
+    		    resolvedSiteMeta: ResolveSiteMeta
+    		}
     	});
     };
 
 
     // Controller ///////////////////////////////
-    controller.$inject = [];
+    controller.$inject = ['$state', 'areaService','$rootScope'];
 
     /* @ngInject */
-    function controller() {
+    function controller($state, areaService, $rootScope) {
         /* jshint validthis:true */
         var entityListData = this;
+        entityListData.currentArea = null;
 
         activate();
 
         function activate() {
+            var currentAreaName = $state.params.areaName;
 
-
+            if (currentAreaName) {
+                entityListData.currentArea = areaService.getAreaByName(currentAreaName);
+                if (entityListData.currentArea != null) {
+                    $rootScope.currentArea = entityListData.currentArea;
+                }
+            }
         }
     }
     

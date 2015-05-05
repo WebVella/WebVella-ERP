@@ -18,6 +18,13 @@ body {
     right:0;*/
 }
 
+.display-block {
+    display:block !important;
+}
+
+.navbar {
+    border-radius:0;
+}
 
 .modal-footer {
   text-align: center;
@@ -90,11 +97,9 @@ body {
 *****************************/
 /*#region << Topbar >> */
 
-
-
 #home-tiles .list-wrapper {
     margin-left:-10px;
-    margin-bottom:50px;
+    min-height:300px;
 }
 
 #home-tiles .thumbnail{
@@ -145,14 +150,69 @@ body {
         background:#F44336;
     }
 
+    #home-tiles .thumbnail.pink .icon-wrapper {
+        background:#E91E63;
+    }
+
+    #home-tiles .thumbnail.purple .icon-wrapper {
+        background:#9C27B0;
+    }
+
+    #home-tiles .thumbnail.deep-purple .icon-wrapper {
+        background:#673AB7;
+    }
+
+    #home-tiles .thumbnail.indigo .icon-wrapper {
+        background:#3F51B5;
+    }
+
+    #home-tiles .thumbnail.blue .icon-wrapper {
+        background:#2196F3;
+    }
+
+    #home-tiles .thumbnail.light-blue .icon-wrapper {
+        background:#03A9F4;
+    }
+
+    #home-tiles .thumbnail.cyan .icon-wrapper {
+        background:#00BCD4;
+    }
+
+    #home-tiles .thumbnail.teal .icon-wrapper {
+        background:#009688;
+    }
+
     #home-tiles .thumbnail.green .icon-wrapper {
         background:#4CAF50;
     }
 
-    #home-tiles .thumbnail.purple .icon-wrapper {
-        background:#673AB7;
+    #home-tiles .thumbnail.light-green .icon-wrapper {
+        background:#8BC34A;
     }
 
+    #home-tiles .thumbnail.lime .icon-wrapper {
+        background:#CDDC39;
+    }
+
+    #home-tiles .thumbnail.yellow .icon-wrapper {
+        background:#FFEB3B;
+    }
+
+    #home-tiles .thumbnail.amber .icon-wrapper {
+        background:#FFC107;
+    }
+
+    #home-tiles .thumbnail.orange .icon-wrapper {
+        background:#FF9800;
+    }
+
+    #home-tiles .thumbnail.deep-orange .icon-wrapper {
+        background:#FF5722;
+    }
+
+    #home-tiles .thumbnail.brown .icon-wrapper {
+        background:#795548;
+    }
 
 /*#endregion */
 
@@ -351,9 +411,7 @@ body {
 *****************************/
 #userbox {
   padding:10px 15px;
-  background: #424242;
-  background:rgba(0,0,0,0.4);
-  border-bottom:1px solid #000;
+  background: #222;
   position: relative;
   height:56px;
   white-space: nowrap;
@@ -1548,3 +1606,49 @@ body {
 
 /*#endregion */
 
+
+/***************************
+    Loading bar
+****************************/
+
+/* Make clicks pass-through */
+#loading-bar,
+#loading-bar-spinner {
+  pointer-events: none;
+  -webkit-pointer-events: none;
+  -webkit-transition: 200ms linear all;
+  -moz-transition: 200ms linear all;
+  -o-transition: 200ms linear all;
+  transition: 200ms linear all;
+}
+
+
+body #loading-bar .bar {
+    background:#F44336;
+}
+
+body #loading-bar .peg {
+    -moz-box-shadow: #F44336 1px 0 6px 1px;
+    -ms-box-shadow: #F44336 1px 0 6px 1px;
+    -webkit-box-shadow: #F44336 1px 0 6px 1px;
+    box-shadow: #F44336 1px 0 6px 1px;
+}
+
+
+body.mini-sidebar #loading-bar-spinner {
+    left:7px;
+}
+
+body #loading-bar-spinner {
+    top:10px;
+    left:13px;
+}
+
+#loading-bar-spinner .spinner-icon {
+    border-top-color: #F44336;
+    border-left-color: #F44336;
+    width:36px;
+    height:36px;
+   border-radius:36px;
+   border-width:3px;
+}

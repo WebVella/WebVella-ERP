@@ -30,22 +30,6 @@
     /* @ngInject */
     function run(siteMetaService, $rootScope) {
 
-        // Site Meta Object
-        //  Managed with the siteMetaService. Could be directly accessible but better through the service
-        $rootScope.siteMetaObject = {}; 
-
-        function successCallbackSiteMeta() {
-            //Value is already updated within the service. Any additional actions should be following
-        };
-        function errorCallbackSiteMeta() {
-            //Error is already handled within the service. Any additional actions should be following
-        };
-        siteMetaService.updateSiteMetaObject(successCallbackSiteMeta, errorCallbackSiteMeta);
-
-
-        // Hide Visual components
-        $rootScope.hideSidebar = false;
-
     };
 
 

@@ -13,16 +13,17 @@
 
   
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope'];
+    controller.$inject = ['$rootScope','$state'];
 
     /* @ngInject */
-    function controller($rootScope) {
+    function controller($rootScope, $state) {
         /* jshint validthis:true */
         var appData = this;
-
         appData.pageTitle = 'WebVella ERP';
-        appData.class = "green";
         appData.isMiniSidebar = false;
+        appData.currentArea = {};
+        appData.currentArea.color = "blue-gray";
+
 
         appData.toggleSideNav = function () {
             appData.isMiniSidebar = !appData.isMiniSidebar;
@@ -31,7 +32,9 @@
         activate();
 
         function activate() {
-
+            $rootScope.$watch("currentArea", function (newValue,oldValue) {
+                appData.currentArea = newValue;
+            });
         }
     }
 
