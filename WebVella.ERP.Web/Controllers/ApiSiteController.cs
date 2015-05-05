@@ -4,6 +4,7 @@ using Microsoft.AspNet.Mvc;
 using WebVella.ERP.Web.Models;
 using System;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace WebVella.ERP.Web.Controllers
 {
@@ -24,13 +25,14 @@ namespace WebVella.ERP.Web.Controllers
 			//Area 1
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "Higher Ed";
+			area.Name = "logistics";
 			area.Label = "Logistics";
 			area.Weight = 1;
-			area.HasDashboard = true;
+			area.Color = "orange";
+            area.IconName = "truck";
 
-			//Area1 SectionNull
-			areaSection = new AreaSection();
+            //Area1 SectionNull
+            areaSection = new AreaSection();
 			areaSection.Id = Guid.Empty;
 			areaSection.Name = "null";
 			areaSection.Label = "Null";
@@ -112,50 +114,130 @@ namespace WebVella.ERP.Web.Controllers
 			//Area 2
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "area2";
-			area.Label = "Area 2";
+			area.Name = "shop";
+			area.Label = "Shop";
 			area.Weight = 2;
-			area.HasDashboard = true;
+			area.Color = "red";
+            area.IconName = "shopping-cart";
 
-			////Add Area to SiteMeta
-			siteMeta.Areas.Add(area);
+            //Area2 Section 1
+            areaSection = new AreaSection();
+            areaSection.Id = Guid.Empty;
+            areaSection.Name = "section1";
+            areaSection.Label = "Area Section 1";
+            areaSection.Weight = 1;
+            //// Entity 1
+            entity = new Entity();
+            entity.Id = Guid.NewGuid();
+            entity.Name = "entity1";
+            entity.IsSystem = false;
+            entity.Label = "entity 1";
+            entity.LabelPlural = "entity 2s";
+            entity.IconName = "files-o";
+            entity.Weight = 1;
+            areaSection.Entities.Add(entity);
+
+            area.Sections.Add(areaSection);
+
+            ////Add Area to SiteMeta
+            siteMeta.Areas.Add(area);
 
 			//Area 3
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "area3";
-			area.Label = "Area 3";
+			area.Name = "finance";
+			area.Label = "Finance";
 			area.Weight = 3;
-			area.HasDashboard = true;
+			area.Color = "green";
+            area.IconName = "money";
 
-			////Add Area to SiteMeta
-			siteMeta.Areas.Add(area);
+            //Area3 Section 1
+            areaSection = new AreaSection();
+            areaSection.Id = Guid.Empty;
+            areaSection.Name = "section1";
+            areaSection.Label = "Area Section 1";
+            areaSection.Weight = 1;
+            //// Entity 1
+            entity = new Entity();
+            entity.Id = Guid.NewGuid();
+            entity.Name = "entity1";
+            entity.IsSystem = false;
+            entity.Label = "entity 1";
+            entity.LabelPlural = "entity 2s";
+            entity.IconName = "files-o";
+            entity.Weight = 1;
+            areaSection.Entities.Add(entity);
+
+            area.Sections.Add(areaSection);
+
+            ////Add Area to SiteMeta
+            siteMeta.Areas.Add(area);
 
 			//Area 4
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "area4";
-			area.Label = "Area 4";
+			area.Name = "integration";
+			area.Label = "Integration";
 			area.Weight = 4;
-			area.HasDashboard = true;
+			area.Color = "cyan";
+            area.IconName = "cloud";
 
-			////Add Area to SiteMeta
-			siteMeta.Areas.Add(area);
+            //Area2 Section 1
+            areaSection = new AreaSection();
+            areaSection.Id = Guid.Empty;
+            areaSection.Name = "section1";
+            areaSection.Label = "Area Section 1";
+            areaSection.Weight = 1;
+            //// Entity 1
+            entity = new Entity();
+            entity.Id = Guid.NewGuid();
+            entity.Name = "entity1";
+            entity.IsSystem = false;
+            entity.Label = "entity 1";
+            entity.LabelPlural = "entity 2s";
+            entity.IconName = "files-o";
+            entity.Weight = 1;
+            areaSection.Entities.Add(entity);
+
+            area.Sections.Add(areaSection);
+
+            ////Add Area to SiteMeta
+            siteMeta.Areas.Add(area);
 
 			//Area 5
 			area = new Area();
 			area.Id = Guid.NewGuid();
-			area.Name = "area5";
-			area.Label = "Area 5";
+			area.Name = "customer-loyalty";
+			area.Label = "Loyalty";
 			area.Weight = 5;
-			area.HasDashboard = true;
+			area.Color = "purple";
+            area.IconName = "trophy";
 
-			////Add Area to SiteMeta
-			siteMeta.Areas.Add(area);
+            //Area2 Section 1
+            areaSection = new AreaSection();
+            areaSection.Id = Guid.Empty;
+            areaSection.Name = "section1";
+            areaSection.Label = "Area Section 1";
+            areaSection.Weight = 1;
+            //// Entity 1
+            entity = new Entity();
+            entity.Id = Guid.NewGuid();
+            entity.Name = "entity1";
+            entity.IsSystem = false;
+            entity.Label = "entity 1";
+            entity.LabelPlural = "entity 2s";
+            entity.IconName = "files-o";
+            entity.Weight = 1;
+            areaSection.Entities.Add(entity);
 
+            area.Sections.Add(areaSection);
 
+            ////Add Area to SiteMeta
+            siteMeta.Areas.Add(area);
 
-			response.Object = siteMeta;
+            
+            Thread.Sleep(50);
+            response.Object = siteMeta;
 			return Json(response);
         }
     }

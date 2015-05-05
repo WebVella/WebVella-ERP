@@ -23,29 +23,36 @@
     			"topbarView": {
     				controller: 'HomeController',
     				templateUrl: 'core-modules/home/home.view.html',
-                    controllerAs: 'contentData'
+    				controllerAs: 'topbarData'
     			}
     		},
-    		resolve: {}
+    		resolve: {
+    		    resolvedSiteMeta: ResolveSiteMeta
+    		}
     	});
     };
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope'];
+    controller.$inject = ['$rootScope','areaService'];
 
     /* @ngInject */
-    function controller($rootScope) {
+    function controller($rootScope, areaService) {
         /* jshint validthis:true */
-        var contentData = this;
+        var topbarData = this;
+        topbarData.showCollapsedNav = false;
 
         activate();
 
         function activate() {
-            contentData.items = [];
-            for (var i = 0; i < 5; i++) {
-                var item = {};
-                contentData.items.push(item);
+            topbarData.areas = $rootScope.siteMeta.areas;
+
+            topbarData.toggleCollapsedNav = function () {
+                topbarData.showCollapsedNav = !topbarData.showCollapsedNav;
+            }
+
+            topbarData.navigateToArea = function (areaName) {
+                areaService.navigateToArea(areaName);
             }
         }
     }

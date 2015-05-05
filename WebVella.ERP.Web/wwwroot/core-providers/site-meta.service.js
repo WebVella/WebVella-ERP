@@ -14,18 +14,17 @@
     service.$inject = ['$http','$rootScope','apiConstants'];
 
     /* @ngInject */
-    function service($http, $rootScope, apiConstants, siteMetaValue) {
+    function service($http, $rootScope, apiConstants) {
         var serviceInstance = this;
-        serviceInstance.getSiteMetaObject = getSiteMetaObject;
-        serviceInstance.updateSiteMetaObject = updateSiteMetaObject;
+
+        serviceInstance.getUpdateSiteMeta = getUpdateSiteMeta;
 
         //// Get Site Meta method //////////////////////////////////////////
-        function getSiteMetaObject() {
-            return $rootScope.siteMetaObject;
-        }
+        // via $rootScope.siteMetaObject;
+
 
         //// Update Site Meta method //////////////////////////////////////////
-        function updateSiteMetaObject(successCallback, errorCallback) {
+        function getUpdateSiteMeta(successCallback, errorCallback) {
             $http({ method: 'GET', url: apiConstants.baseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
@@ -65,9 +64,24 @@
                 errorCallBack();
             }
             else {
-                //Updating the application siteMetaValue
-                $rootScope.siteMetaObject = data.object;
-                successCallBack();
+                //Updating the application siteMetaValue but first sorting 
+                var siteMeta = data.object;
+                
+                //Sort areas
+                siteMeta.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+                
+                //Sections sort
+                for (var i = 0; i < siteMeta.areas.length; i++) {
+                    siteMeta.areas[i].sections.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+                    //Sort entities
+                    for (var j = 0; j < siteMeta.areas[i].sections.length; j++) {
+                        siteMeta.areas[i].sections[j].entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+                    }
+                }
+
+                $rootScope.siteMeta = siteMeta;
+                successCallBack(data);
             }
         }
 
