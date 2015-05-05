@@ -9,7 +9,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('appCore')
         .directive('someNameDirective', directive);
 
     directive.$inject = ['dependencies'];

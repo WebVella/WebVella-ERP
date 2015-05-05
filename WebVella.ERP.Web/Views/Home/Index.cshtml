@@ -1,69 +1,94 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" ng-app="ErpApp">
+<html lang="en" ng-app="appCore" ng-controller="AppCoreController as appData">
 <head>
-	<meta charset="utf-8" />
-	<title>WebVella ERP</title>
-	<link href="~/lib/roboto/import.css" rel="stylesheet" />
-
-
-	<link href="~/bower_components/angular-material/angular-material.css" rel="stylesheet" />
-	<link href="~/app.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title ng-bind="appData.pageTitle"></title>
+    <link href="~/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/bower_components/ngtoast/dist/ngtoast.css" rel="stylesheet" />
+    <link href="~/bower_components/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/bower_components/offline/themes/offline-theme-default.css" rel="stylesheet" />
+    <link href="~/bower_components/offline/themes/offline-language-english.css" rel="stylesheet" />
+    <link href="~/app-core.styles.css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic' rel='stylesheet'
+          type='text/css'>
+    <!-- Plug-in modules CSS includes -->
+    @ViewBag.PluginModulesCssFileStringArray
 </head>
-<body layout="row" ng-controller="AppController">
-	<md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="$mdMedia('gt-md')">
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button id="sidenav-user" aria-label="Show user menu">
-					<div class="avatar-wrapper"><img src="~/assets/mozart.jpg" class="avatar"></img></div>
-					<div layout="column" class="username">
-						<span flex>Wolfgang</span>
-						<span flex>Mozart</span>
-					</div>
-				</md-button>
-			</div>
-		</md-toolbar>
-		<md-content flex role="navigation">
-			<div ui-view="AreaLocalNavView"></div>
-		</md-content>
-	</md-sidenav>
-	<div layout="column" tabindex="-1" role="main" flex>
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button class="md-icon-button" ng-click="toggleLeft()" hide-gt-md aria-label="Toggle left site menu" style="margin-right:5px !important;">
-					<md-icon md-svg-src="/lib/fa/bars.svg" class="s24"></md-icon>
-				</md-button>
-				<div ui-view="AreasNavView"></div>
-				<span flex></span>
-				<div ui-view="ActionsNavView"></div>
-			</div>
-		</md-toolbar>
-		<md-content flex layout-padding id="content">
-			<div ui-view="ContentView"></div>
-		</md-content>
-	</div>
-	<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
-		<div ui-view="ActionsLocalNavView"></div>
-	</md-sidenav>
+<body class="theme-{{appData.class}}" ng-class="{'mini-sidebar':appData.isMiniSidebar}">
+    <toast></toast>
+    <div id="topbar"  ui-view="topbarView"></div>
+    <div id="wrapper">
+        <div id="sidebar" class="hidden-xs" ui-view="sidebarView"></div>
+        <div id="content">
+            <div id="page-topnav" ui-view="topnavView"></div>
+            <div id="page-title" ui-view="titleView"></div>
+            <div id="page-content" ui-view="contentView"></div>
+        </div>
+    </div>
+
+    <!-- 3rd party component JS includes -->
+    <script src="~/bower_components/angular/angular.js"></script>
+    <script src="~/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="~/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="~/bower_components/angular-aria/angular-aria.js"></script>
+    <script src="~/bower_components/angular-messages/angular-messages.js"></script>
+    <script src="~/bower_components/angular-touch/angular-touch.js"></script>
+    <script src="~/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="~/bower_components/ngtoast/dist/ngToast.js"></script>
+    <script src="~/bower_components/offline/offline.min.js"></script>
+    <script src="~/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <!-- Core Application module definition -->
+    <script>
+        //In order to dynamically add plug-in modules, the appCore definition should be with server side aspect
+        (function () {
+            'use strict';
+
+            angular
+                .module('appCore', [
+                    // Angular modules
+                    'ngAnimate',
+                    'ngTouch',
+
+                    // 3rd Party Modules
+                    'ui.router', 'ngMessages',
+
+                    // Core modules
+                    'sidebarModule', 'topnavModule', 'pageTitleModule',
+
+                    // Page modules
+                    'homeModule', 'entityListModule',
+
+                    //Plug-in modules
+                    @ViewBag.PluginModulesNameStringArray
+                ]);
+        })();
+    </script>
 
 
-	<!-- Angular Material Dependencies -->
-	<script src="~/bower_components/angular/angular.js"></script>
-	<script src="~/bower_components/angular-animate/angular-animate.min.js"></script>
-	<script src="~/bower_components/angular-aria/angular-aria.min.js"></script>
-	<script src="~/bower_components/angular-touch/angular-touch.js"></script>
-	<script src="~/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-	<script src="~/bower_components/angular-messages/angular-messages.js"></script>
-	<script src="~/bower_components/angular-material/angular-material.js"></script>
 
-	<!-- Application -->
-	<script src="~/app.js"></script>
-	<script src="~/services.js"></script>
-	<script src="~/config.js"></script>
-	<script src="~/navigation/navigation.js"></script>
-	<script src="~/admin-entities/admin-entities.js"></script>
-	<script src="~/admin-entity-manage/admin-entity-manage.js"></script>
-	<script src="~/area-entity/area-entity.js"></script>
+    <!-- Core Application -->
+    <script src="~/app-core.module.js"></script>
+    <script src="~/app-core.controller.js"></script>
+    <script src="~/app-core.constants.js"></script>
+    <script src="~/core-providers/site-meta.service.js"></script>
+
+    <!-- Core Shared Modules -->
+    <script src="~/core-modules/sidebar/sidebar.controller.js"></script>
+    <script src="~/core-modules/topnav/topnav.controller.js"></script>
+    <script src="~/core-modules/topnav/topnav.service.js"></script>
+    <script src="~/core-modules/page-title/page-title.controller.js"></script>
+
+    <!-- Core Page Modules -->
+    <script src="~/core-modules/home/home.controller.js"></script>
+    <script src="~/core-modules/entity-list/entity-list.controller.js"></script>
+
+
+    <!-- Plug-in modules JS includes -->
+    @ViewBag.PluginModulesJsFileStringArray
+
 
 </body>
 </html>

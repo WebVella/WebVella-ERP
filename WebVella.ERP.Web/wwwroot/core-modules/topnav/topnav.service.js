@@ -1,4 +1,4 @@
-/* some-name.service.js */
+﻿/* topnav.service.js */
 
 /**
 * @desc just a sample service code
@@ -9,14 +9,14 @@
 
     angular
         .module('appCore')
-        .service('someNameService', service);
+        .service('topnavService', service);
 
     service.$inject = ['$http'];
-    
+
     /* @ngInject */
     function service($http) {
         this.getData = getData;
-        
+
         /////////////
         function getData() { }
     }

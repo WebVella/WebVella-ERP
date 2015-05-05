@@ -7,7 +7,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('appCore')
         .filter('someNameFilter', filter);
 
     filter.$inject = [];

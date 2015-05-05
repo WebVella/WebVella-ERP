@@ -7,7 +7,7 @@
  (function () {
             'use strict';
             angular
-                .module('app')
+                .module('appCore')
                 .factory('someNameFactory', factory);
 
             factory.$inject = ['dependencies'];

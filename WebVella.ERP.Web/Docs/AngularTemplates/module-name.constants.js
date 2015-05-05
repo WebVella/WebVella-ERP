@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('appCore')
         .constant('constantName', constantValue);
 })();
 
