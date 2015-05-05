@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('appCore')
+        .module('someNameModule', ['ui.router'])
         .config(config)
         .run(run)
         .controller('SomeNameController', controller);
@@ -37,6 +37,7 @@
     // Run //////////////////////////////////////
     run.$inject = []; 
 
+    /* @ngInject */
     function run() {};
 
 

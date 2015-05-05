@@ -4,7 +4,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('appCore')
         .value('variableName', variableValue);
 })();
 

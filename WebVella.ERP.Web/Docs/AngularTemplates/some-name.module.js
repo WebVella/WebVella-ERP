@@ -10,8 +10,7 @@
     angular
         .module('someNameModule', [
             // Angular modules 
-            'ngAnimate',
-            'ngRoute'
+            'ui.router'
 
             // Custom modules 
 

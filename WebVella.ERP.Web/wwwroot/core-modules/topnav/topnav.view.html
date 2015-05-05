@@ -1,0 +1,55 @@
+<a class="btn btn-default hidden-xs hidden-sm" ng-click="toggleSideNav()" id="switcher"><i class="fa fa-caret-left"></i></a>
+<div class="aux-actions">
+    <a class="btn btn-default btn-sm" title="Create new item"><i class="fa fa-plus"></i> <span class="visible-md-inline visible-lg-inline">Create</span></a>
+    <a class="btn btn-default btn-sm hidden-md hidden-lg" title="Search in this area"><i class="fa fa-search"></i></a>
+    <a class="btn btn-default btn-sm hidden-xs" title="My bookmarked pages and lists"><i class="fa fa-star"></i> <span class="visible-lg-inline">Bookmarks</span></a>
+    <a class="btn btn-default btn-sm hidden-xs" title="My alerts"><i class="fa fa-bell"></i>  <span class="visible-lg-inline">Alerts</span> <span class="badge badge-danger">4</span></a>
+    <a class="btn btn-default btn-sm hidden-xs" title="Get more info about the page"><i class="fa fa-question-circle"></i>  <span class="visible-lg-inline">Help</span></a>
+    <a class="btn btn-default btn-sm" title="Log out"><i class="fa fa-sign-out"></i> <span class="visible-lg-inline">Log out</span></a>
+</div>
+<div id="areanav">
+    <a class="btn btn-default" ng-click="openChangeAreaModal()"><i class="fa fa-sitemap"></i></a>
+</div>
+<div id="localnav">
+    <a class="btn btn-default visible-xs-inline-block" ng-click="openChangeLocalModal()"><i class="fa fa-bars"></i></a>
+</div>
+<div id="area-title" class="hidden-xs">Marketing</div>
+<form id="search-wrapper" class="visible-md-inline-block visible-lg-inline-block">
+    <input type="text" placeholder="Search for something..." class="form-control" name="top-search">
+</form>
+<script type="text/ng-template" id="changeAreaModalContent.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Select Area</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-2">
+                <a href="" class="area thumbnail red">
+                    <i class="fa fa-gear"></i>
+                    <div class="caption">
+                        Administration
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="" class="area thumbnail purple">
+                    <i class="fa fa-money"></i>
+                    <div class="caption">
+                        Marketing
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="" class="area thumbnail green">
+                    <i class="fa fa-shopping-cart"></i>
+                    <div class="caption">
+                        Sales
+                    </div>
+                </a>
+            </div>
+
+
+        </div>
+    </div>
+</script>

@@ -9,7 +9,7 @@
     'use strict';
 
     angular
-        .module('app')
+        .module('appCore')
         .provider('someNameProvider', providerProvider);
 
     function providerProvider() {
