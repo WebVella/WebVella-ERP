@@ -6,7 +6,7 @@
   "company": "WebVella",
   "companyUrl": "http://webvella.com",
   "author": "Bozhidar Zashev",
-  "license": "GNU GPL v3",
+  "license": "Apache License 2.0",
   "loadPriority": 1.0,
   "libCss": [
     "/plugins/webvella-base/lib/bootstrap/dist/css/bootstrap.css",
