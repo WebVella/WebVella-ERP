@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('webvella-areas', ['ui.router'])
+        .module('webvellaAreas', ['ui.router'])
         .config(config)
         .run(run)
         .controller('WebVellaAreasBaseController', controller);
@@ -49,11 +49,20 @@
     function run($rootScope, webvellaDesktopTopnavFactory) {
         var item = {
             "label": "Browse",
-            "stateName": "webvella-desktop-base.webvella-areas-desktop",
+            "stateName": "webvella-areas-desktop",
             "stateParams": {
                 "param": 1
             },
             "weight": 1
+        };
+        webvellaDesktopTopnavFactory.addTopnavItem(item);
+        item = {
+            "label": "Browse 2",
+            "stateName": "webvella-areas-desktop-2",
+            "stateParams": {
+                "param": 1
+            },
+            "weight": 11
         };
         webvellaDesktopTopnavFactory.addTopnavItem(item);
     };

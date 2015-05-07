@@ -9,7 +9,7 @@
     'use strict';
 
     angular
-        .module('webvella-admin')
+        .module('webvellaAdmin')
         .directive('boz', directive);
 
     directive.$inject = [];

@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('webvella-areas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
+        .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasEntitiesController', controller);
 

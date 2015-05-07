@@ -20,13 +20,16 @@
         /* jshint validthis:true */
         var appData = this;
         appData.pageTitle = 'WebVella ERP';
-        $rootScope.$watch("pageTitle", function (newValue,oldValue) {
-            appData.pageTitle = newValue;
-        });
 
         activate();
 
-        function activate() { }
+        function activate() {
+            //Register listener for any changes of the pageTitle that may be performed by the plugins
+            $rootScope.$watch("pageTitle", function (newValue, oldValue) {
+                appData.pageTitle = newValue;
+            });
+
+        }
     }
 
 })();

@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('webvella-admin', ['ui.router'])
+        .module('webvellaAdmin', ['ui.router'])
         .config(config)
         .controller('WebVellaAdminBaseController', controller);
 

@@ -57,10 +57,10 @@
                 .module('wvApp', [
                     'ngAnimate', 'ngTouch', // Angular modules
                     'ui.router', 'ngMessages', 'angular-loading-bar',  // 3rd Party Modules
-                    'webvella-root', //plugin:webvella-root
-                    'webvella-admin', //plugin:webvella-admin
-                    'webvella-desktop', //plugin:webvella-desktop
-                    'webvella-areas', //plugin:webvella-areas
+                    'webvellaRoot', //plugin:webvella-root
+                    'webvellaAdmin', //plugin:webvella-admin
+                    'webvellaDesktop', //plugin:webvella-desktop
+                    'webvellaAreas', //plugin:webvella-areas
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -102,13 +102,14 @@
     <!-- plugin:webvella-admin -->
     <script src="~/plugins/webvella-admin/base.module.js"></script>
     <script src="~/plugins/webvella-admin/entities.module.js"></script>
-    <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
+        <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
 
 
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
     <script src="~/plugins/webvella-areas/entities.module.js"></script>
-
+    <script src="~/plugins/webvella-areas/desktop.module.js"></script>
+    <script src="~/plugins/webvella-areas/desktop-2.module.js"></script>
 
     @ViewBag.PluginModulesJsFileStringArray
 

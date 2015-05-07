@@ -1,6 +1,31 @@
-<ul>
-    <li ng-repeat="item in pluginData.topnav" ui-sref-active="active" ui-sref="item.stateName(item.stateParams)">{{item.label}}</li>
-</ul>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" ng-click="topbarData.toggleCollapsedNav()">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" title="WebVella ERP" style="margin-right:30px;">
+                <img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="display:inline-block;margin-right:10px; position: relative; top: -2px;" />
+                <span class="hidden-xs hidden-sm">WebVella ERP</span>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
+            <ul class="nav navbar-nav">
+                <li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden-xs hidden-sm"><p class="navbar-text">Hi  Wolfgang Mozart</p></li>
+                <li><a href="#">Account</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
 
 <div id="desktop-content" ui-view="contentView">
 

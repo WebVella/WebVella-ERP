@@ -7,7 +7,7 @@
 (function () {
     'use strict';
     angular
-        .module('webvella-desktop')
+        .module('webvellaDesktop')
         .factory('webvellaDesktopTopnavFactory', factory);
 
     factory.$inject = ['$rootScope'];
