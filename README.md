@@ -5,9 +5,9 @@ WebVella ERP
 **Please support the project by giving it a "star" or contributing to the source. We thank you in advance :)**
 
 #### Screenshot
-![Desktop example](https://github.com/WebVella/WebVella-ERP/blob/master/home.png "desktop example")
+![Desktop example](https://cloud.githubusercontent.com/assets/341637/7510849/05e25a66-f4a9-11e4-8d2a-b19113017986.PNG "desktop example")
 
-![Internal page example](https://github.com/WebVella/WebVella-ERP/blob/master/home.png "internal page example")
+![Internal page example](https://cloud.githubusercontent.com/assets/341637/7510850/05e35cae-f4a9-11e4-8bfb-81640d82ce72.PNG "internal page example")
 
 ## Download
 * [Nightly build](https://github.com/WebVella/WebVella-ERP/archive/master.zip)
