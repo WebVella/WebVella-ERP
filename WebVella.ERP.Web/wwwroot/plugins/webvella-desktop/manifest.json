@@ -6,7 +6,7 @@
   "company": "WebVella",
   "companyUrl": "http://webvella.com",
   "author": "Bozhidar Zashev",
-  "license": "GNU GPL v3",
+  "license": "Apache License 2.0",
   "loadPriority": 1.0,
   "libCss": [],
   //Included after all vendor libraries from vendors from all plugins are included
