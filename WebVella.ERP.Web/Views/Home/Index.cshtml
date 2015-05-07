@@ -21,6 +21,10 @@
     <!-- plugin:webvella-desktop-->
     <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
 
+    <!-- plugin:webvella-admin-->
+    <link href="~/plugins/webvella-admin/css/webvella-admin.module.css" rel="stylesheet" />
+
+
     @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
 
 </head>
@@ -44,11 +48,6 @@
     <script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
 
-    <!-- Server generated global variables -->
-    <script>
-        @ViewBag.GlobalVariablesJs
-    </script>
-
     @* Core Application module definition *@
     <script>
         @*In order to dynamically add plug-in modules, the appCore definition should be with server side aspect*@
@@ -58,8 +57,10 @@
                 .module('wvApp', [
                     'ngAnimate', 'ngTouch', // Angular modules
                     'ui.router', 'ngMessages', 'angular-loading-bar',  // 3rd Party Modules
-                    "webvella-root-base", "webvella-root-home", //plugin:webvella-root-base
-                    "webvella-desktop-base", "webvella-desktop-areas", //plugin:webvella-desktop-base
+                    'webvella-root', //plugin:webvella-root
+                    'webvella-admin', //plugin:webvella-admin
+                    'webvella-desktop', //plugin:webvella-desktop
+                    'webvella-areas', //plugin:webvella-areas
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -82,8 +83,12 @@
             function run() { };
         })();
     </script>
-
     <script src="~/application.controller.js"></script>
+
+    <!-- Server generated global variables -->
+    <script>
+        @ViewBag.GlobalVariablesJs
+    </script>
 
     <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/base.module.js"></script>
@@ -91,9 +96,23 @@
 
     <!-- plugin:webvella-desktop -->
     <script src="~/plugins/webvella-desktop/base.module.js"></script>
-    <script src="~/plugins/webvella-desktop/areas.module.js"></script>
+    <script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
+
+
+    <!-- plugin:webvella-admin -->
+    <script src="~/plugins/webvella-admin/base.module.js"></script>
+    <script src="~/plugins/webvella-admin/entities.module.js"></script>
+    <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
+
+
+    <!-- plugin:webvella-areas -->
+    <script src="~/plugins/webvella-areas/base.module.js"></script>
+    <script src="~/plugins/webvella-areas/entities.module.js"></script>
+
 
     @ViewBag.PluginModulesJsFileStringArray
+
+
 
 
     <!-- Core Application -->

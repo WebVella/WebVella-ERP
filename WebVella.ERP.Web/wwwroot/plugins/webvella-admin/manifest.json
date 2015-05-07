@@ -1,0 +1,22 @@
+{
+  "name": "webvella-admin",
+  "url": "http://webvella.com",
+  "description": "WebVella ERP administration plugin",
+  "Version": "1.0",
+  "company": "WebVella",
+  "companyUrl": "http://webvella.com",
+  "author": "Bozhidar Zashev",
+  "license": "Apache License 2.0",
+  "loadPriority": 1.0,
+  "libCss": [],
+  //Included after all vendor libraries from vendors from all plugins are included
+  "moduleCss": [],
+  //Included before Angular application initialization. Usually 3rd party libraries
+  "libJs": [],
+  //Included after Angular application initialization
+  "moduleJs": [
+    "/plugins/webvella-admin/base.module.js",
+    "/plugins/webvella-admin/entities.module.js"
+  ],
+  "includeDependencies": [ "webvella-admin" ]
+}

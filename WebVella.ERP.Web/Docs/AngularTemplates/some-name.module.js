@@ -28,7 +28,7 @@
     			}
     		},
     		resolve: {
-    		    resolvedSiteMeta: ResolveSiteMeta
+    		    resolvedSiteMeta: resolvingFunction
     		}
     	});
     };
@@ -42,11 +42,11 @@
 
 
     // Resolve Function /////////////////////////
-    resolingFunction.$inject = ['dependencies]'];
+    resolvingFunction.$inject = [];
     
     /* @ngInject */
-    function resolingFunction(dependencies) {
-        return dependencies.getData();
+    function resolvingFunction() {
+        return "resolved"
     }    
 
 

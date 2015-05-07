@@ -1,5 +1,8 @@
-<div id="wrapper">
-    <div id="desktop">
-        <div id="desktop-content" ui-view="contentView"></div>
-    </div>
+<ul>
+    <li ng-repeat="item in pluginData.topnav" ui-sref-active="active" ui-sref="item.stateName(item.stateParams)">{{item.label}}</li>
+</ul>
+
+<div id="desktop-content" ui-view="contentView">
+
+
 </div>
