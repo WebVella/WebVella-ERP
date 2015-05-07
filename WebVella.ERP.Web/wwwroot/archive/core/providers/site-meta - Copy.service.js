@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('appCore')
+        .module('wvApp')
         .service('siteMetaService', service);
 
     service.$inject = ['$http','$rootScope','apiConstants'];

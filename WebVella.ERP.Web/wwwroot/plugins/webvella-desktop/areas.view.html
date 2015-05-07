@@ -1,0 +1,46 @@
+<div id="desktop">
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" ng-click="topbarData.toggleCollapsedNav()">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="javascript:void(0)" ng-click="desktopData.goHome()" title="WebVella ERP" style="margin-right:30px;">
+                    <img alt="Brand" src="/core/assets/logo.png" style="display:inline-block;margin-right:10px; position: relative; top: -2px;" />
+                    <span class="hidden-xs hidden-sm">WebVella ERP</span>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Browse</a></li>
+                    <li><a href="#">Recent items</a></li>
+                    <li><a href="#">Bookmarks</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden-xs hidden-sm"><p class="navbar-text">Hi  Wolfgang Mozart</p></li>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="home-tiles" class="container">
+        <div class="list-wrapper">
+            <a href="javascript:void(0)" ng-click="topbarData.navigateToArea(area.name)" class="area thumbnail {{area.color}}" ng-repeat="area in topbarData.areas">
+                <div class="icon-wrapper"><i class="fa fa-{{area.iconName}}"></i></div>
+                <div class="caption">
+                    {{area.label}}
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-bottom" style="background:transparent; border:none;margin-top:30px;">
+        <div class="container">
+            <p class="navbar-text" style="text-align:center;width:100%"><a href="http://webvella.com" style="color:#777;text-decoration:underline">WebVella ERP</a> Core ver. 1.233</p>
+        </div>
+    </nav>
+</div>

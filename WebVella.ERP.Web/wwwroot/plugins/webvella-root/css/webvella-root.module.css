@@ -5,7 +5,7 @@
 
 body {
     background:#212121;
-    background-image:url(/assets/black_scales/black_scales.png);
+    background-image:url(/plugins/webvella-root/assets/black_scales/black_scales.png);
     font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
@@ -92,129 +92,7 @@ body {
 
 /*#endregion */
 
-/****************************
-    Topbar
-*****************************/
-/*#region << Topbar >> */
 
-#home-tiles .list-wrapper {
-    margin-left:-10px;
-    min-height:300px;
-}
-
-#home-tiles .thumbnail{
-    background:transparent;
-    border:none;
-    margin:10px;
-    display:inline-block;
-    padding-top:9px;
-    width:120px;
-    height:90px;
-}
-
-    #home-tiles .thumbnail:hover,
-     #home-tiles .thumbnail:active,
-     #home-tiles .thumbnail:focus {
-        box-shadow:none;
-        background:rgba(255,255,255,0.15);
-    }
-
-    #home-tiles .thumbnail .caption {
-        color: #bdbdbd;
-        overflow: hidden;
-        white-space: nowrap;
-        -ms-text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-    }
-
-    #home-tiles .thumbnail .icon-wrapper {
-        background:#607D8B;
-        border-radius:3px;
-        display:inline-block;
-        width:48px;
-        height:48px;
-    }
-
-    #home-tiles .thumbnail .icon-wrapper .fa{
-        color:white;
-        font-size:32px;
-        padding:0;
-        position:relative;
-        top:8px;
-    }
-
-    /* Theming */
-
-    #home-tiles .thumbnail.red .icon-wrapper {
-        background:#F44336;
-    }
-
-    #home-tiles .thumbnail.pink .icon-wrapper {
-        background:#E91E63;
-    }
-
-    #home-tiles .thumbnail.purple .icon-wrapper {
-        background:#9C27B0;
-    }
-
-    #home-tiles .thumbnail.deep-purple .icon-wrapper {
-        background:#673AB7;
-    }
-
-    #home-tiles .thumbnail.indigo .icon-wrapper {
-        background:#3F51B5;
-    }
-
-    #home-tiles .thumbnail.blue .icon-wrapper {
-        background:#2196F3;
-    }
-
-    #home-tiles .thumbnail.light-blue .icon-wrapper {
-        background:#03A9F4;
-    }
-
-    #home-tiles .thumbnail.cyan .icon-wrapper {
-        background:#00BCD4;
-    }
-
-    #home-tiles .thumbnail.teal .icon-wrapper {
-        background:#009688;
-    }
-
-    #home-tiles .thumbnail.green .icon-wrapper {
-        background:#4CAF50;
-    }
-
-    #home-tiles .thumbnail.light-green .icon-wrapper {
-        background:#8BC34A;
-    }
-
-    #home-tiles .thumbnail.lime .icon-wrapper {
-        background:#CDDC39;
-    }
-
-    #home-tiles .thumbnail.yellow .icon-wrapper {
-        background:#FFEB3B;
-    }
-
-    #home-tiles .thumbnail.amber .icon-wrapper {
-        background:#FFC107;
-    }
-
-    #home-tiles .thumbnail.orange .icon-wrapper {
-        background:#FF9800;
-    }
-
-    #home-tiles .thumbnail.deep-orange .icon-wrapper {
-        background:#FF5722;
-    }
-
-    #home-tiles .thumbnail.brown .icon-wrapper {
-        background:#795548;
-    }
-
-/*#endregion */
 
 /****************************
     Sidebar
@@ -496,6 +374,9 @@ body {
   display:none;
 }
 
+
+
+
 /* Theming */
 .theme-red #page-topnav {
   border-bottom: 2px solid #F44336;
@@ -759,10 +640,10 @@ body {
 
 
 #page-topnav #search-wrapper {
-  display: inline-block;
+  
   margin-left:10px;
   margin-right:10px;
-  padding-left:10px;
+  padding-left:15px;
   border-left:2px solid #eee;
   height:40px;
   line-height: 40px;
@@ -770,6 +651,13 @@ body {
   top:-5px;
   
 }
+
+    #page-topnav #search-wrapper .fa {
+      position: absolute;
+      color: #eee;
+      top: 12px;
+      left: -1px;
+    }
 
 #page-topnav #search-wrapper input{
   border: none;
@@ -1012,7 +900,7 @@ body {
 
 #page-title .divider-box .fa {
   color:#BDBDBD;
-  font-size:18px;
+  font-size:14px;
  position: relative;
   top: 2px; 
 }
