@@ -2,7 +2,10 @@ WebVella ERP
 ======
 **WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET 5, MVC6 and AngularJS. Supports multiple databases, but the initial release will be for TokuDB (mongodb with transactions). Targets Linux or Windows as host OS.
 
-**Please support the project by giving it a "star" or contributing to the source. We thank you in advance :)**
+We will greatly appriciate your support of the project by: 
+* giving it a "star" 
+* contributing to the source
+* Donate via Flattr [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=webvella&url=https://github.com/WebVella/WebVella-ERP&title=WebVella-ERP&language=&tags=github&category=software) 
 
 #### Screenshot
 ![Desktop example](https://cloud.githubusercontent.com/assets/341637/7510849/05e25a66-f4a9-11e4-8d2a-b19113017986.PNG "desktop example")
