@@ -22,7 +22,7 @@
     		views: {
     			"topbarView": {
     				controller: 'HomeController',
-    				templateUrl: 'core-modules/home/home.view.html',
+    				templateUrl: '/core/modules/home/home.view.html',
     				controllerAs: 'topbarData'
     			}
     		},

@@ -11,7 +11,7 @@ namespace WebVella.ERP.Web.Controllers
     public class ApiSiteController : Controller
     {
 		// GET: api/site/meta
-		[AcceptVerbs(new[] { "GET" }, Route = "api/site/meta")]
+		[AcceptVerbs(new[] { "GET" }, Route = "api/root/meta")]
 		public IActionResult SiteMeta()
         {
 			//TODO - Test data
@@ -117,7 +117,7 @@ namespace WebVella.ERP.Web.Controllers
 			area.Name = "shop";
 			area.Label = "Shop";
 			area.Weight = 2;
-			area.Color = "red";
+			area.Color = "indigo";
             area.IconName = "shopping-cart";
 
             //Area2 Section 1
@@ -235,10 +235,70 @@ namespace WebVella.ERP.Web.Controllers
             ////Add Area to SiteMeta
             siteMeta.Areas.Add(area);
 
-            
-            Thread.Sleep(50);
+
+            //Area 6
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "administration";
+            area.Label = "Administration";
+            area.Weight = 99;
+            area.Color = "red";
+            area.IconName = "gear";
+
+            //Area2 Section 1
+            areaSection = new AreaSection();
+            areaSection.Id = Guid.Empty;
+            areaSection.Name = "templates";
+            areaSection.Label = "Templates";
+            areaSection.Weight = 1;
+            //// Entity 1
+            entity = new Entity();
+            entity.Id = Guid.NewGuid();
+            entity.Name = "entity";
+            entity.IsSystem = false;
+            entity.Label = "entity";
+            entity.LabelPlural = "Entities";
+            entity.IconName = "gear";
+            entity.Weight = 1;
+            areaSection.Entities.Add(entity);
+
+            area.Sections.Add(areaSection);
+
+            ////Add Area to SiteMeta
+            siteMeta.Areas.Add(area);
+
+
+            Thread.Sleep(350);
             response.Object = siteMeta;
 			return Json(response);
+        }
+
+        // GET: api/site/meta
+        [AcceptVerbs(new[] { "GET" }, Route = "api/root/get-ui-template/{name}")]
+        public IActionResult GetUiTemplate(string name)
+        {
+            //TODO - Test data
+            var response = new ResponseObj();
+            response.Success = true;
+            var html = "";
+
+            switch (name)
+            {
+                case "layout-0":
+                    html = "<div ui-view></div>";
+                    break;
+                case "layout-1":
+                    html = "<div id='wrapper'><div id='content'><div id='page-content' ui-view='contentView'></div></div></div>";
+                    break;
+                case "layout-2":
+                    html = "<div id='wrapper'><div id='sidebar' class='hidden-xs' ui-view='sidebarView'></div><div id='content'><div id='page-content' ui-view='contentView'></div></div></div>";
+                    break;
+                default:
+                    html = "<div id='wrapper'><div id='content'><div id='page-content' ui-view='contentView'></div></div></div>";
+                    break;
+            }
+
+            return Content(html, "text/xml");
         }
     }
 }

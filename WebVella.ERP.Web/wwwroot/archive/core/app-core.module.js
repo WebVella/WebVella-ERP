@@ -10,7 +10,7 @@
     'use strict';
 
     angular
-        .module('appCore')
+        .module('wvApp')
         .config(config)
         .run(run);
 
@@ -25,10 +25,10 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['siteMetaService','$rootScope'];
+    run.$inject = ['$rootScope'];
 
     /* @ngInject */
-    function run(siteMetaService, $rootScope) {
+    function run($rootScope) {
 
     };
 

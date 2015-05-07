@@ -1,20 +1,67 @@
 /* some-name.module.js */
 
 /**
-* @desc just a sample module code
+* @desc just a sample controller code
 */
 
 (function () {
     'use strict';
 
     angular
-        .module('someNameModule', [
-            // Angular modules 
-            'ui.router'
+        .module('someNameModule', ['ui.router'])
+        .config(config)
+        .run(run)
+        .controller('SomeNameController', controller);
 
-            // Custom modules 
+    // Configuration ///////////////////////////////////
+    config.$inject = ['$stateProvider']; 
+    
+    /* @ngInject */
+    function config($stateProvider) {
+    	$stateProvider.state('stateName', {
+    		url: '/',
+    		views: {
+    			"namedView": {
+    				controller: 'SomeNameController',
+    				templateUrl: 'module/name.view.html',
+                    controllerAs: 'vm'
+    			}
+    		},
+    		resolve: {
+    		    resolvedSiteMeta: ResolveSiteMeta
+    		}
+    	});
+    };
 
-            // 3rd Party Modules
-        
-    ]);
+
+    // Run //////////////////////////////////////
+    run.$inject = []; 
+
+    /* @ngInject */
+    function run() {};
+
+
+    // Resolve Function /////////////////////////
+    resolingFunction.$inject = ['dependencies]'];
+    
+    /* @ngInject */
+    function resolingFunction(dependencies) {
+        return dependencies.getData();
+    }    
+
+
+    // Controller ///////////////////////////////
+    controller.$inject = ['$rootScope'];
+
+    /* @ngInject */
+    function controller($rootScope) {
+        /* jshint validthis:true */
+        var vm = this;
+        vm.title = 'controller';
+
+        activate();
+
+        function activate() { }
+    }
+    
 })();

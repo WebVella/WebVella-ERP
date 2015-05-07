@@ -10,8 +10,12 @@
 
     angular
         .module('appCore')
-        .provider('someNameProvider', providerProvider);
+        .provider('someNameProvider', provider);
 
+
+    provider.$inject = ['$stateProvider'];
+
+    /* @ngInject */
     function providerProvider() {
         var configValue = false;
 
