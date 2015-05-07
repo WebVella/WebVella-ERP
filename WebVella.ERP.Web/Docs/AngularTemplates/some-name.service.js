@@ -15,7 +15,9 @@
     
     /* @ngInject */
     function service($http) {
-        this.getData = getData;
+        var self = this;
+
+        self.getData = getData;
         
         /////////////
         function getData() { }

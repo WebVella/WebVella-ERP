@@ -8,31 +8,31 @@
     'use strict';
 
     angular
-        .module('webvella-desktop', ['ui.router','webvella-areas'])
+        .module('webvella-areas', ['ui.router'])
         .config(config)
         .run(run)
-        .controller('WebVellaDesktopBaseController', controller);
+        .controller('WebVellaAreasBaseController', controller);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-desktop-base', {
-            //abstract: true,
-            parent: 'webvella-root',
-            url: '/desktop', //will be added to all children states
+        $stateProvider.state('webvella-areas-base', {
+           abstract: true,
+           parent: 'webvella-root',
+            url: '/areas', //will be added to all children states
             views: {
                 "pluginView": {
-                    controller: 'WebVellaDesktopBaseController',
-                    templateUrl: '/plugins/webvella-desktop/base.view.html',
+                    controller: 'WebVellaAreasBaseController',
+                    templateUrl: '/plugins/webvella-areas/base.view.html',
                     controllerAs: 'pluginData'
                 }
             },
             resolve: {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function (pageTitle) {
-                    return "Desktop | " + pageTitle;
+                    return "Areas | " + pageTitle;
                 }
             },
             data: {
@@ -47,27 +47,38 @@
 
     /* @ngInject */
     function run($rootScope, webvellaDesktopTopnavFactory) {
-
+        var item = {
+            "label": "Browse",
+            "stateName": "webvella-desktop-base.webvella-areas-desktop",
+            "stateParams": {
+                "param": 1
+            },
+            "weight": 1
+        };
+        webvellaDesktopTopnavFactory.addTopnavItem(item);
     };
 
 
-
-    // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
+    // Resolve Function /////////////////////////
+    resolvingFunction.$inject = [];
 
     /* @ngInject */
-    function controller($rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+    function resolvingFunction() {
+        return dependencies.getData();
+    }
+
+
+    // Controller ///////////////////////////////
+    controller.$inject = [];
+
+    /* @ngInject */
+    function controller() {
         /* jshint validthis:true */
         var pluginData = this;
 
         activate();
 
-        function activate() {
-            pluginData.topnav = webvellaDesktopTopnavFactory.getTopnav();
-            if (pluginData.topnav.length > 0) {
-                $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
-            }
-        }
+        function activate() { }
     }
 
 })();

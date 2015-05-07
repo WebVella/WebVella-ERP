@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('webvella-root-base', ['ui.router'])
+        .module('webvella-root', ['ui.router'])
         .config(config)
         .run(run)
         .controller('WebVellaRootBaseController', controller);
