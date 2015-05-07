@@ -11,7 +11,7 @@
     'use strict';
 
     angular
-        .module('webvella-root', ['ui.router'])
+        .module('webvellaRoot', ['ui.router'])
         .config(config)
         .run(run)
         .controller('WebVellaRootBaseController', controller);
@@ -37,6 +37,7 @@
             resolve: {
                 //here you can resolve any application wide data you need. It will be available for all children states
                 currentUser: function () {
+                    //TODO - Will be substituted with a service call after implementation
                     return { email: 'email@domain.com', roles:["administrator"] };
                 },
                 pageTitle: function () {
@@ -89,8 +90,8 @@
     /* @ngInject */
     function controller() {
         /* jshint validthis:true */
-        var vm = this;
-        vm.title = 'controller';
+        var rootData = this;
+
 
         activate();
 

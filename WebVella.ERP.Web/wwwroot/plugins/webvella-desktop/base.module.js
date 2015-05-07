@@ -1,14 +1,14 @@
 ﻿/* base.module.js */
 
 /**
-* @desc this the base module of the Desktop plugin
+* @desc this the base module of the Desktop plugin. Its only tasks is to check the topNavFactory and redirect to the first menu item state
 */
 
 (function () {
     'use strict';
 
     angular
-        .module('webvella-desktop', ['ui.router','webvella-areas'])
+        .module('webvellaDesktop', ['ui.router'])
         .config(config)
         .run(run)
         .controller('WebVellaDesktopBaseController', controller);
@@ -63,6 +63,7 @@
         activate();
 
         function activate() {
+            //Get the topnav items and redirect to the first one
             pluginData.topnav = webvellaDesktopTopnavFactory.getTopnav();
             if (pluginData.topnav.length > 0) {
                 $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)

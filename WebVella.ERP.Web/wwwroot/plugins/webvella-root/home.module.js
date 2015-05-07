@@ -8,7 +8,7 @@
     'use strict';
 
     angular
-        .module('webvella-root')  //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
+        .module('webvellaRoot')  //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .run(run)
         .controller('WebVellaRootHomeController', controller);
@@ -52,7 +52,7 @@
         function activate() {
 
             if (currentUser != null) {
-               //$state.go("webvella-desktop-areas")
+               $state.go("webvella-desktop-base")
             }
         }
     }
