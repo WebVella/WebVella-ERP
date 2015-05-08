@@ -11,3 +11,6 @@ WebVella.ERP.v14.suo
 *.user
 /artifacts/*
 WebVella.ERP.Web/npm-debug.log
+/.vs/config/applicationhost.config
+/WebVella.ERP.Web/node_modules/.bin
+/WebVella.ERP.Web/node_modules
