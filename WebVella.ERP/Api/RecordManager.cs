@@ -392,8 +392,8 @@ namespace WebVella.ERP.Api
             //split field string into tokens speparated by FIELDS_SEPARATOR
             List<string> tokens = query.Fields.Split(FIELDS_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            //var entity = entityManager.Read(query.EntityName).Object;
-            Entity entity = null;
+            //get entity by name
+            Entity entity = entityManager.ReadEntity(query.EntityName).Object;
 
             if (entity == null)
                 throw new Exception(string.Format("The entity '{0}' does not exists.", query.EntityName));
@@ -525,7 +525,7 @@ namespace WebVella.ERP.Api
             var entity = entityCache.SingleOrDefault(x => x.Id == entityId);
             if (entity == null)
             {
-                entity = entityManager.Read(entityId).Object;
+                entity = entityManager.ReadEntity(entityId).Object;
 
                 if (entity != null)
                     entityCache.Add(entity);
