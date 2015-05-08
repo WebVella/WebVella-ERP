@@ -4,7 +4,7 @@ namespace WebVella.ERP.Api.Models
 {
     public class CurrencyField : Field
     {
-        public new decimal? DefaultValue { get; set; }
+        public decimal? DefaultValue { get; set; }
 
         public decimal? MinValue { get; set; }
 

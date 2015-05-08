@@ -2,7 +2,7 @@
 {
     public interface IStoragePhoneField : IStorageField
     {
-        new string DefaultValue { get; set; }
+        string DefaultValue { get; set; }
 
         string Format { get; set; }
 

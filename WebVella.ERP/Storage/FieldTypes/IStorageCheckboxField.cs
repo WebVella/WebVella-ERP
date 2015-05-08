@@ -2,6 +2,6 @@
 {
     public interface IStorageCheckboxField : IStorageField
     {
-        new bool DefaultValue { get; set; }
+        bool DefaultValue { get; set; }
     }
 }
