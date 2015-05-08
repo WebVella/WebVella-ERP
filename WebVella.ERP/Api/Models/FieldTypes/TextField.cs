@@ -16,5 +16,13 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public TextFieldMeta(Guid entityId, string entityName, TextField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+			MaxLength = field.MaxLength;
+		}
+	}
 }

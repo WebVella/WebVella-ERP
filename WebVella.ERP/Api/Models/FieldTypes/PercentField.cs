@@ -20,5 +20,14 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public PercentFieldMeta(Guid entityId, string entityName, PercentField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			MinValue = field.MinValue;
+			MaxValue= field.MaxValue;
+			DecimalPlaces = field.DecimalPlaces;
+        }
+	}
 }

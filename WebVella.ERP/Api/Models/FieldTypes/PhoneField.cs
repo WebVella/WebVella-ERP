@@ -18,5 +18,13 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			Format = field.Format;
+			MaxLength = field.MaxLength;
+		}
+	}
 }

@@ -291,10 +291,6 @@ namespace WebVella.ERP
             imageField.Auditable = true;
             imageField.System = true;
             imageField.DefaultValue = "";
-
-            imageField.TargetEntityType = "I don't know";
-            imageField.RelationshipName = "Users";
-
             fields.Add(imageField);
 
             LookupRelationField lookupRelationField = new LookupRelationField();

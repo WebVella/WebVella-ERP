@@ -14,5 +14,12 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public FileFieldMeta(Guid entityId, string entityName, FileField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+		}
+	}
 }
