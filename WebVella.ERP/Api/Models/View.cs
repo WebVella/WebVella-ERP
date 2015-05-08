@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -36,5 +37,22 @@ namespace WebVella.ERP.Api.Models
         public Guid? EntityId { get; set; }
 
         public int? Position { get; set; }
+    }
+
+    public class ViewList
+    {
+        public Guid Offset { get; set; }
+
+        public List<View> Views { get; set; }
+    }
+
+    public class ViewResponse : BaseResponseModel
+    {
+        public View Object { get; set; }
+    }
+
+    public class ViewListResponse : BaseResponseModel
+    {
+        public ViewList Object { get; set; }
     }
 }

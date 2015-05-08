@@ -5,9 +5,9 @@ namespace WebVella.ERP.Core
 {
     public class MongoPasswordField : MongoBaseField, IStoragePasswordField
     {
-        public new string DefaultValue { get; set; }
-
         public int MaxLength { get; set; }
+
+        public bool Encrypted { get; set; }
 
         public PasswordFieldMaskTypes MaskType { get; set; }
 
