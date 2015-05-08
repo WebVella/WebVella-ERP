@@ -2,7 +2,7 @@
 {
     public interface IStorageEmailField : IStorageField
     {
-        new string DefaultValue { get; set; }
+        string DefaultValue { get; set; }
 
         int MaxLength { get; set; }
     }

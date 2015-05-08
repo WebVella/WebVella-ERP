@@ -4,7 +4,7 @@ namespace WebVella.ERP.Api.Models
 {
     public class AutoNumberField : Field
     {
-        public new decimal? DefaultValue { get; set; }
+        public decimal? DefaultValue { get; set; }
 
         public string DisplayFormat { get; set; }
 

@@ -2,6 +2,6 @@
 {
     public interface IStorageFileField : IStorageField
     {
-        new string DefaultValue { get; set; }
+        string DefaultValue { get; set; }
     }
 }

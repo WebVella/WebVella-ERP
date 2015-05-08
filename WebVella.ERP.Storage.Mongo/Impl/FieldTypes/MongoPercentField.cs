@@ -4,7 +4,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoPercentField : MongoBaseField, IStoragePercentField
     {
-        public new decimal DefaultValue { get; set; }
+        public decimal DefaultValue { get; set; }
 
         public decimal MinValue { get; set; }
 

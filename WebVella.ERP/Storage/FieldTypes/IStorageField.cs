@@ -25,7 +25,5 @@ namespace WebVella.ERP.Storage
         bool Auditable { get; set; }
 
         bool System { get; set; }
-
-        object DefaultValue { get; set; }
     }
 }

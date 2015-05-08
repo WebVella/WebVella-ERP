@@ -4,7 +4,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoAutoNumberField : MongoBaseField, IStorageAutoNumberField
     {
-        public new decimal DefaultValue { get; set; }
+        public decimal DefaultValue { get; set; }
 
         public string DisplayFormat { get; set; }
 

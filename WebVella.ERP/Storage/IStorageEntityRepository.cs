@@ -15,5 +15,7 @@ namespace WebVella.ERP.Storage
         bool Update(IStorageEntity entity);
         bool Delete(Guid id);
         bool Save(IStorageEntity entity);
+
+        IStorageField ConvertField(Field field);
     }
 }

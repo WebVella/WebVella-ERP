@@ -5,7 +5,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoSelectField : MongoBaseField, IStorageSelectField
     {
-        public new string DefaultValue { get; set; }
+        public string DefaultValue { get; set; }
 
         public IDictionary<string, string> Options { get; set; }
     }

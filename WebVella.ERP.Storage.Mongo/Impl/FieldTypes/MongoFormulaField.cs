@@ -3,12 +3,13 @@ using WebVella.ERP.Api;
 
 namespace WebVella.ERP.Core
 {
-    public class MongoFormulaField : MongoBaseField, IStorageFormulaField
-    {
-        public FormulaFieldReturnType ReturnType { get; set; }
+    //Not supported at the moment
+    //public class MongoFormulaField : MongoBaseField, IStorageFormulaField
+    //{
+    //    public FormulaFieldReturnType ReturnType { get; set; }
 
-        public string FormulaText { get; set; }
+    //    public string FormulaText { get; set; }
 
-        public int DecimalPlaces { get; set; }
-    }
+    //    public int DecimalPlaces { get; set; }
+    //}
 }

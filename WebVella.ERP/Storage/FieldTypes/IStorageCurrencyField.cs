@@ -4,7 +4,7 @@ namespace WebVella.ERP.Storage
 {
     public interface IStorageCurrencyField : IStorageField
     {
-        new decimal DefaultValue { get; set; }
+        decimal DefaultValue { get; set; }
 
         decimal MinValue { get; set; }
 
