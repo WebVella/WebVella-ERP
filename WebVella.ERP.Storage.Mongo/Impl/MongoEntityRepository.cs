@@ -94,8 +94,6 @@ namespace WebVella.ERP.Storage.Mongo
                 {
                     storageField = new MongoImageField();
                     ((MongoImageField)storageField).DefaultValue = ((ImageField)field).DefaultValue;
-                    ((MongoImageField)storageField).TargetEntityType = ((ImageField)field).TargetEntityType;
-                    ((MongoImageField)storageField).RelationshipName = ((ImageField)field).RelationshipName;
                 }
                 else if (field is LookupRelationField)
                 {
@@ -414,8 +412,6 @@ namespace WebVella.ERP.Storage.Mongo
             {
                 storageField = new MongoImageField();
                 ((MongoImageField)storageField).DefaultValue = ((ImageField)field).DefaultValue;
-                ((MongoImageField)storageField).TargetEntityType = ((ImageField)field).TargetEntityType;
-                ((MongoImageField)storageField).RelationshipName = ((ImageField)field).RelationshipName;
             }
             else if (field is LookupRelationField)
             {

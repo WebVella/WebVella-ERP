@@ -20,5 +20,15 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+			MinValue = field.MinValue;
+			MaxValue = field.MaxValue;
+			Currency = field.Currency;
+		}
+	}
 }

@@ -14,5 +14,12 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+		
+		public MasterDetailsRelationshipFieldMeta(Guid entityId, string entityName, MasterDetailsRelationshipField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			RelatedEntityId = field.RelatedEntityId;
+		}
+	}
 }

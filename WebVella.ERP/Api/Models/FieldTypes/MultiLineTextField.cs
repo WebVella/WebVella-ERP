@@ -18,5 +18,14 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public MultiLineTextFieldMeta(Guid entityId, string entityName, MultiLineTextField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+			MaxLength = field.MaxLength;
+			VisibleLineNumber = field.VisibleLineNumber;
+		}
+	}
 }

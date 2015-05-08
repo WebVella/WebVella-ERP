@@ -14,5 +14,12 @@ namespace WebVella.ERP.Api.Models
         public Guid EntityId { get; set; }
 
         public string EntityName { get; set; }
-    }
+
+		public CheckboxFieldMeta(Guid entityId, string entityName, CheckboxField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+		}
+	}
 }

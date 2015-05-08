@@ -17,5 +17,13 @@ namespace WebVella.ERP.Api.Models
 		public Guid EntityId { get; set; }
 
 		public string EntityName { get; set; }
-    }
+
+		public SelectFieldMeta(Guid entityId, string entityName, SelectField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+			Options = field.Options;
+		}
+	}
 }

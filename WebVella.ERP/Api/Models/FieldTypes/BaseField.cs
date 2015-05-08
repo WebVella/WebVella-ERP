@@ -91,15 +91,11 @@ namespace WebVella.ERP
             {
                 field = new ImageField();
                 ((ImageField)field).DefaultValue = ((IStorageImageField)storageField).DefaultValue;
-                ((ImageField)field).TargetEntityType = ((IStorageImageField)storageField).TargetEntityType;
-                ((ImageField)field).RelationshipName = ((IStorageImageField)storageField).RelationshipName;
             }
             else if (storageField is IStorageImageField)
             {
                 field = new ImageField();
                 ((ImageField)field).DefaultValue = ((IStorageImageField)storageField).DefaultValue;
-                ((ImageField)field).TargetEntityType = ((IStorageImageField)storageField).TargetEntityType;
-                ((ImageField)field).RelationshipName = ((IStorageImageField)storageField).RelationshipName;
             }
             else if (storageField is IStorageLookupRelationField)
             {
