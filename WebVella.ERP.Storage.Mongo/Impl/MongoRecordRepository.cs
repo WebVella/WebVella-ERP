@@ -3,11 +3,26 @@ using MongoDB.Bson;
 using MongoDB.Driver.Builders;
 using System.Collections.Generic;
 using WebVella.ERP.Api.Models;
+using System;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoRecordRepository : IStorageRecordRepository
     {
+        public IEnumerable<KeyValuePair<string, object>> Find(string entityName, Guid id )
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(entityName);
+            var doc = mongoCollection.FindOne(Query.EQ("_id", id));
+            if (doc == null)
+                return null;
+
+            List<KeyValuePair<string, object>> result = new List<KeyValuePair<string, object>>();
+            foreach (var fieldName in doc.Names)
+                result.Add(new KeyValuePair<string, object>(fieldName, doc[fieldName]));
+
+            return result;
+        }
+
         public IEnumerable<IEnumerable<KeyValuePair<string, object>>> Find(string entityName, QueryObject query, QuerySortObject[] sort, int? skip, int? limit)
         {
 			var mongoCollection = MongoStaticContext.Context.GetBsonCollection(entityName);
