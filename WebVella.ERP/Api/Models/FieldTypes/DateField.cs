@@ -4,8 +4,17 @@ namespace WebVella.ERP.Api.Models
 {
     public class DateField : Field
     {
+        public static FieldType FieldType { get { return FieldType.DateField; } }
+
         public DateTime? DefaultValue { get; set; }
 
         public string Format { get; set; }
+    }
+
+    public class DateFieldMeta : DateField
+    {
+		public Guid EntityId { get; set; }
+
+		public string EntityName { get; set; }
     }
 }
