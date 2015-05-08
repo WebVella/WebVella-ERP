@@ -1,69 +1,138 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" ng-app="ErpApp">
+<html lang="en" ng-app="wvApp" ng-controller="ApplicationController as appData">
 <head>
-	<meta charset="utf-8" />
-	<title>WebVella ERP</title>
-	<link href="~/lib/roboto/import.css" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title ng-bind="appData.pageTitle"></title>
+    <!--plugin:webvella-root-->
+    <link href="~/plugins/webvella-root/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/ngtoast/dist/ngtoast.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/offline/themes/offline-theme-default.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/offline/themes/offline-language-english.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic' rel='stylesheet'
+          type='text/css'>
+
+     <!-- plugin:webvella-root-->
+    <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
+
+    <!-- plugin:webvella-desktop-->
+    <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
+
+    <!-- plugin:webvella-admin-->
+    <link href="~/plugins/webvella-admin/css/webvella-admin.module.css" rel="stylesheet" />
 
 
-	<link href="~/bower_components/angular-material/angular-material.css" rel="stylesheet" />
-	<link href="~/app.css" rel="stylesheet" />
+    @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
+
 </head>
-<body layout="row" ng-controller="AppController">
-	<md-sidenav md-component-id="left" class="md-sidenav-left md-whiteframe-z2" md-is-locked-open="$mdMedia('gt-md')">
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button id="sidenav-user" aria-label="Show user menu">
-					<div class="avatar-wrapper"><img src="~/assets/mozart.jpg" class="avatar"></img></div>
-					<div layout="column" class="username">
-						<span flex>Wolfgang</span>
-						<span flex>Mozart</span>
-					</div>
-				</md-button>
-			</div>
-		</md-toolbar>
-		<md-content flex role="navigation">
-			<div ui-view="AreaLocalNavView"></div>
-		</md-content>
-	</md-sidenav>
-	<div layout="column" tabindex="-1" role="main" flex>
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button class="md-icon-button" ng-click="toggleLeft()" hide-gt-md aria-label="Toggle left site menu" style="margin-right:5px !important;">
-					<md-icon md-svg-src="/lib/fa/bars.svg" class="s24"></md-icon>
-				</md-button>
-				<div ui-view="AreasNavView"></div>
-				<span flex></span>
-				<div ui-view="ActionsNavView"></div>
-			</div>
-		</md-toolbar>
-		<md-content flex layout-padding id="content">
-			<div ui-view="ContentView"></div>
-		</md-content>
-	</div>
-	<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
-		<div ui-view="ActionsLocalNavView"></div>
-	</md-sidenav>
+<body class="theme-{{appData.currentArea.color}}" ng-class="{'mini-sidebar':rootData.isMiniSidebar}">
+    <toast></toast>
+
+    <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
+    <div ui-view="rootView"></div>
+
+    <!-- plugin:webvella-base -->
+    <script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js"></script>
+    <script src="~/plugins/webvella-root/lib/offline/offline.min.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
+    <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
+
+    @* Core Application module definition *@
+    <script>
+        @*In order to dynamically add plug-in modules, the appCore definition should be with server side aspect*@
+        (function () {
+            'use strict';
+            angular
+                .module('wvApp', [
+                    'ngAnimate', 'ngTouch', // Angular modules
+                    'ui.router', 'ngMessages', 'angular-loading-bar',  // 3rd Party Modules
+                    'webvellaRoot', //plugin:webvella-root
+                    'webvellaAdmin', //plugin:webvella-admin
+                    'webvellaDesktop', //plugin:webvella-desktop
+                    'webvellaAreas', //plugin:webvella-areas
+
+                    //Plug-in modules
+                    @ViewBag.PluginModulesNameStringArray
+                ])
+                .config(config)
+                .run(run);
+                //.constant('apiConstants', {
+                //    "baseUrl": "/api/"
+                //});
 
 
-	<!-- Angular Material Dependencies -->
-	<script src="~/bower_components/angular/angular.js"></script>
-	<script src="~/bower_components/angular-animate/angular-animate.min.js"></script>
-	<script src="~/bower_components/angular-aria/angular-aria.min.js"></script>
-	<script src="~/bower_components/angular-touch/angular-touch.js"></script>
-	<script src="~/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-	<script src="~/bower_components/angular-messages/angular-messages.js"></script>
-	<script src="~/bower_components/angular-material/angular-material.js"></script>
+            // Configuration ///////////////////////////////////
+            config.$inject = ['$urlRouterProvider'];
+            function config($urlRouterProvider) {
+                $urlRouterProvider.otherwise('/');
+            };
 
-	<!-- Application -->
-	<script src="~/app.js"></script>
-	<script src="~/services.js"></script>
-	<script src="~/config.js"></script>
-	<script src="~/navigation/navigation.js"></script>
-	<script src="~/admin-entities/admin-entities.js"></script>
-	<script src="~/admin-entity-manage/admin-entity-manage.js"></script>
-	<script src="~/area-entity/area-entity.js"></script>
+            // Run //////////////////////////////////////
+            run.$inject = [];
+            function run() { };
+        })();
+    </script>
+    <script src="~/application.controller.js"></script>
+
+    <!-- Server generated global variables -->
+    <script>
+        @ViewBag.GlobalVariablesJs
+    </script>
+
+    <!-- plugin:webvella-root -->
+    <script src="~/plugins/webvella-root/base.module.js"></script>
+    <script src="~/plugins/webvella-root/home.module.js"></script>
+
+    <!-- plugin:webvella-desktop -->
+    <script src="~/plugins/webvella-desktop/base.module.js"></script>
+    <script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
+
+
+    <!-- plugin:webvella-admin -->
+    <script src="~/plugins/webvella-admin/base.module.js"></script>
+    <script src="~/plugins/webvella-admin/entities.module.js"></script>
+        <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
+
+
+    <!-- plugin:webvella-areas -->
+    <script src="~/plugins/webvella-areas/base.module.js"></script>
+    <script src="~/plugins/webvella-areas/entities.module.js"></script>
+    <script src="~/plugins/webvella-areas/desktop.module.js"></script>
+    <script src="~/plugins/webvella-areas/desktop-2.module.js"></script>
+
+    @ViewBag.PluginModulesJsFileStringArray
+
+
+
+
+    <!-- Core Application -->
+    <!--<script src="~/core/app-core.module.js"></script>
+    <script src="~/core/app-core.controller.js"></script>
+    <script src="~/core/app-core.constants.js"></script>
+    <script src="~/core/providers/resolve-site-meta.function.js"></script>
+    <script src="~/core/providers/site-meta.service.js"></script>
+    <script src="~/core/providers/area.service.js"></script>-->
+    <!-- Core Shared Modules -->
+    <!--<script src="~/core/modules/sidebar/sidebar.controller.js"></script>
+    <script src="~/core/modules/topnav/topnav.controller.js"></script>
+    <script src="~/core/modules/topnav/topnav.service.js"></script>
+    <script src="~/core/modules/page-title/page-title.controller.js"></script>-->
+    <!-- Core Page Modules -->
+    <!--<script src="~/core/modules/home/home.controller.js"></script>
+    <script src="~/core/modules/entity-list/entity-list.controller.js"></script>-->
+
+
 
 </body>
 </html>

@@ -5,7 +5,12 @@ VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{15EB6AED-0663-4CFD-B874-E80636988E74}"
 	ProjectSection(SolutionItems) = preProject
-		README.TXT = README.TXT
+		home.PNG = home.PNG
+		INSTRUCTIONS.md = INSTRUCTIONS.md
+		internal.PNG = internal.PNG
+		LIBRARIES.md = LIBRARIES.md
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebVella.ERP", "WebVella.ERP\WebVella.ERP.xproj", "{5DD56AA7-9479-4EDF-A10A-FDE7C2708314}"
