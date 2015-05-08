@@ -4,7 +4,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoImageField : MongoBaseField, IStorageImageField
     {
-        public new string DefaultValue { get; set; }
+        public string DefaultValue { get; set; }
 
         public string TargetEntityType { get; set; }
 

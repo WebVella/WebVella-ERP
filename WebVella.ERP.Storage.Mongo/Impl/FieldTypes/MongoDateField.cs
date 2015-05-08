@@ -5,7 +5,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoDateField : MongoBaseField, IStorageDateField
     {
-        public new DateTime DefaultValue { get; set; }
+        public DateTime DefaultValue { get; set; }
 
         public string Format { get; set; }
     }
