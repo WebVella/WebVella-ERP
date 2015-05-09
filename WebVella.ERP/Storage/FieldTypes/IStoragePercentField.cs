@@ -2,7 +2,7 @@
 {
     public interface IStoragePercentField : IStorageField
     {
-        new decimal DefaultValue { get; set; }
+        decimal DefaultValue { get; set; }
 
         decimal MinValue { get; set; }
 

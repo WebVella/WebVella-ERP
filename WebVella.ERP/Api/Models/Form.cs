@@ -24,4 +24,21 @@ namespace WebVella.ERP.Api.Models
 
         public int? Position { get; set; }
     }
+
+    public class FormList
+    {
+        public Guid Offset { get; set; }
+
+        public List<Form> Forms { get; set; }
+    }
+
+    public class FormResponse : BaseResponseModel
+    {
+        public Form Object { get; set; }
+    }
+
+    public class FormListResponse : BaseResponseModel
+    {
+        public FormList Object { get; set; }
+    }
 }
