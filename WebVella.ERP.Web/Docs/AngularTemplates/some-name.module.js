@@ -8,46 +8,68 @@
     'use strict';
 
     angular
-        .module('someNameModule', ['ui.router'])
+        .module('somePlugInOrModuleName', ['ui.router'])
         .config(config)
         .run(run)
         .controller('SomeNameController', controller);
 
     // Configuration ///////////////////////////////////
-    config.$inject = ['$stateProvider']; 
-    
+    config.$inject = ['$stateProvider'];
+
     /* @ngInject */
     function config($stateProvider) {
-    	$stateProvider.state('stateName', {
-    		url: '/',
-    		views: {
-    			"namedView": {
-    				controller: 'SomeNameController',
-    				templateUrl: 'module/name.view.html',
+        $stateProvider.state('stateName', {
+            url: '/',
+            views: {
+                "namedView": {
+                    controller: 'SomeNameController',
+                    templateUrl: 'module/name.view.html',
                     controllerAs: 'vm'
-    			}
-    		},
-    		resolve: {
-    		    resolvedSiteMeta: resolvingFunction
-    		}
-    	});
+                }
+            },
+            resolve: {
+                resolvedSiteMeta: resolvingFunction
+            }
+        });
     };
 
 
     // Run //////////////////////////////////////
-    run.$inject = []; 
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run() {};
+    function run($log) {
+        $log.debug('pluginName>moduleName> BEGIN module.run');
+
+        $log.debug('pluginName>moduleName> END module.run');
+    };
 
 
     // Resolve Function /////////////////////////
-    resolvingFunction.$inject = [];
-    
+    resolvingFunction.$inject = ['$q'];
+
     /* @ngInject */
-    function resolvingFunction() {
-        return "resolved"
-    }    
+    function resolvingFunction($q) {
+        $log.debug('pluginName>moduleName> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallBack(response) {
+            defer.resolve(response);
+        }
+
+        function errorCallBack(response) {
+            defer.resolve(response);
+        }
+
+        siteMetaService.getUpdateSiteMeta(successCallBack, errorCallBack);
+
+        // Return
+        $log.debug('pluginName>moduleName> END state.resolved');
+        return defer.promise;
+
+    }
 
 
     // Controller ///////////////////////////////
@@ -55,13 +77,16 @@
 
     /* @ngInject */
     function controller($rootScope) {
+        $log.debug('pluginName>moduleName> BEGIN controller.exec');
         /* jshint validthis:true */
         var vm = this;
         vm.title = 'controller';
 
         activate();
+        $log.debug('pluginName>moduleName> END controller.exec');
 
+        ///////////
         function activate() { }
     }
-    
+
 })();

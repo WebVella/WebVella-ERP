@@ -28,7 +28,7 @@
     @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
 
 </head>
-<body class="theme-{{appData.currentArea.color}}" ng-class="{'mini-sidebar':rootData.isMiniSidebar}">
+<body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':rootData.isMiniSidebar}">
     <toast></toast>
 
     <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
@@ -67,15 +67,12 @@
                 ])
                 .config(config)
                 .run(run);
-                //.constant('apiConstants', {
-                //    "baseUrl": "/api/"
-                //});
-
 
             // Configuration ///////////////////////////////////
-            config.$inject = ['$urlRouterProvider'];
-            function config($urlRouterProvider) {
+            config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants'];
+            function config($urlRouterProvider, $logProvider, wvAppConstants) {
                 $urlRouterProvider.otherwise('/');
+                $logProvider.debugEnabled(wvAppConstants.debugEnabled);
             };
 
             // Run //////////////////////////////////////
@@ -84,7 +81,7 @@
         })();
     </script>
     <script src="~/application.controller.js"></script>
-
+    <script src="~/application.constants.js"></script>
     <!-- Server generated global variables -->
     <script>
         @ViewBag.GlobalVariablesJs
@@ -93,23 +90,27 @@
     <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/base.module.js"></script>
     <script src="~/plugins/webvella-root/home.module.js"></script>
+    <script src="~/plugins/webvella-root/providers/sitemeta.service.js"></script>
 
     <!-- plugin:webvella-desktop -->
     <script src="~/plugins/webvella-desktop/base.module.js"></script>
+    <script src="~/plugins/webvella-desktop/browse.module.js"></script>
     <script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
-
+    <script src="~/plugins/webvella-desktop/providers/browsenav.factory.js"></script>
 
     <!-- plugin:webvella-admin -->
     <script src="~/plugins/webvella-admin/base.module.js"></script>
     <script src="~/plugins/webvella-admin/entities.module.js"></script>
-        <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
+    <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
 
 
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
+    <script src="~/plugins/webvella-areas/view.module.js"></script>
     <script src="~/plugins/webvella-areas/entities.module.js"></script>
-    <script src="~/plugins/webvella-areas/desktop.module.js"></script>
-    <script src="~/plugins/webvella-areas/desktop-2.module.js"></script>
+    <script src="~/plugins/webvella-areas/topnav.controller.js"></script>
+    <script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
+    <script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
 
     @ViewBag.PluginModulesJsFileStringArray
 
@@ -135,4 +136,5 @@
 
 
 </body>
+
 </html>

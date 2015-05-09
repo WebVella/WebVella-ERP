@@ -5,6 +5,7 @@
 * To achieve this purpose it manages the abstract 'webvella-root-layout-*' state which resolves and pass to all its children 
 * the core data loaded by the database.
 * It also ensures that not logged users have access only to the login form at "/"
+* Data storage: $rootscope.plugins.webvellaRoot
 */
 
 (function () {
@@ -42,7 +43,8 @@
                 },
                 pageTitle: function () {
                     return "Webvella ERP";
-                }
+                },
+                resolvedSiteMeta:resolveSiteMeta
             },
             data: {
                 //Any injectable application wide variables you may need. Can be overwritten by the child states
@@ -54,48 +56,57 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = [];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run() { };
+    function run($log) {
+        $log.debug('webvellaRoot>base> BEGIN module.run');
+
+        $log.debug('webvellaRoot>base> END module.run');
+    };
 
 
     // Resolve Function /////////////////////////
-    resolvingFunction.$inject = ['$q', 'siteMetaService'];
+    resolveSiteMeta.$inject = ['$q','$log', 'webvellaRootSiteMetaService'];
 
     /* @ngInject */
-    function resolvingFunction($q, siteMetaService) {
+    function resolveSiteMeta($q,$log, webvellaRootSiteMetaService) {
+        $log.debug('webvellaRoot>base> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
         // Process
         function successCallBack(response) {
-            defer.resolve(response);
+            defer.resolve(response.object);
         }
 
         function errorCallBack(response) {
-            defer.resolve(response);
+            defer.resolve(response.object);
         }
 
-        siteMetaService.getUpdateSiteMeta(successCallBack, errorCallBack);
+        webvellaRootSiteMetaService.getSiteMeta(successCallBack, errorCallBack);
 
         // Return
+        $log.debug('webvellaRoot>base> END state.resolved');
         return defer.promise;
     }
 
 
     // Controller ///////////////////////////////
-    controller.$inject = [];
+    controller.$inject = ['$log'];
 
     /* @ngInject */
-    function controller() {
+    function controller($log) {
+        $log.debug('webvellaRoot>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var rootData = this;
 
-
         activate();
+        $log.debug('webvellaRoot>base> END controller.exec');
 
-        function activate() { }
+        ////////////
+        function activate() {
+        }
     }
 
 })();

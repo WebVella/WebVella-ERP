@@ -1,7 +1,7 @@
-﻿/* some-name.factory.js */
+﻿/* topnav.factory.js */
 
 /**
-* @desc just a sample factory code
+* @desc factory for managing the desktop topnav object
 */
 
 (function () {
@@ -10,13 +10,13 @@
         .module('webvellaDesktop')
         .factory('webvellaDesktopTopnavFactory', factory);
 
-    factory.$inject = ['$rootScope'];
+    factory.$inject = ['$log','$rootScope'];
 
     /* @ngInject */
-    function factory($rootScope) {
+    function factory($log,$rootScope) {
         var topnav = [];
         var exports = {
-            addTopnavItem: addTopnavItem,
+            addItem: addItem,
             getTopnav: getTopnav
         };
         //Some code
@@ -25,13 +25,17 @@
 
         ////////////////
 
-        function addTopnavItem(item) {
+        function addItem(item) {
+            $log.debug('webvellaDesktop>providers>topnav.factory>addItem> function called');
             topnav.push(item);
             topnav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
+            $rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
+            $log.debug('rootScope>events> "webvellaDesktop-topnav-updated" emitted');
         }
 
 
         function getTopnav() {
+            $log.debug('webvellaDesktop>providers>topnav.factory>getTopnav> function called');
             return topnav;
         }
     }
