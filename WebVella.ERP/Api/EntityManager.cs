@@ -265,12 +265,6 @@ namespace WebVella.ERP
             {
                 if (((ImageField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
-
-                if (string.IsNullOrWhiteSpace(((ImageField)field).TargetEntityType))
-                    errorList.Add(new ErrorModel("fields.targetEntityType", null, "Target Entity Type is required!"));
-
-                if (string.IsNullOrWhiteSpace(((ImageField)field).RelationshipName))
-                    errorList.Add(new ErrorModel("fields.relationshipName", null, "Relationship Name is required!"));
             }
             else if (field is LookupRelationField)
             {

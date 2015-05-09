@@ -4,8 +4,5 @@
     {
         string DefaultValue { get; set; }
 
-        string TargetEntityType { get; set; }
-
-        string RelationshipName { get; set; }
     }
 }

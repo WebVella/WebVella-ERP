@@ -1,1 +1,176 @@
-<div boz title="Hey boz"/>
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+            <a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
+            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
+            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
+                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-users"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="Offers">Offers</h4>
+            <a href=""><i class="fa fa-gear"></i> Settings</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 title="Newest active offers">Newest active offers</h4>
+            <a href=""><i class="fa fa-table"></i> Other Lists and Charts</a>
+        </div>
+    </div>
+    <div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>
+</div>
+
+<form id="filters" class="form-inline">
+    <div class="form-group" style="padding-right:10px;">
+        <a class="btn btn-default hidden-xs" ng-click="openSetFiltersModal()">
+            <i class="fa fa-filter"></i>
+            <span>Filters</span>
+        </a>
+        <script type="text/ng-template" id="setFiltersModalContent.html">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Available filters</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="filter-selection-tabs">
+                            <tabset vertical="true" type="pills">
+                                <tab heading="Name">
+                                    <div class="filters-selection-list">
+                                        <label class="btn btn-default" ng-model="o1" btn-checkbox><i class="fa fa-check"></i> Microsoft</label>
+                                        <label class="btn btn-default" ng-model="o2" btn-checkbox><i class="fa fa-check"></i> Oracle</label>
+                                        <label class="btn btn-default" ng-model="o3" btn-checkbox><i class="fa fa-check"></i> Sun</label>
+                                    </div>
+
+                                </tab>
+                                <tab heading="Country">
+                                    <form class="form-inline">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail2">Value</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail2" placeholder="type value">
+                                        </div>
+                                        <button type="submit" class="btn btn-default">Add</button>
+                                    </form>
+                                </tab>
+                                <tab heading="Country Abbr"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
+                                <tab heading="ZIP"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
+                                <tab heading="State/Province"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
+                            </tabset>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">Apply</button>
+                <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">
+                <i class="fa fa-search"></i>
+            </span>
+            <input ng-model="class" type="text" class="form-control" id="exampleInputName2" placeholder="Search accounts">
+        </div>
+    </div>
+    <div class="form-group hidden-xs hidden-sm">
+        <div class="filter">
+            <div class="field">Name</div>
+            <ul class="criterias list-inline">
+                <li>
+                    Oracle
+                    <a href="" ng-click="showToast()"><i class="fa fa-times-circle"></i></a>
+                </li>
+                <li>
+                    Microsoft
+                    <a href=""><i class="fa fa-times-circle"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</form>
+<div id="list">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="actions"></th>
+                <th class="name">Name</th>
+                <th class="country">Country</th>
+                <th class="countryAbbr">Country Abbr</th>
+                <th class="zip">ZIP</th>
+                <th class="state">State/Province</th>
+                <th class="stateAbbr">State/Province Abbr</th>
+                <th class="city">City</th>
+                <th class="address">Address</th>
+                <th class="address2">Address2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-eye"></i></a>
+                </td>
+                <td class="name">University ABC</td>
+                <td class="country">United States of America</td>
+                <td class="countryAbbr">US</td>
+                <td class="zip">9000</td>
+                <td class="state">New York</td>
+                <td class="stateAbbr">NY</td>
+                <td class="city">New York</td>
+                <td class="address">14 Tottenham Court Road</td>
+                <td class="address2">Room 66</td>
+            </tr>
+            <tr>
+                <td>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-eye"></i></a>
+                </td>
+                <td class="name">University ABC</td>
+                <td class="country">United States of America</td>
+                <td class="countryAbbr">US</td>
+                <td class="zip">9000</td>
+                <td class="state">New York</td>
+                <td class="stateAbbr">NY</td>
+                <td class="city">New York</td>
+                <td class="address">14 Tottenham Court Road</td>
+                <td class="address2">Room 66</td>
+            </tr>
+            <tr>
+                <td>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-eye"></i></a>
+                </td>
+                <td class="name">University ABC</td>
+                <td class="country">United States of America</td>
+                <td class="countryAbbr">US</td>
+                <td class="zip">9000</td>
+                <td class="state">New York</td>
+                <td class="stateAbbr">NY</td>
+                <td class="city">New York</td>
+                <td class="address">14 Tottenham Court Road</td>
+                <td class="address2">Room 66</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

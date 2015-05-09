@@ -35,36 +35,49 @@
                     return "Desktop | " + pageTitle;
                 }
             },
-            data: {
-                //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
-            }
+            data: { }
         });
     };
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopTopnavFactory) {
+    function run($log) {
+        $log.debug('webvellaDesktop>base> BEGIN module.run');
 
+        $log.debug('webvellaDesktop>base> END module.run');
     };
 
 
-
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
+    controller.$inject = ['$log','$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
 
     /* @ngInject */
-    function controller($rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+    function controller($log,$rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+        $log.debug('webvellaDesktop>base> BEGIN controller.exec');
+
         /* jshint validthis:true */
         var pluginData = this;
+        //Get the topnav items and redirect to the first one
+        pluginData.topnav = [];
+        var tempTopnav = webvellaDesktopTopnavFactory.getTopnav();
 
-        activate();
+        if (tempTopnav != undefined) {
+            pluginData.topnav = webvellaDesktopTopnavFactory.getTopnav();
+            activate();
+        }
+
+        //Maintain the topnav if there are new injections
+        $rootScope.$on('webvellaDesktop-topnav-updated', function (event,newValue) {
+            pluginData.topnav = newValue;
+            activate();
+        });
+
+        $log.debug('webvellaDesktop>base> END controller.exec');
 
         function activate() {
-            //Get the topnav items and redirect to the first one
-            pluginData.topnav = webvellaDesktopTopnavFactory.getTopnav();
             if (pluginData.topnav.length > 0) {
                 $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
             }
