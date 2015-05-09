@@ -29,6 +29,8 @@ namespace WebVella.ERP.Api.Models
 
         public bool? System { get; set; }
 
+        public EntityPermissions Permissions { get; set; }
+
         public List<Field> Fields { get; set; }
 
         public List<View> Views { get; set; }
@@ -130,6 +132,20 @@ namespace WebVella.ERP.Api.Models
 
                 Forms.Add(form);
             }
+        }
+    }
+
+    public class EntityPermissions
+    {
+        List<Guid> CanRead { get; set; }
+        List<Guid> CanUpdate { get; set; }
+        List<Guid> CanDelete { get; set; }
+
+        public EntityPermissions()
+        {
+            CanRead = new List<Guid>();
+            CanUpdate = new List<Guid>();
+            CanDelete = new List<Guid>();
         }
     }
 
