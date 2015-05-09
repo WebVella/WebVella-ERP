@@ -6,5 +6,6 @@ namespace WebVella.ERP
     {
         IStorageService StorageService { get; set; }
         void RunTests();
+        void InitializeSystemEntities();
     }
 }
