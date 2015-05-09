@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
@@ -29,7 +30,60 @@ namespace WebVella.ERP
 
         public void RunTests()
         {
-            EntityTests();
+            //EntityTests();
+        }
+
+        public void InitializeSystemEntities()
+        {
+            int version = 150508;
+
+            int currentVersion = 0;
+
+            Guid systemEntityId = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");
+            Guid userEntityId = new Guid("D5050AC8-5967-4CE1-95E7-A79B054F9D15");
+            Guid roleEntityId = new Guid("E5050AC8-5967-4CE1-95E7-A79B054F9D16");
+
+            EntityManager entityManager = new EntityManager(StorageService);
+
+            //Get current version here
+
+            if (currentVersion < 150508 )
+            {
+                Entity systemEntity = new Entity();
+
+                InputEntity inputEntity = new InputEntity();
+                inputEntity.Id = systemEntityId;
+                inputEntity.Name = "System";
+                inputEntity.Label = "System";
+                inputEntity.PluralLabel = "Systems";
+                inputEntity.System = true;
+
+
+                Entity userEntity = new Entity();
+
+                InputEntity inputUserEntity = new InputEntity();
+                inputUserEntity.Id = new Guid("");
+                inputUserEntity.Name = "User";
+                inputUserEntity.Label = "User";
+                inputUserEntity.PluralLabel = "Users";
+                inputUserEntity.System = true;
+
+
+                Entity roleEntity = new Entity();
+
+                InputEntity inputRoleEntity = new InputEntity();
+                inputRoleEntity.Id = new Guid("");
+                inputRoleEntity.Name = "Role";
+                inputRoleEntity.Label = "Role";
+                inputRoleEntity.PluralLabel = "Roles";
+                inputRoleEntity.System = true;
+
+            }
+
+            if (currentVersion <= 150510)
+            {
+
+            }
         }
 
         private void EntityTests()
