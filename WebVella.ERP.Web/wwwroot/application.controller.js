@@ -13,21 +13,21 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope'];
+    controller.$inject = ['$rootScope','$log'];
 
     /* @ngInject */
-    function controller($rootScope) {
+    function controller($rootScope, $log) {
+        $log.debug('vwApp> BEGIN controller.exec');
         /* jshint validthis:true */
         var appData = this;
         appData.pageTitle = 'WebVella ERP';
-
+        $rootScope.$on("application-pageTitle", function (event,newValue) {
+            appData.pageTitle = newValue;
+        });
         activate();
-
+        $log.debug('wvApp> END controller.exec');
         function activate() {
-            //Register listener for any changes of the pageTitle that may be performed by the plugins
-            $rootScope.$watch("pageTitle", function (newValue, oldValue) {
-                appData.pageTitle = newValue;
-            });
+
 
         }
     }

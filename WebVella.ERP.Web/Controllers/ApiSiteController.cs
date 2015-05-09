@@ -5,6 +5,7 @@ using WebVella.ERP.Web.Models;
 using System;
 using Newtonsoft.Json;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace WebVella.ERP.Web.Controllers
 {
@@ -236,42 +237,123 @@ namespace WebVella.ERP.Web.Controllers
             siteMeta.Areas.Add(area);
 
 
-            //Area 6
-            area = new Area();
-            area.Id = Guid.NewGuid();
-            area.Name = "administration";
-            area.Label = "Administration";
-            area.Weight = 99;
-            area.Color = "red";
-            area.IconName = "gear";
+            ////Area 6
+            //area = new Area();
+            //area.Id = Guid.NewGuid();
+            //area.Name = "administration";
+            //area.Label = "Administration";
+            //area.Weight = 99;
+            //area.Color = "red";
+            //area.IconName = "gear";
 
-            //Area2 Section 1
-            areaSection = new AreaSection();
-            areaSection.Id = Guid.Empty;
-            areaSection.Name = "templates";
-            areaSection.Label = "Templates";
-            areaSection.Weight = 1;
-            //// Entity 1
-            entity = new Entity();
-            entity.Id = Guid.NewGuid();
-            entity.Name = "entity";
-            entity.IsSystem = false;
-            entity.Label = "entity";
-            entity.LabelPlural = "Entities";
-            entity.IconName = "gear";
-            entity.Weight = 1;
-            areaSection.Entities.Add(entity);
+            ////Area2 Section 1
+            //areaSection = new AreaSection();
+            //areaSection.Id = Guid.Empty;
+            //areaSection.Name = "templates";
+            //areaSection.Label = "Templates";
+            //areaSection.Weight = 1;
+            ////// Entity 1
+            //entity = new Entity();
+            //entity.Id = Guid.NewGuid();
+            //entity.Name = "entity";
+            //entity.IsSystem = false;
+            //entity.Label = "entity";
+            //entity.LabelPlural = "Entities";
+            //entity.IconName = "gear";
+            //entity.Weight = 1;
+            //areaSection.Entities.Add(entity);
 
-            area.Sections.Add(areaSection);
+            //area.Sections.Add(areaSection);
 
-            ////Add Area to SiteMeta
-            siteMeta.Areas.Add(area);
+            //////Add Area to SiteMeta
+            //siteMeta.Areas.Add(area);
 
 
             Thread.Sleep(350);
             response.Object = siteMeta;
 			return Json(response);
         }
+
+        // GET: api/site/meta
+        [AcceptVerbs(new[] { "GET" }, Route = "api/entities/areas")]
+        public IActionResult Areas()
+        {
+            //TODO - Test data
+            var response = new ResponseObj();
+            response.Success = true;
+            var areas = new List<Area>();
+            var area = new Area();
+            var areaSection = new AreaSection();
+            var entity = new Entity();
+
+            //Area 1
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "logistics";
+            area.Label = "Logistics";
+            area.Weight = 1;
+            area.Color = "orange";
+            area.IconName = "truck";
+            areas.Add(area);
+
+
+            //Area 2
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "shop";
+            area.Label = "Shop";
+            area.Weight = 2;
+            area.Color = "indigo";
+            area.IconName = "shopping-cart";
+            areas.Add(area);
+
+            //Area 3
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "finance";
+            area.Label = "Finance";
+            area.Weight = 3;
+            area.Color = "green";
+            area.IconName = "money";
+            areas.Add(area);
+
+            //Area 4
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "integration";
+            area.Label = "Integration";
+            area.Weight = 4;
+            area.Color = "cyan";
+            area.IconName = "cloud";
+            areas.Add(area);
+
+            //Area 5
+            area = new Area();
+            area.Id = Guid.NewGuid();
+            area.Name = "customer-loyalty";
+            area.Label = "Loyalty";
+            area.Weight = 5;
+            area.Color = "purple";
+            area.IconName = "trophy";
+            areas.Add(area);
+
+
+            //Area 6
+            //area = new Area();
+            //area.Id = Guid.NewGuid();
+            //area.Name = "administration";
+            //area.Label = "Administration";
+            //area.Weight = 99;
+            //area.Color = "red";
+            //area.IconName = "gear";
+            //areas.Add(area);
+
+
+            Thread.Sleep(500);
+            response.Object = areas;
+            return Json(response);
+        }
+
 
         // GET: api/site/meta
         [AcceptVerbs(new[] { "GET" }, Route = "api/root/get-ui-template/{name}")]

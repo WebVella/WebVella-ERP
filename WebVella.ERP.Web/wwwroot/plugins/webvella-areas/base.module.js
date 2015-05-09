@@ -43,37 +43,37 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = [];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopTopnavFactory) {
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-areas-desktop",
-            "stateParams": {
-                "param": 1
-            },
-            "weight": 1
-        };
-        webvellaDesktopTopnavFactory.addTopnavItem(item);
-        item = {
-            "label": "Browse 2",
-            "stateName": "webvella-areas-desktop-2",
-            "stateParams": {
-                "param": 1
-            },
-            "weight": 11
-        };
-        webvellaDesktopTopnavFactory.addTopnavItem(item);
-    };
+    function run() { };
 
 
     // Resolve Function /////////////////////////
-    resolvingFunction.$inject = [];
+    resolvingApplicationAreas.$inject = ['$q'];
 
     /* @ngInject */
-    function resolvingFunction() {
-        return dependencies.getData();
+    function resolvingApplicationAreas($q) {
+        // Initialize
+        var defer = $q.defer();
+
+        //call the API and get the list of all areas
+        webvellaAreasService.getAllAreas(successCallback, errorCallback);
+
+        //On success, push the areas object to the factory, so it is accessible by other states
+        function successCallback(data) {
+            // Process
+            defer.resolve(data);
+        }
+
+        function errorCallback(data) {
+            defer.resolve(data);
+        }
+
+
+
+        // Return
+        return defer.promise;
     }
 
 

@@ -11,10 +11,10 @@
         .module('wvApp')
         .service('siteMetaService', service);
 
-    service.$inject = ['$http','apiConstants'];
+    service.$inject = ['$http', 'wvAppConstants'];
 
     /* @ngInject */
-    function service($http, apiConstants) {
+    function service($http, wvAppConstants) {
         var serviceInstance = this;
 
         serviceInstance.getUpdateSiteMeta = getUpdateSiteMeta;
@@ -25,7 +25,7 @@
 
         //// Update Site Meta method //////////////////////////////////////////
         function getUpdateSiteMeta(successCallback, errorCallback) {
-            $http({ method: 'GET', url: apiConstants.baseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
 
