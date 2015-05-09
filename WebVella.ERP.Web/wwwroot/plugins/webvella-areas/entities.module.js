@@ -19,8 +19,18 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-entities', {
             parent: 'webvella-areas-base',
-            url: '/entities', //  /desktop/areas after the parent state is prepended
+            url: '/:areaName/:sectionName/:entityName', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
+                "topnavView": {
+                    controller: 'WebVellaAreasTopnavController',
+                    templateUrl: '/plugins/webvella-areas/topnav.view.html',
+                    controllerAs: 'topnavData'
+                },
+                "sidebarView": {
+                    controller: 'WebVellaAreasSidebarController',
+                    templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+                    controllerAs: 'sidebarData'
+                },
                 "contentView": {
                     controller: 'WebVellaAreasEntitiesController',
                     templateUrl: '/plugins/webvella-areas/entities.view.html',
@@ -28,7 +38,7 @@
                 }
             },
             resolve: {
-
+                resolvedCurrentArea: resolveCurrentArea
             },
             data: {
 
@@ -38,20 +48,56 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = [];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run() {};
+    function run($log) {
+        $log.debug('webvellaAreas>entities> BEGIN module.run');
+
+        $log.debug('webvellaAreas>entities> END module.run');
+    };
+
+
+    // Resolve Function /////////////////////////
+    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
+
+    /* @ngInject */
+    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
+        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallBack(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallBack(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaAreasService.getAreaByName($stateParams.name, successCallBack, errorCallBack);
+
+        // Return
+        $log.debug('webvellaAreas>entities> END state.resolved');
+        return defer.promise;
+    }
+
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$state', 'pageTitle'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootSiteMetaService', 'resolvedCurrentArea'];
 
     /* @ngInject */
-    function controller($rootScope, $state, pageTitle) {
+    function controller($log, $rootScope, $state, pageTitle, webvellaRootSiteMetaService, resolvedCurrentArea) {
+        $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        contentData.pageTitle = "Areas | " + pageTitle;
+        //Set pageTitle
+        contentData.pageTitle = "Area Entities | " + pageTitle;
+        webvellaRootSiteMetaService.setPageTitle(contentData.pageTitle);
+        contentData.currentArea = resolvedCurrentArea;
+        webvellaRootSiteMetaService.setBodyColorClass(contentData.currentArea.color);
 
 
         contentData.goHome = function () {
@@ -59,7 +105,7 @@
         }
 
         activate();
-
+        $log.debug('webvellaAreas>entities> END controller.exec');
         function activate() { }
     }
 

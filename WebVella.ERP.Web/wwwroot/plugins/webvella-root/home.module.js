@@ -65,14 +65,14 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', 'currentUser', '$log'];
+    controller.$inject = ['$state', 'currentUser', '$log','pageTitle'];
 
     /* @ngInject */
-    function controller($state, currentUser, $log) {
+    function controller($state, currentUser, $log, pageTitle) {
         $log.debug('webvellaRoot>home> BEGIN controller.exec');
         /* jshint validthis:true */
         var homeData = this;
-  
+        webvellaRootSiteMetaService.setPageTitle(pageTitle);
         activate();
         $log.debug('webvellaRoot>home> END controller.exec');
         function activate() {

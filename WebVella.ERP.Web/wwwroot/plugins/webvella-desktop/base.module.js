@@ -41,18 +41,22 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = [];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run(){ };
+    function run($log) {
+        $log.debug('webvellaDesktop>base> BEGIN module.run');
 
+        $log.debug('webvellaDesktop>base> END module.run');
+    };
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
+    controller.$inject = ['$log','$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
 
     /* @ngInject */
-    function controller($rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+    function controller($log,$rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+        $log.debug('webvellaDesktop>base> BEGIN controller.exec');
 
         /* jshint validthis:true */
         var pluginData = this;
@@ -71,7 +75,7 @@
             activate();
         });
 
-       
+        $log.debug('webvellaDesktop>base> END controller.exec');
 
         function activate() {
             if (pluginData.topnav.length > 0) {

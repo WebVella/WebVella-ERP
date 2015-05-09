@@ -11,18 +11,19 @@
         .module('webvellaAreas')
         .service('webvellaAreasService', service);
 
-    service.$inject = ['$http', 'wvAppConstants', 'webvellaAreasFactory'];
+    service.$inject = ['$log','$http', 'wvAppConstants'];
 
     /* @ngInject */
-    function service($http, wvAppConstants, webvellaAreasFactory) {
+    function service($log, $http, wvAppConstants) {
         var serviceInstance = this;
 
-        serviceInstance.getAllAreas = getAllAreas;
+        serviceInstance.getAreaByName = getAreaByName;
 
 
         ///////////////////////
-        function getAllAreas(successCallback, errorCallback) {
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + '/entities/areas' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        function getAreaByName(areaName, successCallback, errorCallback) {
+            $log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + '/entities/area/byname/sampleName' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////
@@ -46,6 +47,7 @@
 
         function handleSuccessResult(data, status, successCallback, errorCallback) {
             if (successCallback === undefined || typeof (successCallback) != "function") {
+                $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: successCallback not a function or missing ');
                 alert("The successCallback argument is not a function or missing");
                 return;
             }
@@ -53,6 +55,7 @@
             if (!data.success) {
                 //when the validation errors occurred
                 if (errorCallback === undefined || typeof (errorCallback) != "function") {
+                    $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: errorCallback not a function or missing ');
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
@@ -60,7 +63,7 @@
                 errorCallback();
             }
             else {
-                webvellaAreasFactory.updateAreas(data.object);
+                $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result success: get object ');
                 successCallback(data);
             }
         }

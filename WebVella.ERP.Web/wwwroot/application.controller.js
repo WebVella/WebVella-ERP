@@ -20,10 +20,17 @@
         $log.debug('vwApp> BEGIN controller.exec');
         /* jshint validthis:true */
         var appData = this;
+        //Set page title
         appData.pageTitle = 'WebVella ERP';
-        $rootScope.$on("application-pageTitle", function (event,newValue) {
+        $rootScope.$on("application-pageTitle-update", function (event,newValue) {
             appData.pageTitle = newValue;
         });
+        //Set the body color
+        appData.bodyColor = "no-color";
+        $rootScope.$on("application-body-color-update", function (event, color) {
+            appData.bodyColor = color;
+        });
+
         activate();
         $log.debug('wvApp> END controller.exec');
         function activate() {
