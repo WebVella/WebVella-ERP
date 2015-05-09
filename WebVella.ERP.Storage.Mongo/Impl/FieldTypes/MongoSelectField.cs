@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WebVella.ERP.Storage;
 
-namespace WebVella.ERP.Core
+namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoSelectField : MongoBaseField, IStorageSelectField
     {

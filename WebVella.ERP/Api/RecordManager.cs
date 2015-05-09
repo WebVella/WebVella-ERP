@@ -37,7 +37,7 @@ namespace WebVella.ERP.Api
 		public IEnumerable<EntityRecord> Find(EntityQuery query, QuerySecurity security = null)
 		{
 			List<QueryResultFieldRecordMeta> recordMetas = ProcessQueryFieldsMeta(query);
-			var errep = ERPService.Current.StorageService.GetRecordRepository();
+			var errep = erpService.StorageService.GetRecordRepository();
 			var storageRecords = errep.Find(RECORD_COLLECTION_PREFIX + query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
 
 			//we need specified entity fields initially and then we will process relation fields

@@ -1,7 +1,7 @@
 ﻿using WebVella.ERP.Storage;
 using WebVella.ERP.Api;
 
-namespace WebVella.ERP.Core
+namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoPasswordField : MongoBaseField, IStoragePasswordField
     {
