@@ -10,10 +10,10 @@
         .module('webvellaDesktop')
         .factory('webvellaDesktopTopnavFactory', factory);
 
-    factory.$inject = ['$rootScope'];
+    factory.$inject = ['$log','$rootScope'];
 
     /* @ngInject */
-    function factory($rootScope) {
+    function factory($log,$rootScope) {
         var topnav = [];
         var exports = {
             addItem: addItem,
@@ -26,14 +26,16 @@
         ////////////////
 
         function addItem(item) {
+            $log.debug('webvellaDesktop>providers>topnav.factory>addItem> function called');
             topnav.push(item);
             topnav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
             $rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
-
+            $log.debug('rootScope>events> "webvellaDesktop-topnav-updated" emitted');
         }
 
 
         function getTopnav() {
+            $log.debug('webvellaDesktop>providers>topnav.factory>getTopnav> function called');
             return topnav;
         }
     }

@@ -37,11 +37,11 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = ['$log','$rootScope', 'webvellaDesktopTopnavFactory'];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopTopnavFactory ) {
-
+    function run($log,$rootScope, webvellaDesktopTopnavFactory ) {
+        $log.debug('webvellaDesktop>browse> BEGIN module.run');
         // Push the Browse area menu and state to the desktop
         var item = {
             "label": "Browse",
@@ -52,41 +52,45 @@
             "weight": 1.0
         };
         webvellaDesktopTopnavFactory.addItem(item);
-
+        $log.debug('webvellaDesktop>browse> END module.run');
     };
 
     // Resolve Function /////////////////////////
-    resolveDesktopBrowseNavigation.$inject = ['$q', 'webvellaDesktopBrowsenavFactory','resolvedSiteMeta'];
+    resolveDesktopBrowseNavigation.$inject = ['$log','$q', 'webvellaDesktopBrowsenavFactory','resolvedSiteMeta'];
 
     /* @ngInject */
-    function resolveDesktopBrowseNavigation($q, webvellaDesktopBrowsenavFactory, resolvedSiteMeta) {
+    function resolveDesktopBrowseNavigation($log,$q, webvellaDesktopBrowsenavFactory, resolvedSiteMeta) {
+        $log.debug('webvellaDesktop>browse> BEGIN state.resolved');
         var defer = $q.defer();
         var navigation = [];
         navigation = webvellaDesktopBrowsenavFactory.generateInitializeFromAreas(resolvedSiteMeta.areas);
         defer.resolve(navigation);
         // Return
+        $log.debug('webvellaDesktop>browse> END state.resolved');
         return defer.promise;
     }
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$state', 'pageTitle', 'resolvedDesktopBrowseNavigation'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootSiteMetaService', 'resolvedDesktopBrowseNavigation'];
 
     /* @ngInject */
-    function controller($rootScope, $state, pageTitle, resolvedDesktopBrowseNavigation) {
+    function controller($log,$rootScope, $state, pageTitle,webvellaRootSiteMetaService, resolvedDesktopBrowseNavigation) {
+        $log.debug('webvellaDesktop>browse> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
         contentData.browsenav = resolvedDesktopBrowseNavigation;
+
         //listen for changes in the browsenav
         $rootScope.$on('webvellaDesktop-browsenav-updated', function (event, browsenav) {
             contentData.browsenav = browsenav;
         });
         contentData.pageTitle = "Browse Desktop | " + pageTitle;
-        $rootScope.$emit('application-pageTitle', contentData.pageTitle);
+        webvellaRootSiteMetaService.setPageTitle(contentData.pageTitle);
 
 
         activate();
-
+        $log.debug('webvellaDesktop>browse> END controller.exec');
         function activate() { }
     }
 

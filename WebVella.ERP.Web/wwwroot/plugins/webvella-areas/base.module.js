@@ -19,8 +19,8 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-base', {
-           abstract: true,
-           parent: 'webvella-root',
+            abstract: true,
+            parent: 'webvella-root',
             url: '/areas', //will be added to all children states
             views: {
                 "pluginView": {
@@ -43,17 +43,22 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = [];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run() { };
+    function run($log) {
+        $log.debug('webvellaAreas>base> BEGIN module.run');
+
+        $log.debug('webvellaAreas>base> END module.run');
+    };
 
 
     // Resolve Function /////////////////////////
-    resolvingApplicationAreas.$inject = ['$q'];
+    resolvingApplicationAreas.$inject = ['$log', '$q'];
 
     /* @ngInject */
-    function resolvingApplicationAreas($q) {
+    function resolvingApplicationAreas($log, $q) {
+        $log.debug('webvellaAreas>base> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
@@ -70,23 +75,23 @@
             defer.resolve(data);
         }
 
-
-
         // Return
+        $log.debug('webvellaAreas>base> END state.resolved');
         return defer.promise;
     }
 
 
     // Controller ///////////////////////////////
-    controller.$inject = [];
+    controller.$inject = ['$log'];
 
     /* @ngInject */
-    function controller() {
+    function controller($log) {
+        $log.debug('webvellaAreas>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var pluginData = this;
 
         activate();
-
+        $log.debug('webvellaAreas>base> END controller.exec');
         function activate() { }
     }
 
