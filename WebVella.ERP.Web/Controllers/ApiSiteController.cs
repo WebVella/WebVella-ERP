@@ -10,8 +10,23 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiSiteController : Controller
     {
-		// GET: api/site/meta
-		[AcceptVerbs(new[] { "GET" }, Route = "api/root/meta")]
+        IERPService service;
+
+        public ApiSiteController(IERPService service )
+        {
+            this.service = service;
+        }
+
+       // GET: api/site/meta
+       [AcceptVerbs(new[] { "GET" }, Route = "api/root/test")]
+        public IActionResult Test()
+        {
+            EntityManager manager = new EntityManager(service.StorageService);
+            return null;
+        }
+
+        // GET: api/site/meta
+        [AcceptVerbs(new[] { "GET" }, Route = "api/root/meta")]
 		public IActionResult SiteMeta()
         {
 			//TODO - Test data
