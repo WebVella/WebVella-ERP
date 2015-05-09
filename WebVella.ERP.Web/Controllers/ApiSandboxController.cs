@@ -12,23 +12,10 @@ namespace WebVella.ERP.Web.Controllers
     public class ApiSandboxController : Controller
     {
 
-        IERPService service;
 
-        public ApiSandboxController(IERPService service)
-        {
-            this.service = service;
-        }
 
         // GET: api/site/meta
-        [AcceptVerbs(new[] { "GET" }, Route = "api/root/test")]
-        public IActionResult Test()
-        {
-            EntityManager manager = new EntityManager(service.StorageService);
-            return null;
-        }
-
-        // GET: api/site/meta
-        [AcceptVerbs(new[] { "GET" }, Route = "api/root/meta")]
+        [AcceptVerbs(new[] { "GET" }, Route = "sandbox/api/root/meta")]
 		public IActionResult SiteMeta()
         {
 			//TODO - Test data

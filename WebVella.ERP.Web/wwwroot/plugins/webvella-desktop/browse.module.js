@@ -29,64 +29,80 @@
                 }
             },
             resolve: {
-                resolvedDesktopBrowseNavigation: resolveDesktopBrowseNavigation
+
             },
-            data: { }
+            data: {}
         });
     };
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log','$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopTopnavFactory', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function run($log,$rootScope, webvellaDesktopTopnavFactory ) {
+    function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>browse> BEGIN module.run');
-        // Push the Browse area menu and state to the desktop
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-desktop-browse",
-            "stateParams": {},
-            "parentName": "",
-            "nodes": [],
-            "weight": 1.0
-        };
-        webvellaDesktopTopnavFactory.addItem(item);
+
+        //Initialize the pluggable object made with factories, always when state is changed. (it fixes the duplication problem with browser back and forward buttons)
+        //$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+        //    webvellaDesktopBrowsenavService.initBrowsenav();
+        //})
+
+
+        //Wait for the hook and push the Browse area menu and state to the desktop
+        $rootScope.$on('webvellaDesktop-topnav-ready', function (event) {
+            var item = {
+                "label": "Browse",
+                "stateName": "webvella-desktop-browse",
+                "stateParams": {},
+                "parentName": "",
+                "nodes": [],
+                "weight": 1.0
+            };
+            webvellaDesktopTopnavFactory.addItem(item);
+        });
+
+
         $log.debug('webvellaDesktop>browse> END module.run');
     };
 
-    // Resolve Function /////////////////////////
-    resolveDesktopBrowseNavigation.$inject = ['$log','$q', 'webvellaDesktopBrowsenavFactory','resolvedSiteMeta'];
-
-    /* @ngInject */
-    function resolveDesktopBrowseNavigation($log,$q, webvellaDesktopBrowsenavFactory, resolvedSiteMeta) {
-        $log.debug('webvellaDesktop>browse> BEGIN state.resolved');
-        var defer = $q.defer();
-        var navigation = [];
-        navigation = webvellaDesktopBrowsenavFactory.generateInitializeFromAreas(resolvedSiteMeta.areas);
-        defer.resolve(navigation);
-        // Return
-        $log.debug('webvellaDesktop>browse> END state.resolved');
-        return defer.promise;
-    }
-
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootSiteMetaService', 'resolvedDesktopBrowseNavigation'];
+    controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedSiteMeta', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function controller($log,$rootScope, $state, pageTitle,webvellaRootSiteMetaService, resolvedDesktopBrowseNavigation) {
+    function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedSiteMeta, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>browse> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        contentData.browsenav = resolvedDesktopBrowseNavigation;
+        contentData.browsenav = [];
 
-        //listen for changes in the browsenav
-        $rootScope.$on('webvellaDesktop-browsenav-updated', function (event, browsenav) {
-            contentData.browsenav = browsenav;
+        //Make the Browsenav pluggable
+        ////1. CONSTRUCTOR - initialize the factory
+        webvellaDesktopBrowsenavFactory.initBrowsenav();
+        ////2. READY hook listener
+        var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
+            for (var i = 0; i < resolvedSiteMeta.areas.length; i++) {
+                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedSiteMeta.areas[i]);
+                webvellaDesktopBrowsenavFactory.addItem(menuItem);
+            };
+        })
+        ////3. UPDATED hook listener
+        var updateBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-updated", function (event, data) {
+            contentData.browsenav = data;
         });
+        ////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
+        $scope.$on("$destroy", function () {
+            readyBrowsenavDestructor();
+            updateBrowsenavDestructor();
+        });
+        ////5. Bootstrap the pluggable Browsenav
+        $rootScope.$emit("webvellaDesktop-browsenav-ready");
+
+
+
         contentData.pageTitle = "Browse Desktop | " + pageTitle;
-        webvellaRootSiteMetaService.setPageTitle(contentData.pageTitle);
+        webvellaRootService.setPageTitle(contentData.pageTitle);
 
 
         activate();

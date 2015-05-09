@@ -1,33 +1,29 @@
-﻿/* browsenav.factory.js */
+﻿/* browsenav.service.js */
 
 /**
-* @desc factory for managing and generating the Desktop browse section menu / icons
+* @desc service for managing and generating the Desktop browse section menu / icons
+* @data menu item is stored in $rootScope.webvellaDesktop.browsenav;
 */
 
 (function () {
     'use strict';
+
     angular
         .module('webvellaDesktop')
-        .factory('webvellaDesktopBrowsenavFactory', factory);
+        .service('webvellaDesktopBrowsenavService', service);
 
-    factory.$inject = ['$log', '$rootScope'];
+    service.$inject = ['$log', '$rootScope'];
 
     /* @ngInject */
-    function factory($log, $rootScope) {
-        var browsenav = [];
+    function service($log, $rootScope) {
+        var self = this;
 
-        var exports = {
-            generateMenuItemFromArea: generateMenuItemFromArea,
-            addItem: addItem,
-            getBrowsenav: getBrowsenav,
-            initBrowsenav: initBrowsenav
-        };
-        //Some code
+        self.generateMenuItemFromArea = generateMenuItemFromArea;
+        self.addItem = addItem;
+        self.initBrowsenav = initBrowsenav;
 
-        return exports;
 
-        ////////////////
-
+        /////////////
         function generateMenuItemFromArea(area) {
             $log.debug('webvellaDesktop>providers>browsenav.factory>generateMenuItemFromArea> function called');
 
@@ -69,31 +65,21 @@
             return menuItem
         }
 
-        ////////////////
-
+        /////////////
         function addItem(menuItem) {
             $log.debug('webvellaDesktop>providers>browsenav.factory>addItem> function called');
-            browsenav.push(menuItem);
-            browsenav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-            $rootScope.$emit('webvellaDesktop-browsenav-updated', browsenav);
+            $rootScope.webvellaDesktop.browsenav.push(menuItem);
+            $rootScope.webvellaDesktop.browsenav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
+            $rootScope.$emit('webvellaDesktop-browsenav-updated', $rootScope.webvellaDesktop.browsenav);
             $log.debug('rootScope>events> "webvellaDesktop-browsenav-updated" emitted');
-            return browsenav
         }
 
-
-        ////////////////
-
-        function getBrowsenav() {
-            $log.debug('webvellaDesktop>providers>browsenav.factory>getBrowsenav> function called');
-            return browsenav
-        }
-
-        ////////////////
-
+        //////////////
         function initBrowsenav() {
+            $log.error("ready");
             $log.debug('webvellaDesktop>providers>browsenav.factory>initBrowsenav> function called');
-            browsenav = [];
-            return browsenav
+            $rootScope.$broadcast('webvellaDesktop-browsenav-ready');
+            $rootScope.webvellaDesktop.browsenav = [];
         }
     }
 })();

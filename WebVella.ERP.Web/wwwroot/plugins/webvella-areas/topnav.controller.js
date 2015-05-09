@@ -13,17 +13,19 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentArea'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentArea', '$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, resolvedCurrentArea) {
+    function controller($log, $rootScope, $state, resolvedCurrentArea, $timeout) {
         $log.debug('webvellaAreas>topnav> BEGIN controller.exec');
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = resolvedCurrentArea;
 
         topnavData.navigateToHome = function () {
-            $state.go("webvella-desktop-browse");
+            $timeout(function () {
+                $state.go("webvella-desktop-browse");
+            }, 0);
         }
 
 
