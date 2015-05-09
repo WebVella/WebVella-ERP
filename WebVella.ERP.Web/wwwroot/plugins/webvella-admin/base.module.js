@@ -10,6 +10,7 @@
     angular
         .module('webvellaAdmin', ['ui.router'])
         .config(config)
+        .run(run)
         .controller('WebVellaAdminBaseController', controller);
 
     // Configuration ///////////////////////////////////
@@ -40,6 +41,24 @@
         });
     };
 
+    // Run //////////////////////////////////////
+    run.$inject = ['$rootScope', 'webvellaDesktopBrowsenavFactory'];
+
+    /* @ngInject */
+    function run($rootScope, webvellaDesktopBrowsenavFactory) {
+
+        // Push the Browse area menu and state to the desktop
+        var item = {
+            "label": "Browse",
+            "stateName": "webvella-desktop-browse",
+            "stateParams": {},
+            "parentName": "",
+            "nodes": [],
+            "weight": 1.0
+        };
+        webvellaDesktopBrowsenavFactory.addItem(item);
+
+    };
 
     // Controller ///////////////////////////////
     controller.$inject = [];

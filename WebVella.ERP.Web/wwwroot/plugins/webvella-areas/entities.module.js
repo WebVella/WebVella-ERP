@@ -38,12 +38,10 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = [];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopTopnavFactory) {
-        console.log("run executed")
-    };
+    function run() {};
 
 
     // Controller ///////////////////////////////
