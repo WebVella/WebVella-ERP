@@ -5,7 +5,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoCurrencyField : MongoBaseField, IStorageCurrencyField
     {
-        public new decimal DefaultValue { get; set; }
+        public decimal DefaultValue { get; set; }
 
         public decimal MinValue { get; set; }
 

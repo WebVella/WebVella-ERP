@@ -2,10 +2,7 @@
 {
     public interface IStorageImageField : IStorageField
     {
-        new string DefaultValue { get; set; }
+        string DefaultValue { get; set; }
 
-        string TargetEntityType { get; set; }
-
-        string RelationshipName { get; set; }
     }
 }

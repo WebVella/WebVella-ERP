@@ -27,7 +27,5 @@ namespace WebVella.ERP
         public bool Auditable { get; set; }
 
         public bool System { get; set; }
-
-        public virtual object DefaultValue { get; set; }
     }
 }

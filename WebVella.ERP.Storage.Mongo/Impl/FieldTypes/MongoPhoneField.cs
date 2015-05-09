@@ -4,7 +4,7 @@ namespace WebVella.ERP.Core
 {
     public class MongoPhoneField : MongoBaseField, IStoragePhoneField
     {
-        public new string DefaultValue { get; set; }
+        public string DefaultValue { get; set; }
 
         public string Format { get; set; }
 

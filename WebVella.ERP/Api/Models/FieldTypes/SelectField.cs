@@ -1,11 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
     public class SelectField : Field
     {
-        public new string DefaultValue { get; set; }
+        public static FieldType FieldType { get { return FieldType.SelectField; } }
+
+        public string DefaultValue { get; set; }
 
         public IDictionary<string, string> Options { get; set; }
     }
+
+    public class SelectFieldMeta : SelectField
+    {
+		public Guid EntityId { get; set; }
+
+		public string EntityName { get; set; }
+
+		public SelectFieldMeta(Guid entityId, string entityName, SelectField field)
+		{
+			EntityId = entityId;
+			EntityName = entityName;
+			DefaultValue = field.DefaultValue;
+			Options = field.Options;
+		}
+	}
 }
