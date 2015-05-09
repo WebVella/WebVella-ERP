@@ -10,7 +10,8 @@
         .module('wvApp')
         .constant('wvAppConstants', {
             "debugEnabled": true,
-            "apiBaseUrl": "/api"
+            "apiBaseUrl": "/api",
+            "apiSandboxBaseUrl": "/sandbox/api",
         });
 })();
 
