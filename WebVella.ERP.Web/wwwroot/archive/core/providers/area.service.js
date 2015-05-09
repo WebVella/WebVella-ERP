@@ -11,10 +11,10 @@
         .module('appCore')
         .service('areaService', service);
 
-    service.$inject = ['$http', '$rootScope', 'apiConstants','$state'];
+    service.$inject = ['$http', '$rootScope', '$state'];
 
     /* @ngInject */
-    function service($http, $rootScope, apiConstants, $state) {
+    function service($http, $rootScope, $state) {
         var serviceInstance = this;
 
         serviceInstance.getAreaByName = getAreaByName;

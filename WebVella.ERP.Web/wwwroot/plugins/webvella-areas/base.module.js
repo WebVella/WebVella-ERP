@@ -19,8 +19,8 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-base', {
-           abstract: true,
-           parent: 'webvella-root',
+            abstract: true,
+            parent: 'webvella-root',
             url: '/areas', //will be added to all children states
             views: {
                 "pluginView": {
@@ -43,50 +43,55 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopTopnavFactory'];
+    run.$inject = ['$log'];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopTopnavFactory) {
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-areas-desktop",
-            "stateParams": {
-                "param": 1
-            },
-            "weight": 1
-        };
-        webvellaDesktopTopnavFactory.addTopnavItem(item);
-        item = {
-            "label": "Browse 2",
-            "stateName": "webvella-areas-desktop-2",
-            "stateParams": {
-                "param": 1
-            },
-            "weight": 11
-        };
-        webvellaDesktopTopnavFactory.addTopnavItem(item);
+    function run($log) {
+        $log.debug('webvellaAreas>base> BEGIN module.run');
+
+        $log.debug('webvellaAreas>base> END module.run');
     };
 
 
     // Resolve Function /////////////////////////
-    resolvingFunction.$inject = [];
+    resolvingApplicationAreas.$inject = ['$log', '$q'];
 
     /* @ngInject */
-    function resolvingFunction() {
-        return dependencies.getData();
+    function resolvingApplicationAreas($log, $q) {
+        $log.debug('webvellaAreas>base> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        //call the API and get the list of all areas
+        webvellaAreasService.getAllAreas(successCallback, errorCallback);
+
+        //On success, push the areas object to the factory, so it is accessible by other states
+        function successCallback(data) {
+            // Process
+            defer.resolve(data);
+        }
+
+        function errorCallback(data) {
+            defer.resolve(data);
+        }
+
+        // Return
+        $log.debug('webvellaAreas>base> END state.resolved');
+        return defer.promise;
     }
 
 
     // Controller ///////////////////////////////
-    controller.$inject = [];
+    controller.$inject = ['$log'];
 
     /* @ngInject */
-    function controller() {
+    function controller($log) {
+        $log.debug('webvellaAreas>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var pluginData = this;
 
         activate();
-
+        $log.debug('webvellaAreas>base> END controller.exec');
         function activate() { }
     }
 

@@ -34,24 +34,51 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = [];
+    run.$inject = ['$log'];
     /* @ngInject */
-    function run() { };
+    function run($log) {
+        $log.debug('webvellaRoot>home> BEGIN module.run');
+
+        $log.debug('webvellaRoot>home> END module.run');
+    };
+
+
+    // Resolve Function /////////////////////////
+    resolvingFunction.$inject = ['$q'];
+
+    /* @ngInject */
+    function resolvingFunction($q) {
+        $log.debug('webvellaRoot>home> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+        
+        // Process
+        defer.resolve("test");
+
+        // Return
+        $log.debug('webvellaRoot>home> END state.resolved');
+        return defer.promise;
+
+    }
+
+
+
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state','currentUser'];
+    controller.$inject = ['$state', 'currentUser', '$log','pageTitle'];
 
     /* @ngInject */
-    function controller($state, currentUser) {
+    function controller($state, currentUser, $log, pageTitle) {
+        $log.debug('webvellaRoot>home> BEGIN controller.exec');
         /* jshint validthis:true */
         var homeData = this;
-        
-
+        webvellaRootSiteMetaService.setPageTitle(pageTitle);
         activate();
-
+        $log.debug('webvellaRoot>home> END controller.exec');
         function activate() {
 
             if (currentUser != null) {
+                //If there is an user already logged in, redirect to desktop base
                $state.go("webvella-desktop-base")
             }
         }
