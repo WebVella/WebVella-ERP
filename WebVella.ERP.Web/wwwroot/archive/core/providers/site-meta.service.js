@@ -25,7 +25,7 @@
 
         //// Update Site Meta method //////////////////////////////////////////
         function getUpdateSiteMeta(successCallback, errorCallback) {
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
 
