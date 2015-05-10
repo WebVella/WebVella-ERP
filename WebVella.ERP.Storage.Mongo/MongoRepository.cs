@@ -59,7 +59,8 @@ namespace WebVella.ERP.Storage.Mongo
         {
             try
             {
-                return Collection.Insert(document).DocumentsAffected > 0;
+               Collection.Insert(document);
+               return true;
             }
             catch (Exception e)
             {
