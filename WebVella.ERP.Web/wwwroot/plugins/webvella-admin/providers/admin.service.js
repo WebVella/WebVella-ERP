@@ -19,13 +19,13 @@
 
         serviceInstance.getMetaEntityList = getMetaEntityList;
         serviceInstance.createEntity = createEntity;
+        serviceInstance.getEntityMeta = getEntityMeta;
 
         ///////////////////////
         function getMetaEntityList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
-
 
         ///////////////////////
         function createEntity(postObject,successCallback, errorCallback) {
@@ -40,7 +40,11 @@
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity', data: postData }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
-
+        ///////////////////////
+        function getEntityMeta(name,successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getEntityMeta> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/'+ name }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
 
         //// Aux methods //////////////////////////////////////////////////////
 
@@ -54,7 +58,7 @@
                         return;
                     }
                     data.success = false;
-                    errorCallback();
+                    errorCallback(data);
                     break;
                 default:
                     $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: API call finished with error: ' + status);
@@ -77,8 +81,7 @@
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
-                status = 400;//Bad request
-                errorCallback();
+                errorCallback(data);
             }
             else {
                 $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result success: get object ');

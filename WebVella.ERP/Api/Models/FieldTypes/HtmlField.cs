@@ -12,7 +12,7 @@ namespace WebVella.ERP.Api.Models
         public string DefaultValue { get; set; }
     }
 
-    public class HtmlFieldMeta : HtmlField
+    public class HtmlFieldMeta : HtmlField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -20,11 +20,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public HtmlFieldMeta(Guid entityId, string entityName, HtmlField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public HtmlFieldMeta(Guid entityId, string entityName, HtmlField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

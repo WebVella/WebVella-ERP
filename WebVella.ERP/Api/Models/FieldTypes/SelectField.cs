@@ -16,7 +16,7 @@ namespace WebVella.ERP.Api.Models
         public IDictionary<string, string> Options { get; set; }
     }
 
-    public class SelectFieldMeta : SelectField
+    public class SelectFieldMeta : SelectField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -24,12 +24,16 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public SelectFieldMeta(Guid entityId, string entityName, SelectField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public SelectFieldMeta(Guid entityId, string entityName, SelectField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			Options = field.Options;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

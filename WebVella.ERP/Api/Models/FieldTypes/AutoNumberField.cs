@@ -18,21 +18,25 @@ namespace WebVella.ERP.Api.Models
         public decimal? StartingNumber { get; set; }
 	}
 
-	public class AutoNumberFieldMeta : AutoNumberField
-	{
+	public class AutoNumberFieldMeta : AutoNumberField, IFieldMeta
+    {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
 
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-        public AutoNumberFieldMeta(Guid entityId, string entityName, AutoNumberField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public AutoNumberFieldMeta(Guid entityId, string entityName, AutoNumberField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			DisplayFormat = field.DisplayFormat;
 			StartingNumber = field.StartingNumber;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

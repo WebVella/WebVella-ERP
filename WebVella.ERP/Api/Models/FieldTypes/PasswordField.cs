@@ -21,7 +21,7 @@ namespace WebVella.ERP.Api.Models
         public char? MaskCharacter { get; set; }
     }
 
-    public class PasswordFieldMeta : PasswordField
+    public class PasswordFieldMeta : PasswordField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -29,13 +29,17 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public PasswordFieldMeta(Guid entityId, string entityName, PasswordField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public PasswordFieldMeta(Guid entityId, string entityName, PasswordField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			Encrypted = field.Encrypted;
 			MaskType = field.MaskType;
 			MaskCharacter = field.MaskCharacter;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

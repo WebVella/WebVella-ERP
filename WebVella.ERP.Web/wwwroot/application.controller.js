@@ -30,6 +30,12 @@
         $rootScope.$on("application-body-color-update", function (event, color) {
             appData.bodyColor = color;
         });
+        //Side menu visibility
+        appData.sideMenuIsVisible = true;
+        $rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {
+            appData.sideMenuIsVisible = isVisible;
+        });
+
 
         activate();
         $log.debug('wvApp> END controller.exec');

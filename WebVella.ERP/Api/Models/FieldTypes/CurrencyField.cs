@@ -21,7 +21,7 @@ namespace WebVella.ERP.Api.Models
         public CurrencyTypes Currency { get; set; }
     }
 
-    public class CurrencyFieldMeta : CurrencyField
+    public class CurrencyFieldMeta : CurrencyField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -29,14 +29,18 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			MinValue = field.MinValue;
 			MaxValue = field.MaxValue;
 			Currency = field.Currency;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

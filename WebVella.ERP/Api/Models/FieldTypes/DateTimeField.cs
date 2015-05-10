@@ -15,20 +15,24 @@ namespace WebVella.ERP.Api.Models
         public string Format { get; set; }
     }
 
-    public class DateTimeFieldMeta : DateTimeField
+    public class DateTimeFieldMeta : DateTimeField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
 
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
-		
-		public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field)
-		{
-			EntityId = entityId;
+
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			Format = field.Format;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }
