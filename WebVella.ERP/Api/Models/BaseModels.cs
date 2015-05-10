@@ -1,20 +1,21 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
     public class BaseResponseModel
     {
-        //[JsonProperty(PropertyName = "timestamp")]
+        [JsonProperty(PropertyName = "timestamp")]
         public DateTime Timestamp { get; set; }
 
-        //[JsonProperty(PropertyName = "success")]
+        [JsonProperty(PropertyName = "success")]
         public bool Success { get; set; }
 
-        //[JsonProperty(PropertyName = "message")]
+        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
-        //[JsonProperty(PropertyName = "errors")]
+        [JsonProperty(PropertyName = "errors")]
         public List<ErrorModel> Errors { get; set; }
 
         public BaseResponseModel()
@@ -25,25 +26,25 @@ namespace WebVella.ERP.Api.Models
 
     public class AccessWarningModel
     {
-        //[JsonProperty(PropertyName = "key")]
+        [JsonProperty(PropertyName = "key")]
         public string Key { get; set; }
 
-       // [JsonProperty(PropertyName = "code")]
+        [JsonProperty(PropertyName = "code")]
         public string Code { get; set; }
 
-        //[JsonProperty(PropertyName = "message")]
+        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
     }
 
     public class ErrorModel
     {
-        //[JsonProperty(PropertyName = "key")]
+        [JsonProperty(PropertyName = "key")]
         public string Key { get; set; }
 
-        //[JsonProperty(PropertyName = "value")]
+        [JsonProperty(PropertyName = "value")]
         public string Value { get; set; }
 
-        //[JsonProperty(PropertyName = "message")]
+        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
 
         public ErrorModel()

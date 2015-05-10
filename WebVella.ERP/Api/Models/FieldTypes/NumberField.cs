@@ -1,25 +1,33 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace WebVella.ERP.Api.Models
 {
 	public class NumberField : Field
 	{
-		public static FieldType FieldType { get { return FieldType.NumberField; } }
+        [JsonProperty(PropertyName = "fieldType")]
+        public static FieldType FieldType { get { return FieldType.NumberField; } }
 
-		public decimal? DefaultValue { get; set; }
+        [JsonProperty(PropertyName = "defaultValue")]
+        public decimal? DefaultValue { get; set; }
 
-		public decimal? MinValue { get; set; }
+        [JsonProperty(PropertyName = "minValue")]
+        public decimal? MinValue { get; set; }
 
-		public decimal? MaxValue { get; set; }
+        [JsonProperty(PropertyName = "maxValue")]
+        public decimal? MaxValue { get; set; }
 
-		public byte? DecimalPlaces { get; set; }
+        [JsonProperty(PropertyName = "decimalPlaces")]
+        public byte? DecimalPlaces { get; set; }
 	}
 
 	public class NumberFieldMeta : NumberField
 	{
-		public Guid EntityId { get; set; }
+        [JsonProperty(PropertyName = "entityId")]
+        public Guid EntityId { get; set; }
 
-		public string EntityName { get; set; }
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
 
 		public NumberFieldMeta(Guid entityId, string entityName, NumberField field)
 		{

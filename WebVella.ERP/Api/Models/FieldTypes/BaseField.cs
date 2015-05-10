@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
@@ -7,26 +8,37 @@ namespace WebVella.ERP
 {
     public abstract class Field
     {
+        [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
+        [JsonProperty(PropertyName = "placeholderText")]
         public string PlaceholderText { get; set; }
 
+        [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
+        [JsonProperty(PropertyName = "helpText")]
         public string HelpText { get; set; }
 
+        [JsonProperty(PropertyName = "required")]
         public bool? Required { get; set; }
 
+        [JsonProperty(PropertyName = "unique")]
         public bool? Unique { get; set; }
 
+        [JsonProperty(PropertyName = "searchable")]
         public bool? Searchable { get; set; }
 
+        [JsonProperty(PropertyName = "auditable")]
         public bool? Auditable { get; set; }
 
+        [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
 
         public static Field Convert(IStorageField storageField)
@@ -193,8 +205,10 @@ namespace WebVella.ERP
 
     public class FieldList
     {
+        [JsonProperty(PropertyName = "offset")]
         public Guid Offset { get; set; }
 
+        [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
 
         public FieldList()
@@ -215,11 +229,13 @@ namespace WebVella.ERP
 
     public class FieldResponse : BaseResponseModel
     {
+        [JsonProperty(PropertyName = "object")]
         public Field Object { get; set; }
     }
 
     public class FieldListResponse : BaseResponseModel
     {
+        [JsonProperty(PropertyName = "object")]
         public FieldList Object { get; set; }
     }
 }

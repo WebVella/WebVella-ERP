@@ -1,22 +1,28 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
 	public class MultiSelectField : Field
 	{
-		public static FieldType FieldType { get { return FieldType.MultiSelectField; } }
+        [JsonProperty(PropertyName = "fieldType")]
+        public static FieldType FieldType { get { return FieldType.MultiSelectField; } }
 
-		public IEnumerable<string> DefaultValue { get; set; }
+        [JsonProperty(PropertyName = "defaultValue")]
+        public IEnumerable<string> DefaultValue { get; set; }
 
-		public IDictionary<string, string> Options { get; set; }
+        [JsonProperty(PropertyName = "options")]
+        public IDictionary<string, string> Options { get; set; }
 	}
 
 	public class MultiSelectFieldMeta : MultiSelectField
 	{
-		public Guid EntityId { get; set; }
+        [JsonProperty(PropertyName = "entityId")]
+        public Guid EntityId { get; set; }
 
-		public string EntityName { get; set; }
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
 
 		public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field)
 		{
