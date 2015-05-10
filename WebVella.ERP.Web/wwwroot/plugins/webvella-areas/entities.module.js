@@ -68,15 +68,15 @@
         var defer = $q.defer();
 
         // Process
-        function successCallBack(response) {
+        function successCallback(response) {
             defer.resolve(response.object);
         }
 
-        function errorCallBack(response) {
+        function errorCallback(response) {
             defer.resolve(response.object);
         }
 
-        webvellaAreasService.getAreaByName($stateParams.name, successCallBack, errorCallBack);
+        webvellaAreasService.getAreaByName($stateParams.name, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAreas>entities> END state.resolved');

@@ -23,7 +23,7 @@
         ///////////////////////
         function getMetaEntityList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + 'meta/entity/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////

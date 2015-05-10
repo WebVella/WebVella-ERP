@@ -67,7 +67,7 @@
         ////////////////////
         function getSiteMeta(successCallback, errorCallback) {
             $log.debug('webvellaRoot>providers>root.service>getSiteMeta> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/root/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/root/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////

@@ -19,9 +19,9 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-desktop-base', {
-            abstract: true,
+            //abstract: true,
             parent: 'webvella-root',
-            url: '/desktop', //will be added to all children states
+            url: '', //will be added to all children states
             views: {
                 "pluginView": {
                     controller: 'WebVellaDesktopBaseController',
@@ -46,43 +46,51 @@
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>base> BEGIN module.run');
-        //Initialize the module storage
-        $rootScope.webvellaDesktop = {};
-        $rootScope.webvellaDesktop.browsenav = [];
-
-
-
-        //Initialize the pluggable object made with factories, always when state is changed. (it fixes the duplication problem with browser back and forward buttons)
-        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-            webvellaDesktopTopnavFactory.initTopnav();
-        })
-
-
 
         $log.debug('webvellaDesktop>base> END module.run');
     };
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout'];
+    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout) {
+    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout) {
         $log.debug('webvellaDesktop>base> BEGIN controller.exec');
 
         /* jshint validthis:true */
         var pluginData = this;
-        //Get the topnav items and redirect to the first one
         pluginData.topnav = [];
-        
 
-        //Maintain the topnav if there are new injections
-        $rootScope.$on('webvellaDesktop-topnav-updated', function (event,newValue) {
-            pluginData.topnav = newValue;
+        //Making topnav pluggable
+        ////1. CONSTRUCTOR initialize the factory
+        webvellaDesktopTopnavFactory.initTopnav();
+        ////2. READY hook listener
+        var readyTopnavDestructor = $rootScope.$on("webvellaDesktop-topnav-ready", function (event, data) {
+            //All actions you want to be done after the "Ready" hook is cast
+        })
+        ////3. UPDATED hook listener
+        var updateTopnavDestructor = $rootScope.$on("webvellaDesktop-topnav-updated", function (event, data) {
+            pluginData.topnav = data;
             activate();
         });
-        //Emit hook for adding topnav menu items
-        $rootScope.$emit('webvellaDesktop-topnav-ready');
+        ////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
+        $scope.$on("$destroy", function () {
+            readyTopnavDestructor();
+            updateTopnavDestructor();
+        });
+        ////5. Bootstrap the pluggable element and cast the Ready hook
+        //Push the Browse area menu
+        var item = {
+            "label": "Browse",
+            "stateName": "webvella-desktop-browse",
+            "stateParams": {},
+            "parentName": "",
+            "nodes": [],
+            "weight": 1.0
+        };
+        webvellaDesktopTopnavFactory.addItem(item);
+        $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted');
 
         $log.debug('webvellaDesktop>base> END controller.exec');

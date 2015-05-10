@@ -20,7 +20,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-desktop-browse', {
             parent: "webvella-desktop-base", // the state is defined in the webvella-desktop-plugin
-            url: '/browse', //  /desktop/browse after the parent state is prepended
+            url: '/desktop/browse', //  /desktop/browse after the parent state is prepended
             views: {
                 "contentView": {
                     controller: 'WebVellaDesktopBrowseController',
@@ -47,21 +47,6 @@
         //$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         //    webvellaDesktopBrowsenavService.initBrowsenav();
         //})
-
-
-        //Wait for the hook and push the Browse area menu and state to the desktop
-        $rootScope.$on('webvellaDesktop-topnav-ready', function (event) {
-            var item = {
-                "label": "Browse",
-                "stateName": "webvella-desktop-browse",
-                "stateParams": {},
-                "parentName": "",
-                "nodes": [],
-                "weight": 1.0
-            };
-            webvellaDesktopTopnavFactory.addItem(item);
-        });
-
 
         $log.debug('webvellaDesktop>browse> END module.run');
     };

@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntitiesController', controller);
+        .controller('WebVellaAdminEntitiesController', controller)
+        .controller('CreateEntityModalController', createEntityController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -19,12 +20,17 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entities', {
             parent: 'webvella-admin-base',
-            url: '/entities', //  /desktop/areas after the parent state is prepended
+            url: '/admin/entities', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
-                    controller: 'WebVellaAdminEntitiesTopnavController',
-                    templateUrl: '/plugins/webvella-admin//topnav/topnav.view.html',
+                    controller: 'WebVellaAdminTopnavController',
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
                     controllerAs: 'topnavData'
+                },
+                "sidebarView": {
+                    controller: 'WebVellaAdminSidebarController',
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+                    controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminEntitiesController',
@@ -33,7 +39,7 @@
                 }
             },
             resolve: {
-                
+                resolvedEntityMetaList: resolveEntityMetaList
             },
             data: {
                 
@@ -43,44 +49,75 @@
 
 
     // Resolve Function /////////////////////////
-    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
+    resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaAdminService'];
 
     /* @ngInject */
-    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
-        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
+    function resolveEntityMetaList($q, $log, webvellaAdminService) {
+        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
         // Process
-        function successCallBack(response) {
+        function successCallback(response) {
             defer.resolve(response.object);
         }
 
-        function errorCallBack(response) {
+        function errorCallback(response) {
             defer.resolve(response.object);
         }
 
-        webvellaAreasService.getAreaByName($stateParams.name, successCallBack, errorCallBack);
+        webvellaAdminService.getMetaEntityList(successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAreas>entities> END state.resolved');
+        $log.debug('webvellaAdmin>entities> END state.resolved');
         return defer.promise;
     }
 
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope','$state','pageTitle'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList','$modal'];
 
     /* @ngInject */
-    function controller($rootScope, $state, pageTitle) {
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList,$modal) {
+        $log.debug('webvellaAdmin>entities> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
+        //Update page title
         contentData.pageTitle = "Entities | " + pageTitle;
+        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+        contentData.entities = resolvedEntityMetaList.entities;
+
+        //Create new entity modal
+        contentData.openAddEntityModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'createEntityModal.html',
+                controller: 'CreateEntityModalController',
+                controllerAs:"modalData",
+                size: "",
+                resolve: {}
+            });
+
+        }
 
         activate();
-
+        $log.debug('webvellaAdmin>entities> END controller.exec');
         function activate() { }
     }
+
+
+    //// Modal Controllers
+    createEntityController.$inject = ['$modalInstance', '$log'];
+
+    /* @ngInject */
+    function createEntityController($modalInstance, $log) {
+        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+        /* jshint validthis:true */
+        var modalData = this;
+        modalData.boz = "Yesssss boz";
+
+        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+    };
 
 })();

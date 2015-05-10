@@ -55,15 +55,15 @@
         var defer = $q.defer();
 
         // Process
-        function successCallBack(response) {
+        function successCallback(response) {
             defer.resolve(response);
         }
 
-        function errorCallBack(response) {
+        function errorCallback(response) {
             defer.resolve(response);
         }
 
-        siteMetaService.getUpdateSiteMeta(successCallBack, errorCallBack);
+        siteMetaService.getUpdateSiteMeta(successCallback, errorCallback);
 
         // Return
         $log.debug('pluginName>moduleName> END state.resolved');
