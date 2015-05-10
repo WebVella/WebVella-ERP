@@ -108,15 +108,38 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$modalInstance', '$log'];
+    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService'];
 
     /* @ngInject */
-    function createEntityController($modalInstance, $log) {
+    function createEntityController($modalInstance, $log, webvellaAdminService) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
-        modalData.boz = "Yesssss boz";
+        modalData.entity = {
+            id:null,
+            name: "",
+            label: "",
+            pluralLabel: "",
+            system: false
+        };
 
+        modalData.ok = function () {
+            webvellaAdminService.createEntity(modalData.entity, successCallback, errorCallback)
+            //$modalInstance.close(modalData.entity);
+        };
+
+        modalData.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        /// Aux
+        function successCallback(response) {
+            console.log(response)
+        }
+
+        function errorCallback(response) {
+            console.log(response)
+        }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };
 

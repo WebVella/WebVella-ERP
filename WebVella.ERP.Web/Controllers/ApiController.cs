@@ -21,6 +21,7 @@ namespace WebVella.ERP.Web.Controllers
         }
 
 
+        // Get all entity definitions
         // GET: api/v1/en_US/meta/entity/list/
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
         public IActionResult MetaEntitiesList()
@@ -28,6 +29,16 @@ namespace WebVella.ERP.Web.Controllers
             EntityManager manager = new EntityManager(service.StorageService);
             EntityListResponse list = manager.ReadEntities();
             return Json(list);
+        }
+
+        // Create an entity
+        // POST: api/v1/en_US/meta/entity
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
+        public IActionResult CreateEntity([FromBody]InputEntity submitObj)
+        {
+            EntityManager manager = new EntityManager(service.StorageService);
+            EntityResponse response = manager.CreateEntity(submitObj);
+            return Json(response);
         }
     }
 }
