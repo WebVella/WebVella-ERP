@@ -21,7 +21,7 @@ namespace WebVella.ERP.Api.Models
         public byte? DecimalPlaces { get; set; }
     }
 
-    public class PercentFieldMeta : PercentField
+    public class PercentFieldMeta : PercentField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -29,13 +29,17 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public PercentFieldMeta(Guid entityId, string entityName, PercentField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public PercentFieldMeta(Guid entityId, string entityName, PercentField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			MinValue = field.MinValue;
 			MaxValue= field.MaxValue;
 			DecimalPlaces = field.DecimalPlaces;
+            ParentFieldName = parentFieldName;
         }
 	}
 }

@@ -12,19 +12,23 @@ namespace WebVella.ERP.Api.Models
         public Guid? RelatedEntityId { get; set; }
     }
 
-    public class MasterDetailsRelationshipFieldMeta : MasterDetailsRelationshipField
+    public class MasterDetailsRelationshipFieldMeta : MasterDetailsRelationshipField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
 
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
-		
-		public MasterDetailsRelationshipFieldMeta(Guid entityId, string entityName, MasterDetailsRelationshipField field)
-		{
-			EntityId = entityId;
+
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public MasterDetailsRelationshipFieldMeta(Guid entityId, string entityName, MasterDetailsRelationshipField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			RelatedEntityId = field.RelatedEntityId;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

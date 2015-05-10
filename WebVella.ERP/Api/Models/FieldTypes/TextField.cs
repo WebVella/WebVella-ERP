@@ -15,7 +15,7 @@ namespace WebVella.ERP.Api.Models
         public int? MaxLength { get; set; }
     }
 
-    public class TextFieldMeta : TextField
+    public class TextFieldMeta : TextField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -23,12 +23,16 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public TextFieldMeta(Guid entityId, string entityName, TextField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public TextFieldMeta(Guid entityId, string entityName, TextField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			MaxLength = field.MaxLength;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

@@ -18,7 +18,7 @@ namespace WebVella.ERP.Api.Models
         public bool? OpenTargetInNewWindow { get; set; }
     }
 
-    public class UrlFieldMeta : UrlField
+    public class UrlFieldMeta : UrlField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -26,13 +26,17 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public UrlFieldMeta(Guid entityId, string entityName, UrlField field)
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public UrlFieldMeta(Guid entityId, string entityName, UrlField field, string parentFieldName = null )
 		{
-			EntityId = entityId;
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			MaxLength = field.MaxLength;
 			OpenTargetInNewWindow = field.OpenTargetInNewWindow;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

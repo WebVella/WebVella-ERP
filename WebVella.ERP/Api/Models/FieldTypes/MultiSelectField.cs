@@ -16,20 +16,24 @@ namespace WebVella.ERP.Api.Models
         public IDictionary<string, string> Options { get; set; }
 	}
 
-	public class MultiSelectFieldMeta : MultiSelectField
-	{
+	public class MultiSelectFieldMeta : MultiSelectField, IFieldMeta
+    {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
 
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
 			Options = field.Options;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

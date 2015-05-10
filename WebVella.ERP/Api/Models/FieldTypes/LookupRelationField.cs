@@ -12,7 +12,7 @@ namespace WebVella.ERP.Api.Models
         public Guid? RelatedEntityId { get; set; }
     }
 
-    public class LookupRelationFieldMeta : LookupRelationField
+    public class LookupRelationFieldMeta : LookupRelationField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -20,11 +20,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public LookupRelationFieldMeta(Guid entityId, string entityName, LookupRelationField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public LookupRelationFieldMeta(Guid entityId, string entityName, LookupRelationField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			RelatedEntityId = field.RelatedEntityId;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

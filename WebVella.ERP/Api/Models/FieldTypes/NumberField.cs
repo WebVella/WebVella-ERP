@@ -21,21 +21,25 @@ namespace WebVella.ERP.Api.Models
         public byte? DecimalPlaces { get; set; }
 	}
 
-	public class NumberFieldMeta : NumberField
-	{
+	public class NumberFieldMeta : NumberField, IFieldMeta
+    {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
 
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public NumberFieldMeta(Guid entityId, string entityName, NumberField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public NumberFieldMeta(Guid entityId, string entityName, NumberField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			MinValue = field.MinValue;
 			MaxValue = field.MaxValue;
 			DecimalPlaces = field.DecimalPlaces;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }
