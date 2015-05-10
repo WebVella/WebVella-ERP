@@ -617,6 +617,7 @@ namespace WebVella.ERP
                     return response;
                 }
 
+                entity.Id = Guid.NewGuid();
                 entity.Fields = CreateEntityDefaultFields(entity);
                 entity.Views = CreateEntityDefaultViews(entity);
                 entity.Forms = CreateEntityDefaultForms(entity);
