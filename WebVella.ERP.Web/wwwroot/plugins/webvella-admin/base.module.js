@@ -21,7 +21,7 @@
         $stateProvider.state('webvella-admin-base', {
             abstract: true,
             parent: 'webvella-root',
-            url: '/admin', //will be added to all children states
+            url: '', //will be added to all children states
             views: {
                 "pluginView": {
                     controller: 'WebVellaAdminBaseController',
@@ -42,13 +42,12 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory', 'webvellaRootService'];
 
     /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
         $log.debug('webvellaAdmin>base> BEGIN module.run');
-
-        // Push the Browse area menu and state to the desktop
+        // Push the Admin to the Desktop Browse navigation
         $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
             var item = {
                 "label": "Administration",
@@ -63,20 +62,25 @@
 
             webvellaDesktopBrowsenavFactory.addItem(item);
         });
+
         $log.debug('webvellaAdmin>base> END module.run');
     };
 
     // Controller ///////////////////////////////
-    controller.$inject = [];
+    controller.$inject = ['$log', '$rootScope', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller() {
+    function controller($log, $rootScope, webvellaRootService) {
+        $log.debug('webvellaAdmin>base> START controller.exec');
         /* jshint validthis:true */
         var adminData = this;
 
         activate();
-
-        function activate() { }
+        $log.debug('webvellaAdmin>base> END controller.exec');
+        function activate() {
+            // Change the body color to all child states to red
+            webvellaRootService.setBodyColorClass("red");
+        }
     }
 
 })();

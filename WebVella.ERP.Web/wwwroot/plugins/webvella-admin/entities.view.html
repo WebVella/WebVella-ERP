@@ -1,1 +1,66 @@
-<div boz title="Hey boz"/>
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+            <a class="btn btn-link hidden-xs" ng-click="contentData.openAddEntityModal()"><i class="fa fa-plus"></i> Create New</a>
+            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-database"></i>
+        </div>
+        <div class="entity-box">
+            <h4 class="no-link" title="Entity Definitions">Entity Definitions</h4>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 class="no-link" title="List">List</h4>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+
+<form id="filters" class="form-inline">
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">
+                <i class="fa fa-search"></i>
+            </span>
+            <input ng-model="class" type="text" class="form-control" placeholder="Search entities">
+        </div>
+    </div>
+</form>
+<div id="list">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="actions"></th>
+                <th class="name">Name</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="entity in contentData.entities">
+                <td class="actions">
+                    <a class="btn btn-warning btn-xs">edit</a>
+                </td>
+                <td class="name">{{entity.name}}</td>
+            </tr>
+  
+        </tbody>
+    </table>
+</div>
+
+<script type="text/ng-template" id="createEntityModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Create entity</h3>
+    </div>
+    <div class="modal-body">
+      {{modalData.boz}}
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

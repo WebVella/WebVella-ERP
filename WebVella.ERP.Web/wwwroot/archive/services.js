@@ -44,7 +44,7 @@ ErpApp.service('$ApiService', function ($config, $http) {
 
 	//Site Meta - returns the general site object with the sitemap and meta info
 	this.getSiteMeta = function (successCallBack, errorCallBack) {
-		$http({ method: 'GET', url: $config.apiBaseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallBack); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallBack); });
+	    $http({ method: 'GET', url: $config.apiBaseUrl + 'site/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallBack, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallBack); });
 	};
 
 });

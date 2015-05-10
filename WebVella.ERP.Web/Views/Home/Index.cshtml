@@ -56,7 +56,7 @@
             angular
                 .module('wvApp', [
                     'ngAnimate', 'ngTouch', // Angular modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar',  // 3rd Party Modules
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', // 3rd Party Modules
                     'webvellaRoot', //plugin:webvella-root
                     'webvellaAdmin', //plugin:webvella-admin
                     'webvellaDesktop', //plugin:webvella-desktop
@@ -101,12 +101,12 @@
     <!-- plugin:webvella-admin -->
     <script src="~/plugins/webvella-admin/base.module.js"></script>
     <script src="~/plugins/webvella-admin/entities.module.js"></script>
-    <script src="~/plugins/webvella-admin/topnav/topnav.controller.js"></script>
+    <script src="~/plugins/webvella-admin/topnav.controller.js"></script>
+    <script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
     <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
 
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
-    @*<script src="~/plugins/webvella-areas/view.module.js"></script>*@
     <script src="~/plugins/webvella-areas/entities.module.js"></script>
     <script src="~/plugins/webvella-areas/topnav.controller.js"></script>
     <script src="~/plugins/webvella-areas/sidebar.controller.js"></script>

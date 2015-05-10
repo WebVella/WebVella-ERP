@@ -76,15 +76,15 @@
         var defer = $q.defer();
 
         // Process
-        function successCallBack(response) {
+        function successCallback(response) {
             defer.resolve(response.object);
         }
 
-        function errorCallBack(response) {
+        function errorCallback(response) {
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getSiteMeta(successCallBack, errorCallBack);
+        webvellaRootService.getSiteMeta(successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaRoot>base> END state.resolved');

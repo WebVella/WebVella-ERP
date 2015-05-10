@@ -18,16 +18,18 @@ body {
     right:0;*/
 }
 
+table thead th.actions,
+table tbody td.actions {
+    width:1%;
+    white-space:nowrap;
+}
+
 .display-block {
     display:block !important;
 }
 
 .navbar {
     border-radius:0;
-}
-
-.modal-footer {
-  text-align: center;
 }
 
 .ng-toast .ng-toast__message .alert{
@@ -882,6 +884,13 @@ body {
   overflow: hidden;
 }
 
+    #page-title .entity-box h4.no-link {
+        line-height:39px;
+    }
+
+    #page-title .lists-box h4.no-link {
+        line-height:39px;
+    }
 #page-title .entity-box a {
  text-transform: lowercase; 
 }
@@ -1540,3 +1549,105 @@ body #loading-bar-spinner {
    border-radius:36px;
    border-width:3px;
 }
+
+/*
+    Modal overrides
+*/
+/*#region Modal overrides */
+.modal h3.modal-title {
+    text-transform:uppercase;
+    font-size:16px;
+}
+
+.modal .modal-header {
+    border-bottom-width:1px;
+    border-bottom-color:#90A4AE;
+    background:#F5F5F5;
+    text-align:center;
+}
+
+.modal .modal-content{
+    border-radius:0;
+}
+
+.modal .modal-body {
+    background:#fff;
+}
+
+.modal .modal-footer {
+  text-align: center;
+  border-top-color:#E0E0E0;
+  background:#F5F5F5;
+}
+
+/* Theming */
+.theme-red .modal .modal-header {
+  border-bottom-color:  #F44336;
+}
+
+.theme-pink .modal .modal-header {
+  border-bottom-color:  #E91E63;
+}
+
+.theme-purple .modal .modal-header {
+  border-bottom-color:  #9C27B0;
+}
+
+
+.theme-deep-purple .modal .modal-header {
+  border-bottom-color:  #673AB7;
+}
+
+.theme-indigo .modal .modal-header {
+  border-bottom-color:  #3F51B5;
+}
+
+.theme-blue .modal .modal-header {
+  border-bottom-color:  #2196F3;
+}
+
+.theme-light-blue .modal .modal-header {
+  border-bottom-color:  #03A9F4;
+}
+
+.theme-cyan .modal .modal-header {
+  border-bottom-color:  #00BCD4;
+}
+
+.theme-teal .modal .modal-header {
+  border-bottom-color:  #009688;
+}
+
+.theme-green .modal .modal-header {
+  border-bottom-color:  #4CAF50;
+}
+
+
+.theme-light-green .modal .modal-header {
+  border-bottom-color:  #8BC34A;
+}
+
+.theme-lime .modal .modal-header {
+  border-bottom-color:  #CDDC39;
+}
+
+.theme-yellow .modal .modal-header {
+  border-bottom-color:  #FDD835;
+}
+
+.theme-amber .modal .modal-header {
+  border-bottom-color:  #FFC107;
+}
+
+.theme-orange .modal .modal-header {
+  border-bottom-color:  #FF9800;
+}
+
+.theme-deep-orange .modal .modal-header {
+  border-bottom-color:  #FF5722;
+}
+
+.theme-brown .modal .modal-header {
+  border-bottom-color:  #795548;
+}
+/*#endregion */
