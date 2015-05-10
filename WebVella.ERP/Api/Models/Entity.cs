@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using WebVella.ERP.Storage;
 
@@ -6,35 +7,49 @@ namespace WebVella.ERP.Api.Models
 {
     public class InputEntity
     {
+        [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
+        [JsonProperty(PropertyName = "pluralLabel")]
         public string PluralLabel { get; set; }
 
+        [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
     }
 
     public class Entity
     {
+        [JsonProperty(PropertyName = "id")]
         public Guid? Id { get; set; }
 
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
+        [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
+        [JsonProperty(PropertyName = "pluralLabel")]
         public string PluralLabel { get; set; }
 
+        [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
 
+        [JsonProperty(PropertyName = "permissions")]
         public EntityPermissions Permissions { get; set; }
 
+        [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
 
+        [JsonProperty(PropertyName = "views")]
         public List<View> Views { get; set; }
 
+        [JsonProperty(PropertyName = "forms")]
         public List<Form> Forms { get; set; }
 
         public Entity()
@@ -137,8 +152,13 @@ namespace WebVella.ERP.Api.Models
 
     public class EntityPermissions
     {
+        [JsonProperty(PropertyName = "canRead")]
         List<Guid> CanRead { get; set; }
+
+        [JsonProperty(PropertyName = "canUpdate")]
         List<Guid> CanUpdate { get; set; }
+
+        [JsonProperty(PropertyName = "canDelete")]
         List<Guid> CanDelete { get; set; }
 
         public EntityPermissions()
@@ -151,8 +171,10 @@ namespace WebVella.ERP.Api.Models
 
     public class EntityList
     {
+        [JsonProperty(PropertyName = "offset")]
         public Guid Offset { get; set; }
 
+        [JsonProperty(PropertyName = "entities")]
         public List<Entity> Entities { get; set; }
 
         public EntityList()
@@ -173,11 +195,13 @@ namespace WebVella.ERP.Api.Models
 
     public class EntityResponse : BaseResponseModel
     {
+        [JsonProperty(PropertyName = "object")]
         public Entity Object { get; set; }
     }
 
     public class EntityListResponse : BaseResponseModel
     {
+        [JsonProperty(PropertyName = "object")]
         public EntityList Object { get; set; }
     }
 }

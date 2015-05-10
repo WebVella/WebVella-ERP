@@ -39,45 +39,231 @@ namespace WebVella.ERP
 
             int currentVersion = 0;
 
-            Guid systemEntityId = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");
-            Guid userEntityId = new Guid("D5050AC8-5967-4CE1-95E7-A79B054F9D15");
-            Guid roleEntityId = new Guid("E5050AC8-5967-4CE1-95E7-A79B054F9D16");
+            Guid systemEntityId = new Guid("A5050AC8-5967-4CE1-95E7-A79B054F9D14");
+            Guid userEntityId = new Guid("B9CEBC3B-6443-452A-8E34-B311A73DCC8B");
+            Guid roleEntityId = new Guid("C4541FEE-FBB6-4661-929E-1724ADEC285A");
 
             EntityManager entityManager = new EntityManager(StorageService);
 
             //Get current version here
 
-            if (currentVersion < 150508 )
+            if (currentVersion < 150508)
             {
-                Entity systemEntity = new Entity();
+                InputEntity systemEntity = new InputEntity();
+                systemEntity.Id = systemEntityId;
+                systemEntity.Name = "System";
+                systemEntity.Label = "System";
+                systemEntity.PluralLabel = "Systems";
+                systemEntity.System = true;
 
-                InputEntity inputEntity = new InputEntity();
-                inputEntity.Id = systemEntityId;
-                inputEntity.Name = "System";
-                inputEntity.Label = "System";
-                inputEntity.PluralLabel = "Systems";
-                inputEntity.System = true;
+                EntityResponse response = entityManager.CreateEntity(systemEntity);
 
+                NumberField versionField = new NumberField();
 
-                Entity userEntity = new Entity();
+                versionField.Id = Guid.NewGuid();
+                versionField.Name = "Version";
+                versionField.Label = "Version";
+                versionField.PlaceholderText = "";
+                versionField.Description = "this field hold database version";
+                versionField.HelpText = "";
+                versionField.Required = true;
+                versionField.Unique = true;
+                versionField.Searchable = false;
+                versionField.Auditable = false;
+                versionField.System = true;
+                versionField.DefaultValue = 0;
+                
+                versionField.MinValue = 1;
+                versionField.MaxValue = 100;
+                versionField.DecimalPlaces = 3;
 
-                InputEntity inputUserEntity = new InputEntity();
-                inputUserEntity.Id = new Guid("");
-                inputUserEntity.Name = "User";
-                inputUserEntity.Label = "User";
-                inputUserEntity.PluralLabel = "Users";
-                inputUserEntity.System = true;
+                FieldResponse fieldResponse = entityManager.CreateField(systemEntity.Id.Value, versionField);
 
+                InputEntity userEntity = new InputEntity();
+                userEntity.Id = userEntityId;
+                userEntity.Name = "User";
+                userEntity.Label = "User";
+                userEntity.PluralLabel = "Users";
+                userEntity.System = true;
+
+                TextField firstName = new TextField();
+
+                firstName.Id = Guid.NewGuid();
+                firstName.Name = "firstName";
+                firstName.Label = "First Name";
+                firstName.PlaceholderText = "";
+                firstName.Description = "First name of the user";
+                firstName.HelpText = "";
+                firstName.Required = true;
+                firstName.Unique = false;
+                firstName.Searchable = true;
+                firstName.Auditable = false;
+                firstName.System = true;
+                firstName.DefaultValue = "";
+
+                firstName.MaxLength = 200;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
+
+                TextField lastName = new TextField();
+
+                lastName.Id = Guid.NewGuid();
+                lastName.Name = "lastName";
+                lastName.Label = "Last Name";
+                lastName.PlaceholderText = "";
+                lastName.Description = "Last name of the user";
+                lastName.HelpText = "";
+                lastName.Required = true;
+                lastName.Unique = false;
+                lastName.Searchable = true;
+                lastName.Auditable = false;
+                lastName.System = true;
+                lastName.DefaultValue = "";
+
+                lastName.MaxLength = 200;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName);
+
+                EmailField email = new EmailField();
+
+                email.Id = Guid.NewGuid();
+                email.Name = "Email";
+                email.Label = "Email";
+                email.PlaceholderText = "";
+                email.Description = "Email address of the user";
+                email.HelpText = "";
+                email.Required = true;
+                email.Unique = true;
+                email.Searchable = true;
+                email.Auditable = false;
+                email.System = true;
+                email.DefaultValue = "";
+
+                email.MaxLength = 255;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, email);
+
+                PasswordField password = new PasswordField();
+
+                password.Id = Guid.NewGuid();
+                password.Name = "Password";
+                password.Label = "Password";
+                password.PlaceholderText = "";
+                password.Description = "Password for the user account";
+                password.HelpText = "";
+                password.Required = true;
+                password.Unique = true;
+                password.Searchable = true;
+                password.Auditable = false;
+                password.System = true;
+
+                password.MaxLength = 1;
+                password.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
+                password.MaskCharacter = '*';
+                password.Encrypted = true;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
+
+                DateTimeField lastLoggedIn = new DateTimeField();
+
+                lastLoggedIn.Id = Guid.NewGuid();
+                lastLoggedIn.Name = "lastLoggedIn";
+                lastLoggedIn.Label = "Last Logged In";
+                lastLoggedIn.PlaceholderText = "";
+                lastLoggedIn.Description = "";
+                lastLoggedIn.HelpText = "";
+                lastLoggedIn.Required = true;
+                lastLoggedIn.Unique = true;
+                lastLoggedIn.Searchable = true;
+                lastLoggedIn.Auditable = true;
+                lastLoggedIn.System = true;
+                lastLoggedIn.DefaultValue = DateTime.MinValue;
+
+                lastLoggedIn.Format = "MM/dd/YYYY";
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn);
+
+                CheckboxField enabledField = new CheckboxField();
+
+                enabledField.Id = Guid.NewGuid();
+                enabledField.Name = "Enabled";
+                enabledField.Label = "Enabled";
+                enabledField.PlaceholderText = "";
+                enabledField.Description = "Shous if the user account is enabled";
+                enabledField.HelpText = "";
+                enabledField.Required = true;
+                enabledField.Unique = false;
+                enabledField.Searchable = true;false
+                enabledField.Auditable = false;
+                enabledField.System = true;
+                enabledField.DefaultValue = false;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, enabledField);
+
+                CheckboxField verifiedUserField = new CheckboxField();
+
+                verifiedUserField.Id = Guid.NewGuid();
+                verifiedUserField.Name = "Verified";
+                verifiedUserField.Label = "Verified";
+                verifiedUserField.PlaceholderText = "";
+                verifiedUserField.Description = "Shows if the user email is verified";
+                verifiedUserField.HelpText = "";
+                verifiedUserField.Required = true;
+                verifiedUserField.Unique = false;
+                verifiedUserField.Searchable = true;
+                verifiedUserField.Auditable = false;
+                verifiedUserField.System = true;
+                verifiedUserField.DefaultValue = false;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField);
 
                 Entity roleEntity = new Entity();
 
                 InputEntity inputRoleEntity = new InputEntity();
-                inputRoleEntity.Id = new Guid("");
+                inputRoleEntity.Id = roleEntityId;
                 inputRoleEntity.Name = "Role";
                 inputRoleEntity.Label = "Role";
                 inputRoleEntity.PluralLabel = "Roles";
                 inputRoleEntity.System = true;
 
+
+                TextField nameRoleField = new TextField();
+
+                nameRoleField.Id = Guid.NewGuid();
+                nameRoleField.Name = "Name";
+                nameRoleField.Label = "Name";
+                nameRoleField.PlaceholderText = "";
+                nameRoleField.Description = "The name of the role";
+                nameRoleField.HelpText = "";
+                nameRoleField.Required = true;
+                nameRoleField.Unique = false;
+                nameRoleField.Searchable = true;
+                nameRoleField.Auditable = false;
+                nameRoleField.System = true;
+                nameRoleField.DefaultValue = "";
+
+                firstName.MaxLength = 200;
+
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
+
+                TextField descriptionRoleField = new TextField();
+
+                descriptionRoleField.Id = Guid.NewGuid();
+                descriptionRoleField.Name = "Description";
+                descriptionRoleField.Label = "Description";
+                descriptionRoleField.PlaceholderText = "";
+                descriptionRoleField.Description = "";
+                descriptionRoleField.HelpText = "";
+                descriptionRoleField.Required = true;
+                descriptionRoleField.Unique = false;
+                descriptionRoleField.Searchable = true;
+                descriptionRoleField.Auditable = false;
+                descriptionRoleField.System = true;
+                descriptionRoleField.DefaultValue = "";
+                
+                descriptionRoleField.MaxLength = 200;
+
+                fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField);
             }
 
             if (currentVersion <= 150510)

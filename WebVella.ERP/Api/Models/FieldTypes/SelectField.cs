@@ -1,22 +1,28 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
     public class SelectField : Field
     {
+        [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.SelectField; } }
 
+        [JsonProperty(PropertyName = "defaultValue")]
         public string DefaultValue { get; set; }
 
+        [JsonProperty(PropertyName = "options")]
         public IDictionary<string, string> Options { get; set; }
     }
 
     public class SelectFieldMeta : SelectField
     {
-		public Guid EntityId { get; set; }
+        [JsonProperty(PropertyName = "entityId")]
+        public Guid EntityId { get; set; }
 
-		public string EntityName { get; set; }
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
 
 		public SelectFieldMeta(Guid entityId, string entityName, SelectField field)
 		{
