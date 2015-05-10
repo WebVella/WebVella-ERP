@@ -30,7 +30,7 @@ namespace WebVella.ERP
 
         public void RunTests()
         {
-            //EntityTests();
+           //EntityTests();
         }
 
         public void InitializeSystemEntities()
@@ -282,56 +282,93 @@ namespace WebVella.ERP
             InputEntity inputEntity = new InputEntity();
             //entity.Id = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");
             inputEntity.Id = Guid.NewGuid();
-            inputEntity.Name = "Name of test entity";
-            inputEntity.Label = "Display name of test entity";
-            inputEntity.PluralLabel = "Plural display name of test entity";
+            inputEntity.Name = "GoroTest";
+            inputEntity.Label = "Goro Test";
+            inputEntity.PluralLabel = "Goro Tests";
             inputEntity.System = true;
 
             try
             {
                 Entity entity = new Entity(inputEntity);
-                List<Field> fields = CreateTestFieldCollection(entity);
 
                 EntityResponse response = entityManager.CreateEntity(inputEntity);
 
+                TextField field = new TextField();
+                field.Id = Guid.NewGuid();
+                field.Name = "TextField";
+                field.Label = "Text field";
+                field.PlaceholderText = "Text field placeholder text";
+                field.Description = "Text field description";
+                field.HelpText = "Text field help text";
+                field.Required = true;
+                field.Unique = true;
+                field.Searchable = true;
+                field.Auditable = true;
+                field.System = true;
+                field.DefaultValue = "";
+
+                field.MaxLength = 200;
+
+                FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, field);
+
+                inputEntity.Label = "GoroTest_edited";
+                inputEntity.PluralLabel = "Goro Tests - edited";
+
+                response = entityManager.UpdateEntity(inputEntity);
+
+                field.Label = "TextField_edited";
+
+                fieldResponse = entityManager.UpdateField(entity.Id.Value, field);
+
+                fieldResponse = entityManager.DeleteField(entity.Id.Value, field.Id.Value);
+
+                List<Field> fields = CreateTestFieldCollection(entity);
                 //FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, fields[0]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[1]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[2]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[3]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[4]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[5]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[6]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[7]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[8]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[9]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[10]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[11]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[12]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[13]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[14]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[15]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[16]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[17]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[18]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[19]);
-                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[20]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[1]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[2]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[3]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[4]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[5]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[6]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[7]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[8]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[9]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[10]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[11]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[12]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[13]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[14]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[15]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[16]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[17]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[18]);
+                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[19]);
 
-                //EntityResponse entityResponse = entityManager.ReadEntity(entity.Id.Value);
-                //entity = entityResponse.Object;
+                EntityResponse entityResponse = entityManager.ReadEntity(entity.Id.Value);
+                entity = entityResponse.Object;
 
-                //List<View> views = CreateTestViewCollection(entity);
+                List<View> views = CreateTestViewCollection(entity);
 
-                //ViewResponse viewResponse = entityManager.CreateView(entity.Id.Value, views[0]);
+                ViewResponse viewResponse = entityManager.CreateView(entity.Id.Value, views[0]);
 
-                //List<Form> forms = CreateTestFormCollection(entity);
+                views[0].Label = "Edited View";
 
-                //FormResponse formResponse = entityManager.CreateForm(entity.Id.Value, forms[0]);
+                viewResponse = entityManager.UpdateView(entity.Id.Value, views[0]);
 
-                //entityManager.DeleteEntity(entity.Id.Value);
+                List<Form> forms = CreateTestFormCollection(entity);
 
-                ////entityManager.ReadEntities();
+                FormResponse formResponse = entityManager.CreateForm(entity.Id.Value, forms[0]);
+
+                forms[0].Label = "Edited Form";
+
+                formResponse = entityManager.CreateForm(entity.Id.Value, forms[0]);
+
+                entityManager.ReadEntities();
 
                 EntityResponse resultEntity = entityManager.ReadEntity(entity.Id.Value);
+
+                response = entityManager.DeleteEntity(entity.Id.Value);
+
             }
             catch (StorageException e)
             {
@@ -348,7 +385,7 @@ namespace WebVella.ERP
             AutoNumberField autoNumberField = new AutoNumberField();
 
             autoNumberField.Id = Guid.NewGuid();
-            autoNumberField.Name = "AutoNumber field";
+            autoNumberField.Name = "AutoNumberField";
             autoNumberField.Label = "AutoNumber field";
             autoNumberField.PlaceholderText = "AutoNumber field placeholder text";
             autoNumberField.Description = "AutoNumber field description";
@@ -368,7 +405,7 @@ namespace WebVella.ERP
             CheckboxField checkboxField = new CheckboxField();
 
             checkboxField.Id = Guid.NewGuid();
-            checkboxField.Name = "Checkbox field";
+            checkboxField.Name = "CheckboxField";
             checkboxField.Label = "Checkbox field";
             checkboxField.PlaceholderText = "Checkbox field placeholder text";
             checkboxField.Description = "Checkbox field description";
@@ -385,7 +422,7 @@ namespace WebVella.ERP
             CurrencyField currencyField = new CurrencyField();
 
             currencyField.Id = Guid.NewGuid();
-            currencyField.Name = "Currency field";
+            currencyField.Name = "CurrencyField";
             currencyField.Label = "Currency field";
             currencyField.PlaceholderText = "Currency field placeholder text";
             currencyField.Description = "Currency field description";
@@ -409,7 +446,7 @@ namespace WebVella.ERP
             DateField dateField = new DateField();
 
             dateField.Id = Guid.NewGuid();
-            dateField.Name = "Date field";
+            dateField.Name = "DateField";
             dateField.Label = "Date field";
             dateField.PlaceholderText = "Date field placeholder text";
             dateField.Description = "Date field description";
@@ -428,7 +465,7 @@ namespace WebVella.ERP
             DateTimeField dateTimeField = new DateTimeField();
 
             dateTimeField.Id = Guid.NewGuid();
-            dateTimeField.Name = "DateTime field";
+            dateTimeField.Name = "DateTimeField";
             dateTimeField.Label = "DateTime field";
             dateTimeField.PlaceholderText = "DateTime field placeholder text";
             dateTimeField.Description = "DateTime field description";
@@ -447,7 +484,7 @@ namespace WebVella.ERP
             EmailField emailField = new EmailField();
 
             emailField.Id = Guid.NewGuid();
-            emailField.Name = "Email field";
+            emailField.Name = "EmailField";
             emailField.Label = "Email field";
             emailField.PlaceholderText = "Email field placeholder text";
             emailField.Description = "Email field description";
@@ -466,7 +503,7 @@ namespace WebVella.ERP
             FileField fileField = new FileField();
 
             fileField.Id = Guid.NewGuid();
-            fileField.Name = "File field";
+            fileField.Name = "FileField";
             fileField.Label = "File field";
             fileField.PlaceholderText = "File field placeholder text";
             fileField.Description = "File field description";
@@ -503,7 +540,7 @@ namespace WebVella.ERP
             HtmlField htmlField = new HtmlField();
 
             htmlField.Id = Guid.NewGuid();
-            htmlField.Name = "Html field";
+            htmlField.Name = "HtmlField";
             htmlField.Label = "Html field";
             htmlField.PlaceholderText = "Html field placeholder text";
             htmlField.Description = "Html field description";
@@ -520,7 +557,7 @@ namespace WebVella.ERP
             ImageField imageField = new ImageField();
 
             imageField.Id = Guid.NewGuid();
-            imageField.Name = "Image field";
+            imageField.Name = "ImageField";
             imageField.Label = "Image field";
             imageField.PlaceholderText = "Image field placeholder text";
             imageField.Description = "Image field description";
@@ -536,7 +573,7 @@ namespace WebVella.ERP
             LookupRelationField lookupRelationField = new LookupRelationField();
 
             lookupRelationField.Id = Guid.NewGuid();
-            lookupRelationField.Name = "LookupRelation field";
+            lookupRelationField.Name = "LookupRelationField";
             lookupRelationField.Label = "LookupRelation field";
             lookupRelationField.PlaceholderText = "LookupRelation field placeholder text";
             lookupRelationField.Description = "LookupRelation field description";
@@ -572,7 +609,7 @@ namespace WebVella.ERP
             MultiLineTextField multiLineTextField = new MultiLineTextField();
 
             multiLineTextField.Id = Guid.NewGuid();
-            multiLineTextField.Name = "MultiLineText field";
+            multiLineTextField.Name = "MultiLineTextField";
             multiLineTextField.Label = "MultiLineText field";
             multiLineTextField.PlaceholderText = "MultiLineText field placeholder text";
             multiLineTextField.Description = "MultiLineText field description";
@@ -592,7 +629,7 @@ namespace WebVella.ERP
             MultiSelectField multiSelectField = new MultiSelectField();
 
             multiSelectField.Id = Guid.NewGuid();
-            multiSelectField.Name = "MultiSelect field";
+            multiSelectField.Name = "MultiSelectField";
             multiSelectField.Label = "MultiSelect field";
             multiSelectField.PlaceholderText = "MultiSelect field placeholder text";
             multiSelectField.Description = "MultiSelect field description";
@@ -617,7 +654,7 @@ namespace WebVella.ERP
             NumberField numberField = new NumberField();
 
             numberField.Id = Guid.NewGuid();
-            numberField.Name = "Number field";
+            numberField.Name = "NumberField";
             numberField.Label = "Number field";
             numberField.PlaceholderText = "Number field placeholder text";
             numberField.Description = "Number field description";
@@ -638,7 +675,7 @@ namespace WebVella.ERP
             PasswordField passwordField = new PasswordField();
 
             passwordField.Id = Guid.NewGuid();
-            passwordField.Name = "Password field";
+            passwordField.Name = "PasswordField";
             passwordField.Label = "Password field";
             passwordField.PlaceholderText = "Password field placeholder text";
             passwordField.Description = "Password field description";
@@ -658,7 +695,7 @@ namespace WebVella.ERP
             PercentField percentField = new PercentField();
 
             percentField.Id = Guid.NewGuid();
-            percentField.Name = "Percent field";
+            percentField.Name = "PercentField";
             percentField.Label = "Percent field";
             percentField.PlaceholderText = "Percent field";
             percentField.Description = "Percent field description";
@@ -679,7 +716,7 @@ namespace WebVella.ERP
             PhoneField phoneField = new PhoneField();
 
             phoneField.Id = Guid.NewGuid();
-            phoneField.Name = "Phone field";
+            phoneField.Name = "PhoneField";
             phoneField.Label = "Phone field";
             phoneField.PlaceholderText = "Phone field";
             phoneField.Description = "Phone field description";
@@ -699,7 +736,7 @@ namespace WebVella.ERP
             PrimaryKeyField primaryKeyField = new PrimaryKeyField();
 
             primaryKeyField.Id = Guid.NewGuid();
-            primaryKeyField.Name = "PrimaryKey field";
+            primaryKeyField.Name = "PrimaryKeyField";
             primaryKeyField.Label = "PrimaryKey field";
             primaryKeyField.PlaceholderText = "PrimaryKey field placeholder text";
             primaryKeyField.Description = "PrimaryKey field description";
@@ -716,7 +753,7 @@ namespace WebVella.ERP
             SelectField selectField = new SelectField();
 
             selectField.Id = Guid.NewGuid();
-            selectField.Name = "Select field";
+            selectField.Name = "SelectField";
             selectField.Label = "Select field";
             selectField.PlaceholderText = "Select field placeholder text";
             selectField.Description = "Select field description";
@@ -741,7 +778,7 @@ namespace WebVella.ERP
             TextField textField = new TextField();
 
             textField.Id = Guid.NewGuid();
-            textField.Name = "Text field";
+            textField.Name = "TextField";
             textField.Label = "Text field";
             textField.PlaceholderText = "Text field placeholder text";
             textField.Description = "Text field description";
@@ -758,7 +795,7 @@ namespace WebVella.ERP
             UrlField urlField = new UrlField();
 
             urlField.Id = Guid.NewGuid();
-            urlField.Name = "Url field";
+            urlField.Name = "UrlField";
             urlField.Label = "Url field";
             urlField.PlaceholderText = "Url field placeholder text";
             urlField.Description = "Url field description";
@@ -785,7 +822,7 @@ namespace WebVella.ERP
             View firstView = new View();
 
             firstView.Id = Guid.NewGuid();
-            firstView.Name = "Search Popup view name";
+            firstView.Name = "SearchPopupviewname";
             firstView.Label = "Search Popup view label";
             firstView.Type = Api.ViewTypes.SearchPopup;
 
@@ -826,7 +863,7 @@ namespace WebVella.ERP
             Form form = new Form();
 
             form.Id = Guid.NewGuid();
-            form.Name = "Form name";
+            form.Name = "FormName";
             form.Label = "Form label";
 
             form.Fields = new List<FormField>();

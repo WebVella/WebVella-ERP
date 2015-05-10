@@ -51,10 +51,13 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("name", entity.Name, "Name is required!"));
             else
             {
+                if (entity.Name.Length <= 3)
+                    errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be greater than 3 characters!"));
+
                 if (entity.Name.Length > 50)
                     errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be less than 50 characters!"));
 
-                string pattern = @"^[A-Za-z][A-Za-z0-9_]*$";
+                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
 
                 Match match = Regex.Match(entity.Name, pattern);
                 if (!match.Success || match.Value != entity.Name.Trim())
@@ -73,16 +76,16 @@ namespace WebVella.ERP
             else
             {
                 //TODO check if we need this validation
-                /*
+
                 if (entity.Label.Length > 50)
                     errorList.Add(new ErrorModel("label", entity.Label, "The length of Label must be less than 50 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
+                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(entity.Label, pattern);
                 if (!match.Success || match.Value != entity.Label.Trim())
                     errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-                */
+
             }
 
             if (string.IsNullOrWhiteSpace(entity.PluralLabel))
@@ -90,16 +93,16 @@ namespace WebVella.ERP
             else
             {
                 //TODO check if we need this validation
-                /*
+
                 if (entity.PluralLabel.Length > 50)
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The length of Plural Label must be less than 50 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
+                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(entity.PluralLabel, pattern);
                 if (!match.Success || match.Value != entity.PluralLabel.Trim())
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-               */
+
             }
 
             if (!entity.System.HasValue)
@@ -169,7 +172,7 @@ namespace WebVella.ERP
                 if (field.Name.Length > 30)
                     errorList.Add(new ErrorModel("fields.name", field.Name, "The length of Name must be less than 30 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
+                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
 
                 Match match = Regex.Match(field.Name, pattern);
                 if (!match.Success || match.Value != field.Name.Trim())
@@ -185,7 +188,7 @@ namespace WebVella.ERP
                 /*if (field.Label.Length > 30)
                     errorList.Add(new ErrorModel("fields.label", field.Label, "The length of Label must be less than 30 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
+                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*"";
 
                 Match match = Regex.Match(field.Label, pattern);
                 if (!match.Success || match.Value != field.Label.Trim())
@@ -430,7 +433,7 @@ namespace WebVella.ERP
                 if (view.Name.Length > 30)
                     errorList.Add(new ErrorModel("name", view.Name, "The length of Name must be less than 30 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
+                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
 
                 Match match = Regex.Match(view.Name, pattern);
                 if (!match.Success || match.Value != view.Name.Trim())
@@ -446,7 +449,7 @@ namespace WebVella.ERP
                 if (view.Label.Length > 50)
                     errorList.Add(new ErrorModel("views.label", view.Label, "The length of Label must be less than 50 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
+                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(view.Label, pattern);
                 if (!match.Success || match.Value != view.Label.Trim())
@@ -547,7 +550,7 @@ namespace WebVella.ERP
                 if (form.Name.Length > 30)
                     errorList.Add(new ErrorModel("forms.name", form.Name, "The length of Name must be less than 30 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
+                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
 
                 Match match = Regex.Match(form.Name, pattern);
                 if (!match.Success || match.Value != form.Name.Trim())
@@ -563,7 +566,7 @@ namespace WebVella.ERP
                 if (form.Label.Length > 50)
                     errorList.Add(new ErrorModel("forms.label", form.Label, "The length of Label must be less than 50 characters!"));
 
-                string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
+                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(form.Label, pattern);
                 if (!match.Success || match.Value != form.Label.Trim())
