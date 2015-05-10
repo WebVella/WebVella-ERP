@@ -57,7 +57,7 @@ namespace WebVella.ERP
                 string pattern = @"^[A-Za-z][A-Za-z0-9_]*$";
 
                 Match match = Regex.Match(entity.Name, pattern);
-                if (!(match.Success && match.Value == entity.Name.Trim()))
+                if (!match.Success || match.Value != entity.Name.Trim())
                     errorList.Add(new ErrorModel("name", entity.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
 
                 IStorageEntity verifiedEntity = EntityRepository.Read(entity.Name);
@@ -78,7 +78,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(entity.Label, pattern);
-                if (!(match.Success && match.Value == entity.Label.Trim()))
+                if (!match.Success || match.Value != entity.Label.Trim())
                     errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
             }
 
@@ -92,7 +92,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(entity.PluralLabel, pattern);
-                if (!(match.Success && match.Value == entity.PluralLabel.Trim()))
+                if (!match.Success || match.Value != entity.PluralLabel.Trim())
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
             }
 
@@ -166,7 +166,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
                 Match match = Regex.Match(field.Name, pattern);
-                if (!(match.Success && match.Value == field.Name.Trim()))
+                if (!match.Success || match.Value != field.Name.Trim())
                     errorList.Add(new ErrorModel("fields.name", field.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
 
             }
@@ -181,7 +181,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(field.Label, pattern);
-                if (!(match.Success && match.Value == field.Label.Trim()))
+                if (!match.Success || match.Value != field.Label.Trim())
                     errorList.Add(new ErrorModel("fields.label", field.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
             }
 
@@ -426,7 +426,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
                 Match match = Regex.Match(view.Name, pattern);
-                if (!(match.Success && match.Value == view.Name.Trim()))
+                if (!match.Success || match.Value != view.Name.Trim())
                     errorList.Add(new ErrorModel("views.name", view.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
             }
 
@@ -440,7 +440,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(view.Label, pattern);
-                if (!(match.Success && match.Value == view.Label.Trim()))
+                if (!match.Success || match.Value != view.Label.Trim())
                     errorList.Add(new ErrorModel("views.label", view.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
             }
 
@@ -540,7 +540,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
                 Match match = Regex.Match(form.Name, pattern);
-                if (!(match.Success && match.Value == form.Name.Trim()))
+                if (!match.Success || match.Value != form.Name.Trim())
                     errorList.Add(new ErrorModel("forms.name", form.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
             }
 
@@ -554,7 +554,7 @@ namespace WebVella.ERP
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(form.Label, pattern);
-                if (!(match.Success && match.Value == form.Label.Trim()))
+                if (!match.Success || match.Value != form.Label.Trim())
                     errorList.Add(new ErrorModel("forms.label", form.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
             }
 
