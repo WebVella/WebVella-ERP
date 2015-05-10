@@ -1,8 +1,8 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-link hidden-xs" ng-click="contentData.openAddEntityModal()"><i class="fa fa-plus"></i> Create New</a>
-            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+            <a class="btn btn-default hidden-xs" ng-click="contentData.openAddEntityModal()"><i class="fa fa-plus"></i> Create New</a>
+            <!--<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>-->
         </div>
         <div class="icon-box">
             <i class="fa fa-database"></i>
@@ -34,7 +34,7 @@
     </div>
 </form>
 <div id="list">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover table-vertical-align-middle">
         <thead>
             <tr>
                 <th class="actions"></th>
@@ -43,7 +43,9 @@
         <tbody>
             <tr ng-repeat="entity in contentData.entities">
                 <td class="actions">
-                    <a class="btn btn-warning btn-xs">edit</a>
+                    <a href="" class="btn btn-default">
+                        <i class="fa fa-eye"></i>
+                    </a>
                 </td>
                 <td class="name">{{entity.name}}</td>
             </tr>
@@ -53,32 +55,66 @@
 </div>
 
 <script type="text/ng-template" id="createEntityModal.html">
-    <div class="modal-header">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Create new entity</h3>
     </div>
     <div class="modal-body">
-        <form>
-            <div class="form-group">
-                <label for="entityName">Name <span class="required">*</span> </label>
-                <div class="input-group">
-                    <input ng-model="modalData.entity.name" type="text" class="form-control" id="entityName" placeholder="eg. sampleEntity1">
-                    <div class="input-group-addon"><i class="fa fa-question-circle"></i></div>
+        <form name="createEntity">
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || modalData.nameError}">
+                <label class="required" for="entityName">Name</label>
+                <input ng-model="modalData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer" 
+                       required pattern="^[A-Za-z][A-Za-z0-9_]*$" maxlength="50">
+                <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || modalData.nameError">
+                    <small class="error" ng-show="createEntity.name.$error.required && !modalData.nameError">
+                        Your name is required.
+                    </small>
+                    <small class="error" ng-show="createEntity.name.$error.pattern">
+                        Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores!
+                    </small>
+                    <small class="error"  ng-show="signup_form.name.$error.minlength">
+                        The name is required to be at least 3 characters
+                    </small>
+                    <small class="error" ng-show="signup_form.name.$error.maxlength">
+                        The name cannot be longer than 50 characters
+                    </small>
+                    <small class="error" ng-show="modalData.nameError">
+                        {{modalData.nameMessage}}
+                    </small>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="entityLabel">Label</label>
-                <input ng-model="modalData.entity.label" type="text" class="form-control" id="entityLabel" placeholder="">
+            <div class="form-group" ng-class="{ 'has-error' : createEntity.label.$invalid && !createEntity.label.$pristine || modalData.labelError }">
+                <label class="required" for="label">Label</label>
+                <input ng-model="modalData.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
+                       required>
+                <div class="error" ng-show="createEntity.label.$dirty && createEntity.label.$invalid || modalData.labelError">
+                    <small class="error" ng-show="createEntity.label.$error.required && !modalData.labelError">
+                        Entity label is required.
+                    </small>
+                    <small class="error" ng-show="modalData.labelError">
+                        {{modalData.labelMessage}}
+                    </small>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="entityPluralLabel">Plural Label</label>
-                <input ng-model="modalData.entity.pluralLabel" type="text" class="form-control" id="entityPluralLabel" placeholder="">
+            <div class="form-group" ng-class="{ 'has-error' : createEntity.pluralLabel.$invalid && !createEntity.pluralLabel.$pristine || modalData.pluralLabelError }">
+                <label class="required" for="entityPluralLabel">Plural Label</label>
+                <input ng-model="modalData.entity.pluralLabel" type="text" class="form-control" id="entityPluralLabel" placeholder="e.g. Customers"
+                       required>
+                <div class="error" ng-show="createEntity.pluralLabel.$dirty && createEntity.pluralLabel.$invalid || modalData.pluralLabelError">
+                    <small class="error" ng-show="createEntity.pluralLabel.$error.required && !modalData.pluralLabelError">
+                        Entity plural label is required.
+                    </small>
+                    <small class="error" ng-show="modalData.pluralLabelError">
+                        {{modalData.pluralLabelMessage}}
+                    </small>
+                </div>
             </div>
             <div class="form-group">
                 <label for="entitySystemStatus">System Status</label>
                 <div class="checkbox">
                     <label>
                         <input ng-model="modalData.entity.system" type="checkbox" id="entitySystemStatus" value="true">
-                        this is system entity
+                        this is system entity <span class="go-grey">(could not be deleted later)</span>
                     </label>
                 </div>
             </div>

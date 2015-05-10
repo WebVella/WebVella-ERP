@@ -54,7 +54,7 @@
                         return;
                     }
                     data.success = false;
-                    errorCallback();
+                    errorCallback(data);
                     break;
                 default:
                     $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: API call finished with error: ' + status);
@@ -77,8 +77,7 @@
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
-                status = 400;//Bad request
-                errorCallback();
+                errorCallback(data);
             }
             else {
                 $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result success: get object ');

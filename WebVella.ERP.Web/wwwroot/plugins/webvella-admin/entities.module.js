@@ -42,7 +42,7 @@
                 resolvedEntityMetaList: resolveEntityMetaList
             },
             data: {
-                
+
             }
         });
     };
@@ -76,10 +76,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList','$modal'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$modal'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList,$modal) {
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal) {
         $log.debug('webvellaAdmin>entities> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -94,7 +94,7 @@
                 animation: false,
                 templateUrl: 'createEntityModal.html',
                 controller: 'CreateEntityModalController',
-                controllerAs:"modalData",
+                controllerAs: "modalData",
                 size: "",
                 resolve: {}
             });
@@ -108,15 +108,15 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService'];
+    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location'];
 
     /* @ngInject */
-    function createEntityController($modalInstance, $log, webvellaAdminService) {
+    function createEntityController($modalInstance, $log, webvellaAdminService,webvellaRootService, ngToast, $timeout, $state, $location) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
         modalData.entity = {
-            id:null,
+            id: null,
             name: "",
             label: "",
             pluralLabel: "",
@@ -134,11 +134,18 @@
 
         /// Aux
         function successCallback(response) {
-            console.log(response)
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>The entity was successfully created</p>'
+            });
+            $modalInstance.close('success');
+            webvellaRootService.reloadCurrentState($state);
         }
 
         function errorCallback(response) {
-            console.log(response)
+            var location = $location;
+            //Process the response and generate the validation Messages
+            webvellaRootService.generateValidationMessages(response, modalData,modalData.entity, location);
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };

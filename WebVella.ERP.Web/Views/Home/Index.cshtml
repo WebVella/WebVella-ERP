@@ -56,7 +56,7 @@
             angular
                 .module('wvApp', [
                     'ngAnimate', 'ngTouch', // Angular modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', // 3rd Party Modules
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', // 3rd Party Modules
                     'webvellaRoot', //plugin:webvella-root
                     'webvellaAdmin', //plugin:webvella-admin
                     'webvellaDesktop', //plugin:webvella-desktop
@@ -69,10 +69,14 @@
                 .run(run);
 
             // Configuration ///////////////////////////////////
-            config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants'];
-            function config($urlRouterProvider, $logProvider, wvAppConstants) {
+            config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
+            function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
                 $urlRouterProvider.otherwise('/');
                 $logProvider.debugEnabled(wvAppConstants.debugEnabled);
+
+                ngToastProvider.configure({
+                    animation: 'fade'
+                });
             };
 
             // Run //////////////////////////////////////

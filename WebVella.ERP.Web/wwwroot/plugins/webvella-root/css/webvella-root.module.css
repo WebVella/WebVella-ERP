@@ -1,7 +1,4 @@
-﻿/****************************
-    General
-*****************************/
-/*#region << General >> */
+﻿/*#region << General >> */
 
 body {
     background:#212121;
@@ -18,11 +15,6 @@ body {
     right:0;*/
 }
 
-table thead th.actions,
-table tbody td.actions {
-    width:1%;
-    white-space:nowrap;
-}
 
 .display-block {
     display:block !important;
@@ -94,11 +86,6 @@ table tbody td.actions {
 
 /*#endregion */
 
-
-
-/****************************
-    Sidebar
-*****************************/
 /*#region << Sidebar >> */
 
 #sidebar {
@@ -355,9 +342,6 @@ table tbody td.actions {
 
 /*#endregion */
 
-/****************************
-    Page topnav
-*****************************/
 /*#region << Page topnav >> */
 
 #page-topnav {
@@ -376,7 +360,9 @@ table tbody td.actions {
   display:none;
 }
 
-
+#page-topnav .btn-link {
+    color:#555;
+}
 
 
 /* Theming */
@@ -722,10 +708,6 @@ table tbody td.actions {
 
 /*#endregion */
 
-
-/****************************
-    Content
-*****************************/
 /*#region << Content >> */
 
 #content {
@@ -757,10 +739,6 @@ table tbody td.actions {
 
 /*#endregion */
 
-
-/****************************
-    Page title
-*****************************/
 /*#region << Page title >> */
 
 #page-title:empty {
@@ -1079,12 +1057,7 @@ table tbody td.actions {
 
 /*#endregion */
 
-
-/****************************
-    Area thumbnail
-*****************************/
-
-/*#region Area thumbnails */
+/*#region << Area thumbnails >> */
 
 .area.thumbnail {
   text-align: center;
@@ -1338,10 +1311,7 @@ table tbody td.actions {
 
 /*#endregion */
 
-/****************************
-    Page content
-*****************************/
-/*#region << Page content */
+/*#region << Page content >>*/
 
 #page-content {
   position: relative;
@@ -1503,10 +1473,7 @@ table tbody td.actions {
 
 /*#endregion */
 
-
-/***************************
-    Loading bar
-****************************/
+/*#region << Loading bar overrides>> */
 
 /* Make clicks pass-through */
 #loading-bar,
@@ -1550,10 +1517,9 @@ body #loading-bar-spinner {
    border-width:3px;
 }
 
-/*
-    Modal overrides
-*/
-/*#region Modal overrides */
+/*#endregion */
+
+/*#region << Modal overrides >>*/
 .modal h3.modal-title {
     text-transform:uppercase;
     font-size:16px;
@@ -1649,5 +1615,121 @@ body #loading-bar-spinner {
 
 .theme-brown .modal .modal-header {
   border-bottom-color:  #795548;
+}
+/*#endregion */
+
+/*#region << Forms >> */
+
+label.required:after {
+    content:"*";
+    display:inline-block;
+    color:#F44336;
+    margin-left:5px;
+}
+
+form .error {
+    color:#F44336;
+}
+.has-error .form-control {
+    border-color:#F44336;
+}
+
+
+/*#endregion */
+
+/*#region << Tables >> */
+
+.table-vertical-align-middle tbody th,
+.table-vertical-align-middle tbody td {
+    vertical-align:middle !important;
+}
+
+table thead th.actions,
+table tbody td.actions {
+    width:1%;
+    white-space:nowrap;
+}
+
+table .btn-xs.btn-link {
+    padding:0 5px;
+    font-size:13px;
+}
+
+/*#endregion */
+
+/*#region << Colors >> */
+.go-red {
+  color:  #F44336;
+}
+
+.go-pink {
+  color:  #E91E63;
+}
+
+.go-purple {
+  color:  #9C27B0;
+}
+
+
+.go-deep-purple {
+  color:  #673AB7;
+}
+
+.go-indigo {
+  color:  #3F51B5;
+}
+
+.go-blue {
+  color:  #2196F3;
+}
+
+.go-light-blue {
+  color:  #03A9F4;
+}
+
+.go-cyan {
+  color:  #00BCD4;
+}
+
+.go-teal {
+  color:  #009688;
+}
+
+.go-green {
+  color:  #4CAF50;
+}
+
+
+.go-light-green {
+  color:  #8BC34A;
+}
+
+.go-lime {
+  color:  #CDDC39;
+}
+
+.go-yellow {
+  color:  #FDD835;
+}
+
+.go-amber {
+  color:  #FFC107;
+}
+
+.go-orange {
+  color:  #FF9800;
+}
+
+.go-deep-orange {
+  color:  #FF5722;
+}
+
+.go-brown {
+  color:  #795548;
+}
+
+.go-gray,
+.go-grey {
+  color:  #BDBDBD;
 }
 /*#endregion */
