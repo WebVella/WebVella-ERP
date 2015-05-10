@@ -193,7 +193,7 @@ namespace WebVella.ERP
                 enabledField.HelpText = "";
                 enabledField.Required = true;
                 enabledField.Unique = false;
-                enabledField.Searchable = true;false
+                enabledField.Searchable = true;
                 enabledField.Auditable = false;
                 enabledField.System = true;
                 enabledField.DefaultValue = false;
