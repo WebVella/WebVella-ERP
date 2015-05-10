@@ -16,6 +16,8 @@ namespace WebVella.ERP.Storage.Mongo
 
         public bool System { get; set; }
 
+        public IStorageEntityPermissions Permissions { get; set; }
+
         public List<IStorageField> Fields { get; set; }
 
         public List<IStorageView> Views { get; set; }
@@ -27,6 +29,22 @@ namespace WebVella.ERP.Storage.Mongo
             Fields = new List<IStorageField>();
             Views = new List<IStorageView>();
             Forms = new List<IStorageForm>();
+        }
+    }
+
+    internal class MongoEntityPermissions : IStorageEntityPermissions
+    {
+        public List<Guid> CanRead { get; set; }
+
+        public List<Guid> CanUpdate { get; set; }
+
+        public List<Guid> CanDelete { get; set; }
+
+        public MongoEntityPermissions()
+        {
+            CanRead = new List<Guid>();
+            CanUpdate = new List<Guid>();
+            CanDelete = new List<Guid>();
         }
     }
 }
