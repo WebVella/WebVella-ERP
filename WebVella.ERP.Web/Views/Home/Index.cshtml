@@ -28,7 +28,7 @@
     @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
 
 </head>
-<body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':rootData.isMiniSidebar}">
+<body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':appData.isMiniSidebar, 'not-visible-side-menu': !appData.sideMenuIsVisible}">
     <toast></toast>
 
     <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
@@ -108,6 +108,8 @@
     <script src="~/plugins/webvella-admin/topnav.controller.js"></script>
     <script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
     <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
+    <script src="~/plugins/webvella-admin/entity-details.module.js"></script>
+
 
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
