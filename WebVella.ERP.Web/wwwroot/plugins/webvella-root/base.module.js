@@ -67,10 +67,10 @@
 
 
     // Resolve Function /////////////////////////
-    resolveSiteMeta.$inject = ['$q','$log', 'webvellaRootSiteMetaService'];
+    resolveSiteMeta.$inject = ['$q','$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function resolveSiteMeta($q,$log, webvellaRootSiteMetaService) {
+    function resolveSiteMeta($q,$log, webvellaRootService) {
         $log.debug('webvellaRoot>base> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
@@ -84,7 +84,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootSiteMetaService.getSiteMeta(successCallBack, errorCallBack);
+        webvellaRootService.getSiteMeta(successCallBack, errorCallBack);
 
         // Return
         $log.debug('webvellaRoot>base> END state.resolved');

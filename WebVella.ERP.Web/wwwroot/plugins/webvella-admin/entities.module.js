@@ -42,6 +42,33 @@
     };
 
 
+    // Resolve Function /////////////////////////
+    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
+
+    /* @ngInject */
+    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
+        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallBack(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallBack(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaAreasService.getAreaByName($stateParams.name, successCallBack, errorCallBack);
+
+        // Return
+        $log.debug('webvellaAreas>entities> END state.resolved');
+        return defer.promise;
+    }
+
+
+
     // Controller ///////////////////////////////
     controller.$inject = ['$rootScope','$state','pageTitle'];
 

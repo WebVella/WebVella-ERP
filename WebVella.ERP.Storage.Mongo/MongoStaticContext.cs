@@ -6,6 +6,7 @@ using System.Linq;
 using MongoDB.Driver;
 using Microsoft.Framework.ConfigurationModel;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 
 #endregion
 
@@ -39,7 +40,30 @@ namespace WebVella.ERP.Storage.Mongo
 			Database = Server.GetDatabase(mongoUrl.DatabaseName);
 
 			Entities = RegisterRepository<MongoEntity>("entities");
-		}
+
+            //register fields classes in classmap
+            BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
+            BsonClassMap.RegisterClassMap<MongoCheckboxField>();
+            BsonClassMap.RegisterClassMap<MongoCurrencyField>();
+            BsonClassMap.RegisterClassMap<MongoDateField>();
+            BsonClassMap.RegisterClassMap<MongoDateTimeField>();
+            BsonClassMap.RegisterClassMap<MongoEmailField>();
+            BsonClassMap.RegisterClassMap<MongoFileField>();
+            BsonClassMap.RegisterClassMap<MongoHtmlField>();
+            BsonClassMap.RegisterClassMap<MongoImageField>();
+            BsonClassMap.RegisterClassMap<MongoLookupRelationField>();
+            BsonClassMap.RegisterClassMap<MongoMasterDetailsRelationshipField>();
+            BsonClassMap.RegisterClassMap<MongoMultiLineTextField>();
+            BsonClassMap.RegisterClassMap<MongoMultiSelectField>();
+            BsonClassMap.RegisterClassMap<MongoNumberField>();
+            BsonClassMap.RegisterClassMap<MongoPasswordField>();
+            BsonClassMap.RegisterClassMap<MongoPercentField>();
+            BsonClassMap.RegisterClassMap<MongoPhoneField>();
+            BsonClassMap.RegisterClassMap<MongoPrimaryKeyField>();
+            BsonClassMap.RegisterClassMap<MongoSelectField>();
+            BsonClassMap.RegisterClassMap<MongoTextField>();
+            BsonClassMap.RegisterClassMap<MongoUrlField>();
+        }
 
 		/// <summary>
 		///     Registers the repository.

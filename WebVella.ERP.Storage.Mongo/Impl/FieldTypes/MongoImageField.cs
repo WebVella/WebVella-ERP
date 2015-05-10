@@ -1,6 +1,6 @@
 ﻿using WebVella.ERP.Storage;
 
-namespace WebVella.ERP.Core
+namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoImageField : MongoBaseField, IStorageImageField
     {

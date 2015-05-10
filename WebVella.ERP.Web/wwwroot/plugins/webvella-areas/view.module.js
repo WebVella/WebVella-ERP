@@ -18,6 +18,7 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-view', {
+            abstract:true,
             parent: 'webvella-areas-base',
             url: '/view/:areaName', //  /areas/view/:name after the parent state is prepended
             views: {
@@ -74,10 +75,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentArea'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentArea', '$timeout'];
 
     /* @ngInject */
-    function controller($log,$rootScope, $state, resolvedCurrentArea) {
+    function controller($log, $rootScope, $state, resolvedCurrentArea, $timeout) {
         $log.debug('webvellaAreas>view> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -102,7 +103,10 @@
             }
         }
         if (firstEntityName != null) {
-            $state.go('webvella-areas-entities', { areaName: requestedArea.name, sectionName: firstEntitySectionName, entityName: firstEntityName });
+            $timeout(function () {
+                $state.go('webvella-areas-entities', { areaName: requestedArea.name, sectionName: firstEntitySectionName, entityName: firstEntityName });
+            }, 0);
+            
         }
         else {
             //If no entities related raise error and cancel navigation

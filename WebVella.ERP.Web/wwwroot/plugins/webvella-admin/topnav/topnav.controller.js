@@ -12,10 +12,10 @@
         .controller('WebVellaAdminEntitiesTopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state','$rootScope']; 
+    controller.$inject = ['$state', '$rootScope', '$timeout'];
 
     /* @ngInject */
-    function controller($state,$rootScope) {
+    function controller($state, $rootScope, $timeout) {
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = null;
@@ -25,7 +25,10 @@
         function activate() {
 
             topnavData.navigateToHome = function () {
-                $state.go('home');
+                $timeout(function () {
+                    $state.go('home');
+                }, 0);
+                
             }
 
             $rootScope.$watch('currentArea', function (newValue, oldValue) {
