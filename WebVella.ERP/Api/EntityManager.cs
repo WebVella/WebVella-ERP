@@ -72,6 +72,8 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("label", entity.Label, "Label is required!"));
             else
             {
+                //TODO check if we need this validation
+                /*
                 if (entity.Label.Length > 50)
                     errorList.Add(new ErrorModel("label", entity.Label, "The lenght of Label must be less than 50 characters!"));
 
@@ -80,12 +82,15 @@ namespace WebVella.ERP
                 Match match = Regex.Match(entity.Label, pattern);
                 if (!match.Success || match.Value != entity.Label.Trim())
                     errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                */
             }
 
             if (string.IsNullOrWhiteSpace(entity.PluralLabel))
                 errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label is required!"));
             else
             {
+                //TODO check if we need this validation
+                /*
                 if (entity.PluralLabel.Length > 50)
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The lenght of Plural Label must be less than 50 characters!"));
 
@@ -94,6 +99,7 @@ namespace WebVella.ERP
                 Match match = Regex.Match(entity.PluralLabel, pattern);
                 if (!match.Success || match.Value != entity.PluralLabel.Trim())
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+               */
             }
 
             if (!entity.System.HasValue)
@@ -175,14 +181,15 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("fields.label", field.Label, "Label is required!"));
             else
             {
-                if (field.Label.Length > 30)
+                //TODO check if we need this validation
+                /*if (field.Label.Length > 30)
                     errorList.Add(new ErrorModel("fields.label", field.Label, "The lenght of Label must be less than 30 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
                 Match match = Regex.Match(field.Label, pattern);
                 if (!match.Success || match.Value != field.Label.Trim())
-                    errorList.Add(new ErrorModel("fields.label", field.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                    errorList.Add(new ErrorModel("fields.label", field.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));*/
             }
 
             if (field is AutoNumberField)
@@ -434,6 +441,8 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("views.label", view.Label, "Label is required!"));
             else
             {
+                //TODO check if we need this validation
+                /*
                 if (view.Label.Length > 50)
                     errorList.Add(new ErrorModel("views.label", view.Label, "The lenght of Label must be less than 50 characters!"));
 
@@ -442,6 +451,7 @@ namespace WebVella.ERP
                 Match match = Regex.Match(view.Label, pattern);
                 if (!match.Success || match.Value != view.Label.Trim())
                     errorList.Add(new ErrorModel("views.label", view.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                */
             }
 
             if (view.Filters != null && view.Filters.Count > 0)
@@ -548,6 +558,8 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("forms.label", form.Label, "Label is required!"));
             else
             {
+                //TODO check if we need this validation
+                /*
                 if (form.Label.Length > 50)
                     errorList.Add(new ErrorModel("forms.label", form.Label, "The lenght of Label must be less than 50 characters!"));
 
@@ -556,6 +568,7 @@ namespace WebVella.ERP
                 Match match = Regex.Match(form.Label, pattern);
                 if (!match.Success || match.Value != form.Label.Trim())
                     errorList.Add(new ErrorModel("forms.label", form.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+               */
             }
 
             foreach (var field in form.Fields)
@@ -607,6 +620,11 @@ namespace WebVella.ERP
             try
             {
                 response.Object = entity;
+                //in order to support external IDs (while import in example)
+                //we generate new ID only when it is not specified
+                if (inputEntity.Id == null)
+                    inputEntity.Id = Guid.NewGuid();
+
                 response.Errors = ValidateEntity(inputEntity, false);
 
                 if (response.Errors.Count > 0)
@@ -617,11 +635,7 @@ namespace WebVella.ERP
                     return response;
                 }
 
-                //in order to support external IDs (while import in example)
-                //we generate new ID only when it is not specified
-                if (entity.Id == null )
-                    entity.Id = Guid.NewGuid();
-
+                entity.Id = inputEntity.Id;
                 entity.Fields = CreateEntityDefaultFields(entity);
                 entity.Views = CreateEntityDefaultViews(entity);
                 entity.Forms = CreateEntityDefaultForms(entity);
