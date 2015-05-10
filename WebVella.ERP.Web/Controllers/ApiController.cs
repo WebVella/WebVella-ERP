@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using System.Net;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,8 +28,12 @@ namespace WebVella.ERP.Web.Controllers
         public IActionResult MetaEntitiesList()
         {
             EntityManager manager = new EntityManager(service.StorageService);
-            EntityListResponse list = manager.ReadEntities();
-            return Json(list);
+            EntityListResponse response = manager.ReadEntities();
+
+            if (response.Errors.Count > 0)
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json(response);
         }
 
         // Create an entity
@@ -38,6 +43,10 @@ namespace WebVella.ERP.Web.Controllers
         {
             EntityManager manager = new EntityManager(service.StorageService);
             EntityResponse response = manager.CreateEntity(submitObj);
+
+            if (response.Errors.Count > 0)
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
             return Json(response);
         }
     }
