@@ -47,20 +47,45 @@
                 </td>
                 <td class="name">{{entity.name}}</td>
             </tr>
-  
+
         </tbody>
     </table>
 </div>
 
 <script type="text/ng-template" id="createEntityModal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Create entity</h3>
+        <h3 class="modal-title">Create new entity</h3>
     </div>
     <div class="modal-body">
-      {{modalData.boz}}
+        <form>
+            <div class="form-group">
+                <label for="entityName">Name <span class="required">*</span> </label>
+                <div class="input-group">
+                    <input ng-model="modalData.entity.name" type="text" class="form-control" id="entityName" placeholder="eg. sampleEntity1">
+                    <div class="input-group-addon"><i class="fa fa-question-circle"></i></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="entityLabel">Label</label>
+                <input ng-model="modalData.entity.label" type="text" class="form-control" id="entityLabel" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="entityPluralLabel">Plural Label</label>
+                <input ng-model="modalData.entity.pluralLabel" type="text" class="form-control" id="entityPluralLabel" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="entitySystemStatus">System Status</label>
+                <div class="checkbox">
+                    <label>
+                        <input ng-model="modalData.entity.system" type="checkbox" id="entitySystemStatus" value="true">
+                        this is system entity
+                    </label>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="modalData.ok()">Create New Entity</button>
+        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
     </div>
 </script>

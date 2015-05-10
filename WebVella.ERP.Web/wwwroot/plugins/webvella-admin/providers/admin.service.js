@@ -18,13 +18,29 @@
         var serviceInstance = this;
 
         serviceInstance.getMetaEntityList = getMetaEntityList;
-
+        serviceInstance.createEntity = createEntity;
 
         ///////////////////////
         function getMetaEntityList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
+
+        ///////////////////////
+        function createEntity(postObject,successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>createEntity> function called');
+            var postData = {
+                id: postObject.id,
+                name: postObject.name,
+                label: postObject.label,
+                pluralLabel: postObject.pluralLabel,
+                system: postObject.system
+            };
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity', data: postData }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+
 
         //// Aux methods //////////////////////////////////////////////////////
 
