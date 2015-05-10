@@ -25,7 +25,7 @@ namespace WebVella.ERP.Web.Controllers
         // Get all entity definitions
         // GET: api/v1/en_US/meta/entity/list/
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
-        public IActionResult MetaEntitiesList()
+        public IActionResult GetEntityMetaList()
         {
             EntityManager manager = new EntityManager(service.StorageService);
             EntityListResponse response = manager.ReadEntities();
@@ -35,6 +35,21 @@ namespace WebVella.ERP.Web.Controllers
 
             return Json(response);
         }
+
+        // Get entity meta
+        // GET: api/v1/en_US/meta/entity/{name}/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}")]
+        public IActionResult GetEntityMeta(string Name)
+        {
+            EntityManager manager = new EntityManager(service.StorageService);
+            EntityResponse response = manager.ReadEntity(Name);
+
+            if (response.Errors.Count > 0)
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json(response);
+        }
+
 
         // Create an entity
         // POST: api/v1/en_US/meta/entity
