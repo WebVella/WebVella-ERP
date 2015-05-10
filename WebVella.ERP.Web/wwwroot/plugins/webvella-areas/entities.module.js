@@ -86,22 +86,25 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootSiteMetaService', 'resolvedCurrentArea'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedCurrentArea', '$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, webvellaRootSiteMetaService, resolvedCurrentArea) {
+    function controller($log, $rootScope, $state, pageTitle, webvellaRootService, resolvedCurrentArea, $timeout) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
         //Set pageTitle
         contentData.pageTitle = "Area Entities | " + pageTitle;
-        webvellaRootSiteMetaService.setPageTitle(contentData.pageTitle);
+        webvellaRootService.setPageTitle(contentData.pageTitle);
         contentData.currentArea = resolvedCurrentArea;
-        webvellaRootSiteMetaService.setBodyColorClass(contentData.currentArea.color);
+        webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 
 
-        contentData.goHome = function () {
-            $state.go("webvella-root-home");
+        contentData.goDesktopBrowse = function () {
+            $timeout(function () {
+                $state.go("webvella-desktop-browse");
+            }, 0);
+            
         }
 
         activate();

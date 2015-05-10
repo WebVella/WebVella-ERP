@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver.Builders;
-using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
-using WebVella.ERP.Core;
 using WebVella.ERP.Storage.Mongo.Impl;
 
 namespace WebVella.ERP.Storage.Mongo

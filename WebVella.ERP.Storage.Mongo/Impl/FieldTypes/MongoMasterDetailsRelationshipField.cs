@@ -1,7 +1,7 @@
 ﻿using System;
 using WebVella.ERP.Storage;
 
-namespace WebVella.ERP.Core
+namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoMasterDetailsRelationshipField : MongoBaseField, IStorageMasterDetailsRelationshipField
     {

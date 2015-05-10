@@ -12,12 +12,22 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiController : Controller
     {
+
+        IERPService service;
+
+        public ApiController(IERPService service)
+        {
+            this.service = service;
+        }
+
+
         // GET: api/v1/en_US/meta/entity/list/
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
         public IActionResult MetaEntitiesList()
         {
-            //List<Entity> list = EnitityManager.ReadEntities();
-            return View();
+            EntityManager manager = new EntityManager(service.StorageService);
+            EntityListResponse list = manager.ReadEntities();
+            return Json(list);
         }
     }
 }

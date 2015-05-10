@@ -65,21 +65,21 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', 'currentUser', '$log','pageTitle'];
+    controller.$inject = ['$state', 'currentUser', '$log', 'pageTitle', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($state, currentUser, $log, pageTitle) {
+    function controller($state, currentUser, $log, pageTitle, webvellaRootService) {
         $log.debug('webvellaRoot>home> BEGIN controller.exec');
         /* jshint validthis:true */
         var homeData = this;
-        webvellaRootSiteMetaService.setPageTitle(pageTitle);
+        webvellaRootService.setPageTitle(pageTitle);
         activate();
         $log.debug('webvellaRoot>home> END controller.exec');
         function activate() {
 
             if (currentUser != null) {
                 //If there is an user already logged in, redirect to desktop base
-               $state.go("webvella-desktop-base")
+               $state.go("webvella-desktop-browse")
             }
         }
     }

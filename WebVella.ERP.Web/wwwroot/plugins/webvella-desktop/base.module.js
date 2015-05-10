@@ -19,7 +19,7 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-desktop-base', {
-            //abstract: true,
+            abstract: true,
             parent: 'webvella-root',
             url: '/desktop', //will be added to all children states
             views: {
@@ -41,45 +41,58 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopTopnavFactory', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function run($log) {
+    function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>base> BEGIN module.run');
+        //Initialize the module storage
+        $rootScope.webvellaDesktop = {};
+        $rootScope.webvellaDesktop.browsenav = [];
+
+
+
+        //Initialize the pluggable object made with factories, always when state is changed. (it fixes the duplication problem with browser back and forward buttons)
+        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+            webvellaDesktopTopnavFactory.initTopnav();
+        })
+
+
 
         $log.debug('webvellaDesktop>base> END module.run');
     };
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log','$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout'];
 
     /* @ngInject */
-    function controller($log,$rootScope, $state, $stateParams, webvellaDesktopTopnavFactory) {
+    function controller($log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout) {
         $log.debug('webvellaDesktop>base> BEGIN controller.exec');
 
         /* jshint validthis:true */
         var pluginData = this;
         //Get the topnav items and redirect to the first one
         pluginData.topnav = [];
-        var tempTopnav = webvellaDesktopTopnavFactory.getTopnav();
-
-        if (tempTopnav != undefined) {
-            pluginData.topnav = webvellaDesktopTopnavFactory.getTopnav();
-            activate();
-        }
+        
 
         //Maintain the topnav if there are new injections
         $rootScope.$on('webvellaDesktop-topnav-updated', function (event,newValue) {
             pluginData.topnav = newValue;
             activate();
         });
+        //Emit hook for adding topnav menu items
+        $rootScope.$emit('webvellaDesktop-topnav-ready');
+        $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted');
 
         $log.debug('webvellaDesktop>base> END controller.exec');
 
         function activate() {
             if (pluginData.topnav.length > 0) {
-                $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+                $timeout(function () {
+                    $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+                }, 0);
+               
             }
         }
     }

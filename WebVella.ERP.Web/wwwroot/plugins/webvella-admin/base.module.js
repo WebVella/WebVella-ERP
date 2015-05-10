@@ -19,8 +19,8 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-base', {
-           abstract: true,
-           parent: 'webvella-root',
+            abstract: true,
+            parent: 'webvella-root',
             url: '/admin', //will be added to all children states
             views: {
                 "pluginView": {
@@ -42,22 +42,28 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$rootScope', 'webvellaDesktopBrowsenavFactory'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function run($rootScope, webvellaDesktopBrowsenavFactory) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
+        $log.debug('webvellaAdmin>base> BEGIN module.run');
 
         // Push the Browse area menu and state to the desktop
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-desktop-browse",
-            "stateParams": {},
-            "parentName": "",
-            "nodes": [],
-            "weight": 1.0
-        };
-        webvellaDesktopBrowsenavFactory.addItem(item);
+        $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
+            var item = {
+                "label": "Administration",
+                "stateName": "webvella-admin-entities",
+                "stateParams": {},
+                "parentName": "",
+                "nodes": [],
+                "weight": 100.0,
+                "color": "red",
+                "iconName": "cog"
+            };
 
+            webvellaDesktopBrowsenavFactory.addItem(item);
+        });
+        $log.debug('webvellaAdmin>base> END module.run');
     };
 
     // Controller ///////////////////////////////

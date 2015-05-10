@@ -16,6 +16,7 @@
     function factory($log,$rootScope) {
         var topnav = [];
         var exports = {
+            initTopnav:initTopnav,
             addItem: addItem,
             getTopnav: getTopnav
         };
@@ -24,6 +25,12 @@
         return exports;
 
         ////////////////
+
+        function initTopnav() {
+            $log.debug('webvellaDesktop>providers>topnav.factory>initTopnav> function called');
+            topnav = [];
+            return topnav;
+        }
 
         function addItem(item) {
             $log.debug('webvellaDesktop>providers>topnav.factory>addItem> function called');
