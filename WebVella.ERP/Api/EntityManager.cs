@@ -52,7 +52,7 @@ namespace WebVella.ERP
             else
             {
                 if (entity.Name.Length > 50)
-                    errorList.Add(new ErrorModel("name", entity.Name, "The lenght of Name must be less than 50 characters!"));
+                    errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be less than 50 characters!"));
 
                 string pattern = @"^[A-Za-z][A-Za-z0-9_]*$";
 
@@ -75,7 +75,7 @@ namespace WebVella.ERP
                 //TODO check if we need this validation
                 /*
                 if (entity.Label.Length > 50)
-                    errorList.Add(new ErrorModel("label", entity.Label, "The lenght of Label must be less than 50 characters!"));
+                    errorList.Add(new ErrorModel("label", entity.Label, "The length of Label must be less than 50 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
@@ -92,7 +92,7 @@ namespace WebVella.ERP
                 //TODO check if we need this validation
                 /*
                 if (entity.PluralLabel.Length > 50)
-                    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The lenght of Plural Label must be less than 50 characters!"));
+                    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The length of Plural Label must be less than 50 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
@@ -167,7 +167,7 @@ namespace WebVella.ERP
             else
             {
                 if (field.Name.Length > 30)
-                    errorList.Add(new ErrorModel("fields.name", field.Name, "The lenght of Name must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("fields.name", field.Name, "The length of Name must be less than 30 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
@@ -183,7 +183,7 @@ namespace WebVella.ERP
             {
                 //TODO check if we need this validation
                 /*if (field.Label.Length > 30)
-                    errorList.Add(new ErrorModel("fields.label", field.Label, "The lenght of Label must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("fields.label", field.Label, "The length of Label must be less than 30 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
@@ -428,7 +428,7 @@ namespace WebVella.ERP
             else
             {
                 if (view.Name.Length > 30)
-                    errorList.Add(new ErrorModel("name", view.Name, "The lenght of Name must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("name", view.Name, "The length of Name must be less than 30 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
@@ -444,7 +444,7 @@ namespace WebVella.ERP
                 //TODO check if we need this validation
                 /*
                 if (view.Label.Length > 50)
-                    errorList.Add(new ErrorModel("views.label", view.Label, "The lenght of Label must be less than 50 characters!"));
+                    errorList.Add(new ErrorModel("views.label", view.Label, "The length of Label must be less than 50 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
@@ -545,7 +545,7 @@ namespace WebVella.ERP
             else
             {
                 if (form.Name.Length > 30)
-                    errorList.Add(new ErrorModel("forms.name", form.Name, "The lenght of Name must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("forms.name", form.Name, "The length of Name must be less than 30 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9_])$";
 
@@ -561,7 +561,7 @@ namespace WebVella.ERP
                 //TODO check if we need this validation
                 /*
                 if (form.Label.Length > 50)
-                    errorList.Add(new ErrorModel("forms.label", form.Label, "The lenght of Label must be less than 50 characters!"));
+                    errorList.Add(new ErrorModel("forms.label", form.Label, "The length of Label must be less than 50 characters!"));
 
                 string pattern = @"^([A-Za-z][A-Za-z0-9\s_.-])$";
 
@@ -690,8 +690,13 @@ namespace WebVella.ERP
                     return response;
                 }
 
-                IStorageEntity storageEntity = EntityRepository.Convert(entity);
+                IStorageEntity storageEntity = EntityRepository.Read(entity.Id.Value);
+
+                storageEntity.Label = entity.Label;
+                storageEntity.PluralLabel = entity.PluralLabel;
+
                 bool result = EntityRepository.Update(storageEntity);
+
                 if (!result)
                 {
                     response.Timestamp = DateTime.UtcNow;
