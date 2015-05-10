@@ -10,17 +10,17 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntitiesController', controller)
-        .controller('CreateEntityModalController', createEntityController);
+        .controller('WebVellaAdminEntityDetailsController', controller)
+        .controller('DeleteEntityModalController', deleteEntityController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-admin-entities', {
+        $stateProvider.state('webvella-admin-entity-details', {
             parent: 'webvella-admin-base',
-            url: '/admin/entities', //  /desktop/areas after the parent state is prepended
+            url: '/admin/entities/:name', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -33,13 +33,13 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAdminEntitiesController',
-                    templateUrl: '/plugins/webvella-admin/entities.view.html',
+                    controller: 'WebVellaAdminEntityDetailsController',
+                    templateUrl: '/plugins/webvella-admin/entity-details.view.html',
                     controllerAs: 'contentData'
                 }
             },
             resolve: {
-                resolvedEntityMetaList: resolveEntityMetaList
+                resolvedCurrentEntityMeta: resolveCurrentEntityMeta
             },
             data: {
 
@@ -49,11 +49,11 @@
 
 
     // Resolve Function /////////////////////////
-    resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaAdminService'];
+    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService','$stateParams'];
 
     /* @ngInject */
-    function resolveEntityMetaList($q, $log, webvellaAdminService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams) {
+        $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
@@ -66,27 +66,36 @@
             defer.resolve(response.object);
         }
 
-        webvellaAdminService.getMetaEntityList(successCallback, errorCallback);
+        webvellaAdminService.getEntityMeta($stateParams.name, successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
+        $log.debug('webvellaAdmin>entity-details> END state.resolved');
         return defer.promise;
     }
 
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$modal'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal) {
-        $log.debug('webvellaAdmin>entities> START controller.exec');
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal) {
+        $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
+        contentData.entity = resolvedCurrentEntityMeta;
         //Update page title
-        contentData.pageTitle = "Entities | " + pageTitle;
+        contentData.pageTitle = "Entity Details | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-        contentData.entities = resolvedEntityMetaList.entities;
+        //Hide Sidemenu
+        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+        $scope.$on("$destroy", function () {
+            $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+        });
+
+
 
         //Create new entity modal
         contentData.openAddEntityModal = function () {
@@ -102,16 +111,16 @@
         }
 
         activate();
-        $log.debug('webvellaAdmin>entities> END controller.exec');
+        $log.debug('webvellaAdmin>entity-details> END controller.exec');
         function activate() { }
     }
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location'];
+    deleteEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location'];
 
     /* @ngInject */
-    function createEntityController($modalInstance, $log, webvellaAdminService,webvellaRootService, ngToast, $timeout, $state, $location) {
+    function deleteEntityController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
