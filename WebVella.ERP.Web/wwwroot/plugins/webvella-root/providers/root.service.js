@@ -11,10 +11,10 @@
         .module('webvellaRoot')
         .service('webvellaRootService', service);
 
-    service.$inject = ['$http', 'wvAppConstants','$log','$rootScope'];
+    service.$inject = ['$http', 'wvAppConstants', '$log', '$rootScope', '$window', '$location', '$anchorScroll', 'ngToast', '$timeout'];
 
     /* @ngInject */
-    function service($http, wvAppConstants,$log,$rootScope) {
+    function service($http, wvAppConstants, $log, $rootScope, $window, $location, $anchorScroll, ngToast, $timeout) {
         var serviceInstance = this;
 
         serviceInstance.registerHookListener = registerHookListener;
@@ -22,7 +22,8 @@
         serviceInstance.getSiteMeta = getSiteMeta;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
-
+        serviceInstance.generateValidationMessages = generateValidationMessages;
+        serviceInstance.reloadCurrentState = reloadCurrentState;
 
         ///////////////////////
         function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
@@ -63,11 +64,43 @@
             $log.debug('rootScope>events> "application-body-color-update" emitted');
         }
 
-
         ////////////////////
         function getSiteMeta(successCallback, errorCallback) {
             $log.debug('webvellaRoot>providers>root.service>getSiteMeta> function called');
             $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/root/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////
+        function generateValidationMessages(response, scopeObj, formObject, location) {
+            $log.error('webvellaRoot>providers>root.service>generateValidationMessages> function called');
+            //Fill in validationError boolean and message for each field according to the template
+            // scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
+            for (var i = 0; i < response.errors.length; i++) {
+                scopeObj[response.errors[i].key + "Message"] = response.errors[i].message;
+                scopeObj[response.errors[i].key + "Error"] = true;
+            }
+            //Rebind the form with the data returned from the server
+            formObject = response.object;
+            //Notify with a toast about the error and show the server response.message
+            ngToast.create({
+                className: 'error',
+                content: '<h4>Error</h4><p>' + response.message +'</p>'
+            });
+            //Scroll top
+            // set the location.hash to the id of
+            // the element you wish to scroll to.
+            location.hash('modal-top');
+
+            // call $anchorScroll()
+            $anchorScroll();
+        }
+
+        //////////////////
+        function reloadCurrentState(state) {
+            $log.error('webvellaRoot>providers>root.service>reloadCurrentState> function called');
+            $timeout(function () {
+                state.go(state.current, {}, { reload: true });
+            }, 0);
         }
 
         //// Aux methods //////////////////////////////////////////////////////
@@ -82,7 +115,7 @@
                         return;
                     }
                     data.success = false;
-                    errorCallback();
+                    errorCallback(data);
                     break;
                 default:
                     $log.debug('webvellaRoot>providers>root.service>getSiteMeta> result failure: API finished with error: ' + status);
@@ -106,7 +139,7 @@
                     return;
                 }
                 status = 400;//Bad request
-                errorCallback();
+                errorCallback(data);
             }
             else {
                 //Updating the application siteMetaValue but first sorting 
