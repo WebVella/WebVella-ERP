@@ -18,7 +18,7 @@ namespace WebVella.ERP.Api.Models
         public int? MaxLength { get; set; }
     }
 
-    public class PhoneFieldMeta : PhoneField
+    public class PhoneFieldMeta : PhoneField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -26,12 +26,16 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			Format = field.Format;
 			MaxLength = field.MaxLength;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }

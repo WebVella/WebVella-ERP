@@ -12,7 +12,7 @@ namespace WebVella.ERP.Api.Models
         public bool? DefaultValue { get; set; }
     }
 
-    public class CheckboxFieldMeta : CheckboxField
+    public class CheckboxFieldMeta : CheckboxField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -20,11 +20,15 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityName")]
         public string EntityName { get; set; }
 
-		public CheckboxFieldMeta(Guid entityId, string entityName, CheckboxField field)
-		{
-			EntityId = entityId;
+        [JsonProperty(PropertyName = "parentFieldName")]
+        public string ParentFieldName { get; set; }
+
+        public CheckboxFieldMeta(Guid entityId, string entityName, CheckboxField field, string parentFieldName = null)
+        {
+            EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
-		}
+            ParentFieldName = parentFieldName;
+        }
 	}
 }
