@@ -286,6 +286,10 @@ namespace WebVella.ERP
             inputEntity.Label = "Goro Test";
             inputEntity.PluralLabel = "Goro Tests";
             inputEntity.System = true;
+            inputEntity.Permissions = new EntityPermissions();
+            inputEntity.Permissions.CanRead = new List<Guid> { };
+            inputEntity.Permissions.CanUpdate = new List<Guid> { };
+            inputEntity.Permissions.CanDelete = new List<Guid> { };
 
             try
             {

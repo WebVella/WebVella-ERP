@@ -21,6 +21,9 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
+
+        [JsonProperty(PropertyName = "permissions")]
+        public EntityPermissions Permissions { get; set; }
     }
 
     public class Entity
@@ -64,15 +67,23 @@ namespace WebVella.ERP.Api.Models
             Label = entity.Label;
             PluralLabel = entity.PluralLabel;
             System = entity.System;
+            Permissions = entity.Permissions;
         }
 
         public Entity(IStorageEntity entity)
         {
             Id = entity.Id;
             Name = entity.Name;
-            entity.Label = entity.Label;
-            entity.PluralLabel = entity.PluralLabel;
+            Label = entity.Label;
+            PluralLabel = entity.PluralLabel;
             System = entity.System;
+            Permissions = new EntityPermissions();
+            if (entity.Permissions != null)
+            {
+                Permissions.CanRead = entity.Permissions.CanRead;
+                Permissions.CanUpdate = entity.Permissions.CanUpdate;
+                Permissions.CanDelete = entity.Permissions.CanDelete;
+            }
 
             Fields = new List<Field>();
 
@@ -153,13 +164,13 @@ namespace WebVella.ERP.Api.Models
     public class EntityPermissions
     {
         [JsonProperty(PropertyName = "canRead")]
-        List<Guid> CanRead { get; set; }
+        public List<Guid> CanRead { get; set; }
 
         [JsonProperty(PropertyName = "canUpdate")]
-        List<Guid> CanUpdate { get; set; }
+        public List<Guid> CanUpdate { get; set; }
 
         [JsonProperty(PropertyName = "canDelete")]
-        List<Guid> CanDelete { get; set; }
+        public List<Guid> CanDelete { get; set; }
 
         public EntityPermissions()
         {
