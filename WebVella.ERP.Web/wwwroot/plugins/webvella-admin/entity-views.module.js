@@ -10,17 +10,16 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityDetailsController', controller)
-        .controller('DeleteEntityModalController', deleteEntityController);
+        .controller('WebVellaAdminEntityViewsController', controller);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-admin-entity-details', {
+        $stateProvider.state('webvella-admin-entity-views', {
             parent: 'webvella-admin-base',
-            url: '/admin/entities/:name', //  /desktop/areas after the parent state is prepended
+            url: '/admin/entities/:name/views', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -33,8 +32,8 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAdminEntityDetailsController',
-                    templateUrl: '/plugins/webvella-admin/entity-details.view.html',
+                    controller: 'WebVellaAdminEntityViewsController',
+                    templateUrl: '/plugins/webvella-admin/entity-views.view.html',
                     controllerAs: 'contentData'
                 }
             },

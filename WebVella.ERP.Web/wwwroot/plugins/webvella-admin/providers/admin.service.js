@@ -20,6 +20,7 @@
         serviceInstance.getMetaEntityList = getMetaEntityList;
         serviceInstance.createEntity = createEntity;
         serviceInstance.getEntityMeta = getEntityMeta;
+        serviceInstance.deleteEntity = deleteEntity;
 
         ///////////////////////
         function getMetaEntityList(successCallback, errorCallback) {
@@ -45,6 +46,13 @@
             $log.debug('webvellaAdmin>providers>admin.service>getEntityMeta> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/'+ name }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
+        ///////////////////////
+        function deleteEntity(entityId, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>deleteEntity> function called');
+            $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
 
         //// Aux methods //////////////////////////////////////////////////////
 

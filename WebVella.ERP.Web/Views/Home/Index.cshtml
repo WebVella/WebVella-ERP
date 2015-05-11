@@ -14,10 +14,10 @@
     <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css" rel="stylesheet" />
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic' rel='stylesheet'
           type='text/css'>
+    <link href="~/plugins/webvella-root/lib/angular-xeditable/css/xeditable.css" rel="stylesheet" />
 
      <!-- plugin:webvella-root-->
     <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
-
     <!-- plugin:webvella-desktop-->
     <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
 
@@ -34,7 +34,7 @@
     <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
     <div ui-view="rootView"></div>
 
-    <!-- plugin:webvella-base -->
+    <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
@@ -47,6 +47,7 @@
     <script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
+    <script src="~/plugins/webvella-root/lib/angular-xeditable/js/xeditable.js"></script>
 
     @* Core Application module definition *@
     <script>
@@ -56,11 +57,11 @@
             angular
                 .module('wvApp', [
                     // Angular modules
-                    'ngAnimate', 'ngTouch', 
+                    'ngAnimate', 'ngTouch',
                      // 3rd Party Modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast',
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', 'xeditable',
                     //plugins
-                    'webvellaRoot','webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
+                    'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -80,8 +81,8 @@
             };
 
             // Run //////////////////////////////////////
-            run.$inject = [];
-            function run() { };
+            run.$inject = ['editableOptions'];
+            function run(editableOptions) { editableOptions.theme = 'bs3'; };
         })();
     </script>
     <script src="~/application.controller.js"></script>
@@ -94,6 +95,7 @@
     <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/base.module.js"></script>
     <script src="~/plugins/webvella-root/home.module.js"></script>
+    <script src="~/plugins/webvella-root/not-found.module.js"></script>
     <script src="~/plugins/webvella-root/providers/root.service.js"></script>
 
     <!-- plugin:webvella-desktop -->
@@ -117,6 +119,9 @@
     <script src="~/plugins/webvella-areas/topnav.controller.js"></script>
     <script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
     <script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
+    <script src="~/plugins/webvella-admin/entity-fields.module.js"></script>
+    <script src="~/plugins/webvella-admin/entity-views.module.js"></script>
+    <script src="~/plugins/webvella-admin/entity-lists.module.js"></script>
 
     <!-- plugin:webvella-developers -->
     <script src="~/plugins/webvella-developers/base.module.js"></script>
