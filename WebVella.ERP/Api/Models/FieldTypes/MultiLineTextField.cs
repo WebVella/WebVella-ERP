@@ -16,6 +16,17 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "visibleLineNumber")]
         public int? VisibleLineNumber { get; set; }
+
+        public MultiLineTextField()
+        {
+        }
+
+        public MultiLineTextField(InputField field) : base(field)
+        {
+            DefaultValue = (string)field["defaultValue"];
+            MaxLength = (int?)field["maxLength"];
+            VisibleLineNumber = (int?)field["visibleLineNumber"];
+        }
     }
 
     public class MultiLineTextFieldMeta : MultiLineTextField, IFieldMeta

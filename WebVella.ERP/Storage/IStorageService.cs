@@ -2,6 +2,7 @@
 {
     public interface IStorageService
     {
+        IStorageSystemSettingsRepository GetSystemSettingsRepository();
         IStorageEntityRepository GetEntityRepository();
         IStorageRecordRepository GetRecordRepository();
     }

@@ -64,5 +64,30 @@ namespace WebVella.ERP.Web.Controllers
 
             return Json(response);
         }
+
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
+        public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("Id", Id, "Id parameter is not valid Guid value"));
+
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(response);
+            }
+
+            Field field = Field.Convert(submitObj);
+
+            EntityManager manager = new EntityManager(service.StorageService);
+            response = manager.CreateField(entityId, field);
+
+            if (response.Errors.Count > 0)
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json(response);
+        }
     }
 }

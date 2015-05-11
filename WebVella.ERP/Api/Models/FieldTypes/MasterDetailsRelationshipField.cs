@@ -10,6 +10,15 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "relatedEntityId")]
         public Guid? RelatedEntityId { get; set; }
+
+        public MasterDetailsRelationshipField()
+        {
+        }
+
+        public MasterDetailsRelationshipField(InputField field) : base(field)
+        {
+            RelatedEntityId = (Guid?)field["relatedEntityId"];
+        }
     }
 
     public class MasterDetailsRelationshipFieldMeta : MasterDetailsRelationshipField, IFieldMeta

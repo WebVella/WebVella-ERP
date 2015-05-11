@@ -13,13 +13,17 @@ namespace WebVella.ERP.Storage
 
         bool System { get; set; }
 
+        string IconName { get; set; }
+
+        decimal Weight { get; set; }
+
         IStorageEntityPermissions Permissions { get; set; }
 
         List<IStorageField> Fields { get; set; }
 
-        List<IStorageView> Views { get; set; }
+        List<IStorageRecordsList> RecordsLists { get; set; }
 
-        List<IStorageForm> Forms { get; set; }
+        List<IStorageRecordView> RecordViewList { get; set; }
     }
 
     public interface IStorageEntityPermissions

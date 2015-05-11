@@ -10,6 +10,15 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "relatedEntityId")]
         public Guid? RelatedEntityId { get; set; }
+
+        public LookupRelationField()
+        {
+        }
+
+        public LookupRelationField(InputField field) : base(field)
+        {
+            RelatedEntityId = (Guid?)field["relatedEntityId"];
+        }
     }
 
     public class LookupRelationFieldMeta : LookupRelationField, IFieldMeta

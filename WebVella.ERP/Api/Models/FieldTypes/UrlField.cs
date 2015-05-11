@@ -16,6 +16,17 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "openTargetInNewWindow")]
         public bool? OpenTargetInNewWindow { get; set; }
+
+        public UrlField()
+        {
+        }
+
+        public UrlField(InputField field) : base(field)
+        {
+            DefaultValue = (string)field["defaultValue"];
+            MaxLength = (int?)field["maxLength"];
+            OpenTargetInNewWindow = (bool?)field["openTargetInNewWindow"];
+        }
     }
 
     public class UrlFieldMeta : UrlField, IFieldMeta

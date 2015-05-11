@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Driver.Builders;
 using WebVella.ERP.Api.Models;
-using WebVella.ERP.Storage.Mongo.Impl;
 
 namespace WebVella.ERP.Storage.Mongo
 {
@@ -27,6 +26,8 @@ namespace WebVella.ERP.Storage.Mongo
             storageEntity.Label = entity.Label;
             storageEntity.PluralLabel = entity.PluralLabel;
             storageEntity.System = entity.System.Value;
+            storageEntity.IconName = entity.IconName;
+            storageEntity.Weight = entity.Weight.Value;
 
             storageEntity.Fields = new List<IStorageField>();
 
@@ -186,69 +187,69 @@ namespace WebVella.ERP.Storage.Mongo
                 storageEntity.Fields.Add(storageField);
             }
 
-            storageEntity.Views = new List<IStorageView>();
+            storageEntity.RecordsLists = new List<IStorageRecordsList>();
 
-            foreach (View view in entity.Views)
+            foreach (RecordsList recordsList in entity.RecordsLists)
             {
-                MongoView storageView = new MongoView();
-                storageView.Id = view.Id.Value;
-                storageView.Name = view.Name;
-                storageView.Label = view.Label;
-                storageView.Type = view.Type;
+                MongoRecordsList storageRecordsList = new MongoRecordsList();
+                storageRecordsList.Id = recordsList.Id.Value;
+                storageRecordsList.Name = recordsList.Name;
+                storageRecordsList.Label = recordsList.Label;
+                storageRecordsList.Type = recordsList.Type;
 
-                storageView.Filters = new List<IStorageViewFilter>();
+                storageRecordsList.Filters = new List<IStorageRecordsListFilter>();
 
-                foreach (ViewFilter filter in view.Filters)
+                foreach (RecordsListFilter filter in recordsList.Filters)
                 {
-                    MongoViewFilter storageFilter = new MongoViewFilter();
+                    MongoRecordsListFilter storageFilter = new MongoRecordsListFilter();
 
                     storageFilter.EntityId = filter.EntityId.Value;
                     storageFilter.FieldId = filter.FieldId.Value;
                     storageFilter.Operator = filter.Operator;
                     storageFilter.Value = filter.Value;
 
-                    storageView.Filters.Add(storageFilter);
+                    storageRecordsList.Filters.Add(storageFilter);
                 }
 
-                storageView.Fields = new List<IStorageViewField>();
+                storageRecordsList.Fields = new List<IStorageRecordsListField>();
 
-                foreach (ViewField field in view.Fields)
+                foreach (RecordsListField field in recordsList.Fields)
                 {
-                    MongoViewField storageField = new MongoViewField();
+                    MongoRecordsListField storageField = new MongoRecordsListField();
 
                     storageField.EntityId = field.EntityId.Value;
                     storageField.Id = field.Id.Value;
                     storageField.Position = field.Position.Value;
 
-                    storageView.Fields.Add(storageField);
+                    storageRecordsList.Fields.Add(storageField);
                 }
 
-                storageEntity.Views.Add(storageView);
+                storageEntity.RecordsLists.Add(storageRecordsList);
             }
 
-            storageEntity.Forms = new List<IStorageForm>();
+            storageEntity.RecordViewList = new List<IStorageRecordView>();
 
-            foreach (Form form in entity.Forms)
+            foreach (RecordView recordView in entity.RecordViewLists)
             {
-                MongoForm storageForm = new MongoForm();
-                storageForm.Id = form.Id.Value;
-                storageForm.Name = form.Name;
-                storageForm.Label = form.Label;
+                MongoRecordView storageRecordView = new MongoRecordView();
+                storageRecordView.Id = recordView.Id.Value;
+                storageRecordView.Name = recordView.Name;
+                storageRecordView.Label = recordView.Label;
 
-                storageForm.Fields = new List<IStorageFormField>();
+                storageRecordView.Fields = new List<IStorageRecordViewField>();
 
-                foreach (FormField field in form.Fields)
+                foreach (RecordViewField field in recordView.Fields)
                 {
-                    MongoFormField storageField = new MongoFormField();
+                    MongoRecordViewField storageField = new MongoRecordViewField();
 
                     storageField.EntityId = field.EntityId.Value;
                     storageField.Id = field.Id.Value;
                     storageField.Position = field.Position.Value;
 
-                    storageForm.Fields.Add(storageField);
+                    storageRecordView.Fields.Add(storageField);
                 }
 
-                storageEntity.Forms.Add(storageForm);
+                storageEntity.RecordViewList.Add(storageRecordView);
             }
 
             return storageEntity;

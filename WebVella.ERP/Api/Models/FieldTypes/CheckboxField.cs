@@ -10,6 +10,15 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "defaultValue")]
         public bool? DefaultValue { get; set; }
+
+        public CheckboxField()
+        {
+        }
+
+        public CheckboxField(InputField field) : base(field)
+        {
+            DefaultValue = (bool?)field["defaultValue"];
+        }
     }
 
     public class CheckboxFieldMeta : CheckboxField, IFieldMeta
