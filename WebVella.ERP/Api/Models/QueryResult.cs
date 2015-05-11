@@ -14,4 +14,13 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "data")]
         public List<EntityRecord> Data { get; set; }
     }
+
+	public class SingleQueryResult
+	{
+		[JsonProperty(PropertyName = "fieldsMeta")]
+		public List<Field> FieldsMeta { get; set; }
+
+		[JsonProperty(PropertyName = "data")]
+		public EntityRecord Data { get; set; }
+	}
 }
