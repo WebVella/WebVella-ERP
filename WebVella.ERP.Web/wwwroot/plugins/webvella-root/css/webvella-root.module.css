@@ -1358,6 +1358,12 @@ span.divider {
         position:relative;
     }
 
+
+#developers {
+    background:white;
+    min-height:600px;
+}
+
 /****************************
     Filter criterias
 *****************************/

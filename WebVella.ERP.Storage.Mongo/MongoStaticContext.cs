@@ -24,10 +24,10 @@ namespace WebVella.ERP.Storage.Mongo
 		internal IMongoRepository<MongoEntity> Entities { get; private set; }
         internal IMongoRepository<MongoSystemSettings> SystemSettings { get; private set; }
 
-        /// <summary>
-        ///     Initializes the <see cref="MongoStaticContext" /> class.
-        /// </summary>
-        private MongoStaticContext()
+		/// <summary>
+		///     Initializes the <see cref="MongoStaticContext" /> class.
+		/// </summary>
+		private MongoStaticContext()
 		{
 			repositories = new List<object>();
 			var configuration = new Configuration().AddJsonFile("config.json");
@@ -43,7 +43,10 @@ namespace WebVella.ERP.Storage.Mongo
 			Entities = RegisterRepository<MongoEntity>("entities");
             SystemSettings = RegisterRepository<MongoSystemSettings>("system_settings");
 
-            //register fields classes in classmap
+			//register all mongo storage classes
+			BsonClassMap.RegisterClassMap<MongoEntity>();
+			BsonClassMap.RegisterClassMap<MongoForm>();
+			BsonClassMap.RegisterClassMap<MongoView>();
             BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
             BsonClassMap.RegisterClassMap<MongoCheckboxField>();
             BsonClassMap.RegisterClassMap<MongoCurrencyField>();

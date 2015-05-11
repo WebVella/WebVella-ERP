@@ -98,14 +98,16 @@
 
 
         //Create new entity modal
-        contentData.openAddEntityModal = function () {
+        contentData.openDeleteEntityModal = function () {
             var modalInstance = $modal.open({
                 animation: false,
-                templateUrl: 'createEntityModal.html',
-                controller: 'CreateEntityModalController',
+                templateUrl: 'deleteEntityModal.html',
+                controller: 'DeleteEntityModalController',
                 controllerAs: "modalData",
                 size: "",
-                resolve: {}
+                resolve: {
+                    parentData: contentData
+                }
             });
 
         }

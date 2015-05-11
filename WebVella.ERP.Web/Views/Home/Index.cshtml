@@ -55,12 +55,12 @@
             'use strict';
             angular
                 .module('wvApp', [
-                    'ngAnimate', 'ngTouch', // Angular modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', // 3rd Party Modules
-                    'webvellaRoot', //plugin:webvella-root
-                    'webvellaAdmin', //plugin:webvella-admin
-                    'webvellaDesktop', //plugin:webvella-desktop
-                    'webvellaAreas', //plugin:webvella-areas
+                    // Angular modules
+                    'ngAnimate', 'ngTouch', 
+                     // 3rd Party Modules
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast',
+                    //plugins
+                    'webvellaRoot','webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -107,9 +107,9 @@
     <script src="~/plugins/webvella-admin/entities.module.js"></script>
     <script src="~/plugins/webvella-admin/topnav.controller.js"></script>
     <script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
-    <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
     <script src="~/plugins/webvella-admin/entity-details.module.js"></script>
-
+    <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
+    <script src="~/plugins/webvella-admin/providers/sidebar.factory.js"></script>
 
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
@@ -117,6 +117,10 @@
     <script src="~/plugins/webvella-areas/topnav.controller.js"></script>
     <script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
     <script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
+
+    <!-- plugin:webvella-developers -->
+    <script src="~/plugins/webvella-developers/base.module.js"></script>
+	<script src="~/plugins/webvella-developers/providers/query.service.js"></script>
 
     @ViewBag.PluginModulesJsFileStringArray
 

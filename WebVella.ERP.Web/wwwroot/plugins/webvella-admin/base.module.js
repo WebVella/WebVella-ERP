@@ -19,7 +19,7 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-base', {
-            abstract: true,
+            //abstract: true,
             parent: 'webvella-root',
             url: '', //will be added to all children states
             views: {
@@ -42,16 +42,15 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory', 'webvellaRootService'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaAdmin>base> BEGIN module.run');
-        // Push the Admin to the Desktop Browse navigation
         $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
             var item = {
                 "label": "Administration",
-                "stateName": "webvella-admin-entities",
+                "stateName": "webvella-admin-base",
                 "stateParams": {},
                 "parentName": "",
                 "nodes": [],
@@ -67,19 +66,70 @@
     };
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', 'webvellaRootService'];
+    controller.$inject = ['$log', '$scope','$state', '$rootScope', 'webvellaRootService', 'webvellaAdminSidebarFactory', '$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, webvellaRootService) {
+    function controller($log, $scope,$state, $rootScope, webvellaRootService, webvellaAdminSidebarFactory, $timeout) {
         $log.debug('webvellaAdmin>base> START controller.exec');
         /* jshint validthis:true */
         var adminData = this;
+        adminData.sidebar = [];
+
+        //Making topnav pluggable
+        ////1. CONSTRUCTOR initialize the factory
+        webvellaAdminSidebarFactory.initSidebar();
+        ////2. READY hook listener
+        var readySidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-ready", function (event, data) {
+            //All actions you want to be done after the "Ready" hook is cast
+        })
+        ////3. UPDATED hook listener
+        var updateSidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-updated", function (event, data) {
+            adminData.sidebar = data;
+            activate();
+        });
+        ////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
+        $scope.$on("$destroy", function () {
+            readySidebarDestructor();
+            readySidebarDestructor();
+        });
+        ////5. Bootstrap the pluggable element and cast the Ready hook
+        //Push the Regular menu items
+        var item = {
+            "label": "Entities",
+            "stateName": "webvella-admin-entities",
+            "stateParams": {},
+            "parentName": "",
+            "nodes": [],
+            "weight": 1.0,
+            "color": "red",
+            "iconName": "cog"
+        };
+        adminData.sidebar.push(item);
+        item = {
+            "label": "Users",
+            "stateName": "webvella-admin-users",
+            "stateParams": {},
+            "parentName": "",
+            "nodes": [],
+            "weight": 2.0,
+            "color": "red",
+            "iconName": "cog"
+        };
+        adminData.sidebar.push(item);
+        $rootScope.$emit("webvellaAdmin-sidebar-ready");
+        $log.debug('rootScope>events> "webvellaAdmin-sidebar-ready" emitted');
 
         activate();
         $log.debug('webvellaAdmin>base> END controller.exec');
         function activate() {
             // Change the body color to all child states to red
             webvellaRootService.setBodyColorClass("red");
+            if (adminData.sidebar.length > 0) {
+                $timeout(function () {
+                    $state.go(adminData.sidebar[0].stateName, adminData.sidebar[0].stateParams)
+                }, 0);
+
+            }
         }
     }
 

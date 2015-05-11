@@ -39,10 +39,10 @@
             <tr>
                 <th class="actions"></th>
                 <th class="name">Name</th>
+                <th class="icon" style="width:6em">icon</th>
                 <th class="fields" style="width:6em"># fields</th>
                 <th class="views" style="width:6em"># views</th>
                 <th class="lists" style="width:6em"># lists</th>
-                <th class="forms" style="width:6em"># forms</th>
         </thead>
         <tbody>
             <tr ng-repeat="entity in contentData.entities">
@@ -52,15 +52,14 @@
                     </a>
                 </td>
                 <td class="name">
-                    {{entity.name}}<br/>
-                    <span class="go-gray">Label: {{entity.label}}</span><span class="divider">|</span> <span class="go-gray">Plural Label: {{entity.pluralLabel}}</span>
+                    {{entity.name}}<br />
+                    <span class="go-gray">label: {{entity.label}}</span><span class="divider">|</span> <span class="go-gray">plural: {{entity.pluralLabel}}</span>
                 </td>
+                <td class="icon"><i class="fa fa-{{entity.iconName}}"></i></td>
                 <td class="fields">{{entity.fields.length}}</td>
                 <td class="views">{{entity.views.length}}</td>
                 <td class="lists">{{entity.lists.length}}</td>
-                <td class="forms">{{entity.forms.length}}</td>
             </tr>
-
         </tbody>
     </table>
 </div>
