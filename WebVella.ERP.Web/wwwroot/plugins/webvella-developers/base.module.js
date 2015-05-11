@@ -45,7 +45,7 @@
 
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaDevlopers>base> BEGIN module.run');
+        $log.debug('webvellaDevelopers>base> BEGIN module.run');
         $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
             var item = {
                 "label": "Developers",
@@ -72,12 +72,22 @@
         $log.debug('webvellaDevelopers>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var pluginData = this;
-   
+        pluginData.executeSampleQuery = executeSampleQuery;
+        pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
+
 
         $log.debug('webvellaDevelopers>base> END controller.exec');
 
         function activate() {
 
+        }
+
+        function executeSampleQuery() {
+        	$log.debug('webvellaDevelopers>base> BEGIN controller.executeSampleQuery');
+        }
+
+        function createSampleQueryDataStructure() {
+        	$log.debug('webvellaDevelopers>base> BEGIN controller.createSampleQueryDataStructure');
         }
     }
 
