@@ -24,7 +24,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-root', {
             abstract: true,
-            url: "",
+            url: "/",
             views: {
                 "rootView": {
                     controller: 'WebVellaRootBaseController',
@@ -93,10 +93,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log'];
+    controller.$inject = ['$log','$timeout','$state'];
 
     /* @ngInject */
-    function controller($log) {
+    function controller($log, $timeout, $state) {
         $log.debug('webvellaRoot>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var rootData = this;

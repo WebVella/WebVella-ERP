@@ -21,7 +21,7 @@
         $stateProvider.state('webvella-areas-base', {
             abstract: true,
             parent: 'webvella-root',
-            url: '/areas', //will be added to all children states
+            url: 'areas', //will be added to all children states
             views: {
                 "pluginView": {
                     controller: 'WebVellaAreasBaseController',

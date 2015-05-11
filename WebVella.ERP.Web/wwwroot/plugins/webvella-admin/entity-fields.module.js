@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-fields', {
             parent: 'webvella-admin-base',
-            url: '/admin/entities/:name/fields', //  /desktop/areas after the parent state is prepended
+            url: 'admin/entities/:name/fields', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',

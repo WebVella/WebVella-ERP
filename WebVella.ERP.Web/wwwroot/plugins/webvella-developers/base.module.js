@@ -21,7 +21,7 @@
         $stateProvider.state('webvella-developers-base', {
             //abstract: true,
             parent: 'webvella-root',
-            url: '/developers', //will be added to all children states
+            url: 'developers', //will be added to all children states
             views: {
                 "pluginView": {
                     controller: 'WebVellaDevelopersBaseController',

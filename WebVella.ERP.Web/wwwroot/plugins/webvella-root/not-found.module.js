@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-root-not-found', {
             parent: 'webvella-root',
-            url: '/page-not-found',
+            url: 'page-not-found',
             views: {
                 "pluginView": {
                     controller: 'WebVellaRootNotFoundController',
