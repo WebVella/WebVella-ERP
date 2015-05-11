@@ -51,8 +51,13 @@ namespace WebVella.ERP.Storage.Mongo
 			foreach( BsonDocument doc in cursor )
 			{
 				List<KeyValuePair<string, object>> record = new List<KeyValuePair<string, object>>();
-                foreach (var fieldName in doc.Names)
-					record.Add(new KeyValuePair<string, object>(fieldName, doc[fieldName]));
+				foreach (var fieldName in doc.Names)
+				{
+					if (fieldName == "_id")
+						record.Add(new KeyValuePair<string, object>("id", doc["id"]));
+					else
+						record.Add(new KeyValuePair<string, object>(fieldName, doc[fieldName]));
+				}
 				result.Add(record);
 			}
 			return result;
@@ -68,32 +73,32 @@ namespace WebVella.ERP.Storage.Mongo
 				case QueryType.EQ:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.EQ( query.FieldName, value );
+						return Query.EQ(ProcessQueryIDFieldName(query.FieldName), value );
 					}
 				case QueryType.NOT:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.Not(Query.EQ(query.FieldName, value));
+						return Query.Not(Query.EQ(ProcessQueryIDFieldName(query.FieldName), value));
 					}
 				case QueryType.LT:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.LT(query.FieldName, value);
+						return Query.LT(ProcessQueryIDFieldName(query.FieldName), value);
 					}
 				case QueryType.LTE:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.LTE(query.FieldName, value);
+						return Query.LTE(ProcessQueryIDFieldName(query.FieldName), value);
 					}
 				case QueryType.GT:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.GT(query.FieldName, value);
+						return Query.GT(ProcessQueryIDFieldName(query.FieldName), value);
 					}
 				case QueryType.GTE:
 					{
 						var value = query.FieldValue == null ? BsonNull.Value.ToBsonDocument() : query.FieldValue.ToBsonDocument();
-						return Query.GTE(query.FieldName, value);
+						return Query.GTE(ProcessQueryIDFieldName(query.FieldName), value);
 					}
 				case QueryType.AND:
 					{
@@ -112,6 +117,14 @@ namespace WebVella.ERP.Storage.Mongo
 				default:
 					throw new System.Exception("Not supported query type");
 			}
+		}
+		
+		private string ProcessQueryIDFieldName(string fieldName )
+		{
+			if (fieldName == "id" || fieldName == "Id" )
+				return "_id";
+
+			return fieldName;
 		} 
     }
 }
