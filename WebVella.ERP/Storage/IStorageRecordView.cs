@@ -4,7 +4,7 @@ using WebVella.ERP.Api;
 
 namespace WebVella.ERP.Storage
 {
-    public interface IStorageFormField
+    public interface IStorageRecordViewField
     {
         Guid Id { get; set; }
 
@@ -15,7 +15,7 @@ namespace WebVella.ERP.Storage
         int Position { get; set; }
     }
 
-    public interface IStorageForm
+    public interface IStorageRecordView
     {
         Guid Id { get; set; }
 
@@ -23,6 +23,6 @@ namespace WebVella.ERP.Storage
 
         string Label { get; set; }
 
-        IList<IStorageFormField> Fields { get; set; }
+        IList<IStorageRecordViewField> Fields { get; set; }
     }
 }

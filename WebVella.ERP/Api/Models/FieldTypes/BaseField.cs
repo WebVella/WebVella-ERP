@@ -3,9 +3,14 @@ using System;
 using System.Collections.Generic;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
+using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
+    public class InputField : Expando
+    {
+    }
+
     public abstract class Field
     {
         [JsonProperty(PropertyName = "id")]
@@ -40,6 +45,26 @@ namespace WebVella.ERP
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
+
+        public Field()
+        {
+
+        }
+
+        public Field(InputField field)
+        {
+            Id = (Guid)field["id"];
+            Name = (string)field["name"];
+            Label = (string)field["label"];
+            PlaceholderText = (string)field["placeholderText"];
+            Description = (string)field["description"];
+            HelpText = (string)field["helpText"];
+            Required = (bool?)field["required"];
+            Unique = (bool?)field["unique"];
+            Searchable = (bool?)field["searchable"];
+            Auditable = (bool?)field["auditable"];
+            System = (bool?)field["system"];
+        }
 
         public static Field Convert(IStorageField storageField)
         {
@@ -198,6 +223,81 @@ namespace WebVella.ERP
             field.Searchable = storageField.Searchable;
             field.Auditable = storageField.Auditable;
             field.System = storageField.System;
+
+            return field;
+        }
+
+        public static Field Convert(InputField inputField)
+        {
+            Field field = null;
+
+            FieldType fieldType = (FieldType)inputField["fieldType"];
+            switch (fieldType)
+            {
+                case FieldType.AutoNumberField:
+                    field = new AutoNumberField(inputField);
+                    break;
+                case FieldType.CheckboxField:
+                    field = new CheckboxField(inputField);
+                    break;
+                case FieldType.CurrencyField:
+                    field = new CurrencyField(inputField);
+                    break;
+                case FieldType.DateField:
+                    field = new DateField(inputField);
+                    break;
+                case FieldType.DateTimeField:
+                    field = new DateTimeField(inputField);
+                    break;
+                case FieldType.EmailField:
+                    field = new EmailField(inputField);
+                    break;
+                case FieldType.FileField:
+                    field = new FileField(inputField);
+                    break;
+                case FieldType.HtmlField:
+                    field = new HtmlField(inputField);
+                    break;
+                case FieldType.ImageField:
+                    field = new ImageField(inputField);
+                    break;
+                case FieldType.LookupRelationField:
+                    field = new LookupRelationField(inputField);
+                    break;
+                case FieldType.MasterDetailsRelationshipField:
+                    field = new MasterDetailsRelationshipField(inputField);
+                    break;
+                case FieldType.MultiLineTextField:
+                    field = new MultiLineTextField(inputField);
+                    break;
+                case FieldType.MultiSelectField:
+                    field = new MultiSelectField(inputField);
+                    break;
+                case FieldType.NumberField:
+                    field = new NumberField(inputField);
+                    break;
+                case FieldType.PasswordField:
+                    field = new PasswordField(inputField);
+                    break;
+                case FieldType.PercentField:
+                    field = new PercentField(inputField);
+                    break;
+                case FieldType.PhoneField:
+                    field = new PhoneField(inputField);
+                    break;
+                case FieldType.PrimaryKeyField:
+                    field = new PrimaryKeyField(inputField);
+                    break;
+                case FieldType.SelectField:
+                    field = new SelectField(inputField);
+                    break;
+                case FieldType.TextField:
+                    field = new TextField(inputField);
+                    break;
+                case FieldType.UrlField:
+                    field = new UrlField(inputField);
+                    break;
+            }
 
             return field;
         }

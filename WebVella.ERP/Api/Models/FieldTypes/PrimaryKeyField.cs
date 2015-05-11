@@ -10,6 +10,15 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "defaultValue")]
         public Guid? DefaultValue { get; set; }
+
+        public PrimaryKeyField()
+        {
+        }
+
+        public PrimaryKeyField(InputField field) : base(field)
+        {
+            DefaultValue = (Guid?)field["defaultValue"];
+        }
     }
 
     public class PrimaryKeyFieldMeta : PrimaryKeyField, IFieldMeta

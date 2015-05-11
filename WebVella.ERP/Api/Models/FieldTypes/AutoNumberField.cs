@@ -16,9 +16,21 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "startingNumber")]
         public decimal? StartingNumber { get; set; }
-	}
 
-	public class AutoNumberFieldMeta : AutoNumberField, IFieldMeta
+        public AutoNumberField()
+        {
+
+        }
+
+        public AutoNumberField(InputField field) : base(field)
+        {
+            DefaultValue = (decimal)field["defaultValue"];
+            DisplayFormat = (string)field["displayFormat"];
+            StartingNumber = (decimal)field["startingNumber"];
+        }
+    }
+
+    public class AutoNumberFieldMeta : AutoNumberField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }

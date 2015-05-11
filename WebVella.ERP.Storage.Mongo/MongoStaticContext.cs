@@ -22,6 +22,7 @@ namespace WebVella.ERP.Storage.Mongo
 		public MongoDatabase Database { get; set; }
 
 		internal IMongoRepository<MongoEntity> Entities { get; private set; }
+        internal IMongoRepository<MongoSystemSettings> SystemSettings { get; private set; }
 
 		/// <summary>
 		///     Initializes the <see cref="MongoStaticContext" /> class.
@@ -40,12 +41,19 @@ namespace WebVella.ERP.Storage.Mongo
 			Database = Server.GetDatabase(mongoUrl.DatabaseName);
 
 			Entities = RegisterRepository<MongoEntity>("entities");
-			
-			//register all mongo storage classes
-			BsonClassMap.RegisterClassMap<MongoEntity>();
-			BsonClassMap.RegisterClassMap<MongoForm>();
-			BsonClassMap.RegisterClassMap<MongoView>();
-			BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
+            SystemSettings = RegisterRepository<MongoSystemSettings>("system_settings");
+
+            //register all mongo storage classes
+            BsonClassMap.RegisterClassMap<MongoSystemSettings>();
+            BsonClassMap.RegisterClassMap<MongoEntity>();
+            
+            BsonClassMap.RegisterClassMap<MongoRecordsList>();
+            BsonClassMap.RegisterClassMap<MongoRecordsListField>();
+            BsonClassMap.RegisterClassMap<MongoRecordsListFilter>();
+            BsonClassMap.RegisterClassMap<MongoRecordView>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewField>();
+
+            BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
             BsonClassMap.RegisterClassMap<MongoCheckboxField>();
             BsonClassMap.RegisterClassMap<MongoCurrencyField>();
             BsonClassMap.RegisterClassMap<MongoDateField>();
@@ -66,7 +74,7 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoSelectField>();
             BsonClassMap.RegisterClassMap<MongoTextField>();
             BsonClassMap.RegisterClassMap<MongoUrlField>();
-		}
+        }
 
 		/// <summary>
 		///     Registers the repository.

@@ -13,6 +13,16 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "format")]
         public string Format { get; set; }
+
+        public DateField()
+        {
+        }
+
+        public DateField(InputField field) : base(field)
+        {
+            DefaultValue = (DateTime?)field["defaultValue"];
+            Format = (string)field["format"];
+        }
     }
 
     public class DateFieldMeta : DateField, IFieldMeta

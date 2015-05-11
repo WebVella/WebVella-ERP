@@ -45,7 +45,7 @@
 
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaDevlopers>base> BEGIN module.run');
+        $log.debug('webvellaDevelopers>base> BEGIN module.run');
         $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
             var item = {
                 "label": "Developers",
@@ -65,19 +65,50 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log'];
+    controller.$inject = ['$log', 'webvellaDevelopersQueryService'];
 
     /* @ngInject */
-    function controller($log) {
+    function controller($log, queryService) {
         $log.debug('webvellaDevelopers>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var pluginData = this;
-   
+        pluginData.executeSampleQuery = executeSampleQuery;
+        pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
+
 
         $log.debug('webvellaDevelopers>base> END controller.exec');
 
         function activate() {
 
+        }
+
+        function executeSampleQuery() {
+        	$log.debug('webvellaDevelopers>base> BEGIN controller.executeSampleQuery');
+        	queryService.executeSampleQuery({},
+				function (response) {
+					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> SUCCESS');
+					$log.debug(response);
+				},
+				function (response) {
+					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> ERROR');
+					$log.debug(response);
+				}
+			);
+        	
+        }
+
+        function createSampleQueryDataStructure() {
+        	$log.debug('webvellaDevelopers>base> BEGIN controller.createSampleQueryDataStructure');
+        	queryService.createSampleQueryDataStructure({}, 
+				function (response) {
+					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> SUCCESS');
+					$log.debug(response);
+				},
+				function (response) {
+					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> ERROR');
+					$log.debug(response);
+				}
+			);
         }
     }
 

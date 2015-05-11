@@ -13,6 +13,16 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "format")]
         public string Format { get; set; }
+
+        public DateTimeField()
+        {
+        }
+
+        public DateTimeField(InputField field) : base(field)
+        {
+            DefaultValue = (DateTime?)field["defaultValue"];
+            Format = (string)field["format"];
+        }
     }
 
     public class DateTimeFieldMeta : DateTimeField, IFieldMeta
@@ -29,10 +39,10 @@ namespace WebVella.ERP.Api.Models
         public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field, string parentFieldName = null)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			Format = field.Format;
+            EntityName = entityName;
+            DefaultValue = field.DefaultValue;
+            Format = field.Format;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }

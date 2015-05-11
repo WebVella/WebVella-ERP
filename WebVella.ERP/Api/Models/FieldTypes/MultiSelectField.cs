@@ -14,7 +14,17 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "options")]
         public IDictionary<string, string> Options { get; set; }
-	}
+
+        public MultiSelectField()
+        {
+        }
+
+        public MultiSelectField(InputField field) : base(field)
+        {
+            DefaultValue = (IEnumerable<string>)field["defaultValue"];
+            Options = (IDictionary<string, string>)field["options"];
+        }
+    }
 
 	public class MultiSelectFieldMeta : MultiSelectField, IFieldMeta
     {

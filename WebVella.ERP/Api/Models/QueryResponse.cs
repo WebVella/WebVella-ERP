@@ -11,4 +11,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "object")]
         public QueryResult Object { get; set; }
 	}
+
+	public class SingleQueryResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public SingleQueryResult Object { get; set; }
+	}
 }
