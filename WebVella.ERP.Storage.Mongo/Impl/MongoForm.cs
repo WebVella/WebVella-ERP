@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api;
 
-namespace WebVella.ERP.Storage.Mongo.Impl
+namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoForm : IStorageForm
     {

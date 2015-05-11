@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using WebVella.ERP.Storage;
-using WebVella.ERP.Storage.Mongo.Impl;
 
 namespace WebVella.ERP.Storage.Mongo
 {
