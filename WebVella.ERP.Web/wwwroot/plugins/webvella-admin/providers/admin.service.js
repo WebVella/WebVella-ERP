@@ -53,7 +53,7 @@
             switch (status) {
                 case 400:
                     if (errorCallback === undefined || typeof (errorCallback) != "function") {
-                        $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: errorCallback not a function or missing ');
+                        $log.debug('webvellaAdmin>providers>admin.service> result failure: errorCallback not a function or missing ');
                         alert("The errorCallback argument is not a function or missing");
                         return;
                     }
@@ -61,7 +61,7 @@
                     errorCallback(data);
                     break;
                 default:
-                    $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: API call finished with error: ' + status);
+                    $log.debug('webvellaAdmin>providers>admin.service> result failure: API call finished with error: ' + status);
                     alert("An API call finished with error: " + status);
                     break;
             }
@@ -69,7 +69,7 @@
 
         function handleSuccessResult(data, status, successCallback, errorCallback) {
             if (successCallback === undefined || typeof (successCallback) != "function") {
-                $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: successCallback not a function or missing ');
+                $log.debug('webvellaAdmin>providers>admin.service> result failure: successCallback not a function or missing ');
                 alert("The successCallback argument is not a function or missing");
                 return;
             }
@@ -77,14 +77,14 @@
             if (!data.success) {
                 //when the validation errors occurred
                 if (errorCallback === undefined || typeof (errorCallback) != "function") {
-                    $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result failure: errorCallback not a function or missing ');
+                    $log.debug('webvellaAdmin>providers>admin.service> result failure: errorCallback not a function or missing ');
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
                 errorCallback(data);
             }
             else {
-                $log.debug('webvellaAdmin>providers>admin.service>getMetaEntityList> result success: get object ');
+                $log.debug('webvellaAdmin>providers>admin.service> result success: get object ');
                 successCallback(data);
             }
         }

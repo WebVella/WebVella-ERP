@@ -19,7 +19,7 @@
         </div>
         <div class="entity-box">
             <h4 title="Entity Definitions">{{contentData.entity.name}}</h4>
-            <a class="go-red"><i class="fa fa-trash"></i> Delete entity</a>
+            <a class="go-red" ng-click="contentData.openDeleteEntityModal()"><i class="fa fa-trash"></i> Delete entity</a>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -38,9 +38,8 @@
         <ul class="nav nav-tabs">
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details">Details</a></li>
             <li><a>Fields</a></li>
-            <li><a>Views</a></li>
-            <li><a>Lists</a></li>
-            <li><a>Forms</a></li>
+            <li><a>Record Views</a></li>
+            <li><a>Records Lists</a></li>
         </ul>
 
     </div>
@@ -73,7 +72,7 @@
 </div>
 
 
-<script type="text/ng-template" id="createEntityModal.html">
+<script type="text/ng-template" id="deleteEntityModal.html">
     <div class="modal-header" id="modal-top">
         <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Create new entity</h3>

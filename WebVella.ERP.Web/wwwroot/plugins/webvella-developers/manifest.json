@@ -1,0 +1,21 @@
+{
+  "name": "webvella-home",
+  "url": "http://webvella.com",
+  "description": "WebVella ERP base plugin for bootstrapping the application",
+  "Version": "1.0",
+  "company": "WebVella",
+  "companyUrl": "http://webvella.com",
+  "author": "Bozhidar Zashev",
+  "license": "Apache License 2.0",
+  "loadPriority": 1.0,
+  "libCss": [],
+  //Included after all vendor libraries from vendors from all plugins are included
+  "moduleCss": [],
+  //Included before Angular application initialization. Usually 3rd party libraries
+  "libJs": [],
+  //Included after Angular application initialization
+  "moduleJs": [
+    "/plugins/webvella-home/home.module.js"
+  ],
+  "includeDependencies": [ "webvella-home" ]
+}
