@@ -43,10 +43,16 @@ namespace WebVella.ERP.Storage.Mongo
 			Entities = RegisterRepository<MongoEntity>("entities");
             SystemSettings = RegisterRepository<MongoSystemSettings>("system_settings");
 
-			//register all mongo storage classes
-			BsonClassMap.RegisterClassMap<MongoEntity>();
-			BsonClassMap.RegisterClassMap<MongoForm>();
-			BsonClassMap.RegisterClassMap<MongoView>();
+            //register all mongo storage classes
+            BsonClassMap.RegisterClassMap<MongoSystemSettings>();
+            BsonClassMap.RegisterClassMap<MongoEntity>();
+            
+            BsonClassMap.RegisterClassMap<MongoRecordsList>();
+            BsonClassMap.RegisterClassMap<MongoRecordsListField>();
+            BsonClassMap.RegisterClassMap<MongoRecordsListFilter>();
+            BsonClassMap.RegisterClassMap<MongoRecordView>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewField>();
+
             BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
             BsonClassMap.RegisterClassMap<MongoCheckboxField>();
             BsonClassMap.RegisterClassMap<MongoCurrencyField>();
