@@ -53,7 +53,7 @@
                 </td>
                 <td class="name">
                     {{entity.name}}<br />
-                    <span class="go-gray">label: {{entity.label}}</span><span class="divider">|</span> <span class="go-gray">plural: {{entity.pluralLabel}}</span>
+                    <span class="go-red" ng-show="entity.system">[SYS]</span><span class="divider" ng-show="entity.system">|</span><span class="go-gray">{{entity.label}} / {{entity.pluralLabel}}</span>
                 </td>
                 <td class="icon"><i class="fa fa-{{entity.iconName}}"></i></td>
                 <td class="fields">{{entity.fields.length}}</td>
@@ -74,16 +74,16 @@
             <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || modalData.nameError}">
                 <label class="required" for="entityName">Name</label>
                 <input ng-model="modalData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer" 
-                       required pattern="^[A-Za-z][A-Za-z0-9_]*$" maxlength="50">
+                       required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" minlength="2">
                 <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || modalData.nameError">
                     <small class="error" ng-show="createEntity.name.$error.required && !modalData.nameError">
                         Your name is required.
                     </small>
                     <small class="error" ng-show="createEntity.name.$error.pattern">
-                        Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores!
+                        Name can only contains lowercase alphanumeric characters or underscore. It must begin with a letter!
                     </small>
                     <small class="error"  ng-show="signup_form.name.$error.minlength">
-                        The name is required to be at least 3 characters
+                        The name is required to be at least 2 characters
                     </small>
                     <small class="error" ng-show="signup_form.name.$error.maxlength">
                         The name cannot be longer than 50 characters

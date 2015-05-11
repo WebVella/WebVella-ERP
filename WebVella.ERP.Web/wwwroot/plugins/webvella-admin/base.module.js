@@ -29,6 +29,9 @@
                     controllerAs: 'pluginData'
                 }
             },
+            params: {
+                "redirect": 'false'
+            },
             resolve: {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function (pageTitle) {
@@ -51,7 +54,9 @@
             var item = {
                 "label": "Administration",
                 "stateName": "webvella-admin-base",
-                "stateParams": {},
+                "stateParams": {
+                    "redirect": 'true'
+                },
                 "parentName": "",
                 "nodes": [],
                 "weight": 100.0,
@@ -66,10 +71,10 @@
     };
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$scope','$state', '$rootScope', 'webvellaRootService', 'webvellaAdminSidebarFactory', '$timeout'];
+    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory', '$timeout'];
 
     /* @ngInject */
-    function controller($log, $scope,$state, $rootScope, webvellaRootService, webvellaAdminSidebarFactory, $timeout) {
+    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory, $timeout) {
         $log.debug('webvellaAdmin>base> START controller.exec');
         /* jshint validthis:true */
         var adminData = this;
@@ -124,7 +129,8 @@
         function activate() {
             // Change the body color to all child states to red
             webvellaRootService.setBodyColorClass("red");
-            if (adminData.sidebar.length > 0) {
+            
+            if (adminData.sidebar.length > 0 && $stateParams.redirect == 'true') {
                 $timeout(function () {
                     $state.go(adminData.sidebar[0].stateName, adminData.sidebar[0].stateParams)
                 }, 0);

@@ -64,5 +64,33 @@ namespace WebVella.ERP.Web.Controllers
 
             return Json(response);
         }
+
+        // Delete an entity
+        // DELETE: api/v1/en_US/meta/entity/{id}
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
+        public IActionResult DeleteEntity(string StringId)
+        {
+            EntityManager manager = new EntityManager(service.StorageService);
+            EntityResponse response = new EntityResponse();
+
+            // Parse each string representation.
+            Guid newGuid;
+            Guid id = Guid.Empty;
+            if (Guid.TryParse(StringId, out newGuid))
+            {
+                response = manager.DeleteEntity(newGuid);
+                if (response.Errors.Count > 0)
+                    Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = "The entity Id should be a valid Guid";
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            return Json(response);
+        }
+
     }
 }
+

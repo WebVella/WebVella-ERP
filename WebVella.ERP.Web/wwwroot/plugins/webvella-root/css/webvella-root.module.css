@@ -16,9 +16,14 @@ body {
 }
 
 span.divider {
-    color:#bdbdbd;
-    margin:0 1em;
+    color: #bdbdbd;
+    margin: 0 1em;
 }
+
+.panel {
+    border-radius:0;
+}
+
 .display-block {
     display: block !important;
 }
@@ -344,7 +349,9 @@ span.divider {
         }
 }
 
-.not-visible-side-menu #sidebar .nav {display:none;}
+.not-visible-side-menu #sidebar .nav {
+    display: none;
+}
 
 
 /*#endregion */
@@ -1055,9 +1062,6 @@ span.divider {
     padding-top: 5px;
 }
 
-    #page-title .aux-actions a {
-        color: #333;
-    }
 
 #page-messages > .alert {
     margin-bottom: 0;
@@ -1349,19 +1353,19 @@ span.divider {
     #page-content #list {
         min-height: 50px;
         padding: 0 1em 0 1em;
-        position:relative;
+        position: relative;
     }
 
     #page-content #text {
         min-height: 50px;
         padding: 1em 1em 0 1em;
-        position:relative;
+        position: relative;
     }
 
 
 #developers {
-    background:white;
-    min-height:600px;
+    background: white;
+    min-height: 600px;
 }
 
 /****************************
@@ -1667,6 +1671,12 @@ form .error {
     border-color: #F44336;
 }
 
+.editable-wrap .editable-controls {
+    margin: 0 !important;
+}
+.form-control-static {
+    padding-left:14px;
+}
 
 /*#endregion */
 
@@ -1889,93 +1899,146 @@ table .btn-xs.btn-link {
         background: rgba(255,255,255,0.2);
         padding: 1em 0 1em 1em;
         border-left: 3px solid #90A4AE;
+        border-right:none;
     }
+
+        .tabbable.spilled ul li {
+            padding:2px 0;
+        }
 
         .tabbable.spilled ul a {
             color: #ccc;
         }
 
         .tabbable.spilled ul li:not(.active) a:hover {
-            background: rgba(255,255,255,0.5);
-            border-color:rgba(255,255,255,0.7);
-            color: #333;
+            background: rgba(255,255,255,0.15);
+            border-color:transparent;
+            border-right:none;
+            color: #ccc;
         }
-       
-         .tabbable.spilled ul li.active a {
+
+        .tabbable.spilled ul li.active a {
             background: #fff;
-            border-color:rgba(255,255,255,0.7);
-            color: #000;
+            border-color: rgba(255,255,255,0.7);
+            color: #333;
         }
 
 /* Theming */
-.theme-red  .tabbable.spilled ul {
+.theme-red .tabbable.spilled ul {
     border-left-color: #F44336 !important;
 }
 
-.theme-pink  .tabbable.spilled ul {
+.theme-pink .tabbable.spilled ul {
     border-left-color: #E91E63 !important;
 }
 
-.theme-purple  .tabbable.spilled ul {
+.theme-purple .tabbable.spilled ul {
     border-left-color: #9C27B0 !important;
 }
 
 
-.theme-deep-purple  .tabbable.spilled ul {
+.theme-deep-purple .tabbable.spilled ul {
     border-left-color: #673AB7 !important;
 }
 
-.theme-indigo  .tabbable.spilled ul {
+.theme-indigo .tabbable.spilled ul {
     border-left-color: #3F51B5 !important;
 }
 
-.theme-blue  .tabbable.spilled ul {
+.theme-blue .tabbable.spilled ul {
     border-left-color: #2196F3 !important;
 }
 
-.theme-light-blue  .tabbable.spilled ul {
+.theme-light-blue .tabbable.spilled ul {
     border-left-color: #03A9F4 !important;
 }
 
-.theme-cyan  .tabbable.spilled ul {
+.theme-cyan .tabbable.spilled ul {
     border-left-color: #00BCD4 !important;
 }
 
-.theme-teal  .tabbable.spilled ul {
+.theme-teal .tabbable.spilled ul {
     border-left-color: #009688 !important;
 }
 
-.theme-green  .tabbable.spilled ul {
+.theme-green .tabbable.spilled ul {
     border-left-color: #4CAF50 !important;
 }
 
 
-.theme-light-green  .tabbable.spilled ul {
+.theme-light-green .tabbable.spilled ul {
     border-left-color: #8BC34A !important;
 }
 
-.theme-lime  .tabbable.spilled ul {
+.theme-lime .tabbable.spilled ul {
     border-left-color: #CDDC39 !important;
 }
 
-.theme-yellow  .tabbable.spilled ul {
+.theme-yellow .tabbable.spilled ul {
     border-left-color: #FDD835 !important;
 }
 
-.theme-amber  .tabbable.spilled ul {
+.theme-amber .tabbable.spilled ul {
     border-left-color: #FFC107 !important;
 }
 
-.theme-orange  .tabbable.spilled ul {
+.theme-orange .tabbable.spilled ul {
     border-left-color: #FF9800 !important;
 }
 
-.theme-deep-orange  .tabbable.spilled ul {
+.theme-deep-orange .tabbable.spilled ul {
     border-left-color: #FF5722 !important;
 }
 
-.theme-brown  .tabbable.spilled ul {
+.theme-brown .tabbable.spilled ul {
     border-left-color: #795548 !important;
 }
+
+/*#endregion */
+
+/*#region << Inline edit styles >> */
+
+/*Text*/
+
+.editable-empty, .editable-empty:hover, .editable-empty:focus, a.editable-empty, a.editable-empty:hover, a.editable-empty:focus {
+    color:#9E9E9E !important;
+}
+
+a[editable-text] {
+    color: #337ab7;
+    display: inline-block;
+    line-height: 20px;
+    padding: 6px 12px;
+    border:1px solid transparent !important;
+    border-radius:3px;
+    position:relative;
+    
+}
+
+a[editable-text]:after {
+    font-family: 'FontAwesome';
+    content:"\f040";
+    position:absolute;
+    right:-32px;
+    border:1px solid #FFF59D;
+    top:-1px;
+    line-height:20px;
+    width:32px;
+    padding:6px 0;
+    text-align:center;
+    color:#F44336;
+    background:#FFF59D;
+    display:none;
+}
+    a[editable-text]:hover:after {
+            display:inline-block;
+    }
+
+    a[editable-text]:hover {
+        background: #FFFDE7;
+        border-color:#FFF59D;
+        cursor:pointer;
+        color:#333;
+    }
 
 /*#endregion */

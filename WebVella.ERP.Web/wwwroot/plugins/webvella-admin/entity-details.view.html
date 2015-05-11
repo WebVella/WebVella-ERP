@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-default"><i class="fa fa-pencil"></i> Edit Details</a>
+            
         </div>
         <div class="icon-box">
             <i class="fa fa-database"></i>
@@ -18,8 +18,9 @@
             <i class="fa fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="Entity Definitions">{{contentData.entity.name}}</h4>
-            <a class="go-red" ng-click="contentData.openDeleteEntityModal()"><i class="fa fa-trash"></i> Delete entity</a>
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+            <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -36,110 +37,92 @@
 <div id="text">
     <div class="tabbable tabs-left spilled">
         <ul class="nav nav-tabs">
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details">Details</a></li>
-            <li><a>Fields</a></li>
-            <li><a>Record Views</a></li>
-            <li><a>Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({name:'{{contentData.entity.name}}'})">Record Views</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({name:'{{contentData.entity.name}}'})">Records Lists</a></li>
         </ul>
 
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin-top:2em;">
         <div class="panel-body">
-            <form>
+            <div class="form-horizontal">
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="name">Name</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{contentData.entity.name}} <i title="Once created, the name can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="name">System entity</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static" ng-show="contentData.entity.system"><i class="go-green fa fa-check"></i> true <i title="Once created, the type can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
+                                <p class="form-control-static" ng-show="!contentData.entity.system"><i class="go-red fa fa-close"></i> false<i title="Once created, the type can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="label">Label</label>
+                            <div class="col-sm-9">
+                                <a href="javascript:void(0)" editable-text="contentData.entity.label">{{ contentData.entity.label || "empty" }}</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="pluralLabel">Plural Label</label>
+                            <div class="col-sm-9">
+                                <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel">{{ contentData.entity.pluralLabel || "empty" }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputFile">File input</label>
-                    <input type="file" id="exampleInputFile">
-                    <p class="help-block">Example block-level help text here.</p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="iconName">Icon name</label>
+                            <div class="col-sm-9">
+                                <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName"  e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8">{{ contentData.entity.iconName || "empty" }}</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="col-sm-3 control-label" for="weight">Weight</label>
+                            <div class="col-sm-9">
+                                <a href="javascript:void(0)" editable-text="contentData.entity.weight">{{ contentData.entity.weight || "empty" }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"> Check me out
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-default">Submit</button>
-            </form>
+            </div>
+
         </div>
     </div>
 
 </div>
-
+<script type="text/ng-template" id="iconTypeaheadTemplate.html">
+    <a>
+        <i class="fa fa-{{match.model}} fa-fw go-light-blue" style="margin-right:5px;"></i>
+        <span bind-html-unsafe="match.model | typeaheadHighlight:query"></span>
+    </a>
+</script>
 
 <script type="text/ng-template" id="deleteEntityModal.html">
     <div class="modal-header" id="modal-top">
         <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title">Create new entity</h3>
+        <h3 class="modal-title">Delete an entity</h3>
     </div>
     <div class="modal-body">
-        <form name="createEntity">
-            <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || modalData.nameError}">
-                <label class="required" for="entityName">Name</label>
-                <input ng-model="modalData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
-                       required pattern="^[A-Za-z][A-Za-z0-9_]*$" maxlength="50">
-                <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || modalData.nameError">
-                    <small class="error" ng-show="createEntity.name.$error.required && !modalData.nameError">
-                        Your name is required.
-                    </small>
-                    <small class="error" ng-show="createEntity.name.$error.pattern">
-                        Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores!
-                    </small>
-                    <small class="error" ng-show="signup_form.name.$error.minlength">
-                        The name is required to be at least 3 characters
-                    </small>
-                    <small class="error" ng-show="signup_form.name.$error.maxlength">
-                        The name cannot be longer than 50 characters
-                    </small>
-                    <small class="error" ng-show="modalData.nameError">
-                        {{modalData.nameMessage}}
-                    </small>
-                </div>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error' : createEntity.label.$invalid && !createEntity.label.$pristine || modalData.labelError }">
-                <label class="required" for="label">Label</label>
-                <input ng-model="modalData.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
-                       required>
-                <div class="error" ng-show="createEntity.label.$dirty && createEntity.label.$invalid || modalData.labelError">
-                    <small class="error" ng-show="createEntity.label.$error.required && !modalData.labelError">
-                        Entity label is required.
-                    </small>
-                    <small class="error" ng-show="modalData.labelError">
-                        {{modalData.labelMessage}}
-                    </small>
-                </div>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error' : createEntity.pluralLabel.$invalid && !createEntity.pluralLabel.$pristine || modalData.pluralLabelError }">
-                <label class="required" for="entityPluralLabel">Plural Label</label>
-                <input ng-model="modalData.entity.pluralLabel" type="text" class="form-control" id="entityPluralLabel" placeholder="e.g. Customers"
-                       required>
-                <div class="error" ng-show="createEntity.pluralLabel.$dirty && createEntity.pluralLabel.$invalid || modalData.pluralLabelError">
-                    <small class="error" ng-show="createEntity.pluralLabel.$error.required && !modalData.pluralLabelError">
-                        Entity plural label is required.
-                    </small>
-                    <small class="error" ng-show="modalData.pluralLabelError">
-                        {{modalData.pluralLabelMessage}}
-                    </small>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="entitySystemStatus">System Status</label>
-                <div class="checkbox">
-                    <label>
-                        <input ng-model="modalData.entity.system" type="checkbox" id="entitySystemStatus" value="true">
-                        this is system entity <span class="go-grey">(could not be deleted later)</span>
-                    </label>
-                </div>
-            </div>
-        </form>
+        <div class="alert alert-danger" ng-bind="modalData.errorMessage" ng-show="modalData.hasError"></div>
+        <div ng-hide="modalData.hasError">
+            <h3>Are you sure that you need this entity deleted?</h3>
+            <div class="alert alert-warning">By deleting the <b>{{modalData.entity.label}}</b> entity you will also <b>delete all its records</b>?</div>
+        </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="modalData.ok()">Create New Entity</button>
+        <button class="btn btn-danger" ng-click="modalData.ok()" ng-hide="modalData.hasError">Delete Entity</button>
         <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
     </div>
 </script>
