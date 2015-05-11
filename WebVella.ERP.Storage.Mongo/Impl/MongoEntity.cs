@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MongoDB.Bson.Serialization.Attributes;
-using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
@@ -15,19 +13,23 @@ namespace WebVella.ERP.Storage.Mongo
 
         public bool System { get; set; }
 
+        public string IconName { get; set; }
+
+        public decimal Weight { get; set; }
+
         public IStorageEntityPermissions Permissions { get; set; }
 
         public List<IStorageField> Fields { get; set; }
 
-        public List<IStorageView> Views { get; set; }
+        public List<IStorageRecordsList> RecordsLists { get; set; }
 
-        public List<IStorageForm> Forms { get; set; }
+        public List<IStorageRecordView> RecordViewList { get; set; }
 
         public MongoEntity()
         {
             Fields = new List<IStorageField>();
-            Views = new List<IStorageView>();
-            Forms = new List<IStorageForm>();
+            RecordsLists = new List<IStorageRecordsList>();
+            RecordViewList = new List<IStorageRecordView>();
         }
     }
 

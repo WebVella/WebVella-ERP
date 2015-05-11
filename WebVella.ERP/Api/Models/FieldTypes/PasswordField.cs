@@ -12,13 +12,25 @@ namespace WebVella.ERP.Api.Models
         public int? MaxLength { get; set; }
 
         [JsonProperty(PropertyName = "encrypted")]
-        public bool Encrypted { get; set; }
+        public bool? Encrypted { get; set; }
 
         [JsonProperty(PropertyName = "maskType")]
         public PasswordFieldMaskTypes MaskType { get; set; }
 
         [JsonProperty(PropertyName = "maskCharacter")]
         public char? MaskCharacter { get; set; }
+
+        public PasswordField()
+        {
+        }
+
+        public PasswordField(InputField field) : base(field)
+        {
+            MaxLength = (int?)field["maxLength"];
+            Encrypted = (bool?)field["encrypted"];
+            MaskType = (PasswordFieldMaskTypes)field["maskType"];
+            MaskCharacter = (char?)field["maskCharacter"];
+        }
     }
 
     public class PasswordFieldMeta : PasswordField, IFieldMeta

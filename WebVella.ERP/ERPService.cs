@@ -35,9 +35,18 @@ namespace WebVella.ERP
 
         public void InitializeSystemEntities()
         {
-            int version = 150508;
+            IStorageSystemSettingsRepository systemSettingsRepository = StorageService.GetSystemSettingsRepository();
+            IStorageSystemSettings storeSystemSettings = systemSettingsRepository.Read();
+            SystemSettings systemSettings = new SystemSettings();
 
             int currentVersion = 0;
+            if (systemSettings != null)
+            {
+                systemSettings = new SystemSettings(storeSystemSettings);
+
+                currentVersion = systemSettings.Version;
+            }
+
 
             Guid systemEntityId = new Guid("A5050AC8-5967-4CE1-95E7-A79B054F9D14");
             Guid userEntityId = new Guid("B9CEBC3B-6443-452A-8E34-B311A73DCC8B");
@@ -45,51 +54,21 @@ namespace WebVella.ERP
 
             EntityManager entityManager = new EntityManager(StorageService);
 
-            //Get current version here
-
             if (currentVersion < 150508)
             {
-                InputEntity systemEntity = new InputEntity();
-                systemEntity.Id = systemEntityId;
-                systemEntity.Name = "System";
-                systemEntity.Label = "System";
-                systemEntity.PluralLabel = "Systems";
-                systemEntity.System = true;
-
-                EntityResponse response = entityManager.CreateEntity(systemEntity);
-
-                NumberField versionField = new NumberField();
-
-                versionField.Id = Guid.NewGuid();
-                versionField.Name = "Version";
-                versionField.Label = "Version";
-                versionField.PlaceholderText = "";
-                versionField.Description = "this field hold database version";
-                versionField.HelpText = "";
-                versionField.Required = true;
-                versionField.Unique = true;
-                versionField.Searchable = false;
-                versionField.Auditable = false;
-                versionField.System = true;
-                versionField.DefaultValue = 0;
-                
-                versionField.MinValue = 1;
-                versionField.MaxValue = 100;
-                versionField.DecimalPlaces = 3;
-
-                FieldResponse fieldResponse = entityManager.CreateField(systemEntity.Id.Value, versionField);
+                systemSettings.Version = 150508;
 
                 InputEntity userEntity = new InputEntity();
                 userEntity.Id = userEntityId;
-                userEntity.Name = "User";
+                userEntity.Name = "user";
                 userEntity.Label = "User";
                 userEntity.PluralLabel = "Users";
                 userEntity.System = true;
 
                 TextField firstName = new TextField();
 
-                firstName.Id = Guid.NewGuid();
-                firstName.Name = "firstName";
+                firstName.Id = new Guid("DF211549-41CC-4D11-BB43-DACA4C164411");
+                firstName.Name = "first_name";
                 firstName.Label = "First Name";
                 firstName.PlaceholderText = "";
                 firstName.Description = "First name of the user";
@@ -103,12 +82,12 @@ namespace WebVella.ERP
 
                 firstName.MaxLength = 200;
 
-                fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
+                FieldResponse fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
 
                 TextField lastName = new TextField();
 
-                lastName.Id = Guid.NewGuid();
-                lastName.Name = "lastName";
+                lastName.Id = new Guid("63E685B1-B2C6-4961-B393-2B6723EBD1BF");
+                lastName.Name = "last_name";
                 lastName.Label = "Last Name";
                 lastName.PlaceholderText = "";
                 lastName.Description = "Last name of the user";
@@ -126,8 +105,8 @@ namespace WebVella.ERP
 
                 EmailField email = new EmailField();
 
-                email.Id = Guid.NewGuid();
-                email.Name = "Email";
+                email.Id = new Guid("9FC75C8F-CE80-4A64-81D7-E2BEFA5E4815");
+                email.Name = "email";
                 email.Label = "Email";
                 email.PlaceholderText = "";
                 email.Description = "Email address of the user";
@@ -145,8 +124,8 @@ namespace WebVella.ERP
 
                 PasswordField password = new PasswordField();
 
-                password.Id = Guid.NewGuid();
-                password.Name = "Password";
+                password.Id = new Guid("4EDE88D9-217A-4462-9300-EA0D6AFCDCEA");
+                password.Name = "password";
                 password.Label = "Password";
                 password.PlaceholderText = "";
                 password.Description = "Password for the user account";
@@ -166,8 +145,8 @@ namespace WebVella.ERP
 
                 DateTimeField lastLoggedIn = new DateTimeField();
 
-                lastLoggedIn.Id = Guid.NewGuid();
-                lastLoggedIn.Name = "lastLoggedIn";
+                lastLoggedIn.Id = new Guid("3C85CCEC-D526-4E47-887F-EE169D1F508D");
+                lastLoggedIn.Name = "last_logged_in";
                 lastLoggedIn.Label = "Last Logged In";
                 lastLoggedIn.PlaceholderText = "";
                 lastLoggedIn.Description = "";
@@ -185,8 +164,8 @@ namespace WebVella.ERP
 
                 CheckboxField enabledField = new CheckboxField();
 
-                enabledField.Id = Guid.NewGuid();
-                enabledField.Name = "Enabled";
+                enabledField.Id = new Guid("C0C63650-7572-4252-8E4B-4E25C94897A6");
+                enabledField.Name = "enabled";
                 enabledField.Label = "Enabled";
                 enabledField.PlaceholderText = "";
                 enabledField.Description = "Shous if the user account is enabled";
@@ -202,8 +181,8 @@ namespace WebVella.ERP
 
                 CheckboxField verifiedUserField = new CheckboxField();
 
-                verifiedUserField.Id = Guid.NewGuid();
-                verifiedUserField.Name = "Verified";
+                verifiedUserField.Id = new Guid("F1BA5069-8CC9-4E66-BCC3-60E33C79C265");
+                verifiedUserField.Name = "verified";
                 verifiedUserField.Label = "Verified";
                 verifiedUserField.PlaceholderText = "";
                 verifiedUserField.Description = "Shows if the user email is verified";
@@ -229,8 +208,8 @@ namespace WebVella.ERP
 
                 TextField nameRoleField = new TextField();
 
-                nameRoleField.Id = Guid.NewGuid();
-                nameRoleField.Name = "Name";
+                nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
+                nameRoleField.Name = "name";
                 nameRoleField.Label = "Name";
                 nameRoleField.PlaceholderText = "";
                 nameRoleField.Description = "The name of the role";
@@ -248,8 +227,8 @@ namespace WebVella.ERP
 
                 TextField descriptionRoleField = new TextField();
 
-                descriptionRoleField.Id = Guid.NewGuid();
-                descriptionRoleField.Name = "Description";
+                descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
+                descriptionRoleField.Name = "description";
                 descriptionRoleField.Label = "Description";
                 descriptionRoleField.PlaceholderText = "";
                 descriptionRoleField.Description = "";
@@ -264,11 +243,17 @@ namespace WebVella.ERP
                 descriptionRoleField.MaxLength = 200;
 
                 fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField);
+
+                storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
+                systemSettingsRepository.Save(storeSystemSettings);
             }
 
-            if (currentVersion <= 150510)
+            if (currentVersion == 150508) //update to 150510
             {
+                systemSettings.Version = 150510;
 
+                storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
+                systemSettingsRepository.Save(storeSystemSettings);
             }
         }
 
@@ -351,23 +336,23 @@ namespace WebVella.ERP
                 EntityResponse entityResponse = entityManager.ReadEntity(entity.Id.Value);
                 entity = entityResponse.Object;
 
-                List<View> views = CreateTestViewCollection(entity);
+                List<RecordsList> recordsLists = CreateTestViewCollection(entity);
 
-                ViewResponse viewResponse = entityManager.CreateView(entity.Id.Value, views[0]);
+                RecordsListResponse recordsListsResponse = entityManager.CreateView(entity.Id.Value, recordsLists[0]);
 
-                views[0].Label = "Edited View";
+                recordsLists[0].Label = "Edited View";
 
-                viewResponse = entityManager.UpdateView(entity.Id.Value, views[0]);
+                recordsListsResponse = entityManager.UpdateView(entity.Id.Value, recordsLists[0]);
 
-                List<Form> forms = CreateTestFormCollection(entity);
+                List<RecordView> recordViewList = CreateTestFormCollection(entity);
 
-                FormResponse formResponse = entityManager.CreateForm(entity.Id.Value, forms[0]);
+                RecordViewResponse recordViewResponse = entityManager.CreateForm(entity.Id.Value, recordViewList[0]);
 
-                forms[0].Label = "Edited Form";
+                recordViewList[0].Label = "Edited Form";
 
-                formResponse = entityManager.CreateForm(entity.Id.Value, forms[0]);
+                recordViewResponse = entityManager.CreateForm(entity.Id.Value, recordViewList[0]);
 
-                entityManager.ReadEntities();
+                EntityListResponse entityListResponse = entityManager.ReadEntities();
 
                 EntityResponse resultEntity = entityManager.ReadEntity(entity.Id.Value);
 
@@ -819,80 +804,80 @@ namespace WebVella.ERP
             return fields;
         }
 
-        private List<View> CreateTestViewCollection(Entity entity)
+        private List<RecordsList> CreateTestViewCollection(Entity entity)
         {
-            List<View> views = new List<View>();
+            List<RecordsList> recordsLists = new List<RecordsList>();
 
-            View firstView = new View();
+            RecordsList firstRecordList = new RecordsList();
 
-            firstView.Id = Guid.NewGuid();
-            firstView.Name = "SearchPopupviewname";
-            firstView.Label = "Search Popup view label";
-            firstView.Type = Api.ViewTypes.SearchPopup;
+            firstRecordList.Id = Guid.NewGuid();
+            firstRecordList.Name = "SearchPopupviewname";
+            firstRecordList.Label = "Search Popup view label";
+            firstRecordList.Type = Api.ViewTypes.SearchPopup;
 
-            firstView.Filters = new List<ViewFilter>();
+            firstRecordList.Filters = new List<RecordsListFilter>();
 
-            ViewFilter filter = new ViewFilter();
+            RecordsListFilter filter = new RecordsListFilter();
             filter.EntityId = entity.Id;
             filter.FieldId = entity.Fields[1].Id.Value;
             filter.Operator = Api.FilterOperatorTypes.Equals;
             filter.Value = "false";
 
-            firstView.Filters.Add(filter);
+            firstRecordList.Filters.Add(filter);
 
-            firstView.Fields = new List<ViewField>();
+            firstRecordList.Fields = new List<RecordsListField>();
 
-            ViewField field1 = new ViewField();
+            RecordsListField field1 = new RecordsListField();
             field1.EntityId = entity.Id;
             field1.Id = entity.Fields[3].Id.Value;
             field1.Position = 1;
 
-            firstView.Fields.Add(field1);
+            firstRecordList.Fields.Add(field1);
 
-            ViewField field2 = new ViewField();
+            RecordsListField field2 = new RecordsListField();
             field2.EntityId = entity.Id;
             field2.Id = entity.Fields[10].Id.Value;
             field2.Position = 2;
 
-            firstView.Fields.Add(field2);
+            firstRecordList.Fields.Add(field2);
 
-            views.Add(firstView);
-            return views;
+            recordsLists.Add(firstRecordList);
+            return recordsLists;
         }
 
-        private List<Form> CreateTestFormCollection(Entity entity)
+        private List<RecordView> CreateTestFormCollection(Entity entity)
         {
-            List<Form> forms = new List<Form>();
+            List<RecordView> recordViewList = new List<RecordView>();
 
-            Form form = new Form();
+            RecordView recordView = new RecordView();
 
-            form.Id = Guid.NewGuid();
-            form.Name = "FormName";
-            form.Label = "Form label";
+            recordView.Id = Guid.NewGuid();
+            recordView.Name = "record_view_name";
+            recordView.Label = "Record view label";
 
-            form.Fields = new List<FormField>();
+            recordView.Fields = new List<RecordViewField>();
 
-            FormField field1 = new FormField();
+            RecordViewField field1 = new RecordViewField();
 
             field1.Id = entity.Fields[1].Id.Value;
             field1.EntityId = entity.Id;
             field1.Column = Api.FormColumns.Left;
             field1.Position = 1;
 
-            form.Fields.Add(field1);
+            recordView.Fields.Add(field1);
 
-            FormField field2 = new FormField();
+            RecordViewField field2 = new RecordViewField();
 
             field2.Id = entity.Fields[5].Id.Value;
             field2.EntityId = entity.Id;
             field2.Column = Api.FormColumns.Right;
             field2.Position = 2;
 
-            form.Fields.Add(field2);
+            recordView.Fields.Add(field2);
 
-            forms.Add(form);
+            recordViewList.Add(recordView);
 
-            return forms;
+            return recordViewList;
         }
     }
 }

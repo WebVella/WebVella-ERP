@@ -10,6 +10,15 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "defaultValue")]
         public string DefaultValue { get; set; }
+
+        public FileField()
+        {
+        }
+
+        public FileField(InputField field) : base(field)
+        {
+            DefaultValue = (string)field["defaultValue"];
+        }
     }
 
     public class FileFieldMeta : FileField, IFieldMeta

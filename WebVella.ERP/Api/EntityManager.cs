@@ -51,17 +51,17 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("name", entity.Name, "Name is required!"));
             else
             {
-                if (entity.Name.Length <= 3)
-                    errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be greater than 3 characters!"));
+                if (entity.Name.Length < 2)
+                    errorList.Add(new ErrorModel("name", entity.Name, "The Name must be at least 2 characters long!"));
 
                 if (entity.Name.Length > 50)
                     errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be less than 50 characters!"));
 
-                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
+                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 
                 Match match = Regex.Match(entity.Name, pattern);
                 if (!match.Success || match.Value != entity.Name.Trim())
-                    errorList.Add(new ErrorModel("name", entity.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                    errorList.Add(new ErrorModel("name", entity.Name, "Name can only contains underscores and lowercase alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
 
                 IStorageEntity verifiedEntity = EntityRepository.Read(entity.Name);
 
@@ -80,11 +80,11 @@ namespace WebVella.ERP
                 if (entity.Label.Length > 50)
                     errorList.Add(new ErrorModel("label", entity.Label, "The length of Label must be less than 50 characters!"));
 
-                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
+                //string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
-                Match match = Regex.Match(entity.Label, pattern);
-                if (!match.Success || match.Value != entity.Label.Trim())
-                    errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                //Match match = Regex.Match(entity.Label, pattern);
+                //if (!match.Success || match.Value != entity.Label.Trim())
+                //    errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
 
             }
 
@@ -97,16 +97,36 @@ namespace WebVella.ERP
                 if (entity.PluralLabel.Length > 50)
                     errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The length of Plural Label must be less than 50 characters!"));
 
-                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
+                //string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
-                Match match = Regex.Match(entity.PluralLabel, pattern);
-                if (!match.Success || match.Value != entity.PluralLabel.Trim())
-                    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                //Match match = Regex.Match(entity.PluralLabel, pattern);
+                //if (!match.Success || match.Value != entity.PluralLabel.Trim())
+                //    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
 
             }
 
             if (!entity.System.HasValue)
                 errorList.Add(new ErrorModel("system", null, "System is required!"));
+
+            if (entity.Permissions != null)
+            {
+                if(entity.Permissions.CanRead == null || entity.Permissions.CanRead.Count == 0)
+                    errorList.Add(new ErrorModel("permissions.canRead", null, "CanRead is required! It must contains at least one item!"));
+
+                if (entity.Permissions.CanUpdate == null || entity.Permissions.CanUpdate.Count == 0)
+                    errorList.Add(new ErrorModel("permissions.canUpdate", null, "CanUpdate is required! It must contains at least one item!"));
+
+                if (entity.Permissions.CanDelete == null || entity.Permissions.CanDelete.Count == 0)
+                    errorList.Add(new ErrorModel("permissions.canDelete", null, "CanDelete is required! It must contains at least one item!"));
+            }
+            else
+                errorList.Add(new ErrorModel("permissions", null, "Permissions is required!"));
+
+            if (string.IsNullOrWhiteSpace(entity.IconName))
+                entity.IconName = "database";
+
+            if (!entity.Weight.HasValue)
+                entity.Weight = 1;
 
             return errorList;
         }
@@ -169,10 +189,13 @@ namespace WebVella.ERP
                 errorList.Add(new ErrorModel("fields.name", field.Name, "Name is required!"));
             else
             {
+                if (field.Name.Length < 2)
+                    errorList.Add(new ErrorModel("fields.name", field.Name, "The Name must be at least 2 characters long!"));
+
                 if (field.Name.Length > 30)
                     errorList.Add(new ErrorModel("fields.name", field.Name, "The length of Name must be less than 30 characters!"));
 
-                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
+                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 
                 Match match = Regex.Match(field.Name, pattern);
                 if (!match.Success || match.Value != field.Name.Trim())
@@ -185,9 +208,9 @@ namespace WebVella.ERP
             else
             {
                 //TODO check if we need this validation
-                /*if (field.Label.Length > 30)
+                if (field.Label.Length > 30)
                     errorList.Add(new ErrorModel("fields.label", field.Label, "The length of Label must be less than 30 characters!"));
-
+                /*
                 string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*"";
 
                 Match match = Regex.Match(field.Label, pattern);
@@ -404,51 +427,54 @@ namespace WebVella.ERP
             return errorList;
         }
 
-        public List<ErrorModel> ValidateViews(Guid entityId, List<View> views, bool checkId = false)
+        public List<ErrorModel> ValidateViews(Guid entityId, List<RecordsList> recordsLists, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             IStorageEntity storageEntity = EntityRepository.Read(entityId);
             Entity entity = new Entity(storageEntity);
 
-            foreach (var view in views)
+            foreach (var recordList in recordsLists)
             {
-                errorList.AddRange(ValidateView(entity, view, checkId));
+                errorList.AddRange(ValidateView(entity, recordList, checkId));
             }
 
             return errorList;
         }
 
-        public List<ErrorModel> ValidateView(Entity entity, View view, bool checkId = false)
+        public List<ErrorModel> ValidateView(Entity entity, RecordsList recordslist, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
-            if (!view.Id.HasValue || view.Id.Value == Guid.Empty)
-                errorList.Add(new ErrorModel("views.id", null, "Id is required!"));
+            if (!recordslist.Id.HasValue || recordslist.Id.Value == Guid.Empty)
+                errorList.Add(new ErrorModel("recordsLists.id", null, "Id is required!"));
 
-            if (string.IsNullOrWhiteSpace(view.Name))
-                errorList.Add(new ErrorModel("views.name", view.Name, "Name is required!"));
+            if (string.IsNullOrWhiteSpace(recordslist.Name))
+                errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "Name is required!"));
             else
             {
-                if (view.Name.Length > 30)
-                    errorList.Add(new ErrorModel("name", view.Name, "The length of Name must be less than 30 characters!"));
+                if (recordslist.Name.Length < 2)
+                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "The Name must be at least 2 characters long!"));
 
-                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
+                if (recordslist.Name.Length > 30)
+                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "The length of Name must be less than 30 characters!"));
 
-                Match match = Regex.Match(view.Name, pattern);
-                if (!match.Success || match.Value != view.Name.Trim())
-                    errorList.Add(new ErrorModel("views.name", view.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
+
+                Match match = Regex.Match(recordslist.Name, pattern);
+                if (!match.Success || match.Value != recordslist.Name.Trim())
+                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
             }
 
-            if (string.IsNullOrWhiteSpace(view.Label))
-                errorList.Add(new ErrorModel("views.label", view.Label, "Label is required!"));
+            if (string.IsNullOrWhiteSpace(recordslist.Label))
+                errorList.Add(new ErrorModel("recordsLists.label", recordslist.Label, "Label is required!"));
             else
             {
                 //TODO check if we need this validation
-                /*
-                if (view.Label.Length > 50)
-                    errorList.Add(new ErrorModel("views.label", view.Label, "The length of Label must be less than 50 characters!"));
 
+                if (recordslist.Label.Length > 50)
+                    errorList.Add(new ErrorModel("recordsLists.label", recordslist.Label, "The length of Label must be less than 50 characters!"));
+                /*
                 string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(view.Label, pattern);
@@ -457,13 +483,13 @@ namespace WebVella.ERP
                 */
             }
 
-            if (view.Filters != null && view.Filters.Count > 0)
+            if (recordslist.Filters != null && recordslist.Filters.Count > 0)
             {
 
-                foreach (var filter in view.Filters)
+                foreach (var filter in recordslist.Filters)
                 {
                     if (!filter.FieldId.HasValue || filter.FieldId.Value == Guid.Empty)
-                        errorList.Add(new ErrorModel("views.filters.fieldId", null, "FieldId is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.filters.fieldId", null, "FieldId is required!"));
 
                     if (filter.EntityId.HasValue && filter.EntityId.Value != Guid.Empty)
                     {
@@ -474,25 +500,25 @@ namespace WebVella.ERP
                             Entity currentEntity = verifiedEntity != null ? new Entity(verifiedEntity) : entity;
 
                             if (currentEntity.Fields.Where(f => f.Id == filter.FieldId).Count() == 0)
-                                errorList.Add(new ErrorModel("views.filters.fieldId", filter.FieldId.ToString(), "Filter with such Id does not exist!"));
+                                errorList.Add(new ErrorModel("recordsLists.filters.fieldId", filter.FieldId.ToString(), "Filter with such Id does not exist!"));
                         }
                         else
-                            errorList.Add(new ErrorModel("views.filters.entityId", filter.EntityId.ToString(), "Entity with such Id does not exist!"));
+                            errorList.Add(new ErrorModel("recordsLists.filters.entityId", filter.EntityId.ToString(), "Entity with such Id does not exist!"));
                     }
                     else
-                        errorList.Add(new ErrorModel("views.filters.entityId", null, "EntityId is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.filters.entityId", null, "EntityId is required!"));
 
                     if (string.IsNullOrWhiteSpace(filter.Value))
-                        errorList.Add(new ErrorModel("views.filters.value", null, "Value is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.filters.value", null, "Value is required!"));
                 }
             }
 
-            if (view.Fields != null && view.Fields.Count > 0)
+            if (recordslist.Fields != null && recordslist.Fields.Count > 0)
             {
-                foreach (var field in view.Fields)
+                foreach (var field in recordslist.Fields)
                 {
                     if (!field.Id.HasValue || field.Id.Value == Guid.Empty)
-                        errorList.Add(new ErrorModel("views.fields.id", null, "Id is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.fields.id", null, "Id is required!"));
 
                     if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
                     {
@@ -503,81 +529,84 @@ namespace WebVella.ERP
                             Entity currentEntity = verifiedEntity != null ? new Entity(verifiedEntity) : entity;
 
                             if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
-                                errorList.Add(new ErrorModel("views.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
+                                errorList.Add(new ErrorModel("recordsLists.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
                         }
                         else
-                            errorList.Add(new ErrorModel("views.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
+                            errorList.Add(new ErrorModel("recordsLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
                     }
                     else
-                        errorList.Add(new ErrorModel("views.fields.entityId", null, "EntityId is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.fields.entityId", null, "EntityId is required!"));
 
                     if (!field.Position.HasValue)
-                        errorList.Add(new ErrorModel("views.fields.position", null, "Position is required!"));
+                        errorList.Add(new ErrorModel("recordsLists.fields.position", null, "Position is required!"));
                 }
             }
             else
-                errorList.Add(new ErrorModel("views.fields", view.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
+                errorList.Add(new ErrorModel("recordsLists.fields", recordslist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
 
             return errorList;
         }
 
-        public List<ErrorModel> ValidateForms(Guid entityId, List<Form> forms, bool checkId = false)
+        public List<ErrorModel> ValidateForms(Guid entityId, List<RecordView> recordViewList, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             IStorageEntity storageEntity = EntityRepository.Read(entityId);
             Entity entity = new Entity(storageEntity);
 
-            foreach (var form in forms)
+            foreach (var recordView in recordViewList)
             {
-                errorList.AddRange(ValidateForm(entity, form, checkId));
+                errorList.AddRange(ValidateForm(entity, recordView, checkId));
             }
 
             return errorList;
         }
 
-        public List<ErrorModel> ValidateForm(Entity entity, Form form, bool checkId = false)
+        public List<ErrorModel> ValidateForm(Entity entity, RecordView recordView, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
-            if (!form.Id.HasValue || form.Id.Value == Guid.Empty)
-                errorList.Add(new ErrorModel("forms.id", null, "Id is required!"));
+            if (!recordView.Id.HasValue || recordView.Id.Value == Guid.Empty)
+                errorList.Add(new ErrorModel("recordViewLists.id", null, "Id is required!"));
 
-            if (string.IsNullOrWhiteSpace(form.Name))
-                errorList.Add(new ErrorModel("forms.name", form.Name, "Name is required!"));
+            if (string.IsNullOrWhiteSpace(recordView.Name))
+                errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "Name is required!"));
             else
             {
-                if (form.Name.Length > 30)
-                    errorList.Add(new ErrorModel("forms.name", form.Name, "The length of Name must be less than 30 characters!"));
+                if (recordView.Name.Length < 2)
+                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "The Name must be at least 2 characters long!"));
 
-                string pattern = @"[a-zA-Z][a-zA-Z0-9_]*";
+                if (recordView.Name.Length > 30)
+                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "The length of Name must be less than 30 characters!"));
 
-                Match match = Regex.Match(form.Name, pattern);
-                if (!match.Success || match.Value != form.Name.Trim())
-                    errorList.Add(new ErrorModel("forms.name", form.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
+
+                Match match = Regex.Match(recordView.Name, pattern);
+                if (!match.Success || match.Value != recordView.Name.Trim())
+                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
             }
 
-            if (string.IsNullOrWhiteSpace(form.Label))
-                errorList.Add(new ErrorModel("forms.label", form.Label, "Label is required!"));
+            if (string.IsNullOrWhiteSpace(recordView.Label))
+                errorList.Add(new ErrorModel("recordViewLists.label", recordView.Label, "Label is required!"));
             else
             {
                 //TODO check if we need this validation
-                /*
-                if (form.Label.Length > 50)
-                    errorList.Add(new ErrorModel("forms.label", form.Label, "The length of Label must be less than 50 characters!"));
 
+                if (recordView.Label.Length > 50)
+                    errorList.Add(new ErrorModel("recordViewLists.label", recordView.Label, "The length of Label must be less than 50 characters!"));
+                /*
                 string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
 
                 Match match = Regex.Match(form.Label, pattern);
                 if (!match.Success || match.Value != form.Label.Trim())
-                    errorList.Add(new ErrorModel("forms.label", form.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
+                    errorList.Add(new ErrorModel("recordViewLists.label", form.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
                */
             }
 
-            foreach (var field in form.Fields)
+            foreach (var field in recordView.Fields)
             {
                 if (!field.Id.HasValue && field.Id.Value == Guid.Empty)
-                    errorList.Add(new ErrorModel("forms.fields.id", null, "Id is required!"));
+                    errorList.Add(new ErrorModel("recordViewLists.fields.id", null, "Id is required!"));
 
                 if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
                 {
@@ -588,19 +617,19 @@ namespace WebVella.ERP
                         Entity currentEntity = verifiedEntity != null ? new Entity(verifiedEntity) : entity;
 
                         if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
-                            errorList.Add(new ErrorModel("forms.fields.id", entity.Id.ToString(), "Field with such Id does not exist!"));
+                            errorList.Add(new ErrorModel("recordViewLists.fields.id", entity.Id.ToString(), "Field with such Id does not exist!"));
                     }
                     else
-                        errorList.Add(new ErrorModel("forms.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
+                        errorList.Add(new ErrorModel("recordViewLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
                 }
                 else
-                    errorList.Add(new ErrorModel("forms.fields.entityId", null, "EntityId is required!"));
+                    errorList.Add(new ErrorModel("recordViewLists.fields.entityId", null, "EntityId is required!"));
 
                 if (!field.Position.HasValue)
-                    errorList.Add(new ErrorModel("forms.fields.position", null, "Position is required!"));
+                    errorList.Add(new ErrorModel("recordViewLists.fields.position", null, "Position is required!"));
 
                 if (!field.Column.HasValue)
-                    errorList.Add(new ErrorModel("forms.column.position", null, "Column is required!"));
+                    errorList.Add(new ErrorModel("recordViewLists.column.position", null, "Column is required!"));
             }
 
             return errorList;
@@ -640,8 +669,8 @@ namespace WebVella.ERP
 
                 entity.Id = inputEntity.Id;
                 entity.Fields = CreateEntityDefaultFields(entity);
-                entity.Views = CreateEntityDefaultViews(entity);
-                entity.Forms = CreateEntityDefaultForms(entity);
+                entity.RecordsLists = CreateEntityDefaultViews(entity);
+                entity.RecordViewLists = CreateEntityDefaultForms(entity);
 
                 IStorageEntity storageEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Create(storageEntity);
@@ -1144,9 +1173,9 @@ namespace WebVella.ERP
 
         #region <-- View methods -->
 
-        public ViewResponse CreateView(Guid entityId, View view)
+        public RecordsListResponse CreateView(Guid entityId, RecordsList recordsList)
         {
-            ViewResponse response = new ViewResponse
+            RecordsListResponse response = new RecordsListResponse
             {
                 Success = true,
                 Message = "The view was successfully created!",
@@ -1166,8 +1195,8 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                response.Object = view;
-                response.Errors = ValidateView(entity, view, false);
+                response.Object = recordsList;
+                response.Errors = ValidateView(entity, recordsList, false);
 
                 if (response.Errors.Count > 0)
                 {
@@ -1177,7 +1206,7 @@ namespace WebVella.ERP
                     return response;
                 }
 
-                entity.Views.Add(view);
+                entity.RecordsLists.Add(recordsList);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1194,23 +1223,23 @@ namespace WebVella.ERP
             {
                 response.Success = false;
                 response.Message = "The view was not created. An internal error occurred!";
-                response.Object = view;
+                response.Object = recordsList;
                 response.Timestamp = DateTime.UtcNow;
                 return response;
             }
 
-            response.Object = view;
+            response.Object = recordsList;
             response.Timestamp = DateTime.UtcNow;
 
             return response;
         }
 
-        public ViewResponse UpdateView(Guid entityId, View view)
+        public RecordsListResponse UpdateView(Guid entityId, RecordsList recordsList)
         {
-            ViewResponse response = new ViewResponse
+            RecordsListResponse response = new RecordsListResponse
             {
                 Success = true,
-                Message = "The view was successfully updated!",
+                Message = "The list was successfully updated!",
             };
 
             try
@@ -1227,22 +1256,22 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                response.Object = view;
-                response.Errors = ValidateView(entity, view, true);
+                response.Object = recordsList;
+                response.Errors = ValidateView(entity, recordsList, true);
 
                 if (response.Errors.Count > 0)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not updated. Validation error occurred!";
+                    response.Message = "The list was not updated. Validation error occurred!";
                     return response;
                 }
 
-                View viewForDelete = entity.Views.FirstOrDefault(v => v.Id == view.Id);
-                if (viewForDelete.Id == view.Id)
-                    entity.Views.Remove(viewForDelete);
+                RecordsList viewForDelete = entity.RecordsLists.FirstOrDefault(r => r.Id == recordsList.Id);
+                if (viewForDelete.Id == recordsList.Id)
+                    entity.RecordsLists.Remove(viewForDelete);
 
-                entity.Views.Add(view);
+                entity.RecordsLists.Add(recordsList);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1250,7 +1279,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not updated! An internal error occurred!";
+                    response.Message = "The list was not updated! An internal error occurred!";
                     return response;
                 }
 
@@ -1258,24 +1287,24 @@ namespace WebVella.ERP
             catch (Exception)
             {
                 response.Success = false;
-                response.Message = "The view was not updated. An internal error occurred!";
-                response.Object = view;
+                response.Message = "The list was not updated. An internal error occurred!";
+                response.Object = recordsList;
                 response.Timestamp = DateTime.UtcNow;
                 return response;
             }
 
-            response.Object = view;
+            response.Object = recordsList;
             response.Timestamp = DateTime.UtcNow;
 
             return response;
         }
 
-        public ViewResponse DeleteView(Guid entityId, Guid id)
+        public RecordsListResponse DeleteView(Guid entityId, Guid id)
         {
-            ViewResponse response = new ViewResponse
+            RecordsListResponse response = new RecordsListResponse
             {
                 Success = true,
-                Message = "The view was successfully deleted!",
+                Message = "The list was successfully deleted!",
             };
 
             try
@@ -1292,18 +1321,18 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                View view = entity.Views.FirstOrDefault(v => v.Id == id);
+                RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
 
-                if (view == null)
+                if (recordsList == null)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not deleted. Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("id", id.ToString(), "View with such Id does not exist!"));
+                    response.Message = "The list was not deleted. Validation error occurred!";
+                    response.Errors.Add(new ErrorModel("id", id.ToString(), "List with such Id does not exist!"));
                     return response;
                 }
 
-                entity.Views.Remove(view);
+                entity.RecordsLists.Remove(recordsList);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1311,7 +1340,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not updated! An internal error occurred!";
+                    response.Message = "The list was not updated! An internal error occurred!";
                     return response;
                 }
             }
@@ -1319,7 +1348,7 @@ namespace WebVella.ERP
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
-                response.Message = "The view was not deleted. An internal error occurred!";
+                response.Message = "The list was not deleted. An internal error occurred!";
                 return response;
             }
 
@@ -1327,12 +1356,12 @@ namespace WebVella.ERP
             return response;
         }
 
-        public ViewListResponse ReadViews(Guid entityId)
+        public RecordsListCollectionResponse ReadViews(Guid entityId)
         {
-            ViewListResponse response = new ViewListResponse
+            RecordsListCollectionResponse response = new RecordsListCollectionResponse
             {
                 Success = true,
-                Message = "The views were successfully returned!",
+                Message = "The lists were successfully returned!",
             };
 
             try
@@ -1349,11 +1378,11 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                ViewList viewList = new ViewList();
-                viewList.Views = entity.Views;
-                viewList.Offset = viewList.Views != null && viewList.Views.Count > 0 ? viewList.Views.Last().Id.Value : Guid.Empty;
+                RecordsListCollection recordsListCollection = new RecordsListCollection();
+                recordsListCollection.Views = entity.RecordsLists;
+                recordsListCollection.Offset = recordsListCollection.Views != null && recordsListCollection.Views.Count > 0 ? recordsListCollection.Views.Last().Id.Value : Guid.Empty;
 
-                response.Object = viewList;
+                response.Object = recordsListCollection;
             }
             catch (Exception)
             {
@@ -1368,12 +1397,12 @@ namespace WebVella.ERP
             return response;
         }
 
-        public ViewResponse ReadView(Guid entityId, Guid id)
+        public RecordsListResponse ReadView(Guid entityId, Guid id)
         {
-            ViewResponse response = new ViewResponse
+            RecordsListResponse response = new RecordsListResponse
             {
                 Success = true,
-                Message = "The view was successfully returned!",
+                Message = "The list was successfully returned!",
             };
 
             try
@@ -1390,18 +1419,18 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                View view = entity.Views.FirstOrDefault(v => v.Id == id);
+                RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
 
-                if (view == null)
+                if (recordsList == null)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("id", id.ToString(), "View with such Id does not exist!"));
+                    response.Errors.Add(new ErrorModel("id", id.ToString(), "List with such Id does not exist!"));
                     return response;
                 }
 
-                response.Object = view;
+                response.Object = recordsList;
             }
             catch (Exception)
             {
@@ -1420,12 +1449,12 @@ namespace WebVella.ERP
 
         #region <-- Form methods -->
 
-        public FormResponse CreateForm(Guid entityId, Form form)
+        public RecordViewResponse CreateForm(Guid entityId, RecordView recordView)
         {
-            FormResponse response = new FormResponse
+            RecordViewResponse response = new RecordViewResponse
             {
                 Success = true,
-                Message = "The form was successfully created!",
+                Message = "The record view was successfully created!",
             };
 
             try
@@ -1442,18 +1471,18 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                response.Object = form;
-                response.Errors = ValidateForm(entity, form, false);
+                response.Object = recordView;
+                response.Errors = ValidateForm(entity, recordView, false);
 
                 if (response.Errors.Count > 0)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not created. Validation error occurred!";
+                    response.Message = "The record view was not created. Validation error occurred!";
                     return response;
                 }
 
-                entity.Forms.Add(form);
+                entity.RecordViewLists.Add(recordView);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1461,7 +1490,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not created! An internal error occurred!";
+                    response.Message = "The record view was not created! An internal error occurred!";
                     return response;
                 }
 
@@ -1469,24 +1498,24 @@ namespace WebVella.ERP
             catch (Exception)
             {
                 response.Success = false;
-                response.Message = "The form was not created. An internal error occurred!";
-                response.Object = form;
+                response.Message = "The record view was not created. An internal error occurred!";
+                response.Object = recordView;
                 response.Timestamp = DateTime.UtcNow;
                 return response;
             }
 
-            response.Object = form;
+            response.Object = recordView;
             response.Timestamp = DateTime.UtcNow;
 
             return response;
         }
 
-        public FormResponse UpdateForm(Guid entityId, Form form)
+        public RecordViewResponse UpdateForm(Guid entityId, RecordView recordView)
         {
-            FormResponse response = new FormResponse
+            RecordViewResponse response = new RecordViewResponse
             {
                 Success = true,
-                Message = "The form was successfully updated!",
+                Message = "The record view was successfully updated!",
             };
 
             try
@@ -1503,22 +1532,22 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                response.Object = form;
-                response.Errors = ValidateForm(entity, form, true);
+                response.Object = recordView;
+                response.Errors = ValidateForm(entity, recordView, true);
 
                 if (response.Errors.Count > 0)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not updated. Validation error occurred!";
+                    response.Message = "The record view was not updated. Validation error occurred!";
                     return response;
                 }
 
-                Form formForDelete = entity.Forms.FirstOrDefault(f => f.Id == form.Id);
-                if (formForDelete.Id == form.Id)
-                    entity.Forms.Remove(formForDelete);
+                RecordView recordViewForDelete = entity.RecordViewLists.FirstOrDefault(r => r.Id == recordView.Id);
+                if (recordViewForDelete.Id == recordView.Id)
+                    entity.RecordViewLists.Remove(recordViewForDelete);
 
-                entity.Forms.Add(form);
+                entity.RecordViewLists.Add(recordView);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1526,7 +1555,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not updated! An internal error occurred!";
+                    response.Message = "The record view was not updated! An internal error occurred!";
                     return response;
                 }
 
@@ -1534,24 +1563,24 @@ namespace WebVella.ERP
             catch (Exception)
             {
                 response.Success = false;
-                response.Message = "The form was not updated. An internal error occurred!";
-                response.Object = form;
+                response.Message = "The record view was not updated. An internal error occurred!";
+                response.Object = recordView;
                 response.Timestamp = DateTime.UtcNow;
                 return response;
             }
 
-            response.Object = form;
+            response.Object = recordView;
             response.Timestamp = DateTime.UtcNow;
 
             return response;
         }
 
-        public FormResponse DeleteForm(Guid entityId, Guid id)
+        public RecordViewResponse DeleteForm(Guid entityId, Guid id)
         {
-            FormResponse response = new FormResponse
+            RecordViewResponse response = new RecordViewResponse
             {
                 Success = true,
-                Message = "The form was successfully deleted!",
+                Message = "The record view was successfully deleted!",
             };
 
             try
@@ -1568,18 +1597,18 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                Form form = entity.Forms.FirstOrDefault(f => f.Id == id);
+                RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
 
-                if (form == null)
+                if (recordView == null)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not deleted. Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("id", id.ToString(), "Form with such Id does not exist!"));
+                    response.Message = "The record view was not deleted. Validation error occurred!";
+                    response.Errors.Add(new ErrorModel("id", id.ToString(), "Record view with such Id does not exist!"));
                     return response;
                 }
 
-                entity.Forms.Remove(form);
+                entity.RecordViewLists.Remove(recordView);
 
                 IStorageEntity updatedEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Update(updatedEntity);
@@ -1587,7 +1616,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The form was not updated! An internal error occurred!";
+                    response.Message = "The record view was not updated! An internal error occurred!";
                     return response;
                 }
             }
@@ -1595,7 +1624,7 @@ namespace WebVella.ERP
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
-                response.Message = "The form was not deleted. An internal error occurred!";
+                response.Message = "The record view was not deleted. An internal error occurred!";
                 return response;
             }
 
@@ -1603,12 +1632,12 @@ namespace WebVella.ERP
             return response;
         }
 
-        public FormListResponse ReadForms(Guid entityId)
+        public RecordViewCollectionResponse ReadForms(Guid entityId)
         {
-            FormListResponse response = new FormListResponse
+            RecordViewCollectionResponse response = new RecordViewCollectionResponse
             {
                 Success = true,
-                Message = "The forms were successfully returned!",
+                Message = "The record views were successfully returned!",
             };
 
             try
@@ -1625,11 +1654,11 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                FormList formList = new FormList();
-                formList.Forms = entity.Forms;
-                formList.Offset = formList.Forms != null && formList.Forms.Count > 0 ? formList.Forms.Last().Id.Value : Guid.Empty;
+                RecordViewCollection recordViewList = new RecordViewCollection();
+                recordViewList.Forms = entity.RecordViewLists;
+                recordViewList.Offset = recordViewList.Forms != null && recordViewList.Forms.Count > 0 ? recordViewList.Forms.Last().Id.Value : Guid.Empty;
 
-                response.Object = formList;
+                response.Object = recordViewList;
             }
             catch (Exception)
             {
@@ -1644,12 +1673,12 @@ namespace WebVella.ERP
             return response;
         }
 
-        public FormResponse ReadForm(Guid entityId, Guid id)
+        public RecordViewResponse ReadForm(Guid entityId, Guid id)
         {
-            FormResponse response = new FormResponse
+            RecordViewResponse response = new RecordViewResponse
             {
                 Success = true,
-                Message = "The form was successfully returned!",
+                Message = "The record view was successfully returned!",
             };
 
             try
@@ -1666,18 +1695,18 @@ namespace WebVella.ERP
 
                 Entity entity = new Entity(storageEntity);
 
-                Form form = entity.Forms.FirstOrDefault(f => f.Id == id);
+                RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
 
-                if (form == null)
+                if (recordView == null)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("id", id.ToString(), "Form with such Id does not exist!"));
+                    response.Errors.Add(new ErrorModel("id", id.ToString(), "Record View with such Id does not exist!"));
                     return response;
                 }
 
-                response.Object = form;
+                response.Object = recordView;
             }
             catch (Exception)
             {
@@ -1710,7 +1739,7 @@ namespace WebVella.ERP
             primaryKeyField.HelpText = "";
             primaryKeyField.Required = true;
             primaryKeyField.Unique = true;
-            primaryKeyField.Searchable = true;
+            primaryKeyField.Searchable = false;
             primaryKeyField.Auditable = false;
             primaryKeyField.System = true;
             primaryKeyField.DefaultValue = Guid.Empty;
@@ -1720,14 +1749,14 @@ namespace WebVella.ERP
             LookupRelationField createdBy = new LookupRelationField();
 
             createdBy.Id = Guid.NewGuid();
-            createdBy.Name = "createdBy";
+            createdBy.Name = "created_by";
             createdBy.Label = "Created By";
             createdBy.PlaceholderText = "";
             createdBy.Description = "";
             createdBy.HelpText = "";
             createdBy.Required = true;
             createdBy.Unique = false;
-            createdBy.Searchable = true;
+            createdBy.Searchable = false;
             createdBy.Auditable = false;
             createdBy.System = true;
 
@@ -1738,14 +1767,14 @@ namespace WebVella.ERP
             LookupRelationField lastModifiedBy = new LookupRelationField();
 
             lastModifiedBy.Id = Guid.NewGuid();
-            lastModifiedBy.Name = "lastModifiedBy";
+            lastModifiedBy.Name = "last_modified_by";
             lastModifiedBy.Label = "Last Modified By";
             lastModifiedBy.PlaceholderText = "";
             lastModifiedBy.Description = "";
             lastModifiedBy.HelpText = "";
             lastModifiedBy.Required = true;
             lastModifiedBy.Unique = false;
-            lastModifiedBy.Searchable = true;
+            lastModifiedBy.Searchable = false;
             lastModifiedBy.Auditable = false;
             lastModifiedBy.System = true;
 
@@ -1756,14 +1785,14 @@ namespace WebVella.ERP
             DateTimeField createdOn = new DateTimeField();
 
             createdOn.Id = Guid.NewGuid();
-            createdOn.Name = "createdOn";
+            createdOn.Name = "created_on";
             createdOn.Label = "CreatedOn";
             createdOn.PlaceholderText = "";
             createdOn.Description = "";
             createdOn.HelpText = "";
             createdOn.Required = true;
             createdOn.Unique = false;
-            createdOn.Searchable = true;
+            createdOn.Searchable = false;
             createdOn.Auditable = false;
             createdOn.System = true;
             createdOn.DefaultValue = DateTime.MinValue;
@@ -1775,20 +1804,20 @@ namespace WebVella.ERP
             return fields;
         }
 
-        private List<View> CreateEntityDefaultViews(Entity entity)
+        private List<RecordsList> CreateEntityDefaultViews(Entity entity)
         {
-            List<View> views = new List<View>();
+            List<RecordsList> recordsLists = new List<RecordsList>();
 
 
-            return views;
+            return recordsLists;
         }
 
-        private List<Form> CreateEntityDefaultForms(Entity entity)
+        private List<RecordView> CreateEntityDefaultForms(Entity entity)
         {
-            List<Form> forms = new List<Form>();
+            List<RecordView> recordViewList = new List<RecordView>();
 
 
-            return forms;
+            return recordViewList;
         }
 
         #endregion

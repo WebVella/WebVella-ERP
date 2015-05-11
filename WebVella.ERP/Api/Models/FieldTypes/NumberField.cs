@@ -19,7 +19,19 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "decimalPlaces")]
         public byte? DecimalPlaces { get; set; }
-	}
+
+        public NumberField()
+        {
+        }
+
+        public NumberField(InputField field) : base(field)
+        {
+            DefaultValue = (decimal?)field["defaultValue"];
+            MinValue = (decimal?)field["minValue"];
+            MaxValue = (decimal?)field["maxValue"];
+            DecimalPlaces = (byte?)field["decimalPlaces"];
+        }
+    }
 
 	public class NumberFieldMeta : NumberField, IFieldMeta
     {
