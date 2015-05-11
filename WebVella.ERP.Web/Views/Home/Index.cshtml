@@ -72,7 +72,7 @@
             // Configuration ///////////////////////////////////
             config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
             function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
-                $urlRouterProvider.otherwise('/');
+                $urlRouterProvider.otherwise('/login');
                 $logProvider.debugEnabled(wvAppConstants.debugEnabled);
 
                 ngToastProvider.configure({

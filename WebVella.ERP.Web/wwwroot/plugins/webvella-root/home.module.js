@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-root-home', {
             parent: 'webvella-root',
-            url: '/',
+            url: 'login',
             views: {
                 "pluginView": {
                     controller: 'WebVellaRootHomeController',
@@ -72,6 +72,7 @@
         $log.debug('webvellaRoot>home> BEGIN controller.exec');
         /* jshint validthis:true */
         var homeData = this;
+
         webvellaRootService.setPageTitle(pageTitle);
         activate();
         $log.debug('webvellaRoot>home> END controller.exec');
