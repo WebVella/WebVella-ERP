@@ -40,9 +40,12 @@ namespace WebVella.ERP.Storage.Mongo
 			Database = Server.GetDatabase(mongoUrl.DatabaseName);
 
 			Entities = RegisterRepository<MongoEntity>("entities");
-
-            //register fields classes in classmap
-            BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
+			
+			//register all mongo storage classes
+			BsonClassMap.RegisterClassMap<MongoEntity>();
+			BsonClassMap.RegisterClassMap<MongoForm>();
+			BsonClassMap.RegisterClassMap<MongoView>();
+			BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
             BsonClassMap.RegisterClassMap<MongoCheckboxField>();
             BsonClassMap.RegisterClassMap<MongoCurrencyField>();
             BsonClassMap.RegisterClassMap<MongoDateField>();
@@ -63,7 +66,7 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoSelectField>();
             BsonClassMap.RegisterClassMap<MongoTextField>();
             BsonClassMap.RegisterClassMap<MongoUrlField>();
-        }
+		}
 
 		/// <summary>
 		///     Registers the repository.
