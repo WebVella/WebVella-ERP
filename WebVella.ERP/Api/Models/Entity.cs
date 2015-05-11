@@ -22,6 +22,12 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
 
+        [JsonProperty(PropertyName = "iconName")]
+        public string IconName { get; set; }
+
+        [JsonProperty(PropertyName = "weight")]
+        public decimal? Weight { get; set; }
+
         [JsonProperty(PropertyName = "permissions")]
         public EntityPermissions Permissions { get; set; }
     }
@@ -43,17 +49,23 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
 
+        [JsonProperty(PropertyName = "iconName")]
+        public string IconName { get; set; }
+
+        [JsonProperty(PropertyName = "weight")]
+        public decimal? Weight { get; set; }
+
         [JsonProperty(PropertyName = "permissions")]
         public EntityPermissions Permissions { get; set; }
 
         [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
 
-        [JsonProperty(PropertyName = "views")]
-        public List<View> Views { get; set; }
+        [JsonProperty(PropertyName = "recordsLists")]
+        public List<RecordsList> RecordsLists { get; set; }
 
-        [JsonProperty(PropertyName = "forms")]
-        public List<Form> Forms { get; set; }
+        [JsonProperty(PropertyName = "recordViewLists")]
+        public List<RecordView> RecordViewLists { get; set; }
 
         public Entity()
         {
@@ -66,8 +78,17 @@ namespace WebVella.ERP.Api.Models
             Name = entity.Name;
             Label = entity.Label;
             PluralLabel = entity.PluralLabel;
-            System = entity.System;
+            System = entity.System.Value;
             Permissions = entity.Permissions;
+            IconName = entity.IconName;
+            Weight = entity.Weight;
+            Permissions = new EntityPermissions();
+            if (entity.Permissions != null)
+            {
+                Permissions.CanRead = entity.Permissions.CanRead;
+                Permissions.CanUpdate = entity.Permissions.CanUpdate;
+                Permissions.CanDelete = entity.Permissions.CanDelete;
+            }
         }
 
         public Entity(IStorageEntity entity)
@@ -77,6 +98,8 @@ namespace WebVella.ERP.Api.Models
             Label = entity.Label;
             PluralLabel = entity.PluralLabel;
             System = entity.System;
+            IconName = entity.IconName;
+            Weight = entity.Weight;
             Permissions = new EntityPermissions();
             if (entity.Permissions != null)
             {
@@ -94,69 +117,69 @@ namespace WebVella.ERP.Api.Models
                 Fields.Add(field);
             }
 
-            Views = new List<View>();
+            RecordsLists = new List<RecordsList>();
 
-            foreach (IStorageView storageView in entity.Views)
+            foreach (IStorageRecordsList storageRecordsList in entity.RecordsLists)
             {
-                View view = new View();
-                view.Id = storageView.Id;
-                view.Name = storageView.Name;
-                view.Label = storageView.Label;
-                view.Type = storageView.Type;
+                RecordsList recordsList = new RecordsList();
+                recordsList.Id = storageRecordsList.Id;
+                recordsList.Name = storageRecordsList.Name;
+                recordsList.Label = storageRecordsList.Label;
+                recordsList.Type = storageRecordsList.Type;
 
-                view.Filters = new List<ViewFilter>();
+                recordsList.Filters = new List<RecordsListFilter>();
 
-                foreach (IStorageViewFilter storageFilter in storageView.Filters)
+                foreach (IStorageRecordsListFilter storageFilter in storageRecordsList.Filters)
                 {
-                    ViewFilter filter = new ViewFilter();
+                    RecordsListFilter filter = new RecordsListFilter();
 
                     filter.EntityId = storageFilter.EntityId;
                     filter.FieldId = storageFilter.FieldId;
                     filter.Operator = storageFilter.Operator;
                     filter.Value = storageFilter.Value;
 
-                    view.Filters.Add(filter);
+                    recordsList.Filters.Add(filter);
                 }
 
-                view.Fields = new List<ViewField>();
+                recordsList.Fields = new List<RecordsListField>();
 
-                foreach (IStorageViewField storageField in storageView.Fields)
+                foreach (IStorageRecordsListField storageField in storageRecordsList.Fields)
                 {
-                    ViewField field = new ViewField();
+                    RecordsListField field = new RecordsListField();
 
                     field.EntityId = storageField.EntityId;
                     field.Id = storageField.Id;
                     field.Position = storageField.Position;
 
-                    view.Fields.Add(field);
+                    recordsList.Fields.Add(field);
                 }
 
-                Views.Add(view);
+                RecordsLists.Add(recordsList);
             }
 
-            Forms = new List<Form>();
+            RecordViewLists = new List<RecordView>();
 
-            foreach (IStorageForm storageForm in entity.Forms)
+            foreach (IStorageRecordView storageRecordView in entity.RecordViewList)
             {
-                Form form = new Form();
-                form.Id = storageForm.Id;
-                form.Name = storageForm.Name;
-                form.Label = storageForm.Label;
+                RecordView recordView = new RecordView();
+                recordView.Id = storageRecordView.Id;
+                recordView.Name = storageRecordView.Name;
+                recordView.Label = storageRecordView.Label;
 
-                form.Fields = new List<FormField>();
+                recordView.Fields = new List<RecordViewField>();
 
-                foreach (IStorageFormField storageField in storageForm.Fields)
+                foreach (IStorageRecordViewField storageField in storageRecordView.Fields)
                 {
-                    FormField field = new FormField();
+                    RecordViewField field = new RecordViewField();
 
                     field.EntityId = storageField.EntityId;
                     field.Id = storageField.Id;
                     field.Position = storageField.Position;
 
-                    form.Fields.Add(field);
+                    recordView.Fields.Add(field);
                 }
 
-                Forms.Add(form);
+                RecordViewLists.Add(recordView);
             }
         }
     }

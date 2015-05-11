@@ -16,6 +16,17 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "maxLength")]
         public int? MaxLength { get; set; }
+
+        public PhoneField()
+        {
+        }
+
+        public PhoneField(InputField field) : base(field)
+        {
+            DefaultValue = (string)field["defaultValue"];
+            Format = (string)field["format"];
+            MaxLength = (int?)field["maxLength"];
+        }
     }
 
     public class PhoneFieldMeta : PhoneField, IFieldMeta

@@ -19,6 +19,19 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "currency")]
         public CurrencyTypes Currency { get; set; }
+
+        public CurrencyField()
+        {
+        }
+
+        public CurrencyField(InputField field) : base(field)
+        {
+            DefaultValue = (decimal?)field["defaultValue"];
+            MinValue = (decimal?)field["minValue"];
+            MaxValue = (decimal?)field["maxValue"];
+            Currency = (CurrencyTypes)field["currency"];
+        }
+
     }
 
     public class CurrencyFieldMeta : CurrencyField, IFieldMeta
