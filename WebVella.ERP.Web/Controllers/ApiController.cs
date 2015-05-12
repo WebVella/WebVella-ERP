@@ -13,14 +13,10 @@ using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    public class ApiController : Controller
+    public class ApiController : ApiControllerBase
     {
-
-        IERPService service;
-
-        public ApiController(IERPService service)
+        public ApiController(IERPService service) : base(service)
         {
-            this.service = service;
         }
 
 
@@ -29,13 +25,7 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
         public IActionResult GetEntityMetaList()
         {
-            EntityManager manager = new EntityManager(service.StorageService);
-            EntityListResponse response = manager.ReadEntities();
-
-            if (response.Errors.Count > 0)
-                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return Json(response);
+            return DoResponse(new EntityManager(service.StorageService).ReadEntities());
         }
 
         // Get entity meta
@@ -43,13 +33,7 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}")]
         public IActionResult GetEntityMeta(string Name)
         {
-            EntityManager manager = new EntityManager(service.StorageService);
-            EntityResponse response = manager.ReadEntity(Name);
-
-            if (response.Errors.Count > 0)
-                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return Json(response);
+            return DoResponse(new EntityManager(service.StorageService).ReadEntity(Name));
         }
 
 
@@ -58,13 +42,7 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
         public IActionResult CreateEntity([FromBody]InputEntity submitObj)
         {
-            EntityManager manager = new EntityManager(service.StorageService);
-            EntityResponse response = manager.CreateEntity(submitObj);
-
-            if (response.Errors.Count > 0)
-                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return Json(response);
+            return DoResponse(new EntityManager(service.StorageService).CreateEntity(submitObj));
         }
 
 
@@ -77,20 +55,10 @@ namespace WebVella.ERP.Web.Controllers
             if (!Guid.TryParse(Id, out entityId))
             {
                 response.Errors.Add(new ErrorModel("Id", Id, "Id parameter is not valid Guid value"));
-
-                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(response);
+                return DoResponse(response);
             }
 
-            Field field = Field.Convert(submitObj);
-
-            EntityManager manager = new EntityManager(service.StorageService);
-            response = manager.CreateField(entityId, field);
-
-            if (response.Errors.Count > 0)
-                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            return Json(response);
+            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.Convert(submitObj)));
         }
 
         // Delete an entity
@@ -107,8 +75,6 @@ namespace WebVella.ERP.Web.Controllers
             if (Guid.TryParse(StringId, out newGuid))
             {
                 response = manager.DeleteEntity(newGuid);
-                if (response.Errors.Count > 0)
-                    Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
             else
             {
@@ -116,7 +82,7 @@ namespace WebVella.ERP.Web.Controllers
                 response.Message = "The entity Id should be a valid Guid";
                 Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
-            return Json(response);
+            return DoResponse(response);
         }
 
     }

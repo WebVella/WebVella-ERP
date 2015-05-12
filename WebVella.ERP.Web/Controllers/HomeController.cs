@@ -2,18 +2,15 @@
 
 namespace WebVella.ERP.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ApiControllerBase
     {
-        private IERPService service;
-
-        public HomeController(IERPService service)
+        public HomeController(IERPService service) : base(service)
         {
-            this.service = service;
         }
 
 
         // GET: /<controller>/
-        public IActionResult Index( )
+        public IActionResult Index()
         {
             service.RunTests();
             return View();
