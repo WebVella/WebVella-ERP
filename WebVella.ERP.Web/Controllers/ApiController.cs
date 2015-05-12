@@ -53,32 +53,20 @@ namespace WebVella.ERP.Web.Controllers
         }
 
 
-		//// Create an entity
-		//// POST: api/v1/en_US/meta/entity
-		//[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
-		//public IActionResult CreateEntity([FromBody]InputEntity submitObj)
-		//{
-		//    EntityManager manager = new EntityManager(service.StorageService);
-		//    EntityResponse response = manager.CreateEntity(submitObj);
-
-		//    if (response.Errors.Count > 0)
-		//        Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-		//    return Json(response);
-		//}
-
         // Create an entity
         // POST: api/v1/en_US/meta/entity
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
-		public IActionResult CreateEntity([FromBody]EntityRecord obj )
+        public IActionResult CreateEntity([FromBody]InputEntity submitObj)
         {
-			var h = obj.GetProperties();
-			
-            var t =  Json(obj);
+            EntityManager manager = new EntityManager(service.StorageService);
+            EntityResponse response = manager.CreateEntity(submitObj);
 
+            if (response.Errors.Count > 0)
+                Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-			return Json(obj);
+            return Json(response);
         }
+
 
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
         public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
