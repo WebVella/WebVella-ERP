@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityFieldsController', controller);
+        .controller('WebVellaAdminEntityFieldsController', controller)
+        .controller('CreateFieldModalController', CreateFieldModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -108,6 +109,21 @@
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
         });
 
+        //Create new entity modal
+        contentData.createFieldModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'createFieldModal.html',
+                controller: 'CreateFieldModalController',
+                controllerAs: "modalData",
+                size: "lg",
+                resolve: {
+                    contentData: function () { return contentData; }
+                }
+            });
+
+        }
+
         
         activate();
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
@@ -116,14 +132,14 @@
 
 
     //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
-        modalData.entity = parentData.entity;
+        modalData.contentData = contentData;
 
         modalData.ok = function () {
             webvellaAdminService.deleteEntity(modalData.entity.id, successCallback, errorCallback)
