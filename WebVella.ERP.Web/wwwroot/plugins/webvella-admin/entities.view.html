@@ -201,10 +201,30 @@
                             <tbody>
                                 <tr ng-repeat="role in modalData.entity.roles">
                                     <td>{{role.label}}</td>
-                                    <td class="text-center"><input type="checkbox" ng-model="role.canRead" ng-change="modalData.toggleCanRead(role.id)"/></td>
-                                    <td class="text-center"><input type="checkbox" ng-model="role.canCreate" ng-change="modalData.toggleCanCreate(role.id)"/></td>
-                                    <td class="text-center"><input type="checkbox" ng-model="role.canUpdate" ng-change="modalData.toggleCanUpdate(role.id)"/></td>
-                                    <td class="text-center"><input type="checkbox" ng-model="role.canDelete" ng-change="modalData.toggleCanDelete(role.id)"/></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canRead" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                            <i ng-show="role.canRead" class="fa fa-fw fa-check go-green"></i>
+                                            <i ng-show="!role.canRead" class="fa fa-fw fa-close go-red"></i>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                            <i ng-show="role.canCreate" class="fa fa-fw fa-check go-green"></i>
+                                            <i ng-show="!role.canCreate" class="fa fa-fw fa-close go-red"></i>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                            <i ng-show="role.canUpdate" class="fa fa-fw fa-check go-green"></i>
+                                            <i ng-show="!role.canUpdate" class="fa fa-fw fa-close go-red"></i>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canDelete" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                            <i ng-show="role.canDelete" class="fa fa-fw fa-check go-green"></i>
+                                            <i ng-show="!role.canDelete" class="fa fa-fw fa-close go-red"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
