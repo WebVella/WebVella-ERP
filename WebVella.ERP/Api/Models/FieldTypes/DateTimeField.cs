@@ -14,6 +14,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "format")]
         public string Format { get; set; }
 
+        [JsonProperty(PropertyName = "useCurrentTimeAsDefaultValue")]
+        public bool? UseCurrentTimeAsDefaultValue { get; set; }
+
         public DateTimeField()
         {
         }
@@ -26,6 +29,7 @@ namespace WebVella.ERP.Api.Models
         {
             DefaultValue = (DateTime?)field["defaultValue"];
             Format = (string)field["format"];
+            UseCurrentTimeAsDefaultValue = (bool?)field["useCurrentTimeAsDefaultValue"];
         }
     }
 
@@ -46,6 +50,7 @@ namespace WebVella.ERP.Api.Models
             EntityName = entityName;
             DefaultValue = field.DefaultValue;
             Format = field.Format;
+            UseCurrentTimeAsDefaultValue = field.UseCurrentTimeAsDefaultValue;
             ParentFieldName = parentFieldName;
         }
     }
