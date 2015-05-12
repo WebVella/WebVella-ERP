@@ -20,10 +20,9 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-developers-base', {
             //abstract: true,
-            parent: 'webvella-root',
-            url: 'developers', //will be added to all children states
+            url: '/developers', //will be added to all children states
             views: {
-                "pluginView": {
+                "rootView": {
                     controller: 'WebVellaDevelopersBaseController',
                     templateUrl: '/plugins/webvella-developers/base.view.html',
                     controllerAs: 'pluginData'
@@ -31,8 +30,8 @@
             },
             resolve: {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
-                pageTitle: function (pageTitle) {
-                    return "Developers | " + pageTitle;
+                pageTitle: function () {
+                    return "Webvella ERP";
                 }
             },
             data: { }

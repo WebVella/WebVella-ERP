@@ -20,10 +20,9 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-base', {
             abstract: true,
-            parent: 'webvella-root',
-            url: 'areas', //will be added to all children states
+            url: '/areas', //will be added to all children states
             views: {
-                "pluginView": {
+                "rootView": {
                     controller: 'WebVellaAreasBaseController',
                     templateUrl: '/plugins/webvella-areas/base.view.html',
                     controllerAs: 'pluginData'
@@ -31,9 +30,10 @@
             },
             resolve: {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
-                pageTitle: function (pageTitle) {
-                    return "Areas | " + pageTitle;
-                }
+                pageTitle: function () {
+                    return "Webvella ERP";
+                },
+                resolvedSiteMeta: resolveSiteMeta
             },
             data: {
                 //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -54,29 +54,27 @@
 
 
     // Resolve Function /////////////////////////
-    resolvingApplicationAreas.$inject = ['$log', '$q'];
+    resolveSiteMeta.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function resolvingApplicationAreas($log, $q) {
-        $log.debug('webvellaAreas>base> BEGIN state.resolved');
+    function resolveSiteMeta($q, $log, webvellaRootService) {
+        $log.debug('webvellaRoot>base> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
-        //call the API and get the list of all areas
-        webvellaAreasService.getAllAreas(successCallback, errorCallback);
-
-        //On success, push the areas object to the factory, so it is accessible by other states
-        function successCallback(data) {
-            // Process
-            defer.resolve(data);
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
         }
 
-        function errorCallback(data) {
-            defer.resolve(data);
+        function errorCallback(response) {
+            defer.resolve(response.object);
         }
+
+        webvellaRootService.getSiteMeta(successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAreas>base> END state.resolved');
+        $log.debug('webvellaRoot>base> END state.resolved');
         return defer.promise;
     }
 

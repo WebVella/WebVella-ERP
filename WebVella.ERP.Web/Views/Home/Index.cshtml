@@ -72,7 +72,7 @@
             // Configuration ///////////////////////////////////
             config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
             function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
-                $urlRouterProvider.otherwise('/login');
+                $urlRouterProvider.otherwise('/desktop/browse');
                 $logProvider.debugEnabled(wvAppConstants.debugEnabled);
 
                 ngToastProvider.configure({
@@ -94,7 +94,7 @@
 
     <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/base.module.js"></script>
-    <script src="~/plugins/webvella-root/home.module.js"></script>
+    <script src="~/plugins/webvella-root/login.module.js"></script>
     <script src="~/plugins/webvella-root/not-found.module.js"></script>
     <script src="~/plugins/webvella-root/providers/root.service.js"></script>
 
