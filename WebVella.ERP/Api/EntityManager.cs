@@ -807,7 +807,7 @@ namespace WebVella.ERP
 
                 response.Object = new EntityList(storageEntityList);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;

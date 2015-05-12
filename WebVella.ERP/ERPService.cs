@@ -32,6 +32,8 @@ namespace WebVella.ERP
         {
             InitializeSystemEntities();
             //EntityTests();
+
+            var entityManager = new EntityManager(StorageService);
         }
 
         public void InitializeSystemEntities()
