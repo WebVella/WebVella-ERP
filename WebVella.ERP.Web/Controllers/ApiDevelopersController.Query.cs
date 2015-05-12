@@ -13,13 +13,10 @@ using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    public partial class ApiDevelopersController : Controller
+    public partial class ApiDevelopersController : ApiControllerBase
     {
-        IERPService service;
-
-        public ApiDevelopersController(IERPService service)
+        public ApiDevelopersController(IERPService service) : base(service)
         {
-            this.service = service;
         }
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
