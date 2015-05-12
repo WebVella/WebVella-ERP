@@ -255,15 +255,17 @@ namespace WebVella.ERP
             }
             else if (field is DateField)
             {
-                if (!((DateField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                //because DateField support NULL now, we skipp this validation
+                //if (!((DateField)field).DefaultValue.HasValue)
+                //    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
 
                 //TODO:parse format and check if it is valid
             }
             else if (field is DateTimeField)
             {
-                if (!((DateTimeField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                //because DateField support NULL now, we skipp this validation
+                //if (!((DateTimeField)field).DefaultValue.HasValue)
+                //    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
 
                 //TODO:parse format and check if it is valid
             }
@@ -1883,7 +1885,7 @@ namespace WebVella.ERP
             createdOn.Searchable = false;
             createdOn.Auditable = false;
             createdOn.System = true;
-            createdOn.DefaultValue = DateTime.MinValue;
+            createdOn.DefaultValue = null;
 
             createdOn.Format = "MM/dd/YYYY";
             createdOn.UseCurrentTimeAsDefaultValue = true;
@@ -1903,7 +1905,7 @@ namespace WebVella.ERP
             modifiedOn.Searchable = false;
             modifiedOn.Auditable = false;
             modifiedOn.System = true;
-            modifiedOn.DefaultValue = DateTime.MinValue;
+            modifiedOn.DefaultValue = null;
 
             modifiedOn.Format = "MM/dd/YYYY";
             modifiedOn.UseCurrentTimeAsDefaultValue = true;
