@@ -21,6 +21,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public MultiLineTextField(Field field) : base(field)
+        {
+        }
+
         public MultiLineTextField(InputField field) : base(field)
         {
             DefaultValue = (string)field["defaultValue"];
@@ -40,7 +44,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public MultiLineTextFieldMeta(Guid entityId, string entityName, MultiLineTextField field, string parentFieldName = null)
+        public MultiLineTextFieldMeta(Guid entityId, string entityName, MultiLineTextField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

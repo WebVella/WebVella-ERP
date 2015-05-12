@@ -15,6 +15,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public MasterDetailsRelationshipField(Field field) : base(field)
+        {
+        }
+
         public MasterDetailsRelationshipField(InputField field) : base(field)
         {
             RelatedEntityId = (Guid?)field["relatedEntityId"];
@@ -32,7 +36,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public MasterDetailsRelationshipFieldMeta(Guid entityId, string entityName, MasterDetailsRelationshipField field, string parentFieldName = null)
+        public MasterDetailsRelationshipFieldMeta(Guid entityId, string entityName, MasterDetailsRelationshipField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

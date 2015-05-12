@@ -18,6 +18,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public DateTimeField(Field field) : base(field)
+        {
+        }
+
         public DateTimeField(InputField field) : base(field)
         {
             DefaultValue = (DateTime?)field["defaultValue"];
@@ -36,7 +40,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field, string parentFieldName = null)
+        public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
             EntityName = entityName;
