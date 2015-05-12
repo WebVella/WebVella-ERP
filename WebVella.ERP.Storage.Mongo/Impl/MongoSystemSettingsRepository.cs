@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api.Models;
 
@@ -16,12 +17,18 @@ namespace WebVella.ERP.Storage.Mongo
         }
 
         /// <summary>
-        /// 
+        /// Read system setting
         /// </summary>
         /// <returns></returns>
         public IStorageSystemSettings Read()
         {
-            return MongoStaticContext.Context.SystemSettings.Get().ToList<IStorageSystemSettings>()[0];
+            List<IStorageSystemSettings> settings = MongoStaticContext.Context.SystemSettings.Get().ToList<IStorageSystemSettings>();
+
+            IStorageSystemSettings setting = null;
+            if (settings != null && settings.Count > 0)
+                setting = settings[0];
+
+            return setting;
         }
 
         /// <summary>
