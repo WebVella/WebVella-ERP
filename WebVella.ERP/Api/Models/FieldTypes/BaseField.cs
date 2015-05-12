@@ -51,6 +51,21 @@ namespace WebVella.ERP
 
         }
 
+        public Field(Field field)
+        {
+            Id = field.Id;
+            Name = field.Name;
+            Label = field.Label;
+            PlaceholderText = field.PlaceholderText;
+            Description = field.Description;
+            HelpText = field.HelpText;
+            Required = field.Required;
+            Unique = field.Unique;
+            Searchable = field.Searchable;
+            Auditable = field.Auditable;
+            System = field.System;
+        }
+
         public Field(InputField field)
         {
             Id = (Guid)field["id"];

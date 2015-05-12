@@ -22,17 +22,22 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
 		public IActionResult CreateSampleQueryDataStructure()
 		{
-			var queryObject = EntityQuery.QueryAND(EntityQuery.QueryEQ("id", Guid.NewGuid()), EntityQuery.QueryEQ("id", Guid.NewGuid()));
-			EntityQuery query = new EntityQuery("customer", "id,createdBy",queryObject );
-			RecordManager rm = new RecordManager(service);
-			var result = rm.Find(query);
+            Guid recId = Guid.NewGuid();
 
-			QueryResponse response = new QueryResponse();
-			response.Success = true;
-			response.Timestamp = DateTime.UtcNow;
-			response.Message = "CreateSampleQueryDataStructure:DONE";
-            return Json(response);
-		}
+            EntityRecord record = new EntityRecord();
+            record["id"] = recId;
+            record["email"] = "test email";
+            RecordManager rm = new RecordManager(service);
+            rm.CreateRecord("user", record);
+
+
+
+            var queryObject = EntityQuery.QueryEQ("id", recId );
+            EntityQuery query = new EntityQuery("user", "id,email", queryObject);
+            var result = rm.Find(query);
+
+           return Json(result);
+        }
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
 		public IActionResult ExecuteSampleQuery()

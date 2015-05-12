@@ -10,7 +10,7 @@ namespace WebVella.ERP.Api
 	public class RecordManager
 	{
 		private IERPService erpService;
-		private const string RECORD_COLLECTION_PREFIX = "ev_";
+		
 		private const string ID_FIELD_NAME = "Id";
 		private const string WILDCARD_SYMBOL = "*";
 		private const char FIELDS_SEPARATOR = ',';
@@ -30,32 +30,83 @@ namespace WebVella.ERP.Api
 			entityManager = new EntityManager(erpService.StorageService);
 		}
 
-		public SingleQueryResponse CreateRecord(string entityName, EntityRecord record)
+		public SingleRecordResponse CreateRecord(string entityName, EntityRecord record)
 		{
-			//check entityname for null
+            if (string.IsNullOrWhiteSpace(entityName))
+            {
+                SingleRecordResponse response = new SingleRecordResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message="Invalid entity name." });
+                return response;
+            }
 
 			Entity entity = GetEntity(entityName);
-			if (entity == null)
-			{
-				//TODO throw exception
-			}
-			return CreateRecord(entity, record);
+            if (entity == null)
+            {
+                SingleRecordResponse response = new SingleRecordResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return CreateRecord(entity, record);
 		}
 
-		public SingleQueryResponse CreateRecord(Guid entityId, EntityRecord record)
+		public SingleRecordResponse CreateRecord(Guid entityId, EntityRecord record)
 		{
-			Entity entity = GetEntity(entityId);
-			if (entity == null)
-			{
-				//TODO throw exception
-			}
-			return CreateRecord(entity, record);
+            Entity entity = GetEntity(entityId);
+            if (entity == null)
+            {
+                SingleRecordResponse response = new SingleRecordResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return CreateRecord(entity, record);
 		}
 
-		public SingleQueryResponse CreateRecord(Entity entity, EntityRecord record)
+		public SingleRecordResponse CreateRecord(Entity entity, EntityRecord record)
 		{
-			return null;
-		}
+
+            if( entity == null )
+            {
+                //TODO 
+                return null;
+            }
+
+            if (record == null)
+            {
+                //TODO 
+                return null;
+            }
+
+            List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+
+            var fieldsMeta = ExtractEntityFieldsMeta(entity);
+            var recordFields = record.GetProperties();
+            foreach (var field in fieldsMeta )
+            {
+                var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
+                storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field) ));
+            }
+
+            var recRep = erpService.StorageService.GetRecordRepository();
+            recRep.Create(entity.Name, storageRecordData);
+            return null;
+        }
 
 
 		/// <summary>
@@ -76,7 +127,7 @@ namespace WebVella.ERP.Api
 			{
 				List<Field> fieldsMeta = ExtractQueryFieldsMeta(query);
 				var recRepo = erpService.StorageService.GetRecordRepository();
-				var storageRecords = recRepo.Find(RECORD_COLLECTION_PREFIX + query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
+				var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
 
 				List<EntityRecord> result = new List<EntityRecord>();
 
@@ -98,7 +149,7 @@ namespace WebVella.ERP.Api
 								resultRecord[relationCompositeFieldName] = null;
 							else
 							{
-								var childRecord = recRepo.Find(RECORD_COLLECTION_PREFIX + ((IFieldMeta)field).EntityName, (Guid)parentField.Value);
+								var childRecord = recRepo.Find(((IFieldMeta)field).EntityName, (Guid)parentField.Value);
 								if (childRecord == null)
 									resultRecord[relationCompositeFieldName] = null;
 								else
@@ -127,7 +178,7 @@ namespace WebVella.ERP.Api
 
 		private object ExractFieldValue(KeyValuePair<string, object>? fieldValue, Field field)
 		{
-			if (fieldValue != null)
+			if (fieldValue != null && fieldValue.Value.Key != null )
 			{
 				var pair = fieldValue.Value;
 
@@ -179,52 +230,62 @@ namespace WebVella.ERP.Api
 			}
 			else
 			{
-				#region <--- the field value doesn't exist. Set defaults from meta
+                #region <--- the field value doesn't exist. Set defaults from meta
 
-				if (field is AutoNumberField)
-					return ((AutoNumberField)field).DefaultValue;
-				else if (field is CheckboxField)
-					return ((CheckboxField)field).DefaultValue;
-				else if (field is CurrencyField)
-					return ((CurrencyField)field).DefaultValue;
-				else if (field is DateField)
-					return ((DateField)field).DefaultValue;
-				else if (field is DateTimeField)
-					return ((DateTimeField)field).DefaultValue;
-				else if (field is EmailField)
-					return ((EmailField)field).DefaultValue;
-				else if (field is FileField)
-					//TODO convert file path to url path
-					return ((FileField)field).DefaultValue;
-				else if (field is ImageField)
-					//TODO convert file path to url path
-					return ((ImageField)field).DefaultValue;
-				else if (field is HtmlField)
-					return ((HtmlField)field).DefaultValue;
-				else if (field is MultiLineTextField)
-					return ((MultiLineTextField)field).DefaultValue;
-				else if (field is MultiSelectField)
-					return ((MultiSelectField)field).DefaultValue;
-				else if (field is NumberField)
-					return ((NumberField)field).DefaultValue;
-				else if (field is PasswordField)
-					return null;
-				else if (field is PercentField)
-					return ((PercentField)field).DefaultValue;
-				else if (field is PhoneField)
-					return ((PhoneField)field).DefaultValue;
-				else if (field is PrimaryKeyField)
-					throw new Exception("System error. Record primary key value is missing.");
-				else if (field is SelectField)
-					return ((SelectField)field).DefaultValue;
-				else if (field is TextField)
-					return ((TextField)field).DefaultValue;
-				else if (field is UrlField)
-					return ((UrlField)field).DefaultValue;
-				else if (field is LookupRelationField)
-					return null;
-				else if (field is MasterDetailsRelationshipField)
-					return null;
+                if (field is AutoNumberField)
+                    return ((AutoNumberField)field).DefaultValue;
+                else if (field is CheckboxField)
+                    return ((CheckboxField)field).DefaultValue;
+                else if (field is CurrencyField)
+                    return ((CurrencyField)field).DefaultValue;
+                else if (field is DateField)
+                {
+                    if (((DateField)field).UseCurrentTimeAsDefaultValue)
+                        return DateTime.UtcNow.Date;
+                    else
+                        return ((DateField)field).DefaultValue;
+                }
+                else if (field is DateTimeField)
+                {
+                    if (((DateTimeField)field).UseCurrentTimeAsDefaultValue)
+                        return DateTime.UtcNow;
+                    else
+                        return ((DateTimeField)field).DefaultValue;
+                }
+                else if (field is EmailField)
+                    return ((EmailField)field).DefaultValue;
+                else if (field is FileField)
+                    //TODO convert file path to url path
+                    return ((FileField)field).DefaultValue;
+                else if (field is ImageField)
+                    //TODO convert file path to url path
+                    return ((ImageField)field).DefaultValue;
+                else if (field is HtmlField)
+                    return ((HtmlField)field).DefaultValue;
+                else if (field is MultiLineTextField)
+                    return ((MultiLineTextField)field).DefaultValue;
+                else if (field is MultiSelectField)
+                    return ((MultiSelectField)field).DefaultValue;
+                else if (field is NumberField)
+                    return ((NumberField)field).DefaultValue;
+                else if (field is PasswordField)
+                    return null;
+                else if (field is PercentField)
+                    return ((PercentField)field).DefaultValue;
+                else if (field is PhoneField)
+                    return ((PhoneField)field).DefaultValue;
+                else if (field is PrimaryKeyField)
+                    throw new Exception("System error. Record primary key value is missing.");
+                else if (field is SelectField)
+                    return ((SelectField)field).DefaultValue;
+                else if (field is TextField)
+                    return ((TextField)field).DefaultValue;
+                else if (field is UrlField)
+                    return ((UrlField)field).DefaultValue;
+                else if (field is LookupRelationField)
+                    return null;
+                else if (field is MasterDetailsRelationshipField)
+                    return null;
 
 				#endregion
 			}
@@ -323,7 +384,14 @@ namespace WebVella.ERP.Api
 			return result;
 		}
 
-		private Field WrapFieldMeta(Field field, Entity entity, string parentFieldName = null)
+        private List<Field> ExtractEntityFieldsMeta(Entity entity)
+        {
+            List<Field> result = new List<Field>();
+            result.AddRange(entity.Fields.Select(x => WrapFieldMeta(x, entity)));
+            return result;
+        }
+
+        private Field WrapFieldMeta(Field field, Entity entity, string parentFieldName = null)
 		{
 			if (field is AutoNumberField)
 				return new AutoNumberFieldMeta(entity.Id.Value, entity.Name, (AutoNumberField)field, parentFieldName);
