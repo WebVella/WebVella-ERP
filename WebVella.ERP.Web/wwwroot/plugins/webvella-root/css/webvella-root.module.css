@@ -24,6 +24,10 @@ span.divider {
     border-radius:0;
 }
 
+.position-relative {
+    position:relative !important;
+}
+
 .display-block {
     display: block !important;
 }
@@ -880,7 +884,8 @@ span.divider {
     line-height: 39px;
 }
 
-#page-title .entity-box a {
+#page-title .entity-box a,
+#page-title .entity-box span {
     text-transform: lowercase;
 }
 
@@ -1678,6 +1683,15 @@ form .error {
     padding-left:14px;
 }
 
+.input-group.clean-addon .form-control{
+    border-right:0;
+}
+
+.input-group.clean-addon .input-group-addon{
+   background: white;
+    color: #999;
+}
+
 /*#endregion */
 
 /*#region << Tables >> */
@@ -1696,6 +1710,12 @@ table tbody td.actions {
 table .btn-xs.btn-link {
     padding: 0 5px;
     font-size: 13px;
+}
+
+
+.table.table-permissions thead th{
+    font-weight:normal;
+    color:#999;
 }
 
 /*#endregion */
@@ -1998,47 +2018,139 @@ table .btn-xs.btn-link {
 
 /*#region << Inline edit styles >> */
 
-/*Text*/
+/*All*/
 
 .editable-empty, .editable-empty:hover, .editable-empty:focus, a.editable-empty, a.editable-empty:hover, a.editable-empty:focus {
     color:#9E9E9E !important;
 }
 
-a[editable-text] {
+.editable-wrap {
+    padding:10px;
+    position:absolute;
+    box-shadow:0 0 10px #666;
+    background:white;
+    z-index:12;
+    top:-10px;
+    left:-20px;
+}
+
+a.editable,
+span.editable{
     color: #337ab7;
     display: inline-block;
     line-height: 20px;
     padding: 6px 12px;
-    border:1px solid transparent !important;
+    border:1px solid transparent;
     border-radius:3px;
     position:relative;
     
 }
 
-a[editable-text]:after {
+a.editable:after,
+span.editable:after {
     font-family: 'FontAwesome';
     content:"\f040";
     position:absolute;
     right:-32px;
-    border:1px solid #FFF59D;
+    border:1px solid #FFCC80;
     top:-1px;
     line-height:20px;
     width:32px;
     padding:6px 0;
     text-align:center;
-    color:#F44336;
-    background:#FFF59D;
+    color:#fff;
+    background:#FFCC80;
     display:none;
+    border-radius:0 3px 3px 0;
 }
-    a[editable-text]:hover:after {
+    a.editable:hover:after,
+    span.editable:hover:after {
             display:inline-block;
     }
 
-    a[editable-text]:hover {
-        background: #FFFDE7;
-        border-color:#FFF59D;
+    a.editable:hover,
+    span.editable:hover {
+        background: #FFF3E0;
+        border:1px solid #FFCC80;
         cursor:pointer;
         color:#333;
     }
 
+
+/*Checkbox*/
+.editable-checkbox label {
+    line-height:30px;
+}
+
+.editable-checkbox label:hover{
+    cursor:pointer;
+}
+
+.editable-checkbox input {
+    vertical-align:middle;
+}
+
+
+/* Not editable */
+
+a.not-editable,
+span.not-editable{
+    color: #333;
+    display: inline-block;
+    line-height: 20px;
+    padding: 6px 12px;
+    border:1px solid transparent;
+    border-radius:3px;
+    position:relative;
+    
+}
+
+a.not-editable:after,
+span.not-editable:after {
+    font-family: 'FontAwesome';
+    content:"\f023";
+    position:absolute;
+    right:-32px;
+    border:1px solid #EF9A9A;
+    top:-1px;
+    line-height:20px;
+    width:32px;
+    padding:6px 0;
+    text-align:center;
+    color:#fff;
+    background:#EF9A9A;
+    display:none;
+    border-radius:0 3px 3px 0;
+}
+    a.not-editable:hover:after,
+    span.not-editable:hover:after {
+            display:inline-block;
+    }
+
+    a.not-editable:hover,
+    span.not-editable:hover {
+        background: #FFCDD2;
+        border:1px solid #EF9A9A;
+        cursor:pointer;
+        color:#333;
+    }
+
+/*#endregion */
+
+/*#region << Typeahead >> */
+.dropdown-menu > li > a.typeahead-icon-item {
+    line-height:34px;
+    height:34px;
+    padding:0 10px;
+}
+.dropdown-menu > li > a.typeahead-icon-item i{
+    margin-right: 5px;
+    font-size: 18px;
+    position:relative;
+    top:2px;
+}
+
+    .dropdown-menu > li > a.typeahead-icon-item:hover i {
+        color: #fff !important;
+    }
 /*#endregion */

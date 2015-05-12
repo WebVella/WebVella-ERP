@@ -35,8 +35,7 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function () {
                     return "Webvella ERP";
-                },
-                resolvedSiteMeta: resolveSiteMeta
+                }
             },
             data: {
                 //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -68,31 +67,6 @@
         $log.debug('webvellaAdmin>base> END module.run');
     };
 
-
-    // Resolve Function /////////////////////////
-    resolveSiteMeta.$inject = ['$q', '$log', 'webvellaRootService'];
-
-    /* @ngInject */
-    function resolveSiteMeta($q, $log, webvellaRootService) {
-        $log.debug('webvellaRoot>base> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        webvellaRootService.getSiteMeta(successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaRoot>base> END state.resolved');
-        return defer.promise;
-    }
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory', '$timeout'];
@@ -154,12 +128,6 @@
             // Change the body color to all child states to red
             webvellaRootService.setBodyColorClass("red");
             
-            //if (adminData.sidebar.length > 0 && $stateParams.redirect == 'true') {
-            //    $timeout(function () {
-            //        $state.go(adminData.sidebar[0].stateName, adminData.sidebar[0].stateParams)
-            //    }, 0);
-
-            //}
         }
     }
 
