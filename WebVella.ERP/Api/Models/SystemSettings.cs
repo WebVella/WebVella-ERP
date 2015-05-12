@@ -9,6 +9,9 @@ namespace WebVella.ERP.Api.Models
 {
     public class SystemSettings
     {
+        [JsonProperty(PropertyName = "id")]
+        public Guid Id { get; set; }
+
         [JsonProperty(PropertyName = "version")]
         public int Version { get; set; }
 
@@ -19,6 +22,7 @@ namespace WebVella.ERP.Api.Models
 
         public SystemSettings(IStorageSystemSettings settings)
         {
+            Id = settings.Id;
             Version = settings.Version;
         }
     }

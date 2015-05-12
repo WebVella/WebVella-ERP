@@ -28,12 +28,13 @@ namespace WebVella.ERP.Storage.Mongo
             storageEntity.System = entity.System.Value;
             storageEntity.IconName = entity.IconName;
             storageEntity.Weight = entity.Weight.Value;
-            storageEntity.Permissions = new MongoEntityPermissions();
-            if (entity.Permissions != null)
+            storageEntity.RecordPermissions = new MongoRecordPermissions();
+            if (entity.RecordPermissions != null)
             {
-                storageEntity.Permissions.CanRead = entity.Permissions.CanRead;
-                storageEntity.Permissions.CanUpdate = entity.Permissions.CanUpdate;
-                storageEntity.Permissions.CanDelete = entity.Permissions.CanDelete;
+                storageEntity.RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
+                storageEntity.RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
+                storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
+                storageEntity.RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
             }
             storageEntity.Fields = new List<IStorageField>();
 

@@ -32,21 +32,21 @@ namespace WebVella.ERP
         {
             InitializeSystemEntities();
             //EntityTests();
-
-            var entityManager = new EntityManager(StorageService);
         }
 
         public void InitializeSystemEntities()
         {
             IStorageSystemSettingsRepository systemSettingsRepository = StorageService.GetSystemSettingsRepository();
             IStorageSystemSettings storeSystemSettings = systemSettingsRepository.Read();
+
+            Guid systemSettingsId = new Guid("F3223177-B2FF-43F5-9A4B-FF16FC67D186");
             SystemSettings systemSettings = new SystemSettings();
+            systemSettings.Id = systemSettingsId;
 
             int currentVersion = 0;
             if (storeSystemSettings != null)
             {
                 systemSettings = new SystemSettings(storeSystemSettings);
-
                 currentVersion = systemSettings.Version;
             }
 
@@ -71,10 +71,11 @@ namespace WebVella.ERP
                 roleEntity.Label = "Role";
                 roleEntity.PluralLabel = "Roles";
                 roleEntity.System = true;
-                roleEntity.Permissions = new EntityPermissions();
-                roleEntity.Permissions.CanRead = allowedRoles;
-                roleEntity.Permissions.CanUpdate = allowedRoles;
-                roleEntity.Permissions.CanDelete = allowedRoles;
+                roleEntity.RecordPermissions = new RecordPermissions();
+                roleEntity.RecordPermissions.CanRead = allowedRoles;
+                roleEntity.RecordPermissions.CanCreate = allowedRoles;
+                roleEntity.RecordPermissions.CanUpdate = allowedRoles;
+                roleEntity.RecordPermissions.CanDelete = allowedRoles;
 
                 EntityResponse response = entityManager.CreateEntity(roleEntity);
 
@@ -123,10 +124,11 @@ namespace WebVella.ERP
                 userEntity.Label = "User";
                 userEntity.PluralLabel = "Users";
                 userEntity.System = true;
-                userEntity.Permissions = new EntityPermissions();
-                userEntity.Permissions.CanRead = allowedRoles;
-                userEntity.Permissions.CanUpdate = allowedRoles;
-                userEntity.Permissions.CanDelete = allowedRoles;
+                userEntity.RecordPermissions = new RecordPermissions();
+                userEntity.RecordPermissions.CanRead = allowedRoles;
+                userEntity.RecordPermissions.CanCreate = allowedRoles;
+                userEntity.RecordPermissions.CanUpdate = allowedRoles;
+                userEntity.RecordPermissions.CanDelete = allowedRoles;
 
                 response = entityManager.CreateEntity(userEntity);
 
@@ -233,7 +235,7 @@ namespace WebVella.ERP
                 enabledField.Name = "enabled";
                 enabledField.Label = "Enabled";
                 enabledField.PlaceholderText = "";
-                enabledField.Description = "Shous if the user account is enabled";
+                enabledField.Description = "Shows if the user account is enabled";
                 enabledField.HelpText = "";
                 enabledField.Required = true;
                 enabledField.Unique = false;
@@ -288,10 +290,11 @@ namespace WebVella.ERP
             inputEntity.Label = "Goro Test";
             inputEntity.PluralLabel = "Goro Tests";
             inputEntity.System = true;
-            inputEntity.Permissions = new EntityPermissions();
-            inputEntity.Permissions.CanRead = new List<Guid> { };
-            inputEntity.Permissions.CanUpdate = new List<Guid> { };
-            inputEntity.Permissions.CanDelete = new List<Guid> { };
+            inputEntity.RecordPermissions = new RecordPermissions();
+            inputEntity.RecordPermissions.CanRead = new List<Guid> { };
+            inputEntity.RecordPermissions.CanCreate = new List<Guid> { };
+            inputEntity.RecordPermissions.CanUpdate = new List<Guid> { };
+            inputEntity.RecordPermissions.CanDelete = new List<Guid> { };
 
             try
             {
