@@ -99,11 +99,11 @@
         <div ng-hide="modalData.hasError">
             <div class="wizard" id="MyWizard">
                 <ul class="steps horizontal">
-                    <li class="complete" data-target="#step1">
+                    <li class="active" data-target="#step1">
                         <span class="badge">1</span>Choose type<span class="chevron"></span>
 
                     </li>
-                    <li class="active" data-target="#step2">
+                    <li class="" data-target="#step2">
                         <span class="badge">2</span>General settings<span class="chevron"></span>
 
                     </li>
@@ -113,10 +113,29 @@
                     </li>
                 </ul>
             </div>
+            <br />
+            <div class="form">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+                        <input class="form-control" ng-model="modalData.typeFilter.searchBox" autofocus/>
+                    </div>
+                </div>
+            </div>
+
+
+            <table class="table table-bordered table-hover">
+                <tr ng-repeat="type in modalData.fieldTypes | filter:modalData.typeFilter">
+                    <th style="width:200px;">{{type.label}}</th>
+                    <td>{{type.description}}</td>
+                    <td><a href="" class="btn btn-default">select</a></td>
+                </tr>
+            </table>
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-click="modalData.ok()" ng-hide="modalData.hasError">Create Field</button>
-        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
+        <p><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
+        <!--<button class="btn btn-success" ng-click="modalData.ok()" ng-hide="modalData.hasError">Create Field</button>
+        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>-->
     </div>
 </script>

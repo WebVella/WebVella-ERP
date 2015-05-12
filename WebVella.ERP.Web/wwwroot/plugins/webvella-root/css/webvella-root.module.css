@@ -1719,6 +1719,71 @@ table .btn-xs.btn-link {
     color: #999;
 }
 
+.table-hover > tbody > tr:hover {
+    background-color:#FAFBFD;
+}
+
+.theme-red .table-hover > tbody > tr:hover {
+    background-color:#FFFAFB;
+}
+
+
+.theme-pink .table-hover > tbody > tr:hover {
+    background-color:#FFF5F8;
+}
+
+
+.theme-purple .table-hover > tbody > tr:hover {
+    background-color:#FDF2FF;
+}
+
+.theme-deep-purple .table-hover > tbody > tr:hover {
+    background-color:#F8F3FF;
+}
+.theme-indigo .table-hover > tbody > tr:hover {
+    background-color:#F8F9FF;
+}
+.theme-blue .table-hover > tbody > tr:hover {
+    background-color:#F3FAFF;
+}
+
+.theme-light-blue .table-hover > tbody > tr:hover {
+    background-color:#F5FCFF;
+}
+.theme-cyan .table-hover > tbody > tr:hover {
+    background-color:#F3FAFF;
+}
+.theme-teal .table-hover > tbody > tr:hover {
+    background-color:#F5FFFE;
+}
+
+.theme-green .table-hover > tbody > tr:hover {
+    background-color:#F2FFF3;
+}
+.theme-light-green .table-hover > tbody > tr:hover {
+    background-color:#F4FFE6;
+}
+.theme-lime .table-hover > tbody > tr:hover {
+    background-color:#F9FBE7;
+}
+
+.theme-yellow .table-hover > tbody > tr:hover {
+    background-color:#FFFCDE;
+}
+.theme-amber .table-hover > tbody > tr:hover {
+    background-color:#FDF9EA;
+}
+.theme-orange .table-hover > tbody > tr:hover {
+    background-color:#FFFAFA;
+}
+
+.theme-deep-orange .table-hover > tbody > tr:hover {
+    background-color:#FFFAFA;
+}
+.theme-brown .table-hover > tbody > tr:hover {
+    background-color:#FFFAF8;
+}
+
 
 /*#endregion */
 
