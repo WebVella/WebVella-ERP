@@ -19,6 +19,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public SelectField(Field field) : base(field)
+        {
+        }
+
         public SelectField(InputField field) : base(field)
         {
             DefaultValue = (string)field["defaultValue"];
@@ -37,7 +41,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public SelectFieldMeta(Guid entityId, string entityName, SelectField field, string parentFieldName = null)
+        public SelectFieldMeta(Guid entityId, string entityName, SelectField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;
