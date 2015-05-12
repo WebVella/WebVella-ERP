@@ -11,6 +11,7 @@ namespace WebVella.ERP.Storage.Mongo
         {
             MongoSystemSettings storageSystemSettings = new MongoSystemSettings();
 
+            storageSystemSettings.Id = systemSettings.Id;
             storageSystemSettings.Version = systemSettings.Version;
 
             return storageSystemSettings;

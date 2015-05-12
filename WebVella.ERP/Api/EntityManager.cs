@@ -108,15 +108,18 @@ namespace WebVella.ERP
             if (!entity.System.HasValue)
                 errorList.Add(new ErrorModel("system", null, "System is required!"));
 
-            if (entity.Permissions != null)
+            if (entity.RecordPermissions != null)
             {
-                if(entity.Permissions.CanRead == null || entity.Permissions.CanRead.Count == 0)
+                if(entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
                     errorList.Add(new ErrorModel("permissions.canRead", null, "CanRead is required! It must contains at least one item!"));
 
-                if (entity.Permissions.CanUpdate == null || entity.Permissions.CanUpdate.Count == 0)
+                if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
+                    errorList.Add(new ErrorModel("permissions.canCreate", null, "CanCreate is required! It must contains at least one item!"));
+
+                if (entity.RecordPermissions.CanUpdate == null || entity.RecordPermissions.CanUpdate.Count == 0)
                     errorList.Add(new ErrorModel("permissions.canUpdate", null, "CanUpdate is required! It must contains at least one item!"));
 
-                if (entity.Permissions.CanDelete == null || entity.Permissions.CanDelete.Count == 0)
+                if (entity.RecordPermissions.CanDelete == null || entity.RecordPermissions.CanDelete.Count == 0)
                     errorList.Add(new ErrorModel("permissions.canDelete", null, "CanDelete is required! It must contains at least one item!"));
             }
             else

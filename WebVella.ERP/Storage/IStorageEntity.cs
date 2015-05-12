@@ -17,7 +17,7 @@ namespace WebVella.ERP.Storage
 
         decimal Weight { get; set; }
 
-        IStorageEntityPermissions Permissions { get; set; }
+        IStorageRecordPermissions RecordPermissions { get; set; }
 
         List<IStorageField> Fields { get; set; }
 
@@ -26,9 +26,11 @@ namespace WebVella.ERP.Storage
         List<IStorageRecordView> RecordViewList { get; set; }
     }
 
-    public interface IStorageEntityPermissions
+    public interface IStorageRecordPermissions
     {
         List<Guid> CanRead { get; set; }
+
+        List<Guid> CanCreate { get; set; }
 
         List<Guid> CanUpdate { get; set; }
 

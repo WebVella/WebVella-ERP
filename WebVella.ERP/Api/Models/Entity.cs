@@ -28,8 +28,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "weight")]
         public decimal? Weight { get; set; }
 
-        [JsonProperty(PropertyName = "permissions")]
-        public EntityPermissions Permissions { get; set; }
+        [JsonProperty(PropertyName = "recordPermissions")]
+        public RecordPermissions RecordPermissions { get; set; }
     }
 
     public class Entity
@@ -55,8 +55,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "weight")]
         public decimal? Weight { get; set; }
 
-        [JsonProperty(PropertyName = "permissions")]
-        public EntityPermissions Permissions { get; set; }
+        [JsonProperty(PropertyName = "recordPermissions")]
+        public RecordPermissions RecordPermissions { get; set; }
 
         [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
@@ -79,16 +79,11 @@ namespace WebVella.ERP.Api.Models
             Label = entity.Label;
             PluralLabel = entity.PluralLabel;
             System = entity.System.Value;
-            Permissions = entity.Permissions;
             IconName = entity.IconName;
             Weight = entity.Weight;
-            Permissions = new EntityPermissions();
-            if (entity.Permissions != null)
-            {
-                Permissions.CanRead = entity.Permissions.CanRead;
-                Permissions.CanUpdate = entity.Permissions.CanUpdate;
-                Permissions.CanDelete = entity.Permissions.CanDelete;
-            }
+            RecordPermissions = entity.RecordPermissions;
+            if (RecordPermissions == null)
+                RecordPermissions = new RecordPermissions();
         }
 
         public Entity(IStorageEntity entity)
@@ -100,12 +95,13 @@ namespace WebVella.ERP.Api.Models
             System = entity.System;
             IconName = entity.IconName;
             Weight = entity.Weight;
-            Permissions = new EntityPermissions();
-            if (entity.Permissions != null)
+            RecordPermissions = new RecordPermissions();
+            if (entity.RecordPermissions != null)
             {
-                Permissions.CanRead = entity.Permissions.CanRead;
-                Permissions.CanUpdate = entity.Permissions.CanUpdate;
-                Permissions.CanDelete = entity.Permissions.CanDelete;
+                RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
+                RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
+                RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
+                RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
             }
 
             Fields = new List<Field>();
@@ -184,10 +180,13 @@ namespace WebVella.ERP.Api.Models
         }
     }
 
-    public class EntityPermissions
+    public class RecordPermissions
     {
         [JsonProperty(PropertyName = "canRead")]
         public List<Guid> CanRead { get; set; }
+
+        [JsonProperty(PropertyName = "canCreate")]
+        public List<Guid> CanCreate { get; set; }
 
         [JsonProperty(PropertyName = "canUpdate")]
         public List<Guid> CanUpdate { get; set; }
@@ -195,9 +194,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "canDelete")]
         public List<Guid> CanDelete { get; set; }
 
-        public EntityPermissions()
+        public RecordPermissions()
         {
             CanRead = new List<Guid>();
+            CanCreate = new List<Guid>();
             CanUpdate = new List<Guid>();
             CanDelete = new List<Guid>();
         }

@@ -17,7 +17,7 @@ namespace WebVella.ERP.Storage.Mongo
 
         public decimal Weight { get; set; }
 
-        public IStorageEntityPermissions Permissions { get; set; }
+        public IStorageRecordPermissions RecordPermissions { get; set; }
 
         public List<IStorageField> Fields { get; set; }
 
@@ -33,17 +33,20 @@ namespace WebVella.ERP.Storage.Mongo
         }
     }
 
-    public class MongoEntityPermissions : IStorageEntityPermissions
+    public class MongoRecordPermissions : IStorageRecordPermissions
     {
         public List<Guid> CanRead { get; set; }
+
+        public List<Guid> CanCreate { get; set; }
 
         public List<Guid> CanUpdate { get; set; }
 
         public List<Guid> CanDelete { get; set; }
 
-        public MongoEntityPermissions()
+        public MongoRecordPermissions()
         {
             CanRead = new List<Guid>();
+            CanCreate = new List<Guid>();
             CanUpdate = new List<Guid>();
             CanDelete = new List<Guid>();
         }
