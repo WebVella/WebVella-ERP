@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-success"><i class="fa fa-fw fa-plus"></i> Add field</a>
+            <a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
         </div>
         <!--<div class="icon-box">
             <i class="fa fa-database"></i>
@@ -88,3 +88,35 @@
         </table>
     </div>
 </div>
+
+<script type="text/ng-template" id="createFieldModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Create field</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-danger" ng-bind="modalData.errorMessage" ng-show="modalData.hasError"></div>
+        <div ng-hide="modalData.hasError">
+            <div class="wizard" id="MyWizard">
+                <ul class="steps horizontal">
+                    <li class="complete" data-target="#step1">
+                        <span class="badge">1</span>Choose type<span class="chevron"></span>
+
+                    </li>
+                    <li class="active" data-target="#step2">
+                        <span class="badge">2</span>General settings<span class="chevron"></span>
+
+                    </li>
+                    <li data-target="#step3">
+                        <span class="badge">3</span>Specific settings<span class="chevron"></span>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-click="modalData.ok()" ng-hide="modalData.hasError">Create Field</button>
+        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
+    </div>
+</script>

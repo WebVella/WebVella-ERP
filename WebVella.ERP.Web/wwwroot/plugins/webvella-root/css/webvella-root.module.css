@@ -2178,3 +2178,361 @@ span.not-editable {
         color: #fff !important;
     }
 /*#endregion */
+
+/*#region << Wizard >> */
+/*
+    @insparation from https://github.com/ExactTarget/fuelux Thanks gals and boys 
+    @license: https://github.com/ExactTarget/fuelux/blob/master/LICENSE
+*/
+
+.wizard {
+  *zoom: 1;
+  border: 1px solid #d4d4d4;
+  border-radius: 0;
+  background-color: #f9f9f9;
+  position: relative;
+  min-height: 48px;
+  overflow: hidden;
+}
+.wizard:before,
+.wizard:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.wizard:after {
+  clear: both;
+}
+.wizard > .steps {
+  list-style: none outside none;
+  padding: 0;
+  margin: 0;
+  width: 4000px;
+}
+.wizard > .steps.previous-disabled li.complete {
+  cursor: default;
+}
+.wizard > .steps.previous-disabled li.complete:hover {
+  background: #f3f4f5;
+  color: #468847;
+  cursor: default;
+}
+.wizard > .steps.previous-disabled li.complete:hover .chevron:before {
+  border-left-color: #f3f4f5;
+}
+.wizard > .steps li {
+  float: left;
+  margin: 0;
+  padding: 0 20px 0 30px;
+  height: 46px;
+  line-height: 46px;
+  position: relative;
+  background: #ededed;
+  color: #999999;
+  font-size: 16px;
+  cursor: not-allowed;
+}
+.wizard > .steps li .chevron {
+  border: 24px solid transparent;
+  border-left: 14px solid #d4d4d4;
+  border-right: 0;
+  display: block;
+  position: absolute;
+  right: -14px;
+  top: 0;
+  z-index: 1;
+}
+.wizard > .steps li .chevron:before {
+  border: 24px solid transparent;
+  border-left: 14px solid #ededed;
+  border-right: 0;
+  content: "";
+  display: block;
+  position: absolute;
+  right: 1px;
+  top: -24px;
+}
+.wizard > .steps li.complete {
+  background: #f3f4f5;
+  color: #333;
+}
+.wizard > .steps li.complete:hover {
+  background: #e7eff8;
+  cursor: pointer;
+}
+.wizard > .steps li.complete:hover .chevron:before {
+  border-left: 14px solid #e7eff8;
+}
+.wizard > .steps li.complete .chevron:before {
+  border-left: 14px solid #f3f4f5;
+}
+
+.wizard > .steps li.complete .badge {
+  background: #555;
+}
+
+.wizard > .steps li.active {
+  background: #FAFBFD;
+  color: #009688;
+  cursor: default;
+}
+.wizard > .steps li.active .chevron:before {
+  border-left: 14px solid #FAFBFD;
+}
+.wizard > .steps li.active .badge {
+  background-color: #009688;
+}
+.wizard > .steps li .badge {
+  margin-right: 8px;
+}
+
+.wizard > .steps li:first-child {
+  border-radius: 4px 0 0 4px;
+  padding-left: 20px;
+}
+.wizard > .actions {
+  z-index: 1000;
+  position: absolute;
+  right: 0;
+  line-height: 46px;
+  float: right;
+  padding-left: 15px;
+  padding-right: 15px;
+  vertical-align: middle;
+  background-color: #e5e5e5;
+  border-left: 1px solid #d4d4d4;
+}
+.wizard > .actions a {
+  line-height: 45px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+.wizard > .actions .btn-prev[disabled] {
+  cursor: not-allowed;
+}
+.wizard > .actions .btn-prev span {
+  margin-right: 5px;
+}
+.wizard > .actions .btn-next[disabled] {
+  cursor: not-allowed;
+}
+.wizard > .actions .btn-next span {
+  margin-left: 5px;
+}
+.wizard .step-content {
+  border-top: 1px solid #D4D4D4;
+  padding: 10px;
+  float: left;
+  width: 100%;
+}
+.wizard .step-content .step-pane {
+  display: none;
+}
+.wizard .step-content > .active {
+  display: block;
+}
+.wizard .step-content > .active .btn-group .active {
+  display: inline-block;
+}
+.wizard.complete > .actions .glyphicon-arrow-right:before {
+  display: none;
+}
+.wizard.complete > .actions .glyphicon-arrow-right {
+  margin-left: 0;
+}
+
+/* Theming */
+.theme-red .wizard > .steps li.active .badge {
+  background-color: #F44336;
+}
+
+.theme-red .wizard > .steps li.active {
+  background: #FFFAFB;
+  color: #F44336;
+}
+.theme-red .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFB;
+}
+
+.theme-pink .wizard > .steps li.active .badge {
+  background-color: #E91E63;
+}
+
+.theme-pink .wizard > .steps li.active {
+  background: #FFF5F8;
+  color: #E91E63;
+}
+.theme-pink .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFF5F8;
+}
+
+.theme-purple .wizard > .steps li.active .badge {
+  background-color: #9C27B0;
+}
+
+.theme-purple .wizard > .steps li.active {
+  background: #FDF2FF;
+  color: #9C27B0;
+}
+.theme-purple .wizard > .steps li.active .chevron:before {
+  border-left-color:#FDF2FF;
+}
+
+.theme-indigo .wizard > .steps li.active .badge {
+  background-color: #3F51B5;
+}
+
+.theme-indigo .wizard > .steps li.active {
+  background: #F8F9FF;
+  color: #3F51B5;
+}
+.theme-indigo .wizard > .steps li.active .chevron:before {
+  border-left-color:#F8F9FF;
+}
+
+.theme-blue .wizard > .steps li.active .badge {
+  background-color: #2196F3;
+}
+
+.theme-blue .wizard > .steps li.active {
+  background: #F3FAFF;
+  color: #2196F3;
+}
+.theme-blue .wizard > .steps li.active .chevron:before {
+  border-left-color:#F3FAFF;
+}
+
+.theme-light-blue .wizard > .steps li.active .badge {
+  background-color: #03A9F4;
+}
+
+.theme-light-blue .wizard > .steps li.active {
+  background: #F5FCFF;
+  color: #03A9F4;
+}
+.theme-light-blue .wizard > .steps li.active .chevron:before {
+  border-left-color:#F5FCFF;
+}
+
+.theme-cyan .wizard > .steps li.active .badge {
+  background-color: #00BCD4;
+}
+
+.theme-cyan .wizard > .steps li.active {
+  background: #F3FAFF;
+  color: #00BCD4;
+}
+.theme-cyan .wizard > .steps li.active .chevron:before {
+  border-left-color:#F3FAFF;
+}
+
+.theme-teal .wizard > .steps li.active .badge {
+  background-color: #009688;
+}
+
+.theme-teal .wizard > .steps li.active {
+  background: #F5FFFE;
+  color: #009688;
+}
+.theme-teal .wizard > .steps li.active .chevron:before {
+  border-left-color:#F5FFFE;
+}
+
+.theme-green .wizard > .steps li.active .badge {
+  background-color: #4CAF50;
+}
+
+.theme-green .wizard > .steps li.active {
+  background: #F2FFF3;
+  color: #4CAF50;
+}
+.theme-green .wizard > .steps li.active .chevron:before {
+  border-left-color:#F2FFF3;
+}
+
+.theme-light-green .wizard > .steps li.active .badge {
+  background-color: #8BC34A;
+}
+
+.theme-light-green .wizard > .steps li.active {
+  background: #F4FFE6;
+  color: #8BC34A;
+}
+.theme-light-green .wizard > .steps li.active .chevron:before {
+  border-left-color:#F4FFE6;
+}
+
+.theme-lime .wizard > .steps li.active .badge {
+  background-color: #CDDC39;
+}
+
+.theme-lime .wizard > .steps li.active {
+  background: #F9FBE7;
+  color: #CDDC39;
+}
+.theme-lime .wizard > .steps li.active .chevron:before {
+  border-left-color:#F9FBE7;
+}
+
+.theme-yellow .wizard > .steps li.active .badge {
+  background-color: #FDD835;
+}
+
+.theme-yellow .wizard > .steps li.active {
+  background: #FFFCDE;
+  color: #FDD835;
+}
+.theme-yellow .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFCDE;
+}
+
+.theme-amber .wizard > .steps li.active .badge {
+  background-color: #FFC107;
+}
+
+.theme-amber .wizard > .steps li.active {
+  background: #FDF9EA;
+  color: #FFC107;
+}
+.theme-amber .wizard > .steps li.active .chevron:before {
+  border-left-color:#FDF9EA;
+}
+
+.theme-orange .wizard > .steps li.active .badge {
+  background-color: #FF9800;
+}
+
+.theme-orange .wizard > .steps li.active {
+  background: #FFFAFA;
+  color: #FF9800;
+}
+.theme-orange .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFA;
+}
+
+.theme-deep-orange .wizard > .steps li.active .badge {
+  background-color: #FF5722;
+}
+
+.theme-deep-orange .wizard > .steps li.active {
+  background: #FFFAFA;
+  color: #FF5722;
+}
+.theme-deep-orange .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFA;
+}
+
+.theme-brown .wizard > .steps li.active .badge {
+  background-color: #795548;
+}
+
+.theme-brown .wizard > .steps li.active {
+  background: #FFFAF8;
+  color: #795548;
+}
+.theme-brown .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAF8;
+}
+
+
+/*#endregion */
