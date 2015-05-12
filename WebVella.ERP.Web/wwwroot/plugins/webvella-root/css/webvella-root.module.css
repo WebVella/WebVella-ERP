@@ -21,11 +21,11 @@ span.divider {
 }
 
 .panel {
-    border-radius:0;
+    border-radius: 0;
 }
 
 .position-relative {
-    position:relative !important;
+    position: relative !important;
 }
 
 .display-block {
@@ -1679,16 +1679,17 @@ form .error {
 .editable-wrap .editable-controls {
     margin: 0 !important;
 }
+
 .form-control-static {
-    padding-left:14px;
+    padding-left: 14px;
 }
 
-.input-group.clean-addon .form-control{
-    border-right:0;
+.input-group.clean-addon .form-control {
+    border-right: 0;
 }
 
-.input-group.clean-addon .input-group-addon{
-   background: white;
+.input-group.clean-addon .input-group-addon {
+    background: white;
     color: #999;
 }
 
@@ -1713,10 +1714,11 @@ table .btn-xs.btn-link {
 }
 
 
-.table.table-permissions thead th{
-    font-weight:normal;
-    color:#999;
+.table.table-permissions thead th {
+    font-weight: normal;
+    color: #999;
 }
+
 
 /*#endregion */
 
@@ -1919,11 +1921,11 @@ table .btn-xs.btn-link {
         background: rgba(255,255,255,0.2);
         padding: 1em 0 1em 1em;
         border-left: 3px solid #90A4AE;
-        border-right:none;
+        border-right: none;
     }
 
         .tabbable.spilled ul li {
-            padding:2px 0;
+            padding: 2px 0;
         }
 
         .tabbable.spilled ul a {
@@ -1932,9 +1934,9 @@ table .btn-xs.btn-link {
 
         .tabbable.spilled ul li:not(.active) a:hover {
             background: rgba(255,255,255,0.15);
-            border-color:transparent;
-            border-right:none;
-            color: #ccc;
+            border-color: transparent;
+            border-right: none;
+            color: #eee;
         }
 
         .tabbable.spilled ul li.active a {
@@ -2014,6 +2016,27 @@ table .btn-xs.btn-link {
     border-left-color: #795548 !important;
 }
 
+
+.tabbable.spilled .back {
+    position: absolute;
+    line-height: 40px;
+    height: 40px;
+    top: -64px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    width: 90px;
+    border-radius: 5px 0 0 5px;
+    color: #ccc;
+    text-align: right;
+    padding-right: 20px;
+}
+
+    .tabbable.spilled .back:hover {
+     background: rgba(255,255,255,0.30);
+     text-decoration:none;
+     color: #eee;
+    }
+
 /*#endregion */
 
 /*#region << Inline edit styles >> */
@@ -2021,134 +2044,135 @@ table .btn-xs.btn-link {
 /*All*/
 
 .editable-empty, .editable-empty:hover, .editable-empty:focus, a.editable-empty, a.editable-empty:hover, a.editable-empty:focus {
-    color:#9E9E9E !important;
+    color: #9E9E9E !important;
 }
 
 .editable-wrap {
-    padding:10px;
-    position:absolute;
-    box-shadow:0 0 10px #666;
-    background:white;
-    z-index:12;
-    top:-10px;
-    left:-20px;
+    padding: 10px;
+    position: absolute;
+    box-shadow: 0 0 10px #666;
+    background: white;
+    z-index: 12;
+    top: -10px;
+    left: -20px;
 }
 
 a.editable,
-span.editable{
+span.editable {
     color: #337ab7;
     display: inline-block;
     line-height: 20px;
     padding: 6px 12px;
-    border:1px solid transparent;
-    border-radius:3px;
-    position:relative;
-    
+    border: 1px solid transparent;
+    border-radius: 3px;
+    position: relative;
 }
 
-a.editable:after,
-span.editable:after {
-    font-family: 'FontAwesome';
-    content:"\f040";
-    position:absolute;
-    right:-32px;
-    border:1px solid #FFCC80;
-    top:-1px;
-    line-height:20px;
-    width:32px;
-    padding:6px 0;
-    text-align:center;
-    color:#fff;
-    background:#FFCC80;
-    display:none;
-    border-radius:0 3px 3px 0;
-}
+    a.editable:after,
+    span.editable:after {
+        font-family: 'FontAwesome';
+        content: "\f040";
+        position: absolute;
+        right: -32px;
+        border: 1px solid #FFCC80;
+        top: -1px;
+        line-height: 20px;
+        width: 32px;
+        padding: 6px 0;
+        text-align: center;
+        color: #fff;
+        background: #FFCC80;
+        display: none;
+        border-radius: 0 3px 3px 0;
+    }
+
     a.editable:hover:after,
     span.editable:hover:after {
-            display:inline-block;
+        display: inline-block;
     }
 
     a.editable:hover,
     span.editable:hover {
         background: #FFF3E0;
-        border:1px solid #FFCC80;
-        cursor:pointer;
-        color:#333;
+        border: 1px solid #FFCC80;
+        cursor: pointer;
+        color: #333;
     }
 
 
 /*Checkbox*/
 .editable-checkbox label {
-    line-height:30px;
+    line-height: 30px;
 }
 
-.editable-checkbox label:hover{
-    cursor:pointer;
-}
+    .editable-checkbox label:hover {
+        cursor: pointer;
+    }
 
 .editable-checkbox input {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 
 /* Not editable */
 
 a.not-editable,
-span.not-editable{
+span.not-editable {
     color: #333;
     display: inline-block;
     line-height: 20px;
     padding: 6px 12px;
-    border:1px solid transparent;
-    border-radius:3px;
-    position:relative;
-    
+    border: 1px solid transparent;
+    border-radius: 3px;
+    position: relative;
 }
 
-a.not-editable:after,
-span.not-editable:after {
-    font-family: 'FontAwesome';
-    content:"\f023";
-    position:absolute;
-    right:-32px;
-    border:1px solid #EF9A9A;
-    top:-1px;
-    line-height:20px;
-    width:32px;
-    padding:6px 0;
-    text-align:center;
-    color:#fff;
-    background:#EF9A9A;
-    display:none;
-    border-radius:0 3px 3px 0;
-}
+    a.not-editable:after,
+    span.not-editable:after {
+        font-family: 'FontAwesome';
+        content: "\f023";
+        position: absolute;
+        right: -32px;
+        border: 1px solid #EF9A9A;
+        top: -1px;
+        line-height: 20px;
+        width: 32px;
+        padding: 6px 0;
+        text-align: center;
+        color: #fff;
+        background: #EF9A9A;
+        display: none;
+        border-radius: 0 3px 3px 0;
+    }
+
     a.not-editable:hover:after,
     span.not-editable:hover:after {
-            display:inline-block;
+        display: inline-block;
     }
 
     a.not-editable:hover,
     span.not-editable:hover {
         background: #FFCDD2;
-        border:1px solid #EF9A9A;
-        cursor:pointer;
-        color:#333;
+        border: 1px solid #EF9A9A;
+        cursor: pointer;
+        color: #333;
     }
 
 /*#endregion */
 
 /*#region << Typeahead >> */
 .dropdown-menu > li > a.typeahead-icon-item {
-    line-height:34px;
-    height:34px;
-    padding:0 10px;
+    line-height: 34px;
+    height: 34px;
+    padding: 0 10px;
 }
-.dropdown-menu > li > a.typeahead-icon-item i{
-    margin-right: 5px;
-    font-size: 18px;
-    position:relative;
-    top:2px;
-}
+
+    .dropdown-menu > li > a.typeahead-icon-item i {
+        margin-right: 5px;
+        font-size: 18px;
+        position: relative;
+        top: 2px;
+    }
 
     .dropdown-menu > li > a.typeahead-icon-item:hover i {
         color: #fff !important;
