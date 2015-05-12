@@ -33,7 +33,7 @@ namespace WebVella.ERP.Storage.Mongo
         }
     }
 
-    internal class MongoEntityPermissions : IStorageEntityPermissions
+    public class MongoEntityPermissions : IStorageEntityPermissions
     {
         public List<Guid> CanRead { get; set; }
 
