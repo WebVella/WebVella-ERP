@@ -28,7 +28,13 @@ namespace WebVella.ERP.Storage.Mongo
             storageEntity.System = entity.System.Value;
             storageEntity.IconName = entity.IconName;
             storageEntity.Weight = entity.Weight.Value;
-
+            storageEntity.Permissions = new MongoEntityPermissions();
+            if (entity.Permissions != null)
+            {
+                storageEntity.Permissions.CanRead = entity.Permissions.CanRead;
+                storageEntity.Permissions.CanUpdate = entity.Permissions.CanUpdate;
+                storageEntity.Permissions.CanDelete = entity.Permissions.CanDelete;
+            }
             storageEntity.Fields = new List<IStorageField>();
 
             foreach (Field field in entity.Fields)

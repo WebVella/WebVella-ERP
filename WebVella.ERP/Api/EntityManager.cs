@@ -667,6 +667,7 @@ namespace WebVella.ERP
                     return response;
                 }
 
+                entity = new Entity(inputEntity);
                 entity.Id = inputEntity.Id;
                 entity.Fields = CreateEntityDefaultFields(entity);
                 entity.RecordsLists = CreateEntityDefaultViews(entity);

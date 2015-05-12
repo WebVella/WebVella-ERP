@@ -30,7 +30,8 @@ namespace WebVella.ERP
 
         public void RunTests()
         {
-           //EntityTests();
+            InitializeSystemEntities();
+            //EntityTests();
         }
 
         public void InitializeSystemEntities()
@@ -40,7 +41,7 @@ namespace WebVella.ERP
             SystemSettings systemSettings = new SystemSettings();
 
             int currentVersion = 0;
-            if (systemSettings != null)
+            if (storeSystemSettings != null)
             {
                 systemSettings = new SystemSettings(storeSystemSettings);
 
@@ -58,12 +59,74 @@ namespace WebVella.ERP
             {
                 systemSettings.Version = 150508;
 
+                List<Guid> allowedRoles = new List<Guid>();
+                allowedRoles.Add(new Guid("F42EBA3B-6433-752B-6C34-B322A7B4CE7D"));
+
+
+                InputEntity roleEntity = new InputEntity();
+                roleEntity.Id = roleEntityId;
+                roleEntity.Name = "role";
+                roleEntity.Label = "Role";
+                roleEntity.PluralLabel = "Roles";
+                roleEntity.System = true;
+                roleEntity.Permissions = new EntityPermissions();
+                roleEntity.Permissions.CanRead = allowedRoles;
+                roleEntity.Permissions.CanUpdate = allowedRoles;
+                roleEntity.Permissions.CanDelete = allowedRoles;
+
+                EntityResponse response = entityManager.CreateEntity(roleEntity);
+
+                TextField nameRoleField = new TextField();
+
+                nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
+                nameRoleField.Name = "name";
+                nameRoleField.Label = "Name";
+                nameRoleField.PlaceholderText = "";
+                nameRoleField.Description = "The name of the role";
+                nameRoleField.HelpText = "";
+                nameRoleField.Required = true;
+                nameRoleField.Unique = false;
+                nameRoleField.Searchable = true;
+                nameRoleField.Auditable = false;
+                nameRoleField.System = true;
+                nameRoleField.DefaultValue = "";
+
+                nameRoleField.MaxLength = 200;
+
+                FieldResponse fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField);
+
+                TextField descriptionRoleField = new TextField();
+
+                descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
+                descriptionRoleField.Name = "description";
+                descriptionRoleField.Label = "Description";
+                descriptionRoleField.PlaceholderText = "";
+                descriptionRoleField.Description = "";
+                descriptionRoleField.HelpText = "";
+                descriptionRoleField.Required = true;
+                descriptionRoleField.Unique = false;
+                descriptionRoleField.Searchable = true;
+                descriptionRoleField.Auditable = false;
+                descriptionRoleField.System = true;
+                descriptionRoleField.DefaultValue = "";
+
+                descriptionRoleField.MaxLength = 200;
+
+                fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField);
+
+
                 InputEntity userEntity = new InputEntity();
                 userEntity.Id = userEntityId;
                 userEntity.Name = "user";
                 userEntity.Label = "User";
                 userEntity.PluralLabel = "Users";
                 userEntity.System = true;
+                userEntity.Permissions = new EntityPermissions();
+                userEntity.Permissions.CanRead = allowedRoles;
+                userEntity.Permissions.CanUpdate = allowedRoles;
+                userEntity.Permissions.CanDelete = allowedRoles;
+
+                response = entityManager.CreateEntity(userEntity);
 
                 TextField firstName = new TextField();
 
@@ -82,7 +145,7 @@ namespace WebVella.ERP
 
                 firstName.MaxLength = 200;
 
-                FieldResponse fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
+                fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
 
                 TextField lastName = new TextField();
 
@@ -196,65 +259,17 @@ namespace WebVella.ERP
 
                 fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField);
 
-                Entity roleEntity = new Entity();
-
-                InputEntity inputRoleEntity = new InputEntity();
-                inputRoleEntity.Id = roleEntityId;
-                inputRoleEntity.Name = "Role";
-                inputRoleEntity.Label = "Role";
-                inputRoleEntity.PluralLabel = "Roles";
-                inputRoleEntity.System = true;
-
-
-                TextField nameRoleField = new TextField();
-
-                nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
-                nameRoleField.Name = "name";
-                nameRoleField.Label = "Name";
-                nameRoleField.PlaceholderText = "";
-                nameRoleField.Description = "The name of the role";
-                nameRoleField.HelpText = "";
-                nameRoleField.Required = true;
-                nameRoleField.Unique = false;
-                nameRoleField.Searchable = true;
-                nameRoleField.Auditable = false;
-                nameRoleField.System = true;
-                nameRoleField.DefaultValue = "";
-
-                firstName.MaxLength = 200;
-
-                fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
-
-                TextField descriptionRoleField = new TextField();
-
-                descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
-                descriptionRoleField.Name = "description";
-                descriptionRoleField.Label = "Description";
-                descriptionRoleField.PlaceholderText = "";
-                descriptionRoleField.Description = "";
-                descriptionRoleField.HelpText = "";
-                descriptionRoleField.Required = true;
-                descriptionRoleField.Unique = false;
-                descriptionRoleField.Searchable = true;
-                descriptionRoleField.Auditable = false;
-                descriptionRoleField.System = true;
-                descriptionRoleField.DefaultValue = "";
-                
-                descriptionRoleField.MaxLength = 200;
-
-                fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField);
-
                 storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
                 systemSettingsRepository.Save(storeSystemSettings);
             }
 
-            if (currentVersion == 150508) //update to 150510
-            {
-                systemSettings.Version = 150510;
+            //if (currentVersion == 150508) //update to 150510
+            //{
+            //    systemSettings.Version = 150510;
 
-                storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
-                systemSettingsRepository.Save(storeSystemSettings);
-            }
+            //    storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
+            //    systemSettingsRepository.Save(storeSystemSettings);
+            //}
         }
 
         private void EntityTests()
