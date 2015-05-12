@@ -9,10 +9,12 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    public class ApiSandboxController : Controller
+    public class ApiSandboxController : ApiControllerBase
     {
 
-
+        public ApiSandboxController(IERPService service) : base(service)
+        {
+        }
 
         // GET: api/site/meta
         [AcceptVerbs(new[] { "GET" }, Route = "sandbox/api/root/meta")]

@@ -13,14 +13,10 @@ using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    public class ApiController : Controller
+    public class ApiController : ApiControllerBase
     {
-
-        IERPService service;
-
-        public ApiController(IERPService service)
+        public ApiController(IERPService service) : base(service)
         {
-            this.service = service;
         }
 
 
