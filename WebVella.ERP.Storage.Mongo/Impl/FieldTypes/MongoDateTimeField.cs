@@ -5,8 +5,10 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoDateTimeField : MongoBaseField, IStorageDateTimeField
     {
-        public DateTime DefaultValue { get; set; }
+        public DateTime? DefaultValue { get; set; }
 
         public string Format { get; set; }
+
+        public bool UseCurrentTimeAsDefaultValue { get; set; }
     }
 }
