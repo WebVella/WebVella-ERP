@@ -24,6 +24,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public NumberField(Field field) : base(field)
+        {
+        }
+
         public NumberField(InputField field) : base(field)
         {
             DefaultValue = (decimal?)field["defaultValue"];
@@ -44,7 +48,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public NumberFieldMeta(Guid entityId, string entityName, NumberField field, string parentFieldName = null)
+        public NumberFieldMeta(Guid entityId, string entityName, NumberField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

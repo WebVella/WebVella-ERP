@@ -21,6 +21,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public PhoneField(Field field) : base(field)
+        {
+        }
+
         public PhoneField(InputField field) : base(field)
         {
             DefaultValue = (string)field["defaultValue"];
@@ -40,7 +44,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field, string parentFieldName = null)
+        public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

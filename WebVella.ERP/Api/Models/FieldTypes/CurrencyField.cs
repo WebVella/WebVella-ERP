@@ -24,6 +24,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public CurrencyField(Field field) : base(field)
+        {
+        }
+
         public CurrencyField(InputField field) : base(field)
         {
             DefaultValue = (decimal?)field["defaultValue"];
@@ -45,7 +49,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field, string parentFieldName = null)
+        public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;
