@@ -24,6 +24,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public PercentField(Field field) : base(field)
+        {
+        }
+
         public PercentField(InputField field) : base(field)
         {
             DefaultValue = (decimal?)field["defaultValue"];
@@ -44,7 +48,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public PercentFieldMeta(Guid entityId, string entityName, PercentField field, string parentFieldName = null)
+        public PercentFieldMeta(Guid entityId, string entityName, PercentField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

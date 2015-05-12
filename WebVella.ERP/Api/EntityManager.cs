@@ -110,7 +110,7 @@ namespace WebVella.ERP
 
             if (entity.RecordPermissions != null)
             {
-                if(entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
+                if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
                     errorList.Add(new ErrorModel("permissions.canRead", null, "CanRead is required! It must contains at least one item!"));
 
                 if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
@@ -673,8 +673,8 @@ namespace WebVella.ERP
                 entity = new Entity(inputEntity);
                 entity.Id = inputEntity.Id;
                 entity.Fields = CreateEntityDefaultFields(entity);
-                entity.RecordsLists = CreateEntityDefaultViews(entity);
-                entity.RecordViewLists = CreateEntityDefaultForms(entity);
+                entity.RecordsLists = CreateEntityDefaultRecordsLists(entity);
+                entity.RecordViewLists = CreateEntityDefaultRecordViews(entity);
 
                 IStorageEntity storageEntity = EntityRepository.Convert(entity);
                 bool result = EntityRepository.Create(storageEntity);
@@ -687,12 +687,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The entity was not created. An internal error occurred!";
                 response.Object = entity;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity was not created. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -742,12 +746,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The entity was not updated. An internal error occurred!";
                 response.Object = entity;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity was not updated. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -781,11 +789,15 @@ namespace WebVella.ERP
 
                 EntityRepository.Delete(id);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "The entity was not deleted. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -814,7 +826,11 @@ namespace WebVella.ERP
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -853,7 +869,11 @@ namespace WebVella.ERP
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -888,11 +908,15 @@ namespace WebVella.ERP
 
                 response.Object = entity;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -954,9 +978,13 @@ namespace WebVella.ERP
             catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The field was not created. An internal error occurred!";
                 response.Object = field;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The field was not created. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1016,12 +1044,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The field was not updated. An internal error occurred!";
                 response.Object = field;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The field was not updated. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1076,11 +1108,15 @@ namespace WebVella.ERP
                     return response;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "The field was not deleted. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1113,11 +1149,15 @@ namespace WebVella.ERP
 
                 response.Object = fieldList;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1160,11 +1200,15 @@ namespace WebVella.ERP
                 Field field = Field.Convert(storageField);
                 response.Object = field;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1175,14 +1219,14 @@ namespace WebVella.ERP
 
         #endregion
 
-        #region <-- View methods -->
+        #region <-- RecordsList methods -->
 
-        public RecordsListResponse CreateView(Guid entityId, RecordsList recordsList)
+        public RecordsListResponse CreateRecordsList(Guid entityId, RecordsList recordsList)
         {
             RecordsListResponse response = new RecordsListResponse
             {
                 Success = true,
-                Message = "The view was successfully created!",
+                Message = "The list was successfully created!",
             };
 
             try
@@ -1206,7 +1250,7 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not created. Validation error occurred!";
+                    response.Message = "The list was not created. Validation error occurred!";
                     return response;
                 }
 
@@ -1218,17 +1262,21 @@ namespace WebVella.ERP
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
-                    response.Message = "The view was not created! An internal error occurred!";
+                    response.Message = "The list was not created! An internal error occurred!";
                     return response;
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The view was not created. An internal error occurred!";
                 response.Object = recordsList;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The list was not created. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1238,7 +1286,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordsListResponse UpdateView(Guid entityId, RecordsList recordsList)
+        public RecordsListResponse UpdateRecordsList(Guid entityId, RecordsList recordsList)
         {
             RecordsListResponse response = new RecordsListResponse
             {
@@ -1288,12 +1336,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The list was not updated. An internal error occurred!";
                 response.Object = recordsList;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The list was not updated. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1303,7 +1355,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordsListResponse DeleteView(Guid entityId, Guid id)
+        public RecordsListResponse DeleteRecordsList(Guid entityId, Guid id)
         {
             RecordsListResponse response = new RecordsListResponse
             {
@@ -1348,11 +1400,15 @@ namespace WebVella.ERP
                     return response;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "The list was not deleted. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1360,7 +1416,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordsListCollectionResponse ReadViews(Guid entityId)
+        public RecordsListCollectionResponse ReadRecordsLists(Guid entityId)
         {
             RecordsListCollectionResponse response = new RecordsListCollectionResponse
             {
@@ -1388,11 +1444,15 @@ namespace WebVella.ERP
 
                 response.Object = recordsListCollection;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1401,7 +1461,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordsListResponse ReadView(Guid entityId, Guid id)
+        public RecordsListResponse ReadRecordsList(Guid entityId, Guid id)
         {
             RecordsListResponse response = new RecordsListResponse
             {
@@ -1436,11 +1496,15 @@ namespace WebVella.ERP
 
                 response.Object = recordsList;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1451,9 +1515,9 @@ namespace WebVella.ERP
 
         #endregion
 
-        #region <-- Form methods -->
+        #region <-- RecordView methods -->
 
-        public RecordViewResponse CreateForm(Guid entityId, RecordView recordView)
+        public RecordViewResponse CreateRecordView(Guid entityId, RecordView recordView)
         {
             RecordViewResponse response = new RecordViewResponse
             {
@@ -1499,12 +1563,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The record view was not created. An internal error occurred!";
                 response.Object = recordView;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The record view was not created. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1514,7 +1582,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordViewResponse UpdateForm(Guid entityId, RecordView recordView)
+        public RecordViewResponse UpdateRecordView(Guid entityId, RecordView recordView)
         {
             RecordViewResponse response = new RecordViewResponse
             {
@@ -1564,12 +1632,16 @@ namespace WebVella.ERP
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Success = false;
-                response.Message = "The record view was not updated. An internal error occurred!";
                 response.Object = recordView;
                 response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The record view was not updated. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1579,7 +1651,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordViewResponse DeleteForm(Guid entityId, Guid id)
+        public RecordViewResponse DeleteRecordView(Guid entityId, Guid id)
         {
             RecordViewResponse response = new RecordViewResponse
             {
@@ -1624,11 +1696,15 @@ namespace WebVella.ERP
                     return response;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "The record view was not deleted. An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1636,7 +1712,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordViewCollectionResponse ReadForms(Guid entityId)
+        public RecordViewCollectionResponse ReadRecordViews(Guid entityId)
         {
             RecordViewCollectionResponse response = new RecordViewCollectionResponse
             {
@@ -1664,11 +1740,15 @@ namespace WebVella.ERP
 
                 response.Object = recordViewList;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1677,7 +1757,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public RecordViewResponse ReadForm(Guid entityId, Guid id)
+        public RecordViewResponse ReadRecordView(Guid entityId, Guid id)
         {
             RecordViewResponse response = new RecordViewResponse
             {
@@ -1712,11 +1792,15 @@ namespace WebVella.ERP
 
                 response.Object = recordView;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
                 response.Message = "An internal error occurred!";
+#endif
                 return response;
             }
 
@@ -1790,7 +1874,7 @@ namespace WebVella.ERP
 
             createdOn.Id = Guid.NewGuid();
             createdOn.Name = "created_on";
-            createdOn.Label = "CreatedOn";
+            createdOn.Label = "Created On";
             createdOn.PlaceholderText = "";
             createdOn.Description = "";
             createdOn.HelpText = "";
@@ -1802,13 +1886,34 @@ namespace WebVella.ERP
             createdOn.DefaultValue = DateTime.MinValue;
 
             createdOn.Format = "MM/dd/YYYY";
+            createdOn.UseCurrentTimeAsDefaultValue = true;
 
             fields.Add(createdOn);
+
+            DateTimeField modifiedOn = new DateTimeField();
+
+            modifiedOn.Id = Guid.NewGuid();
+            modifiedOn.Name = "modified_on";
+            modifiedOn.Label = "Modified On";
+            modifiedOn.PlaceholderText = "";
+            modifiedOn.Description = "";
+            modifiedOn.HelpText = "";
+            modifiedOn.Required = true;
+            modifiedOn.Unique = false;
+            modifiedOn.Searchable = false;
+            modifiedOn.Auditable = false;
+            modifiedOn.System = true;
+            modifiedOn.DefaultValue = DateTime.MinValue;
+
+            modifiedOn.Format = "MM/dd/YYYY";
+            modifiedOn.UseCurrentTimeAsDefaultValue = true;
+
+            fields.Add(modifiedOn);
 
             return fields;
         }
 
-        private List<RecordsList> CreateEntityDefaultViews(Entity entity)
+        private List<RecordsList> CreateEntityDefaultRecordsLists(Entity entity)
         {
             List<RecordsList> recordsLists = new List<RecordsList>();
 
@@ -1816,7 +1921,7 @@ namespace WebVella.ERP
             return recordsLists;
         }
 
-        private List<RecordView> CreateEntityDefaultForms(Entity entity)
+        private List<RecordView> CreateEntityDefaultRecordViews(Entity entity)
         {
             List<RecordView> recordViewList = new List<RecordView>();
 

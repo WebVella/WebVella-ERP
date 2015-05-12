@@ -21,6 +21,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public UrlField(Field field) : base(field)
+        {
+        }
+
         public UrlField(InputField field) : base(field)
         {
             DefaultValue = (string)field["defaultValue"];
@@ -40,8 +44,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public UrlFieldMeta(Guid entityId, string entityName, UrlField field, string parentFieldName = null )
-		{
+        public UrlFieldMeta(Guid entityId, string entityName, UrlField field, string parentFieldName = null ) : base(field)
+        {
             EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;

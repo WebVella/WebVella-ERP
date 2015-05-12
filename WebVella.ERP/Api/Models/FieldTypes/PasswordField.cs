@@ -24,6 +24,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public PasswordField(Field field) : base(field)
+        {
+        }
+
         public PasswordField(InputField field) : base(field)
         {
             MaxLength = (int?)field["maxLength"];
@@ -44,7 +48,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public PasswordFieldMeta(Guid entityId, string entityName, PasswordField field, string parentFieldName = null)
+        public PasswordFieldMeta(Guid entityId, string entityName, PasswordField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;
