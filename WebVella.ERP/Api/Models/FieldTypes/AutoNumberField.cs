@@ -19,7 +19,10 @@ namespace WebVella.ERP.Api.Models
 
         public AutoNumberField()
         {
+        }
 
+        public AutoNumberField(Field field) : base(field)
+        {
         }
 
         public AutoNumberField(InputField field) : base(field)
@@ -41,7 +44,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public AutoNumberFieldMeta(Guid entityId, string entityName, AutoNumberField field, string parentFieldName = null)
+        public AutoNumberFieldMeta(Guid entityId, string entityName, AutoNumberField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

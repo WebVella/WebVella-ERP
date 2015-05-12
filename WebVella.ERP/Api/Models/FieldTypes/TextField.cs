@@ -18,6 +18,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public TextField(Field field) : base(field)
+        {
+        }
+
         public TextField(InputField field) : base(field)
         {
             DefaultValue = (string)field["defaultValue"];
@@ -36,13 +40,13 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public TextFieldMeta(Guid entityId, string entityName, TextField field, string parentFieldName = null)
+        public TextFieldMeta(Guid entityId, string entityName, TextField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			MaxLength = field.MaxLength;
+            EntityName = entityName;
+            DefaultValue = field.DefaultValue;
+            MaxLength = field.MaxLength;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }

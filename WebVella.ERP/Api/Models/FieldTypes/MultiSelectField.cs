@@ -19,6 +19,10 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
+        public MultiSelectField(Field field) : base(field)
+        {
+        }
+
         public MultiSelectField(InputField field) : base(field)
         {
             DefaultValue = (IEnumerable<string>)field["defaultValue"];
@@ -37,7 +41,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field, string parentFieldName = null)
+        public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;

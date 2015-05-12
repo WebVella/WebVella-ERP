@@ -66,12 +66,14 @@ namespace WebVella.ERP.Storage.Mongo
                     storageField = new MongoDateField();
                     ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue.Value;
                     ((MongoDateField)storageField).Format = ((DateField)field).Format;
+                    ((MongoDateField)storageField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue;
                 }
                 else if (field is DateTimeField)
                 {
                     storageField = new MongoDateTimeField();
                     ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue.Value;
                     ((MongoDateTimeField)storageField).Format = ((DateTimeField)field).Format;
+                    ((MongoDateTimeField)storageField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue;
                 }
                 else if (field is EmailField)
                 {
@@ -384,12 +386,14 @@ namespace WebVella.ERP.Storage.Mongo
                 storageField = new MongoDateField();
                 ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue.Value;
                 ((MongoDateField)storageField).Format = ((DateField)field).Format;
+                ((MongoDateField)storageField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue;
             }
             else if (field is DateTimeField)
             {
                 storageField = new MongoDateTimeField();
                 ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue.Value;
                 ((MongoDateTimeField)storageField).Format = ((DateTimeField)field).Format;
+                ((MongoDateTimeField)storageField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue;
             }
             else if (field is EmailField)
             {
