@@ -358,19 +358,19 @@ namespace WebVella.ERP
 
                 List<RecordsList> recordsLists = CreateTestViewCollection(entity);
 
-                RecordsListResponse recordsListsResponse = entityManager.CreateView(entity.Id.Value, recordsLists[0]);
+                RecordsListResponse recordsListsResponse = entityManager.CreateRecordsList(entity.Id.Value, recordsLists[0]);
 
                 recordsLists[0].Label = "Edited View";
 
-                recordsListsResponse = entityManager.UpdateView(entity.Id.Value, recordsLists[0]);
+                recordsListsResponse = entityManager.UpdateRecordsList(entity.Id.Value, recordsLists[0]);
 
                 List<RecordView> recordViewList = CreateTestFormCollection(entity);
 
-                RecordViewResponse recordViewResponse = entityManager.CreateForm(entity.Id.Value, recordViewList[0]);
+                RecordViewResponse recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
 
                 recordViewList[0].Label = "Edited Form";
 
-                recordViewResponse = entityManager.CreateForm(entity.Id.Value, recordViewList[0]);
+                recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
 
                 EntityListResponse entityListResponse = entityManager.ReadEntities();
 
