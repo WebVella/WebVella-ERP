@@ -223,7 +223,7 @@ namespace WebVella.ERP
                 lastLoggedIn.Searchable = true;
                 lastLoggedIn.Auditable = true;
                 lastLoggedIn.System = true;
-                lastLoggedIn.DefaultValue = DateTime.MinValue;
+                lastLoggedIn.DefaultValue = null;
 
                 lastLoggedIn.Format = "MM/dd/YYYY";
 
