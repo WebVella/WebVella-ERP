@@ -94,12 +94,14 @@ namespace WebVella.ERP
                 field = new DateField();
                 ((DateField)field).DefaultValue = ((IStorageDateField)storageField).DefaultValue;
                 ((DateField)field).Format = ((IStorageDateField)storageField).Format;
+                ((DateField)field).UseCurrentTimeAsDefaultValue = ((IStorageDateField)storageField).UseCurrentTimeAsDefaultValue;
             }
             else if (storageField is IStorageDateTimeField)
             {
                 field = new DateTimeField();
                 ((DateTimeField)field).DefaultValue = ((IStorageDateTimeField)storageField).DefaultValue;
                 ((DateTimeField)field).Format = ((IStorageDateTimeField)storageField).Format;
+                ((DateTimeField)field).UseCurrentTimeAsDefaultValue = ((IStorageDateTimeField)storageField).UseCurrentTimeAsDefaultValue;
             }
             else if (storageField is IStorageEmailField)
             {
