@@ -20,7 +20,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-desktop-browse', {
             parent: "webvella-desktop-base", // the state is defined in the webvella-desktop-plugin
-            url: 'desktop/browse', //  /desktop/browse after the parent state is prepended
+            url: '/desktop/browse', //  /desktop/browse after the parent state is prepended
             views: {
                 "contentView": {
                     controller: 'WebVellaDesktopBrowseController',

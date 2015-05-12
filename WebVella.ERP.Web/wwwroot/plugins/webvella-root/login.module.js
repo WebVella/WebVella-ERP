@@ -11,19 +11,18 @@
         .module('webvellaRoot')  //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .run(run)
-        .controller('WebVellaRootHomeController', controller);
+        .controller('WebVellaRootLoginController', controller);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-root-home', {
-            parent: 'webvella-root',
-            url: 'login',
+        $stateProvider.state('webvella-root-login', {
+            url: '/login',
             views: {
-                "pluginView": {
-                    controller: 'WebVellaRootHomeController',
-                    templateUrl: '/plugins/webvella-root/home.view.html',
+                "rootView": {
+                    controller: 'WebVellaRootLoginController',
+                    templateUrl: '/plugins/webvella-root/login.view.html',
                     controllerAs: 'homeData'
                 }
             },
@@ -37,9 +36,9 @@
     run.$inject = ['$log'];
     /* @ngInject */
     function run($log) {
-        $log.debug('webvellaRoot>home> BEGIN module.run');
+        $log.debug('webvellaRoot>login> BEGIN module.run');
 
-        $log.debug('webvellaRoot>home> END module.run');
+        $log.debug('webvellaRoot>login> END module.run');
     };
 
 
@@ -48,7 +47,7 @@
 
     /* @ngInject */
     function resolvingFunction($q) {
-        $log.debug('webvellaRoot>home> BEGIN state.resolved');
+        $log.debug('webvellaRoot>login> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
         
@@ -56,7 +55,7 @@
         defer.resolve("test");
 
         // Return
-        $log.debug('webvellaRoot>home> END state.resolved');
+        $log.debug('webvellaRoot>login> END state.resolved');
         return defer.promise;
 
     }
@@ -65,25 +64,19 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', 'currentUser', '$log', 'pageTitle', 'webvellaRootService', '$timeout'];
+    controller.$inject = ['$state', '$log', 'webvellaRootService', '$timeout'];
 
     /* @ngInject */
-    function controller($state, currentUser, $log, pageTitle, webvellaRootService, $timeout) {
-        $log.debug('webvellaRoot>home> BEGIN controller.exec');
+    function controller($state, $log, webvellaRootService, $timeout) {
+        $log.debug('webvellaRoot>login> BEGIN controller.exec');
         /* jshint validthis:true */
-        var homeData = this;
-
-        webvellaRootService.setPageTitle(pageTitle);
+        var loginData = this;
+        loginData.pageTitle = "Login";
+        webvellaRootService.setPageTitle(loginData.pageTitle);
         activate();
-        $log.debug('webvellaRoot>home> END controller.exec');
+        $log.debug('webvellaRoot>login> END controller.exec');
         function activate() {
 
-            if (currentUser != null) {
-                //If there is an user already logged in, redirect to desktop base
-                $timeout(function () { 
-                    $state.go("webvella-desktop-base")
-                },0);
-            }
         }
     }
 

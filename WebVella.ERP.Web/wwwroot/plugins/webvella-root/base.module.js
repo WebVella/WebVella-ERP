@@ -37,14 +37,18 @@
             },
             resolve: {
                 //here you can resolve any application wide data you need. It will be available for all children states
-                currentUser: function () {
-                    //TODO - Will be substituted with a service call after implementation
-                    return { email: 'email@domain.com', roles:["administrator"] };
-                },
+                currentUser: ['$q','$log',function ($q,$log) {
+                    var deferred = $q.defer();
+                    $log.debug("webvellaRoot>base>config>resolve> user not authenticated")
+                    //Simulate not logged user
+                    //deferred.reject('Not logged in');
+                    //Simulate logged user
+                    deferred.resolve('Logged in');
+                    return deferred.promise;
+                }],
                 pageTitle: function () {
                     return "Webvella ERP";
-                },
-                resolvedSiteMeta:resolveSiteMeta
+                }
             },
             data: {
                 //Any injectable application wide variables you may need. Can be overwritten by the child states
@@ -56,40 +60,30 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log'];
+    run.$inject = ['$log', '$rootScope', '$state', '$timeout'];
 
     /* @ngInject */
-    function run($log) {
+    function run($log, $rootScope, $state,$timeout) {
         $log.debug('webvellaRoot>base> BEGIN module.run');
+
+        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+            // Redirect user to our login page
+            $log.debug("webvellaRoot>base>module.run> State change error: " + error);
+            $timeout(function () { 
+                $state.go('webvella-root-login');
+            }, 0);
+        });
+
+        $rootScope.$on('$stateNotFound', function () {
+            // Redirect user to our login page
+            alert("state not found");
+        });
 
         $log.debug('webvellaRoot>base> END module.run');
     };
 
 
-    // Resolve Function /////////////////////////
-    resolveSiteMeta.$inject = ['$q','$log', 'webvellaRootService'];
 
-    /* @ngInject */
-    function resolveSiteMeta($q,$log, webvellaRootService) {
-        $log.debug('webvellaRoot>base> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        webvellaRootService.getSiteMeta(successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaRoot>base> END state.resolved');
-        return defer.promise;
-    }
 
 
     // Controller ///////////////////////////////
@@ -103,6 +97,10 @@
 
         activate();
         $log.debug('webvellaRoot>base> END controller.exec');
+
+        $timeout(function () {
+            $state.go("webvella-desktop-browse");
+        }, 0);
 
         ////////////
         function activate() {

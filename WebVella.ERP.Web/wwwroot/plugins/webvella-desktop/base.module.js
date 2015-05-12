@@ -19,11 +19,11 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-desktop-base', {
-            //abstract: true,
-            parent: 'webvella-root',
+            abstract: true,
+            //parent: 'webvella-root',
             url: '', //will be added to all children states
             views: {
-                "pluginView": {
+                "rootView": {
                     controller: 'WebVellaDesktopBaseController',
                     templateUrl: '/plugins/webvella-desktop/base.view.html',
                     controllerAs: 'pluginData'
@@ -31,9 +31,10 @@
             },
             resolve: {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
-                pageTitle: function (pageTitle) {
-                    return "Desktop | " + pageTitle;
-                }
+                pageTitle: function () {
+                    return "Webvella ERP";
+                },
+                resolvedSiteMeta: resolveSiteMeta
             },
             data: { }
         });
@@ -49,6 +50,31 @@
 
         $log.debug('webvellaDesktop>base> END module.run');
     };
+
+    // Resolve Function /////////////////////////
+    resolveSiteMeta.$inject = ['$q', '$log', 'webvellaRootService'];
+
+    /* @ngInject */
+    function resolveSiteMeta($q, $log, webvellaRootService) {
+        $log.debug('webvellaRoot>base> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaRootService.getSiteMeta(successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaRoot>base> END state.resolved');
+        return defer.promise;
+    }
 
 
     // Controller ///////////////////////////////
