@@ -35,16 +35,16 @@ namespace WebVella.ERP.Api.Models
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (decimal?)property.Value;
+                        DefaultValue = Convert.ToDecimal(property.Value);
                         break;
                     case "minvalue":
-                        MinValue = (decimal?)property.Value;
+                        MinValue = Convert.ToDecimal(property.Value);
                         break;
                     case "maxvalue":
-                        MaxValue = (decimal?)property.Value;
+                        MaxValue = Convert.ToDecimal(property.Value);
                         break;
                     case "decimalplaces":
-                        DecimalPlaces = (byte?)property.Value;
+                        DecimalPlaces = Convert.ToByte(property.Value);
                         break;
                 }
             }

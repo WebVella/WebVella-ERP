@@ -109,7 +109,7 @@ namespace WebVella.ERP
             }
         }
 
-        public static Field Convert(IStorageField storageField)
+        public static Field ConvertField(IStorageField storageField)
         {
             Field field = null;
             if (storageField is IStorageAutoNumberField)
@@ -262,7 +262,7 @@ namespace WebVella.ERP
             return field;
         }
 
-        public static Field Convert(InputField inputField)
+        public static Field ConvertField(InputField inputField)
         {
             Field field = null;
 
@@ -351,7 +351,7 @@ namespace WebVella.ERP
 
             foreach (IStorageField storageField in fields)
             {
-                Fields.Add(Field.Convert(storageField));
+                Fields.Add(Field.ConvertField(storageField));
             }
         }
     }

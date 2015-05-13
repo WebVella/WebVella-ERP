@@ -32,13 +32,13 @@ namespace WebVella.ERP.Api.Models
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (string)property.Value;
+                        DefaultValue = Convert.ToString(property.Value);
                         break;
                     case "maxlength":
-                        MaxLength = (int?)property.Value;
+                        MaxLength = Convert.ToInt32(property.Value);
                         break;
                     case "visiblelinenumber":
-                        VisibleLineNumber = (int?)property.Value;
+                        VisibleLineNumber = Convert.ToInt32(property.Value);
                         break;
                 }
             }

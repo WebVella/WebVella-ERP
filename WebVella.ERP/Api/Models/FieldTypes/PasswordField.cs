@@ -30,25 +30,21 @@ namespace WebVella.ERP.Api.Models
 
         public PasswordField(InputField field) : base(field)
         {
-            MaxLength = (int?)field["maxLength"];
-            Encrypted = (bool?)field["encrypted"];
-            MaskType = (PasswordFieldMaskTypes)field["maskType"];
-            MaskCharacter = (char?)field["maskCharacter"];
             foreach (var property in field.GetProperties())
             {
                 switch (property.Key.ToLower())
                 {
                     case "maxlength":
-                        MaxLength = (int?)property.Value;
+                        MaxLength = Convert.ToInt32(property.Value);
                         break;
                     case "encrypted":
-                        Encrypted = (bool?)property.Value;
+                        Encrypted = Convert.ToBoolean(property.Value);
                         break;
                     case "masktype":
-                        MaskType = (PasswordFieldMaskTypes)property.Value;
+                        MaskType = (PasswordFieldMaskTypes)Convert.ToInt32(property.Value);
                         break;
                     case "maskcharacter":
-                        MaskCharacter = (char?)property.Value;
+                        MaskCharacter = Convert.ToChar(property.Value);
                         break;
                 }
             }
