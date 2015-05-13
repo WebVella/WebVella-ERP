@@ -204,77 +204,100 @@
             },
             {
                 "id": 11,
-                "name": "MasterDetailsRelationshipField",
-                "label": "One to many relation",
-                "description": "With this field you can create a relation between one record and many others e.g. account and contacts "
-            },
-            {
-                "id": 12,
                 "name": "MultiLineTextField",
                 "label": "Textarea",
                 "description": "A textarea for plain text input. Will be cleaned and stripped from any web unsafe content"
             },
             {
-                "id": 13,
+                "id": 12,
                 "name": "MultiSelectField",
                 "label": "Multiple select",
                 "description": "Multiple values can be selected from a provided list"
             },
             {
-                "id": 14,
+                "id": 13,
                 "name": "NumberField",
                 "label": "Number",
                 "description": "Only numbers are allowed. Leading zeros will be stripped."
             },
             {
-                "id": 15,
+                "id": 14,
                 "name": "PasswordField",
                 "label": "Password",
                 "description": "This field is suitable for submitting passwords or other data that needs to stay encrypted in the database"
             },
             {
-                "id": 16,
+                "id": 15,
                 "name": "PercentField",
                 "label": "Percent",
                 "description": "This will automatically present any number you enter as a percent value"
             },
             {
-                "id": 17,
+                "id": 16,
                 "name": "PhoneField",
                 "label": "Phone",
                 "description": "Will allow only valid phone numbers to be submitted"
             },
             {
-                "id": 18,
+                "id": 17,
                 "name": "PrimaryKeyField",
                 "label": "Primary Key",
                 "description": "Very important field for any entity to entity relation. It will generate an unique key for each entity record, which can serve as identification."
             },
             {
-                "id": 19,
+                "id": 18,
                 "name": "SelectField",
                 "label": "Dropdown",
                 "description": "One value can be selected from a provided list"
             },
             {
-                "id": 20,
+                "id": 19,
                 "name": "TextField",
                 "label": "Text",
                 "description": "A simple text field. One of the most needed field nevertheless"
             },
             {
-                "id": 21,
+                "id": 20,
                 "name": "UrlField",
                 "label": "URL",
                 "description": "This field will validate local and static URLs. Will present them accordingly"
             }    
         ];
-
+        // Inject a searchable field
         for (var i = 0; i < modalData.fieldTypes.length; i++) {
             modalData.fieldTypes[i].searchBox = modalData.fieldTypes[i].label + " " + modalData.fieldTypes[i].description;
         }
 
+        //Wizard
+        modalData.wizard = {};
+        modalData.wizard.steps = [];
+        //Initialize steps
+        var step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Dummy step
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 1
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 2
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 3
+        // Set steps
+        modalData.wizard.steps[1].active = true;
+        modalData.wizard.selectedType = null;
 
+        modalData.selectType = function (typeId) {
+            modalData.wizard.selectedType = typeId;
+            modalData.wizard.steps[1].active = false;
+            modalData.wizard.steps[1].completed = true;
+            modalData.wizard.steps[2].active = true;
+        }
+        modalData.setActiveStep = function (stepIndex) {
+            if (modalData.wizard.steps[stepIndex].completed) {
+                for (var i = 1; i < 4; i++) {
+                    modalData.wizard.steps[i].active = false;
+                }
+                modalData.wizard.steps[stepIndex].active = true;
+            }
+        }
 
         modalData.ok = function () {
             webvellaAdminService.deleteEntity(modalData.entity.id, successCallback, errorCallback)

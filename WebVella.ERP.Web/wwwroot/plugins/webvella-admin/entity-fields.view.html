@@ -99,38 +99,40 @@
         <div ng-hide="modalData.hasError">
             <div class="wizard" id="MyWizard">
                 <ul class="steps horizontal">
-                    <li class="active" data-target="#step1">
+                    <li ng-class="{'active': modalData.wizard.steps[1].active,'complete': modalData.wizard.steps[1].completed}" ng-click="modalData.setActiveStep(1)">
                         <span class="badge">1</span>Choose type<span class="chevron"></span>
-
                     </li>
-                    <li class="" data-target="#step2">
+                    <li ng-class="{'active': modalData.wizard.steps[2].active,'complete': modalData.wizard.steps[2].completed}" ng-click="modalData.setActiveStep(2)">
                         <span class="badge">2</span>General settings<span class="chevron"></span>
 
                     </li>
-                    <li data-target="#step3">
+                    <li ng-class="{'active': modalData.wizard.steps[3].active,'complete': modalData.wizard.steps[3].completed}" ng-click="modalData.setActiveStep(3)">
                         <span class="badge">3</span>Specific settings<span class="chevron"></span>
 
                     </li>
                 </ul>
             </div>
             <br />
-            <div class="form">
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-                        <input class="form-control" ng-model="modalData.typeFilter.searchBox" autofocus/>
+
+            <!-- Step 1-->
+            <div ng-show="modalData.wizard.steps[1].active">
+                <div class="form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+                            <input class="form-control" ng-model="modalData.typeFilter.searchBox" autofocus />
+                        </div>
                     </div>
                 </div>
+
+                <table class="table table-bordered table-hover">
+                    <tr ng-repeat="type in modalData.fieldTypes | filter:modalData.typeFilter">
+                        <th style="width:200px;">{{type.label}}</th>
+                        <td>{{type.description}}</td>
+                        <td><a ng-click="modalData.selectType(type.id)" class="btn btn-default">select</a></td>
+                    </tr>
+                </table>
             </div>
-
-
-            <table class="table table-bordered table-hover">
-                <tr ng-repeat="type in modalData.fieldTypes | filter:modalData.typeFilter">
-                    <th style="width:200px;">{{type.label}}</th>
-                    <td>{{type.description}}</td>
-                    <td><a href="" class="btn btn-default">select</a></td>
-                </tr>
-            </table>
         </div>
     </div>
     <div class="modal-footer">
