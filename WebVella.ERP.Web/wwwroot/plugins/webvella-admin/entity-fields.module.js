@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityFieldsController', controller);
+        .controller('WebVellaAdminEntityFieldsController', controller)
+        .controller('CreateFieldModalController', CreateFieldModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -108,6 +109,21 @@
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
         });
 
+        //Create new entity modal
+        contentData.createFieldModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'createFieldModal.html',
+                controller: 'CreateFieldModalController',
+                controllerAs: "modalData",
+                size: "lg",
+                resolve: {
+                    contentData: function () { return contentData; }
+                }
+            });
+
+        }
+
         
         activate();
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
@@ -116,14 +132,172 @@
 
 
     //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
-        modalData.entity = parentData.entity;
+        modalData.contentData = contentData;
+
+        modalData.fieldTypes = [
+            {
+                "id": 1,
+                "name": "AutoNumberField",
+                "label": "Auto increment",
+                "description": "If you need a automatically incremented number with each new record, this is the field you need. You can customize the display format also."
+            },
+            {
+                "id": 2,
+                "name": "CheckboxField",
+                "label": "Checkbox",
+                "description": "The simple on and off switch. This field allows you to get a True (checked) or False (unchecked) value."
+            },
+            {
+                "id": 3,
+                "name": "CurrencyField",
+                "label": "Currency",
+                "description": "A currency amount can be entered and will be represented in a suitable formatted way"
+            },
+            {
+                "id": 4,
+                "name": "DateField",
+                "label": "Date",
+                "description": "A data pickup field, that can be later converting according to a provided pattern"
+            },
+            {
+                "id": 5,
+                "name": "DateTimeField",
+                "label": "Date & Time",
+                "description": "A date and time can be picked up and later presented according to a provided pattern"
+            },
+            {
+                "id": 6,
+                "name": "EmailField",
+                "label": "Email",
+                "description": "An email can be entered by the user, which will be validated and presented accordingly"
+            },
+            {
+                "id": 7,
+                "name": "FileField",
+                "label": "File",
+                "description": "File upload field. Files will be stored within the system."
+            },
+            {
+                "id": 8,
+                "name": "HtmlField",
+                "label": "HTML",
+                "description": "Provides the ability of entering and presenting an HTML code. Supports multiple input languages."
+            },
+            {
+                "id": 9,
+                "name": "ImageField",
+                "label": "Image",
+                "description": "Image upload field. Images will be stored within the system"
+            },
+            {
+                "id": 10,
+                "name": "LookupRelationField",
+                "label": "One to one relation",
+                "description": "Lookup field that creates a relation between this object and another one. The other object's records will be represented with a field of your choice."
+            },
+            {
+                "id": 11,
+                "name": "MultiLineTextField",
+                "label": "Textarea",
+                "description": "A textarea for plain text input. Will be cleaned and stripped from any web unsafe content"
+            },
+            {
+                "id": 12,
+                "name": "MultiSelectField",
+                "label": "Multiple select",
+                "description": "Multiple values can be selected from a provided list"
+            },
+            {
+                "id": 13,
+                "name": "NumberField",
+                "label": "Number",
+                "description": "Only numbers are allowed. Leading zeros will be stripped."
+            },
+            {
+                "id": 14,
+                "name": "PasswordField",
+                "label": "Password",
+                "description": "This field is suitable for submitting passwords or other data that needs to stay encrypted in the database"
+            },
+            {
+                "id": 15,
+                "name": "PercentField",
+                "label": "Percent",
+                "description": "This will automatically present any number you enter as a percent value"
+            },
+            {
+                "id": 16,
+                "name": "PhoneField",
+                "label": "Phone",
+                "description": "Will allow only valid phone numbers to be submitted"
+            },
+            {
+                "id": 17,
+                "name": "PrimaryKeyField",
+                "label": "Primary Key",
+                "description": "Very important field for any entity to entity relation. It will generate an unique key for each entity record, which can serve as identification."
+            },
+            {
+                "id": 18,
+                "name": "SelectField",
+                "label": "Dropdown",
+                "description": "One value can be selected from a provided list"
+            },
+            {
+                "id": 19,
+                "name": "TextField",
+                "label": "Text",
+                "description": "A simple text field. One of the most needed field nevertheless"
+            },
+            {
+                "id": 20,
+                "name": "UrlField",
+                "label": "URL",
+                "description": "This field will validate local and static URLs. Will present them accordingly"
+            }    
+        ];
+        // Inject a searchable field
+        for (var i = 0; i < modalData.fieldTypes.length; i++) {
+            modalData.fieldTypes[i].searchBox = modalData.fieldTypes[i].label + " " + modalData.fieldTypes[i].description;
+        }
+
+        //Wizard
+        modalData.wizard = {};
+        modalData.wizard.steps = [];
+        //Initialize steps
+        var step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Dummy step
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 1
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 2
+        step = angular.copy({ "active": false }, { "completed": false });
+        modalData.wizard.steps.push(step); // Step 3
+        // Set steps
+        modalData.wizard.steps[1].active = true;
+        modalData.wizard.selectedType = null;
+
+        modalData.selectType = function (typeId) {
+            modalData.wizard.selectedType = typeId;
+            modalData.wizard.steps[1].active = false;
+            modalData.wizard.steps[1].completed = true;
+            modalData.wizard.steps[2].active = true;
+        }
+        modalData.setActiveStep = function (stepIndex) {
+            if (modalData.wizard.steps[stepIndex].completed) {
+                for (var i = 1; i < 4; i++) {
+                    modalData.wizard.steps[i].active = false;
+                }
+                modalData.wizard.steps[stepIndex].active = true;
+            }
+        }
 
         modalData.ok = function () {
             webvellaAdminService.deleteEntity(modalData.entity.id, successCallback, errorCallback)

@@ -16,6 +16,7 @@
           type='text/css'>
     <link href="~/plugins/webvella-root/lib/angular-xeditable/css/xeditable.css" rel="stylesheet" />
 
+
      <!-- plugin:webvella-root-->
     <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
     <!-- plugin:webvella-desktop-->
@@ -49,6 +50,7 @@
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-xeditable/js/xeditable.js"></script>
 
+
     @* Core Application module definition *@
     <script>
         @*In order to dynamically add plug-in modules, the appCore definition should be with server side aspect*@
@@ -81,8 +83,8 @@
             };
 
             // Run //////////////////////////////////////
-            run.$inject = ['editableOptions'];
-            function run(editableOptions) { editableOptions.theme = 'bs3'; };
+            run.$inject = ['editableOptions', 'editableThemes'];
+            function run(editableOptions, editableThemes) { editableOptions.theme = 'bs3'; editableThemes.bs3.buttonsClass = 'btn-sm'; };
         })();
     </script>
     <script src="~/application.controller.js"></script>

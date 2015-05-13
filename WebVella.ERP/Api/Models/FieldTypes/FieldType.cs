@@ -12,16 +12,15 @@
         HtmlField = 8,
         ImageField = 9,
         LookupRelationField = 10,
-        MasterDetailsRelationshipField = 11,
-        MultiLineTextField = 12,
-        MultiSelectField = 13,
-        NumberField = 14,
-        PasswordField = 15,
-        PercentField = 16,
-        PhoneField = 17,
-        PrimaryKeyField = 18,
-        SelectField = 19,
-        TextField = 20,
-        UrlField = 21
+        MultiLineTextField = 11,
+        MultiSelectField = 12,
+        NumberField = 13,
+        PasswordField = 14,
+        PercentField = 15,
+        PhoneField = 16,
+        PrimaryKeyField = 17,
+        SelectField = 18,
+        TextField = 19,
+        UrlField = 20
     }
 }

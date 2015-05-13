@@ -1,14 +1,14 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-success"><i class="fa fa-plus"></i> New Field</a>
+            <a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
         </div>
-        <div class="icon-box">
+        <!--<div class="icon-box">
             <i class="fa fa-database"></i>
-        </div>
+        </div>-->
         <div class="entity-box">
-            <h4 title="Entities">Entities</h4>
-            <a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -27,7 +27,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 class="no-link" title="Details">Fields</h4>
+            <h4 class="no-link" title="Details">Details</h4>
         </div>
     </div>
     <!--<div id="page-messages">
@@ -36,6 +36,7 @@
 </div>
 <div id="text">
     <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
         <ul class="nav nav-tabs">
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
@@ -77,13 +78,66 @@
                     </td>
                     <td class="type">guid</td>
                     <td class="meta">
-                        <span ng-show="field.required">required, </span> 
-                        <span ng-show="field.unique">unique, </span> 
-                        <span ng-show="field.searchable">searchable, </span> 
-                        <span ng-show="field.auditable">auditable, </span> 
+                        <span ng-show="field.required">required, </span>
+                        <span ng-show="field.unique">unique, </span>
+                        <span ng-show="field.searchable">searchable, </span>
+                        <span ng-show="field.auditable">auditable, </span>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<script type="text/ng-template" id="createFieldModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Create field</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-danger" ng-bind="modalData.errorMessage" ng-show="modalData.hasError"></div>
+        <div ng-hide="modalData.hasError">
+            <div class="wizard" id="MyWizard">
+                <ul class="steps horizontal">
+                    <li ng-class="{'active': modalData.wizard.steps[1].active,'complete': modalData.wizard.steps[1].completed}" ng-click="modalData.setActiveStep(1)">
+                        <span class="badge">1</span>Choose type<span class="chevron"></span>
+                    </li>
+                    <li ng-class="{'active': modalData.wizard.steps[2].active,'complete': modalData.wizard.steps[2].completed}" ng-click="modalData.setActiveStep(2)">
+                        <span class="badge">2</span>General settings<span class="chevron"></span>
+
+                    </li>
+                    <li ng-class="{'active': modalData.wizard.steps[3].active,'complete': modalData.wizard.steps[3].completed}" ng-click="modalData.setActiveStep(3)">
+                        <span class="badge">3</span>Specific settings<span class="chevron"></span>
+
+                    </li>
+                </ul>
+            </div>
+            <br />
+
+            <!-- Step 1-->
+            <div ng-show="modalData.wizard.steps[1].active">
+                <div class="form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+                            <input class="form-control" ng-model="modalData.typeFilter.searchBox" autofocus />
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered table-hover">
+                    <tr ng-repeat="type in modalData.fieldTypes | filter:modalData.typeFilter">
+                        <th style="width:200px;">{{type.label}}</th>
+                        <td>{{type.description}}</td>
+                        <td><a ng-click="modalData.selectType(type.id)" class="btn btn-default">select</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <p><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
+        <!--<button class="btn btn-success" ng-click="modalData.ok()" ng-hide="modalData.hasError">Create Field</button>
+        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>-->
+    </div>
+</script>

@@ -18,7 +18,6 @@ namespace WebVella.ERP.Storage.Mongo
     //    typeof(MongoHtmlField),
     //    typeof(MongoImageField),
     //    typeof(MongoLookupRelationField),
-    //    typeof(MongoMasterDetailsRelationshipField),
     //    typeof(MongoMultiLineTextField),
     //    typeof(MongoMultiSelectField),
     //    typeof(MongoNumberField),

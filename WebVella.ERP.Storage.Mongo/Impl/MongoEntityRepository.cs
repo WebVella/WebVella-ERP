@@ -64,14 +64,14 @@ namespace WebVella.ERP.Storage.Mongo
                 else if (field is DateField)
                 {
                     storageField = new MongoDateField();
-                    ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue.Value;
+                    ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue;
                     ((MongoDateField)storageField).Format = ((DateField)field).Format;
                     ((MongoDateField)storageField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue.Value;
                 }
                 else if (field is DateTimeField)
                 {
                     storageField = new MongoDateTimeField();
-                    ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue.Value;
+                    ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue;
                     ((MongoDateTimeField)storageField).Format = ((DateTimeField)field).Format;
                     ((MongoDateTimeField)storageField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue.Value;
                 }
@@ -107,11 +107,6 @@ namespace WebVella.ERP.Storage.Mongo
                 {
                     storageField = new MongoLookupRelationField();
                     ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
-                }
-                else if (field is MasterDetailsRelationshipField)
-                {
-                    storageField = new MongoMasterDetailsRelationshipField();
-                    ((MongoMasterDetailsRelationshipField)storageField).RelatedEntityId = ((MasterDetailsRelationshipField)field).RelatedEntityId.Value;
                 }
                 else if (field is MultiLineTextField)
                 {
@@ -384,14 +379,14 @@ namespace WebVella.ERP.Storage.Mongo
             else if (field is DateField)
             {
                 storageField = new MongoDateField();
-                ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue.Value;
+                ((MongoDateField)storageField).DefaultValue = ((DateField)field).DefaultValue;
                 ((MongoDateField)storageField).Format = ((DateField)field).Format;
                 ((MongoDateField)storageField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue.Value;
             }
             else if (field is DateTimeField)
             {
                 storageField = new MongoDateTimeField();
-                ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue.Value;
+                ((MongoDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue;
                 ((MongoDateTimeField)storageField).Format = ((DateTimeField)field).Format;
                 ((MongoDateTimeField)storageField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue.Value;
             }
@@ -427,11 +422,6 @@ namespace WebVella.ERP.Storage.Mongo
             {
                 storageField = new MongoLookupRelationField();
                 ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
-            }
-            else if (field is MasterDetailsRelationshipField)
-            {
-                storageField = new MongoMasterDetailsRelationshipField();
-                ((MongoMasterDetailsRelationshipField)storageField).RelatedEntityId = ((MasterDetailsRelationshipField)field).RelatedEntityId.Value;
             }
             else if (field is MultiLineTextField)
             {
