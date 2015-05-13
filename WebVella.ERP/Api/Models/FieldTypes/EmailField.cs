@@ -24,8 +24,18 @@ namespace WebVella.ERP.Api.Models
 
         public EmailField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
-            MaxLength = (int?)field["maxLength"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                    case "maxlength":
+                        MaxLength = (int?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

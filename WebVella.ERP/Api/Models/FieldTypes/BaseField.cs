@@ -68,17 +68,45 @@ namespace WebVella.ERP
 
         public Field(InputField field)
         {
-            Id = (Guid)field["id"];
-            Name = (string)field["name"];
-            Label = (string)field["label"];
-            PlaceholderText = (string)field["placeholderText"];
-            Description = (string)field["description"];
-            HelpText = (string)field["helpText"];
-            Required = (bool?)field["required"];
-            Unique = (bool?)field["unique"];
-            Searchable = (bool?)field["searchable"];
-            Auditable = (bool?)field["auditable"];
-            System = (bool?)field["system"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "id":
+                        Id = (Guid?)property.Value;
+                        break;
+                    case "name":
+                        Name = (string)property.Value;
+                        break;
+                    case "label":
+                        Label = (string)property.Value;
+                        break;
+                    case "placeholdertext":
+                        PlaceholderText = (string)property.Value;
+                        break;
+                    case "description":
+                        Description = (string)property.Value;
+                        break;
+                    case "helptext":
+                        HelpText = (string)property.Value;
+                        break;
+                    case "required":
+                        Required = (bool?)property.Value;
+                        break;
+                    case "unique":
+                        Unique = (bool?)property.Value;
+                        break;
+                    case "searchable":
+                        Searchable = (bool?)property.Value;
+                        break;
+                    case "auditable":
+                        Auditable = (bool?)property.Value;
+                        break;
+                    case "system":
+                        System = (bool?)property.Value;
+                        break;
+                }
+            }
         }
 
         public static Field Convert(IStorageField storageField)
@@ -151,11 +179,6 @@ namespace WebVella.ERP
                 field = new ImageField();
                 ((ImageField)field).DefaultValue = ((IStorageImageField)storageField).DefaultValue;
             }
-            else if (storageField is IStorageLookupRelationField)
-            {
-                field = new LookupRelationField();
-                ((LookupRelationField)field).RelatedEntityId = ((IStorageLookupRelationField)storageField).RelatedEntityId;
-            }
             else if (storageField is IStorageMultiLineTextField)
             {
                 field = new MultiLineTextField();
@@ -199,10 +222,10 @@ namespace WebVella.ERP
                 ((PhoneField)field).Format = ((IStoragePhoneField)storageField).Format;
                 ((PhoneField)field).MaxLength = ((IStoragePhoneField)storageField).MaxLength;
             }
-            else if (storageField is IStoragePrimaryKeyField)
+            else if (storageField is IStorageGuidField)
             {
-                field = new PrimaryKeyField();
-                ((PrimaryKeyField)field).DefaultValue = ((IStoragePrimaryKeyField)storageField).DefaultValue;
+                field = new GuidField();
+                ((GuidField)field).DefaultValue = ((IStorageGuidField)storageField).DefaultValue;
             }
             else if (storageField is IStorageSelectField)
             {
@@ -273,9 +296,6 @@ namespace WebVella.ERP
                 case FieldType.ImageField:
                     field = new ImageField(inputField);
                     break;
-                case FieldType.LookupRelationField:
-                    field = new LookupRelationField(inputField);
-                    break;
                 case FieldType.MultiLineTextField:
                     field = new MultiLineTextField(inputField);
                     break;
@@ -294,8 +314,8 @@ namespace WebVella.ERP
                 case FieldType.PhoneField:
                     field = new PhoneField(inputField);
                     break;
-                case FieldType.PrimaryKeyField:
-                    field = new PrimaryKeyField(inputField);
+                case FieldType.GuidField:
+                    field = new GuidField(inputField);
                     break;
                 case FieldType.SelectField:
                     field = new SelectField(inputField);

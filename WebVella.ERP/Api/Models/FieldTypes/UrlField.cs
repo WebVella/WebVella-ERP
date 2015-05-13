@@ -27,9 +27,21 @@ namespace WebVella.ERP.Api.Models
 
         public UrlField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
-            MaxLength = (int?)field["maxLength"];
-            OpenTargetInNewWindow = (bool?)field["openTargetInNewWindow"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                    case "maxlength":
+                        MaxLength = (int?)property.Value;
+                        break;
+                    case "opentargetinnewwindow":
+                        OpenTargetInNewWindow = (bool?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

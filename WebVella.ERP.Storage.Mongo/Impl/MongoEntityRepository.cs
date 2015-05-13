@@ -103,11 +103,6 @@ namespace WebVella.ERP.Storage.Mongo
                     storageField = new MongoImageField();
                     ((MongoImageField)storageField).DefaultValue = ((ImageField)field).DefaultValue;
                 }
-                else if (field is LookupRelationField)
-                {
-                    storageField = new MongoLookupRelationField();
-                    ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
-                }
                 else if (field is MultiLineTextField)
                 {
                     storageField = new MongoMultiLineTextField();
@@ -151,10 +146,10 @@ namespace WebVella.ERP.Storage.Mongo
                     ((MongoPhoneField)storageField).Format = ((PhoneField)field).Format;
                     ((MongoPhoneField)storageField).MaxLength = ((PhoneField)field).MaxLength.Value;
                 }
-                else if (field is PrimaryKeyField)
+                else if (field is GuidField)
                 {
-                    storageField = new MongoPrimaryKeyField();
-                    ((MongoPrimaryKeyField)storageField).DefaultValue = ((PrimaryKeyField)field).DefaultValue.Value;
+                    storageField = new MongoGuidField();
+                    ((MongoGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue.Value;
                 }
                 else if (field is SelectField)
                 {
@@ -418,11 +413,6 @@ namespace WebVella.ERP.Storage.Mongo
                 storageField = new MongoImageField();
                 ((MongoImageField)storageField).DefaultValue = ((ImageField)field).DefaultValue;
             }
-            else if (field is LookupRelationField)
-            {
-                storageField = new MongoLookupRelationField();
-                ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
-            }
             else if (field is MultiLineTextField)
             {
                 storageField = new MongoMultiLineTextField();
@@ -466,10 +456,10 @@ namespace WebVella.ERP.Storage.Mongo
                 ((MongoPhoneField)storageField).Format = ((PhoneField)field).Format;
                 ((MongoPhoneField)storageField).MaxLength = ((PhoneField)field).MaxLength.Value;
             }
-            else if (field is PrimaryKeyField)
+            else if (field is GuidField)
             {
-                storageField = new MongoPrimaryKeyField();
-                ((MongoPrimaryKeyField)storageField).DefaultValue = ((PrimaryKeyField)field).DefaultValue.Value;
+                storageField = new MongoGuidField();
+                ((MongoGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue.Value;
             }
             else if (field is SelectField)
             {

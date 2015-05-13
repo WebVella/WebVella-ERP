@@ -18,10 +18,18 @@ namespace WebVella.ERP.Api.Models
         public HtmlField(Field field) : base(field)
         {
         }
-        
-            public HtmlField(InputField field) : base(field)
+
+        public HtmlField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                }
+            }
         }
     }
 
@@ -39,9 +47,9 @@ namespace WebVella.ERP.Api.Models
         public HtmlFieldMeta(Guid entityId, string entityName, HtmlField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
+            EntityName = entityName;
+            DefaultValue = field.DefaultValue;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }

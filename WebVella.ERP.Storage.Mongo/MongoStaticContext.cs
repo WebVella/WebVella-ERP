@@ -63,14 +63,13 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoFileField>();
             BsonClassMap.RegisterClassMap<MongoHtmlField>();
             BsonClassMap.RegisterClassMap<MongoImageField>();
-            BsonClassMap.RegisterClassMap<MongoLookupRelationField>();
             BsonClassMap.RegisterClassMap<MongoMultiLineTextField>();
             BsonClassMap.RegisterClassMap<MongoMultiSelectField>();
             BsonClassMap.RegisterClassMap<MongoNumberField>();
             BsonClassMap.RegisterClassMap<MongoPasswordField>();
             BsonClassMap.RegisterClassMap<MongoPercentField>();
             BsonClassMap.RegisterClassMap<MongoPhoneField>();
-            BsonClassMap.RegisterClassMap<MongoPrimaryKeyField>();
+            BsonClassMap.RegisterClassMap<MongoGuidField>();
             BsonClassMap.RegisterClassMap<MongoSelectField>();
             BsonClassMap.RegisterClassMap<MongoTextField>();
             BsonClassMap.RegisterClassMap<MongoUrlField>();

@@ -27,9 +27,21 @@ namespace WebVella.ERP.Api.Models
 
         public MultiLineTextField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
-            MaxLength = (int?)field["maxLength"];
-            VisibleLineNumber = (int?)field["visibleLineNumber"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                    case "maxlength":
+                        MaxLength = (int?)property.Value;
+                        break;
+                    case "visiblelinenumber":
+                        VisibleLineNumber = (int?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

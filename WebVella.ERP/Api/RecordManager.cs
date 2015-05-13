@@ -215,7 +215,7 @@ namespace WebVella.ERP.Api
 					return pair.Value as decimal?;
 				else if (field is PhoneField)
 					return pair.Value as string;
-				else if (field is PrimaryKeyField)
+				else if (field is GuidField)
 					return (Guid)pair.Value;
 				else if (field is SelectField)
 					return pair.Value as string;
@@ -223,8 +223,6 @@ namespace WebVella.ERP.Api
 					return pair.Value as string;
 				else if (field is UrlField)
 					return pair.Value as string;
-				else if (field is LookupRelationField)
-					return (Guid?)pair.Value;
 			}
 			else
 			{
@@ -272,7 +270,7 @@ namespace WebVella.ERP.Api
                     return ((PercentField)field).DefaultValue;
                 else if (field is PhoneField)
                     return ((PhoneField)field).DefaultValue;
-                else if (field is PrimaryKeyField)
+                else if (field is GuidField)
                     throw new Exception("System error. Record primary key value is missing.");
                 else if (field is SelectField)
                     return ((SelectField)field).DefaultValue;
@@ -280,8 +278,6 @@ namespace WebVella.ERP.Api
                     return ((TextField)field).DefaultValue;
                 else if (field is UrlField)
                     return ((UrlField)field).DefaultValue;
-                else if (field is LookupRelationField)
-                    return null;
 				#endregion
 			}
 
@@ -349,25 +345,25 @@ namespace WebVella.ERP.Api
 					{
 						throw new Exception(string.Format("Invalid query result field '{0}'", token));
 					}
-					else if (field is LookupRelationField)
-					{
-						Guid? relatedEntityId = (field as LookupRelationField).RelatedEntityId;
+					//else if (field is LookupRelationField)
+					//{
+					//	Guid? relatedEntityId = (field as LookupRelationField).RelatedEntityId;
 
-						//there is always value 
-						var relatedEntity = GetEntity(relatedEntityId.Value);
-						if (relatedEntity == null)
-							throw new Exception(string.Format("Invalid query result field '{0}'. Related entity is missing.", token));
+					//	//there is always value 
+					//	var relatedEntity = GetEntity(relatedEntityId.Value);
+					//	if (relatedEntity == null)
+					//		throw new Exception(string.Format("Invalid query result field '{0}'. Related entity is missing.", token));
 
-						//get and check for related field in related entity
-						var relatedField = relatedEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
-						if (relatedField == null)
-							throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
+					//	//get and check for related field in related entity
+					//	var relatedField = relatedEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
+					//	if (relatedField == null)
+					//		throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
 
-						//skip duplication
-						if (!result.Any(x => x.Id == relatedField.Id))
-							result.Add(WrapFieldMeta(field, relatedEntity, fieldName));
+					//	//skip duplication
+					//	if (!result.Any(x => x.Id == relatedField.Id))
+					//		result.Add(WrapFieldMeta(field, relatedEntity, fieldName));
 
-					}
+					//}
 					else
 					{
 						//any other than LookupRelationField type is not supported
@@ -416,16 +412,14 @@ namespace WebVella.ERP.Api
 				return new PercentFieldMeta(entity.Id.Value, entity.Name, (PercentField)field, parentFieldName);
 			else if (field is PhoneField)
 				return new PhoneFieldMeta(entity.Id.Value, entity.Name, (PhoneField)field, parentFieldName);
-			else if (field is PrimaryKeyField)
-				return new PrimaryKeyFieldMeta(entity.Id.Value, entity.Name, (PrimaryKeyField)field, parentFieldName);
+			else if (field is GuidField)
+				return new PrimaryKeyFieldMeta(entity.Id.Value, entity.Name, (GuidField)field, parentFieldName);
 			else if (field is SelectField)
 				return new SelectFieldMeta(entity.Id.Value, entity.Name, (SelectField)field, parentFieldName);
 			else if (field is TextField)
 				return new TextFieldMeta(entity.Id.Value, entity.Name, (TextField)field, parentFieldName);
 			else if (field is UrlField)
 				return new UrlFieldMeta(entity.Id.Value, entity.Name, (UrlField)field, parentFieldName);
-			else if (field is LookupRelationField)
-				return new LookupRelationFieldMeta(entity.Id.Value, entity.Name, (LookupRelationField)field, parentFieldName);
 
 			throw new Exception("Not supported field type met.");
 		}

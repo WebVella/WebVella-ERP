@@ -27,6 +27,18 @@ namespace WebVella.ERP.Api.Models
         {
             DefaultValue = (string)field["defaultValue"];
             Options = (IDictionary<string, string>)field["options"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                    case "options":
+                        Options = (IDictionary<string, string>)property.Value;
+                        break;
+                }
+            }
         }
     }
 
