@@ -19,7 +19,7 @@ namespace WebVella.ERP.Web.Controllers
         {
         }
 
-
+        #region << Entity Meta >>
         // Get all entity definitions
         // GET: api/v1/en_US/meta/entity/list/
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
@@ -45,22 +45,6 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).CreateEntity(submitObj));
         }
 
-
-        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
-        public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
-        {
-            FieldResponse response = new FieldResponse();
-
-            Guid entityId;
-            if (!Guid.TryParse(Id, out entityId))
-            {
-                response.Errors.Add(new ErrorModel("Id", Id, "Id parameter is not valid Guid value"));
-                return DoResponse(response);
-            }
-
-            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.Convert(submitObj)));
-        }
-
         // Delete an entity
         // DELETE: api/v1/en_US/meta/entity/{id}
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
@@ -84,6 +68,26 @@ namespace WebVella.ERP.Web.Controllers
             }
             return DoResponse(response);
         }
+
+        #endregion
+
+        #region << Entity Fields >>
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
+        public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("Id", Id, "Id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.Convert(submitObj)));
+        }
+
+        #endregion
 
     }
 }

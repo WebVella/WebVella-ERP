@@ -3,12 +3,12 @@
         <div class="aux-actions">
 
         </div>
-        <div class="icon-box">
+        <!--<div class="icon-box">
             <i class="fa fa-database"></i>
-        </div>
+        </div>-->
         <div class="entity-box">
-            <h4 title="Entities">Entities</h4>
-            <a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -36,6 +36,7 @@
 </div>
 <div id="text">
     <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
         <ul class="nav nav-tabs">
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
