@@ -266,7 +266,7 @@ namespace WebVella.ERP
         {
             Field field = null;
 
-            FieldType fieldType = (FieldType)inputField["fieldType"];
+            FieldType fieldType = (FieldType)Enum.ToObject(typeof(FieldType), inputField["fieldType"]);
             switch (fieldType)
             {
                 case FieldType.AutoNumberField:
