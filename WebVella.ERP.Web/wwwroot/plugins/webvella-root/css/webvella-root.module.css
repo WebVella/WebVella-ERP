@@ -21,11 +21,11 @@ span.divider {
 }
 
 .panel {
-    border-radius:0;
+    border-radius: 0;
 }
 
 .position-relative {
-    position:relative !important;
+    position: relative !important;
 }
 
 .display-block {
@@ -1679,16 +1679,17 @@ form .error {
 .editable-wrap .editable-controls {
     margin: 0 !important;
 }
+
 .form-control-static {
-    padding-left:14px;
+    padding-left: 14px;
 }
 
-.input-group.clean-addon .form-control{
-    border-right:0;
+.input-group.clean-addon .form-control {
+    border-right: 0;
 }
 
-.input-group.clean-addon .input-group-addon{
-   background: white;
+.input-group.clean-addon .input-group-addon {
+    background: white;
     color: #999;
 }
 
@@ -1713,10 +1714,76 @@ table .btn-xs.btn-link {
 }
 
 
-.table.table-permissions thead th{
-    font-weight:normal;
-    color:#999;
+.table.table-permissions thead th {
+    font-weight: normal;
+    color: #999;
 }
+
+.table-hover > tbody > tr:hover {
+    background-color:#FAFBFD;
+}
+
+.theme-red .table-hover > tbody > tr:hover {
+    background-color:#FFFAFB;
+}
+
+
+.theme-pink .table-hover > tbody > tr:hover {
+    background-color:#FFF5F8;
+}
+
+
+.theme-purple .table-hover > tbody > tr:hover {
+    background-color:#FDF2FF;
+}
+
+.theme-deep-purple .table-hover > tbody > tr:hover {
+    background-color:#F8F3FF;
+}
+.theme-indigo .table-hover > tbody > tr:hover {
+    background-color:#F8F9FF;
+}
+.theme-blue .table-hover > tbody > tr:hover {
+    background-color:#F3FAFF;
+}
+
+.theme-light-blue .table-hover > tbody > tr:hover {
+    background-color:#F5FCFF;
+}
+.theme-cyan .table-hover > tbody > tr:hover {
+    background-color:#F3FAFF;
+}
+.theme-teal .table-hover > tbody > tr:hover {
+    background-color:#F5FFFE;
+}
+
+.theme-green .table-hover > tbody > tr:hover {
+    background-color:#F2FFF3;
+}
+.theme-light-green .table-hover > tbody > tr:hover {
+    background-color:#F4FFE6;
+}
+.theme-lime .table-hover > tbody > tr:hover {
+    background-color:#F9FBE7;
+}
+
+.theme-yellow .table-hover > tbody > tr:hover {
+    background-color:#FFFCDE;
+}
+.theme-amber .table-hover > tbody > tr:hover {
+    background-color:#FDF9EA;
+}
+.theme-orange .table-hover > tbody > tr:hover {
+    background-color:#FFFAFA;
+}
+
+.theme-deep-orange .table-hover > tbody > tr:hover {
+    background-color:#FFFAFA;
+}
+.theme-brown .table-hover > tbody > tr:hover {
+    background-color:#FFFAF8;
+}
+
 
 /*#endregion */
 
@@ -1919,11 +1986,11 @@ table .btn-xs.btn-link {
         background: rgba(255,255,255,0.2);
         padding: 1em 0 1em 1em;
         border-left: 3px solid #90A4AE;
-        border-right:none;
+        border-right: none;
     }
 
         .tabbable.spilled ul li {
-            padding:2px 0;
+            padding: 2px 0;
         }
 
         .tabbable.spilled ul a {
@@ -1932,9 +1999,9 @@ table .btn-xs.btn-link {
 
         .tabbable.spilled ul li:not(.active) a:hover {
             background: rgba(255,255,255,0.15);
-            border-color:transparent;
-            border-right:none;
-            color: #ccc;
+            border-color: transparent;
+            border-right: none;
+            color: #eee;
         }
 
         .tabbable.spilled ul li.active a {
@@ -2014,6 +2081,27 @@ table .btn-xs.btn-link {
     border-left-color: #795548 !important;
 }
 
+
+.tabbable.spilled .back {
+    position: absolute;
+    line-height: 40px;
+    height: 40px;
+    top: -64px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    width: 90px;
+    border-radius: 5px 0 0 5px;
+    color: #ccc;
+    text-align: right;
+    padding-right: 20px;
+}
+
+    .tabbable.spilled .back:hover {
+     background: rgba(255,255,255,0.30);
+     text-decoration:none;
+     color: #eee;
+    }
+
 /*#endregion */
 
 /*#region << Inline edit styles >> */
@@ -2021,136 +2109,495 @@ table .btn-xs.btn-link {
 /*All*/
 
 .editable-empty, .editable-empty:hover, .editable-empty:focus, a.editable-empty, a.editable-empty:hover, a.editable-empty:focus {
-    color:#9E9E9E !important;
+    color: #9E9E9E !important;
 }
 
 .editable-wrap {
-    padding:10px;
-    position:absolute;
-    box-shadow:0 0 10px #666;
-    background:white;
-    z-index:12;
-    top:-10px;
-    left:-20px;
+    padding: 10px;
+    position: absolute;
+    box-shadow: 0 0 10px #666;
+    background: white;
+    z-index: 12;
+    top: -10px;
+    left: -20px;
 }
 
 a.editable,
-span.editable{
+span.editable {
     color: #337ab7;
     display: inline-block;
     line-height: 20px;
     padding: 6px 12px;
-    border:1px solid transparent;
-    border-radius:3px;
-    position:relative;
-    
+    border: 1px solid transparent;
+    border-radius: 3px;
+    position: relative;
 }
 
-a.editable:after,
-span.editable:after {
-    font-family: 'FontAwesome';
-    content:"\f040";
-    position:absolute;
-    right:-32px;
-    border:1px solid #FFCC80;
-    top:-1px;
-    line-height:20px;
-    width:32px;
-    padding:6px 0;
-    text-align:center;
-    color:#fff;
-    background:#FFCC80;
-    display:none;
-    border-radius:0 3px 3px 0;
-}
+    a.editable:after,
+    span.editable:after {
+        font-family: 'FontAwesome';
+        content: "\f040";
+        position: absolute;
+        right: -32px;
+        border: 1px solid #FFCC80;
+        top: -1px;
+        line-height: 20px;
+        width: 32px;
+        padding: 6px 0;
+        text-align: center;
+        color: #fff;
+        background: #FFCC80;
+        display: none;
+        border-radius: 0 3px 3px 0;
+    }
+
     a.editable:hover:after,
     span.editable:hover:after {
-            display:inline-block;
+        display: inline-block;
     }
 
     a.editable:hover,
     span.editable:hover {
         background: #FFF3E0;
-        border:1px solid #FFCC80;
-        cursor:pointer;
-        color:#333;
+        border: 1px solid #FFCC80;
+        cursor: pointer;
+        color: #333;
     }
 
 
 /*Checkbox*/
 .editable-checkbox label {
-    line-height:30px;
+    line-height: 30px;
 }
 
-.editable-checkbox label:hover{
-    cursor:pointer;
-}
+    .editable-checkbox label:hover {
+        cursor: pointer;
+    }
 
 .editable-checkbox input {
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 
 /* Not editable */
 
 a.not-editable,
-span.not-editable{
+span.not-editable {
     color: #333;
     display: inline-block;
     line-height: 20px;
     padding: 6px 12px;
-    border:1px solid transparent;
-    border-radius:3px;
-    position:relative;
-    
+    border: 1px solid transparent;
+    border-radius: 3px;
+    position: relative;
 }
 
-a.not-editable:after,
-span.not-editable:after {
-    font-family: 'FontAwesome';
-    content:"\f023";
-    position:absolute;
-    right:-32px;
-    border:1px solid #EF9A9A;
-    top:-1px;
-    line-height:20px;
-    width:32px;
-    padding:6px 0;
-    text-align:center;
-    color:#fff;
-    background:#EF9A9A;
-    display:none;
-    border-radius:0 3px 3px 0;
-}
+    a.not-editable:after,
+    span.not-editable:after {
+        font-family: 'FontAwesome';
+        content: "\f023";
+        position: absolute;
+        right: -32px;
+        border: 1px solid #EF9A9A;
+        top: -1px;
+        line-height: 20px;
+        width: 32px;
+        padding: 6px 0;
+        text-align: center;
+        color: #fff;
+        background: #EF9A9A;
+        display: none;
+        border-radius: 0 3px 3px 0;
+    }
+
     a.not-editable:hover:after,
     span.not-editable:hover:after {
-            display:inline-block;
+        display: inline-block;
     }
 
     a.not-editable:hover,
     span.not-editable:hover {
         background: #FFCDD2;
-        border:1px solid #EF9A9A;
-        cursor:pointer;
-        color:#333;
+        border: 1px solid #EF9A9A;
+        cursor: pointer;
+        color: #333;
     }
 
 /*#endregion */
 
 /*#region << Typeahead >> */
 .dropdown-menu > li > a.typeahead-icon-item {
-    line-height:34px;
-    height:34px;
-    padding:0 10px;
+    line-height: 34px;
+    height: 34px;
+    padding: 0 10px;
 }
-.dropdown-menu > li > a.typeahead-icon-item i{
-    margin-right: 5px;
-    font-size: 18px;
-    position:relative;
-    top:2px;
-}
+
+    .dropdown-menu > li > a.typeahead-icon-item i {
+        margin-right: 5px;
+        font-size: 18px;
+        position: relative;
+        top: 2px;
+    }
 
     .dropdown-menu > li > a.typeahead-icon-item:hover i {
         color: #fff !important;
     }
+/*#endregion */
+
+/*#region << Wizard >> */
+/*
+    @insparation from https://github.com/ExactTarget/fuelux Thanks gals and boys 
+    @license: https://github.com/ExactTarget/fuelux/blob/master/LICENSE
+*/
+
+.wizard {
+  *zoom: 1;
+  border: 1px solid #d4d4d4;
+  border-radius: 0;
+  background-color: #f9f9f9;
+  position: relative;
+  min-height: 48px;
+  overflow: hidden;
+}
+.wizard:before,
+.wizard:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.wizard:after {
+  clear: both;
+}
+.wizard > .steps {
+  list-style: none outside none;
+  padding: 0;
+  margin: 0;
+  width: 4000px;
+}
+.wizard > .steps.previous-disabled li.complete {
+  cursor: default;
+}
+.wizard > .steps.previous-disabled li.complete:hover {
+  background: #f3f4f5;
+  color: #468847;
+  cursor: default;
+}
+.wizard > .steps.previous-disabled li.complete:hover .chevron:before {
+  border-left-color: #f3f4f5;
+}
+.wizard > .steps li {
+  float: left;
+  margin: 0;
+  padding: 0 20px 0 30px;
+  height: 46px;
+  line-height: 46px;
+  position: relative;
+  background: #ededed;
+  color: #999999;
+  font-size: 16px;
+  cursor: not-allowed;
+}
+.wizard > .steps li .chevron {
+  border: 24px solid transparent;
+  border-left: 14px solid #d4d4d4;
+  border-right: 0;
+  display: block;
+  position: absolute;
+  right: -14px;
+  top: 0;
+  z-index: 1;
+}
+.wizard > .steps li .chevron:before {
+  border: 24px solid transparent;
+  border-left: 14px solid #ededed;
+  border-right: 0;
+  content: "";
+  display: block;
+  position: absolute;
+  right: 1px;
+  top: -24px;
+}
+.wizard > .steps li.complete {
+  background: #f3f4f5;
+  color: #333;
+}
+.wizard > .steps li.complete:hover {
+  background: #e7eff8;
+  cursor: pointer;
+}
+.wizard > .steps li.complete:hover .chevron:before {
+  border-left: 14px solid #e7eff8;
+}
+.wizard > .steps li.complete .chevron:before {
+  border-left: 14px solid #f3f4f5;
+}
+
+.wizard > .steps li.complete .badge {
+  background: #555;
+}
+
+.wizard > .steps li.active {
+  background: #FAFBFD;
+  color: #009688;
+  cursor: default;
+}
+.wizard > .steps li.active .chevron:before {
+  border-left: 14px solid #FAFBFD;
+}
+.wizard > .steps li.active .badge {
+  background-color: #009688;
+}
+.wizard > .steps li .badge {
+  margin-right: 8px;
+}
+
+.wizard > .steps li:first-child {
+  border-radius: 4px 0 0 4px;
+  padding-left: 20px;
+}
+.wizard > .actions {
+  z-index: 1000;
+  position: absolute;
+  right: 0;
+  line-height: 46px;
+  float: right;
+  padding-left: 15px;
+  padding-right: 15px;
+  vertical-align: middle;
+  background-color: #e5e5e5;
+  border-left: 1px solid #d4d4d4;
+}
+.wizard > .actions a {
+  line-height: 45px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+.wizard > .actions .btn-prev[disabled] {
+  cursor: not-allowed;
+}
+.wizard > .actions .btn-prev span {
+  margin-right: 5px;
+}
+.wizard > .actions .btn-next[disabled] {
+  cursor: not-allowed;
+}
+.wizard > .actions .btn-next span {
+  margin-left: 5px;
+}
+.wizard .step-content {
+  border-top: 1px solid #D4D4D4;
+  padding: 10px;
+  float: left;
+  width: 100%;
+}
+.wizard .step-content .step-pane {
+  display: none;
+}
+.wizard .step-content > .active {
+  display: block;
+}
+.wizard .step-content > .active .btn-group .active {
+  display: inline-block;
+}
+.wizard.complete > .actions .glyphicon-arrow-right:before {
+  display: none;
+}
+.wizard.complete > .actions .glyphicon-arrow-right {
+  margin-left: 0;
+}
+
+/* Theming */
+.theme-red .wizard > .steps li.active .badge {
+  background-color: #F44336;
+}
+
+.theme-red .wizard > .steps li.active {
+  background: #FFFAFB;
+  color: #F44336;
+}
+.theme-red .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFB;
+}
+
+.theme-pink .wizard > .steps li.active .badge {
+  background-color: #E91E63;
+}
+
+.theme-pink .wizard > .steps li.active {
+  background: #FFF5F8;
+  color: #E91E63;
+}
+.theme-pink .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFF5F8;
+}
+
+.theme-purple .wizard > .steps li.active .badge {
+  background-color: #9C27B0;
+}
+
+.theme-purple .wizard > .steps li.active {
+  background: #FDF2FF;
+  color: #9C27B0;
+}
+.theme-purple .wizard > .steps li.active .chevron:before {
+  border-left-color:#FDF2FF;
+}
+
+.theme-indigo .wizard > .steps li.active .badge {
+  background-color: #3F51B5;
+}
+
+.theme-indigo .wizard > .steps li.active {
+  background: #F8F9FF;
+  color: #3F51B5;
+}
+.theme-indigo .wizard > .steps li.active .chevron:before {
+  border-left-color:#F8F9FF;
+}
+
+.theme-blue .wizard > .steps li.active .badge {
+  background-color: #2196F3;
+}
+
+.theme-blue .wizard > .steps li.active {
+  background: #F3FAFF;
+  color: #2196F3;
+}
+.theme-blue .wizard > .steps li.active .chevron:before {
+  border-left-color:#F3FAFF;
+}
+
+.theme-light-blue .wizard > .steps li.active .badge {
+  background-color: #03A9F4;
+}
+
+.theme-light-blue .wizard > .steps li.active {
+  background: #F5FCFF;
+  color: #03A9F4;
+}
+.theme-light-blue .wizard > .steps li.active .chevron:before {
+  border-left-color:#F5FCFF;
+}
+
+.theme-cyan .wizard > .steps li.active .badge {
+  background-color: #00BCD4;
+}
+
+.theme-cyan .wizard > .steps li.active {
+  background: #F3FAFF;
+  color: #00BCD4;
+}
+.theme-cyan .wizard > .steps li.active .chevron:before {
+  border-left-color:#F3FAFF;
+}
+
+.theme-teal .wizard > .steps li.active .badge {
+  background-color: #009688;
+}
+
+.theme-teal .wizard > .steps li.active {
+  background: #F5FFFE;
+  color: #009688;
+}
+.theme-teal .wizard > .steps li.active .chevron:before {
+  border-left-color:#F5FFFE;
+}
+
+.theme-green .wizard > .steps li.active .badge {
+  background-color: #4CAF50;
+}
+
+.theme-green .wizard > .steps li.active {
+  background: #F2FFF3;
+  color: #4CAF50;
+}
+.theme-green .wizard > .steps li.active .chevron:before {
+  border-left-color:#F2FFF3;
+}
+
+.theme-light-green .wizard > .steps li.active .badge {
+  background-color: #8BC34A;
+}
+
+.theme-light-green .wizard > .steps li.active {
+  background: #F4FFE6;
+  color: #8BC34A;
+}
+.theme-light-green .wizard > .steps li.active .chevron:before {
+  border-left-color:#F4FFE6;
+}
+
+.theme-lime .wizard > .steps li.active .badge {
+  background-color: #CDDC39;
+}
+
+.theme-lime .wizard > .steps li.active {
+  background: #F9FBE7;
+  color: #CDDC39;
+}
+.theme-lime .wizard > .steps li.active .chevron:before {
+  border-left-color:#F9FBE7;
+}
+
+.theme-yellow .wizard > .steps li.active .badge {
+  background-color: #FDD835;
+}
+
+.theme-yellow .wizard > .steps li.active {
+  background: #FFFCDE;
+  color: #FDD835;
+}
+.theme-yellow .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFCDE;
+}
+
+.theme-amber .wizard > .steps li.active .badge {
+  background-color: #FFC107;
+}
+
+.theme-amber .wizard > .steps li.active {
+  background: #FDF9EA;
+  color: #FFC107;
+}
+.theme-amber .wizard > .steps li.active .chevron:before {
+  border-left-color:#FDF9EA;
+}
+
+.theme-orange .wizard > .steps li.active .badge {
+  background-color: #FF9800;
+}
+
+.theme-orange .wizard > .steps li.active {
+  background: #FFFAFA;
+  color: #FF9800;
+}
+.theme-orange .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFA;
+}
+
+.theme-deep-orange .wizard > .steps li.active .badge {
+  background-color: #FF5722;
+}
+
+.theme-deep-orange .wizard > .steps li.active {
+  background: #FFFAFA;
+  color: #FF5722;
+}
+.theme-deep-orange .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAFA;
+}
+
+.theme-brown .wizard > .steps li.active .badge {
+  background-color: #795548;
+}
+
+.theme-brown .wizard > .steps li.active {
+  background: #FFFAF8;
+  color: #795548;
+}
+.theme-brown .wizard > .steps li.active .chevron:before {
+  border-left-color:#FFFAF8;
+}
+
+
 /*#endregion */
