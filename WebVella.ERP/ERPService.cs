@@ -33,7 +33,7 @@ namespace WebVella.ERP
         public void RunTests()
         {
             InitializeSystemEntities();
-            EntityTests();
+            //EntityTests();
         }
 
         public void InitializeSystemEntities()
