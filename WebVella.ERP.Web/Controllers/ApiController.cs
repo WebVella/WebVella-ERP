@@ -80,7 +80,7 @@ namespace WebVella.ERP.Web.Controllers
             Guid entityId;
             if (!Guid.TryParse(Id, out entityId))
             {
-                response.Errors.Add(new ErrorModel("Id", Id, "Id parameter is not valid Guid value"));
+                response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
                 return DoResponse(response);
             }
 
