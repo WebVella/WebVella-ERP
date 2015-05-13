@@ -116,12 +116,12 @@
                     };
                     break;
                 case 4:
-                    field.defaultValue = '2000-00-01T00:00:01.000Z';
+                    field.defaultValue = null;
                     field.format = "";
                     field.useCurrentTimeAsDefaultValue = false;
                     break;
                 case 5:
-                    field.defaultValue = '2000-00-01T00:00:01.000Z';
+                    field.defaultValue = null;
                     field.format = "";
                     field.useCurrentTimeAsDefaultValue = false;
                     break;

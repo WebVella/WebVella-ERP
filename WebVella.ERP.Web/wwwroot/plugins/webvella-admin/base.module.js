@@ -19,25 +19,25 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-base', {
-            abstract: true,
-            url: '/admin', //will be added to all children states
-            views: {
+            'abstract': true,
+            'url': '/admin', //will be added to all children states
+            'views': {
                 "rootView": {
-                    controller: 'WebVellaAdminBaseController',
-                    templateUrl: '/plugins/webvella-admin/base.view.html',
-                    controllerAs: 'pluginData'
+                    'controller': 'WebVellaAdminBaseController',
+                    'templateUrl': '/plugins/webvella-admin/base.view.html',
+                    'controllerAs': 'pluginData'
                 }
             },
-            params: {
+            'params': {
                 "redirect": 'false'
             },
-            resolve: {
+            'resolve': {
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
-                pageTitle: function () {
+                'pageTitle': function () {
                     return "Webvella ERP";
                 }
             },
-            data: {
+            'data': {
                 //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
             }
         });
@@ -49,7 +49,7 @@
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaAdmin>base> BEGIN module.run');
-        $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
+        $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
             var item = {
                 "label": "Administration",
                 "stateName": "webvella-admin-entities",
@@ -69,10 +69,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory', '$timeout'];
+    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory'];
 
     /* @ngInject */
-    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory, $timeout) {
+    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory) {
         $log.debug('webvellaAdmin>base> START controller.exec');
         /* jshint validthis:true */
         var adminData = this;
@@ -82,9 +82,9 @@
         ////1. CONSTRUCTOR initialize the factory
         webvellaAdminSidebarFactory.initSidebar();
         ////2. READY hook listener
-        var readySidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-ready", function (event, data) {
+        var readySidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-ready", function() {
             //All actions you want to be done after the "Ready" hook is cast
-        })
+        });
         ////3. UPDATED hook listener
         var updateSidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-updated", function (event, data) {
             adminData.sidebar = data;
@@ -93,7 +93,7 @@
         ////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
         $scope.$on("$destroy", function () {
             readySidebarDestructor();
-            readySidebarDestructor();
+            updateSidebarDestructor();
         });
         ////5. Bootstrap the pluggable element and cast the Ready hook
         //Push the Regular menu items
