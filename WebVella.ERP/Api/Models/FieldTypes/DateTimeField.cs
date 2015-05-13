@@ -32,13 +32,13 @@ namespace WebVella.ERP.Api.Models
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (DateTime?)property.Value;
+                        DefaultValue = Convert.ToDateTime(property.Value);
                         break;
                     case "format":
-                        Format = (string)property.Value;
+                        Format = Convert.ToString(property.Value);
                         break;
                     case "usecurrenttimeasdefaultvalue":
-                        UseCurrentTimeAsDefaultValue = (bool?)property.Value;
+                        UseCurrentTimeAsDefaultValue = Convert.ToBoolean(property.Value);
                         break;
                 }
             }

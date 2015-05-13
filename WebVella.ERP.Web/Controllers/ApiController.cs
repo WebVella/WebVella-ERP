@@ -84,7 +84,7 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.Convert(submitObj)));
+            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.ConvertField(submitObj)));
         }
 
         #endregion

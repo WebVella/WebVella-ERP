@@ -108,7 +108,7 @@ namespace WebVella.ERP.Api.Models
 
             foreach (IStorageField storageField in entity.Fields)
             {
-                Field field = Field.Convert(storageField);                
+                Field field = Field.ConvertField(storageField);                
 
                 Fields.Add(field);
             }

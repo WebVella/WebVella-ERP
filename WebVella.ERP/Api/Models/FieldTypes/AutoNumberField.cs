@@ -22,7 +22,7 @@ namespace WebVella.ERP.Api.Models
         }
 
         public AutoNumberField(Field field) : base(field)
-        {
+        {            
         }
 
         public AutoNumberField(InputField field) : base(field)
@@ -32,13 +32,13 @@ namespace WebVella.ERP.Api.Models
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (decimal?)property.Value;
+                        DefaultValue = Convert.ToDecimal(property.Value);
                         break;
                     case "displayformat":
-                        DisplayFormat = (string)property.Value;
+                        DisplayFormat = Convert.ToString(property.Value);
                         break;
                     case "startingnumber":
-                        StartingNumber = (decimal?)property.Value;
+                        StartingNumber = Convert.ToDecimal(property.Value);
                         break;
                 }
             }

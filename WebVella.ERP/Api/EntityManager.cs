@@ -1047,6 +1047,9 @@ namespace WebVella.ERP
                     return response;
                 }
 
+                if (field.Id == null)
+                    field.Id = Guid.NewGuid();
+
                 Entity entity = new Entity(storageEntity);
 
                 response.Object = field;
@@ -1569,7 +1572,7 @@ namespace WebVella.ERP
                     return response;
                 }
 
-                Field field = Field.Convert(storageField);
+                Field field = Field.ConvertField(storageField);
                 response.Object = field;
             }
             catch (Exception e)

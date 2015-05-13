@@ -26,7 +26,7 @@ namespace WebVella.ERP.Api.Models
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (string)property.Value;
+                        DefaultValue = Convert.ToString(property.Value);
                         break;
                 }
             }

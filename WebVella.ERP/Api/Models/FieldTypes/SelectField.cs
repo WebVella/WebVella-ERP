@@ -25,14 +25,12 @@ namespace WebVella.ERP.Api.Models
 
         public SelectField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
-            Options = (IDictionary<string, string>)field["options"];
             foreach (var property in field.GetProperties())
             {
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (string)property.Value;
+                        DefaultValue = Convert.ToString(property.Value);
                         break;
                     case "options":
                         Options = (IDictionary<string, string>)property.Value;
@@ -56,10 +54,10 @@ namespace WebVella.ERP.Api.Models
         public SelectFieldMeta(Guid entityId, string entityName, SelectField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			Options = field.Options;
+            EntityName = entityName;
+            DefaultValue = field.DefaultValue;
+            Options = field.Options;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }
