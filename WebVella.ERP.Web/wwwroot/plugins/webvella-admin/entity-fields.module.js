@@ -250,10 +250,10 @@
 
 
     //// Modal Controllers
-    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 
     /* @ngInject */
-    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function CreateFieldModalController(contentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
@@ -280,8 +280,6 @@
         modalData.wizard.steps.push(step); // Step 1
         step = angular.copy({ "active": false }, { "completed": false });
         modalData.wizard.steps.push(step); // Step 2
-        step = angular.copy({ "active": false }, { "completed": false });
-        modalData.wizard.steps.push(step); // Step 3
         // Set steps
         modalData.wizard.steps[1].active = true;
         modalData.wizard.selectedType = null;
@@ -297,7 +295,7 @@
         }
         modalData.setActiveStep = function (stepIndex) {
             if (modalData.wizard.steps[stepIndex].completed) {
-                for (var i = 1; i < 4; i++) {
+                for (var i = 1; i < 3; i++) {
                     modalData.wizard.steps[i].active = false;
                 }
                 modalData.wizard.steps[stepIndex].active = true;
@@ -308,12 +306,11 @@
         modalData.completeStep2 = function () {
             modalData.wizard.steps[2].active = false;
             modalData.wizard.steps[2].completed = true;
-            modalData.wizard.steps[3].active = true;
         }
 
 
         modalData.ok = function () {
-            webvellaAdminService.createField(modalData.field,modalData.contentData.entity.id, successCallback, errorCallback)
+            webvellaAdminService.createField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
         };
 
         modalData.cancel = function () {
@@ -327,16 +324,13 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
-            $timeout(function () {
-                $state.go("webvella-admin-entities");
-            }, 0)
+            webvellaRootService.reloadCurrentState($state);
         }
 
         function errorCallback(response) {
-            modalData.hasError = true;
-            modalData.errorMessage = response.message;
-
-
+            var location = $location;
+            //Process the response and generate the validation Messages
+            webvellaRootService.generateValidationMessages(response, modalData, modalData.field, location);
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };

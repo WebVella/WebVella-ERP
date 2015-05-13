@@ -6,15 +6,6 @@ body {
     font-family: 'Roboto', 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
-#wrapper {
-    /*margin: 0 auto;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left:0;
-    right:0;*/
-}
-
 span.divider {
     color: #bdbdbd;
     margin: 0 1em;
@@ -93,6 +84,10 @@ span.divider {
 .vertical-align-middle {
     position: relative;
     top: 50%;
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
 }
 
@@ -138,6 +133,8 @@ span.divider {
             color: #BDBDBD;
             white-space: nowrap;
             overflow: hidden;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
             text-overflow: ellipsis;
         }
 
@@ -689,6 +686,8 @@ span.divider {
     text-transform: uppercase;
     float: left;
     white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     max-width: 200px;
     overflow: hidden;
@@ -872,6 +871,8 @@ span.divider {
         margin: 0;
         white-space: nowrap;
         max-width: 150px;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         overflow: hidden;
     }
@@ -1054,6 +1055,8 @@ span.divider {
         margin: 0;
         white-space: nowrap;
         max-width: 300px;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
         overflow: hidden;
     }
@@ -1117,6 +1120,8 @@ span.divider {
         font-size: 14px;
         overflow: hidden;
         white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
     }
 
@@ -1374,7 +1379,7 @@ span.divider {
 }
 
 /****************************
-    Filter criterias
+    Filter criteria
 *****************************/
 
 #filters > .form-group {
@@ -1519,8 +1524,8 @@ span.divider {
 /* Make clicks pass-through */
 #loading-bar,
 #loading-bar-spinner {
-    pointer-events: none;
     -webkit-pointer-events: none;
+    pointer-events: none;
     -webkit-transition: 200ms linear all;
     -moz-transition: 200ms linear all;
     -o-transition: 200ms linear all;
@@ -1983,13 +1988,14 @@ table .btn-xs.btn-link {
 
     .tabbable.spilled ul {
         width: 179px;
+        background: #555;
         background: rgba(255,255,255,0.2);
         padding: 1em 0 1em 1em;
         border-left: 3px solid #90A4AE;
         border-right: none;
     }
 
-        .tabbable.spilled ul li {
+.tabbable.spilled ul li {
             padding: 2px 0;
         }
 
