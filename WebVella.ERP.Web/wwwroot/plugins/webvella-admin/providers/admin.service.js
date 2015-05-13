@@ -29,16 +29,9 @@
         }
 
         ///////////////////////
-        function createEntity(postObject,successCallback, errorCallback) {
+        function createEntity(postObject, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>createEntity> function called');
-            var postData = {
-                id: postObject.id,
-                name: postObject.name,
-                label: postObject.label,
-                pluralLabel: postObject.pluralLabel,
-                system: postObject.system
-            };
-            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity', data: postData }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////////

@@ -38,7 +38,7 @@
                 }
             },
             resolve: {
-                resolvedCurrentArea: resolveCurrentArea
+                //resolvedCurrentArea: resolveCurrentArea
             },
             data: {
 

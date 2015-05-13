@@ -29,7 +29,7 @@
                 "rootView": {
                     controller: 'WebVellaRootBaseController',
                     controllerAs: 'rootData',
-                    template:"<div ui-view='pluginView'></div>"
+                    template: "<div ui-view='pluginView'></div>"
                     //templateProvider: function ($templateFactory) {
                     //    return $templateFactory.fromUrl('/api/root/get-ui-template/layout-0');
                     //}
@@ -37,13 +37,13 @@
             },
             resolve: {
                 //here you can resolve any application wide data you need. It will be available for all children states
-                currentUser: ['$q','$log',function ($q,$log) {
+                currentUser: ['$q', '$log', function ($q, $log) {
                     var deferred = $q.defer();
                     $log.debug("webvellaRoot>base>config>resolve> user not authenticated")
                     //Simulate not logged user
-                    //deferred.reject('Not logged in');
+                    //deferred.reject('notAuthenticated');
                     //Simulate logged user
-                    deferred.resolve('Logged in');
+                    deferred.resolve('logged');
                     return deferred.promise;
                 }],
                 pageTitle: function () {
@@ -55,7 +55,7 @@
             }
         });
 
-  
+
     };
 
 
@@ -63,20 +63,28 @@
     run.$inject = ['$log', '$rootScope', '$state', '$timeout'];
 
     /* @ngInject */
-    function run($log, $rootScope, $state,$timeout) {
+    function run($log, $rootScope, $state, $timeout) {
         $log.debug('webvellaRoot>base> BEGIN module.run');
 
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
             // Redirect user to our login page
             $log.debug("webvellaRoot>base>module.run> State change error: " + error);
-            $timeout(function () { 
-                $state.go('webvella-root-login');
-            }, 0);
+            switch (error) {
+                case "notAuthenticated":
+                    $timeout(function () {
+                        $state.go('webvella-root-login');
+                    }, 0);
+                    break;
+                default:
+                    alert(error);
+                    break;
+            }
+
         });
 
         $rootScope.$on('$stateNotFound', function () {
             // Redirect user to our login page
-            alert("state not found");
+            $log.error("state not found");
         });
 
         $log.debug('webvellaRoot>base> END module.run');
@@ -87,7 +95,7 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log','$timeout','$state'];
+    controller.$inject = ['$log', '$timeout', '$state'];
 
     /* @ngInject */
     function controller($log, $timeout, $state) {

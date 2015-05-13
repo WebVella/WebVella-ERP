@@ -39,7 +39,8 @@
                 }
             },
             resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta
+                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+                resolvedRolesList: resolveRolesList
             },
             data: {
 
@@ -87,13 +88,36 @@
         return defer.promise;
     }
 
-
-
-    // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal'];
+    // Resolve Roles list /////////////////////////
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal) {
+    function resolveRolesList($q, $log, webvellaRootService) {
+        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaRootService.getEntityRecordsByName("role", successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaAdmin>entities> END state.resolved');
+        return defer.promise;
+    }
+
+    // Controller ///////////////////////////////
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList'];
+
+    /* @ngInject */
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedRolesList) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -646,6 +670,33 @@
   "youtube-play",
   "youtube-square"
         ];
+
+        //Generate roles and checkboxes
+        contentData.entity.roles = [];
+        for (var i = 0; i < resolvedRolesList.entities.length; i++) {
+
+            //Now create the new entity.roles array
+            var role = {};
+            role.id = resolvedRolesList.entities[i].id;
+            role.label = resolvedRolesList.entities[i].label;
+            role.canRead = false;
+            if (contentData.entity.recordPermissions.canRead.indexOf(resolvedRolesList.entities[i].id) > -1) {
+                role.canRead = true;
+            }
+            role.canCreate = false;
+            if (contentData.entity.recordPermissions.canCreate.indexOf(resolvedRolesList.entities[i].id) > -1) {
+                role.canCreate = true;
+            }
+            role.canUpdate = false;
+            if (contentData.entity.recordPermissions.canUpdate.indexOf(resolvedRolesList.entities[i].id) > -1) {
+                role.canUpdate = true;
+            }
+            role.canDelete = false;
+            if (contentData.entity.recordPermissions.canDelete.indexOf(resolvedRolesList.entities[i].id) > -1) {
+                role.canDelete = true;
+            }
+            contentData.entity.roles.push(role);
+        }
 
 
         activate();

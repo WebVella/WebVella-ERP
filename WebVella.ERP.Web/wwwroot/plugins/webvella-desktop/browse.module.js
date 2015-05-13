@@ -29,7 +29,7 @@
                 }
             },
             resolve: {
-
+                resolvedAreasList: resolveAreasList
             },
             data: {}
         });
@@ -52,11 +52,38 @@
     };
 
 
-    // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedSiteMeta', 'webvellaDesktopBrowsenavFactory'];
+    // Resolve Function /////////////////////////
+    resolveAreasList.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedSiteMeta, webvellaDesktopBrowsenavFactory) {
+    function resolveAreasList($q, $log, webvellaRootService) {
+        $log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaRootService.getEntityRecordsByName("area", successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaDesktop>browse> END state.resolved');
+        return defer.promise;
+    }
+
+
+
+    // Controller ///////////////////////////////
+    controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedAreasList', 'webvellaDesktopBrowsenavFactory'];
+
+    /* @ngInject */
+    function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedAreasList, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>browse> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -67,8 +94,8 @@
         webvellaDesktopBrowsenavFactory.initBrowsenav();
         ////2. READY hook listener
         var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
-            for (var i = 0; i < resolvedSiteMeta.areas.length; i++) {
-                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedSiteMeta.areas[i]);
+            for (var i = 0; i < resolvedAreasList.entities.length; i++) {
+                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedAreasList.entities[i]);
                 webvellaDesktopBrowsenavFactory.addItem(menuItem);
             };
         })

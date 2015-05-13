@@ -19,7 +19,7 @@
 
         serviceInstance.registerHookListener = registerHookListener;
         serviceInstance.launchHook = launchHook;
-        serviceInstance.getSiteMeta = getSiteMeta;
+        serviceInstance.getEntityRecordsByName = getEntityRecordsByName;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
         serviceInstance.generateValidationMessages = generateValidationMessages;
@@ -65,9 +65,9 @@
         }
 
         ////////////////////
-        function getSiteMeta(successCallback, errorCallback) {
-            $log.debug('webvellaRoot>providers>root.service>getSiteMeta> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/root/meta' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        function getEntityRecordsByName(entityName,successCallback, errorCallback) {
+            $log.debug('webvellaRoot>providers>root.service>getEntityRecords> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/entity/' + entityName + '/records/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////
@@ -138,27 +138,10 @@
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
-                status = 400;//Bad request
                 errorCallback(data);
             }
             else {
-                //Updating the application siteMetaValue but first sorting 
-                var siteMeta = data.object;
-
-                //Sort areas
-                siteMeta.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-
-                //Sections sort
-                for (var i = 0; i < siteMeta.areas.length; i++) {
-                    siteMeta.areas[i].sections.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-
-                    //Sort entities
-                    for (var j = 0; j < siteMeta.areas[i].sections.length; j++) {
-                        siteMeta.areas[i].sections[j].entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-                    }
-                }
-                data.object = siteMeta;
-                $log.debug('webvellaRoot>providers>root.service>getSiteMeta> result success: get object ');
+                 $log.debug('webvellaRoot>providers>root.service>getSiteMeta> result success: get object ');
                 successCallback(data);
             }
         }

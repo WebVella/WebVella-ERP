@@ -39,7 +39,8 @@
                 }
             },
             resolve: {
-                resolvedEntityMetaList: resolveEntityMetaList
+                resolvedEntityMetaList: resolveEntityMetaList,
+                resolvedRolesList:resolveRolesList
             },
             data: {
 
@@ -48,7 +49,7 @@
     };
 
 
-    // Resolve Function /////////////////////////
+    // Resolve EntityMetaList /////////////////////////
     resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaAdminService'];
 
     /* @ngInject */
@@ -74,12 +75,37 @@
     }
 
 
-
-    // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$modal'];
+    // Resolve Roles list /////////////////////////
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal) {
+    function resolveRolesList($q, $log, webvellaRootService) {
+        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaRootService.getEntityRecordsByName("role", successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaAdmin>entities> END state.resolved');
+        return defer.promise;
+    }
+
+
+    // Controller ///////////////////////////////
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$modal', 'resolvedRolesList'];
+
+    /* @ngInject */
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal, resolvedRolesList) {
         $log.debug('webvellaAdmin>entities> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -87,6 +113,7 @@
         contentData.pageTitle = "Entities | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
         contentData.entities = resolvedEntityMetaList.entities;
+        contentData.roles = resolvedRolesList.entities;
 
         //Create new entity modal
         contentData.openAddEntityModal = function () {
@@ -95,8 +122,12 @@
                 templateUrl: 'createEntityModal.html',
                 controller: 'CreateEntityModalController',
                 controllerAs: "modalData",
-                size: "",
-                resolve: {}
+                size: "lg",
+                resolve: {
+                    contentData: function () {
+                        return contentData;
+                    }
+                }
             });
 
         }
@@ -108,10 +139,10 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location'];
+    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
 
     /* @ngInject */
-    function createEntityController($modalInstance, $log, webvellaAdminService,webvellaRootService, ngToast, $timeout, $state, $location) {
+    function createEntityController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
@@ -120,12 +151,635 @@
             name: "",
             label: "",
             pluralLabel: "",
-            system: false
+            system: false,
+            iconName: 'database',
+            weight: '1.0',
+            recordPermissions: {
+                canRead: [],
+                canCreate: [],
+                canUpdate: [],
+                canDelete: []
+            }
+
         };
+        modalData.roles = contentData.roles;
+        
+        //Processing the roles for generation the checkbox values
+        modalData.entity.roles = [];
+
+        for (var i = 0; i < modalData.roles.length; i++) {
+            //Enable all checkboxes for administrators
+            if (modalData.roles[i].name == "administrator") {
+                modalData.entity.recordPermissions.canRead.push(modalData.roles[i].id);
+                modalData.entity.recordPermissions.canCreate.push(modalData.roles[i].id);
+                modalData.entity.recordPermissions.canUpdate.push(modalData.roles[i].id);
+                modalData.entity.recordPermissions.canDelete.push(modalData.roles[i].id);
+            }
+
+            //Now create the new entity.roles array
+            var role = {};
+            role.id = modalData.roles[i].id;
+            role.label = modalData.roles[i].label;
+            role.canRead = false;
+            if (modalData.entity.recordPermissions.canRead.indexOf(modalData.roles[i].id) > -1) {
+                role.canRead = true;
+            }
+            role.canCreate = false;
+            if (modalData.entity.recordPermissions.canCreate.indexOf(modalData.roles[i].id) > -1) {
+                role.canCreate = true;
+            }
+            role.canUpdate = false;
+            if (modalData.entity.recordPermissions.canUpdate.indexOf(modalData.roles[i].id) > -1) {
+                role.canUpdate = true;
+            }
+            role.canDelete = false;
+            if (modalData.entity.recordPermissions.canDelete.indexOf(modalData.roles[i].id) > -1) {
+                role.canDelete = true;
+            }
+            modalData.entity.roles.push(role);
+        }
+        
+        function removeValueFromArray(array, value) {
+            for (var i = array.length - 1; i >= 0; i--) {
+                if (array[i] === value) {
+                    array.splice(i, 1);
+                    // break;       //<-- Uncomment  if only the first term has to be removed
+                }
+            }
+        }
+
+        modalData.toggleCanRead = function (roleId) {
+            if (modalData.entity.recordPermissions.canRead.indexOf(roleId) > -1) {
+                //Found - should be removed
+                removeValueFromArray(modalData.entity.recordPermissions.canRead, roleId);
+            }
+            else {
+                //Not Found - should be added
+                modalData.entity.recordPermissions.canRead.push(roleId);
+            }
+        }
+
+        modalData.toggleCanCreate = function (roleId) {
+            if (modalData.entity.recordPermissions.canCreate.indexOf(roleId) > -1) {
+                //Found - should be removed
+                removeValueFromArray(modalData.entity.recordPermissions.canCreate, roleId);
+            }
+            else {
+                //Not Found - should be added
+                modalData.entity.recordPermissions.canCreate.push(roleId);
+            }
+        }
+
+        modalData.toggleCanUpdate = function (roleId) {
+            if (modalData.entity.recordPermissions.canUpdate.indexOf(roleId) > -1) {
+                //Found - should be removed
+                removeValueFromArray(modalData.entity.recordPermissions.canUpdate, roleId);
+            }
+            else {
+                //Not Found - should be added
+                modalData.entity.recordPermissions.canUpdate.push(roleId);
+            }
+        }
+
+        modalData.toggleCanDelete = function (roleId) {
+            if (modalData.entity.recordPermissions.canDelete.indexOf(roleId) > -1) {
+                //Found - should be removed
+                removeValueFromArray(modalData.entity.recordPermissions.canDelete, roleId);
+            }
+            else {
+                //Not Found - should be added
+                modalData.entity.recordPermissions.canDelete.push(roleId);
+            }
+        }
+
+        //Awesome font icon names array 
+        modalData.icons = [
+  "adjust",
+  "adn",
+  "align-center",
+  "align-justify",
+  "align-left",
+  "align-right",
+  "ambulance",
+  "anchor",
+  "android",
+  "angellist",
+  "angle-double-down",
+  "angle-double-left",
+  "angle-double-right",
+  "angle-double-up",
+  "angle-down",
+  "angle-left",
+  "angle-right",
+  "angle-up",
+  "apple",
+  "archive",
+  "area-chart",
+  "arrow-circle-down",
+  "arrow-circle-left",
+  "arrow-circle-o-down",
+  "arrow-circle-o-left",
+  "arrow-circle-o-right",
+  "arrow-circle-o-up",
+  "arrow-circle-right",
+  "arrow-circle-up",
+  "arrow-down",
+  "arrow-left",
+  "arrow-right",
+  "arrow-up",
+  "arrows",
+  "arrows-alt",
+  "arrows-h",
+  "arrows-v",
+  "asterisk",
+  "at",
+  "backward",
+  "ban",
+  "bar-chart",
+  "barcode",
+  "bars",
+  "bed",
+  "beer",
+  "behance",
+  "behance-square",
+  "bell",
+  "bell-o",
+  "bell-slash",
+  "bell-slash-o",
+  "bicycle",
+  "binoculars",
+  "birthday-cake",
+  "bitbucket",
+  "bitbucket-square",
+  "bold",
+  "bolt",
+  "bomb",
+  "book",
+  "bookmark",
+  "bookmark-o",
+  "briefcase",
+  "btc",
+  "bug",
+  "building",
+  "building-o",
+  "bullhorn",
+  "bullseye",
+  "bus",
+  "buysellads",
+  "calculator",
+  "calendar",
+  "calendar-o",
+  "camera",
+  "camera-retro",
+  "car",
+  "caret-down",
+  "caret-left",
+  "caret-right",
+  "caret-square-o-down",
+  "caret-square-o-left",
+  "caret-square-o-right",
+  "caret-square-o-up",
+  "caret-up",
+  "cart-arrow-down",
+  "cart-plus",
+  "cc",
+  "cc-amex",
+  "cc-discover",
+  "cc-mastercard",
+  "cc-paypal",
+  "cc-stripe",
+  "cc-visa",
+  "certificate",
+  "chain-broken",
+  "check",
+  "check-circle",
+  "check-circle-o",
+  "check-square",
+  "check-square-o",
+  "chevron-circle-down",
+  "chevron-circle-left",
+  "chevron-circle-right",
+  "chevron-circle-up",
+  "chevron-down",
+  "chevron-left",
+  "chevron-right",
+  "chevron-up",
+  "child",
+  "circle",
+  "circle-o",
+  "circle-o-notch",
+  "circle-thin",
+  "clipboard",
+  "clock-o",
+  "cloud",
+  "cloud-download",
+  "cloud-upload",
+  "code",
+  "code-fork",
+  "codepen",
+  "coffee",
+  "cog",
+  "cogs",
+  "columns",
+  "comment",
+  "comment-o",
+  "comments",
+  "comments-o",
+  "compass",
+  "compress",
+  "connectdevelop",
+  "copyright",
+  "credit-card",
+  "crop",
+  "crosshairs",
+  "css3",
+  "cube",
+  "cubes",
+  "cutlery",
+  "dashcube",
+  "database",
+  "delicious",
+  "desktop",
+  "deviantart",
+  "diamond",
+  "digg",
+  "dot-circle-o",
+  "download",
+  "dribbble",
+  "dropbox",
+  "drupal",
+  "eject",
+  "ellipsis-h",
+  "ellipsis-v",
+  "empire",
+  "envelope",
+  "envelope-o",
+  "envelope-square",
+  "eraser",
+  "eur",
+  "exchange",
+  "exclamation",
+  "exclamation-circle",
+  "exclamation-triangle",
+  "expand",
+  "external-link",
+  "external-link-square",
+  "eye",
+  "eye-slash",
+  "eyedropper",
+  "facebook",
+  "facebook-official",
+  "facebook-square",
+  "fast-backward",
+  "fast-forward",
+  "fax",
+  "female",
+  "fighter-jet",
+  "file",
+  "file-archive-o",
+  "file-audio-o",
+  "file-code-o",
+  "file-excel-o",
+  "file-image-o",
+  "file-o",
+  "file-pdf-o",
+  "file-powerpoint-o",
+  "file-text",
+  "file-text-o",
+  "file-video-o",
+  "file-word-o",
+  "files-o",
+  "film",
+  "filter",
+  "fire",
+  "fire-extinguisher",
+  "flag",
+  "flag-checkered",
+  "flag-o",
+  "flask",
+  "flickr",
+  "floppy-o",
+  "folder",
+  "folder-o",
+  "folder-open",
+  "folder-open-o",
+  "font",
+  "forumbee",
+  "forward",
+  "foursquare",
+  "frown-o",
+  "futbol-o",
+  "gamepad",
+  "gavel",
+  "gbp",
+  "gift",
+  "git",
+  "git-square",
+  "github",
+  "github-alt",
+  "github-square",
+  "glass",
+  "globe",
+  "google",
+  "google-plus",
+  "google-plus-square",
+  "google-wallet",
+  "graduation-cap",
+  "gratipay",
+  "h-square",
+  "hacker-news",
+  "hand-o-down",
+  "hand-o-left",
+  "hand-o-right",
+  "hand-o-up",
+  "hdd-o",
+  "header",
+  "headphones",
+  "heart",
+  "heart-o",
+  "heartbeat",
+  "history",
+  "home",
+  "hospital-o",
+  "html5",
+  "ils",
+  "inbox",
+  "indent",
+  "info",
+  "info-circle",
+  "inr",
+  "instagram",
+  "ioxhost",
+  "italic",
+  "joomla",
+  "jpy",
+  "jsfiddle",
+  "key",
+  "keyboard-o",
+  "krw",
+  "language",
+  "laptop",
+  "lastfm",
+  "lastfm-square",
+  "leaf",
+  "leanpub",
+  "lemon-o",
+  "level-down",
+  "level-up",
+  "life-ring",
+  "lightbulb-o",
+  "line-chart",
+  "link",
+  "linkedin",
+  "linkedin-square",
+  "linux",
+  "list",
+  "list-alt",
+  "list-ol",
+  "list-ul",
+  "location-arrow",
+  "lock",
+  "long-arrow-down",
+  "long-arrow-left",
+  "long-arrow-right",
+  "long-arrow-up",
+  "magic",
+  "magnet",
+  "male",
+  "map-marker",
+  "mars",
+  "mars-double",
+  "mars-stroke",
+  "mars-stroke-h",
+  "mars-stroke-v",
+  "maxcdn",
+  "meanpath",
+  "medium",
+  "medkit",
+  "meh-o",
+  "mercury",
+  "microphone",
+  "microphone-slash",
+  "minus",
+  "minus-circle",
+  "minus-square",
+  "minus-square-o",
+  "mobile",
+  "money",
+  "moon-o",
+  "motorcycle",
+  "music",
+  "neuter",
+  "newspaper-o",
+  "openid",
+  "outdent",
+  "pagelines",
+  "paint-brush",
+  "paper-plane",
+  "paper-plane-o",
+  "paperclip",
+  "paragraph",
+  "pause",
+  "paw",
+  "paypal",
+  "pencil",
+  "pencil-square",
+  "pencil-square-o",
+  "phone",
+  "phone-square",
+  "picture-o",
+  "pie-chart",
+  "pied-piper",
+  "pied-piper-alt",
+  "pinterest",
+  "pinterest-p",
+  "pinterest-square",
+  "plane",
+  "play",
+  "play-circle",
+  "play-circle-o",
+  "plug",
+  "plus",
+  "plus-circle",
+  "plus-square",
+  "plus-square-o",
+  "power-off",
+  "print",
+  "puzzle-piece",
+  "qq",
+  "qrcode",
+  "question",
+  "question-circle",
+  "quote-left",
+  "quote-right",
+  "random",
+  "rebel",
+  "recycle",
+  "reddit",
+  "reddit-square",
+  "refresh",
+  "renren",
+  "repeat",
+  "reply",
+  "reply-all",
+  "retweet",
+  "road",
+  "rocket",
+  "rss",
+  "rss-square",
+  "rub",
+  "scissors",
+  "search",
+  "search-minus",
+  "search-plus",
+  "sellsy",
+  "server",
+  "share",
+  "share-alt",
+  "share-alt-square",
+  "share-square",
+  "share-square-o",
+  "shield",
+  "ship",
+  "shirtsinbulk",
+  "shopping-cart",
+  "sign-in",
+  "sign-out",
+  "signal",
+  "simplybuilt",
+  "sitemap",
+  "skyatlas",
+  "skype",
+  "slack",
+  "sliders",
+  "slideshare",
+  "smile-o",
+  "sort",
+  "sort-alpha-asc",
+  "sort-alpha-desc",
+  "sort-amount-asc",
+  "sort-amount-desc",
+  "sort-asc",
+  "sort-desc",
+  "sort-numeric-asc",
+  "sort-numeric-desc",
+  "soundcloud",
+  "space-shuttle",
+  "spinner",
+  "spoon",
+  "spotify",
+  "square",
+  "square-o",
+  "stack-exchange",
+  "stack-overflow",
+  "star",
+  "star-half",
+  "star-half-o",
+  "star-o",
+  "steam",
+  "steam-square",
+  "step-backward",
+  "step-forward",
+  "stethoscope",
+  "stop",
+  "street-view",
+  "strikethrough",
+  "stumbleupon",
+  "stumbleupon-circle",
+  "subscript",
+  "subway",
+  "suitcase",
+  "sun-o",
+  "superscript",
+  "table",
+  "tablet",
+  "tachometer",
+  "tag",
+  "tags",
+  "tasks",
+  "taxi",
+  "tencent-weibo",
+  "terminal",
+  "text-height",
+  "text-width",
+  "th",
+  "th-large",
+  "th-list",
+  "thumb-tack",
+  "thumbs-down",
+  "thumbs-o-down",
+  "thumbs-o-up",
+  "thumbs-up",
+  "ticket",
+  "times",
+  "times-circle",
+  "times-circle-o",
+  "tint",
+  "toggle-off",
+  "toggle-on",
+  "train",
+  "transgender",
+  "transgender-alt",
+  "trash",
+  "trash-o",
+  "tree",
+  "trello",
+  "trophy",
+  "truck",
+  "try",
+  "tty",
+  "tumblr",
+  "tumblr-square",
+  "twitch",
+  "twitter",
+  "twitter-square",
+  "umbrella",
+  "underline",
+  "undo",
+  "university",
+  "unlock",
+  "unlock-alt",
+  "upload",
+  "usd",
+  "user",
+  "user-md",
+  "user-plus",
+  "user-secret",
+  "user-times",
+  "users",
+  "venus",
+  "venus-double",
+  "venus-mars",
+  "viacoin",
+  "video-camera",
+  "vimeo-square",
+  "vine",
+  "vk",
+  "volume-down",
+  "volume-off",
+  "volume-up",
+  "weibo",
+  "weixin",
+  "whatsapp",
+  "wheelchair",
+  "wifi",
+  "windows",
+  "wordpress",
+  "wrench",
+  "xing",
+  "xing-square",
+  "yahoo",
+  "yelp",
+  "youtube",
+  "youtube-play",
+  "youtube-square"
+        ];
+
+  
+
 
         modalData.ok = function () {
             webvellaAdminService.createEntity(modalData.entity, successCallback, errorCallback)
-            //$modalInstance.close(modalData.entity);
         };
 
         modalData.cancel = function () {

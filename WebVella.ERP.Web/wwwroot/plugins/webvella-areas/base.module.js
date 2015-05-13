@@ -32,8 +32,7 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function () {
                     return "Webvella ERP";
-                },
-                resolvedSiteMeta: resolveSiteMeta
+                }
             },
             data: {
                 //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin

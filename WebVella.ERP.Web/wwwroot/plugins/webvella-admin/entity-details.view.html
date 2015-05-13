@@ -1,14 +1,14 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            
+
         </div>
-        <div class="icon-box">
+        <!--<div class="icon-box">
             <i class="fa fa-database"></i>
-        </div>
+        </div>-->
         <div class="entity-box">
-            <h4 title="Entities">Entities</h4>
-            <a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -36,6 +36,7 @@
 </div>
 <div id="text">
     <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
         <ul class="nav nav-tabs">
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
@@ -49,50 +50,89 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="name">Name</label>
-                            <div class="col-sm-9">
-                                <p class="form-control-static">{{contentData.entity.name}} <i title="Once created, the name can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
-                            </div>
+                        <label class="col-sm-2 control-label" for="name">Name</label>
+                        <div class="col-sm-4">
+                            <span class="not-editable">{{contentData.entity.name}}</span>
                         </div>
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="name">System entity</label>
-                            <div class="col-sm-9">
-                                <p class="form-control-static" ng-show="contentData.entity.system"><i class="go-green fa fa-check"></i> true <i title="Once created, the type can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
-                                <p class="form-control-static" ng-show="!contentData.entity.system"><i class="go-red fa fa-close"></i> false<i title="Once created, the type can no longer be edited" class="go-red fa fa-lock" style="margin-left:5px;"></i></p>
-                            </div>
-                        </div>
+                        <label class="col-sm-2 control-label" for="name">System entity</label>
+                        <div class="col-sm-4">
+                            <span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+                            <span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+</div>
+
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="label">Label</label>
-                            <div class="col-sm-9">
-                                <a href="javascript:void(0)" editable-text="contentData.entity.label">{{ contentData.entity.label || "empty" }}</a>
-                            </div>
+
+                        <label class="col-sm-2 control-label" for="label">Label</label>
+                        <div class="col-sm-4 position-relative">
+                            <a href="javascript:void(0)" editable-text="contentData.entity.label">{{ contentData.entity.label || "empty" }}</a>
                         </div>
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="pluralLabel">Plural Label</label>
-                            <div class="col-sm-9">
-                                <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel">{{ contentData.entity.pluralLabel || "empty" }}</a>
-                            </div>
+                        <label class="col-sm-2 control-label" for="pluralLabel">Plural Label</label>
+                        <div class="col-sm-4 position-relative">
+                            <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel">{{ contentData.entity.pluralLabel || "empty" }}</a>
                         </div>
+
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="iconName">Icon name</label>
-                            <div class="col-sm-9">
-                                <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName"  e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8">{{ contentData.entity.iconName || "empty" }}</a>
-                            </div>
+                        <label class="col-sm-2 control-label" for="iconName">Icon name</label>
+                        <div class="col-sm-4 position-relative">
+                            <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "empty" }}</a>
                         </div>
-                        <div class="col-sm-6">
-                            <label class="col-sm-3 control-label" for="weight">Weight</label>
-                            <div class="col-sm-9">
-                                <a href="javascript:void(0)" editable-text="contentData.entity.weight">{{ contentData.entity.weight || "empty" }}</a>
-                            </div>
+                        <label class="col-sm-2 control-label" for="weight">Weight</label>
+                        <div class="col-sm-4 position-relative">
+                            <a href="javascript:void(0)" editable-text="contentData.entity.weight">{{ contentData.entity.weight || "empty" }}</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <label class="col-sm-2 control-label">Record permissions</label>
+                        <div class="col-sm-7">
+                            <table class="table table-bordered table-permissions">
+                                <thead>
+                                    <tr>
+                                        <th>role name</th>
+                                        <th style="width:80px" class="text-center">create</th>
+                                        <th style="width:80px" class="text-center">read</th>
+                                        <th style="width:80px" class="text-center">update</th>
+                                        <th style="width:80px" class="text-center">delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="role in contentData.entity.roles">
+                                        <td>{{role.label}}</td>
+                                        <td class="text-center position-relative">
+                                            <a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="permission granted">
+                                                <i ng-show="role.canRead" class='fa fa-fw fa-check go-green'></i>
+                                                <i ng-show="!role.canRead" class='fa fa-fw fa-close go-red'></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center position-relative">
+                                            <a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="permission granted">
+                                                <i ng-show="role.canCreate" class='fa fa-fw fa-check go-green'></i>
+                                                <i ng-show="!role.canCreate" class='fa fa-fw fa-close go-red'></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center position-relative">
+                                            <a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="permission granted">
+                                                <i ng-show="role.canUpdate" class='fa fa-fw fa-check go-green'></i>
+                                                <i ng-show="!role.canUpdate" class='fa fa-fw fa-close go-red'></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-center position-relative">
+                                            <a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="permission granted">
+                                                <i ng-show="role.canDelete" class='fa fa-fw fa-check go-green'></i>
+                                                <i ng-show="!role.canDelete" class='fa fa-fw fa-close go-red'></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -103,8 +143,8 @@
 
 </div>
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
-    <a>
-        <i class="fa fa-{{match.model}} fa-fw go-light-blue" style="margin-right:5px;"></i>
+    <a class="typeahead-icon-item">
+        <i class="fa fa-{{match.model}} fa-fw go-gray"></i>
         <span bind-html-unsafe="match.model | typeaheadHighlight:query"></span>
     </a>
 </script>

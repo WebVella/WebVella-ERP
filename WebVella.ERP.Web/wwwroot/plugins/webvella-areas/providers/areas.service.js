@@ -23,7 +23,7 @@
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
             $log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/entities/area/byname/sampleName' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/entity/area/byname/sampleName' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////
