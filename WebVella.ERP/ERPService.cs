@@ -5,6 +5,8 @@ using System.Linq;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
+using Newtonsoft.Json.Linq;
+using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
@@ -320,57 +322,64 @@ namespace WebVella.ERP
 
                 FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, field);
 
-                inputEntity.Label = "GoroTest_edited";
-                inputEntity.PluralLabel = "Goro Tests - edited";
+                //inputEntity.Label = "GoroTest_edited";
+                //inputEntity.PluralLabel = "Goro Tests - edited";
 
-                response = entityManager.UpdateEntity(inputEntity);
+                Expando obj = new Expando();
+                obj["Label"] = "GoroTest_edited";
+                obj["PluralLabel"] = "Goro Tests - edited";
 
-                field.Label = "TextField_edited";
+                response = entityManager.PartialUpdateEntity(entity.Id.Value, obj);
 
-                fieldResponse = entityManager.UpdateField(entity.Id.Value, field);
+                //field.Label = "TextField_edited";
 
-                fieldResponse = entityManager.DeleteField(entity.Id.Value, field.Id.Value);
+                InputField fieldObj = new InputField();
+                fieldObj["Label"] = "TextField_edited";
 
-                List<Field> fields = CreateTestFieldCollection(entity);
-                //FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, fields[0]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[1]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[2]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[3]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[4]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[5]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[6]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[7]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[8]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[9]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[10]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[11]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[12]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[13]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[14]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[15]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[16]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[17]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[18]);
-                fieldResponse = entityManager.CreateField(entity.Id.Value, fields[19]);
+                fieldResponse = entityManager.PartialUpdateField(entity.Id.Value, field.Id.Value, fieldObj);
 
-                EntityResponse entityResponse = entityManager.ReadEntity(entity.Id.Value);
-                entity = entityResponse.Object;
+                //fieldResponse = entityManager.DeleteField(entity.Id.Value, field.Id.Value);
 
-                List<RecordsList> recordsLists = CreateTestViewCollection(entity);
+                //List<Field> fields = CreateTestFieldCollection(entity);
+                ////FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, fields[0]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[1]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[2]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[3]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[4]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[5]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[6]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[7]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[8]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[9]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[10]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[11]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[12]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[13]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[14]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[15]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[16]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[17]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[18]);
+                //fieldResponse = entityManager.CreateField(entity.Id.Value, fields[19]);
 
-                RecordsListResponse recordsListsResponse = entityManager.CreateRecordsList(entity.Id.Value, recordsLists[0]);
+                //EntityResponse entityResponse = entityManager.ReadEntity(entity.Id.Value);
+                //entity = entityResponse.Object;
 
-                recordsLists[0].Label = "Edited View";
+                //List<RecordsList> recordsLists = CreateTestViewCollection(entity);
 
-                recordsListsResponse = entityManager.UpdateRecordsList(entity.Id.Value, recordsLists[0]);
+                //RecordsListResponse recordsListsResponse = entityManager.CreateRecordsList(entity.Id.Value, recordsLists[0]);
 
-                List<RecordView> recordViewList = CreateTestFormCollection(entity);
+                //recordsLists[0].Label = "Edited View";
 
-                RecordViewResponse recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
+                //recordsListsResponse = entityManager.UpdateRecordsList(entity.Id.Value, recordsLists[0]);
 
-                recordViewList[0].Label = "Edited Form";
+                //List<RecordView> recordViewList = CreateTestFormCollection(entity);
 
-                recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
+                //RecordViewResponse recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
+
+                //recordViewList[0].Label = "Edited Form";
+
+                //recordViewResponse = entityManager.CreateRecordView(entity.Id.Value, recordViewList[0]);
 
                 EntityListResponse entityListResponse = entityManager.ReadEntities();
 

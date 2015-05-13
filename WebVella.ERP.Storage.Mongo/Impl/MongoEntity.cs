@@ -30,6 +30,7 @@ namespace WebVella.ERP.Storage.Mongo
             Fields = new List<IStorageField>();
             RecordsLists = new List<IStorageRecordsList>();
             RecordViewList = new List<IStorageRecordView>();
+            RecordPermissions = new MongoRecordPermissions();
         }
     }
 
