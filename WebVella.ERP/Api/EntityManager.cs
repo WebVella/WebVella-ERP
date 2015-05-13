@@ -309,11 +309,6 @@ namespace WebVella.ERP
                 if (!((LookupRelationField)field).RelatedEntityId.HasValue && ((LookupRelationField)field).RelatedEntityId.Value == Guid.Empty)
                     errorList.Add(new ErrorModel("fields.relatedEntityId", null, "Related Entity Id is required!"));
             }
-            else if (field is MasterDetailsRelationshipField)
-            {
-                if (!((MasterDetailsRelationshipField)field).RelatedEntityId.HasValue && ((MasterDetailsRelationshipField)field).RelatedEntityId.Value == Guid.Empty)
-                    errorList.Add(new ErrorModel("fields.masterDetailsRelationshipField", null, "Master Details Relationship Field is required!"));
-            }
             else if (field is MultiLineTextField)
             {
                 if (((MultiLineTextField)field).DefaultValue == null)
