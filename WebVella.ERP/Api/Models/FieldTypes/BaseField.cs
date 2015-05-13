@@ -156,11 +156,6 @@ namespace WebVella.ERP
                 field = new LookupRelationField();
                 ((LookupRelationField)field).RelatedEntityId = ((IStorageLookupRelationField)storageField).RelatedEntityId;
             }
-            else if (storageField is IStorageMasterDetailsRelationshipField)
-            {
-                field = new MasterDetailsRelationshipField();
-                ((MasterDetailsRelationshipField)field).RelatedEntityId = ((IStorageMasterDetailsRelationshipField)storageField).RelatedEntityId;
-            }
             else if (storageField is IStorageMultiLineTextField)
             {
                 field = new MultiLineTextField();
@@ -280,9 +275,6 @@ namespace WebVella.ERP
                     break;
                 case FieldType.LookupRelationField:
                     field = new LookupRelationField(inputField);
-                    break;
-                case FieldType.MasterDetailsRelationshipField:
-                    field = new MasterDetailsRelationshipField(inputField);
                     break;
                 case FieldType.MultiLineTextField:
                     field = new MultiLineTextField(inputField);
