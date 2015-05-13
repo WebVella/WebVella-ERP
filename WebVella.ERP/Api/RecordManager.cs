@@ -240,14 +240,14 @@ namespace WebVella.ERP.Api
                     return ((CurrencyField)field).DefaultValue;
                 else if (field is DateField)
                 {
-                    if (((DateField)field).UseCurrentTimeAsDefaultValue)
+                    if (((DateField)field).UseCurrentTimeAsDefaultValue.Value)
                         return DateTime.UtcNow.Date;
                     else
                         return ((DateField)field).DefaultValue;
                 }
                 else if (field is DateTimeField)
                 {
-                    if (((DateTimeField)field).UseCurrentTimeAsDefaultValue)
+                    if (((DateTimeField)field).UseCurrentTimeAsDefaultValue.Value)
                         return DateTime.UtcNow;
                     else
                         return ((DateTimeField)field).DefaultValue;
