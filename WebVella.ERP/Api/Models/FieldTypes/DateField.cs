@@ -27,9 +27,21 @@ namespace WebVella.ERP.Api.Models
 
         public DateField(InputField field) : base(field)
         {
-            DefaultValue = (DateTime?)field["defaultValue"];
-            Format = (string)field["format"];
-            UseCurrentTimeAsDefaultValue = (bool?)field["useCurrentTimeAsDefaultValue"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (DateTime?)property.Value;
+                        break;
+                    case "format":
+                        Format = (string)property.Value;
+                        break;
+                    case "usecurrenttimeasdefaultvalue":
+                        UseCurrentTimeAsDefaultValue = (bool?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

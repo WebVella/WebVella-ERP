@@ -3,7 +3,7 @@ using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    public class MongoPrimaryKeyField : MongoBaseField, IStoragePrimaryKeyField
+    public class MongoGuidField : MongoBaseField, IStorageGuidField
     {
         public Guid DefaultValue { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace WebVella.ERP.Storage
 {
-    public interface IStoragePrimaryKeyField : IStorageField
+    public interface IStorageGuidField : IStorageField
     {
         Guid DefaultValue { get; set; }
     }

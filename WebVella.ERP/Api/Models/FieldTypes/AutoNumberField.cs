@@ -27,9 +27,21 @@ namespace WebVella.ERP.Api.Models
 
         public AutoNumberField(InputField field) : base(field)
         {
-            DefaultValue = (decimal)field["defaultValue"];
-            DisplayFormat = (string)field["displayFormat"];
-            StartingNumber = (decimal)field["startingNumber"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (decimal?)property.Value;
+                        break;
+                    case "displayformat":
+                        DisplayFormat = (string)property.Value;
+                        break;
+                    case "startingnumber":
+                        StartingNumber = (decimal?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

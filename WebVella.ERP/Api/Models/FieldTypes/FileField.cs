@@ -21,7 +21,15 @@ namespace WebVella.ERP.Api.Models
 
         public FileField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                }
+            }
         }
     }
 

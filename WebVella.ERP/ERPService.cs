@@ -33,7 +33,7 @@ namespace WebVella.ERP
         public void RunTests()
         {
             InitializeSystemEntities();
-            //EntityTests();
+            EntityTests();
         }
 
         public void InitializeSystemEntities()
@@ -52,11 +52,6 @@ namespace WebVella.ERP
                 currentVersion = systemSettings.Version;
             }
 
-
-            Guid systemEntityId = new Guid("A5050AC8-5967-4CE1-95E7-A79B054F9D14");
-            Guid userEntityId = new Guid("B9CEBC3B-6443-452A-8E34-B311A73DCC8B");
-            Guid roleEntityId = new Guid("C4541FEE-FBB6-4661-929E-1724ADEC285A");
-
             EntityManager entityManager = new EntityManager(StorageService);
 
             if (currentVersion < 150508)
@@ -68,7 +63,7 @@ namespace WebVella.ERP
 
 
                 InputEntity roleEntity = new InputEntity();
-                roleEntity.Id = roleEntityId;
+                roleEntity.Id = SystemIds.RoleEntityId;
                 roleEntity.Name = "role";
                 roleEntity.Label = "Role";
                 roleEntity.PluralLabel = "Roles";
@@ -121,7 +116,7 @@ namespace WebVella.ERP
 
 
                 InputEntity userEntity = new InputEntity();
-                userEntity.Id = userEntityId;
+                userEntity.Id = SystemIds.UserEntityId;
                 userEntity.Name = "user";
                 userEntity.Label = "User";
                 userEntity.PluralLabel = "Users";
@@ -228,6 +223,7 @@ namespace WebVella.ERP
                 lastLoggedIn.DefaultValue = null;
 
                 lastLoggedIn.Format = "MM/dd/YYYY";
+                lastLoggedIn.UseCurrentTimeAsDefaultValue = true;
 
                 fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn);
 
@@ -288,15 +284,18 @@ namespace WebVella.ERP
             InputEntity inputEntity = new InputEntity();
             //entity.Id = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");
             inputEntity.Id = Guid.NewGuid();
-            inputEntity.Name = "GoroTest";
+            inputEntity.Name = "goro_test";
             inputEntity.Label = "Goro Test";
             inputEntity.PluralLabel = "Goro Tests";
             inputEntity.System = true;
+
+            List<Guid> allowedRoles = new List<Guid>();
+            allowedRoles.Add(new Guid("F42EBA3B-6433-752B-6C34-B322A7B4CE7D"));
             inputEntity.RecordPermissions = new RecordPermissions();
-            inputEntity.RecordPermissions.CanRead = new List<Guid> { };
-            inputEntity.RecordPermissions.CanCreate = new List<Guid> { };
-            inputEntity.RecordPermissions.CanUpdate = new List<Guid> { };
-            inputEntity.RecordPermissions.CanDelete = new List<Guid> { };
+            inputEntity.RecordPermissions.CanRead = allowedRoles;
+            inputEntity.RecordPermissions.CanCreate = allowedRoles;
+            inputEntity.RecordPermissions.CanUpdate = allowedRoles;
+            inputEntity.RecordPermissions.CanDelete = allowedRoles;
 
             try
             {
@@ -306,7 +305,7 @@ namespace WebVella.ERP
 
                 TextField field = new TextField();
                 field.Id = Guid.NewGuid();
-                field.Name = "TextField";
+                field.Name = "text_field";
                 field.Label = "Text field";
                 field.PlaceholderText = "Text field placeholder text";
                 field.Description = "Text field description";
@@ -586,25 +585,8 @@ namespace WebVella.ERP
             imageField.Auditable = true;
             imageField.System = true;
             imageField.DefaultValue = "";
+
             fields.Add(imageField);
-
-            LookupRelationField lookupRelationField = new LookupRelationField();
-
-            lookupRelationField.Id = Guid.NewGuid();
-            lookupRelationField.Name = "LookupRelationField";
-            lookupRelationField.Label = "LookupRelation field";
-            lookupRelationField.PlaceholderText = "LookupRelation field placeholder text";
-            lookupRelationField.Description = "LookupRelation field description";
-            lookupRelationField.HelpText = "LookupRelation field help text";
-            lookupRelationField.Required = true;
-            lookupRelationField.Unique = true;
-            lookupRelationField.Searchable = true;
-            lookupRelationField.Auditable = true;
-            lookupRelationField.System = true;
-
-            lookupRelationField.RelatedEntityId = Guid.Empty;
-
-            fields.Add(lookupRelationField);
 
             MultiLineTextField multiLineTextField = new MultiLineTextField();
 
@@ -733,7 +715,7 @@ namespace WebVella.ERP
 
             fields.Add(phoneField);
 
-            PrimaryKeyField primaryKeyField = new PrimaryKeyField();
+            GuidField primaryKeyField = new GuidField();
 
             primaryKeyField.Id = Guid.NewGuid();
             primaryKeyField.Name = "PrimaryKeyField";

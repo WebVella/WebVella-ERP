@@ -27,9 +27,21 @@ namespace WebVella.ERP.Api.Models
 
         public PhoneField(InputField field) : base(field)
         {
-            DefaultValue = (string)field["defaultValue"];
-            Format = (string)field["format"];
-            MaxLength = (int?)field["maxLength"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (string)property.Value;
+                        break;
+                    case "format":
+                        Format = (string)property.Value;
+                        break;
+                    case "MaxLength":
+                        MaxLength = (int?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

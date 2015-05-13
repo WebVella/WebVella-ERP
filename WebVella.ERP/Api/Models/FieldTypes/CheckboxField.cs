@@ -21,7 +21,15 @@ namespace WebVella.ERP.Api.Models
 
         public CheckboxField(InputField field) : base(field)
         {
-            DefaultValue = (bool?)field["defaultValue"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "defaultvalue":
+                        DefaultValue = (bool?)property.Value;
+                        break;
+                }
+            }
         }
     }
 

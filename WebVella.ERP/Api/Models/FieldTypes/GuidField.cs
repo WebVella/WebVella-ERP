@@ -1,46 +1,39 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-	public class MultiSelectField : Field
-	{
+    public class GuidField : Field
+    {
         [JsonProperty(PropertyName = "fieldType")]
-        public static FieldType FieldType { get { return FieldType.MultiSelectField; } }
+        public static FieldType FieldType { get { return FieldType.GuidField; } }
 
         [JsonProperty(PropertyName = "defaultValue")]
-        public IEnumerable<string> DefaultValue { get; set; }
+        public Guid? DefaultValue { get; set; }
 
-        [JsonProperty(PropertyName = "options")]
-        public IDictionary<string, string> Options { get; set; }
-
-        public MultiSelectField()
+        public GuidField()
         {
         }
 
-        public MultiSelectField(Field field) : base(field)
+        public GuidField(Field field) : base(field)
         {
         }
 
-        public MultiSelectField(InputField field) : base(field)
+        public GuidField(InputField field) : base(field)
         {
             foreach (var property in field.GetProperties())
             {
                 switch (property.Key.ToLower())
                 {
                     case "defaultvalue":
-                        DefaultValue = (IEnumerable<string>)property.Value;
-                        break;
-                    case "options":
-                        Options = (IDictionary<string, string>)property.Value;
+                        DefaultValue = (Guid?)property.Value;
                         break;
                 }
             }
         }
     }
 
-	public class MultiSelectFieldMeta : MultiSelectField, IFieldMeta
+    public class PrimaryKeyFieldMeta : GuidField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -51,12 +44,11 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "parentFieldName")]
         public string ParentFieldName { get; set; }
 
-        public MultiSelectFieldMeta(Guid entityId, string entityName, MultiSelectField field, string parentFieldName = null) : base(field)
+        public PrimaryKeyFieldMeta(Guid entityId, string entityName, GuidField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
 			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
-			Options = field.Options;
             ParentFieldName = parentFieldName;
         }
 	}

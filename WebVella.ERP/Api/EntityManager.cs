@@ -155,7 +155,7 @@ namespace WebVella.ERP
             {
                 errorList.AddRange(ValidateField(entity, field, false));
 
-                if (field is PrimaryKeyField)
+                if (field is GuidField)
                 {
                     primaryFieldCount++;
                 }
@@ -175,46 +175,46 @@ namespace WebVella.ERP
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             if (field.Id == Guid.Empty)
-                errorList.Add(new ErrorModel("fields.id", null, "Id is required!"));
+                errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
             if (checkId)
             {
                 int fieldSameIdCount = entity.Fields.Where(f => f.Id == field.Id).Count();
 
                 if (fieldSameIdCount > 1)
-                    errorList.Add(new ErrorModel("fields.id", null, "There are multiple fields with same Id!"));
+                    errorList.Add(new ErrorModel("id", null, "There are multiple fields with same Id!"));
 
                 int fieldSameNameCount = entity.Fields.Where(f => f.Id == field.Id).Count();
 
                 if (fieldSameNameCount > 1)
-                    errorList.Add(new ErrorModel("fields.name", null, "There are multiple fields with same Name!"));
+                    errorList.Add(new ErrorModel("name", null, "There are multiple fields with same Name!"));
             }
 
             if (string.IsNullOrWhiteSpace(field.Name))
-                errorList.Add(new ErrorModel("fields.name", field.Name, "Name is required!"));
+                errorList.Add(new ErrorModel("name", field.Name, "Name is required!"));
             else
             {
                 if (field.Name.Length < 2)
-                    errorList.Add(new ErrorModel("fields.name", field.Name, "The Name must be at least 2 characters long!"));
+                    errorList.Add(new ErrorModel("name", field.Name, "The Name must be at least 2 characters long!"));
 
                 if (field.Name.Length > 30)
-                    errorList.Add(new ErrorModel("fields.name", field.Name, "The length of Name must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("name", field.Name, "The length of Name must be less than 30 characters!"));
 
                 string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 
                 Match match = Regex.Match(field.Name, pattern);
                 if (!match.Success || match.Value != field.Name.Trim())
-                    errorList.Add(new ErrorModel("fields.name", field.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                    errorList.Add(new ErrorModel("name", field.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
 
             }
 
             if (string.IsNullOrWhiteSpace(field.Label))
-                errorList.Add(new ErrorModel("fields.label", field.Label, "Label is required!"));
+                errorList.Add(new ErrorModel("label", field.Label, "Label is required!"));
             else
             {
                 //TODO check if we need this validation
                 if (field.Label.Length > 30)
-                    errorList.Add(new ErrorModel("fields.label", field.Label, "The length of Label must be less than 30 characters!"));
+                    errorList.Add(new ErrorModel("label", field.Label, "The length of Label must be less than 30 characters!"));
                 /*
                 string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*"";
 
@@ -225,34 +225,34 @@ namespace WebVella.ERP
 
             if (field is AutoNumberField)
             {
-                if (!((AutoNumberField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && !((AutoNumberField)field).DefaultValue.HasValue)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((AutoNumberField)field).StartingNumber.HasValue)
-                    errorList.Add(new ErrorModel("fields.startingNumber", null, "Starting Number is required!"));
+                    errorList.Add(new ErrorModel("startingNumber", null, "Starting Number is required!"));
 
                 //TODO:parse DisplayFormat field
             }
             else if (field is CheckboxField)
             {
-                if (!((CheckboxField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && !((CheckboxField)field).DefaultValue.HasValue)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
             else if (field is CurrencyField)
             {
-                if (!((CurrencyField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && !((CurrencyField)field).DefaultValue.HasValue)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((CurrencyField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.minValue", null, "Min Value is required!"));
+                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
                 if (!((CurrencyField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxValue", null, "Max Value is required!"));
+                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
                 if (((CurrencyField)field).MinValue.HasValue && ((CurrencyField)field).MaxValue.HasValue)
                 {
                     if (((CurrencyField)field).MinValue.Value >= ((CurrencyField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("fields.MinValue", null, "Min Value must be less than Max Value!"));
+                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 }
             }
             else if (field is DateField)
@@ -273,16 +273,16 @@ namespace WebVella.ERP
             }
             else if (field is EmailField)
             {
-                if (((EmailField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((EmailField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((EmailField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
             else if (field is FileField)
             {
-                if (((FileField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((FileField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
             //else if (field is FormulaField)
             //{
@@ -298,132 +298,130 @@ namespace WebVella.ERP
             //}
             else if (field is HtmlField)
             {
-                if ((((HtmlField)field).DefaultValue) == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((HtmlField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
             else if (field is ImageField)
             {
-                if (((ImageField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
-            }
-            else if (field is LookupRelationField)
-            {
-                if (!((LookupRelationField)field).RelatedEntityId.HasValue && ((LookupRelationField)field).RelatedEntityId.Value == Guid.Empty)
-                    errorList.Add(new ErrorModel("fields.relatedEntityId", null, "Related Entity Id is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((ImageField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
             else if (field is MultiLineTextField)
             {
-                if (((MultiLineTextField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((MultiLineTextField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((MultiLineTextField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
                 if (!((MultiLineTextField)field).VisibleLineNumber.HasValue)
-                    errorList.Add(new ErrorModel("fields.visibleLineNumber", null, "Visible Line Number is required!"));
+                    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number is required!"));
 
                 if (((MultiLineTextField)field).VisibleLineNumber.HasValue && ((MultiLineTextField)field).VisibleLineNumber.Value > 20)
-                    errorList.Add(new ErrorModel("fields.visibleLineNumber", null, "Visible Line Number cannot be greater than 20!"));
+                    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number cannot be greater than 20!"));
             }
             else if (field is MultiSelectField)
             {
+                if (field.Required.HasValue && field.Required.Value && 
+                    (((MultiSelectField)field).DefaultValue == null || ((MultiSelectField)field).DefaultValue.Count() == 0))
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
                 if (((MultiSelectField)field).Options != null)
                 {
                     if (((MultiSelectField)field).Options.Count == 0)
-                        errorList.Add(new ErrorModel("fields.options", null, "Options must contains at least one item!"));
+                        errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
                 }
                 else
-                    errorList.Add(new ErrorModel("fields.options", null, "Options is required!"));
+                    errorList.Add(new ErrorModel("options", null, "Options is required!"));
             }
             else if (field is NumberField)
             {
-                if (!((NumberField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && !((NumberField)field).DefaultValue.HasValue)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((NumberField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.minValue", null, "Min Value is required!"));
+                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
                 if (!((NumberField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxValue", null, "Max Value is required!"));
+                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
                 if (((NumberField)field).MinValue.HasValue && ((NumberField)field).MaxValue.HasValue)
                 {
                     if (((NumberField)field).MinValue.Value >= ((NumberField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("fields.MinValue", null, "Min Value must be less than Max Value!"));
+                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 }
 
                 if (!((NumberField)field).DecimalPlaces.HasValue)
-                    errorList.Add(new ErrorModel("fields.decimalPlaces", null, "Decimal Places is required!"));
+                    errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
             else if (field is PasswordField)
             {
                 if (!((PasswordField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
                 if (!((PasswordField)field).MaskCharacter.HasValue)
-                    errorList.Add(new ErrorModel("fields.maskCharacter", null, "Mask Character is required!"));
+                    errorList.Add(new ErrorModel("maskCharacter", null, "Mask Character is required!"));
             }
             else if (field is PercentField)
             {
-                if (!((PercentField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && !((PercentField)field).DefaultValue.HasValue)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((PercentField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.minValue", null, "Min Value is required!"));
+                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
                 if (!((PercentField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxValue", null, "Max Value is required!"));
+                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
                 if (((PercentField)field).MinValue.HasValue && ((PercentField)field).MaxValue.HasValue)
                 {
                     if (((PercentField)field).MinValue.Value >= ((PercentField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("fields.MinValue", null, "Min Value must be less than Max Value!"));
+                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 }
 
                 if (!((PercentField)field).DecimalPlaces.HasValue)
-                    errorList.Add(new ErrorModel("fields.decimalPlaces", null, "Decimal Places is required!"));
+                    errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
             else if (field is PhoneField)
             {
-                if (((PhoneField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((PhoneField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((PhoneField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
                 //TODO: parse formula text and check if it is valid
             }
             else if (field is SelectField)
             {
-                if (string.IsNullOrWhiteSpace(((SelectField)field).DefaultValue))
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && string.IsNullOrWhiteSpace(((SelectField)field).DefaultValue))
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (((SelectField)field).Options != null)
                 {
                     if (((SelectField)field).Options.Count == 0)
-                        errorList.Add(new ErrorModel("fields.options", null, "Options must contains at least one item!"));
+                        errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
                 }
                 else
-                    errorList.Add(new ErrorModel("fields.options", null, "Options is required!"));
+                    errorList.Add(new ErrorModel("options", null, "Options is required!"));
             }
             else if (field is TextField)
             {
-                if (((TextField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((TextField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((TextField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
             else if (field is UrlField)
             {
-                if (((UrlField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
+                if (field.Required.HasValue && field.Required.Value && ((UrlField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 if (!((UrlField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("fields.maxLength", null, "Max Length is required!"));
+                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
                 if (!((UrlField)field).OpenTargetInNewWindow.HasValue)
-                    errorList.Add(new ErrorModel("fields.openTargetInNewWindow", null, "Open Target In New Window is required!"));
+                    errorList.Add(new ErrorModel("openTargetInNewWindow", null, "Open Target In New Window is required!"));
             }
 
             return errorList;
@@ -787,14 +785,14 @@ namespace WebVella.ERP
 
                 foreach (var property in inputEntity.GetProperties())
                 {
-                    switch (property.Key)
+                    switch (property.Key.ToLower())
                     {
                         case "label":
                             {
                                 entity.Label = (string)property.Value;
                             }
                             break;
-                        case "pluralLabel":
+                        case "plurallabel":
                             {
                                 entity.PluralLabel = (string)property.Value;
                             }
@@ -804,7 +802,7 @@ namespace WebVella.ERP
                                 entity.System = (bool)property.Value;
                             }
                             break;
-                        case "iconName":
+                        case "iconname":
                             {
                                 entity.IconName = (string)property.Value;
                             }
@@ -814,7 +812,7 @@ namespace WebVella.ERP
                                 entity.Weight = (decimal)property.Value;
                             }
                             break;
-                        case "recordPermissions":
+                        case "recordpermissions":
                             {
                                 entity.RecordPermissions = (RecordPermissions)property.Value;
                             }
@@ -1215,7 +1213,7 @@ namespace WebVella.ERP
                     if (((CheckboxField)field).DefaultValue != null)
                         ((CheckboxField)updatedField).DefaultValue = ((CheckboxField)field).DefaultValue;
                 }
-                else if (field is CurrencyField)
+                else if (updatedField is CurrencyField)
                 {
                     field = new CurrencyField(inputField);
                     if (((CurrencyField)field).DefaultValue != null)
@@ -1227,7 +1225,7 @@ namespace WebVella.ERP
                     if (((CurrencyField)field).Currency != null)
                         ((CurrencyField)updatedField).Currency = ((CurrencyField)field).Currency;
                 }
-                else if (field is DateField)
+                else if (updatedField is DateField)
                 {
                     field = new DateField(inputField);
                     if (((DateField)field).DefaultValue != null)
@@ -1237,7 +1235,7 @@ namespace WebVella.ERP
                     if (((DateField)field).UseCurrentTimeAsDefaultValue != null)
                         ((DateField)updatedField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue;
                 }
-                else if (field is DateTimeField)
+                else if (updatedField is DateTimeField)
                 {
                     field = new DateTimeField(inputField);
                     if (((DateTimeField)field).DefaultValue != null)
@@ -1247,7 +1245,7 @@ namespace WebVella.ERP
                     if (((DateTimeField)field).UseCurrentTimeAsDefaultValue != null)
                         ((DateTimeField)updatedField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue;
                 }
-                else if (field is EmailField)
+                else if (updatedField is EmailField)
                 {
                     field = new EmailField(inputField);
                     if (((EmailField)field).DefaultValue != null)
@@ -1255,31 +1253,25 @@ namespace WebVella.ERP
                     if (((EmailField)field).MaxLength != null)
                         ((EmailField)updatedField).MaxLength = ((EmailField)field).MaxLength;
                 }
-                else if (field is FileField)
+                else if (updatedField is FileField)
                 {
                     field = new FileField(inputField);
                     if (((FileField)field).DefaultValue != null)
                         ((FileField)updatedField).DefaultValue = ((FileField)field).DefaultValue;
                 }
-                else if (field is HtmlField)
+                else if (updatedField is HtmlField)
                 {
                     field = new HtmlField(inputField);
                     if (((HtmlField)field).DefaultValue != null)
                         ((HtmlField)updatedField).DefaultValue = ((HtmlField)field).DefaultValue;
                 }
-                else if (field is ImageField)
+                else if (updatedField is ImageField)
                 {
                     field = new ImageField(inputField);
                     if (((ImageField)field).DefaultValue != null)
                         ((ImageField)updatedField).DefaultValue = ((ImageField)field).DefaultValue;
                 }
-                else if (field is LookupRelationField)
-                {
-                    field = new LookupRelationField(inputField);
-                    if (((LookupRelationField)field).RelatedEntityId != null)
-                        ((LookupRelationField)updatedField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId;
-                }
-                else if (field is MultiLineTextField)
+                else if (updatedField is MultiLineTextField)
                 {
                     field = new MultiLineTextField(inputField);
                     if (((MultiLineTextField)field).DefaultValue != null)
@@ -1289,7 +1281,7 @@ namespace WebVella.ERP
                     if (((MultiLineTextField)field).VisibleLineNumber != null)
                         ((MultiLineTextField)updatedField).VisibleLineNumber = ((MultiLineTextField)field).VisibleLineNumber;
                 }
-                else if (field is MultiSelectField)
+                else if (updatedField is MultiSelectField)
                 {
                     field = new MultiSelectField(inputField);
                     if (((MultiSelectField)field).DefaultValue != null)
@@ -1297,7 +1289,7 @@ namespace WebVella.ERP
                     if (((MultiSelectField)field).Options != null)
                         ((MultiSelectField)updatedField).Options = ((MultiSelectField)field).Options;
                 }
-                else if (field is NumberField)
+                else if (updatedField is NumberField)
                 {
                     field = new NumberField(inputField);
                     if (((NumberField)field).DefaultValue != null)
@@ -1309,7 +1301,7 @@ namespace WebVella.ERP
                     if (((NumberField)field).DecimalPlaces != null)
                         ((NumberField)updatedField).DecimalPlaces = ((NumberField)field).DecimalPlaces;
                 }
-                else if (field is PasswordField)
+                else if (updatedField is PasswordField)
                 {
                     field = new PasswordField(inputField);
                     if (((PasswordField)field).MaxLength != null)
@@ -1321,7 +1313,7 @@ namespace WebVella.ERP
                     if (((PasswordField)field).MaskCharacter != null)
                         ((PasswordField)updatedField).MaskCharacter = ((PasswordField)field).MaskCharacter;
                 }
-                else if (field is PercentField)
+                else if (updatedField is PercentField)
                 {
                     field = new PercentField(inputField);
                     if (((PercentField)field).DefaultValue != null)
@@ -1343,13 +1335,13 @@ namespace WebVella.ERP
                     if (((PhoneField)field).MaxLength != null)
                         ((PhoneField)updatedField).MaxLength = ((PhoneField)field).MaxLength;
                 }
-                else if (field is PrimaryKeyField)
+                else if (updatedField is GuidField)
                 {
-                    field = new PrimaryKeyField(inputField);
-                    if (((PrimaryKeyField)field).DefaultValue != null)
-                        ((PrimaryKeyField)updatedField).DefaultValue = ((PrimaryKeyField)field).DefaultValue;
+                    field = new GuidField(inputField);
+                    if (((GuidField)field).DefaultValue != null)
+                        ((GuidField)updatedField).DefaultValue = ((GuidField)field).DefaultValue;
                 }
-                else if (field is SelectField)
+                else if (updatedField is SelectField)
                 {
                     field = new SelectField(inputField);
                     if (((SelectField)field).DefaultValue != null)
@@ -1357,7 +1349,7 @@ namespace WebVella.ERP
                     if (((SelectField)field).Options != null)
                         ((SelectField)updatedField).Options = ((SelectField)field).Options;
                 }
-                else if (field is TextField)
+                else if (updatedField is TextField)
                 {
                     field = new TextField(inputField);
                     if (((TextField)field).DefaultValue != null)
@@ -1365,7 +1357,7 @@ namespace WebVella.ERP
                     if (((TextField)field).MaxLength != null)
                         ((TextField)updatedField).MaxLength = ((TextField)field).MaxLength;
                 }
-                else if (field is UrlField)
+                else if (updatedField is UrlField)
                 {
                     field = new UrlField(inputField);
                     if (((UrlField)field).DefaultValue != null)
@@ -2197,7 +2189,7 @@ namespace WebVella.ERP
         {
             List<Field> fields = new List<Field>();
 
-            PrimaryKeyField primaryKeyField = new PrimaryKeyField();
+            GuidField primaryKeyField = new GuidField();
 
             primaryKeyField.Id = Guid.NewGuid();
             primaryKeyField.Name = "id";
@@ -2214,7 +2206,7 @@ namespace WebVella.ERP
 
             fields.Add(primaryKeyField);
 
-            LookupRelationField createdBy = new LookupRelationField();
+            GuidField createdBy = new GuidField();
 
             createdBy.Id = Guid.NewGuid();
             createdBy.Name = "created_by";
@@ -2227,12 +2219,11 @@ namespace WebVella.ERP
             createdBy.Searchable = false;
             createdBy.Auditable = false;
             createdBy.System = true;
-
-            createdBy.RelatedEntityId = Guid.Empty; //User entity id must be set here
+            createdBy.DefaultValue = Guid.Empty;
 
             fields.Add(createdBy);
 
-            LookupRelationField lastModifiedBy = new LookupRelationField();
+            GuidField lastModifiedBy = new GuidField();
 
             lastModifiedBy.Id = Guid.NewGuid();
             lastModifiedBy.Name = "last_modified_by";
@@ -2245,8 +2236,7 @@ namespace WebVella.ERP
             lastModifiedBy.Searchable = false;
             lastModifiedBy.Auditable = false;
             lastModifiedBy.System = true;
-
-            lastModifiedBy.RelatedEntityId = Guid.Empty; //User entity id must be set here
+            lastModifiedBy.DefaultValue = Guid.Empty;
 
             fields.Add(lastModifiedBy);
 

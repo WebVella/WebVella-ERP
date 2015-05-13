@@ -34,6 +34,24 @@ namespace WebVella.ERP.Api.Models
             Encrypted = (bool?)field["encrypted"];
             MaskType = (PasswordFieldMaskTypes)field["maskType"];
             MaskCharacter = (char?)field["maskCharacter"];
+            foreach (var property in field.GetProperties())
+            {
+                switch (property.Key.ToLower())
+                {
+                    case "maxlength":
+                        MaxLength = (int?)property.Value;
+                        break;
+                    case "encrypted":
+                        Encrypted = (bool?)property.Value;
+                        break;
+                    case "masktype":
+                        MaskType = (PasswordFieldMaskTypes)property.Value;
+                        break;
+                    case "maskcharacter":
+                        MaskCharacter = (char?)property.Value;
+                        break;
+                }
+            }
         }
     }
 
