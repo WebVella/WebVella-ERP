@@ -76,19 +76,16 @@
                     <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || modalData.nameError}">
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="modalData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
-                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" minlength="2">
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
                         <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || modalData.nameError">
                             <small class="error" ng-show="createEntity.name.$error.required && !modalData.nameError">
-                                Your name is required.
+                                required field
                             </small>
                             <small class="error" ng-show="createEntity.name.$error.pattern">
-                                Name can only contains lowercase alphanumeric characters or underscore. It must begin with a letter!
+                                only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
                             </small>
-                            <small class="error" ng-show="signup_form.name.$error.minlength">
-                                The name is required to be at least 2 characters
-                            </small>
-                            <small class="error" ng-show="signup_form.name.$error.maxlength">
-                                The name cannot be longer than 50 characters
+                            <small class="error" ng-show="createEntity.name.$error.maxlength">
+                                must be less than 50 chars
                             </small>
                             <small class="error" ng-show="modalData.nameError">
                                 {{modalData.nameMessage}}
@@ -102,7 +99,7 @@
                         <div class="checkbox">
                             <label>
                                 <input ng-model="modalData.entity.system" type="checkbox" id="entitySystemStatus" value="true">
-                                this is system entity <span class="go-grey">(could not be deleted later)</span>
+                                this is a system entity <span class="go-grey">(deletion is locked)</span>
                             </label>
                         </div>
                     </div>

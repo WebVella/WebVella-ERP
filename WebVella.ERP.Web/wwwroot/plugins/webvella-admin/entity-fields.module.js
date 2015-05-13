@@ -109,43 +109,11 @@
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
         });
 
-        //Create new entity modal
-        contentData.createFieldModal = function () {
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: 'createFieldModal.html',
-                controller: 'CreateFieldModalController',
-                controllerAs: "modalData",
-                size: "lg",
-                resolve: {
-                    contentData: function () { return contentData; }
-                }
-            });
-
-        }
-
-        
-        activate();
-        $log.debug('webvellaAdmin>entity-details> END controller.exec');
-        function activate() { }
-    }
-
-
-    //// Modal Controllers
-    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
-
-    /* @ngInject */
-    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
-        /* jshint validthis:true */
-        var modalData = this;
-        modalData.contentData = contentData;
-
-        modalData.fieldTypes = [
+        contentData.fieldTypes = [
             {
                 "id": 1,
                 "name": "AutoNumberField",
-                "label": "Auto increment",
+                "label": "Auto increment number",
                 "description": "If you need a automatically incremented number with each new record, this is the field you need. You can customize the display format also."
             },
             {
@@ -198,75 +166,109 @@
             },
             {
                 "id": 10,
-                "name": "LookupRelationField",
-                "label": "One to one relation",
-                "description": "Lookup field that creates a relation between this object and another one. The other object's records will be represented with a field of your choice."
-            },
-            {
-                "id": 11,
                 "name": "MultiLineTextField",
                 "label": "Textarea",
                 "description": "A textarea for plain text input. Will be cleaned and stripped from any web unsafe content"
             },
             {
-                "id": 12,
+                "id": 11,
                 "name": "MultiSelectField",
                 "label": "Multiple select",
                 "description": "Multiple values can be selected from a provided list"
             },
             {
-                "id": 13,
+                "id": 12,
                 "name": "NumberField",
                 "label": "Number",
                 "description": "Only numbers are allowed. Leading zeros will be stripped."
             },
             {
-                "id": 14,
+                "id": 13,
                 "name": "PasswordField",
                 "label": "Password",
                 "description": "This field is suitable for submitting passwords or other data that needs to stay encrypted in the database"
             },
             {
-                "id": 15,
+                "id": 14,
                 "name": "PercentField",
                 "label": "Percent",
                 "description": "This will automatically present any number you enter as a percent value"
             },
             {
-                "id": 16,
+                "id": 15,
                 "name": "PhoneField",
                 "label": "Phone",
                 "description": "Will allow only valid phone numbers to be submitted"
             },
             {
-                "id": 17,
-                "name": "PrimaryKeyField",
-                "label": "Primary Key",
-                "description": "Very important field for any entity to entity relation. It will generate an unique key for each entity record, which can serve as identification."
+                "id": 16,
+                "name": "GuidField",
+                "label": "Unique identifier",
+                "description": "Very important field for any entity to entity relation and required by it"
             },
             {
-                "id": 18,
+                "id": 17,
                 "name": "SelectField",
                 "label": "Dropdown",
                 "description": "One value can be selected from a provided list"
             },
             {
-                "id": 19,
+                "id": 18,
                 "name": "TextField",
                 "label": "Text",
                 "description": "A simple text field. One of the most needed field nevertheless"
             },
             {
-                "id": 20,
+                "id": 19,
                 "name": "UrlField",
                 "label": "URL",
                 "description": "This field will validate local and static URLs. Will present them accordingly"
-            }    
+            }
         ];
+
+
+        //Create new entity modal
+        contentData.createFieldModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'createFieldModal.html',
+                controller: 'CreateFieldModalController',
+                controllerAs: "modalData",
+                size: "lg",
+                resolve: {
+                    contentData: function () { return contentData; }
+                }
+            });
+
+        }
+
+        
+        activate();
+        $log.debug('webvellaAdmin>entity-details> END controller.exec');
+        function activate() { }
+    }
+
+
+    //// Modal Controllers
+    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+
+    /* @ngInject */
+    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+        /* jshint validthis:true */
+        var modalData = this;
+
+        modalData.contentData = contentData;
+
+        modalData.field = {};
+
+        modalData.fieldTypes = contentData.fieldTypes;
         // Inject a searchable field
         for (var i = 0; i < modalData.fieldTypes.length; i++) {
             modalData.fieldTypes[i].searchBox = modalData.fieldTypes[i].label + " " + modalData.fieldTypes[i].description;
         }
+
+
 
         //Wizard
         modalData.wizard = {};
@@ -285,7 +287,10 @@
         modalData.wizard.selectedType = null;
 
         modalData.selectType = function (typeId) {
-            modalData.wizard.selectedType = typeId;
+            var typeIndex = typeId - 1;
+            modalData.wizard.selectedType = modalData.fieldTypes[typeIndex];
+            modalData.field = webvellaAdminService.initField(modalData.wizard.selectedType.id);
+
             modalData.wizard.steps[1].active = false;
             modalData.wizard.steps[1].completed = true;
             modalData.wizard.steps[2].active = true;
@@ -299,8 +304,16 @@
             }
         }
 
+        //////
+        modalData.completeStep2 = function () {
+            modalData.wizard.steps[2].active = false;
+            modalData.wizard.steps[2].completed = true;
+            modalData.wizard.steps[3].active = true;
+        }
+
+
         modalData.ok = function () {
-            webvellaAdminService.deleteEntity(modalData.entity.id, successCallback, errorCallback)
+            webvellaAdminService.createField(modalData.field,modalData.contentData.entity.id, successCallback, errorCallback)
         };
 
         modalData.cancel = function () {

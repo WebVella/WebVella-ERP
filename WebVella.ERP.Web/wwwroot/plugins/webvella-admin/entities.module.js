@@ -146,22 +146,7 @@
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
-        modalData.entity = {
-            id: null,
-            name: "",
-            label: "",
-            pluralLabel: "",
-            system: false,
-            iconName: 'database',
-            weight: '1.0',
-            recordPermissions: {
-                canRead: [],
-                canCreate: [],
-                canUpdate: [],
-                canDelete: []
-            }
-
-        };
+        modalData.entity = webvellaAdminService.initEntity();
         modalData.roles = contentData.roles;
         
         //Processing the roles for generation the checkbox values
