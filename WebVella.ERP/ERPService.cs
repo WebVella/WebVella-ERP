@@ -597,24 +597,6 @@ namespace WebVella.ERP
 
             fields.Add(lookupRelationField);
 
-            MasterDetailsRelationshipField masterDetailsRelationshipField = new MasterDetailsRelationshipField();
-
-            masterDetailsRelationshipField.Id = Guid.NewGuid();
-            masterDetailsRelationshipField.Name = "MasterDetailsRelationship";
-            masterDetailsRelationshipField.Label = "Master Details Relationship";
-            masterDetailsRelationshipField.PlaceholderText = "MasterDetailsRelationship field placeholder text";
-            masterDetailsRelationshipField.Description = "MasterDetailsRelationship field description";
-            masterDetailsRelationshipField.HelpText = "MasterDetailsRelationship field help text";
-            masterDetailsRelationshipField.Required = true;
-            masterDetailsRelationshipField.Unique = true;
-            masterDetailsRelationshipField.Searchable = true;
-            masterDetailsRelationshipField.Auditable = true;
-            masterDetailsRelationshipField.System = true;
-
-            masterDetailsRelationshipField.RelatedEntityId = Guid.Empty;
-
-            fields.Add(masterDetailsRelationshipField);
-
             MultiLineTextField multiLineTextField = new MultiLineTextField();
 
             multiLineTextField.Id = Guid.NewGuid();

@@ -108,11 +108,6 @@ namespace WebVella.ERP.Storage.Mongo
                     storageField = new MongoLookupRelationField();
                     ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
                 }
-                else if (field is MasterDetailsRelationshipField)
-                {
-                    storageField = new MongoMasterDetailsRelationshipField();
-                    ((MongoMasterDetailsRelationshipField)storageField).RelatedEntityId = ((MasterDetailsRelationshipField)field).RelatedEntityId.Value;
-                }
                 else if (field is MultiLineTextField)
                 {
                     storageField = new MongoMultiLineTextField();
@@ -427,11 +422,6 @@ namespace WebVella.ERP.Storage.Mongo
             {
                 storageField = new MongoLookupRelationField();
                 ((MongoLookupRelationField)storageField).RelatedEntityId = ((LookupRelationField)field).RelatedEntityId.Value;
-            }
-            else if (field is MasterDetailsRelationshipField)
-            {
-                storageField = new MongoMasterDetailsRelationshipField();
-                ((MongoMasterDetailsRelationshipField)storageField).RelatedEntityId = ((MasterDetailsRelationshipField)field).RelatedEntityId.Value;
             }
             else if (field is MultiLineTextField)
             {

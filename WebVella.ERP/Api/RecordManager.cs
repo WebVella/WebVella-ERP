@@ -225,8 +225,6 @@ namespace WebVella.ERP.Api
 					return pair.Value as string;
 				else if (field is LookupRelationField)
 					return (Guid?)pair.Value;
-				else if (field is MasterDetailsRelationshipField)
-					return (Guid?)pair.Value;
 			}
 			else
 			{
@@ -284,9 +282,6 @@ namespace WebVella.ERP.Api
                     return ((UrlField)field).DefaultValue;
                 else if (field is LookupRelationField)
                     return null;
-                else if (field is MasterDetailsRelationshipField)
-                    return null;
-
 				#endregion
 			}
 
@@ -431,8 +426,6 @@ namespace WebVella.ERP.Api
 				return new UrlFieldMeta(entity.Id.Value, entity.Name, (UrlField)field, parentFieldName);
 			else if (field is LookupRelationField)
 				return new LookupRelationFieldMeta(entity.Id.Value, entity.Name, (LookupRelationField)field, parentFieldName);
-			else if (field is MasterDetailsRelationshipField)
-				return new MasterDetailsRelationshipFieldMeta(entity.Id.Value, entity.Name, (MasterDetailsRelationshipField)field, parentFieldName);
 
 			throw new Exception("Not supported field type met.");
 		}
