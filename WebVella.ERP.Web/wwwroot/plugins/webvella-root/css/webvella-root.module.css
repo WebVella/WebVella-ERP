@@ -2113,13 +2113,13 @@ table .btn-xs.btn-link {
 }
 
 .editable-wrap {
-    padding: 10px;
+    padding: 20px;
     position: absolute;
     box-shadow: 0 0 10px #666;
     background: white;
     z-index: 12;
-    top: -10px;
-    left: -20px;
+    top: -20px;
+    left: -30px;
 }
 
 a.editable,
