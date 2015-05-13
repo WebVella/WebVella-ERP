@@ -1,5 +1,5 @@
 ﻿{
     "Storage": {
-        "ConnectionString": "mongodb://dev:dev@192.168.0.2:27017/wv-erp?safe=true"
+        "ConnectionString": "mongodb://dev:dev@192.168.0.5:27017/wv-erp?safe=true"
     }
 }
