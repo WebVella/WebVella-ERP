@@ -5,7 +5,6 @@ namespace WebVella.ERP.Storage
 {
     public interface IStorageEntityRelationRepository : IStorageRepository
     {
-        IStorageEntityRelation Empty();
         List<IStorageEntityRelation> Read();
         IStorageEntityRelation Read(Guid id);
         IStorageEntityRelation Read(string name);
