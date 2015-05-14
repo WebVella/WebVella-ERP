@@ -88,7 +88,7 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
-        public IActionResult UpdateField(string Id,string FieldId, [FromBody]InputField submitObj)
+        public IActionResult UpdateField(string Id,string FieldId, [FromBody]JObject submitObj)
         {
             FieldResponse response = new FieldResponse();
 
