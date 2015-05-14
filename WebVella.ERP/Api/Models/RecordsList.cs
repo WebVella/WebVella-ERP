@@ -17,7 +17,7 @@ namespace WebVella.ERP.Api.Models
         public string Label { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public ViewTypes Type { get; set; }
+        public RecordsListTypes Type { get; set; }
 
         [JsonProperty(PropertyName = "filters")]
         public IList<RecordsListFilter> Filters { get; set; }

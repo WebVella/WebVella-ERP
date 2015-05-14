@@ -13,7 +13,7 @@ namespace WebVella.ERP.Storage.Mongo
 
         public string Label { get; set; }
 
-        public ViewTypes Type { get; set; }
+        public RecordsListTypes Type { get; set; }
 
         public IList<IStorageRecordsListFilter> Filters { get; set; }
 

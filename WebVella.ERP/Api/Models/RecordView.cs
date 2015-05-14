@@ -28,7 +28,7 @@ namespace WebVella.ERP.Api.Models
         public Guid? EntityId { get; set; }
 
         [JsonProperty(PropertyName = "column")]
-        public FormColumns? Column { get; set; }
+        public RecordViewColumns? Column { get; set; }
 
         [JsonProperty(PropertyName = "position")]
         public int? Position { get; set; }
