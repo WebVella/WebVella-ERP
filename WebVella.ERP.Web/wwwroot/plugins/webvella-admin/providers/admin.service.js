@@ -24,6 +24,9 @@
         serviceInstance.deleteEntity = deleteEntity;
         serviceInstance.initField = initField;
         serviceInstance.createField = createField;
+        serviceInstance.updateField = updateField;
+        serviceInstance.deleteField = deleteField;
+
 
         //#region << Entity >>
 
@@ -98,17 +101,17 @@
 
             switch (typeId) {
                 case 1:
-                    field.defaultValue = 1.0;
-                    field.startingNumber = 1.0;
+                    field.defaultValue = null;
+                    field.startingNumber = null;
                     field.displayFormat = "";
                     break;
                 case 2:
                     field.defaultValue = false;
                     break;
                 case 3:
-                    field.defaultValue = 1.0;
-                    field.minValue = 1.0;
-                    field.maxValue = 1.0;
+                    field.defaultValue = null;
+                    field.minValue = null;
+                    field.maxValue = null;
                     field.currency = {
                         currencySymbol: "",
                         currencyName: "",
@@ -116,18 +119,18 @@
                     };
                     break;
                 case 4:
-                    field.defaultValue = '2000-00-01T00:00:01.000Z';
+                    field.defaultValue = null;
                     field.format = "";
                     field.useCurrentTimeAsDefaultValue = false;
                     break;
                 case 5:
-                    field.defaultValue = '2000-00-01T00:00:01.000Z';
+                    field.defaultValue = null;
                     field.format = "";
                     field.useCurrentTimeAsDefaultValue = false;
                     break;
                 case 6:
                     field.defaultValue = '';
-                    field.maxLength = 150;
+                    field.maxLength = null;
                     break;
                 case 7:
                     field.defaultValue = '';
@@ -140,7 +143,7 @@
                     break;
                 case 10:
                     field.defaultValue = '';
-                    field.maxLength = 1000;
+                    field.maxLength = null;
                     field.visibleLineNumber = false;
                     break;
                 case 11:
@@ -148,27 +151,26 @@
                     field.options = [];
                     break;
                 case 12:
-                    field.defaultValue = 1.0;
-                    field.minValue = 1.0;
-                    field.maxValue = 1.0;
+                    field.defaultValue = null;
+                    field.minValue = null;
+                    field.maxValue = null;
                     field.decimalPlaces = 2;
                     break;
                 case 13:
-                    field.maxLength = 50;
+                    field.maxLength = null;
                     field.encrypted = true;
                     field.maskType = 1;
-                    field.maskCharacter = null;
                     break;
                 case 14:
-                    field.defaultValue = 1.0;
-                    field.minValue = 0.0;
-                    field.maxValue = 100.0;
+                    field.defaultValue = null;
+                    field.minValue = null;
+                    field.maxValue = null;
                     field.decimalPlaces = 2;
                     break;
                 case 15:
                     field.defaultValue = "";
                     field.format = "";
-                    field.maxLength = 50;
+                    field.maxLength = null;
                     break;
                 case 16:
                     field.defaultValue = "00000000-0000-0000-0000-000000000000";
@@ -179,11 +181,11 @@
                     break;
                 case 18:
                     field.defaultValue = "";
-                    field.maxLength = 50;
+                    field.maxLength = null;
                     break;
                 case 19:
                     field.defaultValue = "";
-                    field.maxLength = 50;
+                    field.maxLength = null;
                     field.openTargetInNewWindow = false;
                     break;
                 default:
@@ -198,6 +200,18 @@
         function createField(postObject, entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>createField> function called');
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId + '/field', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function updateField(putObject, entityId, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>updateField> function called');
+            $http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId + '/field/' + putObject.id, data: putObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function deleteField(fieldId, entityId, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>updateField> function called');
+            $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId + '/field/' + fieldId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //#endregion

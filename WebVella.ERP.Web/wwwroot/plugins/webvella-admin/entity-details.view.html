@@ -42,6 +42,7 @@
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({name:'{{contentData.entity.name}}'})">Record Views</a></li>
             <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({name:'{{contentData.entity.name}}'})">Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({name:'{{contentData.entity.name}}'})">Relations</a></li>
         </ul>
 
     </div>
@@ -157,7 +158,7 @@
     <div class="modal-body">
         <div class="alert alert-danger" ng-bind="modalData.errorMessage" ng-show="modalData.hasError"></div>
         <div ng-hide="modalData.hasError">
-            <h3>Are you sure that you need this entity deleted?</h3>
+            <h4>Are you sure that you need this entity deleted?</h4>
             <div class="alert alert-warning">By deleting the <b>{{modalData.entity.label}}</b> entity you will also <b>delete all its records</b>?</div>
         </div>
     </div>

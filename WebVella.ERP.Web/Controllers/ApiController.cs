@@ -87,6 +87,51 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.ConvertField(submitObj)));
         }
 
+        [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+        public IActionResult UpdateField(string Id,string FieldId, [FromBody]InputField submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            Guid fieldId;
+            if (!Guid.TryParse(FieldId, out fieldId))
+            {
+                response.Errors.Add(new ErrorModel("id", FieldId, "FieldId parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).UpdateField(entityId, Field.ConvertField(submitObj)));
+        }
+
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+        public IActionResult DeleteField(string Id, string FieldId)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            Guid fieldId;
+            if (!Guid.TryParse(FieldId, out fieldId))
+            {
+                response.Errors.Add(new ErrorModel("id", FieldId, "FieldId parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).DeleteField(entityId, fieldId));
+        }
+
+
         #endregion
 
     }

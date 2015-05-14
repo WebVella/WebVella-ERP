@@ -72,7 +72,7 @@
 
         ///////////////////
         function generateValidationMessages(response, scopeObj, formObject, location) {
-            $log.error('webvellaRoot>providers>root.service>generateValidationMessages> function called');
+            $log.debug('webvellaRoot>providers>root.service>generateValidationMessages> function called');
             //Fill in validationError boolean and message for each field according to the template
             // scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
             for (var i = 0; i < response.errors.length; i++) {
@@ -97,7 +97,7 @@
 
         //////////////////
         function reloadCurrentState(state) {
-            $log.error('webvellaRoot>providers>root.service>reloadCurrentState> function called');
+            $log.debug('webvellaRoot>providers>root.service>reloadCurrentState> function called');
             $timeout(function () {
                 state.go(state.current, {}, { reload: true });
             }, 0);

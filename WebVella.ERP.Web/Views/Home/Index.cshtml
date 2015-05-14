@@ -15,10 +15,8 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic' rel='stylesheet'
           type='text/css'>
     <link href="~/plugins/webvella-root/lib/angular-xeditable/css/xeditable.css" rel="stylesheet" />
-
-
-     <!-- plugin:webvella-root-->
     <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
+
     <!-- plugin:webvella-desktop-->
     <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
 
@@ -49,7 +47,7 @@
     <script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-xeditable/js/xeditable.js"></script>
-
+    <script src="~/plugins/webvella-root/lib/moment/moment-with-locales.js"></script>
 
     @* Core Application module definition *@
     <script>
@@ -59,7 +57,7 @@
             angular
                 .module('wvApp', [
                     // Angular modules
-                    'ngAnimate', 'ngTouch', 
+                    'ngAnimate', 'ngTouch',
                      // 3rd Party Modules
                     'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', 'xeditable',
                     //plugins
@@ -99,6 +97,7 @@
     <script src="~/plugins/webvella-root/login.module.js"></script>
     <script src="~/plugins/webvella-root/not-found.module.js"></script>
     <script src="~/plugins/webvella-root/providers/root.service.js"></script>
+    <script src="~/plugins/webvella-root/providers/validdate.directive.js"></script>
 
     <!-- plugin:webvella-desktop -->
     <script src="~/plugins/webvella-desktop/base.module.js"></script>
@@ -127,7 +126,7 @@
 
     <!-- plugin:webvella-developers -->
     <script src="~/plugins/webvella-developers/base.module.js"></script>
-	<script src="~/plugins/webvella-developers/providers/query.service.js"></script>
+    <script src="~/plugins/webvella-developers/providers/query.service.js"></script>
 
     @ViewBag.PluginModulesJsFileStringArray
 

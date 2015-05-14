@@ -11,11 +11,12 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityFieldsController', controller)
-        .controller('CreateFieldModalController', CreateFieldModalController);
+        .controller('CreateFieldModalController', CreateFieldModalController)
+        .controller('ManageFieldModalController', ManageFieldModalController)
+        .controller('DeleteFieldModalController', DeleteFieldModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
-
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-fields', {
@@ -50,7 +51,6 @@
 
     // Resolve Function /////////////////////////
     resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-
     /* @ngInject */
     function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
         $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
@@ -87,11 +87,8 @@
         return defer.promise;
     }
 
-
-
     // Controller ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal'];
-
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
@@ -227,7 +224,7 @@
         ];
 
 
-        //Create new entity modal
+        //Create new field modal
         contentData.createFieldModal = function () {
             var modalInstance = $modal.open({
                 animation: false,
@@ -239,22 +236,42 @@
                     contentData: function () { return contentData; }
                 }
             });
-
         }
 
-        
+        //Manage field modal
+        contentData.manageFieldModal = function (fieldId) {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'manageFieldModal.html',
+                controller: 'ManageFieldModalController',
+                controllerAs: "modalData",
+                size: "lg",
+                resolve: {
+                    contentData: function () { return contentData; },
+                    resolvedField: function () {
+                        var managedField = null;
+                        for (var i = 0; i < contentData.entity.fields.length; i++) {
+                            if (contentData.entity.fields[i].id === fieldId) {
+                                managedField = contentData.entity.fields[i];
+                            }
+                        }
+                        return managedField;
+                    }
+                }
+            });
+        }
+
+
         activate();
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
         function activate() { }
     }
 
-
-    //// Modal Controllers
-    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
-
+    //// Create Field Controllers
+    CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
     /* @ngInject */
-    function CreateFieldModalController(contentData,$modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+    function CreateFieldModalController(contentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+        $log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
 
@@ -268,8 +285,6 @@
             modalData.fieldTypes[i].searchBox = modalData.fieldTypes[i].label + " " + modalData.fieldTypes[i].description;
         }
 
-
-
         //Wizard
         modalData.wizard = {};
         modalData.wizard.steps = [];
@@ -280,8 +295,6 @@
         modalData.wizard.steps.push(step); // Step 1
         step = angular.copy({ "active": false }, { "completed": false });
         modalData.wizard.steps.push(step); // Step 2
-        step = angular.copy({ "active": false }, { "completed": false });
-        modalData.wizard.steps.push(step); // Step 3
         // Set steps
         modalData.wizard.steps[1].active = true;
         modalData.wizard.selectedType = null;
@@ -297,7 +310,7 @@
         }
         modalData.setActiveStep = function (stepIndex) {
             if (modalData.wizard.steps[stepIndex].completed) {
-                for (var i = 1; i < 4; i++) {
+                for (var i = 1; i < 3; i++) {
                     modalData.wizard.steps[i].active = false;
                 }
                 modalData.wizard.steps[stepIndex].active = true;
@@ -308,12 +321,10 @@
         modalData.completeStep2 = function () {
             modalData.wizard.steps[2].active = false;
             modalData.wizard.steps[2].completed = true;
-            modalData.wizard.steps[3].active = true;
         }
 
-
         modalData.ok = function () {
-            webvellaAdminService.createField(modalData.field,modalData.contentData.entity.id, successCallback, errorCallback)
+            webvellaAdminService.createField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
         };
 
         modalData.cancel = function () {
@@ -327,9 +338,110 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
-            $timeout(function () {
-                $state.go("webvella-admin-entities");
-            }, 0)
+            webvellaRootService.reloadCurrentState($state);
+        }
+
+        function errorCallback(response) {
+            var location = $location;
+            //Process the response and generate the validation Messages
+            webvellaRootService.generateValidationMessages(response, modalData, modalData.field, location);
+        }
+        $log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec');
+    };
+
+    //// Create Field Controllers
+    ManageFieldModalController.$inject = ['contentData', 'resolvedField','$modal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+    /* @ngInject */
+    function ManageFieldModalController(contentData, resolvedField,$modal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+        $log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec');
+        /* jshint validthis:true */
+        var modalData = this;
+
+        modalData.contentData = contentData;
+
+        modalData.field = resolvedField;
+
+        modalData.fieldTypes = contentData.fieldTypes;
+        modalData.fieldType = null;
+
+        for (var i = 0; i < modalData.fieldTypes.length; i++) {
+            if (modalData.fieldTypes[i].id === modalData.field.fieldType) {
+                modalData.fieldType = modalData.fieldTypes[i];
+            }
+        }
+
+        modalData.ok = function () {
+            webvellaAdminService.updateField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
+        };
+
+        modalData.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        //Delete field
+        //Create new field modal
+        modalData.deleteFieldModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'deleteFieldModal.html',
+                controller: 'DeleteFieldModalController',
+                controllerAs: "modalData",
+                size: "",
+                resolve: {
+                    parentModalData: function () { return modalData; }
+                }
+            });
+        }
+
+
+
+        /// Aux
+        function successCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+            $modalInstance.close('success');
+            webvellaRootService.reloadCurrentState($state);
+        }
+
+        function errorCallback(response) {
+            var location = $location;
+            //Process the response and generate the validation Messages
+            webvellaRootService.generateValidationMessages(response, modalData, modalData.field, location);
+        }
+        $log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec');
+    };
+
+
+    //// Modal Controllers
+    DeleteFieldModalController.$inject = ['parentModalData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+
+    /* @ngInject */
+    function DeleteFieldModalController(parentModalData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+        $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+        /* jshint validthis:true */
+        var modalData = this;
+        modalData.parentData = parentModalData;
+
+        modalData.ok = function () {
+            webvellaAdminService.deleteField(modalData.parentData.contentData.entity.id,modalData.parentData.field.id, successCallback, errorCallback);
+        };
+
+        modalData.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        /// Aux
+        function successCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+            $modalInstance.close('success');
+            $timeout(function() {
+                $state.go("webvella-admin-entity-fields", { name: modalData.parentData.contentData.entity.name});
+            }, 0);
         }
 
         function errorCallback(response) {
@@ -340,5 +452,6 @@
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };
+
 
 })();
