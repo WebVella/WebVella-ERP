@@ -205,9 +205,6 @@ namespace WebVella.ERP.Api.Models
 
     public class EntityList
     {
-        [JsonProperty(PropertyName = "offset")]
-        public Guid Offset { get; set; }
-
         [JsonProperty(PropertyName = "entities")]
         public List<Entity> Entities { get; set; }
 
