@@ -45,6 +45,23 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).CreateEntity(submitObj));
         }
 
+        // Create an entity
+        // POST: api/v1/en_US/meta/entity
+        [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
+        public IActionResult PatchEntity(string StringId, [FromBody]Expando submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(StringId, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+            return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, submitObj));
+        }
+
+
         // Delete an entity
         // DELETE: api/v1/en_US/meta/entity/{id}
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]

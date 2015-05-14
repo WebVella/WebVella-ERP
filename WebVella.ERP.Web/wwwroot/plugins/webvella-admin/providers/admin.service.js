@@ -20,6 +20,7 @@
         serviceInstance.getMetaEntityList = getMetaEntityList;
         serviceInstance.initEntity = initEntity;
         serviceInstance.createEntity = createEntity;
+        serviceInstance.patchEntity = patchEntity;
         serviceInstance.getEntityMeta = getEntityMeta;
         serviceInstance.deleteEntity = deleteEntity;
         serviceInstance.initField = initField;
@@ -71,10 +72,19 @@
         }
 
         ///////////////////////
+        function patchEntity(entityId, patchObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>patchEntity> function called');
+            $http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+
+        ///////////////////////
         function deleteEntity(entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>deleteEntity> function called');
             $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
+
 
         //#endregion << Entity >>
 
