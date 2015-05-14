@@ -420,7 +420,6 @@ namespace WebVella.ERP.Web.Controllers
             response.Success = true;
             var responseObj = new EntityList();
             responseObj.Entities = new List<Entity>();
-            responseObj.Offset = new Guid();
             response.Object = responseObj;
             switch (entityName)
             {

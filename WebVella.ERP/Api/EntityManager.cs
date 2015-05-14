@@ -892,7 +892,6 @@ namespace WebVella.ERP
                 List<IStorageEntity> storageEntityList = EntityRepository.Read();
 
                 EntityList entityList = new EntityList(storageEntityList);
-                entityList.Offset = entityList.Entities != null && entityList.Entities.Count > 0 ? entityList.Entities.Last().Id.Value : Guid.Empty;
 
                 response.Object = new EntityList(storageEntityList);
             }
@@ -1468,7 +1467,6 @@ namespace WebVella.ERP
                 }
 
                 FieldList fieldList = new FieldList(storageEntity.Fields);
-                fieldList.Offset = fieldList.Fields != null && fieldList.Fields.Count > 0 ? fieldList.Fields.Last().Id.Value : Guid.Empty;
 
                 response.Object = fieldList;
             }
@@ -1763,7 +1761,6 @@ namespace WebVella.ERP
 
                 RecordsListCollection recordsListCollection = new RecordsListCollection();
                 recordsListCollection.Views = entity.RecordsLists;
-                recordsListCollection.Offset = recordsListCollection.Views != null && recordsListCollection.Views.Count > 0 ? recordsListCollection.Views.Last().Id.Value : Guid.Empty;
 
                 response.Object = recordsListCollection;
             }
@@ -2059,7 +2056,6 @@ namespace WebVella.ERP
 
                 RecordViewCollection recordViewList = new RecordViewCollection();
                 recordViewList.Forms = entity.RecordViewLists;
-                recordViewList.Offset = recordViewList.Forms != null && recordViewList.Forms.Count > 0 ? recordViewList.Forms.Last().Id.Value : Guid.Empty;
 
                 response.Object = recordViewList;
             }
