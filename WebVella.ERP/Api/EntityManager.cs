@@ -2602,7 +2602,7 @@ namespace WebVella.ERP
             createdBy.Auditable = false;
             createdBy.System = true;
             createdBy.DefaultValue = Guid.Empty;
-            primaryKeyField.GenerateNewId = false;
+            createdBy.GenerateNewId = false;
 
             fields.Add(createdBy);
 
@@ -2620,7 +2620,7 @@ namespace WebVella.ERP
             lastModifiedBy.Auditable = false;
             lastModifiedBy.System = true;
             lastModifiedBy.DefaultValue = Guid.Empty;
-            primaryKeyField.GenerateNewId = false;
+            lastModifiedBy.GenerateNewId = false;
 
             fields.Add(lastModifiedBy);
 

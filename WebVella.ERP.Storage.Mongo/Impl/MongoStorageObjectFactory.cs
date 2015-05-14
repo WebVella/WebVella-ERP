@@ -26,10 +26,10 @@ namespace WebVella.ERP.Storage.Mongo
                 return new MongoCheckboxField();
             if (type == typeof(CurrencyField))
                 return new MongoCurrencyField();
-            if (type == typeof(DateTimeField))
-                return new MongoDateField();
             if (type == typeof(DateField))
                 return new MongoDateField();
+            if (type == typeof(DateTimeField))
+                return new MongoDateTimeField();
             if (type == typeof(EmailField))
                 return new MongoEmailField();
             if (type == typeof(FileField))
