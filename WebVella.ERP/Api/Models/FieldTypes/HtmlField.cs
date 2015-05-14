@@ -18,19 +18,6 @@ namespace WebVella.ERP.Api.Models
         public HtmlField(Field field) : base(field)
         {
         }
-
-        public HtmlField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class HtmlFieldMeta : HtmlField, IFieldMeta

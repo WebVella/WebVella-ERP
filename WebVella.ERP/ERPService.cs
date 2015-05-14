@@ -332,8 +332,8 @@ namespace WebVella.ERP
 
                 //field.Label = "TextField_edited";
 
-                InputField fieldObj = new InputField();
-                fieldObj["Label"] = "TextField_edited";
+                Field fieldObj = new TextField();
+                fieldObj.Label = "TextField_edited";
 
                 fieldResponse = entityManager.PartialUpdateField(entity.Id.Value, field.Id.Value, fieldObj);
 
@@ -623,13 +623,13 @@ namespace WebVella.ERP
             multiSelectField.System = true;
             multiSelectField.DefaultValue = new string[] { "itemKey1", "itemKey4" };
 
-            multiSelectField.Options = new Dictionary<string, string>();
-            multiSelectField.Options.Add("itemKey1", "itemValue1");
-            multiSelectField.Options.Add("itemKey2", "itemValue2");
-            multiSelectField.Options.Add("itemKey3", "itemValue3");
-            multiSelectField.Options.Add("itemKey4", "itemValue4");
-            multiSelectField.Options.Add("itemKey5", "itemValue5");
-            multiSelectField.Options.Add("itemKey6", "itemValue6");
+            multiSelectField.Options = new List<MultiSelectFieldOption>();
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey1", "itemValue1"));
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey2", "itemValue2"));
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey3", "itemValue3"));
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey4", "itemValue4"));
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey5", "itemValue5"));
+            multiSelectField.Options.Add(new MultiSelectFieldOption("itemKey6", "itemValue6"));
 
             fields.Add(multiSelectField);
 
@@ -747,13 +747,13 @@ namespace WebVella.ERP
             selectField.System = true;
             selectField.DefaultValue = "itemKey2";
 
-            selectField.Options = new Dictionary<string, string>();
-            selectField.Options.Add("itemKey1", "itemValue1");
-            selectField.Options.Add("itemKey2", "itemValue2");
-            selectField.Options.Add("itemKey3", "itemValue3");
-            selectField.Options.Add("itemKey4", "itemValue4");
-            selectField.Options.Add("itemKey5", "itemValue5");
-            selectField.Options.Add("itemKey6", "itemValue6");
+            selectField.Options = new List<SelectFieldOption>();
+            selectField.Options.Add(new SelectFieldOption("itemKey1", "itemValue1"));
+            selectField.Options.Add(new SelectFieldOption("itemKey2", "itemValue2"));
+            selectField.Options.Add(new SelectFieldOption("itemKey3", "itemValue3"));
+            selectField.Options.Add(new SelectFieldOption("itemKey4", "itemValue4"));
+            selectField.Options.Add(new SelectFieldOption("itemKey5", "itemValue5"));
+            selectField.Options.Add(new SelectFieldOption("itemKey6", "itemValue6"));
 
             fields.Add(selectField);
 

@@ -21,22 +21,6 @@ namespace WebVella.ERP.Api.Models
         public TextField(Field field) : base(field)
         {
         }
-
-        public TextField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                    case "maxlength":
-                        MaxLength = Convert.ToInt32(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class TextFieldMeta : TextField, IFieldMeta

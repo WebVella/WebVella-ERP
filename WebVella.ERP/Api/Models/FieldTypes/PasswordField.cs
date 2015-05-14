@@ -27,28 +27,6 @@ namespace WebVella.ERP.Api.Models
         public PasswordField(Field field) : base(field)
         {
         }
-
-        public PasswordField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "maxlength":
-                        MaxLength = Convert.ToInt32(property.Value);
-                        break;
-                    case "encrypted":
-                        Encrypted = Convert.ToBoolean(property.Value);
-                        break;
-                    case "masktype":
-                        MaskType = (PasswordFieldMaskTypes)Convert.ToInt32(property.Value);
-                        break;
-                    case "maskcharacter":
-                        MaskCharacter = Convert.ToChar(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class PasswordFieldMeta : PasswordField, IFieldMeta

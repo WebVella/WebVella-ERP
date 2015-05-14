@@ -1,16 +1,14 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
-    public class InputField : Expando
-    {
-    }
-
     public abstract class Field
     {
         [JsonProperty(PropertyName = "id")]
@@ -64,49 +62,6 @@ namespace WebVella.ERP
             Searchable = field.Searchable;
             Auditable = field.Auditable;
             System = field.System;
-        }
-
-        public Field(InputField field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "id":
-                        Id = (Guid?)property.Value;
-                        break;
-                    case "name":
-                        Name = (string)property.Value;
-                        break;
-                    case "label":
-                        Label = (string)property.Value;
-                        break;
-                    case "placeholdertext":
-                        PlaceholderText = (string)property.Value;
-                        break;
-                    case "description":
-                        Description = (string)property.Value;
-                        break;
-                    case "helptext":
-                        HelpText = (string)property.Value;
-                        break;
-                    case "required":
-                        Required = (bool?)property.Value;
-                        break;
-                    case "unique":
-                        Unique = (bool?)property.Value;
-                        break;
-                    case "searchable":
-                        Searchable = (bool?)property.Value;
-                        break;
-                    case "auditable":
-                        Auditable = (bool?)property.Value;
-                        break;
-                    case "system":
-                        System = (bool?)property.Value;
-                        break;
-                }
-            }
         }
 
         public static Field ConvertField(IStorageField storageField)
@@ -190,7 +145,7 @@ namespace WebVella.ERP
             {
                 field = new MultiSelectField();
                 ((MultiSelectField)field).DefaultValue = ((IStorageMultiSelectField)storageField).DefaultValue;
-                ((MultiSelectField)field).Options = ((IStorageMultiSelectField)storageField).Options;
+                ((MultiSelectField)field).Options = MultiSelectField.ConvertOptions(((IStorageMultiSelectField)storageField).Options);
             }
             else if (storageField is IStorageNumberField)
             {
@@ -231,7 +186,7 @@ namespace WebVella.ERP
             {
                 field = new SelectField();
                 ((SelectField)field).DefaultValue = ((IStorageSelectField)storageField).DefaultValue;
-                ((SelectField)field).Options = ((IStorageSelectField)storageField).Options;
+                ((SelectField)field).Options = SelectField.ConvertOptions(((IStorageSelectField)storageField).Options);
             }
             else if (storageField is IStorageTextField)
             {
@@ -262,69 +217,74 @@ namespace WebVella.ERP
             return field;
         }
 
-        public static Field ConvertField(InputField inputField)
+        public static Field ConvertField(JObject inputField)
         {
             Field field = null;
 
-            FieldType fieldType = (FieldType)Enum.ToObject(typeof(FieldType), inputField["fieldType"]);
+            var fieldTypeProp = inputField.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
+            if (fieldTypeProp == null)
+                return field;
+
+            FieldType fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
+
             switch (fieldType)
             {
                 case FieldType.AutoNumberField:
-                    field = new AutoNumberField(inputField);
+                    field = inputField.ToObject<AutoNumberField>();
                     break;
                 case FieldType.CheckboxField:
-                    field = new CheckboxField(inputField);
+                    field = inputField.ToObject<CheckboxField>();
                     break;
                 case FieldType.CurrencyField:
-                    field = new CurrencyField(inputField);
+                    field = inputField.ToObject<CurrencyField>();
                     break;
                 case FieldType.DateField:
-                    field = new DateField(inputField);
+                    field = inputField.ToObject<DateField>();
                     break;
                 case FieldType.DateTimeField:
-                    field = new DateTimeField(inputField);
+                    field = inputField.ToObject<DateTimeField>();
                     break;
                 case FieldType.EmailField:
-                    field = new EmailField(inputField);
+                    field = inputField.ToObject<EmailField>();
                     break;
                 case FieldType.FileField:
-                    field = new FileField(inputField);
+                    field = inputField.ToObject<FileField>();
                     break;
                 case FieldType.HtmlField:
-                    field = new HtmlField(inputField);
+                    field = inputField.ToObject<HtmlField>();
                     break;
                 case FieldType.ImageField:
-                    field = new ImageField(inputField);
+                    field = inputField.ToObject<ImageField>();
                     break;
                 case FieldType.MultiLineTextField:
-                    field = new MultiLineTextField(inputField);
+                    field = inputField.ToObject<MultiLineTextField>();
                     break;
                 case FieldType.MultiSelectField:
-                    field = new MultiSelectField(inputField);
+                    field = inputField.ToObject<MultiSelectField>();
                     break;
                 case FieldType.NumberField:
-                    field = new NumberField(inputField);
+                    field = inputField.ToObject<NumberField>();
                     break;
                 case FieldType.PasswordField:
-                    field = new PasswordField(inputField);
+                    field = inputField.ToObject<PasswordField>();
                     break;
                 case FieldType.PercentField:
-                    field = new PercentField(inputField);
+                    field = inputField.ToObject<PercentField>();
                     break;
                 case FieldType.PhoneField:
-                    field = new PhoneField(inputField);
+                    field = inputField.ToObject<PhoneField>();
                     break;
                 case FieldType.GuidField:
-                    field = new GuidField(inputField);
+                    field = inputField.ToObject<GuidField>();
                     break;
                 case FieldType.SelectField:
-                    field = new SelectField(inputField);
+                    field = inputField.ToObject<SelectField>();
                     break;
                 case FieldType.TextField:
-                    field = new TextField(inputField);
+                    field = inputField.ToObject<TextField>();
                     break;
                 case FieldType.UrlField:
-                    field = new UrlField(inputField);
+                    field = inputField.ToObject<UrlField>();
                     break;
             }
 
