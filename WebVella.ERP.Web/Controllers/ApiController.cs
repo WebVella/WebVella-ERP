@@ -115,7 +115,7 @@ namespace WebVella.ERP.Web.Controllers
             Field field = new GuidField();
             try
             {
-                field = Field.ConvertField(submitObj));
+                field = Field.ConvertField(submitObj);
             }
             catch (Exception e)
             {
@@ -147,7 +147,7 @@ namespace WebVella.ERP.Web.Controllers
             Field field = new GuidField();
             try
             {
-                field = Field.ConvertField(submitObj));
+                field = Field.ConvertField(submitObj);
             }
             catch (Exception e)
             {
