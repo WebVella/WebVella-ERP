@@ -11,5 +11,8 @@
                 "Newtonsoft.Json": "6.0.6"
             }
         }
+    },
+    "dependencies": {
+        "AutoMapper": "3.3.1"
     }
 }
