@@ -55,7 +55,7 @@ namespace WebVella.ERP
                 roleEntity.Id = SystemIds.RoleEntityId;
                 roleEntity.Name = "role";
                 roleEntity.Label = "Role";
-                roleEntity.PluralLabel = "Roles";
+                roleEntity.LabelPlural = "Roles";
                 roleEntity.System = true;
                 roleEntity.RecordPermissions = new RecordPermissions();
                 roleEntity.RecordPermissions.CanRead = allowedRoles;
@@ -108,7 +108,7 @@ namespace WebVella.ERP
                 userEntity.Id = SystemIds.UserEntityId;
                 userEntity.Name = "user";
                 userEntity.Label = "User";
-                userEntity.PluralLabel = "Users";
+                userEntity.LabelPlural = "Users";
                 userEntity.System = true;
                 userEntity.RecordPermissions = new RecordPermissions();
                 userEntity.RecordPermissions.CanRead = allowedRoles;
@@ -191,7 +191,6 @@ namespace WebVella.ERP
 
                 password.MaxLength = 1;
                 password.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
-                password.MaskCharacter = '*';
                 password.Encrypted = true;
 
                 fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
@@ -275,7 +274,7 @@ namespace WebVella.ERP
             inputEntity.Id = Guid.NewGuid();
             inputEntity.Name = "goro_test";
             inputEntity.Label = "Goro Test";
-            inputEntity.PluralLabel = "Goro Tests";
+            inputEntity.LabelPlural = "Goro Tests";
             inputEntity.System = true;
 
             List<Guid> allowedRoles = new List<Guid>();
@@ -659,7 +658,6 @@ namespace WebVella.ERP
 
             passwordField.MaxLength = 1;
             passwordField.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
-            passwordField.MaskCharacter = '*';
 
             fields.Add(passwordField);
 

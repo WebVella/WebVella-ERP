@@ -16,8 +16,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "pluralLabel")]
-        public string PluralLabel { get; set; }
+        [JsonProperty(PropertyName = "labelPlural")]
+        public string LabelPlural { get; set; }
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
@@ -43,8 +43,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "pluralLabel")]
-        public string PluralLabel { get; set; }
+        [JsonProperty(PropertyName = "labelPlural")]
+        public string LabelPlural { get; set; }
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
@@ -77,7 +77,7 @@ namespace WebVella.ERP.Api.Models
             Id = entity.Id;
             Name = entity.Name;
             Label = entity.Label;
-            PluralLabel = entity.PluralLabel;
+            LabelPlural = entity.LabelPlural;
             System = entity.System.Value;
             IconName = entity.IconName;
             Weight = entity.Weight;
