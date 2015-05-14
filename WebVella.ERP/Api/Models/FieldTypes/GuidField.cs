@@ -11,6 +11,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "defaultValue")]
         public Guid? DefaultValue { get; set; }
 
+        [JsonProperty(PropertyName = "generateNewId")]
+        public bool? GenerateNewId { get; set; }
+
         public GuidField()
         {
         }

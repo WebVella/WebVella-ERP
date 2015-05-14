@@ -10,7 +10,5 @@ namespace WebVella.ERP.Storage.Mongo
         public bool Encrypted { get; set; }
 
         public PasswordFieldMaskTypes MaskType { get; set; }
-
-        public char MaskCharacter { get; set; }
     }
 }

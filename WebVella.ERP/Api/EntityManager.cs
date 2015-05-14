@@ -55,63 +55,19 @@ namespace WebVella.ERP
 
             }
 
-            if (string.IsNullOrWhiteSpace(entity.Name))
-                errorList.Add(new ErrorModel("name", entity.Name, "Name is required!"));
-            else
+            errorList.AddRange(ValidationUtility.ValidateName(entity.Name));
+
+            if (!string.IsNullOrWhiteSpace(entity.Name))
             {
-                if (entity.Name.Length < 2)
-                    errorList.Add(new ErrorModel("name", entity.Name, "The Name must be at least 2 characters long!"));
-
-                if (entity.Name.Length > 50)
-                    errorList.Add(new ErrorModel("name", entity.Name, "The length of Name must be less than 50 characters!"));
-
-                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
-
-                Match match = Regex.Match(entity.Name, pattern);
-                if (!match.Success || match.Value != entity.Name.Trim())
-                    errorList.Add(new ErrorModel("name", entity.Name, "Name can only contains underscores and lowercase alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
-
                 IStorageEntity verifiedEntity = EntityRepository.Read(entity.Name);
 
                 if (verifiedEntity != null && verifiedEntity.Id != entity.Id)
-                {
                     errorList.Add(new ErrorModel("name", entity.Name, "Entity with such Name exists already!"));
-                }
             }
 
-            if (string.IsNullOrWhiteSpace(entity.Label))
-                errorList.Add(new ErrorModel("label", entity.Label, "Label is required!"));
-            else
-            {
-                //TODO check if we need this validation
+            errorList.AddRange(ValidationUtility.ValidateLabel(entity.Label));
 
-                if (entity.Label.Length > 50)
-                    errorList.Add(new ErrorModel("label", entity.Label, "The length of Label must be less than 50 characters!"));
-
-                //string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
-
-                //Match match = Regex.Match(entity.Label, pattern);
-                //if (!match.Success || match.Value != entity.Label.Trim())
-                //    errorList.Add(new ErrorModel("label", entity.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-
-            }
-
-            if (string.IsNullOrWhiteSpace(entity.PluralLabel))
-                errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label is required!"));
-            else
-            {
-                //TODO check if we need this validation
-
-                if (entity.PluralLabel.Length > 50)
-                    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "The length of Plural Label must be less than 50 characters!"));
-
-                //string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
-
-                //Match match = Regex.Match(entity.PluralLabel, pattern);
-                //if (!match.Success || match.Value != entity.PluralLabel.Trim())
-                //    errorList.Add(new ErrorModel("pluralLabel", entity.PluralLabel, "Plural Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-
-            }
+            errorList.AddRange(ValidationUtility.ValidateLabelPlural(entity.LabelPlural));
 
             if (!entity.System.HasValue)
                 errorList.Add(new ErrorModel("system", null, "System is required!"));
@@ -168,10 +124,10 @@ namespace WebVella.ERP
             }
 
             if (primaryFieldCount < 1)
-                errorList.Add(new ErrorModel("fields.id", null, "Must have one primary field!"));
+                errorList.Add(new ErrorModel("fields.id", null, "Must have one unique identifier field!"));
 
             if (primaryFieldCount > 1)
-                errorList.Add(new ErrorModel("fields.id", null, "Too many primary fields. Must have only one primary field!"));
+                errorList.Add(new ErrorModel("fields.id", null, "Too many primary fields. Must have only one unique identifier!"));
 
             return errorList;
         }
@@ -188,46 +144,17 @@ namespace WebVella.ERP
                 int fieldSameIdCount = entity.Fields.Where(f => f.Id == field.Id).Count();
 
                 if (fieldSameIdCount > 1)
-                    errorList.Add(new ErrorModel("id", null, "There are multiple fields with same Id!"));
+                    errorList.Add(new ErrorModel("id", null, "There is already a field with such Id!"));
 
-                int fieldSameNameCount = entity.Fields.Where(f => f.Id == field.Id).Count();
+                int fieldSameNameCount = entity.Fields.Where(f => f.Name == field.Name).Count();
 
                 if (fieldSameNameCount > 1)
-                    errorList.Add(new ErrorModel("name", null, "There are multiple fields with same Name!"));
+                    errorList.Add(new ErrorModel("name", null, "There is already a field with such Name!"));
             }
 
-            if (string.IsNullOrWhiteSpace(field.Name))
-                errorList.Add(new ErrorModel("name", field.Name, "Name is required!"));
-            else
-            {
-                if (field.Name.Length < 2)
-                    errorList.Add(new ErrorModel("name", field.Name, "The Name must be at least 2 characters long!"));
+            errorList.AddRange(ValidationUtility.ValidateName(field.Name));
 
-                if (field.Name.Length > 30)
-                    errorList.Add(new ErrorModel("name", field.Name, "The length of Name must be less than 30 characters!"));
-
-                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
-
-                Match match = Regex.Match(field.Name, pattern);
-                if (!match.Success || match.Value != field.Name.Trim())
-                    errorList.Add(new ErrorModel("name", field.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
-
-            }
-
-            if (string.IsNullOrWhiteSpace(field.Label))
-                errorList.Add(new ErrorModel("label", field.Label, "Label is required!"));
-            else
-            {
-                //TODO check if we need this validation
-                if (field.Label.Length > 30)
-                    errorList.Add(new ErrorModel("label", field.Label, "The length of Label must be less than 30 characters!"));
-                /*
-                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*"";
-
-                Match match = Regex.Match(field.Label, pattern);
-                if (!match.Success || match.Value != field.Label.Trim())
-                    errorList.Add(new ErrorModel("fields.label", field.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));*/
-            }
+            errorList.AddRange(ValidationUtility.ValidateLabel(field.Label));
 
             if (field is AutoNumberField)
             {
@@ -302,6 +229,14 @@ namespace WebVella.ERP
             //    if (!((FormulaField)field).DecimalPlaces.HasValue)
             //        errorList.Add(new ErrorModel("fields.decimalPlaces", null, "Decimal Places is required!"));
             //}
+            else if (field is GuidField)
+            {
+                if (((((GuidField)field).Unique.HasValue && ((GuidField)field).Unique.Value) ||
+                    (((GuidField)field).Required.HasValue && ((GuidField)field).Required.Value)) &&
+                    (((GuidField)field).GenerateNewId.HasValue && !((GuidField)field).GenerateNewId.Value) &&
+                    ((GuidField)field).DefaultValue == null)
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as unique or required and generate new id option is not selected!"));
+            }
             else if (field is HtmlField)
             {
                 if (field.Required.HasValue && field.Required.Value && ((HtmlField)field).DefaultValue == null)
@@ -363,9 +298,6 @@ namespace WebVella.ERP
             {
                 if (!((PasswordField)field).MaxLength.HasValue)
                     errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
-
-                if (!((PasswordField)field).MaskCharacter.HasValue)
-                    errorList.Add(new ErrorModel("maskCharacter", null, "Mask Character is required!"));
             }
             else if (field is PercentField)
             {
@@ -453,41 +385,24 @@ namespace WebVella.ERP
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             if (!recordslist.Id.HasValue || recordslist.Id.Value == Guid.Empty)
-                errorList.Add(new ErrorModel("recordsLists.id", null, "Id is required!"));
+                errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
-            if (string.IsNullOrWhiteSpace(recordslist.Name))
-                errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "Name is required!"));
-            else
+            if (checkId)
             {
-                if (recordslist.Name.Length < 2)
-                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "The Name must be at least 2 characters long!"));
+                int listSameIdCount = entity.RecordsLists.Where(f => f.Id == recordslist.Id).Count();
 
-                if (recordslist.Name.Length > 30)
-                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "The length of Name must be less than 30 characters!"));
+                if (listSameIdCount > 1)
+                    errorList.Add(new ErrorModel("id", null, "There is already a list with such Id!"));
 
-                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
+                int listSameNameCount = entity.Fields.Where(f => f.Name == recordslist.Name).Count();
 
-                Match match = Regex.Match(recordslist.Name, pattern);
-                if (!match.Success || match.Value != recordslist.Name.Trim())
-                    errorList.Add(new ErrorModel("recordsLists.name", recordslist.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                if (listSameNameCount > 1)
+                    errorList.Add(new ErrorModel("name", null, "There is already a list with such Name!"));
             }
 
-            if (string.IsNullOrWhiteSpace(recordslist.Label))
-                errorList.Add(new ErrorModel("recordsLists.label", recordslist.Label, "Label is required!"));
-            else
-            {
-                //TODO check if we need this validation
+            errorList.AddRange(ValidationUtility.ValidateName(recordslist.Name));
 
-                if (recordslist.Label.Length > 50)
-                    errorList.Add(new ErrorModel("recordsLists.label", recordslist.Label, "The length of Label must be less than 50 characters!"));
-                /*
-                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
-
-                Match match = Regex.Match(view.Label, pattern);
-                if (!match.Success || match.Value != view.Label.Trim())
-                    errorList.Add(new ErrorModel("views.label", view.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-                */
-            }
+            errorList.AddRange(ValidationUtility.ValidateLabel(recordslist.Label));
 
             if (recordslist.Filters != null && recordslist.Filters.Count > 0)
             {
@@ -573,41 +488,24 @@ namespace WebVella.ERP
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             if (!recordView.Id.HasValue || recordView.Id.Value == Guid.Empty)
-                errorList.Add(new ErrorModel("recordViewLists.id", null, "Id is required!"));
+                errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
-            if (string.IsNullOrWhiteSpace(recordView.Name))
-                errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "Name is required!"));
-            else
+            if (checkId)
             {
-                if (recordView.Name.Length < 2)
-                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "The Name must be at least 2 characters long!"));
+                int viewSameIdCount = entity.RecordsLists.Where(f => f.Id == recordView.Id).Count();
 
-                if (recordView.Name.Length > 30)
-                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "The length of Name must be less than 30 characters!"));
+                if (viewSameIdCount > 1)
+                    errorList.Add(new ErrorModel("id", null, "There is already a view with such Id!"));
 
-                string pattern = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
+                int viewSameNameCount = entity.Fields.Where(f => f.Name == recordView.Name).Count();
 
-                Match match = Regex.Match(recordView.Name, pattern);
-                if (!match.Success || match.Value != recordView.Name.Trim())
-                    errorList.Add(new ErrorModel("recordViewLists.name", recordView.Name, "Name can only contains underscores and alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                if (viewSameNameCount > 1)
+                    errorList.Add(new ErrorModel("name", null, "There is already a view with such Name!"));
             }
 
-            if (string.IsNullOrWhiteSpace(recordView.Label))
-                errorList.Add(new ErrorModel("recordViewLists.label", recordView.Label, "Label is required!"));
-            else
-            {
-                //TODO check if we need this validation
+            errorList.AddRange(ValidationUtility.ValidateName(recordView.Name));
 
-                if (recordView.Label.Length > 50)
-                    errorList.Add(new ErrorModel("recordViewLists.label", recordView.Label, "The length of Label must be less than 50 characters!"));
-                /*
-                string pattern = @"[A-Za-z][A-Za-z0-9\s_.-]*";
-
-                Match match = Regex.Match(form.Label, pattern);
-                if (!match.Success || match.Value != form.Label.Trim())
-                    errorList.Add(new ErrorModel("recordViewLists.label", form.Label, "Label can only contains underscores, dashes, dots, spaces and alphanumeric characters.!"));
-               */
-            }
+            errorList.AddRange(ValidationUtility.ValidateLabel(recordView.Label));
 
             foreach (var field in recordView.Fields)
             {
@@ -654,7 +552,7 @@ namespace WebVella.ERP
             entity.Id = storageEntity.Id;
             entity.Name = storageEntity.Name;
             entity.Label = storageEntity.Label;
-            entity.PluralLabel = storageEntity.PluralLabel;
+            entity.LabelPlural = storageEntity.LabelPlural;
             entity.System = storageEntity.System;
             entity.IconName = storageEntity.IconName;
             entity.Weight = storageEntity.Weight;
@@ -751,7 +649,7 @@ namespace WebVella.ERP
             storageEntity.Id = entity.Id.Value;
             storageEntity.Name = entity.Name;
             storageEntity.Label = entity.Label;
-            storageEntity.PluralLabel = entity.PluralLabel;
+            storageEntity.LabelPlural = entity.LabelPlural;
             storageEntity.System = entity.System.Value;
             storageEntity.IconName = entity.IconName;
             storageEntity.Weight = entity.Weight.Value;
@@ -881,6 +779,8 @@ namespace WebVella.ERP
                     return response;
                 }
 
+                //TODO: create records collection
+
             }
             catch (Exception e)
             {
@@ -928,7 +828,7 @@ namespace WebVella.ERP
                 IStorageEntity storageEntity = EntityRepository.Read(entity.Id.Value);
 
                 storageEntity.Label = entity.Label;
-                storageEntity.PluralLabel = entity.PluralLabel;
+                storageEntity.LabelPlural = entity.LabelPlural;
                 storageEntity.System = entity.System.Value;
                 storageEntity.IconName = entity.IconName;
                 storageEntity.Weight = entity.Weight.Value;
@@ -985,8 +885,8 @@ namespace WebVella.ERP
 
                 if (inputEntity.Label != null)
                     entity.Label = inputEntity.Label;
-                if (inputEntity.PluralLabel != null)
-                    entity.PluralLabel = inputEntity.PluralLabel;
+                if (inputEntity.LabelPlural != null)
+                    entity.LabelPlural = inputEntity.LabelPlural;
                 if (inputEntity.System != null)
                     entity.System = inputEntity.System;
                 if (inputEntity.IconName != null)
@@ -1060,6 +960,8 @@ namespace WebVella.ERP
                     response.Errors.Add(new ErrorModel("id", id.ToString(), "Entity with such Id does not exist!"));
                     return response;
                 }
+
+                //TODO: Delete records and delete records of related entities
 
                 EntityRepository.Delete(id);
             }
@@ -1303,7 +1205,6 @@ namespace WebVella.ERP
                 field = new PasswordField();
                 ((PasswordField)field).MaxLength = ((IStoragePasswordField)storageField).MaxLength;
                 ((PasswordField)field).MaskType = ((IStoragePasswordField)storageField).MaskType;
-                ((PasswordField)field).MaskCharacter = ((IStoragePasswordField)storageField).MaskCharacter;
             }
             else if (storageField is IStoragePercentField)
             {
@@ -1324,6 +1225,7 @@ namespace WebVella.ERP
             {
                 field = new GuidField();
                 ((GuidField)field).DefaultValue = ((IStorageGuidField)storageField).DefaultValue;
+                ((GuidField)field).GenerateNewId = ((IStorageGuidField)storageField).GenerateNewId;
             }
             else if (storageField is IStorageSelectField)
             {
@@ -1462,7 +1364,6 @@ namespace WebVella.ERP
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PasswordField));
                 ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength.Value;
                 ((IStoragePasswordField)storageField).MaskType = ((PasswordField)field).MaskType;
-                ((IStoragePasswordField)storageField).MaskCharacter = ((PasswordField)field).MaskCharacter.Value;
             }
             else if (field is PercentField)
             {
@@ -1483,6 +1384,7 @@ namespace WebVella.ERP
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(GuidField));
                 ((IStorageGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue.Value;
+                ((IStorageGuidField)storageField).GenerateNewId = ((GuidField)field).GenerateNewId.Value;
             }
             else if (field is SelectField)
             {
@@ -1799,8 +1701,6 @@ namespace WebVella.ERP
                         ((PasswordField)updatedField).Encrypted = ((PasswordField)field).Encrypted;
                     //if (((PasswordField)field).MaskType != null)
                     //    ((PasswordField)updatedField).MaskType = ((PasswordField)field).MaskType;
-                    if (((PasswordField)field).MaskCharacter != null)
-                        ((PasswordField)updatedField).MaskCharacter = ((PasswordField)field).MaskCharacter;
                 }
                 else if (updatedField is PercentField)
                 {
@@ -1826,6 +1726,8 @@ namespace WebVella.ERP
                 {
                     if (((GuidField)field).DefaultValue != null)
                         ((GuidField)updatedField).DefaultValue = ((GuidField)field).DefaultValue;
+                    if (((GuidField)field).GenerateNewId != null)
+                        ((GuidField)updatedField).GenerateNewId = ((GuidField)field).GenerateNewId;
                 }
                 else if (updatedField is SelectField)
                 {
@@ -2682,6 +2584,7 @@ namespace WebVella.ERP
             primaryKeyField.Auditable = false;
             primaryKeyField.System = true;
             primaryKeyField.DefaultValue = Guid.Empty;
+            primaryKeyField.GenerateNewId = true;
 
             fields.Add(primaryKeyField);
 
@@ -2699,6 +2602,7 @@ namespace WebVella.ERP
             createdBy.Auditable = false;
             createdBy.System = true;
             createdBy.DefaultValue = Guid.Empty;
+            primaryKeyField.GenerateNewId = false;
 
             fields.Add(createdBy);
 
@@ -2716,6 +2620,7 @@ namespace WebVella.ERP
             lastModifiedBy.Auditable = false;
             lastModifiedBy.System = true;
             lastModifiedBy.DefaultValue = Guid.Empty;
+            primaryKeyField.GenerateNewId = false;
 
             fields.Add(lastModifiedBy);
 
