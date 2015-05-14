@@ -21,7 +21,7 @@ namespace WebVella.ERP
             relationRepository = storageService.GetEntityRelationRepository();
             entityRepository = storageService.GetEntityRepository();
         }
-         
+
         #region <--- Validation --->
 
         private enum ValidationType
@@ -42,14 +42,14 @@ namespace WebVella.ERP
                 if (relation.Id == Guid.Empty)
                     errors.Add(new ErrorModel("id", null, "Id is required!"));
                 else if (relationRepository.Read(relation.Id) == null)
-                    errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity with such Id does not exist!"));
+                    errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id does not exist!"));
             }
             else if (validationType == ValidationType.Create)
             {
                 //if id is null, them we later will assing one before create process
                 //otherwise check if relation with same id already exists
                 if (relation.Id != Guid.Empty && (relationRepository.Read(relation.Id) != null))
-                    errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity with such Id already exist!"));
+                    errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id already exist!"));
 
             }
             else if (validationType == ValidationType.RelationsOnly)
@@ -74,13 +74,13 @@ namespace WebVella.ERP
                     {
                         //if relation with same name alfready exists
                         if (existingRelation != null)
-                            errors.Add(new ErrorModel("name", relation.Name, "Relation with such Name exists already!"));
+                            errors.Add(new ErrorModel("name", relation.Name, string.Format("Entity relation '{0}' exists already!", relation.Name)));
                     }
                     else if (validationType == ValidationType.Update)
                     {
                         //if relation with same name alfready and different Id already exists
                         if (existingRelation != null && existingRelation.Id != relation.Id)
-                            errors.Add(new ErrorModel("name", relation.Name, "Relation with such Name exists already!"));
+                            errors.Add(new ErrorModel("name", relation.Name, string.Format("Entity relation '{0}' exists already!", relation.Name)));
                     }
                 }
             }
@@ -93,11 +93,11 @@ namespace WebVella.ERP
             errors.AddRange(ValidationUtility.ValidateLabel(relation.Label));
 
             IStorageEntity originEntity = entityRepository.Read(relation.OriginEntityId);
-            IStorageEntity targetEntity = entityRepository.Read(relation.OriginEntityId);
+            IStorageEntity targetEntity = entityRepository.Read(relation.TargetEntityId);
             IStorageField originField = null;
             IStorageField targetField = null;
 
-            if (originEntity != null)
+            if (originEntity == null)
                 errors.Add(new ErrorModel("originEntity", relation.OriginEntityId.ToString(), "The origin entity do not exist."));
             else
             {
@@ -108,7 +108,7 @@ namespace WebVella.ERP
                     errors.Add(new ErrorModel("originField", relation.OriginFieldId.ToString(), "The origin field should be Unique Identifier (GUID) field."));
             }
 
-            if (targetEntity != null)
+            if (targetEntity == null)
                 errors.Add(new ErrorModel("targetEntity", relation.TargetEntityId.ToString(), "The target entity do not exist."));
             else
             {
@@ -258,11 +258,17 @@ namespace WebVella.ERP
             response.Timestamp = DateTime.UtcNow;
             response.Object = null;
 
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                response.Success = false;
+                response.Errors.Add(new ErrorModel("name", null, "The name argument is NULL."));
+                return response;
+            }
+
             try
             {
-                IStorageEntityRelation storageRelation = null;
-                if (!string.IsNullOrWhiteSpace(name))
-                    storageRelation = relationRepository.Read(name);
+                IStorageEntityRelation storageRelation = relationRepository.Read(name);
+                response.Success = false;
 
                 if (storageRelation != null)
                 {
@@ -272,7 +278,7 @@ namespace WebVella.ERP
                 }
                 else
                 {
-                    response.Success = false;
+                    response.Success = true;
                     response.Message = string.Format("The entity relation '{0}' does not exist!", name);
                 }
                 return response;
@@ -304,8 +310,8 @@ namespace WebVella.ERP
                 }
                 else
                 {
-                    response.Success = false;
-                    response.Message = string.Format("The entity relation '{0}' does not exist!", relationId );
+                    response.Success = true;
+                    response.Message = string.Format("The entity relation '{0}' does not exist!", relationId);
                 }
                 return response;
             }
@@ -353,7 +359,7 @@ namespace WebVella.ERP
             if (response.Errors.Count > 0)
             {
                 response.Success = false;
-                response.Message = "The entity was relation was not created. Validation error occurred!";
+                response.Message = "The entity relation was not created. Validation error occurred!";
                 return response;
             }
 
@@ -404,7 +410,7 @@ namespace WebVella.ERP
             if (response.Errors.Count > 0)
             {
                 response.Success = false;
-                response.Message = "The entity was relation was not updated. Validation error occurred!";
+                response.Message = "The entity relation was not updated. Validation error occurred!";
                 return response;
             }
 
@@ -476,6 +482,6 @@ namespace WebVella.ERP
                 return response;
             }
         }
-      
+
     }
 }

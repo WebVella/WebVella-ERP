@@ -22,24 +22,49 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
 		public IActionResult CreateSampleQueryDataStructure()
 		{
-            Guid recId = Guid.NewGuid();
+          
+            EntityManager em = new EntityManager(service.StorageService);
+            EntityRelationManager rm = new EntityRelationManager(service.StorageService);
+            
+           /* // create relation
+          var userEntity = em.ReadEntity("user");
+          var areaEntity = em.ReadEntity("area");
+          var roleEntity = em.ReadEntity("role");
 
-            EntityRecord record = new EntityRecord();
-            record["id"] = recId;
-            record["email"] = "test email";
-            RecordManager rm = new RecordManager(service);
-            rm.CreateRecord("user", record);
+          EntityRelation create = new EntityRelation();
+          create.Name = "area_user_create_by";
+          create.Label = "area_user_create_by label";
+          create.Description = "area_user_create_by description";
+          create.System = true;
+          create.OriginEntityId = areaEntity.Object.Id.Value;
+          create.OriginFieldId = areaEntity.Object.Fields.Single(x=>x.Name == "created_by").Id.Value;
+
+          create.TargetEntityId = userEntity.Object.Id.Value;
+          create.TargetFieldId = userEntity.Object.Fields.Single(x => x.Name == "id").Id.Value;
+
+          return DoResponse(rm.Create(create));
+          */
+
+            return DoResponse(rm.Read("area_user_create_by"));
+
+            // Guid recId = Guid.NewGuid();
+
+            // EntityRecord record = new EntityRecord();
+            // record["id"] = recId;
+            // record["email"] = "test email";
+            // RecordManager rm = new RecordManager(service);
+            // rm.CreateRecord("user", record);
 
 
 
-            var queryObject = EntityQuery.QueryEQ("id", recId );
-            EntityQuery query = new EntityQuery("user", "id,email", queryObject);
-            var result = rm.Find(query);
+            // var queryObject = EntityQuery.QueryEQ("id", recId );
+            // EntityQuery query = new EntityQuery("user", "id,email", queryObject);
+            // var result = rm.Find(query);
 
-           return Json(result);
+            //return Json(result);
         }
 
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
 		public IActionResult ExecuteSampleQuery()
 		{
 			QueryResponse response = new QueryResponse();
