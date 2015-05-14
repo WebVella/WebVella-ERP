@@ -3,6 +3,7 @@
     public interface IStorageService
     {
         IStorageSystemSettingsRepository GetSystemSettingsRepository();
+        IStorageEntityRelationRepository GetEntityRelationRepository();
         IStorageEntityRepository GetEntityRepository();
         IStorageRecordRepository GetRecordRepository();
     }
