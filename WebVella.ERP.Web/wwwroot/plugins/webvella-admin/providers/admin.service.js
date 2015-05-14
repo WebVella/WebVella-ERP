@@ -28,6 +28,8 @@
         serviceInstance.updateField = updateField;
         serviceInstance.deleteField = deleteField;
 
+        serviceInstance.getRelationsList = getRelationsList;
+
 
         //#region << Entity >>
 
@@ -225,6 +227,16 @@
         }
 
         //#endregion
+
+        //#region << Relations  >>
+        ///////////////////////
+        function getRelationsList(successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getRelationsList> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        //#endregion
+
 
         //#region << Aux methods >>
 
