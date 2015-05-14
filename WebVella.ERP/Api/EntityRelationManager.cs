@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
-using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
@@ -24,7 +21,7 @@ namespace WebVella.ERP
             relationRepository = storageService.GetEntityRelationRepository();
             entityRepository = storageService.GetEntityRepository();
         }
-
+         
         #region <--- Validation --->
 
         private enum ValidationType
@@ -154,7 +151,7 @@ namespace WebVella.ERP
             else if (validationType == ValidationType.Create)
             {
                 //validate there is no other already existing relation with same parameters
-                foreach( var rel in relationRepository.Read() )
+                foreach (var rel in relationRepository.Read())
                 {
                     if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
                         rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
@@ -216,32 +213,269 @@ namespace WebVella.ERP
 
             return errors;
         }
+
         #endregion
+
+        #region <--- Convert --->
+
+        private IStorageEntityRelation ConvertToStorage(EntityRelation relation)
+        {
+            var storageRelation = relationRepository.Empty();
+            storageRelation.Id = relation.Id;
+            storageRelation.Name = relation.Name;
+            storageRelation.Label = relation.Label;
+            storageRelation.Description = relation.Description;
+            storageRelation.System = relation.System;
+            storageRelation.RelationType = relation.RelationType;
+            storageRelation.OriginEntityId = relation.OriginEntityId;
+            storageRelation.OriginFieldId = relation.OriginFieldId;
+            storageRelation.TargetEntityId = relation.TargetEntityId;
+            storageRelation.TargetFieldId = relation.TargetFieldId;
+            return storageRelation;
+        }
+
+        private EntityRelation ConvertFromStorage(IStorageEntityRelation storageRelation)
+        {
+            var relation = new EntityRelation();
+            relation.Id = storageRelation.Id;
+            relation.Name = storageRelation.Name;
+            relation.Label = storageRelation.Label;
+            relation.Description = storageRelation.Description;
+            relation.System = storageRelation.System;
+            relation.RelationType = storageRelation.RelationType;
+            relation.OriginEntityId = storageRelation.OriginEntityId;
+            relation.OriginFieldId = storageRelation.OriginFieldId;
+            relation.TargetEntityId = storageRelation.TargetEntityId;
+            relation.TargetFieldId = storageRelation.TargetFieldId;
+            return relation;
+        }
+
+        #endregion
+
+        public EntityRelationResponse Read(string name)
+        {
+            EntityRelationResponse response = new EntityRelationResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Object = null;
+
+            try
+            {
+                IStorageEntityRelation storageRelation = null;
+                if (!string.IsNullOrWhiteSpace(name))
+                    storageRelation = relationRepository.Read(name);
+
+                if (storageRelation != null)
+                {
+                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Success = true;
+                    response.Message = "The entity relation was successfully returned!";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = string.Format("The entity relation '{0}' does not exist!", name);
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#endif
+                return response;
+            }
+        }
+
+        public EntityRelationResponse Read(Guid relationId)
+        {
+            EntityRelationResponse response = new EntityRelationResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Object = null;
+
+            try
+            {
+                var storageRelation = relationRepository.Read(relationId);
+                if (storageRelation != null)
+                {
+                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Success = true;
+                    response.Message = "The entity relation was successfully returned!";
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = string.Format("The entity relation '{0}' does not exist!", relationId );
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#endif
+                return response;
+            }
+        }
+
+        public EntityRelationListResponse Read()
+        {
+            EntityRelationListResponse response = new EntityRelationListResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Object = null;
+
+            try
+            {
+                response.Object = relationRepository.Read().Select(x => ConvertFromStorage(x)).ToList();
+                response.Success = true;
+                response.Message = null;
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#endif
+                return response;
+            }
+        }
+
+        public EntityRelationResponse Create(EntityRelation relation)
+        {
+            EntityRelationResponse response = new EntityRelationResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Object = relation;
+            response.Errors = ValidateRelation(relation, ValidationType.Create);
+            if (response.Errors.Count > 0)
+            {
+                response.Success = false;
+                response.Message = "The entity was relation was not created. Validation error occurred!";
+                return response;
+            }
+
+
+            try
+            {
+                var storageRelation = ConvertToStorage(relation);
+
+                if (storageRelation.Id == Guid.Empty)
+                    storageRelation.Id = Guid.NewGuid();
+
+                var success = relationRepository.Create(storageRelation);
+
+                if (success)
+                {
+                    response.Success = true;
+                    response.Message = "The entity relation was successfully created!";
+                    return response;
+                }
+                else
+                {
+
+                    response.Success = false;
+                    response.Message = "The entity relation was not created! An internal error occurred!";
+                    return response;
+                }
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = relation;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity relation was not created. An internal error occurred!";
+#endif
+                return response;
+            }
+        }
+
+        public EntityRelationResponse Update(EntityRelation relation)
+        {
+            EntityRelationResponse response = new EntityRelationResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Object = relation;
+            response.Errors = ValidateRelation(relation, ValidationType.Update);
+            if (response.Errors.Count > 0)
+            {
+                response.Success = false;
+                response.Message = "The entity was relation was not updated. Validation error occurred!";
+                return response;
+            }
+
+            try
+            {
+                var storageRelation = ConvertToStorage(relation);
+                var success = relationRepository.Update(storageRelation);
+
+                if (success)
+                {
+                    response.Success = true;
+                    response.Message = "The entity relation was successfully updated!";
+                    return response;
+                }
+                else
+                {
+
+                    response.Success = false;
+                    response.Message = "The entity relation was not updated! An internal error occurred!";
+                    return response;
+                }
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = relation;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity relation was not updated. An internal error occurred!";
+#endif
+                return response;
+            }
+        }
+
+        public EntityRelationResponse Delete(Guid relationId)
+        {
+            EntityRelationResponse response = new EntityRelationResponse();
+            response.Timestamp = DateTime.UtcNow;
+            response.Success = false;
+            response.Object = null;
+
+            try
+            {
+
+                var storageRelation = relationRepository.Read(relationId);
+                if (storageRelation != null)
+                {
+                    relationRepository.Delete(relationId);
+                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Success = true;
+                    response.Message = "The entity relation was deleted!";
+                    return response;
+                }
+                else
+                {
+                    response.Message = string.Format("The entity relation was not deleted! No instance with specified id ({0}) was found!", relationId);
+                    return response;
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                response.Message = string.Format("Relation ID: {0}, /r/nMessage:{1}/r/nStackTrace:{2}", relationId, e.Message, e.StackTrace);
+#else
+                response.Message = "The entity relation was not delete. An internal error occurred!";
+#endif
+                return response;
+            }
+        }
+      
     }
 }
-
-/*
- public enum EntityRelationType
-    {
-        /// <summary>
-        /// 1. Origin field should be an unique, required Guid field
-        /// 2. Target field should be an unique, required Guid field
-        /// 3. Target field record values should match one origin record field values
-        /// </summary>
-        OneToOne = 1,
-
-        /// <summary>
-        /// 1. Origin field should be an unique,required Guid field
-        /// 2. Target field should be a Guid field 
-        /// 3. Target field record values should match atleast one origin record field values or null if field value is not required
-        /// </summary>
-        OneToMany = 2,
-
-        /// <summary>
-        /// 1. Origin field should be an unique, required Guid field
-        /// 2. Target field should be an unique, required Guid field
-        /// </summary>
-        ManyToMany = 3
-    }
-
-    */

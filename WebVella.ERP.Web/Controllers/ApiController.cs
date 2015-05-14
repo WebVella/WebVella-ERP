@@ -89,6 +89,61 @@ namespace WebVella.ERP.Web.Controllers
 
         #endregion
 
+
+        #region << Relation Meta >>
+        // Get all entity relation definitions
+        // GET: api/v1/en_US/meta/relation/list/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
+        public IActionResult GetEntityRelationMetaList()
+        {
+            return DoResponse(new EntityRelationManager(service.StorageService).Read());
+        }
+
+        // Get entity relation meta
+        // GET: api/v1/en_US/meta/relation/{name}/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/{name}")]
+        public IActionResult GetEntityRelationMeta(string name)
+        {
+            return DoResponse(new EntityRelationManager(service.StorageService).Read(name));
+        }
+
+
+        // Create an entity relation
+        // POST: api/v1/en_US/meta/relation
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/relation")]
+        public IActionResult CreateEntityRelation([FromBody]JObject submitObj)
+        {
+            try
+            {
+                var relation = submitObj.ToObject<EntityRelation>();
+                return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
+            }
+            catch(Exception e)
+            {
+                return DoBadRequestResponse(new EntityRelationResponse(), null, e);
+            }
+        }
+
+        // Delete an entity relation
+        // DELETE: api/v1/en_US/meta/relation/{idToken}
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/relation/{idToken}")]
+        public IActionResult DeleteEntityRelation(string idToken)
+        {
+            Guid newGuid;
+            Guid id = Guid.Empty;
+            if (Guid.TryParse(idToken, out newGuid))
+            {
+                return DoResponse(new EntityRelationManager(service.StorageService).Delete(newGuid));
+            }
+            else
+            {
+                return DoBadRequestResponse(new EntityRelationResponse(), "The entity relation Id should be a valid Guid", null);
+            }
+            
+        }
+
+        #endregion
+
     }
 }
 
