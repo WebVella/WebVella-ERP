@@ -294,9 +294,6 @@ namespace WebVella.ERP
 
     public class FieldList
     {
-        [JsonProperty(PropertyName = "offset")]
-        public Guid Offset { get; set; }
-
         [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
 
