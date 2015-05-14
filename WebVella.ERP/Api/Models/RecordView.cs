@@ -36,9 +36,6 @@ namespace WebVella.ERP.Api.Models
 
     public class RecordViewCollection
     {
-        [JsonProperty(PropertyName = "offset")]
-        public Guid Offset { get; set; }
-
         [JsonProperty(PropertyName = "forms")]
         public List<RecordView> Forms { get; set; }
     }

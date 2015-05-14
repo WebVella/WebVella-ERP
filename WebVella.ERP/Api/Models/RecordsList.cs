@@ -55,9 +55,6 @@ namespace WebVella.ERP.Api.Models
 
     public class RecordsListCollection
     {
-        [JsonProperty(PropertyName = "offset")]
-        public Guid Offset { get; set; }
-
         [JsonProperty(PropertyName = "views")]
         public List<RecordsList> Views { get; set; }
     }
