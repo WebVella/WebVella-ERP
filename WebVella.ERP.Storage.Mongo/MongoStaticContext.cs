@@ -76,6 +76,8 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoSelectField>();
             BsonClassMap.RegisterClassMap<MongoTextField>();
             BsonClassMap.RegisterClassMap<MongoUrlField>();
+            BsonClassMap.RegisterClassMap<MongoMultiSelectFieldOption>();
+            BsonClassMap.RegisterClassMap<MongoSelectFieldOption>();
         }
 
 		/// <summary>
