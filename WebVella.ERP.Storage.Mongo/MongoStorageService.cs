@@ -16,6 +16,11 @@
         {
             return new MongoEntityRepository();
         }
+
+        public IStorageEntityRelationRepository GetEntityRelationRepository()
+        {
+            return new MongoEntityRelationRepository();
+        }
     }
 
    
