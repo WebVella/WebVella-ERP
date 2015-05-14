@@ -18,19 +18,6 @@ namespace WebVella.ERP.Api.Models
         public GuidField(Field field) : base(field)
         {
         }
-
-        public GuidField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = (Guid?)property.Value;
-                        break;
-                }
-            }
-        }
     }
 
     public class PrimaryKeyFieldMeta : GuidField, IFieldMeta

@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -13,7 +15,7 @@ namespace WebVella.ERP.Api.Models
         public string DefaultValue { get; set; }
 
         [JsonProperty(PropertyName = "options")]
-        public IDictionary<string, string> Options { get; set; }
+        public List<SelectFieldOption> Options { get; set; }
 
         public SelectField()
         {
@@ -23,20 +25,41 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
-        public SelectField(InputField field) : base(field)
+        public static List<SelectFieldOption> ConvertOptions(IList<IStorageSelectFieldOption> storageOptions)
         {
-            foreach (var property in field.GetProperties())
+            List<SelectFieldOption> options = new List<SelectFieldOption>();
+
+            foreach (var storageOption in storageOptions)
             {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                    case "options":
-                        Options = (IDictionary<string, string>)property.Value;
-                        break;
-                }
+                SelectFieldOption option = new SelectFieldOption(storageOption);
+                options.Add(option);
             }
+
+            return options;
+        }
+    }
+
+    public class SelectFieldOption
+    {
+        [JsonProperty(PropertyName = "key")]
+        public string Key { get; set; }
+
+        [JsonProperty(PropertyName = "value")]
+        public string Value { get; set; }
+
+        public SelectFieldOption()
+        {
+
+        }
+
+        public SelectFieldOption(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public SelectFieldOption(IStorageSelectFieldOption option) : this(option.Key, option.Value)
+        {
         }
     }
 

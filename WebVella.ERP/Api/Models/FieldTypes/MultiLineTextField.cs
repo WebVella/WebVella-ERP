@@ -24,25 +24,6 @@ namespace WebVella.ERP.Api.Models
         public MultiLineTextField(Field field) : base(field)
         {
         }
-
-        public MultiLineTextField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                    case "maxlength":
-                        MaxLength = Convert.ToInt32(property.Value);
-                        break;
-                    case "visiblelinenumber":
-                        VisibleLineNumber = Convert.ToInt32(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class MultiLineTextFieldMeta : MultiLineTextField, IFieldMeta

@@ -18,19 +18,6 @@ namespace WebVella.ERP.Api.Models
         public ImageField(Field field) : base(field)
         {
         }
-
-        public ImageField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class ImageFieldMeta : ImageField, IFieldMeta
