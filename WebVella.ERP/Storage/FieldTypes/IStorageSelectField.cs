@@ -6,6 +6,13 @@ namespace WebVella.ERP.Storage
     {
         string DefaultValue { get; set; }
 
-        IDictionary<string, string> Options { get; set; }
+        IList<IStorageSelectFieldOption> Options { get; set; }
+    }
+
+    public interface IStorageSelectFieldOption
+    {
+        string Key { get; set; }
+
+        string Value { get; set; }
     }
 }

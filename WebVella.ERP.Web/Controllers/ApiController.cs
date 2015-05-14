@@ -45,6 +45,26 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).CreateEntity(submitObj));
         }
 
+        // Create an entity
+        // POST: api/v1/en_US/meta/entity
+        [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
+        public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(StringId, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            InputEntity inputEntity = submitObj.ToObject<InputEntity>();
+
+            return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, inputEntity));
+        }
+
+
         // Delete an entity
         // DELETE: api/v1/en_US/meta/entity/{id}
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
@@ -73,7 +93,7 @@ namespace WebVella.ERP.Web.Controllers
 
         #region << Entity Fields >>
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
-        public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
+        public IActionResult CreateField(string Id, [FromBody]JObject submitObj)
         {
             FieldResponse response = new FieldResponse();
 
@@ -86,6 +106,51 @@ namespace WebVella.ERP.Web.Controllers
 
             return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.ConvertField(submitObj)));
         }
+
+        [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+        public IActionResult UpdateField(string Id,string FieldId, [FromBody]JObject submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            Guid fieldId;
+            if (!Guid.TryParse(FieldId, out fieldId))
+            {
+                response.Errors.Add(new ErrorModel("id", FieldId, "FieldId parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).UpdateField(entityId, Field.ConvertField(submitObj)));
+        }
+
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
+        public IActionResult DeleteField(string Id, string FieldId)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid entityId;
+            if (!Guid.TryParse(Id, out entityId))
+            {
+                response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            Guid fieldId;
+            if (!Guid.TryParse(FieldId, out fieldId))
+            {
+                response.Errors.Add(new ErrorModel("id", FieldId, "FieldId parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).DeleteField(entityId, fieldId));
+        }
+
 
         #endregion
 

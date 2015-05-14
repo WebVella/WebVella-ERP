@@ -24,25 +24,6 @@ namespace WebVella.ERP.Api.Models
         public DateTimeField(Field field) : base(field)
         {
         }
-
-        public DateTimeField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToDateTime(property.Value);
-                        break;
-                    case "format":
-                        Format = Convert.ToString(property.Value);
-                        break;
-                    case "usecurrenttimeasdefaultvalue":
-                        UseCurrentTimeAsDefaultValue = Convert.ToBoolean(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class DateTimeFieldMeta : DateTimeField, IFieldMeta

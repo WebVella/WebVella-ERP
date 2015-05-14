@@ -27,29 +27,6 @@ namespace WebVella.ERP.Api.Models
         public CurrencyField(Field field) : base(field)
         {
         }
-
-        public CurrencyField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "minvalue":
-                        MinValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "maxvalue":
-                        MaxValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "currency":
-                        Currency = (CurrencyTypes)property.Value;
-                        break;
-                }
-            }
-        }
-
     }
 
     public class CurrencyFieldMeta : CurrencyField, IFieldMeta

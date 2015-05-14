@@ -68,11 +68,11 @@
 
                         <label class="col-sm-2 control-label" for="label">Label</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" editable-text="contentData.entity.label">{{ contentData.entity.label || "empty" }}</a>
+                            <a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label || "empty" }}</a>
                         </div>
                         <label class="col-sm-2 control-label" for="pluralLabel">Plural Label</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel">{{ contentData.entity.pluralLabel || "empty" }}</a>
+                            <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel"  onbeforesave="contentData.fieldUpdate('pluralLabel', $data)">{{ contentData.entity.pluralLabel || "empty" }}</a>
                         </div>
 
                     </div>
@@ -81,11 +81,11 @@
                     <div class="row">
                         <label class="col-sm-2 control-label" for="iconName">Icon name</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "empty" }}</a>
+                            <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName"   onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "empty" }}</a>
                         </div>
                         <label class="col-sm-2 control-label" for="weight">Weight</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" editable-text="contentData.entity.weight">{{ contentData.entity.weight || "empty" }}</a>
+                            <a href="javascript:void(0)" editable-text="contentData.entity.weight"   onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "empty" }}</a>
                         </div>
 
                     </div>
@@ -158,7 +158,7 @@
     <div class="modal-body">
         <div class="alert alert-danger" ng-bind="modalData.errorMessage" ng-show="modalData.hasError"></div>
         <div ng-hide="modalData.hasError">
-            <h3>Are you sure that you need this entity deleted?</h3>
+            <h4>Are you sure that you need this entity deleted?</h4>
             <div class="alert alert-warning">By deleting the <b>{{modalData.entity.label}}</b> entity you will also <b>delete all its records</b>?</div>
         </div>
     </div>

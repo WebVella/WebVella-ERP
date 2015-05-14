@@ -18,19 +18,6 @@ namespace WebVella.ERP.Api.Models
         public FileField(Field field) : base(field)
         {
         }
-
-        public FileField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class FileFieldMeta : FileField, IFieldMeta
