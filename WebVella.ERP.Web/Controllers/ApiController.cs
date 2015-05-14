@@ -59,7 +59,15 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            InputEntity inputEntity = submitObj.ToObject<InputEntity>();
+            InputEntity inputEntity = new InputEntity(); ;
+            try
+            {
+                inputEntity = submitObj.ToObject<InputEntity>();
+            }
+            catch(Exception e)
+            {
+                return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+            }
 
             return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, inputEntity));
         }
@@ -104,7 +112,17 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, Field.ConvertField(submitObj)));
+            Field field = new GuidField();
+            try
+            {
+                field = Field.ConvertField(submitObj));
+            }
+            catch (Exception e)
+            {
+                return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, field));
         }
 
         [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
@@ -126,7 +144,17 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            return DoResponse(new EntityManager(service.StorageService).UpdateField(entityId, Field.ConvertField(submitObj)));
+            Field field = new GuidField();
+            try
+            {
+                field = Field.ConvertField(submitObj));
+            }
+            catch (Exception e)
+            {
+                return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+            }
+
+            return DoResponse(new EntityManager(service.StorageService).UpdateField(entityId, field));
         }
 
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
