@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-
+using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -58,5 +58,18 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "targetFieldId")]
         public Guid TargetFieldId { get; set; }
+    }
+
+
+    public class EntityRelationResponse : BaseResponseModel
+    {
+        [JsonProperty(PropertyName = "object")]
+        public EntityRelation Object { get; set; }
+    }
+
+    public class EntityRelationListResponse : BaseResponseModel
+    {
+        [JsonProperty(PropertyName = "object")]
+        public List<EntityRelation> Object { get; set; }
     }
 }
