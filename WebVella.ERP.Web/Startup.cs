@@ -9,6 +9,7 @@ using Microsoft.Framework.DependencyInjection;
 using WebVella.ERP;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Storage.Mongo;
+using WebVella.ERP.Api.Models.AutoMapper;
 
 namespace WebVella.ERP.Web
 {
@@ -27,10 +28,15 @@ namespace WebVella.ERP.Web
 
             services.AddSingleton<IStorageService, MongoStorageService>();
             services.AddSingleton<IERPService, ERPService>();
+
+            //AutoMapperConfiguration.Initialize
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+             IERPService service = app.ApplicationServices.GetService<IERPService>();
+             AutoMapperConfiguration.Configure(service);
+
             //app.Run(async context =>
             //{
             //    IERPService service = app.ApplicationServices.GetService<IERPService>();

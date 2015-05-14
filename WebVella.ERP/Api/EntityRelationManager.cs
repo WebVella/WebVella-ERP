@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
+using WebVella.ERP.Api.Models.AutoMapper;
 
 namespace WebVella.ERP
 {
@@ -22,7 +23,7 @@ namespace WebVella.ERP
             entityRepository = storageService.GetEntityRepository();
         }
 
-        #region <--- Validation --->
+        #region << Validation >>
 
         private enum ValidationType
         {
@@ -216,42 +217,6 @@ namespace WebVella.ERP
 
         #endregion
 
-        #region <--- Convert --->
-
-        private IStorageEntityRelation ConvertToStorage(EntityRelation relation)
-        {
-            var storageRelation = storageService.GetObjectFactory().CreateEmptyEntityRelationObject();
-            storageRelation.Id = relation.Id;
-            storageRelation.Name = relation.Name;
-            storageRelation.Label = relation.Label;
-            storageRelation.Description = relation.Description;
-            storageRelation.System = relation.System;
-            storageRelation.RelationType = relation.RelationType;
-            storageRelation.OriginEntityId = relation.OriginEntityId;
-            storageRelation.OriginFieldId = relation.OriginFieldId;
-            storageRelation.TargetEntityId = relation.TargetEntityId;
-            storageRelation.TargetFieldId = relation.TargetFieldId;
-            return storageRelation;
-        }
-
-        private EntityRelation ConvertFromStorage(IStorageEntityRelation storageRelation)
-        {
-            var relation = new EntityRelation();
-            relation.Id = storageRelation.Id;
-            relation.Name = storageRelation.Name;
-            relation.Label = storageRelation.Label;
-            relation.Description = storageRelation.Description;
-            relation.System = storageRelation.System;
-            relation.RelationType = storageRelation.RelationType;
-            relation.OriginEntityId = storageRelation.OriginEntityId;
-            relation.OriginFieldId = storageRelation.OriginFieldId;
-            relation.TargetEntityId = storageRelation.TargetEntityId;
-            relation.TargetFieldId = storageRelation.TargetFieldId;
-            return relation;
-        }
-
-        #endregion
-
         public EntityRelationResponse Read(string name)
         {
             EntityRelationResponse response = new EntityRelationResponse();
@@ -272,7 +237,7 @@ namespace WebVella.ERP
 
                 if (storageRelation != null)
                 {
-                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was successfully returned!";
                 }
@@ -304,7 +269,7 @@ namespace WebVella.ERP
                 var storageRelation = relationRepository.Read(relationId);
                 if (storageRelation != null)
                 {
-                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was successfully returned!";
                 }
@@ -333,7 +298,7 @@ namespace WebVella.ERP
 
             try
             {
-                response.Object = relationRepository.Read().Select(x => ConvertFromStorage(x)).ToList();
+                response.Object = relationRepository.Read().Select(x => x.MapTo<EntityRelation>() ).ToList();
                 response.Success = true;
                 response.Message = null;
                 return response;
@@ -363,10 +328,9 @@ namespace WebVella.ERP
                 return response;
             }
 
-
             try
             {
-                var storageRelation = ConvertToStorage(relation);
+                var storageRelation = relation.MapTo<IStorageEntityRelation>();
 
                 if (storageRelation.Id == Guid.Empty)
                     storageRelation.Id = Guid.NewGuid();
@@ -416,7 +380,7 @@ namespace WebVella.ERP
 
             try
             {
-                var storageRelation = ConvertToStorage(relation);
+                var storageRelation = relation.MapTo<IStorageEntityRelation>();//ConvertToStorage(relation);
                 var success = relationRepository.Update(storageRelation);
 
                 if (success)
@@ -461,7 +425,7 @@ namespace WebVella.ERP
                 if (storageRelation != null)
                 {
                     relationRepository.Delete(relationId);
-                    response.Object = ConvertFromStorage(storageRelation);
+                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was deleted!";
                     return response;

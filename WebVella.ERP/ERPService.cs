@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
-using Newtonsoft.Json.Linq;
-using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
     public class ERPService : IERPService
     {
-        public static IERPService Current
-        {
-            get; set;
-        }
-
         public IStorageService StorageService
         {
             get; set;
@@ -24,9 +16,6 @@ namespace WebVella.ERP
 
         public ERPService(IStorageService storage)
         {
-            if (Current == null)
-                Current = this;
-
             StorageService = storage;
         }
 
@@ -806,7 +795,7 @@ namespace WebVella.ERP
             firstRecordList.Id = Guid.NewGuid();
             firstRecordList.Name = "SearchPopupviewname";
             firstRecordList.Label = "Search Popup view label";
-            firstRecordList.Type = Api.ViewTypes.SearchPopup;
+            firstRecordList.Type = Api.RecordsListTypes.SearchPopup;
 
             firstRecordList.Filters = new List<RecordsListFilter>();
 
@@ -854,7 +843,7 @@ namespace WebVella.ERP
 
             field1.Id = entity.Fields[1].Id.Value;
             field1.EntityId = entity.Id;
-            field1.Column = Api.FormColumns.Left;
+            field1.Column = Api.RecordViewColumns.Left;
             field1.Position = 1;
 
             recordView.Fields.Add(field1);
@@ -863,7 +852,7 @@ namespace WebVella.ERP
 
             field2.Id = entity.Fields[5].Id.Value;
             field2.EntityId = entity.Id;
-            field2.Column = Api.FormColumns.Right;
+            field2.Column = Api.RecordViewColumns.Right;
             field2.Position = 2;
 
             recordView.Fields.Add(field2);

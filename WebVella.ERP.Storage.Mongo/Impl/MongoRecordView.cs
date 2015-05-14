@@ -27,7 +27,7 @@ namespace WebVella.ERP.Storage.Mongo
 
         public Guid EntityId { get; set; }
 
-        public FormColumns Column { get; set; }
+        public RecordViewColumns Column { get; set; }
 
         public int Position { get; set; }
     }
