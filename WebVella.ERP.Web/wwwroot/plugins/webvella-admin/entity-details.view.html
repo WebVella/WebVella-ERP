@@ -59,8 +59,7 @@
                         <div class="col-sm-4">
                             <span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
                             <span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
-</div>
-
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -72,20 +71,19 @@
                         </div>
                         <label class="col-sm-2 control-label" for="pluralLabel">Plural Label</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel"  onbeforesave="contentData.fieldUpdate('pluralLabel', $data)">{{ contentData.entity.pluralLabel || "empty" }}</a>
+                            <a href="javascript:void(0)" editable-text="contentData.entity.pluralLabel" onbeforesave="contentData.fieldUpdate('pluralLabel', $data)">{{ contentData.entity.pluralLabel || "empty" }}</a>
                         </div>
-
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
                         <label class="col-sm-2 control-label" for="iconName">Icon name</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName"   onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "empty" }}</a>
+                            <a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "empty" }}</a>
                         </div>
                         <label class="col-sm-2 control-label" for="weight">Weight</label>
                         <div class="col-sm-4 position-relative">
-                            <a href="javascript:void(0)" editable-text="contentData.entity.weight"   onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "empty" }}</a>
+                            <a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "empty" }}</a>
                         </div>
 
                     </div>
@@ -108,7 +106,7 @@
                                     <tr ng-repeat="role in contentData.entity.roles">
                                         <td>{{role.label}}</td>
                                         <td class="text-center position-relative">
-                                            <a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="permission granted">
+                                            <a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="permission granted" onbeforesave="contentData.fieldUpdate('recordPermissions', { canRead: $data, canCreate: role.canCreate, canUpdate: role.canUpdate, canDelete: role.canDelete })">
                                                 <i ng-show="role.canRead" class='fa fa-fw fa-check go-green'></i>
                                                 <i ng-show="!role.canRead" class='fa fa-fw fa-close go-red'></i>
                                             </a>
