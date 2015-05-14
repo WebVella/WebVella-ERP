@@ -27,28 +27,6 @@ namespace WebVella.ERP.Api.Models
         public PercentField(Field field) : base(field)
         {
         }
-
-        public PercentField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "minvalue":
-                        MinValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "maxvalue":
-                        MaxValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "decimalplaces":
-                        DecimalPlaces = Convert.ToByte(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class PercentFieldMeta : PercentField, IFieldMeta

@@ -114,10 +114,10 @@
     }
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList', 'webvellaAdminService'];
 
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedRolesList) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $modal, resolvedRolesList, webvellaAdminService) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -698,6 +698,27 @@
             contentData.entity.roles.push(role);
         }
 
+        contentData.patchObject = {};
+        contentData.fieldUpdate = function (key, data) {
+            contentData.patchObject = {};
+            contentData.patchObject[key] = data;
+            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+        }
+
+        function patchSuccessCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+            return true;
+        }
+        function patchFailedCallback(response) {
+            ngToast.create({
+                className: 'error',
+                content: '<h4>Error</h4><p>' + response.message + '</p>'
+            });
+            return false;
+        }
 
         activate();
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
@@ -730,9 +751,9 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
-            $timeout(function () {
+            $timeout(function() {
                 $state.go("webvella-admin-entities");
-            }, 0)
+            }, 0);
         }
 
         function errorCallback(response) {

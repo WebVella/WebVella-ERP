@@ -18,19 +18,6 @@ namespace WebVella.ERP.Api.Models
         public CheckboxField(Field field) : base(field)
         {
         }
-
-        public CheckboxField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToBoolean(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class CheckboxFieldMeta : CheckboxField, IFieldMeta

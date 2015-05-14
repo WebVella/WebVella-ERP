@@ -12,6 +12,7 @@
             "debugEnabled": true,
             "apiBaseUrl": "/api/v1/en_US/",
             "apiSandboxBaseUrl": "/sandbox/api",
+            "locale":"en_US"
         });
 })();
 
