@@ -2,6 +2,7 @@
 {
     public interface IStorageService
     {
+        IStorageObjectFactory GetObjectFactory();
         IStorageSystemSettingsRepository GetSystemSettingsRepository();
         IStorageEntityRelationRepository GetEntityRelationRepository();
         IStorageEntityRepository GetEntityRepository();

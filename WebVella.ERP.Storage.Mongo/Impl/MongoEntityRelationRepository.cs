@@ -11,15 +11,6 @@ namespace WebVella.ERP.Storage.Mongo
         /// 
         /// </summary>
         /// <returns></returns>
-        public IStorageEntityRelation Empty()
-        {
-            return new MongoEntityRelation();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<IStorageEntityRelation> Read()
         {
             return MongoStaticContext.Context.EntityRelations.Get().ToList<IStorageEntityRelation>();

@@ -2,6 +2,11 @@
 {
     public class MongoStorageService : IStorageService
     {
+        public IStorageObjectFactory GetObjectFactory()
+        {
+            return new MongoStorageObjectFactory();
+        }
+
         public IStorageSystemSettingsRepository GetSystemSettingsRepository()
         {
             return new MongoSystemSettingsRepository();

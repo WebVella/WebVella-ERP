@@ -220,7 +220,7 @@ namespace WebVella.ERP
 
         private IStorageEntityRelation ConvertToStorage(EntityRelation relation)
         {
-            var storageRelation = relationRepository.Empty();
+            var storageRelation = storageService.GetObjectFactory().CreateEmptyEntityRelationObject();
             storageRelation.Id = relation.Id;
             storageRelation.Name = relation.Name;
             storageRelation.Label = relation.Label;
