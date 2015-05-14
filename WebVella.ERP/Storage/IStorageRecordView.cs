@@ -10,7 +10,7 @@ namespace WebVella.ERP.Storage
 
         Guid EntityId { get; set; }
 
-        FormColumns Column { get; set; }
+        RecordViewColumns Column { get; set; }
 
         int Position { get; set; }
     }

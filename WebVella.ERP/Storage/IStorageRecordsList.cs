@@ -33,7 +33,7 @@ namespace WebVella.ERP.Storage
 
         string Label { get; set; }
 
-        ViewTypes Type { get; set; }
+        RecordsListTypes Type { get; set; }
 
         IList<IStorageRecordsListFilter> Filters { get; set; }
 
