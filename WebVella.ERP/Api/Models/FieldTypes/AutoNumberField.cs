@@ -1,10 +1,11 @@
 ﻿using System;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace WebVella.ERP.Api.Models
 {
-	public class AutoNumberField : Field
-	{
+    public class AutoNumberField : Field
+    {
         [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.AutoNumberField; } }
 
@@ -22,26 +23,7 @@ namespace WebVella.ERP.Api.Models
         }
 
         public AutoNumberField(Field field) : base(field)
-        {            
-        }
-
-        public AutoNumberField(InputField field) : base(field)
         {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "displayformat":
-                        DisplayFormat = Convert.ToString(property.Value);
-                        break;
-                    case "startingnumber":
-                        StartingNumber = Convert.ToDecimal(property.Value);
-                        break;
-                }
-            }
         }
     }
 
@@ -59,11 +41,11 @@ namespace WebVella.ERP.Api.Models
         public AutoNumberFieldMeta(Guid entityId, string entityName, AutoNumberField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			DisplayFormat = field.DisplayFormat;
-			StartingNumber = field.StartingNumber;
+            EntityName = entityName;
+            DefaultValue = field.DefaultValue;
+            DisplayFormat = field.DisplayFormat;
+            StartingNumber = field.StartingNumber;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }

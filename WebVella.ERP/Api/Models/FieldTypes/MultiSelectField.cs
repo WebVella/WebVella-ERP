@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -13,7 +14,7 @@ namespace WebVella.ERP.Api.Models
         public IEnumerable<string> DefaultValue { get; set; }
 
         [JsonProperty(PropertyName = "options")]
-        public IDictionary<string, string> Options { get; set; }
+        public List<MultiSelectFieldOption> Options { get; set; }
 
         public MultiSelectField()
         {
@@ -23,24 +24,45 @@ namespace WebVella.ERP.Api.Models
         {
         }
 
-        public MultiSelectField(InputField field) : base(field)
+        public static List<MultiSelectFieldOption> ConvertOptions(IList<IStorageMultiSelectFieldOption> storageOptions)
         {
-            foreach (var property in field.GetProperties())
+            List<MultiSelectFieldOption> options = new List<MultiSelectFieldOption>();
+
+            foreach (var storageOption in storageOptions)
             {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = (IEnumerable<string>)property.Value;
-                        break;
-                    case "options":
-                        Options = (IDictionary<string, string>)property.Value;
-                        break;
-                }
+                MultiSelectFieldOption option = new MultiSelectFieldOption(storageOption);
+                options.Add(option);
             }
+
+            return options;
         }
     }
 
-	public class MultiSelectFieldMeta : MultiSelectField, IFieldMeta
+    public class MultiSelectFieldOption
+    {
+        [JsonProperty(PropertyName = "key")]
+        public string Key { get; set; }
+
+        [JsonProperty(PropertyName = "value")]
+        public string Value { get; set; }
+
+        public MultiSelectFieldOption()
+        {
+
+        }
+
+        public MultiSelectFieldOption(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public MultiSelectFieldOption(IStorageMultiSelectFieldOption option) : this(option.Key, option.Value)
+        {
+        }
+    }
+
+    public class MultiSelectFieldMeta : MultiSelectField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }

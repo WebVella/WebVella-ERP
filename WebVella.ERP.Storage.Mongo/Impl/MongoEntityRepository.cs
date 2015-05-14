@@ -114,7 +114,15 @@ namespace WebVella.ERP.Storage.Mongo
                 {
                     storageField = new MongoMultiSelectField();
                     ((MongoMultiSelectField)storageField).DefaultValue = ((MultiSelectField)field).DefaultValue;
-                    ((MongoMultiSelectField)storageField).Options = ((MultiSelectField)field).Options;
+                    ((MongoMultiSelectField)storageField).Options = new List<IStorageMultiSelectFieldOption>();
+                    foreach (var option in ((MultiSelectField)field).Options)
+                    {
+                        MongoMultiSelectFieldOption storeOption = new MongoMultiSelectFieldOption();
+                        storeOption.Key = option.Key;
+                        storeOption.Value = option.Value;
+
+                        ((MongoMultiSelectField)storageField).Options.Add(storeOption);
+                    }
                 }
                 else if (field is NumberField)
                 {
@@ -155,7 +163,16 @@ namespace WebVella.ERP.Storage.Mongo
                 {
                     storageField = new MongoSelectField();
                     ((MongoSelectField)storageField).DefaultValue = ((SelectField)field).DefaultValue;
-                    ((MongoSelectField)storageField).Options = ((SelectField)field).Options;
+                    ((MongoSelectField)storageField).Options = new List<IStorageSelectFieldOption>();
+                    foreach (var option in ((SelectField)field).Options)
+                    {
+                        MongoSelectFieldOption storeOption = new MongoSelectFieldOption();
+                        storeOption.Key = option.Key;
+                        storeOption.Value = option.Value;
+
+                        ((MongoSelectField)storageField).Options.Add(storeOption);
+                    }
+
                 }
                 else if (field is TextField)
                 {
@@ -424,7 +441,15 @@ namespace WebVella.ERP.Storage.Mongo
             {
                 storageField = new MongoMultiSelectField();
                 ((MongoMultiSelectField)storageField).DefaultValue = ((MultiSelectField)field).DefaultValue;
-                ((MongoMultiSelectField)storageField).Options = ((MultiSelectField)field).Options;
+                ((MongoMultiSelectField)storageField).Options = new List<IStorageMultiSelectFieldOption>();
+                foreach (var option in ((MultiSelectField)field).Options)
+                {
+                    MongoMultiSelectFieldOption storeOption = new MongoMultiSelectFieldOption();
+                    storeOption.Key = option.Key;
+                    storeOption.Value = option.Value;
+
+                    ((MongoMultiSelectField)storageField).Options.Add(storeOption);
+                }
             }
             else if (field is NumberField)
             {
@@ -465,7 +490,15 @@ namespace WebVella.ERP.Storage.Mongo
             {
                 storageField = new MongoSelectField();
                 ((MongoSelectField)storageField).DefaultValue = ((SelectField)field).DefaultValue;
-                ((MongoSelectField)storageField).Options = ((SelectField)field).Options;
+                ((MongoSelectField)storageField).Options = new List<IStorageSelectFieldOption>();
+                foreach (var option in ((SelectField)field).Options)
+                {
+                    MongoSelectFieldOption storeOption = new MongoSelectFieldOption();
+                    storeOption.Key = option.Key;
+                    storeOption.Value = option.Value;
+
+                    ((MongoSelectField)storageField).Options.Add(storeOption);
+                }
             }
             else if (field is TextField)
             {

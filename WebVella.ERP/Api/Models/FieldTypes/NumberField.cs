@@ -3,8 +3,8 @@ using System;
 
 namespace WebVella.ERP.Api.Models
 {
-	public class NumberField : Field
-	{
+    public class NumberField : Field
+    {
         [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.NumberField; } }
 
@@ -27,31 +27,9 @@ namespace WebVella.ERP.Api.Models
         public NumberField(Field field) : base(field)
         {
         }
-
-        public NumberField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "minvalue":
-                        MinValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "maxvalue":
-                        MaxValue = Convert.ToDecimal(property.Value);
-                        break;
-                    case "decimalplaces":
-                        DecimalPlaces = Convert.ToByte(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
-	public class NumberFieldMeta : NumberField, IFieldMeta
+    public class NumberFieldMeta : NumberField, IFieldMeta
     {
         [JsonProperty(PropertyName = "entityId")]
         public Guid EntityId { get; set; }
@@ -65,11 +43,11 @@ namespace WebVella.ERP.Api.Models
         public NumberFieldMeta(Guid entityId, string entityName, NumberField field, string parentFieldName = null) : base(field)
         {
             EntityId = entityId;
-			EntityName = entityName;
-			MinValue = field.MinValue;
-			MaxValue = field.MaxValue;
-			DecimalPlaces = field.DecimalPlaces;
+            EntityName = entityName;
+            MinValue = field.MinValue;
+            MaxValue = field.MaxValue;
+            DecimalPlaces = field.DecimalPlaces;
             ParentFieldName = parentFieldName;
         }
-	}
+    }
 }

@@ -788,34 +788,22 @@ namespace WebVella.ERP
                     switch (property.Key.ToLower())
                     {
                         case "label":
-                            {
                                 entity.Label = (string)property.Value;
-                            }
                             break;
                         case "plurallabel":
-                            {
                                 entity.PluralLabel = (string)property.Value;
-                            }
                             break;
                         case "system":
-                            {
                                 entity.System = (bool)property.Value;
-                            }
                             break;
                         case "iconname":
-                            {
                                 entity.IconName = (string)property.Value;
-                            }
                             break;
                         case "weight":
-                            {
                                 entity.Weight = (decimal)property.Value;
-                            }
                             break;
                         case "recordpermissions":
-                            {
                                 entity.RecordPermissions = (RecordPermissions)property.Value;
-                            }
                             break;
                     }
                 }
@@ -1164,7 +1152,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public FieldResponse PartialUpdateField(Guid entityId, Guid id, InputField inputField)
+        public FieldResponse PartialUpdateField(Guid entityId, Guid id, Field field)
         {
             FieldResponse response = new FieldResponse
             {
@@ -1198,11 +1186,8 @@ namespace WebVella.ERP
                     return response;
                 }
 
-                Field field = null;
-
                 if (updatedField is AutoNumberField)
                 {
-                    field = new AutoNumberField(inputField);
                     if (((AutoNumberField)field).DefaultValue != null)
                         ((AutoNumberField)updatedField).DefaultValue = ((AutoNumberField)field).DefaultValue;
                     if (((AutoNumberField)field).DisplayFormat != null)
@@ -1212,13 +1197,11 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is CheckboxField)
                 {
-                    field = new CheckboxField(inputField);
                     if (((CheckboxField)field).DefaultValue != null)
                         ((CheckboxField)updatedField).DefaultValue = ((CheckboxField)field).DefaultValue;
                 }
                 else if (updatedField is CurrencyField)
                 {
-                    field = new CurrencyField(inputField);
                     if (((CurrencyField)field).DefaultValue != null)
                         ((CurrencyField)updatedField).DefaultValue = ((CurrencyField)field).DefaultValue;
                     if (((CurrencyField)field).MinValue != null)
@@ -1230,7 +1213,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is DateField)
                 {
-                    field = new DateField(inputField);
                     if (((DateField)field).DefaultValue != null)
                         ((DateField)updatedField).DefaultValue = ((DateField)field).DefaultValue;
                     if (((DateField)field).Format != null)
@@ -1240,7 +1222,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is DateTimeField)
                 {
-                    field = new DateTimeField(inputField);
                     if (((DateTimeField)field).DefaultValue != null)
                         ((DateTimeField)updatedField).DefaultValue = ((DateTimeField)field).DefaultValue;
                     if (((DateTimeField)field).Format != null)
@@ -1250,7 +1231,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is EmailField)
                 {
-                    field = new EmailField(inputField);
                     if (((EmailField)field).DefaultValue != null)
                         ((EmailField)updatedField).DefaultValue = ((EmailField)field).DefaultValue;
                     if (((EmailField)field).MaxLength != null)
@@ -1258,25 +1238,21 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is FileField)
                 {
-                    field = new FileField(inputField);
                     if (((FileField)field).DefaultValue != null)
                         ((FileField)updatedField).DefaultValue = ((FileField)field).DefaultValue;
                 }
                 else if (updatedField is HtmlField)
                 {
-                    field = new HtmlField(inputField);
                     if (((HtmlField)field).DefaultValue != null)
                         ((HtmlField)updatedField).DefaultValue = ((HtmlField)field).DefaultValue;
                 }
                 else if (updatedField is ImageField)
                 {
-                    field = new ImageField(inputField);
                     if (((ImageField)field).DefaultValue != null)
                         ((ImageField)updatedField).DefaultValue = ((ImageField)field).DefaultValue;
                 }
                 else if (updatedField is MultiLineTextField)
                 {
-                    field = new MultiLineTextField(inputField);
                     if (((MultiLineTextField)field).DefaultValue != null)
                         ((MultiLineTextField)updatedField).DefaultValue = ((MultiLineTextField)field).DefaultValue;
                     if (((MultiLineTextField)field).MaxLength != null)
@@ -1286,7 +1262,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is MultiSelectField)
                 {
-                    field = new MultiSelectField(inputField);
                     if (((MultiSelectField)field).DefaultValue != null)
                         ((MultiSelectField)updatedField).DefaultValue = ((MultiSelectField)field).DefaultValue;
                     if (((MultiSelectField)field).Options != null)
@@ -1294,7 +1269,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is NumberField)
                 {
-                    field = new NumberField(inputField);
                     if (((NumberField)field).DefaultValue != null)
                         ((NumberField)updatedField).DefaultValue = ((NumberField)field).DefaultValue;
                     if (((NumberField)field).MinValue != null)
@@ -1306,7 +1280,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is PasswordField)
                 {
-                    field = new PasswordField(inputField);
                     if (((PasswordField)field).MaxLength != null)
                         ((PasswordField)updatedField).MaxLength = ((PasswordField)field).MaxLength;
                     if (((PasswordField)field).Encrypted != null)
@@ -1318,7 +1291,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is PercentField)
                 {
-                    field = new PercentField(inputField);
                     if (((PercentField)field).DefaultValue != null)
                         ((PercentField)updatedField).DefaultValue = ((PercentField)field).DefaultValue;
                     if (((PercentField)field).MinValue != null)
@@ -1330,7 +1302,6 @@ namespace WebVella.ERP
                 }
                 else if (field is PhoneField)
                 {
-                    field = new PhoneField(inputField);
                     if (((PhoneField)field).DefaultValue != null)
                         ((PhoneField)updatedField).DefaultValue = ((PhoneField)field).DefaultValue;
                     if (((PhoneField)field).Format != null)
@@ -1340,13 +1311,11 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is GuidField)
                 {
-                    field = new GuidField(inputField);
                     if (((GuidField)field).DefaultValue != null)
                         ((GuidField)updatedField).DefaultValue = ((GuidField)field).DefaultValue;
                 }
                 else if (updatedField is SelectField)
                 {
-                    field = new SelectField(inputField);
                     if (((SelectField)field).DefaultValue != null)
                         ((SelectField)updatedField).DefaultValue = ((SelectField)field).DefaultValue;
                     if (((SelectField)field).Options != null)
@@ -1354,7 +1323,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is TextField)
                 {
-                    field = new TextField(inputField);
                     if (((TextField)field).DefaultValue != null)
                         ((TextField)updatedField).DefaultValue = ((TextField)field).DefaultValue;
                     if (((TextField)field).MaxLength != null)
@@ -1362,7 +1330,6 @@ namespace WebVella.ERP
                 }
                 else if (updatedField is UrlField)
                 {
-                    field = new UrlField(inputField);
                     if (((UrlField)field).DefaultValue != null)
                         ((UrlField)updatedField).DefaultValue = ((UrlField)field).DefaultValue;
                     if (((UrlField)field).MaxLength != null)
@@ -1389,13 +1356,6 @@ namespace WebVella.ERP
                     updatedField.Auditable = field.Auditable;
                 else if (field.System != null)
                     updatedField.System = field.System;
-
-                //Field fieldForDelete = entity.Fields.FirstOrDefault(f => f.Id == updatedField.Id);
-                //if (fieldForDelete.Id == updatedField.Id)
-                //    entity.Fields.Remove(fieldForDelete);
-
-                //entity.Fields.Add(updatedField);
-
 
                 response.Object = updatedField;
                 response.Errors = ValidateField(entity, updatedField, true);
