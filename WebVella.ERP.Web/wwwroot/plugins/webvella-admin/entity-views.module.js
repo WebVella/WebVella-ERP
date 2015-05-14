@@ -1,7 +1,7 @@
-﻿/* home.module.js */
+﻿/* entity-views.module.js */
 
 /**
-* @desc this module manages the application home desktop screen
+* @desc this module manages the entity views in the admin screen
 */
 
 (function () {

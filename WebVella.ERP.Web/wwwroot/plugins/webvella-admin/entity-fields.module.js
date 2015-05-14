@@ -1,7 +1,7 @@
-﻿/* home.module.js */
+﻿/* entity-fields.module.js */
 
 /**
-* @desc this module manages the application home desktop screen
+* @desc this module manages the entity record fields in the admin screen
 */
 
 (function () {
