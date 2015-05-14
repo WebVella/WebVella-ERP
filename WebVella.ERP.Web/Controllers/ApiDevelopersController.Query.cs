@@ -26,7 +26,7 @@ namespace WebVella.ERP.Web.Controllers
             EntityManager em = new EntityManager(service.StorageService);
             EntityRelationManager rm = new EntityRelationManager(service.StorageService);
             
-           /* // create relation
+           // create relation
           var userEntity = em.ReadEntity("user");
           var areaEntity = em.ReadEntity("area");
           var roleEntity = em.ReadEntity("role");
@@ -43,7 +43,7 @@ namespace WebVella.ERP.Web.Controllers
           create.TargetFieldId = userEntity.Object.Fields.Single(x => x.Name == "id").Id.Value;
 
           return DoResponse(rm.Create(create));
-          */
+          
 
             return DoResponse(rm.Read("area_user_create_by"));
 

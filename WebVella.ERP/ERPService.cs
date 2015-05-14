@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
-using Newtonsoft.Json.Linq;
-using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP
 {
     public class ERPService : IERPService
     {
-        public static IERPService Current
-        {
-            get; set;
-        }
-
         public IStorageService StorageService
         {
             get; set;
@@ -24,9 +16,6 @@ namespace WebVella.ERP
 
         public ERPService(IStorageService storage)
         {
-            if (Current == null)
-                Current = this;
-
             StorageService = storage;
         }
 
