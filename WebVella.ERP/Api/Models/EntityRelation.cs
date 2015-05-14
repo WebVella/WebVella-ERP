@@ -6,8 +6,24 @@ namespace WebVella.ERP.Api.Models
 {
     public enum EntityRelationType
     {
+        /// <summary>
+        /// 1. Origin field should be an unique, required Guid field
+        /// 2. Target field should be an unique, required Guid field
+        /// 3. Target field record values should match one origin record field values
+        /// </summary>
         OneToOne = 1,
+
+        /// <summary>
+        /// 1. Origin field should be an unique,required Guid field
+        /// 2. Target field should be a Guid field 
+        /// 3. Target field record values should match atleast one origin record field values or null if field value is not required
+        /// </summary>
         OneToMany = 2,
+
+        /// <summary>
+        /// 1. Origin field should be an unique, required Guid field
+        /// 2. Target field should be an unique, required Guid field
+        /// </summary>
         ManyToMany = 3
     }
 
