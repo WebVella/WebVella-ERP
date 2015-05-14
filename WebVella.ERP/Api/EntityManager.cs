@@ -322,7 +322,7 @@ namespace WebVella.ERP
             }
             else if (field is MultiSelectField)
             {
-                if (field.Required.HasValue && field.Required.Value && 
+                if (field.Required.HasValue && field.Required.Value &&
                     (((MultiSelectField)field).DefaultValue == null || ((MultiSelectField)field).DefaultValue.Count() == 0))
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
                 if (((MultiSelectField)field).Options != null)
@@ -768,7 +768,7 @@ namespace WebVella.ERP
             return response;
         }
 
-        public EntityResponse PartialUpdateEntity(Guid id, Expando inputEntity)
+        public EntityResponse PartialUpdateEntity(Guid id, InputEntity inputEntity)
         {
             EntityResponse response = new EntityResponse
             {
@@ -783,30 +783,18 @@ namespace WebVella.ERP
                 IStorageEntity storageEntity = EntityRepository.Read(id);
                 entity = new Entity(storageEntity);
 
-                foreach (var property in inputEntity.GetProperties())
-                {
-                    switch (property.Key.ToLower())
-                    {
-                        case "label":
-                                entity.Label = (string)property.Value;
-                            break;
-                        case "plurallabel":
-                                entity.PluralLabel = (string)property.Value;
-                            break;
-                        case "system":
-                                entity.System = (bool)property.Value;
-                            break;
-                        case "iconname":
-                                entity.IconName = (string)property.Value;
-                            break;
-                        case "weight":
-                                entity.Weight = (decimal)property.Value;
-                            break;
-                        case "recordpermissions":
-                                entity.RecordPermissions = (RecordPermissions)property.Value;
-                            break;
-                    }
-                }
+                if (inputEntity.Label != null)
+                    entity.Label = inputEntity.Label;
+                if (inputEntity.PluralLabel != null)
+                    entity.PluralLabel = inputEntity.PluralLabel;
+                if (inputEntity.System != null)
+                    entity.System = inputEntity.System;
+                if (inputEntity.IconName != null)
+                    entity.IconName = inputEntity.IconName;
+                if (inputEntity.Weight != null)
+                    entity.Weight = inputEntity.Weight;
+                if (inputEntity.RecordPermissions != null)
+                    entity.RecordPermissions = inputEntity.RecordPermissions;
 
                 response.Object = entity;
                 response.Errors = ValidateEntity(entity, true);

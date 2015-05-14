@@ -324,11 +324,11 @@ namespace WebVella.ERP
                 //inputEntity.Label = "GoroTest_edited";
                 //inputEntity.PluralLabel = "Goro Tests - edited";
 
-                Expando obj = new Expando();
-                obj["Label"] = "GoroTest_edited";
-                obj["PluralLabel"] = "Goro Tests - edited";
+                //Expando obj = new Expando();
+                //obj["Label"] = "GoroTest_edited";
+                //obj["PluralLabel"] = "Goro Tests - edited";
 
-                response = entityManager.PartialUpdateEntity(entity.Id.Value, obj);
+                //response = entityManager.PartialUpdateEntity(entity.Id.Value, obj);
 
                 //field.Label = "TextField_edited";
 
