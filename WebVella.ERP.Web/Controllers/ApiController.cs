@@ -73,7 +73,7 @@ namespace WebVella.ERP.Web.Controllers
 
         #region << Entity Fields >>
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
-        public IActionResult CreateField(string Id, [FromBody]InputField submitObj)
+        public IActionResult CreateField(string Id, [FromBody]JObject submitObj)
         {
             FieldResponse response = new FieldResponse();
 

@@ -24,25 +24,6 @@ namespace WebVella.ERP.Api.Models
         public UrlField(Field field) : base(field)
         {
         }
-
-        public UrlField(InputField field) : base(field)
-        {
-            foreach (var property in field.GetProperties())
-            {
-                switch (property.Key.ToLower())
-                {
-                    case "defaultvalue":
-                        DefaultValue = Convert.ToString(property.Value);
-                        break;
-                    case "maxlength":
-                        MaxLength = Convert.ToInt32(property.Value);
-                        break;
-                    case "opentargetinnewwindow":
-                        OpenTargetInNewWindow = Convert.ToBoolean(property.Value);
-                        break;
-                }
-            }
-        }
     }
 
     public class UrlFieldMeta : UrlField, IFieldMeta

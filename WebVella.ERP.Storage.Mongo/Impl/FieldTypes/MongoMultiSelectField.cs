@@ -7,6 +7,13 @@ namespace WebVella.ERP.Storage.Mongo
     {
         public IEnumerable<string> DefaultValue { get; set; }
 
-        public IDictionary<string, string> Options { get; set; }
+        public IList<IStorageMultiSelectFieldOption> Options { get; set; }
+    }
+
+    public class MongoMultiSelectFieldOption : IStorageMultiSelectFieldOption
+    {
+        public string Key { get; set; }
+
+        public string Value { get; set; }
     }
 }
