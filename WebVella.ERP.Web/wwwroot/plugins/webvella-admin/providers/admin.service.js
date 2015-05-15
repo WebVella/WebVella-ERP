@@ -27,7 +27,7 @@
         serviceInstance.createField = createField;
         serviceInstance.updateField = updateField;
         serviceInstance.deleteField = deleteField;
-
+        serviceInstance.initRelation = initRelation;
         serviceInstance.getRelationsList = getRelationsList;
 
 
@@ -46,7 +46,7 @@
                 id: null,
                 name: "",
                 label: "",
-                pluralLabel: "",
+                labelPlural: "",
                 system: false,
                 iconName: "database",
                 weight: 1.0,
@@ -115,7 +115,7 @@
                 case 1:
                     field.defaultValue = null;
                     field.startingNumber = null;
-                    field.displayFormat = "";
+                    field.displayFormat = null;
                     break;
                 case 2:
                     field.defaultValue = false;
@@ -125,42 +125,42 @@
                     field.minValue = null;
                     field.maxValue = null;
                     field.currency = {
-                        currencySymbol: "",
-                        currencyName: "",
+                        currencySymbol: null,
+                        currencyName: null,
                         position:0
                     };
                     break;
                 case 4:
                     field.defaultValue = null;
-                    field.format = "";
+                    field.format = null;
                     field.useCurrentTimeAsDefaultValue = false;
                     break;
                 case 5:
                     field.defaultValue = null;
-                    field.format = "";
+                    field.format = null;
                     field.useCurrentTimeAsDefaultValue = false;
                     break;
                 case 6:
-                    field.defaultValue = '';
+                    field.defaultValue = null;
                     field.maxLength = null;
                     break;
                 case 7:
-                    field.defaultValue = '';
+                    field.defaultValue = null;
                     break;
                 case 8:
-                    field.defaultValue = '';
+                    field.defaultValue = null;
                     break;
                 case 9:
-                    field.defaultValue = '';
+                    field.defaultValue = null;
                     break;
                 case 10:
-                    field.defaultValue = '';
+                    field.defaultValue = null;
                     field.maxLength = null;
                     field.visibleLineNumber = false;
                     break;
                 case 11:
-                    field.defaultValue = '';
-                    field.options = [];
+                    field.defaultValue = null;
+                    field.options = null;
                     break;
                 case 12:
                     field.defaultValue = null;
@@ -180,23 +180,24 @@
                     field.decimalPlaces = 2;
                     break;
                 case 15:
-                    field.defaultValue = "";
-                    field.format = "";
+                    field.defaultValue = null;
+                    field.format = null;
                     field.maxLength = null;
                     break;
                 case 16:
-                    field.defaultValue = "00000000-0000-0000-0000-000000000000";
+                    field.defaultValue = null;
+                    field.generateNewId = false;
                     break;
                 case 17:
-                    field.defaultValue = "";
-                    field.options = [];
+                    field.defaultValue = null;
+                    field.options = null;
                     break;
                 case 18:
-                    field.defaultValue = "";
+                    field.defaultValue = null;
                     field.maxLength = null;
                     break;
                 case 19:
-                    field.defaultValue = "";
+                    field.defaultValue = null;
                     field.maxLength = null;
                     field.openTargetInNewWindow = false;
                     break;
@@ -229,6 +230,27 @@
         //#endregion
 
         //#region << Relations  >>
+
+        ///////////////////////
+        function initRelation() {
+            $log.debug('webvellaAdmin>providers>admin.service>initRelation> function called');
+            var relation = {
+                id: null,
+                name: "",
+                label: "",
+                description: "",
+                system: false,
+                relationType: 1,
+                originEntityId: null,
+                originFieldId: null,
+                targetEntityId: null,
+                targetFieldId: null,
+
+            };
+            return relation;
+        }
+
+
         ///////////////////////
         function getRelationsList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getRelationsList> function called');
