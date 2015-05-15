@@ -393,7 +393,7 @@
         $log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec');
         /* jshint validthis:true */
         var popupData = this;
-
+        popupData.modalInstance = $modalInstance;
         popupData.contentData = contentData;
 
         popupData.field = resolvedField;
@@ -462,7 +462,7 @@
                 controllerAs: "popupData",
                 size: "",
                 resolve: {
-                    parentModalData: function () { return modalData; }
+                    parentPopupData: function () { return popupData; }
                 }
             });
         }
@@ -513,8 +513,9 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
+            popupData.parentData.modalInstance.close('success');
             $timeout(function() {
-                $state.go("webvella-admin-entity-fields", { name: popupData.parentData.contentData.entity.name});
+                $state.go("webvella-admin-entity-fields", { name: popupData.parentData.contentData.entity.name }, { reload: true });
             }, 0);
         }
 

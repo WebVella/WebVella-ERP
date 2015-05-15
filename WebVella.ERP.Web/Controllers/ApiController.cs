@@ -257,7 +257,7 @@ namespace WebVella.ERP.Web.Controllers
             try
             {
                 var relation = submitObj.ToObject<EntityRelation>();
-                return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
+                return DoResponse(new EntityRelationManager(service.StorageService).Update(relation));
             }
             catch (Exception e)
             {

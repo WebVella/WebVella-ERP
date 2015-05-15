@@ -30,7 +30,8 @@
         serviceInstance.initRelation = initRelation;
         serviceInstance.getRelationsList = getRelationsList;
         serviceInstance.createRelation = createRelation;
-
+        serviceInstance.updateRelation = updateRelation;
+        serviceInstance.deleteRelation = deleteRelation;
 
         //#region << Entity >>
 
@@ -265,9 +266,15 @@
         }
 
         ///////////////////////
-        function createRelation(postObject, successCallback, errorCallback) {
-            $log.debug('webvellaAdmin>providers>admin.service>createRelation> function called');
-            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        function updateRelation(postObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>updateRelation> function called');
+            $http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + postObject.id, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function deleteRelation(relationId, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>updateRelation> function called');
+            $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + relationId}).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //#endregion
