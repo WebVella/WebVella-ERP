@@ -104,9 +104,9 @@
 
 <script type="text/ng-template" id="manageRelationModal.html">
     <div class="modal-header" id="modal-top">
-        <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h3 class="modal-title" ng-show="modalData.relation.id === null">Create new relation</h3>
-        <h3 class="modal-title" ng-show="modalData.relation.id != null">Manage relation</h3>
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" ng-show="popupData.relation.id === null">Create new relation</h3>
+        <h3 class="modal-title" ng-show="popupData.relation.id != null">Manage relation</h3>
     </div>
     <div class="modal-body">
         <form name="createRelation">
@@ -114,7 +114,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="type">Relation type</label>
-                        <select class="form-control" ng-model="modelData.relation.relationType" name="relationType">
+                        <select class="form-control" ng-model="popupData.relation.relationType" name="relationType">
                             <option value="1">One to One (1:1)</option>
                             <option value="2">One to Many (1:N)</option>
                             <option value="3">Many to Many (N:N)</option>
@@ -127,12 +127,12 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createRelation.name.$invalid && !createRelation.name.$pristine || modalData.nameError}">
+                    <div class="form-group" ng-class="{ 'has-error' : createRelation.name.$invalid && !createRelation.name.$pristine || popupData.nameError}">
                         <label class="required" for="entityName">Name</label>
-                        <input ng-model="modalData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
+                        <input ng-model="popupData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
-                        <div class="error" ng-show="createRelation.name.$dirty && createRelation.name.$invalid || modalData.nameError">
-                            <small class="error" ng-show="createRelation.name.$error.required && !modalData.nameError">
+                        <div class="error" ng-show="createRelation.name.$dirty && createRelation.name.$invalid || popupData.nameError">
+                            <small class="error" ng-show="createRelation.name.$error.required && !popupData.nameError">
                                 required field
                             </small>
                             <small class="error" ng-show="createRelation.name.$error.pattern">
@@ -141,8 +141,8 @@
                             <small class="error" ng-show="createRelation.name.$error.maxlength">
                                 must be less than 50 chars
                             </small>
-                            <small class="error" ng-show="modalData.nameError">
-                                {{modalData.nameMessage}}
+                            <small class="error" ng-show="popupData.nameError">
+                                {{popupData.nameMessage}}
                             </small>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
                         <label for="systemStatus">System Status</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="modalData.relation.system" type="checkbox" id="systemStatus" value="true">
+                                <input ng-model="popupData.relation.system" type="checkbox" id="systemStatus" value="true">
                                 this is a system relation <span class="go-grey">(deletion is locked)</span>
                             </label>
                         </div>
@@ -161,27 +161,27 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createRelation.label.$invalid && !createRelation.label.$pristine || modalData.labelError }">
+                    <div class="form-group" ng-class="{ 'has-error' : createRelation.label.$invalid && !createRelation.label.$pristine || popupData.labelError }">
                         <label class="required" for="label">Label</label>
-                        <input ng-model="modalData.relation.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
+                        <input ng-model="popupData.relation.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
                                required>
-                        <div class="error" ng-show="createRelation.label.$dirty && createRelation.label.$invalid || modalData.labelError">
-                            <small class="error" ng-show="createRelation.label.$error.required && !modalData.labelError">
+                        <div class="error" ng-show="createRelation.label.$dirty && createRelation.label.$invalid || popupData.labelError">
+                            <small class="error" ng-show="createRelation.label.$error.required && !popupData.labelError">
                                 Entity label is required.
                             </small>
-                            <small class="error" ng-show="modalData.labelError">
-                                {{modalData.labelMessage}}
+                            <small class="error" ng-show="popupData.labelError">
+                                {{popupData.labelMessage}}
                             </small>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : modalData.descriptionError }">
+                    <div class="form-group" ng-class="{ 'has-error' : popupData.descriptionError }">
                         <label for="description">Description</label>
-                        <input ng-model="modalData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins"/>
-                        <div class="error" ng-show="createRelation.description.$dirty && createRelation.description.$invalid || modalData.descriptionError">
-                            <small class="error" ng-show="modalData.descriptionError">
-                                {{modalData.descriptionMessage}}
+                        <input ng-model="popupData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins"/>
+                        <div class="error" ng-show="createRelation.description.$dirty && createRelation.description.$invalid || popupData.descriptionError">
+                            <small class="error" ng-show="popupData.descriptionError">
+                                {{popupData.descriptionMessage}}
                             </small>
                         </div>
                     </div>
@@ -190,38 +190,51 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="type">Origin Entity</label>
-                        <select class="form-control" name="selectedOriginEntity" ng-model="modalData.selectedOriginEntity" ng-options="entity as entity.label for entity in modalData.eligibleEntities"></select>
+                        <label class="required">Target Entity</label>
+                        <select class="form-control" name="selectedTargetEntity" ng-model="popupData.selectedTargetEntity"
+                                ng-options="entity as entity.label for entity in popupData.eligibleTargetEntities"
+                                ng-change="popupData.changeTargetEntity(popupData.selectedTargetEntity)"></select>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="type">Target Entity</label>
-                        <select class="form-control" name="selectedTargetEntity" ng-model="modelData.selectedTargetEntity"  ng-options="entity as entity.label for entity in modalData.eligibleEntities"></select>
+                        <label class="required">Origin Entity</label>
+                        <select class="form-control" name="selectedOriginEntity" ng-model="popupData.selectedOriginEntity" 
+                                ng-options="entity as entity.label for entity in popupData.eligibleOriginEntities"
+                                ng-change="popupData.changeOriginEntity(popupData.selectedOriginEntity)"></select>
                     </div>
                 </div>
+
             </div>
-            <p class="text-center go-red">only "Identifier GUID" fields that are marked as unique and required can be related</p>
+            <p class="text-center go-red">only "Identifier GUID" fields that are marked as unique and required can be related. A field can be target to only one relation</p>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="type">Origin Field</label>
-                        <select class="form-control" name="selectedOriginField" ng-model="modalData.selectedOriginField" ng-options="field as field.label for field in modalData.selectedOriginEntity.fields"></select>
+                        <label class="required">Target Field</label>
+                        <select class="form-control" name="selectedTargetField"
+                                ng-disabled="!popupData.selectedTargetFieldEnabled"
+                                ng-model="popupData.selectedTargetField"
+                                ng-options="field as field.label for field in popupData.selectedTargetEntity.fields"></select>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="type">Target Field</label>
-                        <select class="form-control" name="selectedTargetField" ng-model="modelData.selectedTargetField" ng-options="field as field.label for field in modalData.selectedTargetEntity.fields"></select>
+                        <label class="required">Origin Field</label>
+                        <select class="form-control" name="selectedOriginField" 
+                                ng-disabled="!popupData.selectedOriginFieldEnabled"
+                                ng-model="popupData.selectedOriginField" 
+                                ng-options="field as field.label for field in popupData.selectedOriginEntity.fields">
+                        </select>
                     </div>
                 </div>
+
             </div>
         </form>
-        <pre>{{modelData.selectedTargetEntity | json}}</pre>
-        <pre>{{modelData.selectedTargetField | json}}</pre>
+        
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-click="modalData.ok()"><i class="fa fa-fw fa-plus"></i>Create New Entity</button>
-        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
+        
+        <button class="btn btn-success" ng-click="popupData.ok()"><i class="fa fa-fw fa-plus"></i>Create New Entity</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
     </div>
 </script>
