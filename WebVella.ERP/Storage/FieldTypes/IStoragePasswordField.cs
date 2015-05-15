@@ -5,7 +5,7 @@ namespace WebVella.ERP.Storage
 
     public interface IStoragePasswordField : IStorageField
     {
-        int MaxLength { get; set; }
+        int? MaxLength { get; set; }
 
         bool Encrypted { get; set; }
 

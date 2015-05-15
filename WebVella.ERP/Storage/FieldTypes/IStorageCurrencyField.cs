@@ -4,12 +4,12 @@ namespace WebVella.ERP.Storage
 {
     public interface IStorageCurrencyField : IStorageField
     {
-        decimal DefaultValue { get; set; }
+        decimal? DefaultValue { get; set; }
 
-        decimal MinValue { get; set; }
+        decimal? MinValue { get; set; }
 
-        decimal MaxValue { get; set; }
+        decimal? MaxValue { get; set; }
 
-        CurrencyTypes Currency { get; set; }
+        CurrencyType Currency { get; set; }
     }
 }

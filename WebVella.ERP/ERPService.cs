@@ -23,9 +23,6 @@ namespace WebVella.ERP
         {
             InitializeSystemEntities();
             //EntityTests();
-
-            //EntityManager entityManager = new EntityManager(StorageService);
-            //EntityListResponse entityListResponse = entityManager.Read("aa");
         }
 
         public void InitializeSystemEntities()
@@ -444,10 +441,15 @@ namespace WebVella.ERP
 
             currencyField.MinValue = 1;
             currencyField.MaxValue = 35;
-            currencyField.Currency = new CurrencyTypes();
-            currencyField.Currency.CurrencyName = "USD";
-            currencyField.Currency.CurrencySymbol = "$";
-            currencyField.Currency.Position = CurrencyPosition.AfterTheNumber;
+            currencyField.Currency = new CurrencyType();
+            currencyField.Currency.Name = "US Dollar";
+            currencyField.Currency.NamePlural = "US Dollars";
+            currencyField.Currency.Symbol = "$";
+            currencyField.Currency.SymbolNative = "$";
+            currencyField.Currency.SymbolPlacement = CurrencySymbolPlacement.Before;
+            currencyField.Currency.Code = "USD";
+            currencyField.Currency.DecimalDigits = 2;
+            currencyField.Currency.Rounding = 0;
 
             fields.Add(currencyField);
 

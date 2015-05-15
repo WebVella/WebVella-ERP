@@ -8,6 +8,6 @@ namespace WebVella.ERP.Storage.Mongo
 
         public string Format { get; set; }
 
-        public int MaxLength { get; set; }
+        public int? MaxLength { get; set; }
     }
 }
