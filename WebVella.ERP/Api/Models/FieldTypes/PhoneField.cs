@@ -16,34 +16,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "maxLength")]
         public int? MaxLength { get; set; }
-
-        public PhoneField()
-        {
-        }
-
-        public PhoneField(Field field) : base(field)
-        {
-        }
     }
-
-    public class PhoneFieldMeta : PhoneField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public PhoneFieldMeta(Guid entityId, string entityName, PhoneField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-			EntityName = entityName;
-			Format = field.Format;
-			MaxLength = field.MaxLength;
-            ParentFieldName = parentFieldName;
-        }
-	}
 }

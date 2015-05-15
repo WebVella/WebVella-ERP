@@ -16,35 +16,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "visibleLineNumber")]
         public int? VisibleLineNumber { get; set; }
-
-        public MultiLineTextField()
-        {
-        }
-
-        public MultiLineTextField(Field field) : base(field)
-        {
-        }
     }
-
-    public class MultiLineTextFieldMeta : MultiLineTextField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public MultiLineTextFieldMeta(Guid entityId, string entityName, MultiLineTextField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			MaxLength = field.MaxLength;
-			VisibleLineNumber = field.VisibleLineNumber;
-            ParentFieldName = parentFieldName;
-        }
-	}
 }

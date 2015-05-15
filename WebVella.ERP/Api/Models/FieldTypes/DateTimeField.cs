@@ -16,35 +16,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "useCurrentTimeAsDefaultValue")]
         public bool? UseCurrentTimeAsDefaultValue { get; set; }
-
-        public DateTimeField()
-        {
-        }
-
-        public DateTimeField(Field field) : base(field)
-        {
-        }
-    }
-
-    public class DateTimeFieldMeta : DateTimeField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public DateTimeFieldMeta(Guid entityId, string entityName, DateTimeField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-            EntityName = entityName;
-            DefaultValue = field.DefaultValue;
-            Format = field.Format;
-            UseCurrentTimeAsDefaultValue = field.UseCurrentTimeAsDefaultValue;
-            ParentFieldName = parentFieldName;
-        }
     }
 }
