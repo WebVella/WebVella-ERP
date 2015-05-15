@@ -17,14 +17,6 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "options")]
         public List<SelectFieldOption> Options { get; set; }
 
-        public SelectField()
-        {
-        }
-
-        public SelectField(Field field) : base(field)
-        {
-        }
-
         public static List<SelectFieldOption> ConvertOptions(IList<IStorageSelectFieldOption> storageOptions)
         {
             List<SelectFieldOption> options = new List<SelectFieldOption>();
@@ -60,27 +52,6 @@ namespace WebVella.ERP.Api.Models
 
         public SelectFieldOption(IStorageSelectFieldOption option) : this(option.Key, option.Value)
         {
-        }
-    }
-
-    public class SelectFieldMeta : SelectField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public SelectFieldMeta(Guid entityId, string entityName, SelectField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-            EntityName = entityName;
-            DefaultValue = field.DefaultValue;
-            Options = field.Options;
-            ParentFieldName = parentFieldName;
         }
     }
 }
