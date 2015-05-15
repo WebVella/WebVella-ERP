@@ -3,6 +3,7 @@ using Microsoft.AspNet.Mvc;
 using WebVella.ERP.Api.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,7 +44,7 @@ namespace WebVella.ERP.Web.Controllers
         // Create an entity
         // POST: api/v1/en_US/meta/entity
         [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
-        public IActionResult PatchEntity(string StringId, [FromBody]InputEntity inputEntity)
+        public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
         {
             FieldResponse response = new FieldResponse();
 
@@ -52,6 +53,29 @@ namespace WebVella.ERP.Web.Controllers
             {
                 response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
                 return DoResponse(response);
+            }
+
+            InputEntity inputEntity = new InputEntity();
+
+            Type inputEntityType = inputEntity.GetType();
+
+            foreach (var prop in submitObj.Properties())
+            {
+                int count = inputEntityType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+                if (count < 1)
+                    response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+            }
+
+            if(response.Errors.Count > 0)
+                return DoBadRequestResponse(response);
+
+            try
+            {
+                inputEntity = submitObj.ToObject<InputEntity>();
+            }
+            catch (Exception e)
+            {
+                return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
             }
 
             return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, inputEntity));
@@ -111,7 +135,7 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
-        public IActionResult UpdateField(string Id,string FieldId, [FromBody]JObject submitObj)
+        public IActionResult UpdateField(string Id, string FieldId, [FromBody]JObject submitObj)
         {
             FieldResponse response = new FieldResponse();
 
@@ -130,6 +154,19 @@ namespace WebVella.ERP.Web.Controllers
             }
 
             Field field = new GuidField();
+
+            Type inputFieldType = field.GetType();
+
+            foreach (var prop in submitObj.Properties())
+            {
+                int count = inputFieldType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+                if (count < 1)
+                    response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+            }
+
+            if (response.Errors.Count > 0)
+                return DoBadRequestResponse(response);
+
             try
             {
                 field = Field.ConvertField(submitObj);
@@ -197,7 +234,7 @@ namespace WebVella.ERP.Web.Controllers
                 var relation = submitObj.ToObject<EntityRelation>();
                 return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return DoBadRequestResponse(new EntityRelationResponse(), null, e);
             }
@@ -243,7 +280,7 @@ namespace WebVella.ERP.Web.Controllers
             {
                 return DoBadRequestResponse(new EntityRelationResponse(), "The entity relation Id should be a valid Guid", null);
             }
-            
+
         }
 
         #endregion
