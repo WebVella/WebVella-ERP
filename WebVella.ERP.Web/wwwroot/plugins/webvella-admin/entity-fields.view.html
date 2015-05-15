@@ -141,7 +141,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.name.$invalid && !createFieldStep2.name.$pristine || popupData.nameError}">
                             <label class="control-label required">Name</label>
                             <input class="form-control" ng-model="popupData.field.name" name="name" type="text"
-                                   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="e.g. field_name or fieldName"/>
+                                   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="e.g. field_name or fieldName" />
                             <div class="error" ng-show="createFieldStep2.name.$dirty && createFieldStep2.name.$invalid || popupData.nameError">
                                 <small class="error" ng-show="createFieldStep2.name.$error.required && !popupData.nameError">
                                     required field
@@ -162,7 +162,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.label.$invalid && !createFieldStep2.label.$pristine || popupData.labelError}">
                             <label class="control-label required">Label</label>
                             <input class="form-control" ng-model="popupData.field.label" name="label" type="text"
-                                   required placeholder="e.g. Field Name"/>
+                                   required placeholder="e.g. Field Name" />
                             <div class="error" ng-show="createFieldStep2.label.$dirty && createFieldStep2.label.$invalid || popupData.labelError">
                                 <small class="error" ng-show="createFieldStep2.label.$error.required && !popupData.labelError">
                                     required field
@@ -212,11 +212,11 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="auditableStatus">Auditable</label>
+                            <label for="uniqueStatus">Unique status</label>
                             <div class="checkbox">
                                 <label>
-                                    <input ng-model="popupData.field.auditable" type="checkbox" id="auditableStatus" value="true">
-                                    change history should be kept for this field
+                                    <input ng-model="popupData.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="popupData.uniqueGuidPropertyChecked(popupData.field.unique)">
+                                    all values of the field should be unique
                                 </label>
                             </div>
                         </div>
@@ -236,11 +236,11 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="uniqueStatus">Unique status</label>
+                            <label for="systemStatus">System Status</label>
                             <div class="checkbox">
                                 <label>
-                                    <input ng-model="popupData.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="popupData.uniqueGuidPropertyChecked(popupData.field.unique)">
-                                    all values of the field should be unique
+                                    <input ng-model="popupData.field.system" type="checkbox" id="systemStatus" value="true">
+                                    this is a system field <span class="go-grey">(deletion is locked)</span>
                                 </label>
                             </div>
                         </div>
@@ -261,14 +261,15 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="systemStatus">System Status</label>
+                            <label for="auditableStatus">Auditable</label>
                             <div class="checkbox">
                                 <label>
-                                    <input ng-model="popupData.field.system" type="checkbox" id="systemStatus" value="true">
-                                    this is a system field <span class="go-grey">(deletion is locked)</span>
+                                    <input ng-model="popupData.field.auditable" type="checkbox" id="auditableStatus" value="true">
+                                    change history should be kept for this field
                                 </label>
                             </div>
                         </div>
+
 
                     </div>
                 </div>
@@ -282,7 +283,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]*$" placeholder="e.g. 1"/>
+                                       ng-required="popupData.field.required" pattern="^[0-9]*$" placeholder="e.g. 1" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -300,7 +301,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.startingNumber.$invalid && !createFieldStep2.startingNumber.$pristine || popupData.startingNumberError}">
                                 <label class="control-label required">Starting number</label>
                                 <input class="form-control" ng-model="popupData.field.startingNumber" name="startingNumber" type="text"
-                                       pattern="^[0-9]*$" required placeholder="increment starting point"/>
+                                       pattern="^[0-9]*$" required placeholder="increment starting point" />
                                 <div class="error" ng-show="createFieldStep2.startingNumber.$dirty && createFieldStep2.startingNumber.$invalid || popupData.startingNumberError">
                                     <small class="error" ng-show="createFieldStep2.startingNumber.$error.pattern && !popupData.startingNumberError">
                                         only numbers
@@ -319,7 +320,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.displayFormat.$invalid && !createFieldStep2.displayFormat.$pristine || popupData.displayFormatError}">
                                 <label class="control-label">Display format</label>
-                                <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" placeholder="e.g. Order-{0}"/>
+                                <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" placeholder="e.g. Order-{0}" />
                                 <div class="error" ng-show="createFieldStep2.displayFormat.$dirty && createFieldStep2.displayFormat.$invalid || popupData.displayFormatError">
                                     <small class="error" ng-show="popupData.displayFormatError">
                                         {{popupData.displayFormatMessage}}
@@ -1039,8 +1040,8 @@
                             <div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError)  && popupData.defaultValueTextboxEnabled}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}" 
-                                       ng-disabled="!popupData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$"/>
+                                       ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}"
+                                       ng-disabled="!popupData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
                                 <div class="error" ng-show="(createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError) && popupData.defaultValueTextboxEnabled">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -1060,9 +1061,9 @@
                                 <label class="control-label">GUID Generation</label>
                                 <div class="checkbox">
                                     <label>
-                                        <input ng-model="popupData.field.generateNewId" name="generateNewId" type="checkbox" 
+                                        <input ng-model="popupData.field.generateNewId" name="generateNewId" type="checkbox"
                                                ng-change='popupData.uniqueGuidGenerateToggle(popupData.field.generateNewId)'
-                                               ng-disabled="!popupData.uniqueGuidGenerateCheckboxEnabled"/>
+                                               ng-disabled="!popupData.uniqueGuidGenerateCheckboxEnabled" />
                                         automatically generate new GUID as default
                                     </label>
                                 </div>
@@ -1291,14 +1292,15 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="auditableStatus">Auditable</label>
+                        <label for="uniqueStatus">Unique status</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="popupData.field.auditable" type="checkbox" id="auditableStatus" value="true">
-                                change history should be kept for this field
+                                <input ng-model="popupData.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="popupData.uniqueGuidPropertyChecked(popupData.field.unique)">
+                                all values of the field should be unique
                             </label>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="row">
@@ -1315,11 +1317,11 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="uniqueStatus">Unique status</label>
+                        <label for="systemStatus">System Status</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="popupData.field.unique" type="checkbox" id="uniqueStatus" value="true">
-                                all values of the field should be unique
+                                <input ng-model="popupData.field.system" type="checkbox" id="systemStatus" value="true">
+                                this is a system field <span class="go-grey">(deletion is locked)</span>
                             </label>
                         </div>
                     </div>
@@ -1340,15 +1342,14 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="systemStatus">System Status</label>
+                        <label for="auditableStatus">Auditable</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="popupData.field.system" type="checkbox" id="systemStatus" value="true">
-                                this is a system field <span class="go-grey">(deletion is locked)</span>
+                                <input ng-model="popupData.field.auditable" type="checkbox" id="auditableStatus" value="true">
+                                change history should be kept for this field
                             </label>
                         </div>
                     </div>
-
                 </div>
             </div>
             <hr class="divider" />
@@ -2111,17 +2112,18 @@
             <div ng-if="popupData.fieldType.id == 16">
                 <div class="row">
                     <div class="col-sm-6">
-                        <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
-                        <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
+                        <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
+                        <div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError)  && popupData.defaultValueTextboxEnabled}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 2:23 PM" valid-date />
-                            <div class="error" ng-show="manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
-                                <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
+                                   ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}"
+                                   ng-disabled="!popupData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
+                            <div class="error" ng-show="(createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError) && popupData.defaultValueTextboxEnabled">
+                                <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
                                 </small>
-                                <small class="error" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupData.defaultValueError">
-                                    this string is not a valid date format
+                                <small class="error" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupData.defaultValueError">
+                                    should be a valid GUID
                                 </small>
                                 <small class="error" ng-show="popupData.defaultValueError">
                                     {{popupData.defaultValueMessage}}
@@ -2131,8 +2133,17 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="control-label">Note</label>
-                        <p class="form-description">this field will be automatically generated as guid value and will not be editable by the user. It can also has a null value</p>
+                        <div class="form-group">
+                            <label class="control-label">GUID Generation</label>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="popupData.field.generateNewId" name="generateNewId" type="checkbox"
+                                           ng-change='popupData.uniqueGuidGenerateToggle(popupData.field.generateNewId)'
+                                           ng-disabled="!popupData.uniqueGuidGenerateCheckboxEnabled" />
+                                    automatically generate new GUID as default
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

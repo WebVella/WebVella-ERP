@@ -267,7 +267,7 @@
             entity.label = popupData.entities[i].label;
             entity.fields = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
-                if (popupData.entities[i].fields[j].fieldType === 16) {
+                if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
                     var field = {};
                     field.id = popupData.entities[i].fields[j].id;
                     field.name = popupData.entities[i].fields[j].name;
@@ -296,7 +296,7 @@
             entity.label = popupData.entities[i].label;
             entity.fields = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
-                if (popupData.entities[i].fields[j].fieldType === 16) {
+                if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
                     var field = {};
                     //Add the field only if it is not already a target for a relation
                     if (!popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) > -1) {
