@@ -206,7 +206,7 @@
                 animation: false,
                 templateUrl: 'manageRelationModal.html',
                 controller: 'ManageRelationModalController',
-                controllerAs: "modalData",
+                controllerAs: "popupData",
                 size: "lg",
                 resolve: {
                     contentData: function () {
@@ -233,59 +233,117 @@
     function ManageRelationModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
         $log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
+        var popupData = this;
         if (managedRelation === null) {
-            modalData.relation = webvellaAdminService.initRelation();
+            popupData.relation = webvellaAdminService.initRelation();
         }
         else {
-            modalData.relation = managedRelation;
+            popupData.relation = managedRelation;
         }
-        modalData.selectedOriginEntity = {};
-        modalData.selectedOriginEntity.fields = [{
-            id: null,
+
+        popupData.selectedOriginEntity = {};
+        popupData.selectedOriginEntity.fields = [{
+            id: 1,
+            name: "name",
             label:"Select Origin Entity first"
         }];
-        modalData.selectedOriginField = modalData.selectedOriginEntity.fields[0];
-        modalData.selectedTargetEntity = {};
-        modalData.selectedTargetEntity.fields = [{
-            id: null,
+        popupData.selectedOriginFieldEnabled = false;
+        popupData.selectedOriginField = popupData.selectedOriginEntity.fields[0];
+        popupData.selectedTargetEntity = {};
+        popupData.selectedTargetEntity.fields = [{
+            id: 1,
+            name: "name",
             label: "Select Target Entity first"
         }];
-        modalData.selectedTargetField = modalData.selectedTargetEntity.fields[0];
-        modalData.entities = contentData.entityList;
-        modalData.eligibleEntities = [];
-        //Generate the eligible entities list;
-        for (var i = 0; i < modalData.entities.length; i++) {
+        popupData.selectedTargetFieldEnabled = false;
+        popupData.selectedTargetField = popupData.selectedTargetEntity.fields[0];
+        popupData.entities = contentData.entityList;
+        //Generate the eligible ORIGIN entities list. No limitation for the eligible field to have only one relation as Target;
+        popupData.eligibleOriginEntities = [];
+        for (var i = 0; i < popupData.entities.length; i++) {
             var entity = {};
-            entity.id = modalData.entities[i].id;
-            entity.name = modalData.entities[i].name;
-            entity.label = modalData.entities[i].label;
+            entity.id = popupData.entities[i].id;
+            entity.name = popupData.entities[i].name;
+            entity.label = popupData.entities[i].label;
             entity.fields = [];
-            for (var j = 0; j < modalData.entities[i].fields.length; j++) {
-                if (modalData.entities[i].fields[j].fieldType === 16) {
+            for (var j = 0; j < popupData.entities[i].fields.length; j++) {
+                if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
                     var field = {};
-                    field.id = modalData.entities[i].fields[j].id;
-                    field.name = modalData.entities[i].fields[j].name;
-                    field.label = modalData.entities[i].fields[j].label;
+                    field.id = popupData.entities[i].fields[j].id;
+                    field.name = popupData.entities[i].fields[j].name;
+                    field.label = popupData.entities[i].fields[j].label;
                     entity.fields.push(field);
                 }
             }
-            modalData.eligibleEntities.push(entity);
+            //Add entity only if it has more than one field 
+            if (entity.fields.length > 0) {
+                popupData.eligibleOriginEntities.push(entity);
+            }
         }
 
+        //Generate the eligible Target entities list. Enforced limitation for the eligible field to have only one relation as Target;
+        //Generate an array of field Ids that are targets in relations
+        popupData.targetedFields = [];
+        for (var i = 0; i < contentData.allRelations.length; i++) {
+            popupData.targetedFields.push(contentData.allRelations[i].targetFieldId);
+        }
 
+        popupData.eligibleTargetEntities = [];
+        for (var i = 0; i < popupData.entities.length; i++) {
+            var entity = {};
+            entity.id = popupData.entities[i].id;
+            entity.name = popupData.entities[i].name;
+            entity.label = popupData.entities[i].label;
+            entity.fields = [];
+            for (var j = 0; j < popupData.entities[i].fields.length; j++) {
+                if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
+                    var field = {};
+                    //Add the field only if it is not already a target for a relation
+                    if (!popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) > -1) {
+                        field.id = popupData.entities[i].fields[j].id;
+                        field.name = popupData.entities[i].fields[j].name;
+                        field.label = popupData.entities[i].fields[j].label;
+                        entity.fields.push(field);
+                    }
+                }
+            }
+            //Add entity only if it has more than one field 
+            if (entity.fields.length > 0) {
+                popupData.eligibleTargetEntities.push(entity);
+            }
+        }
 
+        ///////
+        popupData.changeOriginEntity = function (newEntityModel) {
+            $timeout(function () { 
+                popupData.selectedOriginField = newEntityModel.fields[0];
+                popupData.selectedOriginFieldEnabled = true;
+            }, 0);
+        }
 
-        modalData.ok = function () {
-            modalData.relation.originEntityId = modalData.selectedOriginEntity.id;
-            modalData.relation.originFieldId = modalData.selectedOriginField.id;
-            modalData.relation.targetEntityId = modalData.selectedTargetEntity.id;
-            modalData.relation.targetFieldId = modalData.selectedTargetField.id;
+        //////
+        popupData.changeTargetEntity = function (newEntityModel) {
+            $timeout(function () { 
+                popupData.selectedTargetField = newEntityModel.fields[0];
+                popupData.selectedTargetFieldEnabled = true;
+            }, 0);
+        }
 
-            //webvellaAdminService.createRelation(modalData.entity, successCallback, errorCallback)
+        //////
+        popupData.ok = function () {
+            popupData.relation.originEntityId = popupData.selectedOriginEntity.id;
+            popupData.relation.originFieldId = popupData.selectedOriginField.id;
+            popupData.relation.targetEntityId = popupData.selectedTargetEntity.id;
+            popupData.relation.targetFieldId = popupData.selectedTargetField.id;
+            if (popupData.relation.id === null) {
+                webvellaAdminService.createRelation(popupData.relation, successCallback, errorCallback)
+            }
+            else {
+                webvellaAdminService.updateRelation(popupData.relation, successCallback, errorCallback)
+            }
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
@@ -302,7 +360,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, modalData, modalData.entity, location);
+            webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
         }
         $log.debug('webvellaAdmin>entities>CreateRelationModalController> END controller.exec');
     };

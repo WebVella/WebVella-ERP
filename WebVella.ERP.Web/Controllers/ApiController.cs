@@ -240,6 +240,31 @@ namespace WebVella.ERP.Web.Controllers
             }
         }
 
+        // Update an entity relation
+        // PUT: api/v1/en_US/meta/relation/id
+        [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/relation/{RelationIdString}")]
+        public IActionResult UpdateEntityRelation(string RelationIdString, [FromBody]JObject submitObj)
+        {
+            FieldResponse response = new FieldResponse();
+
+            Guid relationId;
+            if (!Guid.TryParse(RelationIdString, out relationId))
+            {
+                response.Errors.Add(new ErrorModel("id", RelationIdString, "id parameter is not valid Guid value"));
+                return DoResponse(response);
+            }
+
+            try
+            {
+                var relation = submitObj.ToObject<EntityRelation>();
+                return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
+            }
+            catch (Exception e)
+            {
+                return DoBadRequestResponse(new EntityRelationResponse(), null, e);
+            }
+        }
+
         // Delete an entity relation
         // DELETE: api/v1/en_US/meta/relation/{idToken}
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/relation/{idToken}")]

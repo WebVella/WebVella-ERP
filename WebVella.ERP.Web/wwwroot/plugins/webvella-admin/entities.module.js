@@ -121,7 +121,7 @@
                 animation: false,
                 templateUrl: 'createEntityModal.html',
                 controller: 'CreateEntityModalController',
-                controllerAs: "modalData",
+                controllerAs: "popupData",
                 size: "lg",
                 resolve: {
                     contentData: function () {
@@ -145,43 +145,43 @@
     function createEntityController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
-        modalData.entity = webvellaAdminService.initEntity();
-        modalData.roles = contentData.roles;
+        var popupData = this;
+        popupData.entity = webvellaAdminService.initEntity();
+        popupData.roles = contentData.roles;
         
         //Processing the roles for generation the checkbox values
-        modalData.entity.roles = [];
+        popupData.entity.roles = [];
 
-        for (var i = 0; i < modalData.roles.length; i++) {
+        for (var i = 0; i < popupData.roles.length; i++) {
             //Enable all checkboxes for administrators
-            if (modalData.roles[i].name == "administrator") {
-                modalData.entity.recordPermissions.canRead.push(modalData.roles[i].id);
-                modalData.entity.recordPermissions.canCreate.push(modalData.roles[i].id);
-                modalData.entity.recordPermissions.canUpdate.push(modalData.roles[i].id);
-                modalData.entity.recordPermissions.canDelete.push(modalData.roles[i].id);
+            if (popupData.roles[i].name == "administrator") {
+                popupData.entity.recordPermissions.canRead.push(popupData.roles[i].id);
+                popupData.entity.recordPermissions.canCreate.push(popupData.roles[i].id);
+                popupData.entity.recordPermissions.canUpdate.push(popupData.roles[i].id);
+                popupData.entity.recordPermissions.canDelete.push(popupData.roles[i].id);
             }
 
             //Now create the new entity.roles array
             var role = {};
-            role.id = modalData.roles[i].id;
-            role.label = modalData.roles[i].label;
+            role.id = popupData.roles[i].id;
+            role.label = popupData.roles[i].label;
             role.canRead = false;
-            if (modalData.entity.recordPermissions.canRead.indexOf(modalData.roles[i].id) > -1) {
+            if (popupData.entity.recordPermissions.canRead.indexOf(popupData.roles[i].id) > -1) {
                 role.canRead = true;
             }
             role.canCreate = false;
-            if (modalData.entity.recordPermissions.canCreate.indexOf(modalData.roles[i].id) > -1) {
+            if (popupData.entity.recordPermissions.canCreate.indexOf(popupData.roles[i].id) > -1) {
                 role.canCreate = true;
             }
             role.canUpdate = false;
-            if (modalData.entity.recordPermissions.canUpdate.indexOf(modalData.roles[i].id) > -1) {
+            if (popupData.entity.recordPermissions.canUpdate.indexOf(popupData.roles[i].id) > -1) {
                 role.canUpdate = true;
             }
             role.canDelete = false;
-            if (modalData.entity.recordPermissions.canDelete.indexOf(modalData.roles[i].id) > -1) {
+            if (popupData.entity.recordPermissions.canDelete.indexOf(popupData.roles[i].id) > -1) {
                 role.canDelete = true;
             }
-            modalData.entity.roles.push(role);
+            popupData.entity.roles.push(role);
         }
         
         function removeValueFromArray(array, value) {
@@ -193,52 +193,52 @@
             }
         }
 
-        modalData.toggleCanRead = function (roleId) {
-            if (modalData.entity.recordPermissions.canRead.indexOf(roleId) > -1) {
+        popupData.toggleCanRead = function (roleId) {
+            if (popupData.entity.recordPermissions.canRead.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(modalData.entity.recordPermissions.canRead, roleId);
+                removeValueFromArray(popupData.entity.recordPermissions.canRead, roleId);
             }
             else {
                 //Not Found - should be added
-                modalData.entity.recordPermissions.canRead.push(roleId);
+                popupData.entity.recordPermissions.canRead.push(roleId);
             }
         }
 
-        modalData.toggleCanCreate = function (roleId) {
-            if (modalData.entity.recordPermissions.canCreate.indexOf(roleId) > -1) {
+        popupData.toggleCanCreate = function (roleId) {
+            if (popupData.entity.recordPermissions.canCreate.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(modalData.entity.recordPermissions.canCreate, roleId);
+                removeValueFromArray(popupData.entity.recordPermissions.canCreate, roleId);
             }
             else {
                 //Not Found - should be added
-                modalData.entity.recordPermissions.canCreate.push(roleId);
+                popupData.entity.recordPermissions.canCreate.push(roleId);
             }
         }
 
-        modalData.toggleCanUpdate = function (roleId) {
-            if (modalData.entity.recordPermissions.canUpdate.indexOf(roleId) > -1) {
+        popupData.toggleCanUpdate = function (roleId) {
+            if (popupData.entity.recordPermissions.canUpdate.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(modalData.entity.recordPermissions.canUpdate, roleId);
+                removeValueFromArray(popupData.entity.recordPermissions.canUpdate, roleId);
             }
             else {
                 //Not Found - should be added
-                modalData.entity.recordPermissions.canUpdate.push(roleId);
+                popupData.entity.recordPermissions.canUpdate.push(roleId);
             }
         }
 
-        modalData.toggleCanDelete = function (roleId) {
-            if (modalData.entity.recordPermissions.canDelete.indexOf(roleId) > -1) {
+        popupData.toggleCanDelete = function (roleId) {
+            if (popupData.entity.recordPermissions.canDelete.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(modalData.entity.recordPermissions.canDelete, roleId);
+                removeValueFromArray(popupData.entity.recordPermissions.canDelete, roleId);
             }
             else {
                 //Not Found - should be added
-                modalData.entity.recordPermissions.canDelete.push(roleId);
+                popupData.entity.recordPermissions.canDelete.push(roleId);
             }
         }
 
         //Awesome font icon names array 
-        modalData.icons = [
+        popupData.icons = [
   "adjust",
   "adn",
   "align-center",
@@ -763,11 +763,11 @@
   
 
 
-        modalData.ok = function () {
-            webvellaAdminService.createEntity(modalData.entity, successCallback, errorCallback)
+        popupData.ok = function () {
+            webvellaAdminService.createEntity(popupData.entity, successCallback, errorCallback)
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
@@ -784,7 +784,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, modalData,modalData.entity, location);
+            webvellaRootService.generateValidationMessages(response, popupData,popupData.entity, location);
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };
