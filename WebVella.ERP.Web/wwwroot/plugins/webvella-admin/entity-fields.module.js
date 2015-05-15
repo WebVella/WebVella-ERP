@@ -200,7 +200,7 @@
             {
                 "id": 16,
                 "name": "GuidField",
-                "label": "Unique identifier",
+                "label": "Identifier GUID",
                 "description": "Very important field for any entity to entity relation and required by it"
             },
             {
@@ -323,6 +323,43 @@
             modalData.wizard.steps[2].completed = true;
         }
 
+
+        //Identifier GUID field specific functions
+        modalData.uniqueGuidGenerateCheckboxEnabled = true;
+        modalData.defaultValueTextboxEnabled = true;
+        modalData.defaultValueTextboxPlaceholder = "fill in a GUID";
+        modalData.defaultValueTextboxValue = null;
+        modalData.uniqueGuidGenerateToggle = function (newValue) {
+            if (newValue) { // if it is checked
+                modalData.defaultValueTextboxEnabled = false;
+                modalData.defaultValueTextboxPlaceholder = "will be auto-generated";
+                modalData.defaultValueTextboxValue = modalData.field.defaultValue;
+                modalData.field.defaultValue = null;
+            }
+            else {
+                modalData.defaultValueTextboxEnabled = true;
+                modalData.defaultValueTextboxPlaceholder = "fill in a GUID";
+                modalData.field.defaultValue = modalData.defaultValueTextboxValue;
+                modalData.defaultValueTextboxValue = null;
+            }
+        }
+
+        modalData.uniqueGuidPropertyChecked = function (newValue) {
+            if (newValue) {
+                modalData.field.generateNewId = true;
+                modalData.uniqueGuidGenerateCheckboxEnabled = false;
+                modalData.uniqueGuidGenerateToggle(true);
+            }
+            else {
+                modalData.field.generateNewId = false;
+                modalData.uniqueGuidGenerateCheckboxEnabled = true;
+                modalData.uniqueGuidGenerateToggle(false);
+            }
+        }
+
+
+
+
         modalData.ok = function () {
             webvellaAdminService.createField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
         };
@@ -369,6 +406,7 @@
                 modalData.fieldType = modalData.fieldTypes[i];
             }
         }
+
 
         modalData.ok = function () {
             webvellaAdminService.updateField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
@@ -425,7 +463,7 @@
         modalData.parentData = parentModalData;
 
         modalData.ok = function () {
-            webvellaAdminService.deleteField(modalData.parentData.contentData.entity.id,modalData.parentData.field.id, successCallback, errorCallback);
+            webvellaAdminService.deleteField(modalData.parentData.field.id, modalData.parentData.contentData.entity.id, successCallback, errorCallback);
         };
 
         modalData.cancel = function () {
