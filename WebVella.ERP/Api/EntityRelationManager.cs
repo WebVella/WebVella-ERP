@@ -154,7 +154,11 @@ namespace WebVella.ERP
                 //validate there is no other already existing relation with same parameters
                 foreach (var rel in relationRepository.Read())
                 {
-                    if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
+                    if( rel.TargetEntityId == relation.TargetEntityId && rel.TargetFieldId == relation.TargetFieldId )
+                    {
+                        errors.Add(new ErrorModel("", "", "There is already existing relation to specified target."));
+                    }
+                    else if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
                         rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
                     {
                         errors.Add(new ErrorModel("", "", "There is already existing relation with same parameters."));
