@@ -1,0 +1,227 @@
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+            <a class="btn btn-success" ng-click="contentData.manageRelationModal(null)"><i class="fa fa-fw fa-plus"></i>New Relation</a>
+        </div>
+        <!--<div class="icon-box">
+            <i class="fa fa-database"></i>
+        </div>-->
+        <div class="entity-box">
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-{{contentData.entity.iconName}}"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+            <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 class="no-link" title="Relations">Relations</h4>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+<div id="text">
+    <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+        <ul class="nav nav-tabs">
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({name:'{{contentData.entity.name}}'})">Record Views</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({name:'{{contentData.entity.name}}'})">Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({name:'{{contentData.entity.name}}'})">Relations</a></li>
+        </ul>
+
+    </div>
+
+
+    <form id="filters" class="form-inline">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input ng-model="class" type="text" class="form-control" placeholder="Search list names">
+            </div>
+        </div>
+    </form>
+    <div id="list">
+        <div class="alert alert-info" ng-show="contentData.currentEntityRelation.length == 0">This entity does not have any existing relations yet!</div>
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.currentEntityRelation.length != 0">
+            <thead>
+                <tr>
+                    <th class="actions"></th>
+                    <th class="name">Name</th>
+                    <th class="icon">Type</th>
+                    <th class="icon">Origin</th>
+                    <th class="icon">Target</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="relation in contentData.currentEntityRelation">
+                    <td class="actions">
+                        <a class="btn btn-default">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </td>
+                    <td class="name">
+                        {{relation.name}}
+                        <p class="go-gray">{{relation.description}}</p>
+                    </td>
+                    <td class="type">
+                        <span ng-show="relation.relationType == 1">One to One</span>
+                        <span ng-show="relation.relationType == 2">One to Many</span>
+                        <span ng-show="relation.relationType == 3">Many to Many</span>
+                    </td>
+                    <td>
+                        <div><span class="go-gray">Entity: </span> {{relation.originEntityLabel}}</div>
+                        <div><span class="go-gray">Field: </span> {{relation.originFieldLabel}}</div>
+                    </td>
+                    <td>
+                        <div><span class="go-gray">Entity: </span> {{relation.targetEntityLabel}}</div>
+                        <div><span class="go-gray">Field: </span> {{relation.targetFieldLabel}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+
+<script type="text/ng-template" id="manageRelationModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="modalData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" ng-show="modalData.relation.id === null">Create new relation</h3>
+        <h3 class="modal-title" ng-show="modalData.relation.id != null">Manage relation</h3>
+    </div>
+    <div class="modal-body">
+        <form name="createRelation">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="type">Relation type</label>
+                        <select class="form-control" ng-model="modelData.relation.relationType" name="relationType">
+                            <option value="1">One to One (1:1)</option>
+                            <option value="2">One to Many (1:N)</option>
+                            <option value="3">Many to Many (N:N)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : createRelation.name.$invalid && !createRelation.name.$pristine || modalData.nameError}">
+                        <label class="required" for="entityName">Name</label>
+                        <input ng-model="modalData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
+                        <div class="error" ng-show="createRelation.name.$dirty && createRelation.name.$invalid || modalData.nameError">
+                            <small class="error" ng-show="createRelation.name.$error.required && !modalData.nameError">
+                                required field
+                            </small>
+                            <small class="error" ng-show="createRelation.name.$error.pattern">
+                                only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+                            </small>
+                            <small class="error" ng-show="createRelation.name.$error.maxlength">
+                                must be less than 50 chars
+                            </small>
+                            <small class="error" ng-show="modalData.nameError">
+                                {{modalData.nameMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="systemStatus">System Status</label>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="modalData.relation.system" type="checkbox" id="systemStatus" value="true">
+                                this is a system relation <span class="go-grey">(deletion is locked)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : createRelation.label.$invalid && !createRelation.label.$pristine || modalData.labelError }">
+                        <label class="required" for="label">Label</label>
+                        <input ng-model="modalData.relation.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
+                               required>
+                        <div class="error" ng-show="createRelation.label.$dirty && createRelation.label.$invalid || modalData.labelError">
+                            <small class="error" ng-show="createRelation.label.$error.required && !modalData.labelError">
+                                Entity label is required.
+                            </small>
+                            <small class="error" ng-show="modalData.labelError">
+                                {{modalData.labelMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : modalData.descriptionError }">
+                        <label for="description">Description</label>
+                        <input ng-model="modalData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins"/>
+                        <div class="error" ng-show="createRelation.description.$dirty && createRelation.description.$invalid || modalData.descriptionError">
+                            <small class="error" ng-show="modalData.descriptionError">
+                                {{modalData.descriptionMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="type">Origin Entity</label>
+                        <select class="form-control" name="selectedOriginEntity" ng-model="modalData.selectedOriginEntity" ng-options="entity as entity.label for entity in modalData.eligibleEntities"></select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="type">Target Entity</label>
+                        <select class="form-control" name="selectedTargetEntity" ng-model="modelData.selectedTargetEntity"  ng-options="entity as entity.label for entity in modalData.eligibleEntities"></select>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center go-red">only "Identifier GUID" fields that are marked as unique and required can be related</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="type">Origin Field</label>
+                        <select class="form-control" name="selectedOriginField" ng-model="modalData.selectedOriginField" ng-options="field as field.label for field in modalData.selectedOriginEntity.fields"></select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="type">Target Field</label>
+                        <select class="form-control" name="selectedTargetField" ng-model="modelData.selectedTargetField" ng-options="field as field.label for field in modalData.selectedTargetEntity.fields"></select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <pre>{{modelData.selectedTargetEntity | json}}</pre>
+        <pre>{{modelData.selectedTargetField | json}}</pre>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-click="modalData.ok()"><i class="fa fa-fw fa-plus"></i>Create New Entity</button>
+        <button class="btn btn-default btn-link" ng-click="modalData.cancel()">Cancel</button>
+    </div>
+</script>

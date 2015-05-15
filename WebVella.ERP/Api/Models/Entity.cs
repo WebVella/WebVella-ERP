@@ -16,8 +16,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "pluralLabel")]
-        public string PluralLabel { get; set; }
+        [JsonProperty(PropertyName = "labelPlural")]
+        public string LabelPlural { get; set; }
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
@@ -43,8 +43,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "label")]
         public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "pluralLabel")]
-        public string PluralLabel { get; set; }
+        [JsonProperty(PropertyName = "labelPlural")]
+        public string LabelPlural { get; set; }
 
         [JsonProperty(PropertyName = "system")]
         public bool? System { get; set; }
@@ -77,106 +77,13 @@ namespace WebVella.ERP.Api.Models
             Id = entity.Id;
             Name = entity.Name;
             Label = entity.Label;
-            PluralLabel = entity.PluralLabel;
+            LabelPlural = entity.LabelPlural;
             System = entity.System.Value;
             IconName = entity.IconName;
             Weight = entity.Weight;
             RecordPermissions = entity.RecordPermissions;
             if (RecordPermissions == null)
                 RecordPermissions = new RecordPermissions();
-        }
-
-        public Entity(IStorageEntity entity)
-        {
-            Id = entity.Id;
-            Name = entity.Name;
-            Label = entity.Label;
-            PluralLabel = entity.PluralLabel;
-            System = entity.System;
-            IconName = entity.IconName;
-            Weight = entity.Weight;
-            RecordPermissions = new RecordPermissions();
-            if (entity.RecordPermissions != null)
-            {
-                RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
-                RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
-                RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
-                RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
-            }
-
-            Fields = new List<Field>();
-
-            foreach (IStorageField storageField in entity.Fields)
-            {
-                Field field = Field.ConvertField(storageField);                
-
-                Fields.Add(field);
-            }
-
-            RecordsLists = new List<RecordsList>();
-
-            foreach (IStorageRecordsList storageRecordsList in entity.RecordsLists)
-            {
-                RecordsList recordsList = new RecordsList();
-                recordsList.Id = storageRecordsList.Id;
-                recordsList.Name = storageRecordsList.Name;
-                recordsList.Label = storageRecordsList.Label;
-                recordsList.Type = storageRecordsList.Type;
-
-                recordsList.Filters = new List<RecordsListFilter>();
-
-                foreach (IStorageRecordsListFilter storageFilter in storageRecordsList.Filters)
-                {
-                    RecordsListFilter filter = new RecordsListFilter();
-
-                    filter.EntityId = storageFilter.EntityId;
-                    filter.FieldId = storageFilter.FieldId;
-                    filter.Operator = storageFilter.Operator;
-                    filter.Value = storageFilter.Value;
-
-                    recordsList.Filters.Add(filter);
-                }
-
-                recordsList.Fields = new List<RecordsListField>();
-
-                foreach (IStorageRecordsListField storageField in storageRecordsList.Fields)
-                {
-                    RecordsListField field = new RecordsListField();
-
-                    field.EntityId = storageField.EntityId;
-                    field.Id = storageField.Id;
-                    field.Position = storageField.Position;
-
-                    recordsList.Fields.Add(field);
-                }
-
-                RecordsLists.Add(recordsList);
-            }
-
-            RecordViewLists = new List<RecordView>();
-
-            foreach (IStorageRecordView storageRecordView in entity.RecordViewList)
-            {
-                RecordView recordView = new RecordView();
-                recordView.Id = storageRecordView.Id;
-                recordView.Name = storageRecordView.Name;
-                recordView.Label = storageRecordView.Label;
-
-                recordView.Fields = new List<RecordViewField>();
-
-                foreach (IStorageRecordViewField storageField in storageRecordView.Fields)
-                {
-                    RecordViewField field = new RecordViewField();
-
-                    field.EntityId = storageField.EntityId;
-                    field.Id = storageField.Id;
-                    field.Position = storageField.Position;
-
-                    recordView.Fields.Add(field);
-                }
-
-                RecordViewLists.Add(recordView);
-            }
         }
     }
 
@@ -211,16 +118,6 @@ namespace WebVella.ERP.Api.Models
         public EntityList()
         {
             Entities = new List<Entity>();
-        }
-
-        public EntityList(List<IStorageEntity> entities)
-        {
-            Entities = new List<Entity>();
-
-            foreach (IStorageEntity storageEntity in entities)
-            {
-                Entities.Add(new Entity(storageEntity));
-            }
         }
     }
 

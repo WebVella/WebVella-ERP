@@ -10,7 +10,5 @@ namespace WebVella.ERP.Storage
         bool Encrypted { get; set; }
 
         PasswordFieldMaskTypes MaskType { get; set; }
-
-        char MaskCharacter { get; set; }
     }
 }

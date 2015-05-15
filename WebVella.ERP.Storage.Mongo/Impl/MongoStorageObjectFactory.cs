@@ -20,16 +20,16 @@ namespace WebVella.ERP.Storage.Mongo
 
         public IStorageField CreateEmptyFieldObject(Type type)
         {
-            if( type == typeof(AutoNumberField) )
+            if (type == typeof(AutoNumberField))
                 return new MongoAutoNumberField();
             if (type == typeof(CheckboxField))
                 return new MongoCheckboxField();
             if (type == typeof(CurrencyField))
                 return new MongoCurrencyField();
-            if (type == typeof(DateTimeField))
-                return new MongoDateField();
             if (type == typeof(DateField))
                 return new MongoDateField();
+            if (type == typeof(DateTimeField))
+                return new MongoDateTimeField();
             if (type == typeof(EmailField))
                 return new MongoEmailField();
             if (type == typeof(FileField))
@@ -75,6 +75,31 @@ namespace WebVella.ERP.Storage.Mongo
         public IStorageRecordView CreateEmptyRecordViewObject()
         {
             return new MongoRecordView();
+        }
+
+        public IStorageMultiSelectFieldOption CreateEmptyMultiSelectFieldOptionObject()
+        {
+            return new MongoMultiSelectFieldOption();
+        }
+
+        public IStorageSelectFieldOption CreateEmptySelectFieldOptionObject()
+        {
+            return new MongoSelectFieldOption();
+        }
+
+        public IStorageRecordsListFilter CreateEmptyRecordsListFilterObject()
+        {
+            return new MongoRecordsListFilter();
+        }
+
+        public IStorageRecordsListField CreateEmptyRecordsListFieldObject()
+        {
+            return new MongoRecordsListField();
+        }
+
+        public IStorageRecordViewField CreateEmptyRecordViewFieldObject()
+        {
+            return new MongoRecordViewField();
         }
     }
 }

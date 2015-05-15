@@ -23,6 +23,9 @@ namespace WebVella.ERP
         {
             InitializeSystemEntities();
             //EntityTests();
+
+            //EntityManager entityManager = new EntityManager(StorageService);
+            //EntityListResponse entityListResponse = entityManager.Read("aa");
         }
 
         public void InitializeSystemEntities()
@@ -55,7 +58,7 @@ namespace WebVella.ERP
                 roleEntity.Id = SystemIds.RoleEntityId;
                 roleEntity.Name = "role";
                 roleEntity.Label = "Role";
-                roleEntity.PluralLabel = "Roles";
+                roleEntity.LabelPlural = "Roles";
                 roleEntity.System = true;
                 roleEntity.RecordPermissions = new RecordPermissions();
                 roleEntity.RecordPermissions.CanRead = allowedRoles;
@@ -108,7 +111,7 @@ namespace WebVella.ERP
                 userEntity.Id = SystemIds.UserEntityId;
                 userEntity.Name = "user";
                 userEntity.Label = "User";
-                userEntity.PluralLabel = "Users";
+                userEntity.LabelPlural = "Users";
                 userEntity.System = true;
                 userEntity.RecordPermissions = new RecordPermissions();
                 userEntity.RecordPermissions.CanRead = allowedRoles;
@@ -191,7 +194,6 @@ namespace WebVella.ERP
 
                 password.MaxLength = 1;
                 password.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
-                password.MaskCharacter = '*';
                 password.Encrypted = true;
 
                 fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
@@ -275,7 +277,7 @@ namespace WebVella.ERP
             inputEntity.Id = Guid.NewGuid();
             inputEntity.Name = "goro_test";
             inputEntity.Label = "Goro Test";
-            inputEntity.PluralLabel = "Goro Tests";
+            inputEntity.LabelPlural = "Goro Tests";
             inputEntity.System = true;
 
             List<Guid> allowedRoles = new List<Guid>();
@@ -659,7 +661,6 @@ namespace WebVella.ERP
 
             passwordField.MaxLength = 1;
             passwordField.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
-            passwordField.MaskCharacter = '*';
 
             fields.Add(passwordField);
 
@@ -795,7 +796,7 @@ namespace WebVella.ERP
             firstRecordList.Id = Guid.NewGuid();
             firstRecordList.Name = "SearchPopupviewname";
             firstRecordList.Label = "Search Popup view label";
-            firstRecordList.Type = Api.ViewTypes.SearchPopup;
+            firstRecordList.Type = Api.RecordsListTypes.SearchPopup;
 
             firstRecordList.Filters = new List<RecordsListFilter>();
 
@@ -843,7 +844,7 @@ namespace WebVella.ERP
 
             field1.Id = entity.Fields[1].Id.Value;
             field1.EntityId = entity.Id;
-            field1.Column = Api.FormColumns.Left;
+            field1.Column = Api.RecordViewColumns.Left;
             field1.Position = 1;
 
             recordView.Fields.Add(field1);
@@ -852,7 +853,7 @@ namespace WebVella.ERP
 
             field2.Id = entity.Fields[5].Id.Value;
             field2.EntityId = entity.Id;
-            field2.Column = Api.FormColumns.Right;
+            field2.Column = Api.RecordViewColumns.Right;
             field2.Position = 2;
 
             recordView.Fields.Add(field2);

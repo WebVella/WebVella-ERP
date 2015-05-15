@@ -10,7 +10,7 @@ namespace WebVella.ERP.Api
         public static Guid RoleEntityId { get { return new Guid("C4541FEE-FBB6-4661-929E-1724ADEC285A"); } }
     }
 
-    public enum ViewTypes
+    public enum RecordsListTypes
     {
         SearchPopup = 1,
         List,
@@ -33,13 +33,13 @@ namespace WebVella.ERP.Api
         Within
     }
 
-    public enum FormLayouts
+    public enum RecordViewLayouts
     {
         OneColumn = 1,
         TwoColumns
     }
 
-    public enum FormColumns
+    public enum RecordViewColumns
     {
         Left = 1,
         Right

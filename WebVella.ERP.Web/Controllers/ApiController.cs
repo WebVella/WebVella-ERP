@@ -43,7 +43,7 @@ namespace WebVella.ERP.Web.Controllers
         // Create an entity
         // POST: api/v1/en_US/meta/entity
         [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
-        public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
+        public IActionResult PatchEntity(string StringId, [FromBody]InputEntity inputEntity)
         {
             FieldResponse response = new FieldResponse();
 
@@ -52,16 +52,6 @@ namespace WebVella.ERP.Web.Controllers
             {
                 response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
                 return DoResponse(response);
-            }
-
-            InputEntity inputEntity = new InputEntity(); ;
-            try
-            {
-                inputEntity = submitObj.ToObject<InputEntity>();
-            }
-            catch(Exception e)
-            {
-                return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
             }
 
             return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, inputEntity));
