@@ -139,18 +139,15 @@ namespace WebVella.ERP
             if (field.Id == Guid.Empty)
                 errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
-            if (checkId)
-            {
-                int fieldSameIdCount = entity.Fields.Where(f => f.Id == field.Id).Count();
+            int fieldsSameIdCount = entity.Fields.Where(f => f.Id == field.Id).Count();
 
-                if (fieldSameIdCount > 1)
-                    errorList.Add(new ErrorModel("id", null, "There is already a field with such Id!"));
+            if ((checkId && fieldsSameIdCount > 1) || (!checkId && fieldsSameIdCount > 0))
+                errorList.Add(new ErrorModel("id", null, "There is already a field with such Id!"));
 
-                int fieldSameNameCount = entity.Fields.Where(f => f.Name == field.Name).Count();
+            int fieldsSameNameCount = entity.Fields.Where(f => f.Name == field.Name).Count();
 
-                if (fieldSameNameCount > 1)
-                    errorList.Add(new ErrorModel("name", null, "There is already a field with such Name!"));
-            }
+            if ((checkId && fieldsSameNameCount > 1) || (!checkId && fieldsSameNameCount > 0))
+                errorList.Add(new ErrorModel("name", null, "There is already a field with such Name!"));
 
             errorList.AddRange(ValidationUtility.ValidateName(field.Name));
 
@@ -161,56 +158,59 @@ namespace WebVella.ERP
                 if (field.Required.HasValue && field.Required.Value && !((AutoNumberField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((AutoNumberField)field).StartingNumber.HasValue)
-                    errorList.Add(new ErrorModel("startingNumber", null, "Starting Number is required!"));
+                //if (((AutoNumberField)field).DisplayFormat == null)
+                //    errorList.Add(new ErrorModel("DisplayFormat", null, "DisplayFormat is required!"));
+
+                //if (!((AutoNumberField)field).StartingNumber.HasValue)
+                //    errorList.Add(new ErrorModel("startingNumber", null, "Starting Number is required!"));
 
                 //TODO:parse DisplayFormat field
             }
             else if (field is CheckboxField)
             {
-                if (field.Required.HasValue && field.Required.Value && !((CheckboxField)field).DefaultValue.HasValue)
-                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+                if (!((CheckboxField)field).DefaultValue.HasValue)
+                    ((CheckboxField)field).DefaultValue = false;
             }
             else if (field is CurrencyField)
             {
                 if (field.Required.HasValue && field.Required.Value && !((CurrencyField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((CurrencyField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
+                //if (!((CurrencyField)field).MinValue.HasValue)
+                //    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
-                if (!((CurrencyField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
+                //if (!((CurrencyField)field).MaxValue.HasValue)
+                //    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
-                if (((CurrencyField)field).MinValue.HasValue && ((CurrencyField)field).MaxValue.HasValue)
-                {
-                    if (((CurrencyField)field).MinValue.Value >= ((CurrencyField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
-                }
+                //if (((CurrencyField)field).MinValue.HasValue && ((CurrencyField)field).MaxValue.HasValue)
+                //{
+                //    if (((CurrencyField)field).MinValue.Value >= ((CurrencyField)field).MaxValue.Value)
+                //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
+                //}
             }
             else if (field is DateField)
             {
-                //because DateField support NULL now, we skipp this validation
-                //if (!((DateField)field).DefaultValue.HasValue)
-                //    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
-
                 //TODO:parse format and check if it is valid
+
+                if (!((DateField)field).UseCurrentTimeAsDefaultValue.HasValue)
+                    ((DateField)field).UseCurrentTimeAsDefaultValue = false;
+                //errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
             }
             else if (field is DateTimeField)
             {
-                //because DateField support NULL now, we skipp this validation
-                //if (!((DateTimeField)field).DefaultValue.HasValue)
-                //    errorList.Add(new ErrorModel("fields.defaultValue", null, "Default Value is required!"));
-
                 //TODO:parse format and check if it is valid
+
+                if (!((DateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue)
+                    ((DateTimeField)field).UseCurrentTimeAsDefaultValue = false;
+                //errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
             }
             else if (field is EmailField)
             {
                 if (field.Required.HasValue && field.Required.Value && ((EmailField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((EmailField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!((EmailField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
             else if (field is FileField)
             {
@@ -231,11 +231,14 @@ namespace WebVella.ERP
             //}
             else if (field is GuidField)
             {
-                if (((((GuidField)field).Unique.HasValue && ((GuidField)field).Unique.Value) ||
-                    (((GuidField)field).Required.HasValue && ((GuidField)field).Required.Value)) &&
-                    (((GuidField)field).GenerateNewId.HasValue && !((GuidField)field).GenerateNewId.Value) &&
+                if ((((GuidField)field).Unique.HasValue && ((GuidField)field).Unique.Value) &&
+                   (!((GuidField)field).GenerateNewId.HasValue || !((GuidField)field).GenerateNewId.Value))
+                    errorList.Add(new ErrorModel("defaultValue", null, "Generate New Id is required when the field is marked as unique!"));
+
+                if ((((GuidField)field).Required.HasValue && ((GuidField)field).Required.Value) &&
+                    (!((GuidField)field).GenerateNewId.HasValue || !((GuidField)field).GenerateNewId.Value) &&
                     ((GuidField)field).DefaultValue == null)
-                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as unique or required and generate new id option is not selected!"));
+                    errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as required and generate new id option is not selected!"));
             }
             else if (field is HtmlField)
             {
@@ -252,20 +255,21 @@ namespace WebVella.ERP
                 if (field.Required.HasValue && field.Required.Value && ((MultiLineTextField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((MultiLineTextField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!((MultiLineTextField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
-                if (!((MultiLineTextField)field).VisibleLineNumber.HasValue)
-                    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number is required!"));
+                //if (!((MultiLineTextField)field).VisibleLineNumber.HasValue)
+                //    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number is required!"));
 
-                if (((MultiLineTextField)field).VisibleLineNumber.HasValue && ((MultiLineTextField)field).VisibleLineNumber.Value > 20)
-                    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number cannot be greater than 20!"));
+                //if (((MultiLineTextField)field).VisibleLineNumber.HasValue && ((MultiLineTextField)field).VisibleLineNumber.Value > 20)
+                //    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number cannot be greater than 20!"));
             }
             else if (field is MultiSelectField)
             {
                 if (field.Required.HasValue && field.Required.Value &&
                     (((MultiSelectField)field).DefaultValue == null || ((MultiSelectField)field).DefaultValue.Count() == 0))
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
+
                 if (((MultiSelectField)field).Options != null)
                 {
                     if (((MultiSelectField)field).Options.Count == 0)
@@ -279,55 +283,66 @@ namespace WebVella.ERP
                 if (field.Required.HasValue && field.Required.Value && !((NumberField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((NumberField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
+                //if (!((NumberField)field).MinValue.HasValue)
+                //    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
-                if (!((NumberField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
+                //if (!((NumberField)field).MaxValue.HasValue)
+                //    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
-                if (((NumberField)field).MinValue.HasValue && ((NumberField)field).MaxValue.HasValue)
-                {
-                    if (((NumberField)field).MinValue.Value >= ((NumberField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
-                }
+                //if (((NumberField)field).MinValue.HasValue && ((NumberField)field).MaxValue.HasValue)
+                //{
+                //    if (((NumberField)field).MinValue.Value >= ((NumberField)field).MaxValue.Value)
+                //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
+                //}
 
                 if (!((NumberField)field).DecimalPlaces.HasValue)
-                    errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
+                    ((NumberField)field).DecimalPlaces = 2;
+                //errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
             else if (field is PasswordField)
             {
-                if (!((PasswordField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!((PasswordField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+
+                if (!((PasswordField)field).Encrypted.HasValue)
+                    ((PasswordField)field).Encrypted = true;
+
+                if (!((PasswordField)field).MaskType.HasValue)
+                    ((PasswordField)field).MaskType = PasswordFieldMaskTypes.MaskAllCharacters;
             }
             else if (field is PercentField)
             {
                 if (field.Required.HasValue && field.Required.Value && !((PercentField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((PercentField)field).MinValue.HasValue)
-                    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
+                //if (!((PercentField)field).MinValue.HasValue)
+                //    errorList.Add(new ErrorModel("minValue", null, "Min Value is required!"));
 
-                if (!((PercentField)field).MaxValue.HasValue)
-                    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
+                //if (!((PercentField)field).MaxValue.HasValue)
+                //    errorList.Add(new ErrorModel("maxValue", null, "Max Value is required!"));
 
-                if (((PercentField)field).MinValue.HasValue && ((PercentField)field).MaxValue.HasValue)
-                {
-                    if (((PercentField)field).MinValue.Value >= ((PercentField)field).MaxValue.Value)
-                        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
-                }
+                //if (((PercentField)field).MinValue.HasValue && ((PercentField)field).MaxValue.HasValue)
+                //{
+                //    if (((PercentField)field).MinValue.Value >= ((PercentField)field).MaxValue.Value)
+                //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
+                //}
 
                 if (!((PercentField)field).DecimalPlaces.HasValue)
-                    errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
+                    ((PercentField)field).DecimalPlaces = 2;
+                //errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
             else if (field is PhoneField)
             {
                 if (field.Required.HasValue && field.Required.Value && ((PhoneField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((PhoneField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!string.IsNullOrWhiteSpace(((PhoneField)field).Format))
+                //    errorList.Add(new ErrorModel("format", null, "Format is required!"));
 
-                //TODO: parse formula text and check if it is valid
+                //if (!((PhoneField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+
+                //TODO: parse format and check if it is valid
             }
             else if (field is SelectField)
             {
@@ -347,19 +362,20 @@ namespace WebVella.ERP
                 if (field.Required.HasValue && field.Required.Value && ((TextField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((TextField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!((TextField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
             else if (field is UrlField)
             {
                 if (field.Required.HasValue && field.Required.Value && ((UrlField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (!((UrlField)field).MaxLength.HasValue)
-                    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
+                //if (!((UrlField)field).MaxLength.HasValue)
+                //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
                 if (!((UrlField)field).OpenTargetInNewWindow.HasValue)
-                    errorList.Add(new ErrorModel("openTargetInNewWindow", null, "Open Target In New Window is required!"));
+                    ((UrlField)field).OpenTargetInNewWindow = false;
+                //errorList.Add(new ErrorModel("openTargetInNewWindow", null, "Open Target In New Window is required!"));
             }
 
             return errorList;
@@ -1271,9 +1287,9 @@ namespace WebVella.ERP
             if (field is AutoNumberField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(AutoNumberField));
-                ((IStorageAutoNumberField)storageField).DefaultValue = ((AutoNumberField)field).DefaultValue.Value;
+                ((IStorageAutoNumberField)storageField).DefaultValue = ((AutoNumberField)field).DefaultValue;
                 ((IStorageAutoNumberField)storageField).DisplayFormat = ((AutoNumberField)field).DisplayFormat;
-                ((IStorageAutoNumberField)storageField).StartingNumber = ((AutoNumberField)field).StartingNumber.Value;
+                ((IStorageAutoNumberField)storageField).StartingNumber = ((AutoNumberField)field).StartingNumber;
             }
             else if (field is CheckboxField)
             {
@@ -1283,9 +1299,9 @@ namespace WebVella.ERP
             else if (field is CurrencyField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(CurrencyField));
-                ((IStorageCurrencyField)storageField).DefaultValue = ((CurrencyField)field).DefaultValue.Value;
-                ((IStorageCurrencyField)storageField).MinValue = ((CurrencyField)field).MinValue.Value;
-                ((IStorageCurrencyField)storageField).MaxValue = ((CurrencyField)field).MaxValue.Value;
+                ((IStorageCurrencyField)storageField).DefaultValue = ((CurrencyField)field).DefaultValue;
+                ((IStorageCurrencyField)storageField).MinValue = ((CurrencyField)field).MinValue;
+                ((IStorageCurrencyField)storageField).MaxValue = ((CurrencyField)field).MaxValue;
                 ((IStorageCurrencyField)storageField).Currency = ((CurrencyField)field).Currency;
             }
             else if (field is DateField)
@@ -1306,7 +1322,7 @@ namespace WebVella.ERP
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(EmailField));
                 ((IStorageEmailField)storageField).DefaultValue = ((EmailField)field).DefaultValue;
-                ((IStorageEmailField)storageField).MaxLength = ((EmailField)field).MaxLength.Value;
+                ((IStorageEmailField)storageField).MaxLength = ((EmailField)field).MaxLength;
             }
             else if (field is FileField)
             {
@@ -1318,7 +1334,7 @@ namespace WebVella.ERP
             //    storageField = new MongoFormulaField();
             //    ((MongoFormulaField)storageField).ReturnType = ((FormulaField)field).ReturnType;
             //    ((MongoFormulaField)storageField).FormulaText = ((FormulaField)field).FormulaText;
-            //    ((MongoFormulaField)storageField).DecimalPlaces = ((FormulaField)field).DecimalPlaces.Value;
+            //    ((MongoFormulaField)storageField).DecimalPlaces = ((FormulaField)field).DecimalPlaces;
             //}
             else if (field is HtmlField)
             {
@@ -1334,8 +1350,8 @@ namespace WebVella.ERP
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(MultiLineTextField));
                 ((IStorageMultiLineTextField)storageField).DefaultValue = ((MultiLineTextField)field).DefaultValue;
-                ((IStorageMultiLineTextField)storageField).MaxLength = ((MultiLineTextField)field).MaxLength.Value;
-                ((IStorageMultiLineTextField)storageField).VisibleLineNumber = ((MultiLineTextField)field).VisibleLineNumber.Value;
+                ((IStorageMultiLineTextField)storageField).MaxLength = ((MultiLineTextField)field).MaxLength;
+                ((IStorageMultiLineTextField)storageField).VisibleLineNumber = ((MultiLineTextField)field).VisibleLineNumber;
             }
             else if (field is MultiSelectField)
             {
@@ -1354,23 +1370,23 @@ namespace WebVella.ERP
             else if (field is NumberField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(NumberField));
-                ((IStorageNumberField)storageField).DefaultValue = ((NumberField)field).DefaultValue.Value;
-                ((IStorageNumberField)storageField).MinValue = ((NumberField)field).MinValue.Value;
-                ((IStorageNumberField)storageField).MaxValue = ((NumberField)field).MaxValue.Value;
+                ((IStorageNumberField)storageField).DefaultValue = ((NumberField)field).DefaultValue;
+                ((IStorageNumberField)storageField).MinValue = ((NumberField)field).MinValue;
+                ((IStorageNumberField)storageField).MaxValue = ((NumberField)field).MaxValue;
                 ((IStorageNumberField)storageField).DecimalPlaces = ((NumberField)field).DecimalPlaces.Value;
             }
             else if (field is PasswordField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PasswordField));
-                ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength.Value;
-                ((IStoragePasswordField)storageField).MaskType = ((PasswordField)field).MaskType;
+                ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength;
+                ((IStoragePasswordField)storageField).MaskType = ((PasswordField)field).MaskType.Value;
             }
             else if (field is PercentField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PercentField));
-                ((IStoragePercentField)storageField).DefaultValue = ((PercentField)field).DefaultValue.Value;
-                ((IStoragePercentField)storageField).MinValue = ((PercentField)field).MinValue.Value;
-                ((IStoragePercentField)storageField).MaxValue = ((PercentField)field).MaxValue.Value;
+                ((IStoragePercentField)storageField).DefaultValue = ((PercentField)field).DefaultValue;
+                ((IStoragePercentField)storageField).MinValue = ((PercentField)field).MinValue;
+                ((IStoragePercentField)storageField).MaxValue = ((PercentField)field).MaxValue;
                 ((IStoragePercentField)storageField).DecimalPlaces = ((PercentField)field).DecimalPlaces.Value;
             }
             else if (field is PhoneField)
@@ -1378,13 +1394,13 @@ namespace WebVella.ERP
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PhoneField));
                 ((IStoragePhoneField)storageField).DefaultValue = ((PhoneField)field).DefaultValue;
                 ((IStoragePhoneField)storageField).Format = ((PhoneField)field).Format;
-                ((IStoragePhoneField)storageField).MaxLength = ((PhoneField)field).MaxLength.Value;
+                ((IStoragePhoneField)storageField).MaxLength = ((PhoneField)field).MaxLength;
             }
             else if (field is GuidField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(GuidField));
-                ((IStorageGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue.Value;
-                ((IStorageGuidField)storageField).GenerateNewId = ((GuidField)field).GenerateNewId.Value;
+                ((IStorageGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue;
+                ((IStorageGuidField)storageField).GenerateNewId = ((GuidField)field).GenerateNewId;
             }
             else if (field is SelectField)
             {
@@ -1405,13 +1421,13 @@ namespace WebVella.ERP
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(TextField));
                 ((IStorageTextField)storageField).DefaultValue = ((TextField)field).DefaultValue;
-                ((IStorageTextField)storageField).MaxLength = ((TextField)field).MaxLength.Value;
+                ((IStorageTextField)storageField).MaxLength = ((TextField)field).MaxLength;
             }
             else if (field is UrlField)
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(UrlField));
                 ((IStorageUrlField)storageField).DefaultValue = ((UrlField)field).DefaultValue;
-                ((IStorageUrlField)storageField).MaxLength = ((UrlField)field).MaxLength.Value;
+                ((IStorageUrlField)storageField).MaxLength = ((UrlField)field).MaxLength;
                 ((IStorageUrlField)storageField).OpenTargetInNewWindow = ((UrlField)field).OpenTargetInNewWindow.Value;
             }
 

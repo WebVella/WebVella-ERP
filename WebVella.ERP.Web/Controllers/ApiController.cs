@@ -192,6 +192,8 @@ namespace WebVella.ERP.Web.Controllers
         {
             try
             {
+                if (submitObj["id"] == null)
+                    submitObj["id"] = Guid.Empty;
                 var relation = submitObj.ToObject<EntityRelation>();
                 return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
             }

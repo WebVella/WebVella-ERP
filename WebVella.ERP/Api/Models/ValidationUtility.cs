@@ -10,6 +10,8 @@ namespace WebVella.ERP.Api.Models
 
         public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 50)
         {
+            name = name.Trim();
+
             if (maxLen <= 0)
                 throw new ArgumentException("maxLen<=0");
 
@@ -38,6 +40,8 @@ namespace WebVella.ERP.Api.Models
 
         public static List<ErrorModel> ValidateLabel(string label, int minLen = 1, int maxLen = 50)
         {
+            label = label.Trim();
+
             if (maxLen <= 0)
                 throw new ArgumentException("maxLen<=0");
 
@@ -62,6 +66,8 @@ namespace WebVella.ERP.Api.Models
 
         public static List<ErrorModel> ValidateLabelPlural(string label, int minLen = 1, int maxLen = 50)
         {
+            label = label.Trim();
+
             if (maxLen <= 0)
                 throw new ArgumentException("maxLen<=0");
 
