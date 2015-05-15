@@ -45,27 +45,42 @@ namespace WebVella.ERP.Api
         Right
     }
 
-    public enum CurrencyPosition
+    public enum CurrencySymbolPlacement
     {
-        BeforeTheNumber,
-        AfterTheNumber
+        Before = 1,
+        After
     }
 
-    public class CurrencyTypes
+    public class CurrencyType
     {
-        [JsonProperty(PropertyName = "currencySymbol")]
-        public string CurrencySymbol { get; set; }
+        [JsonProperty(PropertyName = "symbol")]
+        public string Symbol { get; set; }
 
-        [JsonProperty(PropertyName = "currencyName")]
-        public string CurrencyName { get; set; }
+        [JsonProperty(PropertyName = "symbolNative")]
+        public string SymbolNative { get; set; }
 
-        [JsonProperty(PropertyName = "position")]
-        public CurrencyPosition Position { get; set; }
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "namePlural")]
+        public string NamePlural { get; set; }
+
+        [JsonProperty(PropertyName = "code")]
+        public string Code { get; set; }
+
+        [JsonProperty(PropertyName = "decimalDigits")]
+        public int DecimalDigits { get; set; }
+
+        [JsonProperty(PropertyName = "rounding")]
+        public int Rounding { get; set; }
+
+        [JsonProperty(PropertyName = "symbolPlacement")]
+        public CurrencySymbolPlacement SymbolPlacement { get; set; }
     }
 
     public enum FormulaFieldReturnType
     {
-        Checkbox,
+        Checkbox = 1,
         Currency,
         Date,
         DateTime,
@@ -76,7 +91,7 @@ namespace WebVella.ERP.Api
 
     public enum PasswordFieldMaskTypes
     {
-        None,
+        None = 0,
         MaskAllCharacters,
         LastFourCharactersClear,
         CreditCardNumber,

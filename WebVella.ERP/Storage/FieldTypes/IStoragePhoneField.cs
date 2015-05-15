@@ -6,6 +6,6 @@
 
         string Format { get; set; }
 
-        int MaxLength { get; set; }
+        int? MaxLength { get; set; }
     }
 }
