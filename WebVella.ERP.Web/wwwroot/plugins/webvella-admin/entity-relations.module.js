@@ -11,7 +11,8 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityRelationsController', controller)
-        .controller('ManageRelationModalController', ManageRelationModalController);
+        .controller('ManageRelationModalController', ManageRelationModalController)
+        .controller('DeleteRelationModalController', DeleteRelationModalController);
     
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -143,10 +144,10 @@
         $log.debug('webvellaAdmin>entity-relations> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        contentData.allRelations = resolvedRelationsList;
+        contentData.allRelations = angular.copy(resolvedRelationsList);
         contentData.currentEntityRelation = [];
-        contentData.entity = resolvedCurrentEntityMeta;
-        contentData.entityList = resolvedEntityList.entities;
+        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.entityList = angular.copy(resolvedEntityList.entities);
 
         //Initialize relations in the scope of this entity
         for (var i = 0; i < contentData.allRelations.length; i++) {
@@ -213,7 +214,15 @@
                         return contentData;
                     },
                     managedRelation: function () {
-                        return relation;
+                        var relationObject = null;
+                        if (relation != null) {
+                            for (var i = 0; i < resolvedRelationsList.length; i++) {
+                                if (relation.id === resolvedRelationsList[i].id) {
+                                    relationObject = resolvedRelationsList[i];
+                                }
+                            }
+                        }
+                            return relationObject;
                     }
                 }
             });
@@ -227,19 +236,22 @@
 
 
     //// Modal Controllers
-    ManageRelationModalController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
+    ManageRelationModalController.$inject = ['$modalInstance','$modal', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
 
     /* @ngInject */
-    function ManageRelationModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
+    function ManageRelationModalController($modalInstance,$modal, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
         $log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec');
         /* jshint validthis:true */
         var popupData = this;
+        popupData.modalInstance = $modalInstance;
         if (managedRelation === null) {
             popupData.relation = webvellaAdminService.initRelation();
         }
         else {
-            popupData.relation = managedRelation;
+            popupData.relation = angular.copy(managedRelation);
         }
+
+        popupData.currentEntity = contentData.entity;
 
         popupData.selectedOriginEntity = {};
         popupData.selectedOriginEntity.fields = [{
@@ -265,6 +277,7 @@
             entity.id = popupData.entities[i].id;
             entity.name = popupData.entities[i].name;
             entity.label = popupData.entities[i].label;
+            entity.enabled = true;
             entity.fields = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
                 if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
@@ -294,12 +307,13 @@
             entity.id = popupData.entities[i].id;
             entity.name = popupData.entities[i].name;
             entity.label = popupData.entities[i].label;
+            entity.enabled = true;
             entity.fields = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
                 if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
                     var field = {};
                     //Add the field only if it is not already a target for a relation
-                    if (!popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) > -1) {
+                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) == -1) {
                         field.id = popupData.entities[i].fields[j].id;
                         field.name = popupData.entities[i].fields[j].name;
                         field.label = popupData.entities[i].fields[j].label;
@@ -315,19 +329,66 @@
 
         ///////
         popupData.changeOriginEntity = function (newEntityModel) {
-            $timeout(function () { 
                 popupData.selectedOriginField = newEntityModel.fields[0];
                 popupData.selectedOriginFieldEnabled = true;
-            }, 0);
+                if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+                    popupData.fieldsDuplicatedError = true;
+                } else {
+                    popupData.fieldsDuplicatedError = false;
+                }
         }
 
         //////
         popupData.changeTargetEntity = function (newEntityModel) {
-            $timeout(function () { 
                 popupData.selectedTargetField = newEntityModel.fields[0];
                 popupData.selectedTargetFieldEnabled = true;
-            }, 0);
+                if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+                    popupData.fieldsDuplicatedError = true;
+                } else {
+                    popupData.fieldsDuplicatedError = false;
+                }
         }
+
+        //Validation for duplicated fields
+        popupData.fieldsDuplicatedError = false;
+
+        popupData.changeField = function () {
+            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+                popupData.fieldsDuplicatedError = true;
+            } else {
+                popupData.fieldsDuplicatedError = false;
+            }
+        }
+
+
+        //Initialize the selectedEntity and Fields if in manage mode
+        if (popupData.relation.id != null) {
+            popupData.selectedTargetEntityLabel = "";
+            popupData.selectedOriginEntityLabel = "";
+            popupData.selectedTargetFieldLabel = "";
+            popupData.selectedOriginFieldLabel = "";
+            for (var i = 0; i < popupData.entities.length; i++) {
+                //initialize target
+                if (popupData.entities[i].id === popupData.relation.targetEntityId) {
+                    popupData.selectedTargetEntityLabel = popupData.entities[i].label;
+                    for (var j = 0; j < popupData.entities[i].fields.length; j++) {
+                        if (popupData.entities[i].fields[j].id === popupData.relation.targetFieldId) {
+                            popupData.selectedTargetFieldLabel = popupData.entities[i].fields[j].label;
+                        }
+                    }
+                }
+                // initialize origin
+                if (popupData.entities[i].id === popupData.relation.originEntityId) {
+                    popupData.selectedOriginEntityLabel = popupData.entities[i].label;
+                    for (var j = 0; j < popupData.entities[i].fields.length; j++) {
+                        if (popupData.entities[i].fields[j].id === popupData.relation.originFieldId) {
+                            popupData.selectedOriginFieldLabel = popupData.entities[i].fields[j].label;
+                        }
+                    }
+                }
+            }
+        }
+
 
         //////
         popupData.ok = function () {
@@ -339,7 +400,14 @@
                 webvellaAdminService.createRelation(popupData.relation, successCallback, errorCallback)
             }
             else {
-                webvellaAdminService.updateRelation(popupData.relation, successCallback, errorCallback)
+                var putObject = angular.copy(managedRelation);
+                putObject.label = popupData.relation.label;
+                putObject.description = popupData.relation.description;
+                if (!managedRelation.system) {
+                    putObject.system = popupData.relation.system;
+                }
+
+                webvellaAdminService.updateRelation(putObject, successCallback, errorCallback)
             }
         };
 
@@ -362,8 +430,70 @@
             //Process the response and generate the validation Messages
             webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
         }
+
+
+        //Delete relation
+        popupData.deleteRelationModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'deleteRelationModal.html',
+                controller: 'DeleteRelationModalController',
+                controllerAs: "popupData",
+                size: "",
+                resolve: {
+                    parentPopupData: function () { return popupData; }
+                }
+            });
+        }
+
         $log.debug('webvellaAdmin>entities>CreateRelationModalController> END controller.exec');
     };
 
 
+
+    //// Modal Controllers
+    DeleteRelationModalController.$inject = ['parentPopupData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+
+    /* @ngInject */
+    function DeleteRelationModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+        $log.debug('webvellaAdmin>entities>deleteRelationModal> START controller.exec');
+        /* jshint validthis:true */
+        var popupData = this;
+        popupData.parentData = parentPopupData;
+
+        popupData.ok = function () {
+            webvellaAdminService.deleteRelation(popupData.parentData.relation.id, successCallback, errorCallback);
+        };
+
+        popupData.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+         /// Aux
+        function successCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+            $modalInstance.close('success');
+            popupData.parentData.modalInstance.close('success');
+            $timeout(function () {
+                $state.go("webvella-admin-entity-relations", { name: popupData.parentData.currentEntity.name }, { reload: true });
+            }, 0);
+        }
+
+        function errorCallback(response) {
+            popupData.hasError = true;
+            popupData.errorMessage = response.message;
+
+
+        }
+        $log.debug('webvellaAdmin>entities>deleteRelationModal> END controller.exec');
+    };
+
+
+
+
 })();
+
+
