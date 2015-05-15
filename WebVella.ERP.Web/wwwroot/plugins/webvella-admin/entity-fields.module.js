@@ -359,7 +359,7 @@
 
 
 
-
+        //////
         popupData.ok = function () {
             webvellaAdminService.createField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
         };
@@ -407,7 +407,43 @@
             }
         }
 
+        //Identifier GUID field specific functions
+        popupData.uniqueGuidGenerateCheckboxEnabled = true;
+        popupData.defaultValueTextboxEnabled = true;
+        popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
+        popupData.defaultValueTextboxValue = null;
+        popupData.uniqueGuidGenerateToggle = function (newValue) {
+            if (newValue) { // if it is checked
+                popupData.defaultValueTextboxEnabled = false;
+                popupData.defaultValueTextboxPlaceholder = "will be auto-generated";
+                popupData.defaultValueTextboxValue = popupData.field.defaultValue;
+                popupData.field.defaultValue = null;
+            }
+            else {
+                popupData.defaultValueTextboxEnabled = true;
+                popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
+                popupData.field.defaultValue = popupData.defaultValueTextboxValue;
+                popupData.defaultValueTextboxValue = null;
+            }
+        }
 
+        popupData.uniqueGuidPropertyChecked = function (newValue) {
+            if (newValue) {
+                popupData.field.generateNewId = true;
+                popupData.uniqueGuidGenerateCheckboxEnabled = false;
+                popupData.uniqueGuidGenerateToggle(true);
+            }
+            else {
+                popupData.field.generateNewId = false;
+                popupData.uniqueGuidGenerateCheckboxEnabled = true;
+                popupData.uniqueGuidGenerateToggle(false);
+            }
+        }
+
+
+
+
+        /////
         popupData.ok = function () {
             webvellaAdminService.updateField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
         };
