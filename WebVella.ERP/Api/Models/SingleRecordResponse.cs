@@ -8,3 +8,4 @@ namespace WebVella.ERP.Api.Models
         public SingleRecordResult Object { get; set; }
     }
 }
+ 
