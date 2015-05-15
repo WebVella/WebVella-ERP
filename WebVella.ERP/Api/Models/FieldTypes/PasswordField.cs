@@ -17,9 +17,6 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "maskType")]
         public PasswordFieldMaskTypes MaskType { get; set; }
 
-        [JsonProperty(PropertyName = "maskCharacter")]
-        public char? MaskCharacter { get; set; }
-
         public PasswordField()
         {
         }
@@ -46,7 +43,6 @@ namespace WebVella.ERP.Api.Models
 			EntityName = entityName;
 			Encrypted = field.Encrypted;
 			MaskType = field.MaskType;
-			MaskCharacter = field.MaskCharacter;
             ParentFieldName = parentFieldName;
         }
 	}

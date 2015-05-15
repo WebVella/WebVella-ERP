@@ -1,7 +1,7 @@
-﻿/* home.module.js */
+﻿/* entity-details.module.js */
 
 /**
-* @desc this module manages the application home desktop screen
+* @desc this module manages the entity record details in the admin screen
 */
 
 (function () {
@@ -704,6 +704,31 @@
             contentData.patchObject[key] = data;
             webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
         }
+
+        // Helper function
+        function removeValueFromArray(array, value) {
+            for (var i = array.length - 1; i >= 0; i--) {
+                if (array[i] === value) {
+                    array.splice(i, 1);
+                    // break;       //<-- Uncomment  if only the first term has to be removed
+                }
+            }
+        }
+
+        contentData.permissionPatch = function (roleId, key, isEnabled) {
+            contentData.patchObject = {};
+            contentData.patchObject.recordPermissions = {};
+            contentData.patchObject.recordPermissions = contentData.entity.recordPermissions;
+            if (isEnabled) {
+                contentData.entity.recordPermissions[key].push(roleId);
+            }
+            else {
+                removeValueFromArray(contentData.entity.recordPermissions[key], roleId);
+            }
+            contentData.patchObject.recordPermissions[key] = contentData.entity.recordPermissions[key];
+            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+        }
+
 
         function patchSuccessCallback(response) {
             ngToast.create({

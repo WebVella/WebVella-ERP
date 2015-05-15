@@ -1,7 +1,7 @@
-﻿/* home.module.js */
+﻿/* entity-fields.module.js */
 
 /**
-* @desc this module manages the application home desktop screen
+* @desc this module manages the entity record fields in the admin screen
 */
 
 (function () {
@@ -200,7 +200,7 @@
             {
                 "id": 16,
                 "name": "GuidField",
-                "label": "Unique identifier",
+                "label": "Identifier GUID",
                 "description": "Very important field for any entity to entity relation and required by it"
             },
             {
@@ -425,7 +425,7 @@
         modalData.parentData = parentModalData;
 
         modalData.ok = function () {
-            webvellaAdminService.deleteField(modalData.parentData.contentData.entity.id,modalData.parentData.field.id, successCallback, errorCallback);
+            webvellaAdminService.deleteField(modalData.parentData.field.id, modalData.parentData.contentData.entity.id, successCallback, errorCallback);
         };
 
         modalData.cancel = function () {

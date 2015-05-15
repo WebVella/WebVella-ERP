@@ -9,7 +9,7 @@ namespace WebVella.ERP.Storage.Mongo
 
         public string Label { get; set; }
 
-        public string PluralLabel { get; set; }
+        public string LabelPlural { get; set; }
 
         public bool System { get; set; }
 

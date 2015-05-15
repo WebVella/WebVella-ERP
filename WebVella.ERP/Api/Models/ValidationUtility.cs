@@ -60,7 +60,7 @@ namespace WebVella.ERP.Api.Models
             return errors;
         }
 
-        public static List<ErrorModel> ValidatePluralLabel(string label, int minLen = 1, int maxLen = 50)
+        public static List<ErrorModel> ValidateLabelPlural(string label, int minLen = 1, int maxLen = 50)
         {
             if (maxLen <= 0)
                 throw new ArgumentException("maxLen<=0");
@@ -71,15 +71,15 @@ namespace WebVella.ERP.Api.Models
             List<ErrorModel> errors = new List<ErrorModel>();
             if (string.IsNullOrWhiteSpace(label))
             {
-                errors.Add(new ErrorModel("pluralLabel", label, "Plural label is required!"));
+                errors.Add(new ErrorModel("labelPlural", label, "Plural label is required!"));
                 return errors;
             }
 
             if (label.Length < minLen)
-                errors.Add(new ErrorModel("pluralLabel", label, string.Format("The Plural label must be at least {0} characters long!", minLen)));
+                errors.Add(new ErrorModel("labelPlural", label, string.Format("The Plural label must be at least {0} characters long!", minLen)));
 
             if (label.Length > maxLen)
-                errors.Add(new ErrorModel("pluralLabel", label, string.Format("The length of Plural label must be less or equal than {0} characters!", maxLen)));
+                errors.Add(new ErrorModel("labelPlural", label, string.Format("The length of Plural label must be less or equal than {0} characters!", maxLen)));
 
             return errors;
         }

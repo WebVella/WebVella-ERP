@@ -27,6 +27,8 @@
         serviceInstance.createField = createField;
         serviceInstance.updateField = updateField;
         serviceInstance.deleteField = deleteField;
+        serviceInstance.initRelation = initRelation;
+        serviceInstance.getRelationsList = getRelationsList;
 
 
         //#region << Entity >>
@@ -44,7 +46,7 @@
                 id: null,
                 name: "",
                 label: "",
-                pluralLabel: "",
+                labelPlural: "",
                 system: false,
                 iconName: "database",
                 weight: 1.0,
@@ -111,8 +113,8 @@
 
             switch (typeId) {
                 case 1:
-                    field.defaultValue = null;
-                    field.startingNumber = null;
+                    field.defaultValue = 1;
+                    field.startingNumber = 1;
                     field.displayFormat = "";
                     break;
                 case 2:
@@ -225,6 +227,37 @@
         }
 
         //#endregion
+
+        //#region << Relations  >>
+
+        ///////////////////////
+        function initRelation() {
+            $log.debug('webvellaAdmin>providers>admin.service>initRelation> function called');
+            var relation = {
+                id: null,
+                name: "",
+                label: "",
+                description: "",
+                system: false,
+                relationType: 1,
+                originEntityId: null,
+                originFieldId: null,
+                targetEntityId: null,
+                targetFieldId: null,
+
+            };
+            return relation;
+        }
+
+
+        ///////////////////////
+        function getRelationsList(successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getRelationsList> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        //#endregion
+
 
         //#region << Aux methods >>
 

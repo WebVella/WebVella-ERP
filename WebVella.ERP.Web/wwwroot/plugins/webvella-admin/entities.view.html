@@ -53,7 +53,7 @@
                 </td>
                 <td class="name">
                     {{entity.name}}<br />
-                    <span class="go-red" ng-show="entity.system">[SYS]</span><span class="divider" ng-show="entity.system">|</span><span class="go-gray">{{entity.label}} / {{entity.pluralLabel}}</span>
+                    <span class="go-red" ng-show="entity.system">[SYS]</span><span class="divider" ng-show="entity.system">|</span><span class="go-gray">{{entity.label}} / {{entity.labelPlural}}</span>
                 </td>
                 <td class="icon"><i class="fa fa-{{entity.iconName}}"></i></td>
                 <td class="fields">{{entity.fields.length}}</td>
@@ -122,16 +122,16 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createEntity.pluralLabel.$invalid && !createEntity.pluralLabel.$pristine || modalData.pluralLabelError }">
-                        <label class="required" for="pluralLabel">Plural Label</label>
-                        <input ng-model="modalData.entity.pluralLabel" type="text" class="form-control" id="pluralLabel" name="pluralLabel" placeholder="e.g. Customers"
+                    <div class="form-group" ng-class="{ 'has-error' : createEntity.labelPlural.$invalid && !createEntity.labelPlural.$pristine || modalData.labelPluralError }">
+                        <label class="required" for="labelPlural">Label Plural</label>
+                        <input ng-model="modalData.entity.labelPlural" type="text" class="form-control" id="labelPlural" name="labelPlural" placeholder="e.g. Customers"
                                required>
-                        <div class="error" ng-show="createEntity.pluralLabel.$dirty && createEntity.pluralLabel.$invalid || modalData.pluralLabelError">
-                            <small class="error" ng-show="createEntity.pluralLabel.$error.required && !modalData.pluralLabelError">
+                        <div class="error" ng-show="createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || modalData.labelPluralError">
+                            <small class="error" ng-show="createEntity.labelPlural.$error.required && !modalData.labelPluralError">
                                 Entity plural label is required.
                             </small>
-                            <small class="error" ng-show="modalData.pluralLabelError">
-                                {{modalData.pluralLabelMessage}}
+                            <small class="error" ng-show="modalData.labelPluralError">
+                                {{modalData.labelPluralMessage}}
                             </small>
                         </div>
                     </div>
@@ -199,25 +199,25 @@
                                 <tr ng-repeat="role in modalData.entity.roles">
                                     <td>{{role.label}}</td>
                                     <td class="text-center">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanCreate(role.id)">
+                                            <i ng-show="role.canCreate" class="fa fa-fw fa-check go-green"></i>
+                                            <i ng-show="!role.canCreate" class="fa fa-fw fa-close go-red"></i>
+                                        </button>
+                                    </td>
+                                    <td class="text-center">
                                         <button type="button" class="btn btn-default btn-sm" ng-model="role.canRead" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
                                             <i ng-show="role.canRead" class="fa fa-fw fa-check go-green"></i>
                                             <i ng-show="!role.canRead" class="fa fa-fw fa-close go-red"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
-                                            <i ng-show="role.canCreate" class="fa fa-fw fa-check go-green"></i>
-                                            <i ng-show="!role.canCreate" class="fa fa-fw fa-close go-red"></i>
-                                        </button>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanUpdate(role.id)">
                                             <i ng-show="role.canUpdate" class="fa fa-fw fa-check go-green"></i>
                                             <i ng-show="!role.canUpdate" class="fa fa-fw fa-close go-red"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canDelete" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanRead(role.id)">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canDelete" btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="modalData.toggleCanDelete(role.id)">
                                             <i ng-show="role.canDelete" class="fa fa-fw fa-check go-green"></i>
                                             <i ng-show="!role.canDelete" class="fa fa-fw fa-close go-red"></i>
                                         </button>
@@ -229,6 +229,7 @@
                 </div>
             </div>
         </form>
+        <pre>{{modalData.entity | json}}</pre>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="modalData.ok()">Create New Entity</button>

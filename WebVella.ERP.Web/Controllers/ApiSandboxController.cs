@@ -435,7 +435,7 @@ namespace WebVella.ERP.Web.Controllers
                     role.Id = new Guid("0b3fa332-6018-46e4-a70c-297b30c2b19c");
                     role.Name = "administrator";
                     role.Label = "Administrator";
-                    role.PluralLabel = "Administrators";
+                    role.LabelPlural = "Administrators";
                     roles.Add(role);
 
                     //Add Authenticated users
@@ -443,7 +443,7 @@ namespace WebVella.ERP.Web.Controllers
                     role.Id = new Guid("5cdf06ed-a627-4a71-a73b-43bdd390dbf1");
                     role.Name = "authenticated";
                     role.Label = "Authenticated user";
-                    role.PluralLabel = "Authenticated users";
+                    role.LabelPlural = "Authenticated users";
                     roles.Add(role);
 
                     //Add Guest
@@ -451,7 +451,7 @@ namespace WebVella.ERP.Web.Controllers
                     role.Id = new Guid("5cdf06ed-a627-4a71-a73b-43bdd390db22");
                     role.Name = "guest";
                     role.Label = "Guest";
-                    role.PluralLabel = "Guests";
+                    role.LabelPlural = "Guests";
                     roles.Add(role);
                     responseObj.Entities = roles;
                 break;

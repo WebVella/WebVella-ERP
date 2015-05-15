@@ -9,7 +9,7 @@ namespace WebVella.ERP.Storage
 
         string Label { get; set; }
 
-        string PluralLabel { get; set; }
+        string LabelPlural { get; set; }
 
         bool System { get; set; }
 
