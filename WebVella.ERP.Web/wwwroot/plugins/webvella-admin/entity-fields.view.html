@@ -239,7 +239,7 @@
                             <label for="uniqueStatus">Unique status</label>
                             <div class="checkbox">
                                 <label>
-                                    <input ng-model="modalData.field.unique" type="checkbox" id="uniqueStatus" value="true">
+                                    <input ng-model="modalData.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="modalData.uniqueGuidPropertyChecked(modalData.field.unique)">
                                     all values of the field should be unique
                                 </label>
                             </div>
@@ -1036,16 +1036,17 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <input type="hidden" value="{{modalData.wizard.selectedType.id}}" name="fieldType" />
-                            <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || modalData.defaultValueError}">
+                            <div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || modalData.defaultValueError)  && modalData.defaultValueTextboxEnabled}">
                                 <label class="control-label" ng-class="{'required':modalData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="modalData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="modalData.field.required" placeholder="e.g. 2014-11-01 2:23 PM" valid-date />
-                                <div class="error" ng-show="createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || modalData.defaultValueError">
+                                       ng-required="modalData.field.required" placeholder="{{modalData.defaultValueTextboxPlaceholder}}" 
+                                       ng-disabled="!modalData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$"/>
+                                <div class="error" ng-show="(createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || modalData.defaultValueError) && modalData.defaultValueTextboxEnabled">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !modalData.defaultValueError">
                                         required field
                                     </small>
-                                    <small class="error" ng-show="createFieldStep2.defaultValue.$error.validDate && !modalData.defaultValueError">
-                                        this string is not a valid date format
+                                    <small class="error" ng-show="createFieldStep2.defaultValue.$error.pattern && !modalData.defaultValueError">
+                                        should be a valid GUID
                                     </small>
                                     <small class="error" ng-show="modalData.defaultValueError">
                                         {{modalData.defaultValueMessage}}
@@ -1055,8 +1056,17 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label class="control-label">Note</label>
-                            <p class="form-description">this field will be automatically generated as guid value and will not be editable by the user. It can also has a null value</p>
+                            <div class="form-group">
+                                <label class="control-label">GUID Generation</label>
+                                <div class="checkbox">
+                                    <label>
+                                        <input ng-model="modalData.field.generateNewId" name="generateNewId" type="checkbox" 
+                                               ng-change='modalData.uniqueGuidGenerateToggle(modalData.field.generateNewId)'
+                                               ng-disabled="!modalData.uniqueGuidGenerateCheckboxEnabled"/>
+                                        automatically generate new GUID as default
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
