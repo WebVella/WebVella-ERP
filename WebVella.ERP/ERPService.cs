@@ -23,6 +23,9 @@ namespace WebVella.ERP
         {
             InitializeSystemEntities();
             //EntityTests();
+
+            //EntityManager entityManager = new EntityManager(StorageService);
+            //EntityListResponse entityListResponse = entityManager.Read("aa");
         }
 
         public void InitializeSystemEntities()
