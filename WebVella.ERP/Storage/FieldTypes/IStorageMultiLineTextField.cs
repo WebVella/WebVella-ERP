@@ -4,8 +4,8 @@
     {
         string DefaultValue { get; set; }
 
-        int MaxLength { get; set; }
+        int? MaxLength { get; set; }
 
-        int VisibleLineNumber { get; set; }
+        int? VisibleLineNumber { get; set; }
     }
 }

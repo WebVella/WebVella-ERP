@@ -6,8 +6,8 @@ namespace WebVella.ERP.Storage.Mongo
     {
         public string DefaultValue { get; set; }
 
-        public int MaxLength { get; set; }
+        public int? MaxLength { get; set; }
 
-        public int VisibleLineNumber { get; set; }
+        public int? VisibleLineNumber { get; set; }
     }
 }

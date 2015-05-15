@@ -4,6 +4,6 @@
     {
         string DefaultValue { get; set; }
 
-        int MaxLength { get; set; }
+        int? MaxLength { get; set; }
     }
 }

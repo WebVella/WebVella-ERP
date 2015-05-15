@@ -18,7 +18,7 @@ namespace WebVella.ERP.Api.Models
         public decimal? MaxValue { get; set; }
 
         [JsonProperty(PropertyName = "currency")]
-        public CurrencyTypes Currency { get; set; }
+        public CurrencyType Currency { get; set; }
 
         public CurrencyField()
         {

@@ -15,7 +15,7 @@ namespace WebVella.ERP.Api.Models
         public bool? Encrypted { get; set; }
 
         [JsonProperty(PropertyName = "maskType")]
-        public PasswordFieldMaskTypes MaskType { get; set; }
+        public PasswordFieldMaskTypes? MaskType { get; set; }
 
         public PasswordField()
         {

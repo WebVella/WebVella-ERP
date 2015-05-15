@@ -5,7 +5,7 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoPasswordField : MongoBaseField, IStoragePasswordField
     {
-        public int MaxLength { get; set; }
+        public int? MaxLength { get; set; }
 
         public bool Encrypted { get; set; }
 
