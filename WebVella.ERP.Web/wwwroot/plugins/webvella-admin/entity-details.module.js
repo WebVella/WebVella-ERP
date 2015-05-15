@@ -717,13 +717,15 @@
 
         contentData.permissionPatch = function (roleId, key, isEnabled) {
             contentData.patchObject = {};
+            contentData.patchObject.recordPermissions = {};
+            contentData.patchObject.recordPermissions = contentData.entity.recordPermissions;
             if (isEnabled) {
                 contentData.entity.recordPermissions[key].push(roleId);
             }
             else {
                 removeValueFromArray(contentData.entity.recordPermissions[key], roleId);
             }
-            contentData.patchObject[key] = contentData.entity.recordPermissions[key];
+            contentData.patchObject.recordPermissions[key] = contentData.entity.recordPermissions[key];
             webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
         }
 

@@ -82,7 +82,7 @@
                     </td>
                     <td class="meta">
                         <span ng-show="field.required">required, </span>
-                        <span ng-show="field.unique">unique identifier, </span>
+                        <span ng-show="field.unique">unique, </span>
                         <span ng-show="field.searchable">searchable, </span>
                         <span ng-show="field.auditable">auditable, </span>
                     </td>
@@ -298,12 +298,15 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.startingNumber.$invalid && !createFieldStep2.startingNumber.$pristine || modalData.startingNumberError}">
-                                <label class="control-label">Starting number</label>
+                                <label class="control-label required">Starting number</label>
                                 <input class="form-control" ng-model="modalData.field.startingNumber" name="startingNumber" type="text"
-                                       pattern="^[0-9]*$" />
+                                       pattern="^[0-9]*$" required/>
                                 <div class="error" ng-show="createFieldStep2.startingNumber.$dirty && createFieldStep2.startingNumber.$invalid || modalData.startingNumberError">
                                     <small class="error" ng-show="createFieldStep2.startingNumber.$error.pattern && !modalData.startingNumberError">
                                         only numbers
+                                    </small>
+                                    <small class="error" ng-show="createFieldStep2.startingNumber.$error.required && !modalData.startingNumberError">
+                                        required field
                                     </small>
                                     <small class="error" ng-show="modalData.startingNumberError">
                                         {{modalData.startingNumberMessage}}
@@ -1028,7 +1031,7 @@
                         </div>
                     </div>
                 </div>
-                <!--Unique Identifier 16 -->
+                <!--Identifier GUID 16 -->
                 <div ng-if="modalData.wizard.selectedType.id == 16">
                     <div class="row">
                         <div class="col-sm-6">
@@ -2094,7 +2097,7 @@
                     </div>
                 </div>
             </div>
-            <!--Unique Identifier 16 -->
+            <!--Identifier GUID 16 -->
             <div ng-if="modalData.fieldType.id == 16">
                 <div class="row">
                     <div class="col-sm-6">
