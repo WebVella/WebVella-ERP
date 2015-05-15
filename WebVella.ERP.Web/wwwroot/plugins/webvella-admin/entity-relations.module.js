@@ -11,7 +11,7 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityRelationsController', controller)
-        .controller('CreateRelationModalController', CreateRelationModalController);
+        .controller('ManageRelationModalController', ManageRelationModalController);
     
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -201,16 +201,19 @@
         });
 
 
-        contentData.createRelationModal = function () {
+        contentData.manageRelationModal = function (relation) {
             var modalInstance = $modal.open({
                 animation: false,
-                templateUrl: 'createRelationModal.html',
-                controller: 'CreateRelationModalController',
+                templateUrl: 'manageRelationModal.html',
+                controller: 'ManageRelationModalController',
                 controllerAs: "modalData",
                 size: "lg",
                 resolve: {
                     contentData: function () {
                         return contentData;
+                    },
+                    managedRelation: function () {
+                        return relation;
                     }
                 }
             });
@@ -224,17 +227,62 @@
 
 
     //// Modal Controllers
-    CreateRelationModalController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    ManageRelationModalController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
 
     /* @ngInject */
-    function CreateRelationModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function ManageRelationModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
         $log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec');
         /* jshint validthis:true */
         var modalData = this;
+        if (managedRelation === null) {
+            modalData.relation = webvellaAdminService.initRelation();
+        }
+        else {
+            modalData.relation = managedRelation;
+        }
+        modalData.selectedOriginEntity = {};
+        modalData.selectedOriginEntity.fields = [{
+            id: null,
+            label:"Select Origin Entity first"
+        }];
+        modalData.selectedOriginField = modalData.selectedOriginEntity.fields[0];
+        modalData.selectedTargetEntity = {};
+        modalData.selectedTargetEntity.fields = [{
+            id: null,
+            label: "Select Target Entity first"
+        }];
+        modalData.selectedTargetField = modalData.selectedTargetEntity.fields[0];
+        modalData.entities = contentData.entityList;
+        modalData.eligibleEntities = [];
+        //Generate the eligible entities list;
+        for (var i = 0; i < modalData.entities.length; i++) {
+            var entity = {};
+            entity.id = modalData.entities[i].id;
+            entity.name = modalData.entities[i].name;
+            entity.label = modalData.entities[i].label;
+            entity.fields = [];
+            for (var j = 0; j < modalData.entities[i].fields.length; j++) {
+                if (modalData.entities[i].fields[j].fieldType === 16) {
+                    var field = {};
+                    field.id = modalData.entities[i].fields[j].id;
+                    field.name = modalData.entities[i].fields[j].name;
+                    field.label = modalData.entities[i].fields[j].label;
+                    entity.fields.push(field);
+                }
+            }
+            modalData.eligibleEntities.push(entity);
+        }
+
+
 
 
         modalData.ok = function () {
-            webvellaAdminService.createEntity(modalData.entity, successCallback, errorCallback)
+            modalData.relation.originEntityId = modalData.selectedOriginEntity.id;
+            modalData.relation.originFieldId = modalData.selectedOriginField.id;
+            modalData.relation.targetEntityId = modalData.selectedTargetEntity.id;
+            modalData.relation.targetFieldId = modalData.selectedTargetField.id;
+
+            //webvellaAdminService.createRelation(modalData.entity, successCallback, errorCallback)
         };
 
         modalData.cancel = function () {
