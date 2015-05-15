@@ -123,14 +123,14 @@
     function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
-        modalData.entity = parentData.entity;
+        var popupData = this;
+        popupData.entity = parentData.entity;
 
-        modalData.ok = function () {
-            webvellaAdminService.deleteEntity(modalData.entity.id, successCallback, errorCallback)
+        popupData.ok = function () {
+            webvellaAdminService.deleteEntity(popupData.entity.id, successCallback, errorCallback)
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
@@ -147,8 +147,8 @@
         }
 
         function errorCallback(response) {
-            modalData.hasError = true;
-            modalData.errorMessage = response.message;
+            popupData.hasError = true;
+            popupData.errorMessage = response.message;
 
 
         }

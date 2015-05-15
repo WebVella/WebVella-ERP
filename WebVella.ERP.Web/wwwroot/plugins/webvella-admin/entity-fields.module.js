@@ -230,7 +230,7 @@
                 animation: false,
                 templateUrl: 'createFieldModal.html',
                 controller: 'CreateFieldModalController',
-                controllerAs: "modalData",
+                controllerAs: "popupData",
                 size: "lg",
                 resolve: {
                     contentData: function () { return contentData; }
@@ -244,7 +244,7 @@
                 animation: false,
                 templateUrl: 'manageFieldModal.html',
                 controller: 'ManageFieldModalController',
-                controllerAs: "modalData",
+                controllerAs: "popupData",
                 size: "lg",
                 resolve: {
                     contentData: function () { return contentData; },
@@ -273,98 +273,98 @@
     function CreateFieldModalController(contentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
         $log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
+        var popupData = this;
 
-        modalData.contentData = contentData;
+        popupData.contentData = contentData;
 
-        modalData.field = {};
+        popupData.field = {};
 
-        modalData.fieldTypes = contentData.fieldTypes;
+        popupData.fieldTypes = contentData.fieldTypes;
         // Inject a searchable field
-        for (var i = 0; i < modalData.fieldTypes.length; i++) {
-            modalData.fieldTypes[i].searchBox = modalData.fieldTypes[i].label + " " + modalData.fieldTypes[i].description;
+        for (var i = 0; i < popupData.fieldTypes.length; i++) {
+            popupData.fieldTypes[i].searchBox = popupData.fieldTypes[i].label + " " + popupData.fieldTypes[i].description;
         }
 
         //Wizard
-        modalData.wizard = {};
-        modalData.wizard.steps = [];
+        popupData.wizard = {};
+        popupData.wizard.steps = [];
         //Initialize steps
         var step = angular.copy({ "active": false }, { "completed": false });
-        modalData.wizard.steps.push(step); // Dummy step
+        popupData.wizard.steps.push(step); // Dummy step
         step = angular.copy({ "active": false }, { "completed": false });
-        modalData.wizard.steps.push(step); // Step 1
+        popupData.wizard.steps.push(step); // Step 1
         step = angular.copy({ "active": false }, { "completed": false });
-        modalData.wizard.steps.push(step); // Step 2
+        popupData.wizard.steps.push(step); // Step 2
         // Set steps
-        modalData.wizard.steps[1].active = true;
-        modalData.wizard.selectedType = null;
+        popupData.wizard.steps[1].active = true;
+        popupData.wizard.selectedType = null;
 
-        modalData.selectType = function (typeId) {
+        popupData.selectType = function (typeId) {
             var typeIndex = typeId - 1;
-            modalData.wizard.selectedType = modalData.fieldTypes[typeIndex];
-            modalData.field = webvellaAdminService.initField(modalData.wizard.selectedType.id);
+            popupData.wizard.selectedType = popupData.fieldTypes[typeIndex];
+            popupData.field = webvellaAdminService.initField(popupData.wizard.selectedType.id);
 
-            modalData.wizard.steps[1].active = false;
-            modalData.wizard.steps[1].completed = true;
-            modalData.wizard.steps[2].active = true;
+            popupData.wizard.steps[1].active = false;
+            popupData.wizard.steps[1].completed = true;
+            popupData.wizard.steps[2].active = true;
         }
-        modalData.setActiveStep = function (stepIndex) {
-            if (modalData.wizard.steps[stepIndex].completed) {
+        popupData.setActiveStep = function (stepIndex) {
+            if (popupData.wizard.steps[stepIndex].completed) {
                 for (var i = 1; i < 3; i++) {
-                    modalData.wizard.steps[i].active = false;
+                    popupData.wizard.steps[i].active = false;
                 }
-                modalData.wizard.steps[stepIndex].active = true;
+                popupData.wizard.steps[stepIndex].active = true;
             }
         }
 
         //////
-        modalData.completeStep2 = function () {
-            modalData.wizard.steps[2].active = false;
-            modalData.wizard.steps[2].completed = true;
+        popupData.completeStep2 = function () {
+            popupData.wizard.steps[2].active = false;
+            popupData.wizard.steps[2].completed = true;
         }
 
 
         //Identifier GUID field specific functions
-        modalData.uniqueGuidGenerateCheckboxEnabled = true;
-        modalData.defaultValueTextboxEnabled = true;
-        modalData.defaultValueTextboxPlaceholder = "fill in a GUID";
-        modalData.defaultValueTextboxValue = null;
-        modalData.uniqueGuidGenerateToggle = function (newValue) {
+        popupData.uniqueGuidGenerateCheckboxEnabled = true;
+        popupData.defaultValueTextboxEnabled = true;
+        popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
+        popupData.defaultValueTextboxValue = null;
+        popupData.uniqueGuidGenerateToggle = function (newValue) {
             if (newValue) { // if it is checked
-                modalData.defaultValueTextboxEnabled = false;
-                modalData.defaultValueTextboxPlaceholder = "will be auto-generated";
-                modalData.defaultValueTextboxValue = modalData.field.defaultValue;
-                modalData.field.defaultValue = null;
+                popupData.defaultValueTextboxEnabled = false;
+                popupData.defaultValueTextboxPlaceholder = "will be auto-generated";
+                popupData.defaultValueTextboxValue = popupData.field.defaultValue;
+                popupData.field.defaultValue = null;
             }
             else {
-                modalData.defaultValueTextboxEnabled = true;
-                modalData.defaultValueTextboxPlaceholder = "fill in a GUID";
-                modalData.field.defaultValue = modalData.defaultValueTextboxValue;
-                modalData.defaultValueTextboxValue = null;
+                popupData.defaultValueTextboxEnabled = true;
+                popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
+                popupData.field.defaultValue = popupData.defaultValueTextboxValue;
+                popupData.defaultValueTextboxValue = null;
             }
         }
 
-        modalData.uniqueGuidPropertyChecked = function (newValue) {
+        popupData.uniqueGuidPropertyChecked = function (newValue) {
             if (newValue) {
-                modalData.field.generateNewId = true;
-                modalData.uniqueGuidGenerateCheckboxEnabled = false;
-                modalData.uniqueGuidGenerateToggle(true);
+                popupData.field.generateNewId = true;
+                popupData.uniqueGuidGenerateCheckboxEnabled = false;
+                popupData.uniqueGuidGenerateToggle(true);
             }
             else {
-                modalData.field.generateNewId = false;
-                modalData.uniqueGuidGenerateCheckboxEnabled = true;
-                modalData.uniqueGuidGenerateToggle(false);
+                popupData.field.generateNewId = false;
+                popupData.uniqueGuidGenerateCheckboxEnabled = true;
+                popupData.uniqueGuidGenerateToggle(false);
             }
         }
 
 
 
 
-        modalData.ok = function () {
-            webvellaAdminService.createField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
+        popupData.ok = function () {
+            webvellaAdminService.createField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
@@ -381,7 +381,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, modalData, modalData.field, location);
+            webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
         }
         $log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec');
     };
@@ -392,38 +392,38 @@
     function ManageFieldModalController(contentData, resolvedField,$modal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
         $log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
+        var popupData = this;
 
-        modalData.contentData = contentData;
+        popupData.contentData = contentData;
 
-        modalData.field = resolvedField;
+        popupData.field = resolvedField;
 
-        modalData.fieldTypes = contentData.fieldTypes;
-        modalData.fieldType = null;
+        popupData.fieldTypes = contentData.fieldTypes;
+        popupData.fieldType = null;
 
-        for (var i = 0; i < modalData.fieldTypes.length; i++) {
-            if (modalData.fieldTypes[i].id === modalData.field.fieldType) {
-                modalData.fieldType = modalData.fieldTypes[i];
+        for (var i = 0; i < popupData.fieldTypes.length; i++) {
+            if (popupData.fieldTypes[i].id === popupData.field.fieldType) {
+                popupData.fieldType = popupData.fieldTypes[i];
             }
         }
 
 
-        modalData.ok = function () {
-            webvellaAdminService.updateField(modalData.field, modalData.contentData.entity.id, successCallback, errorCallback);
+        popupData.ok = function () {
+            webvellaAdminService.updateField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
         //Delete field
         //Create new field modal
-        modalData.deleteFieldModal = function () {
+        popupData.deleteFieldModal = function () {
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'deleteFieldModal.html',
                 controller: 'DeleteFieldModalController',
-                controllerAs: "modalData",
+                controllerAs: "popupData",
                 size: "",
                 resolve: {
                     parentModalData: function () { return modalData; }
@@ -446,27 +446,27 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, modalData, modalData.field, location);
+            webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
         }
         $log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec');
     };
 
 
     //// Modal Controllers
-    DeleteFieldModalController.$inject = ['parentModalData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    DeleteFieldModalController.$inject = ['parentPopupData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function DeleteFieldModalController(parentModalData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function DeleteFieldModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
         $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
         /* jshint validthis:true */
-        var modalData = this;
-        modalData.parentData = parentModalData;
+        var popupData = this;
+        popupData.parentData = parentPopupData;
 
-        modalData.ok = function () {
-            webvellaAdminService.deleteField(modalData.parentData.field.id, modalData.parentData.contentData.entity.id, successCallback, errorCallback);
+        popupData.ok = function () {
+            webvellaAdminService.deleteField(popupData.parentData.field.id, popupData.parentData.contentData.entity.id, successCallback, errorCallback);
         };
 
-        modalData.cancel = function () {
+        popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
 
@@ -478,13 +478,13 @@
             });
             $modalInstance.close('success');
             $timeout(function() {
-                $state.go("webvella-admin-entity-fields", { name: modalData.parentData.contentData.entity.name});
+                $state.go("webvella-admin-entity-fields", { name: popupData.parentData.contentData.entity.name});
             }, 0);
         }
 
         function errorCallback(response) {
-            modalData.hasError = true;
-            modalData.errorMessage = response.message;
+            popupData.hasError = true;
+            popupData.errorMessage = response.message;
 
 
         }

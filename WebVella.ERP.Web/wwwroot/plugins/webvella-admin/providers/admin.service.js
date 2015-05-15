@@ -29,6 +29,7 @@
         serviceInstance.deleteField = deleteField;
         serviceInstance.initRelation = initRelation;
         serviceInstance.getRelationsList = getRelationsList;
+        serviceInstance.createRelation = createRelation;
 
 
         //#region << Entity >>
@@ -114,7 +115,7 @@
             switch (typeId) {
                 case 1:
                     field.defaultValue = null;
-                    field.startingNumber = null;
+                    field.startingNumber = 1;
                     field.displayFormat = null;
                     break;
                 case 2:
@@ -255,6 +256,18 @@
         function getRelationsList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getRelationsList> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function createRelation(postObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>createRelation> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function createRelation(postObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>createRelation> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //#endregion
