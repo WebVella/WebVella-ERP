@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -23,23 +24,16 @@ namespace WebVella.ERP.Api.Models
         }
     }
 
-    public class PrimaryKeyFieldMeta : GuidField, IFieldMeta
+    public class GuidFieldMeta : GuidField
     {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
         [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
+        public List<Field> RelatedMeta { get; set; }
 
-        public PrimaryKeyFieldMeta(Guid entityId, string entityName, GuidField field, string parentFieldName = null) : base(field)
+        public GuidFieldMeta( GuidField field, List<Field> relatedMeta ) : base(field)
         {
-            EntityId = entityId;
-			EntityName = entityName;
 			DefaultValue = field.DefaultValue;
-            ParentFieldName = parentFieldName;
+            GenerateNewId = field.GenerateNewId;
+            RelatedMeta = RelatedMeta;
         }
 	}
 }

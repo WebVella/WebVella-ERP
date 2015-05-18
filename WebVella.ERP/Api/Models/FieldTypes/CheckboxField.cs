@@ -10,33 +10,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "defaultValue")]
         public bool? DefaultValue { get; set; }
-
-        public CheckboxField()
-        {
-        }
-
-        public CheckboxField(Field field) : base(field)
-        {
-        }
     }
-
-    public class CheckboxFieldMeta : CheckboxField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public CheckboxFieldMeta(Guid entityId, string entityName, CheckboxField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-            ParentFieldName = parentFieldName;
-        }
-	}
 }

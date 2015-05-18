@@ -19,36 +19,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "currency")]
         public CurrencyType Currency { get; set; }
-
-        public CurrencyField()
-        {
-        }
-
-        public CurrencyField(Field field) : base(field)
-        {
-        }
     }
-
-    public class CurrencyFieldMeta : CurrencyField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public CurrencyFieldMeta(Guid entityId, string entityName, CurrencyField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-			EntityName = entityName;
-			DefaultValue = field.DefaultValue;
-			MinValue = field.MinValue;
-			MaxValue = field.MaxValue;
-			Currency = field.Currency;
-            ParentFieldName = parentFieldName;
-        }
-	}
 }
