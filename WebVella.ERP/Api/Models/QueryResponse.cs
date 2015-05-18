@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WebVella.ERP.Api.Models
 {
     public class QueryResponse : BaseResponseModel
-    {
+    { 
         [JsonProperty(PropertyName = "object")]
         public QueryResult Object { get; set; }
 	}
