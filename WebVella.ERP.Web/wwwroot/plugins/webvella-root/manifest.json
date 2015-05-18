@@ -6,6 +6,7 @@
   "company": "WebVella",
   "companyUrl": "http://webvella.com",
   "author": "Bozhidar Zashev",
+  "repository":   "git://github.com/github-username/repository-name.git",
   "license": "Apache License 2.0",
   "loadPriority": 1.0,
   "libCss": [
