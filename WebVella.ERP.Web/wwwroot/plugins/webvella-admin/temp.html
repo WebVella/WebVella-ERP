@@ -1,0 +1,85 @@
+﻿<div class="panel panel-default section">
+    <div class="panel-heading">
+        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+        Section 1
+    </div>
+    <div class="panel-body">
+        <div class="view-divider"><span>add row here</span></div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="drop-zone">
+                    <div as-sortable ng-model="contentData.section">
+                        <div class="zone-actions"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></div>
+                        <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.section">
+                            <div as-sortable-item-handle>
+                                <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                                <span class="title">H1</span> {{item.name}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-divider"><span>add row here</span></div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <div as-sortable ng-model="contentData.sectionB">
+                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.section">
+                                <div as-sortable-item-handle>
+                                    <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                                    <span class="title">field</span> Field name
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                        Field name
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-divider"><span>add row here</span></div>
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                        Field name
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                        Field name
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                        Field name
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="drop-zone">
+                    <div class="dropped-item">
+                        <span class="actions pull-right"><a href="javascript:void(0)"><i class="fa fa-fw fa-cog"></i></a></span>
+                        Field name
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-divider"><span>add row here</span></div>
+    </div>
+</div>
