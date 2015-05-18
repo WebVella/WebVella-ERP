@@ -89,7 +89,7 @@
                                                     <div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
                                                         <div as-sortable-item-handle>
                                                             <!--<span class="actions pull-right"><a href="javascript:void(0)" ng-click="addItemBackToLibrary(item)"><i class="fa fa-fw fa-arrow-right"></i></a></span>-->
-                                                            <span class="title">{{item.type}}</span> {{item.name}}
+                                                            <span><i class="fa fa-fw fa-arrows"></i></span><span class="title">{{item.type}}</span> {{item.name}}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -128,7 +128,7 @@
                             <div class="drop-zone">
                                 <div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
                                     <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items | filter: contentData.search">
-                                        <div as-sortable-item-handle><span class="title">{{item.type}}</span> {{item.name}}</div>
+                                        <div as-sortable-item-handle><span><i class="fa fa-fw fa-arrows"></i></span><span class="title">{{item.type}}</span> {{item.name}}</div>
                                     </div>
                                 </div>
                             </div>

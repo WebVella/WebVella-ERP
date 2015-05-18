@@ -200,6 +200,23 @@
 
         //#endregion
 
+        //#region << Logic >>
+        contentData.moveToColumns = function (item,index) {
+            //Add Item at the end of the columns list
+            contentData.list.items.push(item);
+            //Remove from library
+            contentData.fieldsLibrary.items.splice(index, 1);
+        }
+
+        contentData.moveToLibrary = function (item, index) {
+            //Add Item at the end of the columns list
+            contentData.fieldsLibrary.items.push(item);
+            //Remove from library
+            contentData.list.items.splice(index, 1);
+        }
+
+        //#endregion
+
         $log.debug('webvellaAdmin>entity-records-list> END controller.exec');
     }
     //#endregion

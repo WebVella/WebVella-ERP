@@ -2720,11 +2720,11 @@ span.not-editable {
     margin-top: 10px;
 }
 
-.view-manage-section a {
+.view-manage-section a:not(.btn) {
     color:#ccc !important;
 }
 
-.view-manage-section a:hover {
+.view-manage-section a:not(.btn):hover {
     color:#337ab7 !important;
 }
 
@@ -2787,7 +2787,7 @@ span.not-editable {
 .view-manage-section .dropped-item .title,
 .as-sortable-dragging  .title{
     font-weight: bold;
-    margin-right: 5px;
+    margin:0 5px;
     text-transform: uppercase;
     font-size: 12px;
     display:inline-block;
@@ -2860,7 +2860,7 @@ span.not-editable {
 .view-manage-section .nav-tabs > li > a,
 .view-manage-section .nav-tabs > li > a:hover,
 .view-manage-section .nav-tabs > li > a:focus {
-    padding:7px 5px;
+    padding:7px 7px;
 }
 
 .list-field-selection-box {
@@ -2870,5 +2870,10 @@ span.not-editable {
     border:1px solid #ccc;
     padding:5px;
 }
+
+.view-manage-section .panel-heading .btn + .btn {
+    margin-left:10px;
+}
+
 
 /*#endregion*/
