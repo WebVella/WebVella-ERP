@@ -16,34 +16,5 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "maskType")]
         public PasswordFieldMaskTypes? MaskType { get; set; }
-
-        public PasswordField()
-        {
-        }
-
-        public PasswordField(Field field) : base(field)
-        {
-        }
     }
-
-    public class PasswordFieldMeta : PasswordField, IFieldMeta
-    {
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
-
-        [JsonProperty(PropertyName = "entityName")]
-        public string EntityName { get; set; }
-
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public string ParentFieldName { get; set; }
-
-        public PasswordFieldMeta(Guid entityId, string entityName, PasswordField field, string parentFieldName = null) : base(field)
-        {
-            EntityId = entityId;
-			EntityName = entityName;
-			Encrypted = field.Encrypted;
-			MaskType = field.MaskType;
-            ParentFieldName = parentFieldName;
-        }
-	}
 }
