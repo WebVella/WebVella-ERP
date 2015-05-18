@@ -26,14 +26,19 @@ namespace WebVella.ERP.Api.Models
 
     public class GuidFieldMeta : GuidField
     {
-        [JsonProperty(PropertyName = "parentFieldName")]
-        public List<Field> RelatedMeta { get; set; }
+        [JsonProperty(PropertyName = "relationFields")]
+        public List<Field> RelationFields { get; set; }
 
-        public GuidFieldMeta( GuidField field, List<Field> relatedMeta ) : base(field)
+
+        [JsonProperty(PropertyName = "relation")]
+        public EntityRelation Relation { get; set; }
+
+        public GuidFieldMeta( GuidField field  ) : base(field)
         {
 			DefaultValue = field.DefaultValue;
             GenerateNewId = field.GenerateNewId;
-            RelatedMeta = RelatedMeta;
+            Relation = null;
+            RelationFields = new List<Field>();
         }
 	}
 }
