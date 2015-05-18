@@ -21,7 +21,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-fields', {
             parent: 'webvella-admin-base',
-            url: '/entities/:name/fields', //  /desktop/areas after the parent state is prepended
+            url: '/entities/:entityName/fields', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -80,7 +80,7 @@
             }
         }
 
-        webvellaAdminService.getEntityMeta($stateParams.name, successCallback, errorCallback);
+        webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entity-details> END state.resolved');

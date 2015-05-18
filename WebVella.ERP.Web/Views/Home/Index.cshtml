@@ -14,7 +14,8 @@
     <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/angular-xeditable/css/xeditable.css" rel="stylesheet" />
     <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
-
+    <link href="~/plugins/webvella-root/lib/ui-sortable/ng-sortable.css" rel="stylesheet" />
+   
     <!-- plugin:webvella-desktop-->
     <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
 
@@ -46,6 +47,8 @@
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-xeditable/js/xeditable.js"></script>
     <script src="~/plugins/webvella-root/lib/moment/moment-with-locales.js"></script>
+    <script src="~/plugins/webvella-root/lib/ui-sortable/ng-sortable.js"></script>
+
 
     @* Core Application module definition *@
     <script>
@@ -57,7 +60,7 @@
                     // Angular modules
                     'ngAnimate', 'ngTouch',
                      // 3rd Party Modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', 'xeditable',
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ui.bootstrap', 'ngToast', 'xeditable', 'ui.sortable',
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 
@@ -112,7 +115,10 @@
     <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
     <script src="~/plugins/webvella-admin/providers/sidebar.factory.js"></script>
     <script src="~/plugins/webvella-admin/entity-relations.module.js"></script>
-    
+    <script src="~/plugins/webvella-admin/entity-view-manage.module.js"></script>
+    <script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js"></script>
+
+
     <!-- plugin:webvella-areas -->
     <script src="~/plugins/webvella-areas/base.module.js"></script>
     <script src="~/plugins/webvella-areas/entities.module.js"></script>
