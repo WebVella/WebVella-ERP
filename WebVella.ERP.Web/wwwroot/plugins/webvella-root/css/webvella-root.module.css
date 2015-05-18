@@ -2750,20 +2750,17 @@ span.not-editable {
     border-color: #aaa;
 }
 
-.view-manage-section .title {
-    font-weight: bold;
-    margin-right: 5px;
-    text-transform: uppercase;
-    font-size: 12px;
-}
-
 .drop-zone {
     border: 1px dashed #FDD835;
     background: #fffff0;
-    padding:30px 5px 5px 5px;
+    padding:0;
     position:relative;
-    min-height:50px;
 }
+
+    .drop-zone > div {
+        padding:0;
+        min-height:30px;
+    }
 
 .tab-pane .drop-zone {
     padding-top:5px;
@@ -2773,10 +2770,6 @@ span.not-editable {
         border-color: #EF5350;
     }
 
-.drop-zone > div {
-    padding:5px 0;
-}
-
 .zone-actions{
     position:absolute;
     right:5px;
@@ -2785,14 +2778,24 @@ span.not-editable {
 
 
 .dropped-item {
-    margin: 5px 0;
+    margin: 5px;
     padding: 5px;
     border: 1px solid #bdbdbd;
     background: #eee;
 }
 
+.view-manage-section .dropped-item .title,
+.as-sortable-dragging  .title{
+    font-weight: bold;
+    margin-right: 5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    display:inline-block;
+    width:60px;
+}
+
 .as-sortable-dragging {
-    /*width:200px !important;*/
+    width:200px !important;
 }
 .view-divider {
     position: relative;

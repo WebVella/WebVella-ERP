@@ -4,6 +4,16 @@
 * @desc all actions with site area
 */
 
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+      s4() + '-' + s4() + s4() + s4();
+}
+
 (function () {
     'use strict';
 
@@ -13,15 +23,7 @@
 
     service.$inject = ['$log', '$http', 'wvAppConstants'];
 
-    function guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-              .toString(16)
-              .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-          s4() + '-' + s4() + s4() + s4();
-    }
+
 
     /* @ngInject */
     function service($log, $http, wvAppConstants) {
@@ -55,6 +57,7 @@
         serviceInstance.safeUpdateArrayPlace = safeUpdateArrayPlace;
         serviceInstance.safeRemoveArrayPlace = safeRemoveArrayPlace;
         serviceInstance.getEntityViewList = getEntityViewList;
+        serviceInstance.getEntityViewLibrary = getEntityViewLibrary;
 
         serviceInstance.initList = initList;
         //#endregion
@@ -403,17 +406,7 @@
                                                 "title": "",
                                                 "alt": ""
                                             }
-                                        ],
-                                        "lists": [{
-                                            "place": 1,
-                                            "entityId": null,
-                                            "id": null,
-                                        }],
-                                        "views": [{
-                                            "place": 1,
-                                            "entityId": null,
-                                            "id": null,
-                                        }]
+                                        ]
                                     }],
                                 }
                             ],
@@ -469,9 +462,7 @@
                     "place": 1,
                     "columns": [{
                         "gridColCount": 12,
-                        "items": [],
-                        "lists": [],
-                        "views": []
+                        "items": []
                     }]
                 }]
             }
@@ -493,9 +484,7 @@
             for (var i = 0; i < columnCount; i++) {
                 var column = {
                     "gridColCount": 12 / columnCount,
-                    "items": [],
-                    "lists": [],
-                    "views": []
+                    "items": []
                 }
                 row.columns.push(column);
             }
@@ -507,27 +496,36 @@
         function initViewRowColumn(columnCount) {
             var column = {
                 "gridColCount": 12 / columnCount,
-                "items": [],
-                "lists": [],
-                "views": []
+                "items": []
             }
 
             return column;
         }
         //////////////////////
-        function getEntityAvailableViewItems(entityName, successCallback, errorCallback) {
+        function getEntityViewLibrary(viewName, entityName, successCallback, errorCallback) {
             //This function will call the getEntityViewList, loop through views and return the view data for now
             var object = {};
             //Test data
-            object.options = [];
-            object.fields = [];
-            object.views = [];
-            object.lists = [];
-            object.items = [];
-
+            object.items = [
+            {
+                "id": guid(),
+                "type": "field",
+                "name": "name"
+            },
+            {
+                "id": guid(),
+                "type": "field",
+                "name": "label"
+            },
+            {
+                "id": guid(),
+                "type": "static",
+                "name": "Heading 3"
+            }
+            ];
             var response = {};
             response.success = true;
-            response.object = view;
+            response.object = object;
 
             successCallback(response);
         }
@@ -645,6 +643,7 @@
         }
 
         //#endregion
+
         /////////////////////
         function initRecord() {
             var record = {};

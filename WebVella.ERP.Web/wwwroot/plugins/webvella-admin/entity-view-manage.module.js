@@ -12,7 +12,8 @@
         .config(config)
         .controller('WebVellaAdminEntityViewManageController', controller)
         .controller('ManageSectionModalController', ManageSectionModalController)
-        .controller('ManageRowModalController', ManageRowModalController);
+        .controller('ManageRowModalController', ManageRowModalController)
+        .controller('ManageItemModalController', ManageItemModalController);
 
     //#region << Configuration >> /////////////////////////
     config.$inject = ['$stateProvider'];
@@ -40,6 +41,7 @@
             },
             resolve: {
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+                resolvedViewLibrary: resolveViewLibrary,
                 resolvedCurrentView: resolveCurrentView // TODO this should be removed once the views are implemented in the entity Meta
             },
             data: {
@@ -124,16 +126,57 @@
         $log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
         return defer.promise;
     }
+
+    // TODO this should be removed once the views are implemented in the entity Meta
+    resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    /* @ngInject */
+    function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            if (response.object == null) {
+                $timeout(function () {
+                    $state.go("webvella-root-not-found");
+                }, 0);
+            }
+            else {
+                defer.resolve(response.object);
+            }
+        }
+
+        function errorCallback(response) {
+            if (response.object == null) {
+                $timeout(function () {
+                    $state.go("webvella-root-not-found");
+                }, 0);
+            }
+            else {
+                defer.resolve(response.object);
+            }
+        }
+
+        webvellaAdminService.getEntityViewLibrary($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved');
+        return defer.promise;
+    }
+
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal', 'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal',
+                            'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, $modal, resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, $modal,
+                        resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast, resolvedViewLibrary) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-
+        contentData.search = {};
         //#region << Initialize Current Entity >>
         contentData.entity = resolvedCurrentEntityMeta;
         //#endregion
@@ -152,6 +195,7 @@
 
         //#region << Initialize View and Content Region >>
         contentData.view = resolvedCurrentView;
+        contentData.library = resolvedViewLibrary;
         contentData.viewContentRegion = {};
         for (var i = 0; i < contentData.view.regions.length; i++) {
             if (contentData.view.regions[i].name === "content") {
@@ -285,6 +329,107 @@
 
         //#endregion
 
+        //#region << Drag & Drop Management >>
+
+        function executeDragViewChange(eventObj) {
+            //#region << 1.Define functions >>
+            var moveSuccess, moveFailure, successCallback, errorCallback, openItemSettingsModal;
+
+            openItemSettingsModal = function () {
+                var modalInstance = $modal.open({
+                    animation: false,
+                    templateUrl: 'manageItemModal.html',
+                    controller: 'ManageItemModalController',
+                    controllerAs: "popupData",
+                    size: "",
+                    resolve: {
+                        parentData: function () { return contentData; },
+                        //row: function () { return rowObj },
+                        //section: function () { return sectionObj },
+                        //place: function () { return place },
+                    }
+                });
+            }
+            moveSuccess = function () {
+                // Items should be able to be copied if it is not field, view or list
+                if (eventObj.source.itemScope.item.type !== "field"
+                    && eventObj.source.itemScope.item.type !== "view"
+                    && eventObj.source.itemScope.item.type !== "list")
+                    var objectCopy = angular.copy(eventObj.source.itemScope.item);
+                objectCopy.id = guid();
+                eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
+
+            };
+            moveFailure = function () {
+                eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+                eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+            };
+
+            function successCallback(response) {
+                if (response.success) {
+                    ngToast.create({
+                        className: 'success',
+                        content: '<h4>Success</h4><p>' + response.message + '</p>'
+                    });
+
+                    moveSuccess();
+                }
+                else {
+                    errorCallback(response);
+                }
+            }
+
+            function errorCallback(response) {
+                ngToast.create({
+                    className: 'error',
+                    content: '<h4>Error</h4><p>' + response.message + '</p>'
+                });
+                moveFailure();
+            }
+            //#endregion
+
+            if (eventObj.source.itemScope.item.type != "field"
+                && eventObj.source.itemScope.item.type != "view"
+                && eventObj.source.itemScope.item.type != "list") {
+                //can be managed
+                openItemSettingsModal();
+            }
+            else {
+                //cannot be managed
+                //1. Update the view 
+                for (var i = 0; i < contentData.view.regions.length; i++) {
+                    if (contentData.view.regions[i].name === "content") {
+                        contentData.view.regions[i] = contentData.viewContentRegion;
+                    }
+                }
+                //2. Call the service
+                webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+            }
+
+        }
+
+        contentData.dragControlListeners = {
+            accept: function (sourceItemHandleScope, destSortableScope) {
+                for (var i = 0; i < destSortableScope.modelValue.length; i++) {
+                    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
+                        return false;
+                        break;
+                    }
+                }
+
+                return true
+            },
+            itemMoved: function (eventObj) {
+                //Item is moved from one column to another
+                executeDragViewChange(eventObj);
+            },
+            orderChanged: function (eventObj) {
+                //Item is moved within the same column
+                executeDragViewChange(eventObj);
+            }
+        };
+
+        //#endregion
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
 
     }
@@ -490,6 +635,41 @@
         }
         $log.debug('webvellaAdmin>entities>createRowModal> END controller.exec');
     };
+
+    //TODO - finish the manageable Item Modal and process
+    ManageItemModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    /* @ngInject */
+    function ManageItemModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+        $log.debug('webvellaAdmin>entities>createRowModal> START controller.exec');
+        /* jshint validthis:true */
+        var popupData = this;
+
+
+        popupData.ok = function () {
+
+        };
+
+        popupData.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        /// Aux
+        function successCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+            $modalInstance.close('success');
+        }
+
+        function errorCallback(response) {
+            popupData.hasError = true;
+            popupData.errorMessage = response.message;
+
+        }
+        $log.debug('webvellaAdmin>entities>createRowModal> END controller.exec');
+    };
+
     //#endregion
 
 })();
