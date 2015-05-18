@@ -2205,7 +2205,7 @@ span.editable {
     }
 
 .editable-checkbox input {
-    vertical-align: middle;
+    vertical-align: text-bottom;
 }
 
 
@@ -2795,7 +2795,7 @@ span.not-editable {
 }
 
 .as-sortable-dragging {
-    width:200px !important;
+    /*width:200px !important;*/
 }
 .view-divider {
     position: relative;
@@ -2863,4 +2863,12 @@ span.not-editable {
     padding:7px 5px;
 }
 
-/*#endregion */
+.list-field-selection-box {
+    height:300px;
+    overflow-y:scroll;
+    background:#fafafa;
+    border:1px solid #ccc;
+    padding:5px;
+}
+
+/*#endregion*/

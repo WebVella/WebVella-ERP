@@ -89,7 +89,6 @@
         return defer.promise;
     }
 
-    // TODO this should be removed once the views are implemented in the entity Meta
     resolveCurrentView.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveCurrentView($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
@@ -127,7 +126,6 @@
         return defer.promise;
     }
 
-    // TODO this should be removed once the views are implemented in the entity Meta
     resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
