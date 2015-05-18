@@ -65,20 +65,18 @@
                 <tr>
                     <th class="actions"></th>
                     <th class="name">Name</th>
-                    <th class="icon">Type</th>
             </thead>
             <tbody>
-                <tr>
+                <tr ng-repeat="list in contentData.lists">
                     <td class="actions">
-                        <a class="btn btn-default">
+                        <a class="btn btn-default" ui-sref="webvella-admin-entity-list-manage({entityName:'{{contentData.entity.name}}',listName:'{{list.name}}'})">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
                     <td class="name">
-                        id<br />
-                        <span class="go-red" ng-show="entity.system">[SYS]</span><span class="divider" ng-show="entity.system">|</span><span class="go-gray">Id</span>
+                        {{list.name}}
                     </td>
-                    <td class="type">guid</td>
+
                 </tr>
             </tbody>
         </table>

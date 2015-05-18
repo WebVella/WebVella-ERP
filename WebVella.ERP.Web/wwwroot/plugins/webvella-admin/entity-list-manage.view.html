@@ -1,0 +1,169 @@
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+
+        </div>
+        <!--<div class="icon-box">
+            <i class="fa fa-database"></i>
+        </div>-->
+        <div class="entity-box">
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-{{contentData.entity.iconName}}"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+            <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 title="Records lists">Records lists</h4>
+            <a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-arrow-left"></i> Back to list</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 class="no-link" title="Manage a Record list">Manage</h4>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+<div id="text">
+    <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+        <ul class="nav nav-tabs">
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})">Details</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})">Fields</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})">Record Views</a></li>
+            <li class="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})">Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})">Relations</a></li>
+        </ul>
+
+    </div>
+
+
+    <div class="view-manage-section">
+        <h3>Basic info</h3>
+        <div class="panel panel-default" style="margin-top:2em;">
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-2 control-label" for="name">Name</label>
+                            <div class="col-sm-4">
+                                <span class="not-editable">{{contentData.list.name}}</span>
+                            </div>
+                            <label class="col-sm-2 control-label" for="name">Type</label>
+                            <div class="col-sm-4">
+                                <span class="not-editable">{{contentData.list.type}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+
+                            <label class="col-sm-2 control-label" for="label">Label</label>
+                            <div class="col-sm-4 position-relative">
+                                <a href="javascript:void(0)" editable-text="contentData.list.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "empty" }}</a>
+                            </div>
+                            <label class="col-sm-2 control-label" for="weight">Weight</label>
+                            <div class="col-sm-4 position-relative">
+                                <a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "empty" }}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-2 control-label" for="name">Default</label>
+                            <div class="col-sm-4">
+                                <a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
+                            </div>
+                            <label class="col-sm-2 control-label" for="name">System</label>
+                            <div class="col-sm-4">
+                                <span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+                                <span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <h3>Fields</h3>
+        <div class="row">
+            <div class="col-xs-5">
+                <h4>Library</h4>
+                <form class="form" style="margin-bottom:1em;">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+                            <input type="text" ng-model="contentData.search.name" class="form-control" placeholder="item name" style="width:100%;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-xs-5">
+                <h4>List columns</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <div class="list-field-selection-box">
+                    <div class="drop-zone">
+                        <div as-sortable ng-model="contentData.fieldsLibrary.items">
+                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.fieldsLibrary.items | filter: contentData.search">
+                                <div as-sortable-item-handle class="clearfix">
+                                    <a href="javascript:void(0)" class="pull-right"><i class="fa fa-fw fa-arrow-right"></i></a>
+                                    {{item.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1"></div>
+            <div class="col-xs-5">
+                <div class="list-field-selection-box">
+                    <div class="drop-zone">
+                        <div as-sortable ng-model="contentData.list.items">
+                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.items">
+                                <div as-sortable-item-handle>
+                                    <a href="javascript:void(0)"><i class="fa fa-fw fa-arrow-left"></i></a>
+                                    {{item.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <h3>Filters</h3>
+
+        <h3>Sort</h3>
+
+    </div>
+
+
+</div>
+
+

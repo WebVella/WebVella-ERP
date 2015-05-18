@@ -10,16 +10,16 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityListsController', controller);
+        .controller('WebVellaAdminEntityListManageController', controller);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-admin-entity-lists', {
+        $stateProvider.state('webvella-admin-entity-list-manage', {
             parent: 'webvella-admin-base',
-            url: '/entities/:entityName/lists', //  /desktop/areas after the parent state is prepended
+            url: '/entities/:entityName/lists/:listName', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -32,14 +32,15 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAdminEntityListsController',
-                    templateUrl: '/plugins/webvella-admin/entity-lists.view.html',
+                    controller: 'WebVellaAdminEntityListManageController',
+                    templateUrl: '/plugins/webvella-admin/entity-list-manage.view.html',
                     controllerAs: 'contentData'
                 }
             },
             resolve: {
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedEntityRecordsList: resolveEntityRecordsList
+                resolvedViewLibrary: resolveViewLibrary,
+                resolvedCurrentEntityList: resolveCurrentEntityList
             },
             data: {
 
@@ -86,10 +87,9 @@
         return defer.promise;
     }
 
-
-    resolveEntityRecordsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
-    function resolveEntityRecordsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+    function resolveCurrentEntityList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
         $log.debug('webvellaAdmin>entity-records-list>resolveEntityRecordsList BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
@@ -117,18 +117,55 @@
             }
         }
 
-        webvellaAdminService.getEntityListsList($stateParams.entityName, successCallback, errorCallback);
+        webvellaAdminService.getEntityRecordsList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entity-records-list>resolveEntityRecordsList END state.resolved');
         return defer.promise;
     }
+
+    resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    /* @ngInject */
+    function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            if (response.object == null) {
+                $timeout(function () {
+                    $state.go("webvella-root-not-found");
+                }, 0);
+            }
+            else {
+                defer.resolve(response.object);
+            }
+        }
+
+        function errorCallback(response) {
+            if (response.object == null) {
+                $timeout(function () {
+                    $state.go("webvella-root-not-found");
+                }, 0);
+            }
+            else {
+                defer.resolve(response.object);
+            }
+        }
+
+        webvellaAdminService.getEntityViewLibrary($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved');
+        return defer.promise;
+    }
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedEntityRecordsList'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityList', 'resolvedViewLibrary'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedEntityRecordsList) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityList, resolvedViewLibrary) {
         $log.debug('webvellaAdmin>entity-records-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -148,8 +185,19 @@
         });
         //#endregion
 
-        //#region << Initialize the lists >>
-        contentData.lists = resolvedEntityRecordsList;
+        //#region << Initialize the list >>
+        contentData.list = resolvedCurrentEntityList;
+        //#endregion
+
+        //#region << Initialize the library >>
+        contentData.fieldsLibrary = {};
+        contentData.fieldsLibrary.items = [];
+        for (var i = 0; i < resolvedViewLibrary.items.length; i++) {
+            if (resolvedViewLibrary.items[i].type === "field") {
+                contentData.fieldsLibrary.items.push(resolvedViewLibrary.items[i])
+            }
+        }
+
         //#endregion
 
         $log.debug('webvellaAdmin>entity-records-list> END controller.exec');
