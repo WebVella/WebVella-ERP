@@ -72,15 +72,15 @@ span.divider {
         }
 
 .text-center {
-    text-align:center;
+    text-align: center;
 }
 
 .text-right {
-    text-align:right;
+    text-align: right;
 }
 
 .text-left {
-    text-align:left;
+    text-align: left;
 }
 
 
@@ -2697,3 +2697,170 @@ span.not-editable {
 }
 
 /*#endregion*/
+
+/*#region << Tabs >> */
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+
+/*#endregion */
+
+/*#region << View Manage >> */
+
+
+.view-manage-section .row + .row {
+    margin-top: 10px;
+}
+
+.view-manage-section a {
+    color:#ccc !important;
+}
+
+.view-manage-section a:hover {
+    color:#337ab7 !important;
+}
+
+.view-manage-section .wrapper {
+    padding: 10px;
+    background:#fafafa;
+    border-color:#ddd;
+}
+
+.view-manage-section .section .panel-heading {
+    background:#fff;
+    color:#333;
+
+    border-radius:0;
+}
+
+.view-manage-section .section {
+    border-color: #ccc;
+    border-width:3px;
+}
+
+.view-manage-section .section:hover {
+    border-color: #aaa;
+}
+
+.drop-zone {
+    border: 1px dashed #FDD835;
+    background: #fffff0;
+    padding:0;
+    position:relative;
+}
+
+    .drop-zone > div {
+        padding:0;
+        min-height:30px;
+    }
+
+.tab-pane .drop-zone {
+    padding-top:5px;
+}
+
+    .drop-zone:hover {
+        border-color: #EF5350;
+    }
+
+.zone-actions{
+    position:absolute;
+    right:5px;
+    top:5px;
+}
+
+
+.dropped-item {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #bdbdbd;
+    background: #eee;
+}
+
+.view-manage-section .dropped-item .title,
+.as-sortable-dragging  .title{
+    font-weight: bold;
+    margin-right: 5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    display:inline-block;
+    width:60px;
+}
+
+.as-sortable-dragging {
+    width:200px !important;
+}
+.view-divider {
+    position: relative;
+    line-height: 50px;
+    height: 50px;
+    color: #ccc;
+}
+
+.view-divider.section span{
+    background:#fafafa;
+}
+
+    .view-divider:hover {
+        cursor: pointer;
+        color: #EF5350;
+    }
+
+    .view-divider:before {
+        content: "";
+        width: 100%;
+        border-top: 1px solid #eee;
+        position: absolute;
+        top: 25px;
+        display: block;
+        z-index: 1;
+    }
+
+    .view-divider:hover:before {
+        border-color: #EF5350;
+    }
+
+    .view-divider span {
+        display: inline-block;
+        margin: auto;
+        z-index: 5;
+        background: white;
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 130px;
+        text-align: center;
+    }
+
+
+.view-manage-section .as-sortable-placeholder {
+    background:#FFF9C4;
+    display:block;
+    width:100% !important;
+}
+
+.view-manage-section .as-sortable-dragging {
+    position:relative;
+    border:none;
+    padding:0;
+    margin:0;
+}
+
+.view-manage-section .row-actions {
+    margin-bottom:5px;
+}
+
+.view-manage-section .nav-tabs > li > a,
+.view-manage-section .nav-tabs > li > a:hover,
+.view-manage-section .nav-tabs > li > a:focus {
+    padding:7px 5px;
+}
+
+/*#endregion */

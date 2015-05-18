@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-
+            <a class="btn btn-success" on-click="javascript: alert('should open a modal with only view name and label. After success could be redirected to view management')"><i class="fa fa-fw fa-plus"></i> Create new view</a>
         </div>
         <!--<div class="icon-box">
             <i class="fa fa-database"></i>
@@ -38,11 +38,11 @@
     <div class="tabbable tabs-left spilled">
         <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
         <ul class="nav nav-tabs">
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({name:'{{contentData.entity.name}}'})">Details</a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({name:'{{contentData.entity.name}}'})">Fields</a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({name:'{{contentData.entity.name}}'})">Record Views</a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({name:'{{contentData.entity.name}}'})">Records Lists</a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({name:'{{contentData.entity.name}}'})">Relations</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})">Details</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})">Fields</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})">Record Views</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})">Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})">Relations</a></li>
         </ul>
 
     </div>
@@ -53,7 +53,7 @@
                 <span class="input-group-addon" id="basic-addon1">
                     <i class="fa fa-search"></i>
                 </span>
-                <input ng-model="class" type="text" class="form-control" placeholder="Search field names">
+                <input ng-model="class" type="text" class="form-control" placeholder="Search by label">
             </div>
         </div>
     </form>
@@ -64,21 +64,18 @@
                 <tr>
                     <th class="actions"></th>
                     <th class="name">Name</th>
-                    <th class="icon">Type</th>
-                    <th class="views"># fields</th>
             </thead>
             <tbody>
-                <tr ng-repeat="view in contentData.view">
+                <tr ng-repeat="view in contentData.views">
                     <td class="actions">
-                        <a class="btn btn-default">
+                        <a class="btn btn-default" ui-sref="webvella-admin-entity-view-manage({entityName: '{{contentData.entity.name}}', viewName: '{{view.name}}'})">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
                     <td class="name">
                         {{view.name}}<br />
-                        <span class="go-gray">{{view.label}}</span>
+                        <span class="go-red" ng-show="view.system">[SYS]</span> <span class="go-blue" ng-show="view.default">[Default]</span> <span class="go-gray">{{view.label}}</span>
                     </td>
-                    <td class="views">{{view.fields.length}}</td>
                 </tr>
             </tbody>
         </table>

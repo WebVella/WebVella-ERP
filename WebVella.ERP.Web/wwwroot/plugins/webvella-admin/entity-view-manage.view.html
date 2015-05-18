@@ -1,0 +1,312 @@
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+
+        </div>
+        <!--<div class="icon-box">
+            <i class="fa fa-database"></i>
+        </div>-->
+        <div class="entity-box">
+            <h4 class="no-link" title="Entities">Entities</h4>
+            <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-{{contentData.entity.iconName}}"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+            <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="Record Views">Record Views</h4>
+            <a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-arrow-left"></i> Back to list</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 class="no-link" title="Manage a Record views">Manage</h4>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+<div id="text">
+    <div class="tabbable tabs-left spilled">
+        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> Back</a>
+        <ul class="nav nav-tabs">
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})">Details</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})">Fields</a></li>
+            <li class="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})">Record Views</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})">Records Lists</a></li>
+            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})">Relations</a></li>
+        </ul>
+
+    </div>
+    <ul class="nav nav-pills">
+        <li class="pull-right">drag and drop</li>
+        <li role="presentation" class="active"><a href="#">Content</a></li>
+        <li role="presentation"><a href="#">Sidebar</a></li>
+    </ul>
+    <hr class="divider" />
+    <div class="view-manage-section">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="panel panel-default wrapper">
+                    <div class="view-divider section" ng-click="contentData.manageSectionModalOpen(null,1)" title="click to add section"><span>add section here</span></div>
+                    <div class="section-wrapper" ng-repeat="section in contentData.viewContentRegion.sections">
+                        <div class="panel panel-default section">
+                            <div class="panel-heading">
+                                <span class="actions pull-right">
+                                    <a href="javascript:void(0)" ng-click="contentData.removeSection(section.place)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
+                                    <a href="javascript:void(0)" ng-click="contentData.manageSectionModalOpen(section,section.place)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
+                                </span>
+                                {{section.place}}. {{section.title}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showTitle"></i>
+                            </div>
+                            <div class="panel-body">
+                                <div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
+                                <div class="row-wrapper" ng-repeat="row in section.rows">
+                                    <div class="row-actions clearfix">
+                                        <a  title="row settings" class="pull-right" href="javascript:void(0)" ng-click="contentData.manageRowModalOpen(row,section,row.place + 1)"><i class="fa fa-fw fa-cog"></i></a>
+                                        <a  title="remove row" class="pull-right" href="javascript:void(0)" ng-click="contentData.removeRow(row.place,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+                                            <div class="drop-zone">
+                                                <div as-sortable="contentData.dragControlListeners" ng-model="column.items">
+                                                    <div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
+                                                        <div as-sortable-item-handle>
+                                                            <!--<span class="actions pull-right"><a href="javascript:void(0)" ng-click="addItemBackToLibrary(item)"><i class="fa fa-fw fa-arrow-right"></i></a></span>-->
+                                                            <span class="title">{{item.type}}</span> {{item.name}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,row.place + 1)"><span>add row here</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="view-divider section" title="click to add section" ng-click="contentData.manageSectionModalOpen(null, section.place + 1)"><span>add section here</span></div>
+                    </div>
+                    <!--<pre>{{contentData.view | json}}</pre>
+                    <pre>{{contentData.library | json}}</pre>-->
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div fixed-navigation>
+                    <ul class="nav nav-tabs" id="tabs-header">
+                        <li role="presentation" class="active"><a href="#">all</a></li>
+                        <li role="presentation"><a href="#">fields</a></li>
+                        <li role="presentation"><a href="#">views</a></li>
+                        <li role="presentation"><a href="#">lists</a></li>
+                        <li role="presentation"><a href="#">static</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tabs-pane" style="overflow-y:auto;">
+                            <form class="form" style="margin-bottom:1em;">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+                                        <input type="text" ng-model="contentData.search.name" class="form-control" placeholder="item name" style="width:100%;">
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="drop-zone">
+                                <div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
+                                    <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items | filter: contentData.search">
+                                        <div as-sortable-item-handle><span class="title">{{item.type}}</span> {{item.name}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script type="text/ng-template" id="manageSectionModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title ng-hide" ng-show="popupData.isUpdate">Manage section</h3>
+        <h3 class="modal-title ng-hide" ng-show="!popupData.isUpdate">Create section</h3>
+    </div>
+    <div class="modal-body">
+        <form name="manageSection">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageSection.title.$invalid && !manageSection.title.$pristine}">
+                        <label class="required" for="title">Title</label>
+                        <input ng-model="popupData.section.title" name="title" type="text" class="form-control" id="title" placeholder="e.g. Details"
+                               required maxlength="50" autofocus>
+                        <div class="error" ng-show="manageSection.title.$dirty && manageSection.title.$invalid">
+                            <small class="error" ng-show="manageSection.title.$error.required">
+                                required field
+                            </small>
+                            <small class="error" ng-show="manageSection.title.$error.maxlength">
+                                must be less than 50 chars
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageSection.place.$invalid && !manageSection.place.$pristine}">
+                        <label for="place">Place</label>
+                        <input ng-model="popupData.section.place" name="place" type="text" class="form-control" id="place" placeholder="e.g. 1, empty for last"
+                               pattern="^[0-9]*$">
+                        <div class="error" ng-show="manageSection.place.$dirty && manageSection.place.$invalid">
+                            <small class="error" ng-show="manageSection.place.$error.pattern">
+                                should be a valid number
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="showTitle">Title Visibility</label>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="popupData.section.showTitle" type="checkbox" id="showTitle" value="true">
+                                show the section title
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="collapsed">Section collapsed</label>
+                        <div class="checkbox">
+                            <label>
+                                <input ng-model="popupData.section.collapsed" type="checkbox" id="collapsed" value="true">
+                                section will be collapsed as default
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="tabOrder">Tab Order</label>
+                        <select class="form-control" ng-model="popupData.section.tabOrder">
+                            <option value="left-right">Left to Right</option>
+                            <option value="top-down">Top to Down</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Section</button>
+        <button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Section</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="manageRowModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title ng-hide" ng-show="popupData.row.id == null">Add Row</h3>
+        <h3 class="modal-title ng-hide" ng-show="popupData.row.id != null">Manage Row</h3>
+    </div>
+    <div class="modal-body">
+        <form name="manageRow">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="tabOrder">Row columns</label>
+                        <select class="form-control" ng-model="popupData.columnsCount">
+                            <option value="1">One column</option>
+                            <option value="2">Two columns</option>
+                            <option value="3">Three columns</option>
+                            <option value="4">Four columns</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageRow.row.$invalid && !manageRow.row.$pristine}">
+                        <label for="place">Place</label>
+                        <input ng-model="popupData.row.place" name="place" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
+                               pattern="^[0-9]*$">
+                        <div class="error" ng-show="manageRow.row.$dirty && manageRow.row.$invalid">
+                            <small class="error" ng-show="manageRow.row.$error.pattern">
+                                should be a valid number
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
+        <button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Row</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="manageItemModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title ng-hide" ng-show="popupData.row.id == null">Add Row</h3>
+        <h3 class="modal-title ng-hide" ng-show="popupData.row.id != null">Manage Row</h3>
+    </div>
+    <div class="modal-body">
+        <form name="manageRow">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="tabOrder">Row columns</label>
+                        <select class="form-control" ng-model="popupData.columnsCount">
+                            <option value="1">One column</option>
+                            <option value="2">Two columns</option>
+                            <option value="3">Three columns</option>
+                            <option value="4">Four columns</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageRow.row.$invalid && !manageRow.row.$pristine}">
+                        <label for="place">Place</label>
+                        <input ng-model="popupData.row.place" name="place" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
+                               pattern="^[0-9]*$">
+                        <div class="error" ng-show="manageRow.row.$dirty && manageRow.row.$invalid">
+                            <small class="error" ng-show="manageRow.row.$error.pattern">
+                                should be a valid number
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
+        <button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Row</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+    </div>
+</script>
