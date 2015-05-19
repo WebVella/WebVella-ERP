@@ -95,26 +95,55 @@ namespace WebVella.ERP.Api
                 return null;
             }
 
-            List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+            SingleRecordResponse response = new SingleRecordResponse();
+            response.Object = new SingleRecordResult();
+            response.Object.Data = new EntityRecord();
+            response.Success = true;
+            response.Timestamp = DateTime.UtcNow;
 
-            var recordFields = record.GetProperties();
-            foreach (var field in entity.Fields)
+            try
             {
-                var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field)));
+                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+
+                var recordFields = record.GetProperties();
+                foreach (var field in entity.Fields)
+                {
+                    var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
+                    storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field)));
+                }
+
+                var recRep = erpService.StorageService.GetRecordRepository();
+                recRep.Create(entity.Name, storageRecordData);
+                var recordCreated = recRep.Find(entity.Name, (Guid)record["id"]);
+                if (recordCreated == null)
+                    throw new Exception("The records was not successfully created");
+            
+                foreach (var pair in recordCreated)
+                    response.Object.Data[pair.Key] = pair.Value;
+
+                return response;
+            }
+            catch(Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity relation was not created. An internal error occurred!";
+#endif
+                return response;
             }
 
-            var recRep = erpService.StorageService.GetRecordRepository();
-            recRep.Create(entity.Name, storageRecordData);
-            return null;
         }
 
-        public QueryResponse Find(EntityQuery query )
+        public QueryResponse Find(EntityQuery query)
         {
             QueryResponse response = new QueryResponse
             {
                 Success = true,
-                Message = "The entity was successfully created!",
+                Message = "The query was successfully executed.",
                 Timestamp = DateTime.UtcNow
             };
 
@@ -179,15 +208,15 @@ namespace WebVella.ERP.Api
                                     continue;
                                 }
 
-                                
+
                                 List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(targetField.Relation.Id, (Guid)recValue.Value);
                                 List<EntityRecord> relatedListObject = new List<EntityRecord>();
-                                foreach( var id in relatedRecordIds )
+                                foreach (var id in relatedRecordIds)
                                 {
                                     var relQuery = EntityQuery.QueryEQ(originField.Name, id);
                                     var relatedStorageRecord = recRepo.Find(originEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
                                     //is a perfect world there should not be any related id while entity record do not exist
-                                    if ( relatedStorageRecord == null )
+                                    if (relatedStorageRecord == null)
                                         continue;
 
                                     var rowRecord = new EntityRecord();
@@ -205,7 +234,7 @@ namespace WebVella.ERP.Api
                     data.Add(dataRecord);
                 }
 
-                response.Object = new QueryResult { FieldsMeta = fields, Data= data };
+                response.Object = new QueryResult { FieldsMeta = fields, Data = data };
             }
             catch (Exception ex)
             {
