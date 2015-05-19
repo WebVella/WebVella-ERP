@@ -36,8 +36,8 @@ namespace WebVella.ERP.Api.Models
 
     public class RecordViewCollection
     {
-        [JsonProperty(PropertyName = "forms")]
-        public List<RecordView> Forms { get; set; }
+        [JsonProperty(PropertyName = "recordViews")]
+        public List<RecordView> RecordViews { get; set; }
     }
 
     public class RecordViewResponse : BaseResponseModel
