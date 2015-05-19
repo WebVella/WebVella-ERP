@@ -34,8 +34,8 @@
             var rectInitial = element[0].getBoundingClientRect();
 
 
-            function onResize(el) {
-                var rect = el[0].getBoundingClientRect();
+            function onResize(e) {
+                var rect = element[0].getBoundingClientRect();
                 var clw = ($window.innerWidth || document.documentElement.clientWidth);
                 var clh = ($window.innerHeight || document.documentElement.clientHeight);
                 var offsetY = $window.pageYOffset;
@@ -66,18 +66,22 @@
                     "width": "auto"
                 };
                 if (offsetY > rectInitial.top) {
-                    el.css(styles);
+                    element.css(styles);
                 }
                 else {
-                    el.css(reverseStyles);
+                    element.css(reverseStyles);
                 }
                 
             }
             
-            onResize(element);
+            onResize();
 
-            angular.element($window).bind('resize scroll', function () {
-                onResize(element);
+            //bind to the event
+            angular.element($window).bind('resize scroll', onResize);
+
+            //unbind the event listener
+            scope.$on('$destroy', function () {
+                angular.element($window).unbind('resize scroll', onResize);
             });
         }
 

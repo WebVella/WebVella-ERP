@@ -33,8 +33,7 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function () {
                     return "Webvella ERP";
-                }
-                
+                }                
             },
             data: { }
         });
@@ -50,8 +49,6 @@
 
         $log.debug('webvellaDesktop>base> END module.run');
     };
-
-
 
     // Controller ///////////////////////////////
     controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout'];

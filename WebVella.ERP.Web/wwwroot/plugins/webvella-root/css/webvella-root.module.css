@@ -1379,7 +1379,7 @@ span.divider {
 
     #page-content #text {
         min-height: 50px;
-        padding: 1em 1em 0 1em;
+        padding: 1em;
         position: relative;
     }
 
@@ -2877,3 +2877,18 @@ span.not-editable {
 
 
 /*#endregion*/
+
+/*#region << Record details */
+.record-details{
+    padding:1em;
+}
+
+.record-details .panel-heading.collapsable:hover {
+    cursor:pointer;
+}
+
+.editable-field {
+    line-height:20px;
+    min-height:34px;
+}
+/*#endregion */

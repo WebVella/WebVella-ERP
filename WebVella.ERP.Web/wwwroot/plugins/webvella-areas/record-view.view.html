@@ -1,0 +1,82 @@
+<div id="page-title">
+    <div id="page-meta">
+        <!--<div class="aux-actions">
+            <a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
+            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
+            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
+                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                    <li>
+                        <a href>Account settings</a>
+                    </li>
+                </ul>
+            </span>
+        </div>-->
+        <div class="icon-box">
+            <i class="fa fa-users"></i>
+        </div>
+        <div class="entity-box">
+            <h4 title="Offers">Offers</h4>
+            <a href=""><i class="fa fa-gear"></i> Settings</a>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 title="Newest active offers">Full details</h4>
+            <a href=""><i class="fa fa-table"></i> Other Record Views</a>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+
+<div class="record-details">
+
+    <div class="panel panel-default" ng-repeat="section in contentData.contentRegion.sections">
+        <div class="panel-heading collapsable ng-hide" ng-show="section.showTitle" ng-click="contentData.toggleSectionCollapse(section)">
+            <span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+            <span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+            {{section.title}}
+        </div>
+        <div class="panel-body ng-hide" ng-hide="section.collapsed && section.showTitle">
+            <div class="form-horizontal">
+
+                <div class="row" ng-repeat="row in section.rows">
+                    <div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+                        <div class="form-group" ng-repeat="item in column.items">
+                            <!--If item is field WITH NO relation-->
+                            <div class="row editable-field" ng-if="item.type === 'field' && item.originFieldId === null">
+                                <label class="col-sm-3 control-label">{{item.meta.label}}</label>
+                                <div class="col-sm-9 position-relative">
+                                    <!-- If type 18 - textbox -->
+                                    <a ng-if="item.meta.fieldType === 18" href="#" editable-text="contentData.viewData['{{item.meta.name}}']" ng-bind="contentData.viewData['{{item.meta.name}}'] || 'empty' "></a>
+
+                                </div>
+                            </div>
+                            <!--If item is field WITH relation-->
+                            <div class="row editable-field" ng-if="item.type === 'field' && item.originFieldId != null">
+                                <label class="col-sm-3 control-label">{{item.meta.label}}</label>
+                                <div class="col-sm-9 position-relative">
+                                    <p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['author']['name'] || 'empty' "></a></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

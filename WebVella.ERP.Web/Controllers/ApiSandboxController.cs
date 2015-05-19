@@ -458,42 +458,18 @@ namespace WebVella.ERP.Web.Controllers
                 #endregion
 
                 case "area":
-                    ///////////////////////// ROLES ////////////////////////
+                    ///////////////////////// AREA ////////////////////////
                     var areas = new List<Entity>();
                     var area = new Entity();
 
-                    //	//Area 4
-                    //	area = new Area();
-                    //	area.Id = Guid.NewGuid();
-                    //	area.Name = "integration";
-                    //	area.Label = "Integration";
-                    //	area.Weight = 4;
-                    //	area.Color = "cyan";
-                    //          area.IconName = "cloud";
-
-                    //          //Area2 Section 1
-                    //          areaSection = new AreaSection();
-                    //          areaSection.Id = Guid.Empty;
-                    //          areaSection.Name = "section1";
-                    //          areaSection.Label = "Area Section 1";
-                    //          areaSection.Weight = 1;
-                    //          //// Entity 1
-                    //          entity = new Entity();
-                    //          entity.Id = Guid.NewGuid();
-                    //          entity.Name = "entity1";
-                    //          entity.IsSystem = false;
-                    //          entity.Label = "entity 1";
-                    //          entity.LabelPlural = "entity 2s";
-                    //          entity.IconName = "files-o";
-                    //          entity.Weight = 1;
-                    //          areaSection.Entities.Add(entity);
-
-                    //          area.Sections.Add(areaSection);
-
-                    //          ////Add Area to SiteMeta
-                    //          siteMeta.Areas.Add(area);
-
-
+                    //Entity 1
+                    area = new Entity();
+                    area.Id = Guid.NewGuid();
+                    area.Name = "test";
+                    area.Label = "Test";
+                    area.Weight = 4;
+                    area.IconName = "cloud";
+                    areas.Add(area);
                     responseObj.Entities = areas;
                     break;
 

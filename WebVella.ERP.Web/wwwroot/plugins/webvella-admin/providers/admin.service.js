@@ -384,27 +384,41 @@ function guid() {
                                     "columns": [{
                                         "gridColCount": 12,
                                         "items": [
+                                                {
+                                                    "id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
+                                                    "name": "title",
+                                                    "originFieldId": null,
+                                                    "originFieldName": null,
+                                                    "type": "field"
+                                                },
+                                                 {
+                                                     "id": "e878470b-492e-43af-af87-a137049eef9f",
+                                                     "name": "author",
+                                                     "originFieldId": "083bd9b0-fac0-4f55-852e-9f73f345af2f",
+                                                     "originFieldName": "name",
+                                                     "type": "field"
+                                                 },
                                             {
                                                 "id": guid(),
-                                                "name": "parentFieldName.OriginFieldName",
-                                                "type": "field"
-                                            },
-                                            {
-                                                "id": guid(),
-                                                "name": null,
+                                                "originFieldId": null,
                                                 "type": "h2_heading",
+                                                "originFieldName": null,
+                                                "name": "somename",
                                                 "content": "This is a heading"
                                             },
                                             {
                                                 "id": guid(),
-                                                "name": null,
+                                                "originFieldId": null,
                                                 "type": "html",
+                                                "name": "somename",
                                                 "content": "This is some html content"
                                             },
                                             {
                                                 "id": guid(),
-                                                "name": null,
+                                                "originFieldId": null,
+                                                "originFieldName": null,
                                                 "type": "image",
+                                                "name": "somename",
                                                 "src": "/url/to/image",
                                                 "title": "",
                                                 "alt": ""
@@ -514,17 +528,18 @@ function guid() {
             {
                 "id": guid(),
                 "type": "field",
-                "name": "name"
+                "originFieldId": null,
             },
             {
                 "id": guid(),
                 "type": "field",
-                "name": "label"
+                "originFieldId": null,
             },
             {
                 "id": guid(),
                 "type": "static",
-                "name": "Heading 3"
+                "originFieldId": null,
+                "name":"heading"
             }
             ];
             var response = {};
