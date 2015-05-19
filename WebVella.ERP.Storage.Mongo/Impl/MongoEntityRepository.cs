@@ -8,6 +8,9 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoEntityRepository : IStorageEntityRepository
     {
+
+        private const string RECORD_COLLECTION_PREFIX = "rec_";
+
         /// <summary>
         /// 
         /// </summary>
@@ -87,7 +90,24 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public bool Delete(Guid id)
         {
-            return MongoStaticContext.Context.Entities.Delete(Query.EQ("_id", id));
+            var transaction = MongoStaticContext.Context.CreateTransaction();
+            try
+            {
+                //remove value storage
+                var entity = Read(id);
+                string relationCollectionName = RECORD_COLLECTION_PREFIX + entity.Name;
+                if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
+                    MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
+
+                var result = MongoStaticContext.Context.Entities.Delete(Query.EQ("_id", id));
+                transaction.Commit();
+                return result;
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
 
         /// <summary>
