@@ -4,6 +4,8 @@ using WebVella.ERP.Api.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using WebVella.ERP.Api;
+
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,8 +13,10 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiController : ApiControllerBase
     {
+        RecordManager recMan;
         public ApiController(IERPService service) : base(service)
         {
+            recMan = new RecordManager(service);
         }
 
         #region << Entity Meta >>
@@ -285,6 +289,19 @@ namespace WebVella.ERP.Web.Controllers
 
         #endregion
 
+        #region << Records >>
+        // Create an entity record
+        // POST: api/v1/en_US/record/{entityName}
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
+        public IActionResult CreateEntity(string entityName, [FromBody]EntityRecord postObj)
+        {
+            QueryResponse result = recMan.CreateRecord(entityName, postObj);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+        #endregion
     }
 }
 

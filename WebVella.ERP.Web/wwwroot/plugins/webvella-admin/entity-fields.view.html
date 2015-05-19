@@ -1093,11 +1093,11 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : popupData.optionsError}">
-                                <label class="control-label">Maximum Length</label>
+                                <label class="control-label">Options</label>
                                 <textarea class="form-control" ng-model="popupData.field.options" name="options" rows="4"></textarea>
-                                <div class="error" ng-show="popupData.maxLengthError">
-                                    <small class="error" ng-show="popupData.maxLengthError">
-                                        {{popupData.maxLengthMessage}}
+                                <div class="error" ng-show="popupData.optionsError">
+                                    <small class="error" ng-show="popupData.optionsError">
+                                        {{popupData.optionsMessage}}
                                     </small>
                                 </div>
                                 <p class="form-description">List of string values, separated by a new line</p>

@@ -20,6 +20,7 @@
         serviceInstance.getAreaByName = getAreaByName;
         serviceInstance.getViewMetaByName = getViewMetaByName;
         serviceInstance.getEntityRecord = getEntityRecord;
+        serviceInstance.createEntityRecord = createEntityRecord;
 
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
@@ -224,6 +225,12 @@
                 ]
             };
             handleSuccessResult(response, status, successCallback, errorCallback);
+        }
+
+        ///////////////////////
+        function createEntityRecord(postObject, entityName, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>createEntityRecord> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////
