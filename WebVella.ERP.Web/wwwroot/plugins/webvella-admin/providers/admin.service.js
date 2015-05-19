@@ -60,6 +60,8 @@ function guid() {
         serviceInstance.getEntityViewLibrary = getEntityViewLibrary;
 
         serviceInstance.initList = initList;
+        serviceInstance.getEntityListsList = getEntityListsList;
+        serviceInstance.getEntityRecordsList = getEntityRecordsList;
         //#endregion
 
         //#region << Aux methods >>
@@ -362,6 +364,7 @@ function guid() {
                 "label": "",
                 "default": true,
                 "system": false,
+                "weight":1.0,
                 "type": "details_general",
                 "regions": [
                     {
@@ -432,6 +435,7 @@ function guid() {
                 "label": "",
                 "default": false,
                 "system": false,
+                "weight": 1.0,
                 "type": "details_general",
                 "regions": [
                     {
@@ -644,6 +648,74 @@ function guid() {
 
         //#endregion
 
+        //#region <<Records List>>
+        ///////////////////////
+        function initList() {
+            $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
+            var list = {
+                "id": null,
+                "name": "",
+                "label": "",
+                "default": false,
+                "system": false,
+                "type": "general",
+                "weight": 1.0,
+                "fields": [],
+                "filters": {
+                    "static": [],
+                    "dynamic":[]
+                },
+                "sorting": []
+            }
+            return list;
+        }
+
+        function sampleList() {
+            $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
+            var list = {
+                "id": guid(),
+                "name": "general_list",
+                "label": "General list",
+                "default": false,
+                "system": false,
+                "type": "general",
+                "weight": 1.0,
+                "fields": [],
+                "filters": {
+                    "static": [],
+                    "dynamic": []
+                },
+                "sorting": []
+            }
+            return list;
+        }
+
+
+        ///////////////////////
+        function getEntityListsList(entityName, successCallback, errorCallback) {
+            var lists = [];
+            var list = sampleList();
+            lists.push(list);
+            var response = {};
+            response.success = true;
+            response.object = {};
+            response.object.lists = list;
+            successCallback(response);
+        }
+
+        ///////////////////////
+        function getEntityRecordsList(listName, entityName, successCallback, errorCallback) {
+            var list = sampleList();
+
+            var response = {};
+            response.success = true;
+            response.object = list;
+
+            successCallback(response);
+        }
+
+        //#endregion
+
         /////////////////////
         function initRecord() {
             var record = {};
@@ -655,31 +727,7 @@ function guid() {
             };
             return record;
         }
-        ///////////////////////
-        function initList() {
-            $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
-            var list = {
-                "id": null,
-                "name": "",
-                "label": "",
-                "default": false,
-                "system": false,
-                "typeId": 1,
-                "weight": 1.0,
-                "fields": [],
-                "filters": [],
-                "sorting": []
-            }
-            return list;
-        }
-        /////////////////////
-        function initRecordsList() {
-            var list = {};
-            var meta = initList();
-            list.data = [];
 
-            return list;
-        }
 
 
 
