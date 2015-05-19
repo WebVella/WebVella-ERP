@@ -11,6 +11,8 @@ namespace WebVella.ERP.Api.Models
         GT,
         GTE,
         AND,
-        OR
+        OR,
+        CONTAINS,
+        STARTSWITH
     }
 }

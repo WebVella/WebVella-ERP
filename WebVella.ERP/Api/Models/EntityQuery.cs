@@ -63,7 +63,7 @@ namespace WebVella.ERP.Api.Models
 		{
 			return new QueryObject { QueryType = QueryType.GTE, FieldName = fieldName, FieldValue = value };
 		}
-
+        
 		public static QueryObject QueryAND(params QueryObject[] queries)
 		{
 			foreach (var query in queries)
@@ -86,6 +86,16 @@ namespace WebVella.ERP.Api.Models
 			return new QueryObject { QueryType = QueryType.OR, SubQueries = new List<QueryObject>(queries) };
 		}
 
-		#endregion
-	}
+        public static QueryObject QueryContains(string fieldName, object value)
+        {
+            return new QueryObject { QueryType = QueryType.CONTAINS, FieldName = fieldName, FieldValue = value };
+        }
+
+        public static QueryObject QueryStartsWith(string fieldName, object value)
+        {
+            return new QueryObject { QueryType = QueryType.STARTSWITH, FieldName = fieldName, FieldValue = value };
+        }
+
+        #endregion
+    }
 }
