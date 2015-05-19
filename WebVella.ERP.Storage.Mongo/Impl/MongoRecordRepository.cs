@@ -17,8 +17,16 @@ namespace WebVella.ERP.Storage.Mongo
             BsonDocument doc = new BsonDocument();
             foreach (var record in recordData)
             {
-                var value = record.Value == null ? BsonNull.Value : BsonValue.Create(record.Value);
-                doc[ProcessQueryIDFieldName(record.Key)] = value;
+                //because the decimal is not supported and default stored as string , we do it manually
+                if (record.Value is decimal)
+                {
+                    doc[ProcessQueryIDFieldName(record.Key)] = record.Value .ToString();
+                }
+                else
+                {
+                    var value = record.Value == null ? BsonNull.Value : BsonTypeMapper.MapToBsonValue(record.Value);
+                    doc[ProcessQueryIDFieldName(record.Key)] = value;
+                }
             }
             mongoCollection.Insert(doc);
         }

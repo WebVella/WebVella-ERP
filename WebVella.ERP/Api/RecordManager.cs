@@ -406,7 +406,14 @@ namespace WebVella.ERP.Api
                 else if (field is MultiSelectField)
                     return pair.Value as IEnumerable<string>;
                 else if (field is NumberField)
-                    return pair.Value as decimal?;
+                {
+                    if (pair.Value == null)
+                        return null;
+                    if (pair.Value is string)
+                        return decimal.Parse(pair.Value as string);
+
+                    return Convert.ToDecimal(pair.Value);
+                }
                 else if (field is PasswordField)
                     //TODO decide what to return, at the moment NULL
                     return null;
@@ -418,7 +425,7 @@ namespace WebVella.ERP.Api
                 {
                     if (pair.Value is string)
                         return new Guid(pair.Value as string);
-                    if( pair.Value is Guid)
+                    if (pair.Value is Guid)
                         return (Guid)pair.Value;
                     throw new Exception("Invalid GUID field value.");
                 }
