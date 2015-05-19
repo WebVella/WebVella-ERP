@@ -8,7 +8,6 @@ namespace WebVella.ERP.Storage
         List<IStorageEntityRelation> Read();
         IStorageEntityRelation Read(Guid id);
         IStorageEntityRelation Read(string name);
-        IStorageEntityRelation Read(Guid targetEntityId, Guid targetFieldId);
         bool Create(IStorageEntityRelation relation);
         bool Update(IStorageEntityRelation relation);
         bool Delete(Guid id);

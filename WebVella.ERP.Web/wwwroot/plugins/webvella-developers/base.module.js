@@ -73,7 +73,7 @@
         var pluginData = this;
         pluginData.executeSampleQuery = executeSampleQuery;
         pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
-
+        pluginData.result = "";
 
         $log.debug('webvellaDevelopers>base> END controller.exec');
 
@@ -87,10 +87,12 @@
 				function (response) {
 					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> SUCCESS');
 					$log.debug(response);
+					pluginData.result = response;
 				},
 				function (response) {
 					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> ERROR');
 					$log.debug(response);
+					pluginData.result = response;
 				}
 			);
         	
@@ -102,10 +104,12 @@
 				function (response) {
 					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> SUCCESS');
 					$log.debug(response);
+					pluginData.result = response;
 				},
 				function (response) {
 					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> ERROR');
 					$log.debug(response);
+					pluginData.result = response;
 				}
 			);
         }
