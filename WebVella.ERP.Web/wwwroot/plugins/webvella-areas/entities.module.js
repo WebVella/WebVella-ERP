@@ -86,19 +86,44 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedCurrentArea', '$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService',
+        'resolvedCurrentArea', '$timeout', 'webvellaAreasService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, webvellaRootService, resolvedCurrentArea, $timeout) {
+    function controller($log, $rootScope, $state, pageTitle, webvellaRootService,
+        resolvedCurrentArea, $timeout, webvellaAreasService) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        //Set pageTitle
+        //#region << Set Environment >>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
         contentData.currentArea = resolvedCurrentArea;
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
+        //#endregion
 
+
+        contentData.createNewRecordModal = function () {
+            var record = {};
+            record.id = guid();
+            record["name"] = "sales";
+            record["created_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
+            record["last_modified_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
+            record["created_on"] = moment().toISOString();
+            record["color"] = "green";
+            record["icon_name"] = "money";
+            record["label"] = "Sales";
+            record["weight"] = 1.0;
+            webvellaAreasService.createEntityRecord(record,"area",successCallback,errorCallback)
+        }
+
+        function successCallback(response) {
+            alert("success");
+        }
+
+        function errorCallback(response) {
+            alert("error");
+        }
 
         contentData.goDesktopBrowse = function () {
             $timeout(function () {
@@ -107,9 +132,8 @@
             
         }
 
-        activate();
+
         $log.debug('webvellaAreas>entities> END controller.exec');
-        function activate() { }
     }
 
 })();
