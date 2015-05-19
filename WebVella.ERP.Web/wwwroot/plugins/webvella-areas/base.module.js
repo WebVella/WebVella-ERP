@@ -13,9 +13,8 @@
         .run(run)
         .controller('WebVellaAreasBaseController', controller);
 
-    // Configuration ///////////////////////////////////
+    //#region << Configuration >>
     config.$inject = ['$stateProvider'];
-
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-base', {
@@ -32,32 +31,30 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function () {
                     return "Webvella ERP";
-                }
-            },
-            data: {
-                //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
+                },
+                resolvedCurrentArea: resolveCurrentArea
             }
         });
     };
+    //#endregion
 
-
-    // Run //////////////////////////////////////
-    run.$inject = ['$log'];
-
+    //#region << Run >>
+    run.$inject = ['$log', 'webvellaAreasService', 'webvellaDesktopBrowsenavFactory', '$rootScope'];
     /* @ngInject */
-    function run($log) {
+    function run($log, webvellaAreasService, webvellaDesktopBrowsenavFactory, $rootScope) {
         $log.debug('webvellaAreas>base> BEGIN module.run');
 
         $log.debug('webvellaAreas>base> END module.run');
     };
+    //#endregion
 
 
     // Resolve Function /////////////////////////
-    resolveSiteMeta.$inject = ['$q', '$log', 'webvellaRootService'];
+    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
 
     /* @ngInject */
-    function resolveSiteMeta($q, $log, webvellaRootService) {
-        $log.debug('webvellaRoot>base> BEGIN state.resolved');
+    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
+        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
 
@@ -70,17 +67,17 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getSiteMeta(successCallback, errorCallback);
+        webvellaAreasService.getAreaByName("area", successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaRoot>base> END state.resolved');
+        $log.debug('webvellaAreas>entities> END state.resolved');
         return defer.promise;
     }
 
 
-    // Controller ///////////////////////////////
-    controller.$inject = ['$log'];
 
+    //#region << Controller >>
+    controller.$inject = ['$log'];
     /* @ngInject */
     function controller($log) {
         $log.debug('webvellaAreas>base> BEGIN controller.exec');
@@ -91,5 +88,6 @@
         $log.debug('webvellaAreas>base> END controller.exec');
         function activate() { }
     }
+    //#endregion
 
 })();

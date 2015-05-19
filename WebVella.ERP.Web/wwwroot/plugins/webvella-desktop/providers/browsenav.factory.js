@@ -34,13 +34,19 @@
             //Redirect to the first entity of the area
             var firstEntityName = null;
             var firstEntitySectionName = null;
-            for (var i = 0; i < area.sections.length; i++) {
-                if (area.sections[i].entities.length > 0) {
-                    firstEntityName = area.sections[i].entities[0].name;
-                    firstEntitySectionName = area.sections[i].name;
-                    break;
-                }
-            }
+            //When sections are implemented
+            //for (var i = 0; i < area.sections.length; i++) {
+            //    if (area.sections[i].entities.length > 0) {
+            //        firstEntityName = area.sections[i].entities[0].name;
+            //        firstEntitySectionName = area.sections[i].name;
+            //        break;
+            //    }
+            //}
+
+            //Working without sections 
+            firstEntityName = "order";
+            firstEntitySectionName = null;
+
 
             var menuItem = {};
             menuItem.label = area.label;
