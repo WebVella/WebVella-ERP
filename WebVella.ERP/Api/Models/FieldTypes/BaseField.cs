@@ -46,7 +46,11 @@ namespace WebVella.ERP
 
         public Field()
         {
-
+            Required = false;
+            Unique = false;
+            Searchable = false;
+            Auditable = false;
+            System = false;
         }
 
         public Field(Field field)

@@ -31,11 +31,16 @@ namespace WebVella.ERP.Storage.Mongo
             if (doc == null)
                 return null;
 
-            List<KeyValuePair<string, object>> result = new List<KeyValuePair<string, object>>();
+            List<KeyValuePair<string, object>> record = new List<KeyValuePair<string, object>>();
             foreach (var fieldName in doc.Names)
-                result.Add(new KeyValuePair<string, object>(fieldName, doc[fieldName]));
+            {
+                if (fieldName == "_id")
+                    record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"])));
+                else
+                    record.Add(new KeyValuePair<string, object>(fieldName, BsonTypeMapper.MapToDotNetValue(doc[fieldName])));
+            }
 
-            return result;
+            return record;
         }
 
         public IEnumerable<IEnumerable<KeyValuePair<string, object>>> Find(string entityName, QueryObject query, QuerySortObject[] sort, int? skip, int? limit)
