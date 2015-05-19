@@ -76,7 +76,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaAreasService.getAreaByName($stateParams.areaName, successCallback, errorCallback);
+        webvellaAreasService.getAreaByName("area", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAreas>entities> END state.resolved');

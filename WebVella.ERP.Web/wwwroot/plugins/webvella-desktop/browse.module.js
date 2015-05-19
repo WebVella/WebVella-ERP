@@ -13,7 +13,7 @@
         .config(config)
         .controller('WebVellaDesktopBrowseController', controller);
 
-    // Configuration ///////////////////////////////////
+    //#region << Configuration >>
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
@@ -34,9 +34,9 @@
             data: {}
         });
     };
+    //#endregion
 
-
-    // Run //////////////////////////////////////
+    //#region << Run >>
     run.$inject = ['$log', '$rootScope', 'webvellaDesktopTopnavFactory', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
@@ -50,9 +50,9 @@
 
         $log.debug('webvellaDesktop>browse> END module.run');
     };
+    //#endregion
 
-
-    // Resolve Function /////////////////////////
+    //#region << Resolve Function >>
     resolveAreasList.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
@@ -76,10 +76,10 @@
         $log.debug('webvellaDesktop>browse> END state.resolved');
         return defer.promise;
     }
+    //#endregion
 
 
-
-    // Controller ///////////////////////////////
+    //#region << Controller >>
     controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedAreasList', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
@@ -89,7 +89,12 @@
         var contentData = this;
         contentData.browsenav = [];
 
-        //Make the Browsenav pluggable
+        //#region << Set Page title >>
+        contentData.pageTitle = "Browse Desktop | " + pageTitle;
+        webvellaRootService.setPageTitle(contentData.pageTitle);
+        //#endregion
+
+        //#region << Make the Browsenav pluggable & Initialize>>
         ////1. CONSTRUCTOR - initialize the factory
         webvellaDesktopBrowsenavFactory.initBrowsenav();
         ////2. READY hook listener
@@ -110,16 +115,13 @@
         });
         ////5. Bootstrap the pluggable Browsenav
         $rootScope.$emit("webvellaDesktop-browsenav-ready");
+        //#endregion
 
-
-
-        contentData.pageTitle = "Browse Desktop | " + pageTitle;
-        webvellaRootService.setPageTitle(contentData.pageTitle);
 
 
         activate();
         $log.debug('webvellaDesktop>browse> END controller.exec');
         function activate() { }
     }
-
+    //#endregion
 })();

@@ -59,9 +59,8 @@
     };
 
 
-    // Run //////////////////////////////////////
+    //#region << Run >>
     run.$inject = ['$log', '$rootScope', '$state', '$timeout'];
-
     /* @ngInject */
     function run($log, $rootScope, $state, $timeout) {
         $log.debug('webvellaRoot>base> BEGIN module.run');
@@ -89,9 +88,7 @@
 
         $log.debug('webvellaRoot>base> END module.run');
     };
-
-
-
+    //#endregion
 
 
     // Controller ///////////////////////////////
