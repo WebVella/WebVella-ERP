@@ -202,6 +202,7 @@ namespace WebVella.ERP.Api
                 List<Field> fields = ExtractQueryFieldsMeta(query);
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
+                var entity = GetEntity(query.EntityName);
 
                 List<EntityRecord> data = new List<EntityRecord>();
                 foreach (var record in storageRecords)
@@ -210,73 +211,141 @@ namespace WebVella.ERP.Api
                     foreach (var field in fields)
                     {
                         var recValue = record.SingleOrDefault(x => x.Key == field.Name);
-                        if (!(field is GuidFieldMeta))
+                        if (!(field is RelationFieldMeta))
                         {
                             dataRecord[field.Name] = ExractFieldValue(recValue, field);
                         }
                         else //relation field
                         {
-                            //if we don't have any value for targetField, we set null
-                            if (!record.Any(x => x.Key == field.Name))
-                            {
-                                dataRecord[field.Name] = null;
-                                continue;
-                            }
+                            RelationFieldMeta relationField = (RelationFieldMeta)field;
 
-                            GuidFieldMeta targetField = (GuidFieldMeta)field;
-                            var originEntity = GetEntity(targetField.Relation.OriginEntityId);
-                            var originField = originEntity.Fields.Single(x => x.Id == targetField.Relation.OriginFieldId);
-
-                            //both kind of relations return only single record from other entity
-                            if (targetField.Relation.RelationType == EntityRelationType.OneToOne ||
-                                targetField.Relation.RelationType == EntityRelationType.OneToMany)
+                            if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
                             {
-                                var relQuery = EntityQuery.QueryEQ(originField.Name, recValue.Value);
-                                var relatedStorageRecord = recRepo.Find(originEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-                                if (relatedStorageRecord == null)
+                                IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
+                                //when the relation is origin -> target entity
+                                if (relationField.Relation.OriginEntityId == entity.Id)
                                 {
-                                    dataRecord[field.Name] = null;
-                                    continue;
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+                                        relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+                                    }
+                                }
+                                else //when the relation is target -> origin, we have to query origin entity
+                                {
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+                                        relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+                                    }
                                 }
 
-                                var relatedObject = new EntityRecord();
-                                foreach (var relField in targetField.RelationFields)
+                                var dataArrayRecord = new List<EntityRecord>();
+                                if (relatedStorageRecord != null)
                                 {
-                                    var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                    relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
-                                }
-                                dataRecord[field.Name] = relatedObject;
-                            }
-                            //in this case we need to retrieve multiple records from system table,
-                            //which containsrecords of pair ids
-                            else if (targetField.Relation.RelationType == EntityRelationType.ManyToMany)
-                            {
-                                if (recValue.Value == null || !(recValue.Value is Guid))
-                                {
-                                    dataRecord[field.Name] = null;
-                                    continue;
-                                }
-
-
-                                List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(targetField.Relation.Id, (Guid)recValue.Value);
-                                List<EntityRecord> relatedListObject = new List<EntityRecord>();
-                                foreach (var id in relatedRecordIds)
-                                {
-                                    var relQuery = EntityQuery.QueryEQ(originField.Name, id);
-                                    var relatedStorageRecord = recRepo.Find(originEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-                                    //is a perfect world there should not be any related id while entity record do not exist
-                                    if (relatedStorageRecord == null)
-                                        continue;
-
-                                    var rowRecord = new EntityRecord();
-                                    foreach (var relField in targetField.RelationFields)
+                                    var relatedObject = new EntityRecord();
+                                    foreach (var relField in relationField.Fields)
                                     {
                                         var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                        rowRecord[relField.Name] = ExractFieldValue(relValue, relField);
+                                        relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
                                     }
-                                    relatedListObject.Add(rowRecord);
+                                    dataArrayRecord.Add(relatedObject);
                                 }
-                                dataRecord[field.Name] = relatedListObject;
+                                dataRecord[field.Name] = dataArrayRecord;
+                            }
+                            else if (relationField.Relation.RelationType == EntityRelationType.OneToMany)
+                            {
+                                IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
+                                //when the relation is origin -> target entity
+                                if (relationField.Relation.OriginEntityId == entity.Id)
+                                {
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+                                        relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+                                    }
+                                }
+                                else //when the relation is target -> origin, we have to query origin entity
+                                {
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+                                        relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+                                    }
+                                }
+
+                                var dataArrayRecord = new List<EntityRecord>();
+                                if (relatedStorageRecords != null)
+                                {
+                                    foreach (var relatedStorageRecord in relatedStorageRecords)
+                                    {
+                                        var relatedObject = new EntityRecord();
+                                        foreach (var relField in relationField.Fields)
+                                        {
+                                            var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
+                                            relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
+                                        }
+                                        dataArrayRecord.Add(relatedObject);
+                                    }
+                                }
+                                dataRecord[field.Name] = dataArrayRecord;
+                            }
+                            else if (relationField.Relation.RelationType == EntityRelationType.ManyToMany)
+                            {
+                                List<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
+                                //when the relation is origin -> target entity
+                                if (relationField.Relation.OriginEntityId == entity.Id)
+                                {
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
+                                        relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+                                        foreach (Guid id in relatedRecordIds)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
+                                            var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
+                                            if (relatedStorageRecord != null)
+                                                relatedStorageRecords.Add(relatedStorageRecord);
+                                        }
+                                    }
+                                }
+                                else //when the relation is target -> origin, we have to query origin entity
+                                {
+                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+                                    if (recValue.Value != null)
+                                    {
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
+                                        relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+                                        foreach (Guid id in relatedRecordIds)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
+                                            var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
+                                            if (relatedStorageRecord != null)
+                                                relatedStorageRecords.Add(relatedStorageRecord);
+                                        }
+                                    }
+                                }
+
+                                var dataArrayRecord = new List<EntityRecord>();
+                                if (relatedStorageRecords != null)
+                                {
+                                    foreach (var relatedStorageRecord in relatedStorageRecords)
+                                    {
+                                        var relatedObject = new EntityRecord();
+                                        foreach (var relField in relationField.Fields)
+                                        {
+                                            var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
+                                            relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
+                                        }
+                                        dataArrayRecord.Add(relatedObject);
+                                    }
+                                }
+                                dataRecord[field.Name] = dataArrayRecord;
                             }
                         }
                     }
@@ -453,73 +522,72 @@ namespace WebVella.ERP.Api
                     if (relationData.Count > 2)
                         throw new Exception(string.Format("The specified query result  field '{0}' is incorrect. Only first level relation can be specified.", token));
 
-                    string fieldName = relationData[0];
+                    string relationName = relationData[0];
                     string relationFieldName = relationData[1];
 
-                    if (string.IsNullOrWhiteSpace(fieldName))
-                        throw new Exception(string.Format("Invalid query result field '{0}'. The field name is not specified.", token));
+                    if (string.IsNullOrWhiteSpace(relationName) || relationName == "$")
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
+                    else if (!relationName.StartsWith("$"))
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
+                    else
+                        relationName = relationName.Substring(1);
 
                     if (string.IsNullOrWhiteSpace(relationFieldName))
                         throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
 
+                 
 
-                    Field field = result.SingleOrDefault(x => x.Name == fieldName);
-                    GuidFieldMeta guidMetaField = null;
+                    Field field = result.SingleOrDefault( x => x.Name == "$" + relationName );
+                    RelationFieldMeta relationFieldMeta = null;
                     if (field == null)
                     {
-                        field = entity.Fields.SingleOrDefault(x => x.Name == fieldName);
-                        if (field == null)
-                            throw new Exception(string.Format("Invalid query result field '{0}'", token));
-
-                        //add 
-                        if (field is GuidField)
-                        {
-                            //we add GuidFieldMeta object, and we are going to set relation and relation fields later bellow
-                            guidMetaField = new GuidFieldMeta(field as GuidField);
-                            result.Add(guidMetaField);
-                        }
-                        else
-                            //any other than GuidField type is not supported
-                            throw new Exception(string.Format("Invalid query field '{0}'. Specified query field used as relation is not valid.", token));
+                        relationFieldMeta = new RelationFieldMeta();
+                        relationFieldMeta.Name = "$" + relationName;
+                        result.Add(relationFieldMeta);
                     }
                     else
-                    {
-                        //if field is already added to result and it is not a GuidFildMeta, remove it and 
-                        //add GuidFieldMeta object, are going to set relation and relation fields later bellow
-                        if ((field is GuidField) && !(field is GuidFieldMeta))
-                        {
-                            result.Remove(field);
-                            guidMetaField = new GuidFieldMeta(field as GuidField);
-                            result.Add(guidMetaField);
-                        }
-                        else
-                            guidMetaField = (GuidFieldMeta)field;
-                    }
+                        relationFieldMeta = (RelationFieldMeta)field;
 
-                    if (guidMetaField.Relation == null)
-                    {
-                        guidMetaField.Relation = GetRelations().Single(x => x.TargetEntityId == entity.Id.Value && x.TargetFieldId == field.Id.Value);
-                        if (guidMetaField.Relation == null)
-                            throw new Exception(string.Format("Invalid query field '{0}'. No relation found.", token));
-                    }
+                    relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
+                    if (relationFieldMeta.Relation == null)
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
 
-                    //if field already added 
-                    if (guidMetaField.RelationFields.Any(x => x.Name == relationFieldName))
-                        continue;
+                    if(relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id )
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token ));
 
-                    var originEntity = GetEntity(guidMetaField.Relation.OriginEntityId);
+                    relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
+                    relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);
+
                     //this should not happen in a perfect (no bugs) world
-                    if (originEntity == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. Related entity is missing.", token));
+                    if (relationFieldMeta.OriginEntity == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)entity is missing.", token));
+                    if (relationFieldMeta.TargetEntity == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", token));
 
-                    //get and check for related field in related entity
-                    var relatedField = originEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
-                    if (relatedField == null)
+                    relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x=>x.Id == relationFieldMeta.Relation.TargetFieldId);
+                    relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
+
+                    //this should not happen in a perfect (no bugs) world
+                    if (relationFieldMeta.OriginField == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)field is missing.", token));
+                    if (relationFieldMeta.TargetField == null)
+                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)field is missing.", token));
+
+                    Entity joinToEntity = null;
+                    if (relationFieldMeta.TargetEntity.Id == entity.Id)
+                        joinToEntity = relationFieldMeta.OriginEntity;
+                    else
+                        joinToEntity = relationFieldMeta.TargetEntity;
+
+                    var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
+                    if( relatedField == null )
                         throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
 
-                    //check for duplication and add it
-                    if (!guidMetaField.RelationFields.Any(x => x.Id == relatedField.Id))
-                        guidMetaField.RelationFields.Add(relatedField);
+                    //if field already added
+                    if (relationFieldMeta.Fields.Any(x => x.Id == relatedField.Id))
+                        continue;
+
+                    relationFieldMeta.Fields.Add(relatedField);
                 }
             }
 
