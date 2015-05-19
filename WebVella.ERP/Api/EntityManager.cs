@@ -693,7 +693,7 @@ namespace WebVella.ERP
                 storageRecordsList.Id = recordsList.Id.Value;
                 storageRecordsList.Name = recordsList.Name;
                 storageRecordsList.Label = recordsList.Label;
-                storageRecordsList.Type = recordsList.Type;
+                storageRecordsList.Type = recordsList.Type.Value;
 
                 storageRecordsList.Filters = new List<IStorageRecordsListFilter>();
 
@@ -2126,6 +2126,88 @@ namespace WebVella.ERP
             return response;
         }
 
+        public RecordsListResponse PartialUpdateRecordsList(Guid entityId, Guid id, RecordsList recordsList)
+        {
+            RecordsListResponse response = new RecordsListResponse
+            {
+                Success = true,
+                Message = "The list was successfully updated!",
+            };
+
+            try
+            {
+                IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+                if (storageEntity == null)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "Entity with such Id does not exist!";
+                    return response;
+                }
+
+                Entity entity = ConvertEntityFromStorage(storageEntity);
+
+                RecordsList updatedList = entity.RecordsLists.FirstOrDefault(l => l.Id == id);
+
+                if (updatedList == null)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "List with such Id does not exist!";
+                    return response;
+                }
+
+                if (!string.IsNullOrWhiteSpace(recordsList.Label))
+                    updatedList.Label = recordsList.Label;
+                if (!recordsList.Type.HasValue)
+                    updatedList.Type = recordsList.Type;
+                if (recordsList.Filters != null)
+                    updatedList.Filters = recordsList.Filters;
+                if (recordsList.Fields != null)
+                    updatedList.Fields = recordsList.Fields;
+
+                response.Object = recordsList;
+                response.Errors = ValidateView(entity, recordsList, true);
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "The list was not updated. Validation error occurred!";
+                    return response;
+                }
+
+                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                bool result = EntityRepository.Update(updatedEntity);
+                if (!result)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "The list was not updated! An internal error occurred!";
+                    return response;
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = recordsList;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The list was not updated. An internal error occurred!";
+#endif
+                return response;
+            }
+
+            response.Object = recordsList;
+            response.Timestamp = DateTime.UtcNow;
+
+            return response;
+        }
+
         public RecordsListResponse DeleteRecordsList(Guid entityId, Guid id)
         {
             RecordsListResponse response = new RecordsListResponse
@@ -2210,7 +2292,7 @@ namespace WebVella.ERP
                 Entity entity = ConvertEntityFromStorage(storageEntity);
 
                 RecordsListCollection recordsListCollection = new RecordsListCollection();
-                recordsListCollection.Views = entity.RecordsLists;
+                recordsListCollection.RecordsLists = entity.RecordsLists;
 
                 response.Object = recordsListCollection;
             }
@@ -2421,6 +2503,84 @@ namespace WebVella.ERP
             return response;
         }
 
+        public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, RecordView recordView)
+        {
+            RecordViewResponse response = new RecordViewResponse
+            {
+                Success = true,
+                Message = "The record view was successfully updated!",
+            };
+
+            try
+            {
+                IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+                if (storageEntity == null)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "Entity with such Id does not exist!";
+                    return response;
+                }
+
+                Entity entity = ConvertEntityFromStorage(storageEntity);
+
+                RecordView updatedView = entity.RecordViewLists.FirstOrDefault(v => v.Id == id);
+
+                if (updatedView == null)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "View with such Id does not exist!";
+                    return response;
+                }
+
+                if (!string.IsNullOrWhiteSpace(recordView.Label))
+                    updatedView.Label = recordView.Label;
+                if (recordView.Fields != null)
+                    updatedView.Fields = recordView.Fields;
+
+                response.Object = recordView;
+                response.Errors = ValidateForm(entity, recordView, true);
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "The record view was not updated. Validation error occurred!";
+                    return response;
+                }
+
+                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                bool result = EntityRepository.Update(updatedEntity);
+                if (!result)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = "The record view was not updated! An internal error occurred!";
+                    return response;
+                }
+
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = recordView;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The record view was not updated. An internal error occurred!";
+#endif
+                return response;
+            }
+
+            response.Object = recordView;
+            response.Timestamp = DateTime.UtcNow;
+
+            return response;
+        }
+
         public RecordViewResponse DeleteRecordView(Guid entityId, Guid id)
         {
             RecordViewResponse response = new RecordViewResponse
@@ -2505,7 +2665,7 @@ namespace WebVella.ERP
                 Entity entity = ConvertEntityFromStorage(storageEntity);
 
                 RecordViewCollection recordViewList = new RecordViewCollection();
-                recordViewList.Forms = entity.RecordViewLists;
+                recordViewList.RecordViews = entity.RecordViewLists;
 
                 response.Object = recordViewList;
             }
@@ -2612,7 +2772,7 @@ namespace WebVella.ERP
             createdBy.PlaceholderText = "";
             createdBy.Description = "";
             createdBy.HelpText = "";
-            createdBy.Required = true;
+            createdBy.Required = false;
             createdBy.Unique = false;
             createdBy.Searchable = false;
             createdBy.Auditable = false;
@@ -2630,7 +2790,7 @@ namespace WebVella.ERP
             lastModifiedBy.PlaceholderText = "";
             lastModifiedBy.Description = "";
             lastModifiedBy.HelpText = "";
-            lastModifiedBy.Required = true;
+            lastModifiedBy.Required = false;
             lastModifiedBy.Unique = false;
             lastModifiedBy.Searchable = false;
             lastModifiedBy.Auditable = false;
@@ -2648,7 +2808,7 @@ namespace WebVella.ERP
             createdOn.PlaceholderText = "";
             createdOn.Description = "";
             createdOn.HelpText = "";
-            createdOn.Required = true;
+            createdOn.Required = false;
             createdOn.Unique = false;
             createdOn.Searchable = false;
             createdOn.Auditable = false;
@@ -2663,12 +2823,12 @@ namespace WebVella.ERP
             DateTimeField modifiedOn = new DateTimeField();
 
             modifiedOn.Id = Guid.NewGuid();
-            modifiedOn.Name = "modified_on";
-            modifiedOn.Label = "Modified On";
+            modifiedOn.Name = "last_modified_on";
+            modifiedOn.Label = "Last Modified On";
             modifiedOn.PlaceholderText = "";
             modifiedOn.Description = "";
             modifiedOn.HelpText = "";
-            modifiedOn.Required = true;
+            modifiedOn.Required = false;
             modifiedOn.Unique = false;
             modifiedOn.Searchable = false;
             modifiedOn.Auditable = false;
