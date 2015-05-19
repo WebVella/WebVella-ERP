@@ -110,6 +110,8 @@ namespace WebVella.ERP.Api
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
                     storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field)));
                 }
+                var recRepo = erpService.StorageService.GetRecordRepository();
+                recRepo.Create(entity.Name, storageRecordData);
                 var query = EntityQuery.QueryEQ("id", (Guid)record["id"]);
                 var entityQuery = new EntityQuery(entity.Name, "*", query);
 
