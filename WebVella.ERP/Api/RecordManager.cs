@@ -19,6 +19,7 @@ namespace WebVella.ERP.Api
         private List<Entity> entityCache;
         private EntityManager entityManager;
         private EntityRelationManager entityRelationManager;
+        private List<EntityRelation> relations = null;
 
         /// <summary>
         /// The contructor
@@ -30,6 +31,50 @@ namespace WebVella.ERP.Api
             entityCache = new List<Entity>();
             entityManager = new EntityManager(erpService.StorageService);
             entityRelationManager = new EntityRelationManager(erpService.StorageService);
+        }
+
+        public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
+        {
+            QueryResponse response = new QueryResponse();
+            response.Object = null;
+            response.Success = true;
+            response.Timestamp = DateTime.UtcNow;
+
+            try
+            {
+                var relRep = erpService.StorageService.GetEntityRelationRepository();
+                var relation = relRep.Read(relationId);
+
+                if (relation == null)
+                    response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
+
+                var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
+                if( targetValues.Contains(targetValue))
+                    response.Errors.Add(new ErrorModel { Message = "The relation record already exists." });
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Object = null;
+                    response.Success = false;
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                relRep.CreateManyToManyRecord(relationId, originValue, targetValue);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity relation record was not created. An internal error occurred!";
+#endif
+                return response;
+            }
         }
 
         public QueryResponse CreateRecord(string entityName, EntityRecord record)
@@ -83,18 +128,6 @@ namespace WebVella.ERP.Api
         public QueryResponse CreateRecord(Entity entity, EntityRecord record)
         {
 
-            if (entity == null)
-            {
-                //TODO 
-                return null;
-            }
-
-            if (record == null)
-            {
-                //TODO 
-                return null;
-            }
-
             QueryResponse response = new QueryResponse();
             response.Object = null;
             response.Success = true;
@@ -102,6 +135,19 @@ namespace WebVella.ERP.Api
 
             try
             {
+                if (entity == null)
+                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+
+                if (record == null)
+                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Object = null;
+                    response.Success = false;
+                    response.Timestamp = DateTime.UtcNow;
+                }
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -123,10 +169,10 @@ namespace WebVella.ERP.Api
                     response.Success = false;
                     response.Message = "Record was not created successfully";
                 }
-                
+
                 return response;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 response.Success = false;
                 response.Object = null;
@@ -134,7 +180,7 @@ namespace WebVella.ERP.Api
 #if DEBUG
                 response.Message = e.Message + e.StackTrace;
 #else
-                response.Message = "The entity relation was not created. An internal error occurred!";
+                response.Message = "The entity record was not created. An internal error occurred!";
 #endif
                 return response;
             }
@@ -452,7 +498,7 @@ namespace WebVella.ERP.Api
 
                     if (guidMetaField.Relation == null)
                     {
-                        guidMetaField.Relation = entityRelationManager.Read(entity.Id.Value, field.Id.Value).Object;
+                        guidMetaField.Relation = GetRelations().Single(x => x.TargetEntityId == entity.Id.Value && x.TargetFieldId == field.Id.Value);
                         if (guidMetaField.Relation == null)
                             throw new Exception(string.Format("Invalid query field '{0}'. No relation found.", token));
                     }
@@ -506,6 +552,17 @@ namespace WebVella.ERP.Api
             }
 
             return entity;
+        }
+
+        private List<EntityRelation> GetRelations()
+        {
+            if (relations == null)
+                relations = entityRelationManager.Read().Object;
+
+            if (relations == null)
+                return new List<EntityRelation>();
+
+            return relations;
         }
 
     }

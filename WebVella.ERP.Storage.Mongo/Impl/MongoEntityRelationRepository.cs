@@ -40,18 +40,6 @@ namespace WebVella.ERP.Storage.Mongo
         }
 
         /// <summary>
-        /// Read single relation record specified by target entity and field
-        /// </summary>
-        /// <param name="targetEntityId"></param>
-        /// <param name="targetFieldId"></param>
-        /// <returns></returns>
-        public IStorageEntityRelation Read(Guid targetEntityId, Guid targetFieldId)
-        {
-            return MongoStaticContext.Context.EntityRelations.SingleOrDefault(
-                x => x.TargetEntityId == targetEntityId && x.TargetFieldId == targetFieldId);
-        }
-
-        /// <summary>
         /// Creates entity relation
         /// </summary>
         /// <param name="entity"></param>
