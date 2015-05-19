@@ -158,7 +158,15 @@ namespace WebVella.ERP.Api
                 }
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 recRepo.Create(entity.Name, storageRecordData);
-                var query = EntityQuery.QueryEQ("id", (Guid)record["id"]);
+                Guid recordId = Guid.Empty;
+                if (record["id"] is string)
+                    recordId = new Guid(record["id"] as string);
+                else if (record["id"] is Guid)
+                    recordId = (Guid)record["id"];
+                else
+                    throw new Exception("Invalid record id");
+
+                var query = EntityQuery.QueryEQ("id", recordId);
                 var entityQuery = new EntityQuery(entity.Name, "*", query);
 
                 response = Find(entityQuery);
@@ -407,7 +415,13 @@ namespace WebVella.ERP.Api
                 else if (field is PhoneField)
                     return pair.Value as string;
                 else if (field is GuidField)
-                    return (Guid)pair.Value;
+                {
+                    if (pair.Value is string)
+                        return new Guid(pair.Value as string);
+                    if( pair.Value is Guid)
+                        return (Guid)pair.Value;
+                    throw new Exception("Invalid GUID field value.");
+                }
                 else if (field is SelectField)
                     return pair.Value as string;
                 else if (field is TextField)
