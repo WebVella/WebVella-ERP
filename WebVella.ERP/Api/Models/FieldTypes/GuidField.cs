@@ -23,22 +23,4 @@ namespace WebVella.ERP.Api.Models
         {
         }
     }
-
-    public class GuidFieldMeta : GuidField
-    {
-        [JsonProperty(PropertyName = "relationFields")]
-        public List<Field> RelationFields { get; set; }
-
-
-        [JsonProperty(PropertyName = "relation")]
-        public EntityRelation Relation { get; set; }
-
-        public GuidFieldMeta( GuidField field  ) : base(field)
-        {
-			DefaultValue = field.DefaultValue;
-            GenerateNewId = field.GenerateNewId;
-            Relation = null;
-            RelationFields = new List<Field>();
-        }
-	}
 }

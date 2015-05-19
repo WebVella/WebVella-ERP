@@ -20,6 +20,7 @@
         GuidField = 16,
         SelectField = 17,
         TextField = 18,
-        UrlField = 19
+        UrlField = 19,
+        RelationField = 20
     }
 }
