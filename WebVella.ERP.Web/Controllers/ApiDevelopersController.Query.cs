@@ -251,22 +251,25 @@ namespace WebVella.ERP.Web.Controllers
                     return DoResponse(result);
             }
 
-
+            Guid[] postIds = new Guid[10];
             for (int i = 0; i < 10; i++)
             {
-                EntityRecord post1 = new EntityRecord();
-                post1["id"] = Guid.NewGuid();
-                post1["title"] = string.Format("post {0} title", i);
-                post1["content"] = string.Format("post {0} content", i); ;
-                post1["author"] = authorId;
-                post1["created_by"] = userId;
-                post1["last_modified_by"] = userId;
-                post1["created_on"] = DateTime.UtcNow;
+                
+                EntityRecord post = new EntityRecord();
+                post["id"] = Guid.NewGuid();
+                post["title"] = string.Format("post {0} title", i);
+                post["content"] = string.Format("post {0} content", i); ;
+                post["author"] = authorId;
+                post["created_by"] = userId;
+                post["last_modified_by"] = userId;
+                post["created_on"] = DateTime.UtcNow;
                 {
-                    QueryResponse result = recMan.CreateRecord("query_test_post", post1);
+                    QueryResponse result = recMan.CreateRecord("query_test_post", post);
                     if (!result.Success)
                         return DoResponse(result);
                 }
+
+                postIds[i] = (Guid)post["id"];
             }
 
 
@@ -293,7 +296,13 @@ namespace WebVella.ERP.Web.Controllers
                 QueryResponse result = recMan.CreateRecord("query_test_category", cat2);
                 if (!result.Success)
                     return DoResponse(result);
-            } 
+            }
+
+            recMan.CreateRelationManyToManyRecord(postCategoriesRelation.Id, cat1Id, postIds[0]);
+            //recMan.CreateRelationManyToManyRecord(postCategoriesRelation.Id, cat2Id, postIds[0]);
+
+            //recMan.CreateRelationManyToManyRecord(postCategoriesRelation.Id, cat1Id, postIds[1]);
+            recMan.CreateRelationManyToManyRecord(postCategoriesRelation.Id, cat2Id, postIds[1]);
 
             #endregion
 
@@ -303,8 +312,16 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
+            /*
             var queryObject = EntityQuery.QueryEQ("id", authorId);
             EntityQuery query = new EntityQuery("query_test_post", "id,title,content,author.id,author.name", null);
+            */
+            EntityQuery query = new EntityQuery("query_test_post", "id,title", null);
+            var posts = recMan.Find(query).Object.Data;
+
+            var queryObject = EntityQuery.QueryEQ("id", (Guid)(posts[0]["id"]) );
+            query = new EntityQuery("query_test_post", "id, title, id.id, id.name", null);
+
             var result = recMan.Find(query);
             return Json(result); 
         }

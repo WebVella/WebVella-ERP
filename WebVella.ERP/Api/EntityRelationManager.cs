@@ -272,21 +272,18 @@ namespace WebVella.ERP
             EntityRelationResponse response = new EntityRelationResponse();
             response.Timestamp = DateTime.UtcNow;
             response.Object = null;
-
+            response.Success = true;
             try
             {
                 var storageRelation = relationRepository.Read(relationId);
                 if (storageRelation != null)
                 {
                     response.Object = storageRelation.MapTo<EntityRelation>();
-                    response.Success = true;
                     response.Message = "The entity relation was successfully returned!";
                 }
                 else
-                {
-                    response.Success = true;
                     response.Message = string.Format("The entity relation '{0}' does not exist!", relationId);
-                }
+
                 return response;
             }
             catch (Exception e)
@@ -299,37 +296,6 @@ namespace WebVella.ERP
             }
         }
 
-        public EntityRelationResponse Read(Guid targetEntityId, Guid targetFieldId )
-        {
-            EntityRelationResponse response = new EntityRelationResponse();
-            response.Timestamp = DateTime.UtcNow;
-            response.Object = null;
-
-            try
-            {
-                var storageRelation = relationRepository.Read(targetEntityId, targetFieldId );
-                if (storageRelation != null)
-                {
-                    response.Object = storageRelation.MapTo<EntityRelation>();
-                    response.Success = true;
-                    response.Message = "The entity relation was successfully returned!";
-                }
-                else
-                {
-                    response.Success = true;
-                    response.Message = string.Format("The entity relation  does not exist!" );
-                }
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-#if DEBUG
-                response.Message = e.Message + e.StackTrace;
-#endif
-                return response;
-            }
-        }
 
         public EntityRelationListResponse Read()
         {
@@ -355,7 +321,6 @@ namespace WebVella.ERP
                 return response;
             }
         }
-        
 
         public EntityRelationResponse Create(EntityRelation relation)
         {
