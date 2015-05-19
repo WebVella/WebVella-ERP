@@ -105,6 +105,17 @@ namespace WebVella.ERP.Storage.Mongo
                     return Query.GT(ProcessQueryIDFieldName(query.FieldName), value);
                 case QueryType.GTE:
                     return Query.GTE(ProcessQueryIDFieldName(query.FieldName), value);
+                case QueryType.CONTAINS:
+                    {
+                        var regex = new BsonRegularExpression( string.Format( ".*{0}.*", value ), "i" ); // contains, ignore case
+                        return Query.Matches(ProcessQueryIDFieldName(query.FieldName), regex );
+                    }
+                case QueryType.STARTSWITH:
+                    {
+                        var regex = new BsonRegularExpression(string.Format("^{0}", value), "i"); // starts with, ignore case
+                        return Query.Matches(ProcessQueryIDFieldName(query.FieldName), regex);
+                    }
+
                 case QueryType.AND:
                     {
                         List<IMongoQuery> queries = new List<IMongoQuery>();
