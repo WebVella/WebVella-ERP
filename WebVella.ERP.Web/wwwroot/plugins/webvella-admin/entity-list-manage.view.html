@@ -101,6 +101,19 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <div class="row">
+
+                            <label class="col-sm-2 control-label" for="label">Records Limit</label>
+                            <div class="col-sm-4 position-relative">
+                                <a href="javascript:void(0)" editable-text="contentData.list.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "empty" }}</a>
+                            </div>
+                            <label class="col-sm-2 control-label" for="weight">Page size</label>
+                            <div class="col-sm-4 position-relative">
+                                <a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "empty" }}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

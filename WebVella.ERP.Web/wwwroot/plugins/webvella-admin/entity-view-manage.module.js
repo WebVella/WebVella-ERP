@@ -239,26 +239,25 @@
                 //Try update with the new view
                 webvellaAdminService.updateEntityView(tempCopyView, contentData.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
 
-                function successSectionRemoveCallback(response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<h4>Success</h4><p>' + response.message + '</p>'
-                    });
-
-                    //Initialize both view and the content region with the new value
-                    contentData.view = tempCopyView;
-                    contentData.viewContentRegion = tempCopyViewRegion;
-                }
-                function errorSectionRemoveCallback(response) {
-                    ngToast.create({
-                        className: 'error',
-                        content: '<h4>Error</h4><p>' + response.message + '</p>'
-                    });
-                }
-
             }
         }
 
+        function successSectionRemoveCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
+
+            //Initialize both view and the content region with the new value
+            contentData.view = tempCopyView;
+            contentData.viewContentRegion = tempCopyViewRegion;
+        }
+        function errorSectionRemoveCallback(response) {
+            ngToast.create({
+                className: 'error',
+                content: '<h4>Error</h4><p>' + response.message + '</p>'
+            });
+        }
 
         //#endregion
 
@@ -302,28 +301,26 @@
                     }
                 }
                 //Try update with the new view
-                webvellaAdminService.updateEntityView(tempCopyView, contentData.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
-
-                function successSectionRemoveCallback(response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<h4>Success</h4><p>' + response.message + '</p>'
-                    });
-
-                    //Initialize both view and the content region with the new value
-                    contentData.view = tempCopyView;
-                    contentData.viewContentRegion = tempCopyViewRegion;
-                }
-                function errorSectionRemoveCallback(response) {
-                    ngToast.create({
-                        className: 'error',
-                        content: '<h4>Error</h4><p>' + response.message + '</p>'
-                    });
-                }
+                webvellaAdminService.updateEntityView(tempCopyView, contentData.entity.name, successRowRemoveCallback, errorRowRemoveCallback);
 
             }
         }
+        function successRowRemoveCallback(response) {
+            ngToast.create({
+                className: 'success',
+                content: '<h4>Success</h4><p>' + response.message + '</p>'
+            });
 
+            //Initialize both view and the content region with the new value
+            contentData.view = tempCopyView;
+            contentData.viewContentRegion = tempCopyViewRegion;
+        }
+        function errorRowRemoveCallback(response) {
+            ngToast.create({
+                className: 'error',
+                content: '<h4>Error</h4><p>' + response.message + '</p>'
+            });
+        }
 
         //#endregion
 
@@ -352,10 +349,11 @@
                 // Items should be able to be copied if it is not field, view or list
                 if (eventObj.source.itemScope.item.type !== "field"
                     && eventObj.source.itemScope.item.type !== "view"
-                    && eventObj.source.itemScope.item.type !== "list")
+                    && eventObj.source.itemScope.item.type !== "list") {
                     var objectCopy = angular.copy(eventObj.source.itemScope.item);
-                objectCopy.id = guid();
-                eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
+                    objectCopy.id = guid();
+                    eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
+                }
 
             };
             moveFailure = function () {
