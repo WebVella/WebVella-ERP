@@ -15,26 +15,32 @@ namespace WebVella.ERP.Web.Controllers
 {
     public partial class ApiDevelopersController : ApiControllerBase
     {
+        Guid userId = new Guid("f5588278-c0a1-4865-ac94-41dfa09bf8ac");
+        Guid authorId = new Guid("031cca7c-1da4-48d3-a8e6-8e9315643b13");
+        Guid cat1Id = new Guid("ca93490a-056d-4c61-9381-9f8283046066");
+        Guid cat2Id = new Guid("01039a82-d507-4e80-b814-a9d74026bb6e");
+
+        Guid postEntityId = new Guid("3fc00d85-7864-464c-8a8e-bfb85f7134e0");
+        Guid authorEntityId = new Guid("59cc62ca-bf44-46f1-bdc8-daa4a538a567");
+        Guid categoryEntityId = new Guid("8cf4c663-5029-4b18-b5df-108af707584c");
+
+        Guid postCategoriesRelationId = new Guid("5f45fdde-b569-4b47-b667-63ff3c8bb423");
+        Guid postAuthorRelationId = new Guid("2f7e77fd-a748-4cdd-8906-01bf8a46a664");
+
+        EntityManager em;
+        EntityRelationManager rm;
+        RecordManager recMan;
+
         public ApiDevelopersController(IERPService service) : base(service)
         {
+            em = new EntityManager(service.StorageService);
+            rm = new EntityRelationManager(service.StorageService);
+            recMan = new RecordManager(service);
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
         public IActionResult CreateSampleQueryDataStructure()
         {
-            Guid userId = new Guid("f5588278-c0a1-4865-ac94-41dfa09bf8ac");
-            Guid authorId = new Guid("031cca7c-1da4-48d3-a8e6-8e9315643b13");
-
-            Guid postEntityId = new Guid("3fc00d85-7864-464c-8a8e-bfb85f7134e0");
-            Guid authorEntityId = new Guid("59cc62ca-bf44-46f1-bdc8-daa4a538a567");
-            Guid categoryEntityId = new Guid("8cf4c663-5029-4b18-b5df-108af707584c");
-
-            Guid postCategoriesRelationId = new Guid("5f45fdde-b569-4b47-b667-63ff3c8bb423");
-            Guid postAuthorRelationId = new Guid("2f7e77fd-a748-4cdd-8906-01bf8a46a664");
-
-            EntityManager em = new EntityManager(service.StorageService);
-            EntityRelationManager rm = new EntityRelationManager(service.StorageService);
-          
             #region << Create Entities >>
 
             //delete entities and create new one
@@ -231,6 +237,7 @@ namespace WebVella.ERP.Web.Controllers
 
             #endregion
 
+            #region << Create records >>
 
             EntityRecord author = new EntityRecord();
             author["id"] = authorId;
@@ -238,81 +245,69 @@ namespace WebVella.ERP.Web.Controllers
             author["created_by"] = userId;
             author["last_modified_by"] = userId;
             author["created_on"] = DateTime.UtcNow;
-            RecordManager recMan = new RecordManager(service);
             {
-                SingleRecordResponse result = recMan.CreateRecord("query_test_author", author);
+                QueryResponse result = recMan.CreateRecord("query_test_author", author);
                 if (!result.Success)
                     return DoResponse(result);
             }
 
-            return Json("ok");
 
+            for (int i = 0; i < 10; i++)
+            {
+                EntityRecord post1 = new EntityRecord();
+                post1["id"] = Guid.NewGuid();
+                post1["title"] = string.Format("post {0} title", i);
+                post1["content"] = string.Format("post {0} content", i); ;
+                post1["author"] = authorId;
+                post1["created_by"] = userId;
+                post1["last_modified_by"] = userId;
+                post1["created_on"] = DateTime.UtcNow;
+                {
+                    QueryResponse result = recMan.CreateRecord("query_test_post", post1);
+                    if (!result.Success)
+                        return DoResponse(result);
+                }
+            }
+
+
+
+            EntityRecord cat1 = new EntityRecord();
+            cat1["id"] = cat1Id;
+            cat1["name"] = "category one";
+            cat1["created_by"] = userId;
+            cat1["last_modified_by"] = userId;
+            cat1["created_on"] = DateTime.UtcNow;
+            {
+                QueryResponse result = recMan.CreateRecord("query_test_category", cat1);
+                if (!result.Success)
+                    return DoResponse(result);
+            }
+
+            EntityRecord cat2 = new EntityRecord();
+            cat2["id"] = cat2Id;
+            cat2["name"] = "category two";
+            cat2["created_by"] = userId;
+            cat2["last_modified_by"] = userId;
+            cat2["created_on"] = DateTime.UtcNow;
+            {
+                QueryResponse result = recMan.CreateRecord("query_test_category", cat2);
+                if (!result.Success)
+                    return DoResponse(result);
+            } 
+
+            #endregion
+
+            return Json("Structure and data created successfully");
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
-            QueryResponse response = new QueryResponse();
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
-            response.Message = "ExecuteSampleQuery:DONE";
-            return Json(response);
+            var queryObject = EntityQuery.QueryEQ("id", authorId);
+            EntityQuery query = new EntityQuery("query_test_post", "id,title,content,author.id,author.name", null);
+            var result = recMan.Find(query);
+            return Json(result); 
         }
-
-
-
-        //[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
-        //public IActionResult CreateEntity([FromBody]EntityRecord obj)
-        //{
-        //	var h = obj.GetProperties();
-
-        //	var t = Json(obj);
-
-
-        //	return Json(obj);
-        //}
-
 
     }
 }
-
-/*
-EntityManager em = new EntityManager(service.StorageService);
-            EntityRelationManager rm = new EntityRelationManager(service.StorageService);
-
-            // create relation
-            var userEntity = em.ReadEntity("user");
-            var areaEntity = em.ReadEntity("area");
-            var roleEntity = em.ReadEntity("role");
-
-            EntityRelation create = new EntityRelation();
-            create.Name = "area_user_create_by";
-            create.Label = "area_user_create_by label";
-            create.Description = "area_user_create_by description";
-            create.System = true;
-            create.OriginEntityId = areaEntity.Object.Id.Value;
-            create.OriginFieldId = areaEntity.Object.Fields.Single(x => x.Name == "created_by").Id.Value;
-
-            create.TargetEntityId = userEntity.Object.Id.Value;
-            create.TargetFieldId = userEntity.Object.Fields.Single(x => x.Name == "id").Id.Value;
-
-            return DoResponse(rm.Create(create));
-
-
-            return DoResponse(rm.Read("area_user_create_by"));
-
-            // Guid recId = Guid.NewGuid();
-
-            // EntityRecord record = new EntityRecord();
-            // record["id"] = recId;
-            // record["email"] = "test email";
-            // RecordManager rm = new RecordManager(service);
-            // rm.CreateRecord("user", record);
-
-
-
-            // var queryObject = EntityQuery.QueryEQ("id", recId );
-            // EntityQuery query = new EntityQuery("user", "id,email", queryObject);
-            // var result = rm.Find(query);
-
-            //return Json(result);*/

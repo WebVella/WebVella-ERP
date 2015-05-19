@@ -32,11 +32,11 @@ namespace WebVella.ERP.Api
             entityRelationManager = new EntityRelationManager(erpService.StorageService);
         }
 
-        public SingleRecordResponse CreateRecord(string entityName, EntityRecord record)
+        public QueryResponse CreateRecord(string entityName, EntityRecord record)
         {
             if (string.IsNullOrWhiteSpace(entityName))
             {
-                SingleRecordResponse response = new SingleRecordResponse
+                QueryResponse response = new QueryResponse
                 {
                     Success = false,
                     Object = null,
@@ -49,7 +49,7 @@ namespace WebVella.ERP.Api
             Entity entity = GetEntity(entityName);
             if (entity == null)
             {
-                SingleRecordResponse response = new SingleRecordResponse
+                QueryResponse response = new QueryResponse
                 {
                     Success = false,
                     Object = null,
@@ -62,12 +62,12 @@ namespace WebVella.ERP.Api
             return CreateRecord(entity, record);
         }
 
-        public SingleRecordResponse CreateRecord(Guid entityId, EntityRecord record)
+        public QueryResponse CreateRecord(Guid entityId, EntityRecord record)
         {
             Entity entity = GetEntity(entityId);
             if (entity == null)
             {
-                SingleRecordResponse response = new SingleRecordResponse
+                QueryResponse response = new QueryResponse
                 {
                     Success = false,
                     Object = null,
@@ -80,7 +80,7 @@ namespace WebVella.ERP.Api
             return CreateRecord(entity, record);
         }
 
-        public SingleRecordResponse CreateRecord(Entity entity, EntityRecord record)
+        public QueryResponse CreateRecord(Entity entity, EntityRecord record)
         {
 
             if (entity == null)
@@ -95,9 +95,8 @@ namespace WebVella.ERP.Api
                 return null;
             }
 
-            SingleRecordResponse response = new SingleRecordResponse();
-            response.Object = new SingleRecordResult();
-            response.Object.Data = new EntityRecord();
+            QueryResponse response = new QueryResponse();
+            response.Object = null;
             response.Success = true;
             response.Timestamp = DateTime.UtcNow;
 
@@ -111,16 +110,18 @@ namespace WebVella.ERP.Api
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
                     storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field)));
                 }
+                var query = EntityQuery.QueryEQ("id", (Guid)record["id"]);
+                var entityQuery = new EntityQuery(entity.Name, "*", query);
 
-                var recRep = erpService.StorageService.GetRecordRepository();
-                recRep.Create(entity.Name, storageRecordData);
-                var recordCreated = recRep.Find(entity.Name, (Guid)record["id"]);
-                if (recordCreated == null)
-                    throw new Exception("The records was not successfully created");
-            
-                foreach (var pair in recordCreated)
-                    response.Object.Data[pair.Key] = pair.Value;
-
+                response = Find(entityQuery);
+                if (response.Object != null && response.Object.Data.Count > 0)
+                    response.Message = "Record was created successfully";
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Record was not created successfully";
+                }
+                
                 return response;
             }
             catch(Exception e)
@@ -443,6 +444,8 @@ namespace WebVella.ERP.Api
                             guidMetaField = new GuidFieldMeta(field as GuidField);
                             result.Add(guidMetaField);
                         }
+                        else
+                            guidMetaField = (GuidFieldMeta)field;
                     }
 
                     if (guidMetaField.Relation == null)
@@ -468,7 +471,7 @@ namespace WebVella.ERP.Api
 
                     //check for duplication and add it
                     if (!guidMetaField.RelationFields.Any(x => x.Id == relatedField.Id))
-                        guidMetaField.RelationFields.Add(field);
+                        guidMetaField.RelationFields.Add(relatedField);
                 }
             }
 
