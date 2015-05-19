@@ -17,7 +17,7 @@ namespace WebVella.ERP.Api.Models
         public string Label { get; set; }
 
         [JsonProperty(PropertyName = "type")]
-        public RecordsListTypes Type { get; set; }
+        public RecordsListTypes? Type { get; set; }
 
         [JsonProperty(PropertyName = "filters")]
         public IList<RecordsListFilter> Filters { get; set; }
@@ -55,8 +55,8 @@ namespace WebVella.ERP.Api.Models
 
     public class RecordsListCollection
     {
-        [JsonProperty(PropertyName = "views")]
-        public List<RecordsList> Views { get; set; }
+        [JsonProperty(PropertyName = "recordsLists")]
+        public List<RecordsList> RecordsLists { get; set; }
     }
 
     public class RecordsListResponse : BaseResponseModel
