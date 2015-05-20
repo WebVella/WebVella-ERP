@@ -14,20 +14,12 @@ namespace WebVella.ERP.Storage.Mongo
         public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
         {
             var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+
             BsonDocument doc = new BsonDocument();
+
             foreach (var record in recordData)
-            {
-                //because the decimal is not supported and default stored as string , we do it manually
-                if (record.Value is decimal)
-                {
-                    doc[ProcessQueryIDFieldName(record.Key)] = record.Value .ToString();
-                }
-                else
-                {
-                    var value = record.Value == null ? BsonNull.Value : BsonTypeMapper.MapToBsonValue(record.Value);
-                    doc[ProcessQueryIDFieldName(record.Key)] = value;
-                }
-            }
+                doc[ProcessQueryIDFieldName(record.Key)] = ConvertObjectToBsonValue(record.Value);
+
             mongoCollection.Insert(doc);
         }
 
@@ -45,7 +37,7 @@ namespace WebVella.ERP.Storage.Mongo
                 if (fieldName == "_id")
                     record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"])));
                 else
-                    record.Add(new KeyValuePair<string, object>(fieldName, BsonTypeMapper.MapToDotNetValue(doc[fieldName])));
+                    record.Add(new KeyValuePair<string, object>(fieldName, ConvertBsonValueToObject(doc[fieldName])));
             }
 
             return record;
@@ -83,9 +75,9 @@ namespace WebVella.ERP.Storage.Mongo
                 foreach (var fieldName in doc.Names)
                 {
                     if (fieldName == "_id")
-                        record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"]) ) );
+                        record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"])));
                     else
-                        record.Add(new KeyValuePair<string, object>(fieldName, BsonTypeMapper.MapToDotNetValue(doc[fieldName] )));
+                        record.Add(new KeyValuePair<string, object>(fieldName, ConvertBsonValueToObject(doc[fieldName])));
                 }
                 result.Add(record);
             }
@@ -97,7 +89,7 @@ namespace WebVella.ERP.Storage.Mongo
             if (query == null)
                 return Query.Null;
 
-            var value = query.FieldValue == null ? BsonNull.Value : BsonValue.Create(query.FieldValue);
+            BsonValue value = ConvertObjectToBsonValue(query.FieldValue);
 
             switch (query.QueryType)
             {
@@ -115,8 +107,8 @@ namespace WebVella.ERP.Storage.Mongo
                     return Query.GTE(ProcessQueryIDFieldName(query.FieldName), value);
                 case QueryType.CONTAINS:
                     {
-                        var regex = new BsonRegularExpression( string.Format( ".*{0}.*", value ), "i" ); // contains, ignore case
-                        return Query.Matches(ProcessQueryIDFieldName(query.FieldName), regex );
+                        var regex = new BsonRegularExpression(string.Format(".*{0}.*", value), "i"); // contains, ignore case
+                        return Query.Matches(ProcessQueryIDFieldName(query.FieldName), regex);
                     }
                 case QueryType.STARTSWITH:
                     {
@@ -149,6 +141,25 @@ namespace WebVella.ERP.Storage.Mongo
                 return "_id";
 
             return fieldName;
+        }
+
+        private BsonValue ConvertObjectToBsonValue(object value)
+        {
+            if (MongoTypeConvertor.IsNumber(value))
+                return value == null ? BsonNull.Value : BsonValue.Create(MongoTypeConvertor.ToLong(value));
+            else
+                return value == null ? BsonNull.Value : BsonValue.Create(value);
+
+        }
+
+        private object ConvertBsonValueToObject( BsonValue bsonValue)
+        {
+            var value = BsonTypeMapper.MapToDotNetValue(bsonValue);
+            if (value is long)
+                return MongoTypeConvertor.LongToDecimal(value);
+
+            return value;
+
         }
     }
 }

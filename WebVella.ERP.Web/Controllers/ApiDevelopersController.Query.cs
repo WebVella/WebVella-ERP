@@ -312,17 +312,19 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
-          //  var queryObject = EntityQuery.QueryEQ("id", authorId);
-           // EntityQuery query = new EntityQuery("query_test_post", "id,title,content,author,$query_test_post_author.id, $query_test_post_author.name", null);
-            
+            //  var queryObject = EntityQuery.QueryEQ("id", authorId);
+            // EntityQuery query = new EntityQuery("query_test_post", "id,title,content,author,$query_test_post_author.id, $query_test_post_author.name", null);
+
 
 
             //EntityQuery query = new EntityQuery("query_test_post", "id,title", null);
             //var posts = recMan.Find(query).Object.Data;
 
-            var queryObject = EntityQuery.QueryContains("title", "title" );
-            var query = new EntityQuery("query_test_post", "id, title, $query_test_post_categories.id, $query_test_post_categories.name", queryObject );
-            
+            // var queryObject = EntityQuery.QueryContains("title", "title" );
+            //var query = new EntityQuery("query_test_post", "id, title, $query_test_post_categories.id, $query_test_post_categories.name", queryObject );
+
+            var queryObject = EntityQuery.QueryEQ("weight", 1);
+            var query = new EntityQuery("area", "*", queryObject);
             var result = recMan.Find(query);
             return Json(result); 
         }
