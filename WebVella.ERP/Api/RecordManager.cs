@@ -206,11 +206,35 @@ namespace WebVella.ERP.Api
 
             try
             {
+                var entity = GetEntity(query.EntityName);
+                if( entity == null )
+                {
+                    response.Success = false;
+                    response.Message = string.Format( "The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName );
+                    response.Object = null;
+                    response.Errors.Add(new ErrorModel { Message = response.Message });
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                try {
+                    ProcessQueryObject(entity,query.Query);
+                }
+                catch( Exception ex )
+                {
+                    response.Success = false;
+                    response.Message = "The query is incorrect and cannot be executed";
+                    response.Object = null;
+                    response.Errors.Add(new ErrorModel { Message = ex.Message });
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
                 IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
                 List<Field> fields = ExtractQueryFieldsMeta(query);
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
-                var entity = GetEntity(query.EntityName);
+              
 
                 List<EntityRecord> data = new List<EntityRecord>();
                 foreach (var record in storageRecords)
@@ -654,5 +678,21 @@ namespace WebVella.ERP.Api
             return relations;
         }
 
+        private void ProcessQueryObject( Entity entity, QueryObject obj )
+        {
+            var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
+            if (field == null)
+                throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
+            if (field is NumberField)
+                obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+            else if (field is AutoNumberField)
+                obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+        
+            if( obj.SubQueries != null && obj.SubQueries.Count > 0 )
+                foreach( var subObj in obj.SubQueries )
+                {
+                    ProcessQueryObject(entity, subObj);
+                }
+        }
     }
 }
