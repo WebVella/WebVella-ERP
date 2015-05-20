@@ -11,7 +11,7 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "maxLength")]
         public int? MaxLength { get; set; }
 
-        [JsonProperty(PropertyName = "maxLength")]
+        [JsonProperty(PropertyName = "minLength")]
         public int? MinLength { get; set; }
 
         [JsonProperty(PropertyName = "encrypted")]

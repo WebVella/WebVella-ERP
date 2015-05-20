@@ -312,10 +312,26 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
-            //  var queryObject = EntityQuery.QueryEQ("id", authorId);
-            // EntityQuery query = new EntityQuery("query_test_post", "id,title,content,author,$query_test_post_author.id, $query_test_post_author.name", null);
+            /*
+            EntityRecord user = new EntityRecord();
+            user["id"] = cat1Id;
+            user["first_name"] = "system";
+            user["last_name"] = "user";
+            user["password"] = "erp";
+            user["email"] = "erp@webvella.com";
+            user["created_by"] = Guid.Empty;
+            user["last_modified_by"] = Guid.Empty;
+            user["created_on"] = DateTime.UtcNow;
+            
 
+            QueryResponse result = recMan.CreateRecord("user", user);
+            return DoResponse(result);
 
+            */
+
+            EntityQuery query = new EntityQuery("user", "id,email", EntityQuery.QueryEQ( "password", "erp"));
+            var result = recMan.Find(query);
+            return DoResponse(result);
 
             //EntityQuery query = new EntityQuery("query_test_post", "id,title", null);
             //var posts = recMan.Find(query).Object.Data;
@@ -323,12 +339,14 @@ namespace WebVella.ERP.Web.Controllers
             // var queryObject = EntityQuery.QueryContains("title", "title" );
             //var query = new EntityQuery("query_test_post", "id, title, $query_test_post_categories.id, $query_test_post_categories.name", queryObject );
 
+            /*
             var queryObject = EntityQuery.QueryEQ("weight", 1);
 
             var query = new EntityQuery("area", "*", queryObject);
 
             var result = recMan.Find(query);
             return Json(result); 
+            */
         }
 
     }

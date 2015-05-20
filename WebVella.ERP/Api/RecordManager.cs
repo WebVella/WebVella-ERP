@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
-using System.Dynamic;
+using System.Security.Cryptography;
+using WebVella.ERP.Utilities;
 
 namespace WebVella.ERP.Api
 {
@@ -49,7 +50,7 @@ namespace WebVella.ERP.Api
                     response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
 
                 var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
-                if( targetValues.Contains(targetValue))
+                if (targetValues.Contains(targetValue))
                     response.Errors.Add(new ErrorModel { Message = "The relation record already exists." });
 
                 if (response.Errors.Count > 0)
@@ -154,10 +155,12 @@ namespace WebVella.ERP.Api
                 foreach (var field in entity.Fields)
                 {
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                    storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field)));
+                    storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
                 }
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 recRepo.Create(entity.Name, storageRecordData);
+
+                //fixes issue with ID comming from webapi request 
                 Guid recordId = Guid.Empty;
                 if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
@@ -207,21 +210,22 @@ namespace WebVella.ERP.Api
             try
             {
                 var entity = GetEntity(query.EntityName);
-                if( entity == null )
+                if (entity == null)
                 {
                     response.Success = false;
-                    response.Message = string.Format( "The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName );
+                    response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
                     response.Object = null;
                     response.Errors.Add(new ErrorModel { Message = response.Message });
                     response.Timestamp = DateTime.UtcNow;
                     return response;
                 }
 
-                try {
+                try
+                {
                     if (query.Query != null)
-                        ProcessQueryObject(entity,query.Query);
+                        ProcessQueryObject(entity, query.Query);
                 }
-                catch( Exception ex )
+                catch (Exception ex)
                 {
                     response.Success = false;
                     response.Message = "The query is incorrect and cannot be executed";
@@ -235,7 +239,7 @@ namespace WebVella.ERP.Api
                 List<Field> fields = ExtractQueryFieldsMeta(query);
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
-              
+
 
                 List<EntityRecord> data = new List<EntityRecord>();
                 foreach (var record in storageRecords)
@@ -400,7 +404,7 @@ namespace WebVella.ERP.Api
             return response;
         }
 
-        private object ExractFieldValue(KeyValuePair<string, object>? fieldValue, Field field)
+        private object ExractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
         {
             if (fieldValue != null && fieldValue.Value.Key != null)
             {
@@ -440,8 +444,19 @@ namespace WebVella.ERP.Api
                     return Convert.ToDecimal(pair.Value);
                 }
                 else if (field is PasswordField)
-                    //TODO decide what to return, at the moment NULL
-                    return null;
+                {
+                    if (encryptPasswordFields)
+                    {
+                        if (((PasswordField)field).Encrypted == true)
+                        {
+                            if (string.IsNullOrWhiteSpace(pair.Value as string))
+                                return null;
+
+                            return PasswordUtil.GetMd5Hash(pair.Value as string);
+                        }
+                    }
+                    return pair.Value;
+                }
                 else if (field is PercentField)
                     return pair.Value as decimal?;
                 else if (field is PhoneField)
@@ -449,9 +464,15 @@ namespace WebVella.ERP.Api
                 else if (field is GuidField)
                 {
                     if (pair.Value is string)
+                    {
+                        if (string.IsNullOrWhiteSpace(pair.Value as string))
+                            return null;
+
                         return new Guid(pair.Value as string);
+                    }
                     if (pair.Value is Guid)
-                        return (Guid)pair.Value;
+                        return (Guid?)pair.Value;
+
                     throw new Exception("Invalid GUID field value.");
                 }
                 else if (field is SelectField)
@@ -581,9 +602,9 @@ namespace WebVella.ERP.Api
                     if (string.IsNullOrWhiteSpace(relationFieldName))
                         throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
 
-                 
 
-                    Field field = result.SingleOrDefault( x => x.Name == "$" + relationName );
+
+                    Field field = result.SingleOrDefault(x => x.Name == "$" + relationName);
                     RelationFieldMeta relationFieldMeta = null;
                     if (field == null)
                     {
@@ -598,8 +619,8 @@ namespace WebVella.ERP.Api
                     if (relationFieldMeta.Relation == null)
                         throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
 
-                    if(relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id )
-                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token ));
+                    if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
+                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token));
 
                     relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
                     relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);
@@ -610,7 +631,7 @@ namespace WebVella.ERP.Api
                     if (relationFieldMeta.TargetEntity == null)
                         throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", token));
 
-                    relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x=>x.Id == relationFieldMeta.Relation.TargetFieldId);
+                    relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.TargetFieldId);
                     relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
 
                     //this should not happen in a perfect (no bugs) world
@@ -626,7 +647,7 @@ namespace WebVella.ERP.Api
                         joinToEntity = relationFieldMeta.TargetEntity;
 
                     var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
-                    if( relatedField == null )
+                    if (relatedField == null)
                         throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
 
                     //if field already added
@@ -690,9 +711,18 @@ namespace WebVella.ERP.Api
                 if (field == null)
                     throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
                 if (field is NumberField)
-                    obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                {
+                    if (obj.FieldValue != null)
+                        obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                }
                 else if (field is AutoNumberField)
-                    obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                {
+                    if (obj.FieldValue != null)
+                        obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                }
+                else if (field is PasswordField && obj.FieldValue != null)
+                    obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
+
             }
 
             if (obj.SubQueries != null && obj.SubQueries.Count > 0)
