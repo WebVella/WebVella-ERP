@@ -88,16 +88,4 @@ namespace WebVella.ERP.Api
         Percent,
         Text
     }
-
-    public enum PasswordFieldMaskTypes
-    {
-        None = 0,
-        MaskAllCharacters,
-        LastFourCharactersClear,
-        CreditCardNumber,
-        NationalInsuranceNumber,
-        SocialSecurityNumber,
-        SocialInsuranceNumber
-    }
-
 }

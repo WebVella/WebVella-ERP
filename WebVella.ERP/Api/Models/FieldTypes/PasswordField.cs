@@ -11,10 +11,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "maxLength")]
         public int? MaxLength { get; set; }
 
+        [JsonProperty(PropertyName = "maxLength")]
+        public int? MinLength { get; set; }
+
         [JsonProperty(PropertyName = "encrypted")]
         public bool? Encrypted { get; set; }
-
-        [JsonProperty(PropertyName = "maskType")]
-        public PasswordFieldMaskTypes? MaskType { get; set; }
     }
 }

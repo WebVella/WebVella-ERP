@@ -188,9 +188,8 @@ namespace WebVella.ERP
                 password.Searchable = true;
                 password.Auditable = false;
                 password.System = true;
-
-                password.MaxLength = 1;
-                password.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
+                password.MinLength = 6;
+                password.MaxLength = 24;
                 password.Encrypted = true;
 
                 fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
@@ -661,8 +660,8 @@ namespace WebVella.ERP
             passwordField.Auditable = true;
             passwordField.System = true;
 
-            passwordField.MaxLength = 1;
-            passwordField.MaskType = Api.PasswordFieldMaskTypes.MaskAllCharacters;
+            passwordField.MaxLength = 24;
+            passwordField.MinLength = 6;
 
             fields.Add(passwordField);
 
