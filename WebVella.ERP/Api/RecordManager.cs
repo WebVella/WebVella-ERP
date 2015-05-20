@@ -218,7 +218,8 @@ namespace WebVella.ERP.Api
                 }
 
                 try {
-                    ProcessQueryObject(entity,query.Query);
+                    if (query.Query != null)
+                        ProcessQueryObject(entity,query.Query);
                 }
                 catch( Exception ex )
                 {
@@ -678,18 +679,24 @@ namespace WebVella.ERP.Api
             return relations;
         }
 
-        private void ProcessQueryObject( Entity entity, QueryObject obj )
+        private void ProcessQueryObject(Entity entity, QueryObject obj)
         {
-            var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
-            if (field == null)
-                throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
-            if (field is NumberField)
-                obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
-            else if (field is AutoNumberField)
-                obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
-        
-            if( obj.SubQueries != null && obj.SubQueries.Count > 0 )
-                foreach( var subObj in obj.SubQueries )
+            if (obj == null)
+                return;
+
+            if (obj.QueryType != QueryType.AND && obj.QueryType != QueryType.OR)
+            {
+                var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
+                if (field == null)
+                    throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
+                if (field is NumberField)
+                    obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                else if (field is AutoNumberField)
+                    obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+            }
+
+            if (obj.SubQueries != null && obj.SubQueries.Count > 0)
+                foreach (var subObj in obj.SubQueries)
                 {
                     ProcessQueryObject(entity, subObj);
                 }

@@ -324,7 +324,9 @@ namespace WebVella.ERP.Web.Controllers
             //var query = new EntityQuery("query_test_post", "id, title, $query_test_post_categories.id, $query_test_post_categories.name", queryObject );
 
             var queryObject = EntityQuery.QueryEQ("weight", 1);
+
             var query = new EntityQuery("area", "*", queryObject);
+
             var result = recMan.Find(query);
             return Json(result); 
         }

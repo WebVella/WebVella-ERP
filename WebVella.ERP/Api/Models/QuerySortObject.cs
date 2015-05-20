@@ -9,6 +9,12 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "sortType")]
         public QuerySortType SortType { get; private set; }
+
+        public QuerySortObject( string fieldName, QuerySortType sortType )
+        {
+            FieldName = fieldName;
+            SortType = sortType;
+        }
     }
 
    
