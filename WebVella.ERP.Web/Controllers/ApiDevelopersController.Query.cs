@@ -329,7 +329,7 @@ namespace WebVella.ERP.Web.Controllers
 
             */
 
-            EntityQuery query = new EntityQuery("user", "id,email", EntityQuery.QueryEQ( "password", "erp"));
+            EntityQuery query = new EntityQuery("user", "id,email,password", EntityQuery.QueryEQ( "password", "erp"));
             var result = recMan.Find(query);
             return DoResponse(result);
 
