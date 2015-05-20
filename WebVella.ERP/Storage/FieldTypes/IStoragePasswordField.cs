@@ -7,8 +7,8 @@ namespace WebVella.ERP.Storage
     {
         int? MaxLength { get; set; }
 
-        bool Encrypted { get; set; }
+        int? MinLength { get; set; }
 
-        PasswordFieldMaskTypes MaskType { get; set; }
+        bool Encrypted { get; set; }
     }
 }

@@ -7,8 +7,8 @@ namespace WebVella.ERP.Storage.Mongo
     {
         public int? MaxLength { get; set; }
 
-        public bool Encrypted { get; set; }
+        public int? MinLength { get; set; }
 
-        public PasswordFieldMaskTypes MaskType { get; set; }
+        public bool Encrypted { get; set; }
     }
 }

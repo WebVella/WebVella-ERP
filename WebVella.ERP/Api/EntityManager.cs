@@ -306,9 +306,6 @@ namespace WebVella.ERP
 
                 if (!((PasswordField)field).Encrypted.HasValue)
                     ((PasswordField)field).Encrypted = true;
-
-                if (!((PasswordField)field).MaskType.HasValue)
-                    ((PasswordField)field).MaskType = PasswordFieldMaskTypes.MaskAllCharacters;
             }
             else if (field is PercentField)
             {
@@ -1219,8 +1216,9 @@ namespace WebVella.ERP
             else if (storageField is IStoragePasswordField)
             {
                 field = new PasswordField();
+                ((PasswordField)field).Encrypted = ((IStoragePasswordField)storageField).Encrypted;
                 ((PasswordField)field).MaxLength = ((IStoragePasswordField)storageField).MaxLength;
-                ((PasswordField)field).MaskType = ((IStoragePasswordField)storageField).MaskType;
+                ((PasswordField)field).MinLength = ((IStoragePasswordField)storageField).MinLength;
             }
             else if (storageField is IStoragePercentField)
             {
@@ -1379,7 +1377,8 @@ namespace WebVella.ERP
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PasswordField));
                 ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength;
-                ((IStoragePasswordField)storageField).MaskType = ((PasswordField)field).MaskType.Value;
+                ((IStoragePasswordField)storageField).MinLength= ((PasswordField)field).MinLength;
+                ((IStoragePasswordField)storageField).Encrypted = ((PasswordField)field).Encrypted??true;
             }
             else if (field is PercentField)
             {
@@ -1713,10 +1712,10 @@ namespace WebVella.ERP
                 {
                     if (((PasswordField)field).MaxLength != null)
                         ((PasswordField)updatedField).MaxLength = ((PasswordField)field).MaxLength;
+                    if (((PasswordField)field).MinLength != null)
+                        ((PasswordField)updatedField).MinLength= ((PasswordField)field).MinLength;
                     if (((PasswordField)field).Encrypted != null)
                         ((PasswordField)updatedField).Encrypted = ((PasswordField)field).Encrypted;
-                    //if (((PasswordField)field).MaskType != null)
-                    //    ((PasswordField)updatedField).MaskType = ((PasswordField)field).MaskType;
                 }
                 else if (updatedField is PercentField)
                 {
