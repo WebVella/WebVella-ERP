@@ -31,7 +31,7 @@ namespace WebVella.ERP.Web.Controllers
         EntityRelationManager rm;
         RecordManager recMan;
 
-        public ApiDevelopersController(IERPService service) : base(service)
+        public ApiDevelopersController(IErpService service) : base(service)
         {
             em = new EntityManager(service.StorageService);
             rm = new EntityRelationManager(service.StorageService);

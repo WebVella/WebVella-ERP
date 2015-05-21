@@ -4,10 +4,9 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class HomeController : ApiControllerBase
     {
-        public HomeController(IERPService service) : base(service)
+        public HomeController(IErpService service) : base(service)
         {
         }
-
 
         // GET: /<controller>/
         public IActionResult Index()

@@ -7,9 +7,9 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiControllerBase : Controller
     {
-        protected IERPService service;
+        protected IErpService service;
 
-        public ApiControllerBase(IERPService service)
+        public ApiControllerBase(IErpService service)
         {
             this.service = service;
         }
