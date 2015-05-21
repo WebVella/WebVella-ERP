@@ -1038,6 +1038,7 @@ namespace WebVella.ERP.Api
             {
                 Success = true,
                 Message = "The entity was successfully returned!",
+                Timestamp = DateTime.UtcNow
             };
 
             Entity entity = new Entity();
@@ -1045,18 +1046,8 @@ namespace WebVella.ERP.Api
             try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(id);
-                entity = ConvertEntityFromStorage(storageEntity);
-
-                if (entity == null)
-                {
-                    response.Timestamp = DateTime.UtcNow;
-                    response.Success = false;
-                    response.Message = "Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("id", id.ToString(), "Entity with such Id does not exist!"));
-                    return response;
-                }
-
-                response.Object = entity;
+                if( storageEntity != null )
+                    response.Object = ConvertEntityFromStorage(storageEntity);
             }
             catch (Exception e)
             {
@@ -1081,25 +1072,16 @@ namespace WebVella.ERP.Api
             {
                 Success = true,
                 Message = "The entity was successfully returned!",
-            };
+                Timestamp = DateTime.UtcNow
+        };
 
             Entity entity = new Entity();
 
             try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(name);
-                entity = ConvertEntityFromStorage(storageEntity);
-
-                if (entity == null)
-                {
-                    response.Timestamp = DateTime.UtcNow;
-                    response.Success = false;
-                    response.Message = "Validation error occurred!";
-                    response.Errors.Add(new ErrorModel("name", name, "Entity with such name does not exist!"));
-                    return response;
-                }
-
-                response.Object = entity;
+                if (storageEntity != null)
+                    response.Object = ConvertEntityFromStorage(storageEntity);
             }
             catch (Exception e)
             {
