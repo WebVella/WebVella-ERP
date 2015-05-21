@@ -155,8 +155,18 @@ namespace WebVella.ERP.Api
                 foreach (var field in entity.Fields)
                 {
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                    storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
+                    try {
+                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
+                    }
+                    catch( Exception ex )
+                    {
+                        if( pair.Key == null )
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified." ); 
+                        else
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value +"'", ex);
+                    }
                 }
+
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 recRepo.Create(entity.Name, storageRecordData);
 
@@ -478,7 +488,7 @@ namespace WebVella.ERP.Api
                     if (pair.Value == null)
                         return (Guid?)null;
 
-                    throw new Exception("Invalid GUID field value.");
+                    throw new Exception("Invalid Guid field value.");
                 }
                 else if (field is SelectField)
                     return pair.Value as string;
@@ -534,7 +544,7 @@ namespace WebVella.ERP.Api
                 else if (field is PhoneField)
                     return ((PhoneField)field).DefaultValue;
                 else if (field is GuidField)
-                    throw new Exception("System error. Record primary key value is missing.");
+                    throw new Exception("Guid value is missing for Guid type field.");
                 else if (field is SelectField)
                     return ((SelectField)field).DefaultValue;
                 else if (field is TextField)
