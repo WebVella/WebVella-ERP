@@ -10,7 +10,7 @@ namespace WebVella.ERP.Api
 {
     public class RecordManager
     {
-        private IERPService erpService;
+        private IErpService erpService;
 
         private const string ID_FIELD_NAME = "Id";
         private const string WILDCARD_SYMBOL = "*";
@@ -26,7 +26,7 @@ namespace WebVella.ERP.Api
         /// The contructor
         /// </summary>
         /// <param name="service"></param>
-        public RecordManager(IERPService service)
+        public RecordManager(IErpService service)
         {
             erpService = service;
             entityCache = new List<Entity>();

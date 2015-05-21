@@ -5,9 +5,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {
     internal class EntityRelationProfile : Profile
     {
-        IERPService service;
+        IErpService service;
 
-        public EntityRelationProfile(IERPService service)
+        public EntityRelationProfile(IErpService service)
         {
             this.service = service;
         }
