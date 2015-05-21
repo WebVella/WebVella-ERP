@@ -14,7 +14,7 @@ namespace WebVella.ERP.Web.Controllers
     public class ApiController : ApiControllerBase
     {
         RecordManager recMan;
-        public ApiController(IERPService service) : base(service)
+        public ApiController(IErpService service) : base(service)
         {
             recMan = new RecordManager(service);
         }

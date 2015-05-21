@@ -27,19 +27,19 @@ namespace WebVella.ERP.Web
             services.AddMvc();
 
             services.AddSingleton<IStorageService, MongoStorageService>();
-            services.AddSingleton<IERPService, ERPService>();
+            services.AddSingleton<IErpService, ErpService>();
 
             //AutoMapperConfiguration.Initialize
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-             IERPService service = app.ApplicationServices.GetService<IERPService>();
+             IErpService service = app.ApplicationServices.GetService<IErpService>();
              AutoMapperConfiguration.Configure(service);
 
             //app.Run(async context =>
             //{
-            //    IERPService service = app.ApplicationServices.GetService<IERPService>();
+            //    IErpService service = app.ApplicationServices.GetService<IErpService>();
             //    service.Run();
             //    context.Response.ContentType = "text/html";
             //    context.Response.StatusCode = 200;

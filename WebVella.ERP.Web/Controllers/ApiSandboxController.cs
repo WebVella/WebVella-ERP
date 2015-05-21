@@ -12,7 +12,7 @@ namespace WebVella.ERP.Web.Controllers
     public class ApiSandboxController : ApiControllerBase
     {
 
-        public ApiSandboxController(IERPService service) : base(service)
+        public ApiSandboxController(IErpService service) : base(service)
         {
         }
 
