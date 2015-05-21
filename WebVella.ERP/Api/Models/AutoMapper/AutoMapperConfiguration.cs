@@ -15,7 +15,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper
         private static object lockObj = new object();
         private static bool alreadyConfigured = false;
         
-        public static void Configure(IERPService service)
+        public static void Configure(IErpService service)
         {
             if (alreadyConfigured)
                 return;

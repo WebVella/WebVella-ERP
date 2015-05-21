@@ -2,7 +2,7 @@
 
 namespace WebVella.ERP
 {
-    public interface IERPService
+    public interface IErpService
     {
         IStorageService StorageService { get; set; }
         void RunTests();

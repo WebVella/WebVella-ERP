@@ -7,14 +7,14 @@ using WebVella.ERP.Api;
 
 namespace WebVella.ERP
 {
-    public class ERPService : IERPService
+    public class ErpService : IErpService
     {
         public IStorageService StorageService
         {
             get; set;
         }
 
-        public ERPService(IStorageService storage)
+        public ErpService(IStorageService storage)
         {
             StorageService = storage;
         }
