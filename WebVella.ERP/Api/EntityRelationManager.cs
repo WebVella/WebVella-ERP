@@ -5,7 +5,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models.AutoMapper;
 
-namespace WebVella.ERP
+namespace WebVella.ERP.Api
 {
     public class EntityRelationManager
     {

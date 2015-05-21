@@ -7,7 +7,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Utilities.Dynamic;
 
-namespace WebVella.ERP
+namespace WebVella.ERP.Api
 {
     public class EntityManager
     {
