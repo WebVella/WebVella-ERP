@@ -11,7 +11,7 @@ namespace WebVella.ERP.Web.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            service.RunTests();
+            service.InitializeSystemEntities();
             return View();
         }
     }
