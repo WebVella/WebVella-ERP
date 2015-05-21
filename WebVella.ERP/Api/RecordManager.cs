@@ -340,7 +340,7 @@ namespace WebVella.ERP.Api
                                     recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
                                     if (recValue.Value != null)
                                     {
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
                                         relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
                                         foreach (Guid id in relatedRecordIds)
                                         {
@@ -356,7 +356,8 @@ namespace WebVella.ERP.Api
                                     recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
                                     if (recValue.Value != null)
                                     {
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
+
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
                                         relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
                                         foreach (Guid id in relatedRecordIds)
                                         {
@@ -470,8 +471,12 @@ namespace WebVella.ERP.Api
 
                         return new Guid(pair.Value as string);
                     }
+
                     if (pair.Value is Guid)
                         return (Guid?)pair.Value;
+
+                    if (pair.Value == null)
+                        return (Guid?)null;
 
                     throw new Exception("Invalid GUID field value.");
                 }
