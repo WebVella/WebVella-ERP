@@ -51,7 +51,7 @@ namespace WebVella.ERP.Storage.Mongo
             if (!(longNumber is long))
                 throw new Exception("longNumber argument should be long type");
 
-            return ((long)longNumber) / 1000000;
+            return Convert.ToDecimal(longNumber) / 1000000;
         }
 
         public static bool IsNumber(object value)
