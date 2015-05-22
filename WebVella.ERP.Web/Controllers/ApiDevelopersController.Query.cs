@@ -41,6 +41,17 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
         public IActionResult CreateSampleQueryDataStructure()
         {
+            //delete entities and create new one
+            em.DeleteEntity(postEntityId);
+            em.DeleteEntity(categoryEntityId);
+            em.DeleteEntity(authorEntityId);
+            //drop all relations
+            rm.Delete(postCategoriesRelationId);
+            rm.Delete(postAuthorRelationId);
+            
+
+            return Json("dropped");
+
             #region << Create Entities >>
 
             //delete entities and create new one
@@ -200,9 +211,7 @@ namespace WebVella.ERP.Web.Controllers
             categoryEntity = em.ReadEntity(categoryEntityId).Object;
             authorEntity = em.ReadEntity(authorEntityId).Object;
 
-            //drop all relations
-            rm.Delete(postCategoriesRelationId);
-            rm.Delete(postAuthorRelationId);
+          
 
             EntityRelation postCategoriesRelation = new EntityRelation();
             postCategoriesRelation.Id = postCategoriesRelationId;
