@@ -147,6 +147,7 @@ namespace WebVella.ERP.Api
                     response.Object = null;
                     response.Success = false;
                     response.Timestamp = DateTime.UtcNow;
+                    return response;
                 }
 
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
@@ -202,6 +203,243 @@ namespace WebVella.ERP.Api
                 response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity record was not created. An internal error occurred!";
+#endif
+                return response;
+            }
+
+        }
+
+        public QueryResponse UpdateRecord(string entityName, EntityRecord record)
+        {
+            if (string.IsNullOrWhiteSpace(entityName))
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+                return response;
+            }
+
+            Entity entity = GetEntity(entityName);
+            if (entity == null)
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return UpdateRecord(entity, record);
+        }
+
+        public QueryResponse UpdateRecord(Guid entityId, EntityRecord record)
+        {
+            Entity entity = GetEntity(entityId);
+            if (entity == null)
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return UpdateRecord(entity, record);
+        }
+
+        public QueryResponse UpdateRecord(Entity entity, EntityRecord record)
+        {
+
+            QueryResponse response = new QueryResponse();
+            response.Object = null;
+            response.Success = true;
+            response.Timestamp = DateTime.UtcNow;
+
+            try
+            {
+                if (entity == null)
+                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+
+                if (record == null)
+                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Object = null;
+                    response.Success = false;
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+
+                var recordFields = record.GetProperties();
+                foreach (var field in entity.Fields)
+                {
+                    var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
+                    try
+                    {
+                        if (field is PasswordField && pair.Value == null)
+                            continue;
+
+                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
+                    }
+                    catch (Exception ex)
+                    {
+                        if (pair.Key == null)
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
+                        else
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
+                    }
+                }
+
+                var recRepo = erpService.StorageService.GetRecordRepository();
+                recRepo.Update(entity.Name, storageRecordData);
+
+                //fixes issue with ID comming from webapi request 
+                Guid recordId = Guid.Empty;
+                if (record["id"] is string)
+                    recordId = new Guid(record["id"] as string);
+                else if (record["id"] is Guid)
+                    recordId = (Guid)record["id"];
+                else
+                    throw new Exception("Invalid record id");
+
+                var query = EntityQuery.QueryEQ("id", recordId);
+                var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+                response = Find(entityQuery);
+                if (response.Object != null && response.Object.Data.Count > 0)
+                    response.Message = "Record was updated successfully";
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Record was not updated successfully";
+                }
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity record was not update. An internal error occurred!";
+#endif
+                return response;
+            }
+
+        }
+
+        public QueryResponse DeleteRecord(string entityName, Guid id )
+        {
+            if (string.IsNullOrWhiteSpace(entityName))
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+                return response;
+            }
+
+            Entity entity = GetEntity(entityName);
+            if (entity == null)
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return DeleteRecord(entity, id);
+        }
+
+        public QueryResponse DeleteRecord(Guid entityId, Guid id )
+        {
+            Entity entity = GetEntity(entityId);
+            if (entity == null)
+            {
+                QueryResponse response = new QueryResponse
+                {
+                    Success = false,
+                    Object = null,
+                    Timestamp = DateTime.UtcNow
+                };
+                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+                return response;
+            }
+
+            return DeleteRecord(entity, id);
+        }
+
+        public QueryResponse DeleteRecord(Entity entity, Guid id )
+        {
+
+            QueryResponse response = new QueryResponse();
+            response.Object = null;
+            response.Success = true;
+            response.Timestamp = DateTime.UtcNow;
+
+            try
+            {
+                if (entity == null)
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+                    response.Success = false;
+                    return response;
+                }
+
+
+                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+
+                var query = EntityQuery.QueryEQ("id", id);
+                var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+                response = Find(entityQuery);
+                if (response.Object != null && response.Object.Data.Count ==1 )
+                {
+                    var recRepo = erpService.StorageService.GetRecordRepository();
+                    recRepo.Delete(entity.Name, id);
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Record was not found.";
+                    return response;
+                }
+
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity record was not update. An internal error occurred!";
 #endif
                 return response;
             }

@@ -11,6 +11,11 @@ namespace WebVella.ERP.Storage.Mongo
     {
         private const string RECORD_COLLECTION_PREFIX = "rec_";
 
+        /// <summary>
+        /// Create record
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <param name="recordData"></param>
         public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
         {
             var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
@@ -23,7 +28,88 @@ namespace WebVella.ERP.Storage.Mongo
             mongoCollection.Insert(doc);
         }
 
+        /// <summary>
+        /// Updates record
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <param name="recordData"></param>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<string, object>> Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
 
+            Guid? id = null;
+            foreach (var rec in recordData)
+            {
+                string fieldName = ProcessQueryIDFieldName(rec.Key);
+                if (fieldName == "_id")
+                    id = (Guid)ConvertObjectToBsonValue(rec.Value);
+            }
+
+            if (id == null)
+                throw new StorageException("ID is missing. Cannot update records without ID specified.");
+
+
+            var doc = mongoCollection.FindOne(Query.EQ("_id", id));
+            if (doc == null)
+                throw new StorageException("There is no document with such id to update.");
+
+            foreach (var rec in recordData)
+            {
+                string fieldName = ProcessQueryIDFieldName(rec.Key);
+                doc[fieldName] = ConvertObjectToBsonValue(rec.Value);
+            }
+
+            var updateSuccess = mongoCollection.Save(doc).DocumentsAffected > 0;
+            if (!updateSuccess )
+                throw new StorageException("Failed to update record.");
+
+            List<KeyValuePair<string, object>> record = new List<KeyValuePair<string, object>>();
+            foreach (var fieldName in doc.Names)
+            {
+                if (fieldName == "_id")
+                    record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"])));
+                else
+                    record.Add(new KeyValuePair<string, object>(fieldName, ConvertBsonValueToObject(doc[fieldName])));
+            }
+
+            return record;
+        }
+
+        /// <summary>
+        /// Deletes record
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<KeyValuePair<string, object>> Delete(string entityName, Guid id)
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+
+            var doc = mongoCollection.FindOne(Query.EQ("_id", id));
+            if (doc == null)
+                throw new StorageException("There is no document with such id to update.");
+
+            mongoCollection.Remove(Query.EQ("_id", id));
+
+            List<KeyValuePair<string, object>> record = new List<KeyValuePair<string, object>>();
+            foreach (var fieldName in doc.Names)
+            {
+                if (fieldName == "_id")
+                    record.Add(new KeyValuePair<string, object>("id", BsonTypeMapper.MapToDotNetValue(doc["_id"])));
+                else
+                    record.Add(new KeyValuePair<string, object>(fieldName, ConvertBsonValueToObject(doc[fieldName])));
+            }
+
+            return record;
+        }
+
+        /// <summary>
+        /// Find record
+        /// </summary>
+        /// <param name="entityName"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IEnumerable<KeyValuePair<string, object>> Find(string entityName, Guid id)
         {
             var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
@@ -161,5 +247,7 @@ namespace WebVella.ERP.Storage.Mongo
             return value;
 
         }
+
+        
     }
 }

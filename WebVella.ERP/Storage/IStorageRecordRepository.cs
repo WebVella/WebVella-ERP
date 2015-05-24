@@ -8,6 +8,10 @@ namespace WebVella.ERP.Storage
     {
         void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData);
 
+        IEnumerable<KeyValuePair<string, object>> Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData);
+
+        IEnumerable<KeyValuePair<string, object>> Delete(string entityName, Guid id);
+
         IEnumerable<IEnumerable<KeyValuePair<string, object>>> Find(string entityName, QueryObject query, QuerySortObject[] sort, int? skip, int? limit);
 
         IEnumerable<KeyValuePair<string, object>> Find(string entityName, Guid id);
