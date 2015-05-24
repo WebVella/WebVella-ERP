@@ -338,14 +338,47 @@ namespace WebVella.ERP.Web.Controllers
 
             */
 
+            Guid userId = new Guid("84A65939-1BCD-478A-9883-5A6EB87A4FBF");
+
+            EntityRecord user = new EntityRecord();
+            user["id"] = userId;
+            user["first_name"] = "Rumen1";
+            user["last_name"] = "Yankov";
+            user["password"] = "rumen";
+            user["email"] = "rumen@webvella.com";
+            user["created_by"] = null;
+            user["last_modified_by"] = null;
+            user["created_on"] = DateTime.UtcNow;
+            user["last_modified_on"] = DateTime.UtcNow;
+
+
+            QueryResponse result = recMan.CreateRecord("user", user);
+
+
+            EntityQuery query = new EntityQuery("user", "*", EntityQuery.QueryEQ("id", userId ));
+            result = recMan.Find(query);
+
+            EntityRecord rec = result.Object.Data.First();
+            rec["first_name"] = "Rumen";
+            rec.Properties.Remove("password");
+            result = recMan.UpdateRecord("user", rec);
+
+
+            result = recMan.DeleteRecord("user", userId);
+
+
+            return DoResponse(result);
+
             //EntityQuery query = new EntityQuery("user", "id,email,password, $user_role.id,$user_role.name", EntityQuery.QueryEQ( "password", "erp"));
             //var result = recMan.Find(query);
             //return DoResponse(result);
 
 
+            /*
             EntityQuery query = new EntityQuery("role", "id,name, $user_role.id,$user_role.email,$user_role.password", null );
             var result = recMan.Find(query);
             return DoResponse(result);
+            */
 
 
             //EntityQuery query = new EntityQuery("query_test_post", "id,title", null);
