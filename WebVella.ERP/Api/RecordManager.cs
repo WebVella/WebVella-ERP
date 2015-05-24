@@ -289,8 +289,13 @@ namespace WebVella.ERP.Api
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
                     try
                     {
+                        if (pair.Key == null)
+                            continue;
+
                         if (field is PasswordField && pair.Value == null)
                             continue;
+
+                        
 
                         storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
                     }

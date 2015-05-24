@@ -358,7 +358,8 @@ namespace WebVella.ERP.Web.Controllers
             EntityQuery query = new EntityQuery("user", "*", EntityQuery.QueryEQ("id", userId ));
             result = recMan.Find(query);
 
-            EntityRecord rec = result.Object.Data.First();
+            EntityRecord rec = new EntityRecord();//result.Object.Data.First();
+            rec["id"] = userId;
             rec["first_name"] = "Rumen";
             rec.Properties.Remove("password");
             result = recMan.UpdateRecord("user", rec);
