@@ -19,9 +19,9 @@ namespace WebVella.ERP.Api.Models
 				throw new ArgumentException("Invalid entity name.");
 
 			if (string.IsNullOrWhiteSpace(fields))
-				throw new ArgumentException("Invalid result fields list.");
+                fields = "*";
 
-			EntityName = entityName;
+            EntityName = entityName;
 			Fields = fields;
 			Query = query;
 			Sort = sort;
