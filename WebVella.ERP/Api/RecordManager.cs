@@ -78,6 +78,51 @@ namespace WebVella.ERP.Api
             }
         }
 
+        public QueryResponse RemoveRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
+        {
+            QueryResponse response = new QueryResponse();
+            response.Object = null;
+            response.Success = true;
+            response.Timestamp = DateTime.UtcNow;
+
+            try
+            {
+                var relRep = erpService.StorageService.GetEntityRelationRepository();
+                var relation = relRep.Read(relationId);
+
+                if (relation == null)
+                    response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
+
+                var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
+                if (!targetValues.Contains(targetValue))
+                    response.Errors.Add(new ErrorModel { Message = "The relation record do not exists." });
+
+
+                if (response.Errors.Count > 0)
+                {
+                    response.Object = null;
+                    response.Success = false;
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                relRep.DeleteManyToManyRecord(relationId, originValue, targetValue);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Object = null;
+                response.Timestamp = DateTime.UtcNow;
+#if DEBUG
+                response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The entity relation record was not created. An internal error occurred!";
+#endif
+                return response;
+            }
+        }
+
         public QueryResponse CreateRecord(string entityName, EntityRecord record)
         {
             if (string.IsNullOrWhiteSpace(entityName))
