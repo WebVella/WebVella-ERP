@@ -338,14 +338,18 @@ namespace WebVella.ERP.Web.Controllers
 
             */
 
+            var transaction = recMan.CreateTransaction();
+
+          
+
             Guid userId = new Guid("84A65939-1BCD-478A-9883-5A6EB87A4FBF");
 
             EntityRecord user = new EntityRecord();
             user["id"] = userId;
-            user["first_name"] = "Rumen1";
-            user["last_name"] = "Yankov";
+            user["first_name"] = "test";
+            user["last_name"] = "test";
             user["password"] = "rumen";
-            user["email"] = "rumen@webvella.com";
+            user["email"] = "test@webvella.com";
             user["created_by"] = null;
             user["last_modified_by"] = null;
             user["created_on"] = DateTime.UtcNow;
@@ -358,22 +362,27 @@ namespace WebVella.ERP.Web.Controllers
             EntityQuery query = new EntityQuery("user", "*", EntityQuery.QueryEQ("id", userId ));
             result = recMan.Find(query);
 
+            transaction.Begin();
+
             EntityRecord rec = new EntityRecord();//result.Object.Data.First();
             rec["id"] = userId;
             rec["first_name"] = "Rumen";
             rec.Properties.Remove("password");
             result = recMan.UpdateRecord("user", rec);
 
+            transaction.Rollback();
 
             result = recMan.DeleteRecord("user", userId);
 
 
             return DoResponse(result);
+           
 
-            //EntityQuery query = new EntityQuery("user", "id,email,password, $user_role.id,$user_role.name", EntityQuery.QueryEQ( "password", "erp"));
-            //var result = recMan.Find(query);
-            //return DoResponse(result);
-
+            /*
+            EntityQuery query = new EntityQuery("institution", "name,endowment", EntityQuery.QueryGTE("endowment", 1000000000));
+            var result = recMan.Find(query);
+            return DoResponse(result);
+            */
 
             /*
             EntityQuery query = new EntityQuery("role", "id,name, $user_role.id,$user_role.email,$user_role.password", null );

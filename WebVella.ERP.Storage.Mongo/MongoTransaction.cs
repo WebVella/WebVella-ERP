@@ -8,7 +8,7 @@ using MongoDB.Driver;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    internal class MongoTransaction : IDisposable
+    internal class MongoTransaction : IStorageTransaction, IDisposable
 	{
 		#region <--- Fields and Properties --->
 
@@ -51,11 +51,10 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <exception cref="System.ArgumentNullException">options</exception>
 		internal MongoTransaction(bool beginImmediately, MongoTransactionOptions options)
 		{
-			if (options == null)
-				throw new ArgumentNullException("options");
+            if (options == null)
+                Options = new MongoTransactionOptions();
 
 			Status = MongoTransactionStatus.Ready;
-			Options = options;
 			connectionDisposable = MongoStaticContext.Context.Server.RequestStart(MongoStaticContext.Context.Database);
 
 			if (beginImmediately)

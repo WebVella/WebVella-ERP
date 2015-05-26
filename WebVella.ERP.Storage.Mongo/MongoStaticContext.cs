@@ -138,7 +138,7 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <returns></returns>
 		public MongoTransaction CreateTransaction(bool beginImmediately = true, MongoTransactionOptions options = null)
 		{
-			return options != null ? new MongoTransaction(beginImmediately, options) : new MongoTransaction();
+            return  new MongoTransaction(beginImmediately, options);
 		}
 	}
 }
