@@ -248,6 +248,10 @@ namespace WebVella.ERP.Storage.Mongo
 
         }
 
+        public IStorageTransaction CreateTransaction()
+        {
+            return  MongoStaticContext.Context.CreateTransaction(false);
+        }
         
     }
 }

@@ -703,6 +703,11 @@ namespace WebVella.ERP.Api
             return response;
         }
 
+        public IStorageTransaction CreateTransaction()
+        {
+            return erpService.StorageService.GetRecordRepository().CreateTransaction();
+        }
+
         private object ExractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
         {
             if (fieldValue != null && fieldValue.Value.Key != null)
