@@ -201,29 +201,42 @@ namespace WebVella.ERP.Api
                 foreach (var field in entity.Fields)
                 {
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                    try {
+                    try
+                    {
                         storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
                     }
-                    catch( Exception ex )
+                    catch (Exception ex)
                     {
-                        if( pair.Key == null )
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified." ); 
+                        if (pair.Key == null)
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
                         else
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value +"'", ex);
+                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
                     }
                 }
 
-                var recRepo = erpService.StorageService.GetRecordRepository();
-                recRepo.Create(entity.Name, storageRecordData);
+
+
+                Guid recordId = Guid.Empty;
+                if (!record.Properties.ContainsKey("id"))
+                {
+                    recordId = Guid.NewGuid();
+                    storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
+                }
 
                 //fixes issue with ID comming from webapi request 
-                Guid recordId = Guid.Empty;
                 if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
                 else if (record["id"] is Guid)
                     recordId = (Guid)record["id"];
                 else
                     throw new Exception("Invalid record id");
+
+                if (recordId == Guid.Empty)
+                    throw new Exception("Guid.Empty value cannot be used as valid value for identifier.");
+
+                var recRepo = erpService.StorageService.GetRecordRepository();
+                recRepo.Create(entity.Name, storageRecordData);
+
 
                 var query = EntityQuery.QueryEQ("id", recordId);
                 var entityQuery = new EntityQuery(entity.Name, "*", query);
@@ -317,6 +330,8 @@ namespace WebVella.ERP.Api
 
                 if (record == null)
                     response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+                else if (!record.Properties.ContainsKey("id"))
+                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Missing ID field." });
 
                 if (response.Errors.Count > 0)
                 {
@@ -340,7 +355,7 @@ namespace WebVella.ERP.Api
                         if (field is PasswordField && pair.Value == null)
                             continue;
 
-                        
+
 
                         storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
                     }
@@ -394,7 +409,7 @@ namespace WebVella.ERP.Api
 
         }
 
-        public QueryResponse DeleteRecord(string entityName, Guid id )
+        public QueryResponse DeleteRecord(string entityName, Guid id)
         {
             if (string.IsNullOrWhiteSpace(entityName))
             {
@@ -424,7 +439,7 @@ namespace WebVella.ERP.Api
             return DeleteRecord(entity, id);
         }
 
-        public QueryResponse DeleteRecord(Guid entityId, Guid id )
+        public QueryResponse DeleteRecord(Guid entityId, Guid id)
         {
             Entity entity = GetEntity(entityId);
             if (entity == null)
@@ -442,7 +457,7 @@ namespace WebVella.ERP.Api
             return DeleteRecord(entity, id);
         }
 
-        public QueryResponse DeleteRecord(Entity entity, Guid id )
+        public QueryResponse DeleteRecord(Entity entity, Guid id)
         {
 
             QueryResponse response = new QueryResponse();
@@ -466,7 +481,7 @@ namespace WebVella.ERP.Api
                 var entityQuery = new EntityQuery(entity.Name, "*", query);
 
                 response = Find(entityQuery);
-                if (response.Object != null && response.Object.Data.Count ==1 )
+                if (response.Object != null && response.Object.Data.Count == 1)
                 {
                     var recRepo = erpService.StorageService.GetRecordRepository();
                     recRepo.Delete(entity.Name, id);
