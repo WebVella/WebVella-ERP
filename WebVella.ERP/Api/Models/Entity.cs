@@ -35,7 +35,7 @@ namespace WebVella.ERP.Api.Models
     public class Entity
     {
         [JsonProperty(PropertyName = "id")]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
@@ -47,13 +47,13 @@ namespace WebVella.ERP.Api.Models
         public string LabelPlural { get; set; }
 
         [JsonProperty(PropertyName = "system")]
-        public bool? System { get; set; }
+        public bool System { get; set; }
 
         [JsonProperty(PropertyName = "iconName")]
         public string IconName { get; set; }
 
         [JsonProperty(PropertyName = "weight")]
-        public decimal? Weight { get; set; }
+        public decimal Weight { get; set; }
 
         [JsonProperty(PropertyName = "recordPermissions")]
         public RecordPermissions RecordPermissions { get; set; }
@@ -74,13 +74,13 @@ namespace WebVella.ERP.Api.Models
 
         public Entity(InputEntity entity)
         {
-            Id = entity.Id;
+            Id = entity.Id.Value;
             Name = entity.Name;
             Label = entity.Label;
             LabelPlural = entity.LabelPlural;
             System = entity.System.Value;
             IconName = entity.IconName;
-            Weight = entity.Weight;
+            Weight = entity.Weight.HasValue ? entity.Weight.Value : 1;
             RecordPermissions = entity.RecordPermissions;
             if (RecordPermissions == null)
                 RecordPermissions = new RecordPermissions();

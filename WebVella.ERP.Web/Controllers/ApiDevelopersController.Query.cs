@@ -119,11 +119,11 @@ namespace WebVella.ERP.Web.Controllers
                 categoryEntity = result.Object;
             }
 
-            #endregion
+			#endregion
 
-            #region << Create Author entity fields >>
+			#region << Create Author entity fields >>
 
-            TextField authorName = new TextField();
+			InputTextField authorName = new InputTextField();
             authorName.Id = Guid.NewGuid();
             authorName.Name = "name";
             authorName.Label = "Name";
@@ -132,16 +132,16 @@ namespace WebVella.ERP.Web.Controllers
             authorName.DefaultValue = string.Empty;
             authorName.System = false;
             {
-                var result = em.CreateField(authorEntity.Id.Value, authorName);
+                var result = em.CreateField(authorEntity.Id, authorName);
                 if (!result.Success)
                     return DoResponse(result);
             }
 
-            #endregion
+			#endregion
 
-            #region << Create Post entity fields >>
+			#region << Create Post entity fields >>
 
-            TextField postTitle = new TextField();
+			InputTextField postTitle = new InputTextField();
             postTitle.Id = Guid.NewGuid();
             postTitle.Name = "title";
             postTitle.Label = "Title";
@@ -150,12 +150,12 @@ namespace WebVella.ERP.Web.Controllers
             postTitle.DefaultValue = string.Empty;
             postTitle.System = false;
             {
-                var result = em.CreateField(postEntity.Id.Value, postTitle);
+                var result = em.CreateField(postEntity.Id, postTitle);
                 if (!result.Success)
                     return DoResponse(result);
             }
 
-            TextField postContent = new TextField();
+			InputTextField postContent = new InputTextField();
             postContent.Id = Guid.NewGuid();
             postContent.Name = "content";
             postContent.Label = "Content";
@@ -164,12 +164,12 @@ namespace WebVella.ERP.Web.Controllers
             postContent.DefaultValue = string.Empty;
             postContent.System = false;
             {
-                var result = em.CreateField(postEntity.Id.Value, postContent);
+                var result = em.CreateField(postEntity.Id, postContent);
                 if (!result.Success)
                     return DoResponse(result);
             }
 
-            GuidField postAuthor = new GuidField();
+			InputGuidField postAuthor = new InputGuidField();
             postAuthor.Id = Guid.NewGuid();
             postAuthor.Name = "author";
             postAuthor.Label = "Author";
@@ -179,16 +179,16 @@ namespace WebVella.ERP.Web.Controllers
             postAuthor.GenerateNewId = true;
             postAuthor.System = false;
             {
-                var result = em.CreateField(postEntity.Id.Value, postAuthor);
+                var result = em.CreateField(postEntity.Id, postAuthor);
                 if (!result.Success)
                     return DoResponse(result);
             }
 
-            #endregion
+			#endregion
 
-            #region << Create Category entity fields >>
+			#region << Create Category entity fields >>
 
-            TextField categoryName = new TextField();
+			InputTextField categoryName = new InputTextField();
             categoryName.Id = Guid.NewGuid();
             categoryName.Name = "name";
             categoryName.Label = "Name";
@@ -197,7 +197,7 @@ namespace WebVella.ERP.Web.Controllers
             categoryName.DefaultValue = string.Empty;
             categoryName.System = false;
             {
-                var result = em.CreateField(categoryEntity.Id.Value, categoryName);
+                var result = em.CreateField(categoryEntity.Id, categoryName);
                 if (!result.Success)
                     return DoResponse(result);
             }
@@ -218,10 +218,10 @@ namespace WebVella.ERP.Web.Controllers
             postCategoriesRelation.Name = "query_test_post_categories";
             postCategoriesRelation.Label = "Post categories";
             postCategoriesRelation.RelationType = EntityRelationType.ManyToMany;
-            postCategoriesRelation.TargetEntityId = postEntity.Id.Value;
-            postCategoriesRelation.TargetFieldId = postEntity.Fields.Single(x => x.Name == "id").Id.Value;
-            postCategoriesRelation.OriginEntityId = categoryEntity.Id.Value;
-            postCategoriesRelation.OriginFieldId = categoryEntity.Fields.Single(x => x.Name == "id").Id.Value;
+            postCategoriesRelation.TargetEntityId = postEntity.Id;
+            postCategoriesRelation.TargetFieldId = postEntity.Fields.Single(x => x.Name == "id").Id;
+            postCategoriesRelation.OriginEntityId = categoryEntity.Id;
+            postCategoriesRelation.OriginFieldId = categoryEntity.Fields.Single(x => x.Name == "id").Id;
             {
                 var result = rm.Create(postCategoriesRelation);
                 if (!result.Success)
@@ -234,9 +234,9 @@ namespace WebVella.ERP.Web.Controllers
             postAuthorRelation.Name = "query_test_post_author";
             postAuthorRelation.Label = "Post author";
             postAuthorRelation.RelationType = EntityRelationType.OneToMany;
-            postAuthorRelation.OriginEntityId = authorEntity.Id.Value;
-            postAuthorRelation.OriginFieldId = authorEntity.Fields.Single(x => x.Name == "id").Id.Value;
-            postAuthorRelation.TargetEntityId = postEntity.Id.Value;
+            postAuthorRelation.OriginEntityId = authorEntity.Id;
+            postAuthorRelation.OriginFieldId = authorEntity.Fields.Single(x => x.Name == "id").Id;
+            postAuthorRelation.TargetEntityId = postEntity.Id;
             postAuthorRelation.TargetFieldId = postAuthor.Id.Value;
             {
                 var result = rm.Create(postAuthorRelation);

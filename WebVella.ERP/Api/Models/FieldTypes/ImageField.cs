@@ -3,12 +3,21 @@ using System;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class ImageField : Field
-    {
+    public class InputImageField : InputField
+	{
         [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.ImageField; } }
 
         [JsonProperty(PropertyName = "defaultValue")]
         public string DefaultValue { get; set; }
     }
+
+	public class ImageField : Field
+	{
+		[JsonProperty(PropertyName = "fieldType")]
+		public static FieldType FieldType { get { return FieldType.ImageField; } }
+
+		[JsonProperty(PropertyName = "defaultValue")]
+		public string DefaultValue { get; set; }
+	}
 }

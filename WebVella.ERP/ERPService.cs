@@ -74,7 +74,7 @@ namespace WebVella.ERP
 
                     response = entityManager.CreateEntity(roleEntity);
 
-                    TextField nameRoleField = new TextField();
+					InputTextField nameRoleField = new InputTextField();
 
                     nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
                     nameRoleField.Name = "name";
@@ -93,7 +93,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField);
 
-                    TextField descriptionRoleField = new TextField();
+					InputTextField descriptionRoleField = new InputTextField();
 
                     descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
                     descriptionRoleField.Name = "description";
@@ -132,7 +132,7 @@ namespace WebVella.ERP
 
                     response = entityManager.CreateEntity(userEntity);
 
-                    TextField firstName = new TextField();
+					InputTextField firstName = new InputTextField();
 
                     firstName.Id = new Guid("DF211549-41CC-4D11-BB43-DACA4C164411");
                     firstName.Name = "first_name";
@@ -151,7 +151,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
 
-                    TextField lastName = new TextField();
+					InputTextField lastName = new InputTextField();
 
                     lastName.Id = new Guid("63E685B1-B2C6-4961-B393-2B6723EBD1BF");
                     lastName.Name = "last_name";
@@ -170,7 +170,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName);
 
-                    EmailField email = new EmailField();
+					InputEmailField email = new InputEmailField();
 
                     email.Id = new Guid("9FC75C8F-CE80-4A64-81D7-E2BEFA5E4815");
                     email.Name = "email";
@@ -189,7 +189,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, email);
 
-                    PasswordField password = new PasswordField();
+					InputPasswordField password = new InputPasswordField();
 
                     password.Id = new Guid("4EDE88D9-217A-4462-9300-EA0D6AFCDCEA");
                     password.Name = "password";
@@ -208,7 +208,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
 
-                    DateTimeField lastLoggedIn = new DateTimeField();
+					InputDateTimeField lastLoggedIn = new InputDateTimeField();
 
                     lastLoggedIn.Id = new Guid("3C85CCEC-D526-4E47-887F-EE169D1F508D");
                     lastLoggedIn.Name = "last_logged_in";
@@ -228,7 +228,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn);
 
-                    CheckboxField enabledField = new CheckboxField();
+					InputCheckboxField enabledField = new InputCheckboxField();
 
                     enabledField.Id = new Guid("C0C63650-7572-4252-8E4B-4E25C94897A6");
                     enabledField.Name = "enabled";
@@ -245,7 +245,7 @@ namespace WebVella.ERP
 
                     fieldResponse = entityManager.CreateField(userEntity.Id.Value, enabledField);
 
-                    CheckboxField verifiedUserField = new CheckboxField();
+					InputCheckboxField verifiedUserField = new InputCheckboxField();
 
                     verifiedUserField.Id = new Guid("F1BA5069-8CC9-4E66-BCC3-60E33C79C265");
                     verifiedUserField.Name = "verified";
@@ -276,10 +276,10 @@ namespace WebVella.ERP
                     userRoleRelation.Label = "User-Role";
                     userRoleRelation.System = true;
                     userRoleRelation.RelationType = EntityRelationType.ManyToMany;
-                    userRoleRelation.TargetEntityId = userEntity.Id.Value;
-                    userRoleRelation.TargetFieldId = userEntity.Fields.Single(x => x.Name == "id").Id.Value;
-                    userRoleRelation.OriginEntityId = roleEntity.Id.Value;
-                    userRoleRelation.OriginFieldId = roleEntity.Fields.Single(x => x.Name == "id").Id.Value;
+                    userRoleRelation.TargetEntityId = userEntity.Id;
+                    userRoleRelation.TargetFieldId = userEntity.Fields.Single(x => x.Name == "id").Id;
+                    userRoleRelation.OriginEntityId = roleEntity.Id;
+                    userRoleRelation.OriginFieldId = roleEntity.Fields.Single(x => x.Name == "id").Id;
                     {
                         var result = rm.Create(userRoleRelation);
                         if (!result.Success)
@@ -368,13 +368,13 @@ namespace WebVella.ERP
             storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
             systemSettingsRepository.Save(storeSystemSettings);
 
-            //if (currentVersion == 150508) //update to 150510
-            //{
-            //    systemSettings.Version = 150510;
+			//if (currentVersion == 150508) //update to 150510
+			//{
+			//    systemSettings.Version = 150510;
 
-            //    storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
-            //    systemSettingsRepository.Save(storeSystemSettings);
-            //}
+			//    storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
+			//    systemSettingsRepository.Save(storeSystemSettings);
+			//}
         }
 
         #region << tests >>
@@ -408,7 +408,7 @@ namespace WebVella.ERP
 
                 EntityResponse response = entityManager.CreateEntity(inputEntity);
 
-                TextField field = new TextField();
+				InputTextField field = new InputTextField();
                 field.Id = Guid.NewGuid();
                 field.Name = "text_field";
                 field.Label = "Text field";
@@ -424,23 +424,23 @@ namespace WebVella.ERP
 
                 field.MaxLength = 200;
 
-                FieldResponse fieldResponse = entityManager.CreateField(entity.Id.Value, field);
+                FieldResponse fieldResponse = entityManager.CreateField(entity.Id, field);
 
-                //inputEntity.Label = "GoroTest_edited";
-                //inputEntity.PluralLabel = "Goro Tests - edited";
+				//inputEntity.Label = "GoroTest_edited";
+				//inputEntity.PluralLabel = "Goro Tests - edited";
 
-                //Expando obj = new Expando();
-                //obj["Label"] = "GoroTest_edited";
-                //obj["PluralLabel"] = "Goro Tests - edited";
+				//Expando obj = new Expando();
+				//obj["Label"] = "GoroTest_edited";
+				//obj["PluralLabel"] = "Goro Tests - edited";
 
-                //response = entityManager.PartialUpdateEntity(entity.Id.Value, obj);
+				//response = entityManager.PartialUpdateEntity(entity.Id.Value, obj);
 
-                //field.Label = "TextField_edited";
+				//field.Label = "TextField_edited";
 
-                Field fieldObj = new TextField();
+				InputField fieldObj = new InputTextField();
                 fieldObj.Label = "TextField_edited";
 
-                fieldResponse = entityManager.PartialUpdateField(entity.Id.Value, field.Id.Value, fieldObj);
+                fieldResponse = entityManager.PartialUpdateField(entity.Id, field.Id.Value, fieldObj);
 
                 //fieldResponse = entityManager.DeleteField(entity.Id.Value, field.Id.Value);
 
@@ -487,9 +487,9 @@ namespace WebVella.ERP
 
                 EntityListResponse entityListResponse = entityManager.ReadEntities();
 
-                EntityResponse resultEntity = entityManager.ReadEntity(entity.Id.Value);
+                EntityResponse resultEntity = entityManager.ReadEntity(entity.Id);
 
-                response = entityManager.DeleteEntity(entity.Id.Value);
+                response = entityManager.DeleteEntity(entity.Id);
 
             }
             catch (StorageException e)
@@ -921,7 +921,7 @@ namespace WebVella.ERP
 
             RecordsListFilter filter = new RecordsListFilter();
             filter.EntityId = entity.Id;
-            filter.FieldId = entity.Fields[1].Id.Value;
+            filter.FieldId = entity.Fields[1].Id;
             filter.Operator = Api.FilterOperatorTypes.Equals;
             filter.Value = "false";
 
@@ -931,14 +931,14 @@ namespace WebVella.ERP
 
             RecordsListField field1 = new RecordsListField();
             field1.EntityId = entity.Id;
-            field1.Id = entity.Fields[3].Id.Value;
+            field1.Id = entity.Fields[3].Id;
             field1.Position = 1;
 
             firstRecordList.Fields.Add(field1);
 
             RecordsListField field2 = new RecordsListField();
             field2.EntityId = entity.Id;
-            field2.Id = entity.Fields[10].Id.Value;
+            field2.Id = entity.Fields[10].Id;
             field2.Position = 2;
 
             firstRecordList.Fields.Add(field2);
@@ -961,7 +961,7 @@ namespace WebVella.ERP
 
             RecordViewField field1 = new RecordViewField();
 
-            field1.Id = entity.Fields[1].Id.Value;
+            field1.Id = entity.Fields[1].Id;
             field1.EntityId = entity.Id;
             field1.Column = Api.RecordViewColumns.Left;
             field1.Position = 1;
@@ -970,7 +970,7 @@ namespace WebVella.ERP
 
             RecordViewField field2 = new RecordViewField();
 
-            field2.Id = entity.Fields[5].Id.Value;
+            field2.Id = entity.Fields[5].Id;
             field2.EntityId = entity.Id;
             field2.Column = Api.RecordViewColumns.Right;
             field2.Position = 2;
