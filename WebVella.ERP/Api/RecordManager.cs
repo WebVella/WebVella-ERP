@@ -232,7 +232,7 @@ namespace WebVella.ERP.Api
                     throw new Exception("Invalid record id");
 
                 if (recordId == Guid.Empty)
-                    throw new Exception("Guid.Empty value cannot be used as valid value for identifier.");
+                    throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 
                 var recRepo = erpService.StorageService.GetRecordRepository();
                 recRepo.Create(entity.Name, storageRecordData);
