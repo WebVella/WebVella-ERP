@@ -1,18 +1,18 @@
 {
-    "version": "1.0.0-*",
+  "version": "1.0.0-*",
 
-    "frameworks": {
-        "aspnet50": {
-            "frameworkAssemblies": {
-                "System.Xml": ""
-            },
-            "dependencies": {
-                "Microsoft.AspNet.Diagnostics": "1.0.0-*",
-                "Newtonsoft.Json": "6.0.6"
-            }
-        }
-    },
-    "dependencies": {
-        "AutoMapper": "3.3.1"
+  "dependencies": {
+    "AutoMapper": "3.3.1"
+  },
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0"
+      },
+      "dependencies": {
+        "Microsoft.AspNet.Diagnostics": "1.0.0-*",
+        "Newtonsoft.Json": "6.0.6"
+      }
     }
+  }
 }
