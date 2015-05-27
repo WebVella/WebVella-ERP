@@ -125,10 +125,10 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            Field field = new GuidField();
+			InputField field = new InputGuidField();
             try
             {
-                field = Field.ConvertField(submitObj);
+                field = InputField.ConvertField(submitObj);
             }
             catch (Exception e)
             {
@@ -157,7 +157,7 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            Field field = new GuidField();
+			InputField field = new InputGuidField();
 
             Type inputFieldType = field.GetType();
 
@@ -173,7 +173,7 @@ namespace WebVella.ERP.Web.Controllers
 
             try
             {
-                field = Field.ConvertField(submitObj);
+                field = InputField.ConvertField(submitObj);
             }
             catch (Exception e)
             {

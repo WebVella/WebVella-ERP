@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class GuidField : Field
-    {
+    public class InputGuidField : InputField
+	{
         [JsonProperty(PropertyName = "fieldType")]
         public static FieldType FieldType { get { return FieldType.GuidField; } }
 
@@ -15,12 +15,32 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "generateNewId")]
         public bool? GenerateNewId { get; set; }
 
-        public GuidField()
+        public InputGuidField()
         {
         }
 
-        public GuidField(Field field) : base(field)
+        public InputGuidField(InputField field) : base(field)
         {
         }
     }
+
+	public class GuidField : Field
+	{
+		[JsonProperty(PropertyName = "fieldType")]
+		public static FieldType FieldType { get { return FieldType.GuidField; } }
+
+		[JsonProperty(PropertyName = "defaultValue")]
+		public Guid? DefaultValue { get; set; }
+
+		[JsonProperty(PropertyName = "generateNewId")]
+		public bool? GenerateNewId { get; set; }
+
+		public GuidField()
+		{
+		}
+
+		public GuidField(Field field) : base(field)
+		{
+		}
+	}
 }

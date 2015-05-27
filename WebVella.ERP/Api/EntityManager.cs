@@ -35,15 +35,15 @@ namespace WebVella.ERP.Api
 
             IList<IStorageEntity> entities = EntityRepository.Read();
 
-            if (!entity.Id.HasValue || entity.Id.Value == Guid.Empty)
+            if (entity.Id == Guid.Empty)
                 errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
             if (checkId)
             {
                 //update
-                if (entity.Id.HasValue && entity.Id.Value != Guid.Empty)
+                if (entity.Id != Guid.Empty)
                 {
-                    IStorageEntity verifiedEntity = EntityRepository.Read(entity.Id.Value);
+                    IStorageEntity verifiedEntity = EntityRepository.Read(entity.Id);
 
                     if (verifiedEntity == null)
                         errorList.Add(new ErrorModel("id", entity.Id.ToString(), "Entity with such Id does not exist!"));
@@ -69,7 +69,7 @@ namespace WebVella.ERP.Api
 
             errorList.AddRange(ValidationUtility.ValidateLabelPlural(entity.LabelPlural));
 
-            if (!entity.System.HasValue)
+            if (!entity.System)
                 errorList.Add(new ErrorModel("system", null, "System is required!"));
 
             if (entity.RecordPermissions != null)
@@ -92,13 +92,10 @@ namespace WebVella.ERP.Api
             if (string.IsNullOrWhiteSpace(entity.IconName))
                 entity.IconName = "database";
 
-            if (!entity.Weight.HasValue)
-                entity.Weight = 1;
-
             return errorList;
         }
 
-        private List<ErrorModel> ValidateFields(Guid entityId, List<Field> fields, bool checkId = false)
+        private List<ErrorModel> ValidateFields(Guid entityId, List<InputField> fields, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -117,7 +114,7 @@ namespace WebVella.ERP.Api
             {
                 errorList.AddRange(ValidateField(entity, field, false));
 
-                if (field is GuidField)
+                if (field is InputGuidField)
                 {
                     primaryFieldCount++;
                 }
@@ -132,7 +129,7 @@ namespace WebVella.ERP.Api
             return errorList;
         }
 
-        private List<ErrorModel> ValidateField(Entity entity, Field field, bool checkId = false)
+        private List<ErrorModel> ValidateField(Entity entity, InputField field, bool checkId = false)
         {
             List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -153,9 +150,9 @@ namespace WebVella.ERP.Api
 
             errorList.AddRange(ValidationUtility.ValidateLabel(field.Label));
 
-            if (field is AutoNumberField)
+            if (field is InputAutoNumberField)
             {
-                if (field.Required.HasValue && field.Required.Value && !((AutoNumberField)field).DefaultValue.HasValue)
+                if (field.Required.HasValue && field.Required.Value && !((InputAutoNumberField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (((AutoNumberField)field).DisplayFormat == null)
@@ -166,14 +163,14 @@ namespace WebVella.ERP.Api
 
                 //TODO:parse DisplayFormat field
             }
-            else if (field is CheckboxField)
+            else if (field is InputCheckboxField)
             {
-                if (!((CheckboxField)field).DefaultValue.HasValue)
-                    ((CheckboxField)field).DefaultValue = false;
+                if (!((InputCheckboxField)field).DefaultValue.HasValue)
+                    ((InputCheckboxField)field).DefaultValue = false;
             }
-            else if (field is CurrencyField)
+            else if (field is InputCurrencyField)
             {
-                if (field.Required.HasValue && field.Required.Value && !((CurrencyField)field).DefaultValue.HasValue)
+                if (field.Required.HasValue && field.Required.Value && !((InputCurrencyField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((CurrencyField)field).MinValue.HasValue)
@@ -188,33 +185,33 @@ namespace WebVella.ERP.Api
                 //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 //}
             }
-            else if (field is DateField)
+            else if (field is InputDateField)
             {
                 //TODO:parse format and check if it is valid
 
-                if (!((DateField)field).UseCurrentTimeAsDefaultValue.HasValue)
-                    ((DateField)field).UseCurrentTimeAsDefaultValue = false;
+                if (!((InputDateField)field).UseCurrentTimeAsDefaultValue.HasValue)
+                    ((InputDateField)field).UseCurrentTimeAsDefaultValue = false;
                 //errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
             }
-            else if (field is DateTimeField)
+            else if (field is InputDateTimeField)
             {
                 //TODO:parse format and check if it is valid
 
-                if (!((DateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue)
-                    ((DateTimeField)field).UseCurrentTimeAsDefaultValue = false;
+                if (!((InputDateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue)
+                    ((InputDateTimeField)field).UseCurrentTimeAsDefaultValue = false;
                 //errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
             }
-            else if (field is EmailField)
+            else if (field is InputEmailField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((EmailField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputEmailField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((EmailField)field).MaxLength.HasValue)
                 //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
-            else if (field is FileField)
+            else if (field is InputFileField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((FileField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputFileField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
             //else if (field is FormulaField)
@@ -229,30 +226,30 @@ namespace WebVella.ERP.Api
             //    if (!((FormulaField)field).DecimalPlaces.HasValue)
             //        errorList.Add(new ErrorModel("fields.decimalPlaces", null, "Decimal Places is required!"));
             //}
-            else if (field is GuidField)
+            else if (field is InputGuidField)
             {
-                if ((((GuidField)field).Unique.HasValue && ((GuidField)field).Unique.Value) &&
-                   (!((GuidField)field).GenerateNewId.HasValue || !((GuidField)field).GenerateNewId.Value))
+                if ((((InputGuidField)field).Unique.HasValue && ((InputGuidField)field).Unique.Value) &&
+                   (!((InputGuidField)field).GenerateNewId.HasValue || !((InputGuidField)field).GenerateNewId.Value))
                     errorList.Add(new ErrorModel("defaultValue", null, "Generate New Id is required when the field is marked as unique!"));
 
-                if ((((GuidField)field).Required.HasValue && ((GuidField)field).Required.Value) &&
-                    (!((GuidField)field).GenerateNewId.HasValue || !((GuidField)field).GenerateNewId.Value) &&
-                    ((GuidField)field).DefaultValue == null)
+                if ((((InputGuidField)field).Required.HasValue && ((InputGuidField)field).Required.Value) &&
+                    (!((InputGuidField)field).GenerateNewId.HasValue || !((InputGuidField)field).GenerateNewId.Value) &&
+                    ((InputGuidField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required when the field is marked as required and generate new id option is not selected!"));
             }
-            else if (field is HtmlField)
+            else if (field is InputHtmlField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((HtmlField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputHtmlField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
-            else if (field is ImageField)
+            else if (field is InputImageField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((ImageField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputImageField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
             }
-            else if (field is MultiLineTextField)
+            else if (field is InputMultiLineTextField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((MultiLineTextField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputMultiLineTextField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((MultiLineTextField)field).MaxLength.HasValue)
@@ -264,23 +261,23 @@ namespace WebVella.ERP.Api
                 //if (((MultiLineTextField)field).VisibleLineNumber.HasValue && ((MultiLineTextField)field).VisibleLineNumber.Value > 20)
                 //    errorList.Add(new ErrorModel("visibleLineNumber", null, "Visible Line Number cannot be greater than 20!"));
             }
-            else if (field is MultiSelectField)
+            else if (field is InputMultiSelectField)
             {
                 if (field.Required.HasValue && field.Required.Value &&
-                    (((MultiSelectField)field).DefaultValue == null || ((MultiSelectField)field).DefaultValue.Count() == 0))
+                    (((InputMultiSelectField)field).DefaultValue == null || ((InputMultiSelectField)field).DefaultValue.Count() == 0))
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (((MultiSelectField)field).Options != null)
+                if (((InputMultiSelectField)field).Options != null)
                 {
-                    if (((MultiSelectField)field).Options.Count == 0)
+                    if (((InputMultiSelectField)field).Options.Count == 0)
                         errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
                 }
                 else
                     errorList.Add(new ErrorModel("options", null, "Options is required!"));
             }
-            else if (field is NumberField)
+            else if (field is InputNumberField)
             {
-                if (field.Required.HasValue && field.Required.Value && !((NumberField)field).DefaultValue.HasValue)
+                if (field.Required.HasValue && field.Required.Value && !((InputNumberField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((NumberField)field).MinValue.HasValue)
@@ -295,21 +292,21 @@ namespace WebVella.ERP.Api
                 //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 //}
 
-                if (!((NumberField)field).DecimalPlaces.HasValue)
-                    ((NumberField)field).DecimalPlaces = 2;
+                if (!((InputNumberField)field).DecimalPlaces.HasValue)
+                    ((InputNumberField)field).DecimalPlaces = 2;
                 //errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
-            else if (field is PasswordField)
+            else if (field is InputPasswordField)
             {
                 //if (!((PasswordField)field).MaxLength.HasValue)
                 //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
-                if (!((PasswordField)field).Encrypted.HasValue)
-                    ((PasswordField)field).Encrypted = true;
+                if (!((InputPasswordField)field).Encrypted.HasValue)
+                    ((InputPasswordField)field).Encrypted = true;
             }
-            else if (field is PercentField)
+            else if (field is InputPercentField)
             {
-                if (field.Required.HasValue && field.Required.Value && !((PercentField)field).DefaultValue.HasValue)
+                if (field.Required.HasValue && field.Required.Value && !((InputPercentField)field).DefaultValue.HasValue)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((PercentField)field).MinValue.HasValue)
@@ -324,13 +321,13 @@ namespace WebVella.ERP.Api
                 //        errorList.Add(new ErrorModel("MinValue", null, "Min Value must be less than Max Value!"));
                 //}
 
-                if (!((PercentField)field).DecimalPlaces.HasValue)
-                    ((PercentField)field).DecimalPlaces = 2;
+                if (!((InputPercentField)field).DecimalPlaces.HasValue)
+                    ((InputPercentField)field).DecimalPlaces = 2;
                 //errorList.Add(new ErrorModel("decimalPlaces", null, "Decimal Places is required!"));
             }
-            else if (field is PhoneField)
+            else if (field is InputPhoneField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((PhoneField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputPhoneField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!string.IsNullOrWhiteSpace(((PhoneField)field).Format))
@@ -341,37 +338,37 @@ namespace WebVella.ERP.Api
 
                 //TODO: parse format and check if it is valid
             }
-            else if (field is SelectField)
+            else if (field is InputSelectField)
             {
-                if (field.Required.HasValue && field.Required.Value && string.IsNullOrWhiteSpace(((SelectField)field).DefaultValue))
+                if (field.Required.HasValue && field.Required.Value && string.IsNullOrWhiteSpace(((InputSelectField)field).DefaultValue))
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
-                if (((SelectField)field).Options != null)
+                if (((InputSelectField)field).Options != null)
                 {
-                    if (((SelectField)field).Options.Count == 0)
+                    if (((InputSelectField)field).Options.Count == 0)
                         errorList.Add(new ErrorModel("options", null, "Options must contains at least one item!"));
                 }
                 else
                     errorList.Add(new ErrorModel("options", null, "Options is required!"));
             }
-            else if (field is TextField)
+            else if (field is InputTextField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((TextField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputTextField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((TextField)field).MaxLength.HasValue)
                 //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
             }
-            else if (field is UrlField)
+            else if (field is InputUrlField)
             {
-                if (field.Required.HasValue && field.Required.Value && ((UrlField)field).DefaultValue == null)
+                if (field.Required.HasValue && field.Required.Value && ((InputUrlField)field).DefaultValue == null)
                     errorList.Add(new ErrorModel("defaultValue", null, "Default Value is required!"));
 
                 //if (!((UrlField)field).MaxLength.HasValue)
                 //    errorList.Add(new ErrorModel("maxLength", null, "Max Length is required!"));
 
-                if (!((UrlField)field).OpenTargetInNewWindow.HasValue)
-                    ((UrlField)field).OpenTargetInNewWindow = false;
+                if (!((InputUrlField)field).OpenTargetInNewWindow.HasValue)
+                    ((InputUrlField)field).OpenTargetInNewWindow = false;
                 //errorList.Add(new ErrorModel("openTargetInNewWindow", null, "Open Target In New Window is required!"));
             }
 
@@ -659,13 +656,13 @@ namespace WebVella.ERP.Api
         {
             IStorageEntity storageEntity = StorageObjectFactory.CreateEmptyEntityObject();
 
-            storageEntity.Id = entity.Id.Value;
+            storageEntity.Id = entity.Id;
             storageEntity.Name = entity.Name;
             storageEntity.Label = entity.Label;
             storageEntity.LabelPlural = entity.LabelPlural;
-            storageEntity.System = entity.System.Value;
+            storageEntity.System = entity.System;
             storageEntity.IconName = entity.IconName;
-            storageEntity.Weight = entity.Weight.Value;
+            storageEntity.Weight = entity.Weight;
             storageEntity.RecordPermissions = StorageObjectFactory.CreateEmptyRecordPermissionsObject();
             if (entity.RecordPermissions != null)
             {
@@ -808,7 +805,7 @@ namespace WebVella.ERP.Api
                 return response;
             }
 
-            IStorageEntity createdEntity = EntityRepository.Read(entity.Id.Value);
+            IStorageEntity createdEntity = EntityRepository.Read(entity.Id);
             response.Object = ConvertEntityFromStorage(createdEntity);
             response.Timestamp = DateTime.UtcNow;
 
@@ -838,13 +835,13 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                IStorageEntity storageEntity = EntityRepository.Read(entity.Id.Value);
+                IStorageEntity storageEntity = EntityRepository.Read(entity.Id);
 
                 storageEntity.Label = entity.Label;
                 storageEntity.LabelPlural = entity.LabelPlural;
-                storageEntity.System = entity.System.Value;
+                storageEntity.System = entity.System;
                 storageEntity.IconName = entity.IconName;
-                storageEntity.Weight = entity.Weight.Value;
+                storageEntity.Weight = entity.Weight;
                 storageEntity.RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
                 storageEntity.RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
                 storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
@@ -874,7 +871,7 @@ namespace WebVella.ERP.Api
                 return response;
             }
 
-            IStorageEntity updatedEntity = EntityRepository.Read(entity.Id.Value);
+            IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
             response.Object = ConvertEntityFromStorage(updatedEntity);
             response.Timestamp = DateTime.UtcNow;
 
@@ -901,11 +898,11 @@ namespace WebVella.ERP.Api
                 if (inputEntity.LabelPlural != null)
                     entity.LabelPlural = inputEntity.LabelPlural;
                 if (inputEntity.System != null)
-                    entity.System = inputEntity.System;
+                    entity.System = inputEntity.System.Value;
                 if (inputEntity.IconName != null)
                     entity.IconName = inputEntity.IconName;
                 if (inputEntity.Weight != null)
-                    entity.Weight = inputEntity.Weight;
+                    entity.Weight = inputEntity.Weight.Value;
                 if (inputEntity.RecordPermissions != null)
                     entity.RecordPermissions = inputEntity.RecordPermissions;
 
@@ -946,7 +943,7 @@ namespace WebVella.ERP.Api
                 return response;
             }
 
-            IStorageEntity updatedEntity = EntityRepository.Read(entity.Id.Value);
+            IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
             response.Object = ConvertEntityFromStorage(updatedEntity);
             response.Timestamp = DateTime.UtcNow;
 
@@ -1412,28 +1409,30 @@ namespace WebVella.ERP.Api
                 ((IStorageUrlField)storageField).OpenTargetInNewWindow = ((UrlField)field).OpenTargetInNewWindow.Value;
             }
 
-            storageField.Id = field.Id.Value;
+            storageField.Id = field.Id;
             storageField.Name = field.Name;
             storageField.Label = field.Label;
             storageField.PlaceholderText = field.PlaceholderText;
             storageField.Description = field.Description;
             storageField.HelpText = field.HelpText;
-            storageField.Required = field.Required.Value;
-            storageField.Unique = field.Unique.Value;
-            storageField.Searchable = field.Searchable.Value;
-            storageField.Auditable = field.Auditable.Value;
-            storageField.System = field.System.Value;
+            storageField.Required = field.Required;
+            storageField.Unique = field.Unique;
+            storageField.Searchable = field.Searchable;
+            storageField.Auditable = field.Auditable;
+            storageField.System = field.System;
 
             return storageField;
         }
 
-        public FieldResponse CreateField(Guid entityId, Field field)
+        public FieldResponse CreateField(Guid entityId, InputField inputField)
         {
             FieldResponse response = new FieldResponse
             {
                 Success = true,
                 Message = "The field was successfully created!",
             };
+
+			Field field = null;
 
             try
             {
@@ -1447,17 +1446,19 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                if (field.Id == null)
-                    field.Id = Guid.NewGuid();
+                if (inputField.Id == null || inputField.Id == Guid.Empty)
+					inputField.Id = Guid.NewGuid();
 
                 Entity entity = ConvertEntityFromStorage(storageEntity);
 
-                response.Object = field;
-                response.Errors = ValidateField(entity, field, false);
+                response.Errors = ValidateField(entity, inputField, false);
 
-                if (response.Errors.Count > 0)
+				field = Field.ConvertField(inputField);
+
+				if (response.Errors.Count > 0)
                 {
-                    response.Timestamp = DateTime.UtcNow;
+					response.Object = field;
+					response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "The field was not created. Validation error occurred!";
                     return response;
@@ -1495,7 +1496,7 @@ namespace WebVella.ERP.Api
             return response;
         }
 
-        public FieldResponse UpdateField(Guid entityId, Field field)
+        public FieldResponse UpdateField(Guid entityId, InputField inputField)
         {
             FieldResponse response = new FieldResponse
             {
@@ -1503,7 +1504,9 @@ namespace WebVella.ERP.Api
                 Message = "The field was successfully updated!",
             };
 
-            try
+			Field field = null;
+
+			try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
@@ -1517,12 +1520,14 @@ namespace WebVella.ERP.Api
 
                 Entity entity = ConvertEntityFromStorage(storageEntity);
 
-                response.Object = field;
-                response.Errors = ValidateField(entity, field, true);
+                response.Errors = ValidateField(entity, inputField, true);
+
+				field = Field.ConvertField(inputField);
 
                 if (response.Errors.Count > 0)
                 {
-                    response.Timestamp = DateTime.UtcNow;
+					response.Object = field;
+					response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "The field was not updated. Validation error occurred!";
                     return response;
@@ -1564,7 +1569,7 @@ namespace WebVella.ERP.Api
             return response;
         }
 
-        public FieldResponse PartialUpdateField(Guid entityId, Guid id, Field field)
+        public FieldResponse PartialUpdateField(Guid entityId, Guid id, InputField inputField)
         {
             FieldResponse response = new FieldResponse
             {
@@ -1600,177 +1605,177 @@ namespace WebVella.ERP.Api
 
                 if (updatedField is AutoNumberField)
                 {
-                    if (((AutoNumberField)field).DefaultValue != null)
-                        ((AutoNumberField)updatedField).DefaultValue = ((AutoNumberField)field).DefaultValue;
-                    if (((AutoNumberField)field).DisplayFormat != null)
-                        ((AutoNumberField)updatedField).DisplayFormat = ((AutoNumberField)field).DisplayFormat;
-                    if (((AutoNumberField)field).StartingNumber != null)
-                        ((AutoNumberField)updatedField).StartingNumber = ((AutoNumberField)field).StartingNumber;
+                    if (((InputAutoNumberField)inputField).DefaultValue != null)
+                        ((AutoNumberField)updatedField).DefaultValue = ((InputAutoNumberField)inputField).DefaultValue;
+                    if (((InputAutoNumberField)inputField).DisplayFormat != null)
+                        ((AutoNumberField)updatedField).DisplayFormat = ((InputAutoNumberField)inputField).DisplayFormat;
+                    if (((InputAutoNumberField)inputField).StartingNumber != null)
+                        ((AutoNumberField)updatedField).StartingNumber = ((InputAutoNumberField)inputField).StartingNumber;
                 }
                 else if (updatedField is CheckboxField)
                 {
-                    if (((CheckboxField)field).DefaultValue != null)
-                        ((CheckboxField)updatedField).DefaultValue = ((CheckboxField)field).DefaultValue;
+                    if (((InputCheckboxField)inputField).DefaultValue != null)
+                        ((CheckboxField)updatedField).DefaultValue = ((InputCheckboxField)inputField).DefaultValue;
                 }
                 else if (updatedField is CurrencyField)
                 {
-                    if (((CurrencyField)field).DefaultValue != null)
-                        ((CurrencyField)updatedField).DefaultValue = ((CurrencyField)field).DefaultValue;
-                    if (((CurrencyField)field).MinValue != null)
-                        ((CurrencyField)updatedField).MinValue = ((CurrencyField)field).MinValue;
-                    if (((CurrencyField)field).MaxValue != null)
-                        ((CurrencyField)updatedField).MaxValue = ((CurrencyField)field).MaxValue;
-                    if (((CurrencyField)field).Currency != null)
-                        ((CurrencyField)updatedField).Currency = ((CurrencyField)field).Currency;
+                    if (((InputCurrencyField)inputField).DefaultValue != null)
+                        ((CurrencyField)updatedField).DefaultValue = ((InputCurrencyField)inputField).DefaultValue;
+                    if (((InputCurrencyField)inputField).MinValue != null)
+                        ((CurrencyField)updatedField).MinValue = ((InputCurrencyField)inputField).MinValue;
+                    if (((InputCurrencyField)inputField).MaxValue != null)
+                        ((CurrencyField)updatedField).MaxValue = ((InputCurrencyField)inputField).MaxValue;
+                    if (((InputCurrencyField)inputField).Currency != null)
+                        ((CurrencyField)updatedField).Currency = ((InputCurrencyField)inputField).Currency;
                 }
                 else if (updatedField is DateField)
                 {
-                    if (((DateField)field).DefaultValue != null)
-                        ((DateField)updatedField).DefaultValue = ((DateField)field).DefaultValue;
-                    if (((DateField)field).Format != null)
-                        ((DateField)updatedField).Format = ((DateField)field).Format;
-                    if (((DateField)field).UseCurrentTimeAsDefaultValue != null)
-                        ((DateField)updatedField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue;
+                    if (((InputDateField)inputField).DefaultValue != null)
+                        ((DateField)updatedField).DefaultValue = ((InputDateField)inputField).DefaultValue;
+                    if (((InputDateField)inputField).Format != null)
+                        ((DateField)updatedField).Format = ((InputDateField)inputField).Format;
+                    if (((InputDateField)inputField).UseCurrentTimeAsDefaultValue != null)
+                        ((DateField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateField)inputField).UseCurrentTimeAsDefaultValue;
                 }
                 else if (updatedField is DateTimeField)
                 {
-                    if (((DateTimeField)field).DefaultValue != null)
-                        ((DateTimeField)updatedField).DefaultValue = ((DateTimeField)field).DefaultValue;
-                    if (((DateTimeField)field).Format != null)
-                        ((DateTimeField)updatedField).Format = ((DateTimeField)field).Format;
-                    if (((DateTimeField)field).UseCurrentTimeAsDefaultValue != null)
-                        ((DateTimeField)updatedField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue;
+                    if (((InputDateTimeField)inputField).DefaultValue != null)
+                        ((DateTimeField)updatedField).DefaultValue = ((InputDateTimeField)inputField).DefaultValue;
+                    if (((InputDateTimeField)inputField).Format != null)
+                        ((DateTimeField)updatedField).Format = ((InputDateTimeField)inputField).Format;
+                    if (((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue != null)
+                        ((DateTimeField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue;
                 }
                 else if (updatedField is EmailField)
                 {
-                    if (((EmailField)field).DefaultValue != null)
-                        ((EmailField)updatedField).DefaultValue = ((EmailField)field).DefaultValue;
-                    if (((EmailField)field).MaxLength != null)
-                        ((EmailField)updatedField).MaxLength = ((EmailField)field).MaxLength;
+                    if (((InputEmailField)inputField).DefaultValue != null)
+                        ((EmailField)updatedField).DefaultValue = ((InputEmailField)inputField).DefaultValue;
+                    if (((InputEmailField)inputField).MaxLength != null)
+                        ((EmailField)updatedField).MaxLength = ((InputEmailField)inputField).MaxLength;
                 }
                 else if (updatedField is FileField)
                 {
-                    if (((FileField)field).DefaultValue != null)
-                        ((FileField)updatedField).DefaultValue = ((FileField)field).DefaultValue;
+                    if (((InputFileField)inputField).DefaultValue != null)
+                        ((FileField)updatedField).DefaultValue = ((InputFileField)inputField).DefaultValue;
                 }
                 else if (updatedField is HtmlField)
                 {
-                    if (((HtmlField)field).DefaultValue != null)
-                        ((HtmlField)updatedField).DefaultValue = ((HtmlField)field).DefaultValue;
+                    if (((InputHtmlField)inputField).DefaultValue != null)
+                        ((HtmlField)updatedField).DefaultValue = ((InputHtmlField)inputField).DefaultValue;
                 }
                 else if (updatedField is ImageField)
                 {
-                    if (((ImageField)field).DefaultValue != null)
-                        ((ImageField)updatedField).DefaultValue = ((ImageField)field).DefaultValue;
+                    if (((InputImageField)inputField).DefaultValue != null)
+                        ((ImageField)updatedField).DefaultValue = ((InputImageField)inputField).DefaultValue;
                 }
                 else if (updatedField is MultiLineTextField)
                 {
-                    if (((MultiLineTextField)field).DefaultValue != null)
-                        ((MultiLineTextField)updatedField).DefaultValue = ((MultiLineTextField)field).DefaultValue;
-                    if (((MultiLineTextField)field).MaxLength != null)
-                        ((MultiLineTextField)updatedField).MaxLength = ((MultiLineTextField)field).MaxLength;
-                    if (((MultiLineTextField)field).VisibleLineNumber != null)
-                        ((MultiLineTextField)updatedField).VisibleLineNumber = ((MultiLineTextField)field).VisibleLineNumber;
+                    if (((InputMultiLineTextField)inputField).DefaultValue != null)
+                        ((MultiLineTextField)updatedField).DefaultValue = ((InputMultiLineTextField)inputField).DefaultValue;
+                    if (((InputMultiLineTextField)inputField).MaxLength != null)
+                        ((MultiLineTextField)updatedField).MaxLength = ((InputMultiLineTextField)inputField).MaxLength;
+                    if (((InputMultiLineTextField)inputField).VisibleLineNumber != null)
+                        ((MultiLineTextField)updatedField).VisibleLineNumber = ((InputMultiLineTextField)inputField).VisibleLineNumber;
                 }
                 else if (updatedField is MultiSelectField)
                 {
-                    if (((MultiSelectField)field).DefaultValue != null)
-                        ((MultiSelectField)updatedField).DefaultValue = ((MultiSelectField)field).DefaultValue;
-                    if (((MultiSelectField)field).Options != null)
-                        ((MultiSelectField)updatedField).Options = ((MultiSelectField)field).Options;
+                    if (((InputMultiSelectField)inputField).DefaultValue != null)
+                        ((MultiSelectField)updatedField).DefaultValue = ((InputMultiSelectField)inputField).DefaultValue;
+                    if (((InputMultiSelectField)inputField).Options != null)
+                        ((MultiSelectField)updatedField).Options = ((InputMultiSelectField)inputField).Options;
                 }
                 else if (updatedField is NumberField)
                 {
-                    if (((NumberField)field).DefaultValue != null)
-                        ((NumberField)updatedField).DefaultValue = ((NumberField)field).DefaultValue;
-                    if (((NumberField)field).MinValue != null)
-                        ((NumberField)updatedField).MinValue = ((NumberField)field).MinValue;
-                    if (((NumberField)field).MaxValue != null)
-                        ((NumberField)updatedField).MaxValue = ((NumberField)field).MaxValue;
-                    if (((NumberField)field).DecimalPlaces != null)
-                        ((NumberField)updatedField).DecimalPlaces = ((NumberField)field).DecimalPlaces;
+                    if (((InputNumberField)inputField).DefaultValue != null)
+                        ((NumberField)updatedField).DefaultValue = ((InputNumberField)inputField).DefaultValue;
+                    if (((InputNumberField)inputField).MinValue != null)
+                        ((NumberField)updatedField).MinValue = ((InputNumberField)inputField).MinValue;
+                    if (((InputNumberField)inputField).MaxValue != null)
+                        ((NumberField)updatedField).MaxValue = ((InputNumberField)inputField).MaxValue;
+                    if (((InputNumberField)inputField).DecimalPlaces != null)
+                        ((NumberField)updatedField).DecimalPlaces = ((InputNumberField)inputField).DecimalPlaces;
                 }
                 else if (updatedField is PasswordField)
                 {
-                    if (((PasswordField)field).MaxLength != null)
-                        ((PasswordField)updatedField).MaxLength = ((PasswordField)field).MaxLength;
-                    if (((PasswordField)field).MinLength != null)
-                        ((PasswordField)updatedField).MinLength= ((PasswordField)field).MinLength;
-                    if (((PasswordField)field).Encrypted != null)
-                        ((PasswordField)updatedField).Encrypted = ((PasswordField)field).Encrypted;
+                    if (((InputPasswordField)inputField).MaxLength != null)
+                        ((PasswordField)updatedField).MaxLength = ((InputPasswordField)inputField).MaxLength;
+                    if (((InputPasswordField)inputField).MinLength != null)
+                        ((PasswordField)updatedField).MinLength= ((InputPasswordField)inputField).MinLength;
+                    if (((InputPasswordField)inputField).Encrypted != null)
+                        ((PasswordField)updatedField).Encrypted = ((InputPasswordField)inputField).Encrypted;
                 }
                 else if (updatedField is PercentField)
                 {
-                    if (((PercentField)field).DefaultValue != null)
-                        ((PercentField)updatedField).DefaultValue = ((PercentField)field).DefaultValue;
-                    if (((PercentField)field).MinValue != null)
-                        ((PercentField)updatedField).MinValue = ((PercentField)field).MinValue;
-                    if (((PercentField)field).MaxValue != null)
-                        ((PercentField)updatedField).MaxValue = ((PercentField)field).MaxValue;
-                    if (((PercentField)field).DecimalPlaces != null)
-                        ((PercentField)updatedField).DecimalPlaces = ((PercentField)field).DecimalPlaces;
+                    if (((InputPercentField)inputField).DefaultValue != null)
+                        ((PercentField)updatedField).DefaultValue = ((InputPercentField)inputField).DefaultValue;
+                    if (((InputPercentField)inputField).MinValue != null)
+                        ((PercentField)updatedField).MinValue = ((InputPercentField)inputField).MinValue;
+                    if (((InputPercentField)inputField).MaxValue != null)
+                        ((PercentField)updatedField).MaxValue = ((InputPercentField)inputField).MaxValue;
+                    if (((InputPercentField)inputField).DecimalPlaces != null)
+                        ((PercentField)updatedField).DecimalPlaces = ((InputPercentField)inputField).DecimalPlaces;
                 }
-                else if (field is PhoneField)
+                else if (updatedField is PhoneField)
                 {
-                    if (((PhoneField)field).DefaultValue != null)
-                        ((PhoneField)updatedField).DefaultValue = ((PhoneField)field).DefaultValue;
-                    if (((PhoneField)field).Format != null)
-                        ((PhoneField)updatedField).Format = ((PhoneField)field).Format;
-                    if (((PhoneField)field).MaxLength != null)
-                        ((PhoneField)updatedField).MaxLength = ((PhoneField)field).MaxLength;
+                    if (((InputPhoneField)inputField).DefaultValue != null)
+                        ((PhoneField)updatedField).DefaultValue = ((InputPhoneField)inputField).DefaultValue;
+                    if (((InputPhoneField)inputField).Format != null)
+                        ((PhoneField)updatedField).Format = ((InputPhoneField)inputField).Format;
+                    if (((InputPhoneField)inputField).MaxLength != null)
+                        ((PhoneField)updatedField).MaxLength = ((InputPhoneField)inputField).MaxLength;
                 }
                 else if (updatedField is GuidField)
                 {
-                    if (((GuidField)field).DefaultValue != null)
-                        ((GuidField)updatedField).DefaultValue = ((GuidField)field).DefaultValue;
-                    if (((GuidField)field).GenerateNewId != null)
-                        ((GuidField)updatedField).GenerateNewId = ((GuidField)field).GenerateNewId;
+                    if (((InputGuidField)inputField).DefaultValue != null)
+                        ((GuidField)updatedField).DefaultValue = ((InputGuidField)inputField).DefaultValue;
+                    if (((InputGuidField)inputField).GenerateNewId != null)
+                        ((GuidField)updatedField).GenerateNewId = ((InputGuidField)inputField).GenerateNewId;
                 }
                 else if (updatedField is SelectField)
                 {
-                    if (((SelectField)field).DefaultValue != null)
-                        ((SelectField)updatedField).DefaultValue = ((SelectField)field).DefaultValue;
-                    if (((SelectField)field).Options != null)
-                        ((SelectField)updatedField).Options = ((SelectField)field).Options;
+                    if (((InputSelectField)inputField).DefaultValue != null)
+                        ((SelectField)updatedField).DefaultValue = ((InputSelectField)inputField).DefaultValue;
+                    if (((InputSelectField)inputField).Options != null)
+                        ((SelectField)updatedField).Options = ((InputSelectField)inputField).Options;
                 }
                 else if (updatedField is TextField)
                 {
-                    if (((TextField)field).DefaultValue != null)
-                        ((TextField)updatedField).DefaultValue = ((TextField)field).DefaultValue;
-                    if (((TextField)field).MaxLength != null)
-                        ((TextField)updatedField).MaxLength = ((TextField)field).MaxLength;
+                    if (((InputTextField)inputField).DefaultValue != null)
+                        ((TextField)updatedField).DefaultValue = ((InputTextField)inputField).DefaultValue;
+                    if (((InputTextField)inputField).MaxLength != null)
+                        ((TextField)updatedField).MaxLength = ((InputTextField)inputField).MaxLength;
                 }
                 else if (updatedField is UrlField)
                 {
-                    if (((UrlField)field).DefaultValue != null)
-                        ((UrlField)updatedField).DefaultValue = ((UrlField)field).DefaultValue;
-                    if (((UrlField)field).MaxLength != null)
-                        ((UrlField)updatedField).MaxLength = ((UrlField)field).MaxLength;
-                    if (((UrlField)field).OpenTargetInNewWindow != null)
-                        ((UrlField)updatedField).OpenTargetInNewWindow = ((UrlField)field).OpenTargetInNewWindow;
+                    if (((InputUrlField)inputField).DefaultValue != null)
+                        ((UrlField)updatedField).DefaultValue = ((InputUrlField)inputField).DefaultValue;
+                    if (((InputUrlField)inputField).MaxLength != null)
+                        ((UrlField)updatedField).MaxLength = ((InputUrlField)inputField).MaxLength;
+                    if (((InputUrlField)inputField).OpenTargetInNewWindow != null)
+                        ((UrlField)updatedField).OpenTargetInNewWindow = ((InputUrlField)inputField).OpenTargetInNewWindow;
                 }
 
-                if (field.Label != null)
-                    updatedField.Label = field.Label;
-                else if (field.PlaceholderText != null)
-                    updatedField.PlaceholderText = field.PlaceholderText;
-                else if (field.Description != null)
-                    updatedField.Description = field.Description;
-                else if (field.HelpText != null)
-                    updatedField.HelpText = field.HelpText;
-                else if (field.Required != null)
-                    updatedField.Required = field.Required;
-                else if (field.Unique != null)
-                    updatedField.Unique = field.Unique;
-                else if (field.Searchable != null)
-                    updatedField.Searchable = field.Searchable;
-                else if (field.Auditable != null)
-                    updatedField.Auditable = field.Auditable;
-                else if (field.System != null)
-                    updatedField.System = field.System;
+                if (inputField.Label != null)
+                    updatedField.Label = inputField.Label;
+                else if (inputField.PlaceholderText != null)
+                    updatedField.PlaceholderText = inputField.PlaceholderText;
+                else if (inputField.Description != null)
+                    updatedField.Description = inputField.Description;
+                else if (inputField.HelpText != null)
+                    updatedField.HelpText = inputField.HelpText;
+                else if (inputField.Required != null)
+                    updatedField.Required = inputField.Required.Value;
+                else if (inputField.Unique != null)
+                    updatedField.Unique = inputField.Unique.Value;
+                else if (inputField.Searchable != null)
+                    updatedField.Searchable = inputField.Searchable.Value;
+                else if (inputField.Auditable != null)
+                    updatedField.Auditable = inputField.Auditable.Value;
+                else if (inputField.System != null)
+                    updatedField.System = inputField.System.Value;
 
                 response.Object = updatedField;
-                response.Errors = ValidateField(entity, updatedField, true);
+                response.Errors = ValidateField(entity, InputField.ConvertField(updatedField), true);
 
                 if (response.Errors.Count > 0)
                 {
