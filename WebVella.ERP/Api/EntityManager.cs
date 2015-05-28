@@ -65,9 +65,6 @@ namespace WebVella.ERP.Api
 
             errorList.AddRange(ValidationUtility.ValidateLabelPlural(entity.LabelPlural));
 
-            if (!entity.System)
-                errorList.Add(new ErrorModel("system", null, "System is required!"));
-
             if (entity.RecordPermissions != null)
             {
                 if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
