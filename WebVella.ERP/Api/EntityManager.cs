@@ -19,6 +19,7 @@ namespace WebVella.ERP.Api
 
         public EntityManager(IStorageService storage)
         {
+            Storage = storage;
             EntityRepository = storage.GetEntityRepository();
             StorageObjectFactory = storage.GetObjectFactory();
         }
