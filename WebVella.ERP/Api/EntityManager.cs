@@ -11,15 +11,11 @@ namespace WebVella.ERP.Api
 {
     public class EntityManager
     {
-        public IStorageEntityRepository EntityRepository
-        {
-            get; set;
-        }
+        public IStorageService Storage { get; set; }
 
-        public IStorageObjectFactory StorageObjectFactory
-        {
-            get; set;
-        }
+        public IStorageEntityRepository EntityRepository { get; set; }
+
+        public IStorageObjectFactory StorageObjectFactory { get; set; }
 
         public EntityManager(IStorageService storage)
         {
@@ -1043,7 +1039,7 @@ namespace WebVella.ERP.Api
             try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(id);
-                if( storageEntity != null )
+                if (storageEntity != null)
                     response.Object = ConvertEntityFromStorage(storageEntity);
             }
             catch (Exception e)
@@ -1070,7 +1066,7 @@ namespace WebVella.ERP.Api
                 Success = true,
                 Message = "The entity was successfully returned!",
                 Timestamp = DateTime.UtcNow
-        };
+            };
 
             Entity entity = new Entity();
 
@@ -1356,8 +1352,8 @@ namespace WebVella.ERP.Api
             {
                 storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PasswordField));
                 ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength;
-                ((IStoragePasswordField)storageField).MinLength= ((PasswordField)field).MinLength;
-                ((IStoragePasswordField)storageField).Encrypted = ((PasswordField)field).Encrypted??true;
+                ((IStoragePasswordField)storageField).MinLength = ((PasswordField)field).MinLength;
+                ((IStoragePasswordField)storageField).Encrypted = ((PasswordField)field).Encrypted ?? true;
             }
             else if (field is PercentField)
             {
@@ -1432,7 +1428,7 @@ namespace WebVella.ERP.Api
                 Message = "The field was successfully created!",
             };
 
-			Field field = null;
+            Field field = null;
 
             try
             {
@@ -1447,18 +1443,18 @@ namespace WebVella.ERP.Api
                 }
 
                 if (inputField.Id == null || inputField.Id == Guid.Empty)
-					inputField.Id = Guid.NewGuid();
+                    inputField.Id = Guid.NewGuid();
 
                 Entity entity = ConvertEntityFromStorage(storageEntity);
 
                 response.Errors = ValidateField(entity, inputField, false);
 
-				field = Field.ConvertField(inputField);
+                field = Field.ConvertField(inputField);
 
-				if (response.Errors.Count > 0)
+                if (response.Errors.Count > 0)
                 {
-					response.Object = field;
-					response.Timestamp = DateTime.UtcNow;
+                    response.Object = field;
+                    response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "The field was not created. Validation error occurred!";
                     return response;
@@ -1467,13 +1463,31 @@ namespace WebVella.ERP.Api
                 entity.Fields.Add(field);
 
                 IStorageEntity editedEntity = ConvertEntityToStorage(entity);
-                bool result = EntityRepository.Update(editedEntity);
-                if (!result)
+
+                var recRep = Storage.GetRecordRepository();
+                var transaction = recRep.CreateTransaction();
+                try
                 {
-                    response.Timestamp = DateTime.UtcNow;
-                    response.Success = false;
-                    response.Message = "The field was not created! An internal error occurred!";
-                    return response;
+
+                    transaction.Begin();
+
+                    recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+
+
+                    bool result = EntityRepository.Update(editedEntity);
+                    if (!result)
+                    {
+                        response.Timestamp = DateTime.UtcNow;
+                        response.Success = false;
+                        response.Message = "The field was not created! An internal error occurred!";
+                        return response;
+                    }
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
                 }
 
             }
@@ -1504,9 +1518,9 @@ namespace WebVella.ERP.Api
                 Message = "The field was successfully updated!",
             };
 
-			Field field = null;
+            Field field = null;
 
-			try
+            try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
@@ -1522,12 +1536,12 @@ namespace WebVella.ERP.Api
 
                 response.Errors = ValidateField(entity, inputField, true);
 
-				field = Field.ConvertField(inputField);
+                field = Field.ConvertField(inputField);
 
                 if (response.Errors.Count > 0)
                 {
-					response.Object = field;
-					response.Timestamp = DateTime.UtcNow;
+                    response.Object = field;
+                    response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "The field was not updated. Validation error occurred!";
                     return response;
@@ -1700,7 +1714,7 @@ namespace WebVella.ERP.Api
                     if (((InputPasswordField)inputField).MaxLength != null)
                         ((PasswordField)updatedField).MaxLength = ((InputPasswordField)inputField).MaxLength;
                     if (((InputPasswordField)inputField).MinLength != null)
-                        ((PasswordField)updatedField).MinLength= ((InputPasswordField)inputField).MinLength;
+                        ((PasswordField)updatedField).MinLength = ((InputPasswordField)inputField).MinLength;
                     if (((InputPasswordField)inputField).Encrypted != null)
                         ((PasswordField)updatedField).Encrypted = ((InputPasswordField)inputField).Encrypted;
                 }
@@ -1850,14 +1864,29 @@ namespace WebVella.ERP.Api
 
                 entity.Fields.Remove(field);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
-                bool result = EntityRepository.Update(updatedEntity);
-                if (!result)
+                var recRep = Storage.GetRecordRepository();
+                var transaction = recRep.CreateTransaction();
+                try
                 {
-                    response.Timestamp = DateTime.UtcNow;
-                    response.Success = false;
-                    response.Message = "The field was not updated! An internal error occurred!";
-                    return response;
+                    transaction.Begin();
+
+                    recRep.RemoveRecordField(entity.Name, field.Name);
+
+                    IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                    bool result = EntityRepository.Update(updatedEntity);
+                    if (!result)
+                    {
+                        response.Timestamp = DateTime.UtcNow;
+                        response.Success = false;
+                        response.Message = "The field was not updated! An internal error occurred!";
+                        return response;
+                    }
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
             catch (Exception e)

@@ -17,5 +17,9 @@ namespace WebVella.ERP.Storage
         IEnumerable<KeyValuePair<string, object>> Find(string entityName, Guid id);
 
         IStorageTransaction CreateTransaction();
+
+        void CreateRecordField(string entityName, string fieldName, object value);
+
+        void RemoveRecordField(string entityName, string fieldName);
     }
 }

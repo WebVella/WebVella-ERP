@@ -500,7 +500,72 @@ namespace WebVella.ERP
 
 			return field;
 		}
-	}
+
+        internal object GetDefaultValue()
+        {
+            if (this is AutoNumberField)
+                return ((AutoNumberField)this).DefaultValue;
+            else if (this is CheckboxField)
+                return ((CheckboxField)this).DefaultValue;
+            else if (this is CurrencyField)
+                return ((CurrencyField)this).DefaultValue;
+            else if (this is DateField)
+            {
+                if (((DateField)this).UseCurrentTimeAsDefaultValue.Value)
+                    return DateTime.UtcNow.Date;
+                else
+                    return ((DateField)this).DefaultValue;
+            }
+            else if (this is DateTimeField)
+            {
+                if (((DateTimeField)this).UseCurrentTimeAsDefaultValue.Value)
+                    return DateTime.UtcNow;
+                else
+                    return ((DateTimeField)this).DefaultValue;
+            }
+            else if (this is EmailField)
+                return ((EmailField)this).DefaultValue;
+            else if (this is FileField)
+                //TODO convert file path to url path
+                return ((FileField)this).DefaultValue;
+            else if (this is ImageField)
+                //TODO convert file path to url path
+                return ((ImageField)this).DefaultValue;
+            else if (this is HtmlField)
+                return ((HtmlField)this).DefaultValue;
+            else if (this is MultiLineTextField)
+                return ((MultiLineTextField)this).DefaultValue;
+            else if (this is MultiSelectField)
+                return ((MultiSelectField)this).DefaultValue;
+            else if (this is NumberField)
+                return ((NumberField)this).DefaultValue;
+            else if (this is PasswordField)
+                return null;
+            else if (this is PercentField)
+                return ((PercentField)this).DefaultValue;
+            else if (this is PhoneField)
+                return ((PhoneField)this).DefaultValue;
+            else if (this is GuidField)
+            {
+                if (Name == "id")
+                    throw new Exception("Cannot use default value for id this.");
+
+                var guidField = (this as GuidField);
+                if (guidField.GenerateNewId != null && guidField.GenerateNewId.Value)
+                    return Guid.NewGuid();
+
+                return guidField.DefaultValue;
+            }
+            else if (this is SelectField)
+                return ((SelectField)this).DefaultValue;
+            else if (this is TextField)
+                return ((TextField)this).DefaultValue;
+            else if (this is UrlField)
+                return ((UrlField)this).DefaultValue;
+
+            return null;
+        }
+    }
 
 	public class FieldList
 	{

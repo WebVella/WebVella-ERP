@@ -203,7 +203,7 @@ namespace WebVella.ERP.Api
                     var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
                     try
                     {
-                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
+                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
                     }
                     catch (Exception ex)
                     {
@@ -357,7 +357,7 @@ namespace WebVella.ERP.Api
 
 
 
-                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExractFieldValue(pair, field, true)));
+                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
                     }
                     catch (Exception ex)
                     {
@@ -563,7 +563,7 @@ namespace WebVella.ERP.Api
                         var recValue = record.SingleOrDefault(x => x.Key == field.Name);
                         if (!(field is RelationFieldMeta))
                         {
-                            dataRecord[field.Name] = ExractFieldValue(recValue, field);
+                            dataRecord[field.Name] = ExtractFieldValue(recValue, field);
                         }
                         else //relation field
                         {
@@ -599,7 +599,7 @@ namespace WebVella.ERP.Api
                                     foreach (var relField in relationField.Fields)
                                     {
                                         var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                        relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
+                                        relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
                                     }
                                     dataArrayRecord.Add(relatedObject);
                                 }
@@ -637,7 +637,7 @@ namespace WebVella.ERP.Api
                                         foreach (var relField in relationField.Fields)
                                         {
                                             var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                            relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
+                                            relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
                                         }
                                         dataArrayRecord.Add(relatedObject);
                                     }
@@ -691,7 +691,7 @@ namespace WebVella.ERP.Api
                                         foreach (var relField in relationField.Fields)
                                         {
                                             var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                            relatedObject[relField.Name] = ExractFieldValue(relValue, relField);
+                                            relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
                                         }
                                         dataArrayRecord.Add(relatedObject);
                                     }
@@ -723,7 +723,7 @@ namespace WebVella.ERP.Api
             return erpService.StorageService.GetRecordRepository().CreateTransaction();
         }
 
-        private object ExractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
+        private object ExtractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
         {
             if (fieldValue != null && fieldValue.Value.Key != null)
             {
@@ -807,59 +807,7 @@ namespace WebVella.ERP.Api
             }
             else
             {
-                #region <--- the field value doesn't exist. Set defaults from meta
-
-                if (field is AutoNumberField)
-                    return ((AutoNumberField)field).DefaultValue;
-                else if (field is CheckboxField)
-                    return ((CheckboxField)field).DefaultValue;
-                else if (field is CurrencyField)
-                    return ((CurrencyField)field).DefaultValue;
-                else if (field is DateField)
-                {
-                    if (((DateField)field).UseCurrentTimeAsDefaultValue.Value)
-                        return DateTime.UtcNow.Date;
-                    else
-                        return ((DateField)field).DefaultValue;
-                }
-                else if (field is DateTimeField)
-                {
-                    if (((DateTimeField)field).UseCurrentTimeAsDefaultValue.Value)
-                        return DateTime.UtcNow;
-                    else
-                        return ((DateTimeField)field).DefaultValue;
-                }
-                else if (field is EmailField)
-                    return ((EmailField)field).DefaultValue;
-                else if (field is FileField)
-                    //TODO convert file path to url path
-                    return ((FileField)field).DefaultValue;
-                else if (field is ImageField)
-                    //TODO convert file path to url path
-                    return ((ImageField)field).DefaultValue;
-                else if (field is HtmlField)
-                    return ((HtmlField)field).DefaultValue;
-                else if (field is MultiLineTextField)
-                    return ((MultiLineTextField)field).DefaultValue;
-                else if (field is MultiSelectField)
-                    return ((MultiSelectField)field).DefaultValue;
-                else if (field is NumberField)
-                    return ((NumberField)field).DefaultValue;
-                else if (field is PasswordField)
-                    return null;
-                else if (field is PercentField)
-                    return ((PercentField)field).DefaultValue;
-                else if (field is PhoneField)
-                    return ((PhoneField)field).DefaultValue;
-                else if (field is GuidField)
-                    throw new Exception("Guid value is missing for Guid type field.");
-                else if (field is SelectField)
-                    return ((SelectField)field).DefaultValue;
-                else if (field is TextField)
-                    return ((TextField)field).DefaultValue;
-                else if (field is UrlField)
-                    return ((UrlField)field).DefaultValue;
-                #endregion
+                return field.GetDefaultValue();
             }
 
             throw new Exception("System Error. A field type is not supported in field value extraction process.");
