@@ -48,7 +48,7 @@ namespace WebVella.ERP.Web.Controllers
             //drop all relations
             rm.Delete(postCategoriesRelationId);
             rm.Delete(postAuthorRelationId);
-            
+
 
             return Json("dropped");
 
@@ -119,11 +119,11 @@ namespace WebVella.ERP.Web.Controllers
                 categoryEntity = result.Object;
             }
 
-			#endregion
+            #endregion
 
-			#region << Create Author entity fields >>
+            #region << Create Author entity fields >>
 
-			InputTextField authorName = new InputTextField();
+            InputTextField authorName = new InputTextField();
             authorName.Id = Guid.NewGuid();
             authorName.Name = "name";
             authorName.Label = "Name";
@@ -137,11 +137,11 @@ namespace WebVella.ERP.Web.Controllers
                     return DoResponse(result);
             }
 
-			#endregion
+            #endregion
 
-			#region << Create Post entity fields >>
+            #region << Create Post entity fields >>
 
-			InputTextField postTitle = new InputTextField();
+            InputTextField postTitle = new InputTextField();
             postTitle.Id = Guid.NewGuid();
             postTitle.Name = "title";
             postTitle.Label = "Title";
@@ -155,7 +155,7 @@ namespace WebVella.ERP.Web.Controllers
                     return DoResponse(result);
             }
 
-			InputTextField postContent = new InputTextField();
+            InputTextField postContent = new InputTextField();
             postContent.Id = Guid.NewGuid();
             postContent.Name = "content";
             postContent.Label = "Content";
@@ -169,7 +169,7 @@ namespace WebVella.ERP.Web.Controllers
                     return DoResponse(result);
             }
 
-			InputGuidField postAuthor = new InputGuidField();
+            InputGuidField postAuthor = new InputGuidField();
             postAuthor.Id = Guid.NewGuid();
             postAuthor.Name = "author";
             postAuthor.Label = "Author";
@@ -184,11 +184,11 @@ namespace WebVella.ERP.Web.Controllers
                     return DoResponse(result);
             }
 
-			#endregion
+            #endregion
 
-			#region << Create Category entity fields >>
+            #region << Create Category entity fields >>
 
-			InputTextField categoryName = new InputTextField();
+            InputTextField categoryName = new InputTextField();
             categoryName.Id = Guid.NewGuid();
             categoryName.Name = "name";
             categoryName.Label = "Name";
@@ -205,13 +205,13 @@ namespace WebVella.ERP.Web.Controllers
             #endregion
 
             #region << Create relations >>
-            
+
             //reload entities with all fields
             postEntity = em.ReadEntity(postEntityId).Object;
             categoryEntity = em.ReadEntity(categoryEntityId).Object;
             authorEntity = em.ReadEntity(authorEntityId).Object;
 
-          
+
 
             EntityRelation postCategoriesRelation = new EntityRelation();
             postCategoriesRelation.Id = postCategoriesRelationId;
@@ -263,7 +263,7 @@ namespace WebVella.ERP.Web.Controllers
             Guid[] postIds = new Guid[10];
             for (int i = 0; i < 10; i++)
             {
-                
+
                 EntityRecord post = new EntityRecord();
                 post["id"] = Guid.NewGuid();
                 post["title"] = string.Format("post {0} title", i);
@@ -321,90 +321,58 @@ namespace WebVella.ERP.Web.Controllers
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
-            /*
-            EntityRecord user = new EntityRecord();
-            user["id"] = cat1Id;
-            user["first_name"] = "system";
-            user["last_name"] = "user";
-            user["password"] = "erp";
-            user["email"] = "erp@webvella.com";
-            user["created_by"] = Guid.Empty;
-            user["last_modified_by"] = Guid.Empty;
-            user["created_on"] = DateTime.UtcNow;
-            
+            return Json("");
 
-            QueryResponse result = recMan.CreateRecord("user", user);
-            return DoResponse(result);
+            em.DeleteEntity(postEntityId);
 
-            */
+            InputEntity inputPostEntity = new InputEntity();
+            inputPostEntity.Id = postEntityId;
+            inputPostEntity.Name = "test_field_operations";
+            inputPostEntity.Label = "test";
+            inputPostEntity.LabelPlural = "test";
+            inputPostEntity.System = false;
+            inputPostEntity.RecordPermissions = new RecordPermissions();
+            inputPostEntity.RecordPermissions.CanCreate.Add(userId);
+            inputPostEntity.RecordPermissions.CanDelete.Add(userId);
+            inputPostEntity.RecordPermissions.CanRead.Add(userId);
+            inputPostEntity.RecordPermissions.CanUpdate.Add(userId);
+            Entity postEntity = null;
+            {
+                var result = em.CreateEntity(inputPostEntity);
+                if (!result.Success)
+                    return DoResponse(result);
 
-            var transaction = recMan.CreateTransaction();
+                postEntity = result.Object;
+            }
 
-          
+            for (int i = 0; i < 10; i++)
+            {
+                EntityRecord testRec = new EntityRecord();
+                testRec["id"] = Guid.NewGuid();
+                {
+                    QueryResponse result = recMan.CreateRecord("test_field_operations", testRec);
+                    if (!result.Success)
+                        return DoResponse(result);
+                }
+            }
 
-            Guid userId = new Guid("84A65939-1BCD-478A-9883-5A6EB87A4FBF");
+            InputTextField postTitle = new InputTextField();
+            postTitle.Id = Guid.NewGuid();
+            postTitle.Name = "title";
+            postTitle.Label = "Title";
+            postTitle.Required = true;
+            postTitle.Unique = false;
+            postTitle.DefaultValue = "test default value";
+            postTitle.System = false;
+            {
+                var result = em.CreateField(postEntity.Id, postTitle);
+                if (!result.Success)
+                    return DoResponse(result);
+            }
 
-            EntityRecord user = new EntityRecord();
-            user["id"] = userId;
-            user["first_name"] = "test";
-            user["last_name"] = "test";
-            user["password"] = "rumen";
-            user["email"] = "test@webvella.com";
-            user["created_by"] = null;
-            user["last_modified_by"] = null;
-            user["created_on"] = DateTime.UtcNow;
-            user["last_modified_on"] = DateTime.UtcNow;
+            em.DeleteField(postEntity.Id, postTitle.Id.Value);
 
-
-            QueryResponse result = recMan.CreateRecord("user", user);
-
-
-            EntityQuery query = new EntityQuery("user", "*", EntityQuery.QueryEQ("id", userId ));
-            result = recMan.Find(query);
-
-            transaction.Begin();
-
-            EntityRecord rec = new EntityRecord();//result.Object.Data.First();
-            rec["id"] = userId;
-            rec["first_name"] = "Rumen";
-            rec.Properties.Remove("password");
-            result = recMan.UpdateRecord("user", rec);
-
-            transaction.Rollback();
-
-            result = recMan.DeleteRecord("user", userId);
-
-
-            return DoResponse(result);
-           
-
-            /*
-            EntityQuery query = new EntityQuery("institution", "name,endowment", EntityQuery.QueryGTE("endowment", 1000000000));
-            var result = recMan.Find(query);
-            return DoResponse(result);
-            */
-
-            /*
-            EntityQuery query = new EntityQuery("role", "id,name, $user_role.id,$user_role.email,$user_role.password", null );
-            var result = recMan.Find(query);
-            return DoResponse(result);
-            */
-
-
-            //EntityQuery query = new EntityQuery("query_test_post", "id,title", null);
-            //var posts = recMan.Find(query).Object.Data;
-
-            // var queryObject = EntityQuery.QueryContains("title", "title" );
-            //var query = new EntityQuery("query_test_post", "id, title, $query_test_post_categories.id, $query_test_post_categories.name", queryObject );
-
-            /*
-            var queryObject = EntityQuery.QueryEQ("weight", 1);
-
-            var query = new EntityQuery("area", "*", queryObject);
-
-            var result = recMan.Find(query);
-            return Json(result); 
-            */
+            return Json("ok");
         }
 
     }
