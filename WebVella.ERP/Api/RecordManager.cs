@@ -718,6 +718,61 @@ namespace WebVella.ERP.Api
             return response;
         }
 
+        public QueryCountResponse Count(EntityQuery query)
+        {
+            QueryCountResponse response = new QueryCountResponse
+            {
+                Success = true,
+                Message = "The query was successfully executed.",
+                Timestamp = DateTime.UtcNow
+            };
+
+            try
+            {
+                var entity = GetEntity(query.EntityName);
+                if (entity == null)
+                {
+                    response.Success = false;
+                    response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
+                    response.Object = 0;
+                    response.Errors.Add(new ErrorModel { Message = response.Message });
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                try
+                {
+                    if (query.Query != null)
+                        ProcessQueryObject(entity, query.Query);
+                }
+                catch (Exception ex)
+                {
+                    response.Success = false;
+                    response.Message = "The query is incorrect and cannot be executed";
+                    response.Object = 0;
+                    response.Errors.Add(new ErrorModel { Message = ex.Message });
+                    response.Timestamp = DateTime.UtcNow;
+                    return response;
+                }
+
+                IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
+                List<Field> fields = ExtractQueryFieldsMeta(query);
+                var recRepo = erpService.StorageService.GetRecordRepository();
+                response.Object = recRepo.Count(query.EntityName, query.Query );
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "The query is incorrect and cannot be executed";
+                response.Object = 0;
+                response.Errors.Add(new ErrorModel { Message = ex.Message });
+                response.Timestamp = DateTime.UtcNow;
+                return response;
+            }
+
+            return response;
+        }
+
         public IStorageTransaction CreateTransaction()
         {
             return erpService.StorageService.GetRecordRepository().CreateTransaction();
