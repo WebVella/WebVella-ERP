@@ -46,7 +46,7 @@ namespace WebVella.ERP
 		{
 		}
 
-		public InputField(InputField field)
+        public InputField(InputField field)
 		{
 			Id = field.Id;
 			Name = field.Name;
@@ -134,7 +134,7 @@ namespace WebVella.ERP
 
 			return field;
 		}
-	}
+			}
 
 	public abstract class Field
 	{

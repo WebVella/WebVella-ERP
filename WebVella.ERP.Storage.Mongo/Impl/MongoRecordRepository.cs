@@ -170,6 +170,13 @@ namespace WebVella.ERP.Storage.Mongo
             return result;
         }
 
+        public long Count(string entityName, QueryObject query )
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+            var mongoQuery = ConvertQuery(query);
+            return mongoCollection.Count(mongoQuery);
+        }
+
         private IMongoQuery ConvertQuery(QueryObject query)
         {
             if (query == null)
@@ -252,6 +259,18 @@ namespace WebVella.ERP.Storage.Mongo
         {
             return  MongoStaticContext.Context.CreateTransaction(false);
         }
-        
+
+        public void CreateRecordField(string entityName, string fieldName, object value)
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+            mongoCollection.Update(Query.Null, MongoDB.Driver.Builders.Update.Set(fieldName, ConvertObjectToBsonValue(value)), UpdateFlags.Multi);
+        }
+
+        public void RemoveRecordField(string entityName, string fieldName)
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+            mongoCollection.Update(Query.Null, MongoDB.Driver.Builders.Update.Unset(fieldName), UpdateFlags.Multi);
+        }
+
     }
 }

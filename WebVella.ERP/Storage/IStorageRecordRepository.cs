@@ -14,8 +14,14 @@ namespace WebVella.ERP.Storage
 
         IEnumerable<IEnumerable<KeyValuePair<string, object>>> Find(string entityName, QueryObject query, QuerySortObject[] sort, int? skip, int? limit);
 
+        long Count(string entityName, QueryObject query);
+
         IEnumerable<KeyValuePair<string, object>> Find(string entityName, Guid id);
 
         IStorageTransaction CreateTransaction();
+
+        void CreateRecordField(string entityName, string fieldName, object value);
+
+        void RemoveRecordField(string entityName, string fieldName);
     }
 }
