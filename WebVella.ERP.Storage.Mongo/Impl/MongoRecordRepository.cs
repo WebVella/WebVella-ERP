@@ -170,6 +170,13 @@ namespace WebVella.ERP.Storage.Mongo
             return result;
         }
 
+        public long Count(string entityName, QueryObject query )
+        {
+            var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+            var mongoQuery = ConvertQuery(query);
+            return mongoCollection.Count(mongoQuery);
+        }
+
         private IMongoQuery ConvertQuery(QueryObject query)
         {
             if (query == null)
