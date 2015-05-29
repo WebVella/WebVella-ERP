@@ -5,6 +5,7 @@ using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
 using System.Linq;
+using WebVella.ERP.Api.Models.AutoMapper;
 
 namespace WebVella.ERP
 {
@@ -375,7 +376,7 @@ namespace WebVella.ERP
 			//    storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
 			//    systemSettingsRepository.Save(storeSystemSettings);
 			//}
-        }
+		}
 
         #region << tests >>
 
@@ -404,7 +405,7 @@ namespace WebVella.ERP
 
             try
             {
-                Entity entity = new Entity(inputEntity);
+                Entity entity = inputEntity.MapTo<Entity>();
 
                 EntityResponse response = entityManager.CreateEntity(inputEntity);
 

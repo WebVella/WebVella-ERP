@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Utilities.Dynamic;
 
@@ -100,7 +101,7 @@ namespace WebVella.ERP.Api
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             IStorageEntity storageEntity = EntityRepository.Read(entityId);
-            Entity entity = ConvertEntityFromStorage(storageEntity);
+            Entity entity = storageEntity.MapTo<Entity>();
 
             if (fields.Count == 0)
             {
@@ -380,7 +381,7 @@ namespace WebVella.ERP.Api
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             IStorageEntity storageEntity = EntityRepository.Read(entityId);
-            Entity entity = ConvertEntityFromStorage(storageEntity);
+            Entity entity = storageEntity.MapTo<Entity>();
 
             foreach (var recordList in recordsLists)
             {
@@ -428,7 +429,7 @@ namespace WebVella.ERP.Api
 
                         if (verifiedEntity != null || filter.EntityId == entity.Id)
                         {
-                            Entity currentEntity = verifiedEntity != null ? ConvertEntityFromStorage(verifiedEntity) : entity;
+                            Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
 
                             if (currentEntity.Fields.Where(f => f.Id == filter.FieldId).Count() == 0)
                                 errorList.Add(new ErrorModel("recordsLists.filters.fieldId", filter.FieldId.ToString(), "Filter with such Id does not exist!"));
@@ -457,7 +458,7 @@ namespace WebVella.ERP.Api
 
                         if (verifiedEntity != null || field.EntityId == entity.Id)
                         {
-                            Entity currentEntity = verifiedEntity != null ? ConvertEntityFromStorage(verifiedEntity) : entity;
+                            Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
 
                             if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
                                 errorList.Add(new ErrorModel("recordsLists.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
@@ -483,7 +484,7 @@ namespace WebVella.ERP.Api
             List<ErrorModel> errorList = new List<ErrorModel>();
 
             IStorageEntity storageEntity = EntityRepository.Read(entityId);
-            Entity entity = ConvertEntityFromStorage(storageEntity);
+            Entity entity = storageEntity.MapTo<Entity>();
 
             foreach (var recordView in recordViewList)
             {
@@ -528,7 +529,7 @@ namespace WebVella.ERP.Api
 
                     if (verifiedEntity != null || field.EntityId == entity.Id)
                     {
-                        Entity currentEntity = verifiedEntity != null ? ConvertEntityFromStorage(verifiedEntity) : entity;
+                        Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
 
                         if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
                             errorList.Add(new ErrorModel("recordViewLists.fields.id", entity.Id.ToString(), "Field with such Id does not exist!"));
@@ -553,200 +554,6 @@ namespace WebVella.ERP.Api
 
         #region << Entity methods >>
 
-        public Entity ConvertEntityFromStorage(IStorageEntity storageEntity)
-        {
-            //IERPService service = new 
-            //EntityManager = new EntityManager(service.StorageService).CreateEntity(submitObj);
-            Entity entity = new Entity(); ;
-
-            entity.Id = storageEntity.Id;
-            entity.Name = storageEntity.Name;
-            entity.Label = storageEntity.Label;
-            entity.LabelPlural = storageEntity.LabelPlural;
-            entity.System = storageEntity.System;
-            entity.IconName = storageEntity.IconName;
-            entity.Weight = storageEntity.Weight;
-            entity.RecordPermissions = new RecordPermissions();
-            if (storageEntity.RecordPermissions != null)
-            {
-                entity.RecordPermissions.CanRead = storageEntity.RecordPermissions.CanRead;
-                entity.RecordPermissions.CanCreate = storageEntity.RecordPermissions.CanCreate;
-                entity.RecordPermissions.CanUpdate = storageEntity.RecordPermissions.CanUpdate;
-                entity.RecordPermissions.CanDelete = storageEntity.RecordPermissions.CanDelete;
-            }
-
-            entity.Fields = new List<Field>();
-
-            foreach (IStorageField storageField in storageEntity.Fields)
-            {
-                Field field = ConvertFieldFromStorage(storageField);
-
-                entity.Fields.Add(field);
-            }
-
-            entity.RecordsLists = new List<RecordsList>();
-
-            foreach (IStorageRecordsList storageRecordsList in storageEntity.RecordsLists)
-            {
-                RecordsList recordsList = new RecordsList();
-                recordsList.Id = storageRecordsList.Id;
-                recordsList.Name = storageRecordsList.Name;
-                recordsList.Label = storageRecordsList.Label;
-                recordsList.Type = storageRecordsList.Type;
-
-                recordsList.Filters = new List<RecordsListFilter>();
-
-                foreach (IStorageRecordsListFilter storageFilter in storageRecordsList.Filters)
-                {
-                    RecordsListFilter filter = new RecordsListFilter();
-
-                    filter.EntityId = storageFilter.EntityId;
-                    filter.FieldId = storageFilter.FieldId;
-                    filter.Operator = storageFilter.Operator;
-                    filter.Value = storageFilter.Value;
-
-                    recordsList.Filters.Add(filter);
-                }
-
-                recordsList.Fields = new List<RecordsListField>();
-
-                foreach (IStorageRecordsListField storageField in storageRecordsList.Fields)
-                {
-                    RecordsListField field = new RecordsListField();
-
-                    field.EntityId = storageField.EntityId;
-                    field.Id = storageField.Id;
-                    field.Position = storageField.Position;
-
-                    recordsList.Fields.Add(field);
-                }
-
-                entity.RecordsLists.Add(recordsList);
-            }
-
-            entity.RecordViewLists = new List<RecordView>();
-
-            foreach (IStorageRecordView storageRecordView in storageEntity.RecordViewList)
-            {
-                RecordView recordView = new RecordView();
-                recordView.Id = storageRecordView.Id;
-                recordView.Name = storageRecordView.Name;
-                recordView.Label = storageRecordView.Label;
-
-                recordView.Fields = new List<RecordViewField>();
-
-                foreach (IStorageRecordViewField storageField in storageRecordView.Fields)
-                {
-                    RecordViewField field = new RecordViewField();
-
-                    field.EntityId = storageField.EntityId;
-                    field.Id = storageField.Id;
-                    field.Position = storageField.Position;
-
-                    recordView.Fields.Add(field);
-                }
-
-                entity.RecordViewLists.Add(recordView);
-            }
-
-            return entity;
-        }
-
-        public IStorageEntity ConvertEntityToStorage(Entity entity)
-        {
-            IStorageEntity storageEntity = StorageObjectFactory.CreateEmptyEntityObject();
-
-            storageEntity.Id = entity.Id;
-            storageEntity.Name = entity.Name;
-            storageEntity.Label = entity.Label;
-            storageEntity.LabelPlural = entity.LabelPlural;
-            storageEntity.System = entity.System;
-            storageEntity.IconName = entity.IconName;
-            storageEntity.Weight = entity.Weight;
-            storageEntity.RecordPermissions = StorageObjectFactory.CreateEmptyRecordPermissionsObject();
-            if (entity.RecordPermissions != null)
-            {
-                storageEntity.RecordPermissions.CanRead = entity.RecordPermissions.CanRead;
-                storageEntity.RecordPermissions.CanCreate = entity.RecordPermissions.CanCreate;
-                storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
-                storageEntity.RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
-            }
-            storageEntity.Fields = new List<IStorageField>();
-
-            foreach (Field field in entity.Fields)
-            {
-                IStorageField storageField = ConvertFieldToStorage(field);
-                storageEntity.Fields.Add(storageField);
-            }
-
-            storageEntity.RecordsLists = new List<IStorageRecordsList>();
-
-            foreach (RecordsList recordsList in entity.RecordsLists)
-            {
-                IStorageRecordsList storageRecordsList = StorageObjectFactory.CreateEmptyRecordsListObject();
-                storageRecordsList.Id = recordsList.Id.Value;
-                storageRecordsList.Name = recordsList.Name;
-                storageRecordsList.Label = recordsList.Label;
-                storageRecordsList.Type = recordsList.Type.Value;
-
-                storageRecordsList.Filters = new List<IStorageRecordsListFilter>();
-
-                foreach (RecordsListFilter filter in recordsList.Filters)
-                {
-                    IStorageRecordsListFilter storageFilter = StorageObjectFactory.CreateEmptyRecordsListFilterObject();
-
-                    storageFilter.EntityId = filter.EntityId.Value;
-                    storageFilter.FieldId = filter.FieldId.Value;
-                    storageFilter.Operator = filter.Operator;
-                    storageFilter.Value = filter.Value;
-
-                    storageRecordsList.Filters.Add(storageFilter);
-                }
-
-                storageRecordsList.Fields = new List<IStorageRecordsListField>();
-
-                foreach (RecordsListField field in recordsList.Fields)
-                {
-                    IStorageRecordsListField storageField = StorageObjectFactory.CreateEmptyRecordsListFieldObject();
-
-                    storageField.EntityId = field.EntityId.Value;
-                    storageField.Id = field.Id.Value;
-                    storageField.Position = field.Position.Value;
-
-                    storageRecordsList.Fields.Add(storageField);
-                }
-
-                storageEntity.RecordsLists.Add(storageRecordsList);
-            }
-
-            storageEntity.RecordViewList = new List<IStorageRecordView>();
-
-            foreach (RecordView recordView in entity.RecordViewLists)
-            {
-                IStorageRecordView storageRecordView = StorageObjectFactory.CreateEmptyRecordViewObject();
-                storageRecordView.Id = recordView.Id.Value;
-                storageRecordView.Name = recordView.Name;
-                storageRecordView.Label = recordView.Label;
-
-                storageRecordView.Fields = new List<IStorageRecordViewField>();
-
-                foreach (RecordViewField field in recordView.Fields)
-                {
-                    IStorageRecordViewField storageField = StorageObjectFactory.CreateEmptyRecordViewFieldObject();
-
-                    storageField.EntityId = field.EntityId.Value;
-                    storageField.Id = field.Id.Value;
-                    storageField.Position = field.Position.Value;
-
-                    storageRecordView.Fields.Add(storageField);
-                }
-
-                storageEntity.RecordViewList.Add(storageRecordView);
-            }
-
-            return storageEntity;
-        }
-
         public EntityResponse CreateEntity(InputEntity inputEntity)
         {
             EntityResponse response = new EntityResponse
@@ -755,7 +562,7 @@ namespace WebVella.ERP.Api
                 Message = "The entity was successfully created!",
             };
 
-            Entity entity = new Entity(inputEntity);
+            Entity entity = inputEntity.MapTo<Entity>();
 
             try
             {
@@ -779,7 +586,7 @@ namespace WebVella.ERP.Api
                 entity.RecordsLists = CreateEntityDefaultRecordsLists(entity);
                 entity.RecordViewLists = CreateEntityDefaultRecordViews(entity);
 
-                IStorageEntity storageEntity = ConvertEntityToStorage(entity);
+                IStorageEntity storageEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Create(storageEntity);
                 if (!result)
                 {
@@ -806,7 +613,7 @@ namespace WebVella.ERP.Api
             }
 
             IStorageEntity createdEntity = EntityRepository.Read(entity.Id);
-            response.Object = ConvertEntityFromStorage(createdEntity);
+            response.Object = createdEntity.MapTo<Entity>();
             response.Timestamp = DateTime.UtcNow;
 
             return response;
@@ -820,7 +627,7 @@ namespace WebVella.ERP.Api
                 Message = "The entity was successfully updated!",
             };
 
-            Entity entity = new Entity(inputEntity);
+            Entity entity = inputEntity.MapTo<Entity>();
 
             try
             {
@@ -872,7 +679,7 @@ namespace WebVella.ERP.Api
             }
 
             IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
-            response.Object = ConvertEntityFromStorage(updatedEntity);
+            response.Object = updatedEntity.MapTo<Entity>();
             response.Timestamp = DateTime.UtcNow;
 
             return response;
@@ -891,7 +698,7 @@ namespace WebVella.ERP.Api
             try
             {
                 IStorageEntity storageEntity = EntityRepository.Read(id);
-                entity = ConvertEntityFromStorage(storageEntity);
+                entity = storageEntity.MapTo<Entity>();
 
                 if (inputEntity.Label != null)
                     entity.Label = inputEntity.Label;
@@ -917,7 +724,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                storageEntity = ConvertEntityToStorage(entity);
+                storageEntity = entity.MapTo<IStorageEntity>();
 
                 bool result = EntityRepository.Update(storageEntity);
 
@@ -944,7 +751,7 @@ namespace WebVella.ERP.Api
             }
 
             IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
-            response.Object = ConvertEntityFromStorage(updatedEntity);
+            response.Object = updatedEntity.MapTo<Entity>();
             response.Timestamp = DateTime.UtcNow;
 
             return response;
@@ -1006,7 +813,7 @@ namespace WebVella.ERP.Api
                 EntityList entityList = new EntityList();
                 foreach (var storageEntity in storageEntityList)
                 {
-                    Entity entity = ConvertEntityFromStorage(storageEntity);
+                    Entity entity = storageEntity.MapTo<Entity>();
                     entityList.Entities.Add(entity);
                 }
 
@@ -1044,7 +851,7 @@ namespace WebVella.ERP.Api
             {
                 IStorageEntity storageEntity = EntityRepository.Read(id);
                 if( storageEntity != null )
-                    response.Object = ConvertEntityFromStorage(storageEntity);
+                    response.Object = storageEntity.MapTo<Entity>();
             }
             catch (Exception e)
             {
@@ -1078,7 +885,7 @@ namespace WebVella.ERP.Api
             {
                 IStorageEntity storageEntity = EntityRepository.Read(name);
                 if (storageEntity != null)
-                    response.Object = ConvertEntityFromStorage(storageEntity);
+                    response.Object = storageEntity.MapTo<Entity>();
             }
             catch (Exception e)
             {
@@ -1100,329 +907,6 @@ namespace WebVella.ERP.Api
         #endregion
 
         #region << Field methods >>
-
-        public Field ConvertFieldFromStorage(IStorageField storageField)
-        {
-            Field field = null;
-            if (storageField is IStorageAutoNumberField)
-            {
-                field = new AutoNumberField();
-                ((AutoNumberField)field).DefaultValue = ((IStorageAutoNumberField)storageField).DefaultValue;
-                ((AutoNumberField)field).DisplayFormat = ((IStorageAutoNumberField)storageField).DisplayFormat;
-                ((AutoNumberField)field).StartingNumber = ((IStorageAutoNumberField)storageField).StartingNumber;
-            }
-            else if (storageField is IStorageCheckboxField)
-            {
-                field = new CheckboxField();
-                ((CheckboxField)field).DefaultValue = ((IStorageCheckboxField)storageField).DefaultValue;
-            }
-            else if (storageField is IStorageCurrencyField)
-            {
-                field = new CurrencyField();
-                ((CurrencyField)field).DefaultValue = ((IStorageCurrencyField)storageField).DefaultValue;
-                ((CurrencyField)field).MinValue = ((IStorageCurrencyField)storageField).MinValue;
-                ((CurrencyField)field).MaxValue = ((IStorageCurrencyField)storageField).MaxValue;
-                ((CurrencyField)field).Currency = ((IStorageCurrencyField)storageField).Currency;
-            }
-            else if (storageField is IStorageDateField)
-            {
-                field = new DateField();
-                ((DateField)field).DefaultValue = ((IStorageDateField)storageField).DefaultValue;
-                ((DateField)field).Format = ((IStorageDateField)storageField).Format;
-                ((DateField)field).UseCurrentTimeAsDefaultValue = ((IStorageDateField)storageField).UseCurrentTimeAsDefaultValue;
-            }
-            else if (storageField is IStorageDateTimeField)
-            {
-                field = new DateTimeField();
-                ((DateTimeField)field).DefaultValue = ((IStorageDateTimeField)storageField).DefaultValue;
-                ((DateTimeField)field).Format = ((IStorageDateTimeField)storageField).Format;
-                ((DateTimeField)field).UseCurrentTimeAsDefaultValue = ((IStorageDateTimeField)storageField).UseCurrentTimeAsDefaultValue;
-            }
-            else if (storageField is IStorageEmailField)
-            {
-                field = new EmailField();
-                ((EmailField)field).DefaultValue = ((IStorageEmailField)storageField).DefaultValue;
-                ((EmailField)field).MaxLength = ((IStorageEmailField)storageField).MaxLength;
-            }
-            else if (storageField is IStorageFileField)
-            {
-                field = new FileField();
-                ((FileField)field).DefaultValue = ((IStorageFileField)storageField).DefaultValue;
-            }
-            //else if (storageField is IStorageFormulaField)
-            //{
-            //    field = new FormulaField();
-            //    ((FormulaField)field).ReturnType = ((IStorageFormulaField)storageField).ReturnType;
-            //    ((FormulaField)field).FormulaText = ((IStorageFormulaField)storageField).FormulaText;
-            //    ((FormulaField)field).DecimalPlaces = ((IStorageFormulaField)storageField).DecimalPlaces;
-            //}
-            else if (storageField is IStorageHtmlField)
-            {
-                field = new HtmlField();
-                ((HtmlField)field).DefaultValue = ((IStorageHtmlField)storageField).DefaultValue;
-            }
-            else if (storageField is IStorageImageField)
-            {
-                field = new ImageField();
-                ((ImageField)field).DefaultValue = ((IStorageImageField)storageField).DefaultValue;
-            }
-            else if (storageField is IStorageImageField)
-            {
-                field = new ImageField();
-                ((ImageField)field).DefaultValue = ((IStorageImageField)storageField).DefaultValue;
-            }
-            else if (storageField is IStorageMultiLineTextField)
-            {
-                field = new MultiLineTextField();
-                ((MultiLineTextField)field).DefaultValue = ((IStorageMultiLineTextField)storageField).DefaultValue;
-                ((MultiLineTextField)field).MaxLength = ((IStorageMultiLineTextField)storageField).MaxLength;
-                ((MultiLineTextField)field).VisibleLineNumber = ((IStorageMultiLineTextField)storageField).VisibleLineNumber;
-            }
-            else if (storageField is IStorageMultiSelectField)
-            {
-                field = new MultiSelectField();
-                ((MultiSelectField)field).DefaultValue = ((IStorageMultiSelectField)storageField).DefaultValue;
-                ((MultiSelectField)field).Options = MultiSelectField.ConvertOptions(((IStorageMultiSelectField)storageField).Options);
-            }
-            else if (storageField is IStorageNumberField)
-            {
-                field = new NumberField();
-                ((NumberField)field).DefaultValue = ((IStorageNumberField)storageField).DefaultValue;
-                ((NumberField)field).MinValue = ((IStorageNumberField)storageField).MinValue;
-                ((NumberField)field).MaxValue = ((IStorageNumberField)storageField).MaxValue;
-                ((NumberField)field).DecimalPlaces = ((IStorageNumberField)storageField).DecimalPlaces;
-            }
-            else if (storageField is IStoragePasswordField)
-            {
-                field = new PasswordField();
-                ((PasswordField)field).Encrypted = ((IStoragePasswordField)storageField).Encrypted;
-                ((PasswordField)field).MaxLength = ((IStoragePasswordField)storageField).MaxLength;
-                ((PasswordField)field).MinLength = ((IStoragePasswordField)storageField).MinLength;
-            }
-            else if (storageField is IStoragePercentField)
-            {
-                field = new PercentField();
-                ((PercentField)field).DefaultValue = ((IStoragePercentField)storageField).DefaultValue;
-                ((PercentField)field).MinValue = ((IStoragePercentField)storageField).MinValue;
-                ((PercentField)field).MaxValue = ((IStoragePercentField)storageField).MaxValue;
-                ((PercentField)field).DecimalPlaces = ((IStoragePercentField)storageField).DecimalPlaces;
-            }
-            else if (storageField is IStoragePhoneField)
-            {
-                field = new PhoneField();
-                ((PhoneField)field).DefaultValue = ((IStoragePhoneField)storageField).DefaultValue;
-                ((PhoneField)field).Format = ((IStoragePhoneField)storageField).Format;
-                ((PhoneField)field).MaxLength = ((IStoragePhoneField)storageField).MaxLength;
-            }
-            else if (storageField is IStorageGuidField)
-            {
-                field = new GuidField();
-                ((GuidField)field).DefaultValue = ((IStorageGuidField)storageField).DefaultValue;
-                ((GuidField)field).GenerateNewId = ((IStorageGuidField)storageField).GenerateNewId;
-            }
-            else if (storageField is IStorageSelectField)
-            {
-                field = new SelectField();
-                ((SelectField)field).DefaultValue = ((IStorageSelectField)storageField).DefaultValue;
-                ((SelectField)field).Options = SelectField.ConvertOptions(((IStorageSelectField)storageField).Options);
-            }
-            else if (storageField is IStorageTextField)
-            {
-                field = new TextField();
-                ((TextField)field).DefaultValue = ((IStorageTextField)storageField).DefaultValue;
-                ((TextField)field).MaxLength = ((IStorageTextField)storageField).MaxLength;
-            }
-            else if (storageField is IStorageUrlField)
-            {
-                field = new UrlField();
-                ((UrlField)field).DefaultValue = ((IStorageUrlField)storageField).DefaultValue;
-                ((UrlField)field).MaxLength = ((IStorageUrlField)storageField).MaxLength;
-                ((UrlField)field).OpenTargetInNewWindow = ((IStorageUrlField)storageField).OpenTargetInNewWindow;
-            }
-
-            field.Id = storageField.Id;
-            field.Name = storageField.Name;
-            field.Label = storageField.Label;
-            field.PlaceholderText = storageField.PlaceholderText;
-            field.Description = storageField.Description;
-            field.HelpText = storageField.HelpText;
-            field.Required = storageField.Required;
-            field.Unique = storageField.Unique;
-            field.Searchable = storageField.Searchable;
-            field.Auditable = storageField.Auditable;
-            field.System = storageField.System;
-
-            return field;
-        }
-
-        public IStorageField ConvertFieldToStorage(Field field)
-        {
-            if (field == null)
-                throw new ArgumentNullException("field");
-
-            IStorageField storageField = null;
-            if (field is AutoNumberField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(AutoNumberField));
-                ((IStorageAutoNumberField)storageField).DefaultValue = ((AutoNumberField)field).DefaultValue;
-                ((IStorageAutoNumberField)storageField).DisplayFormat = ((AutoNumberField)field).DisplayFormat;
-                ((IStorageAutoNumberField)storageField).StartingNumber = ((AutoNumberField)field).StartingNumber;
-            }
-            else if (field is CheckboxField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(CheckboxField));
-                ((IStorageCheckboxField)storageField).DefaultValue = ((CheckboxField)field).DefaultValue.Value;
-            }
-            else if (field is CurrencyField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(CurrencyField));
-                ((IStorageCurrencyField)storageField).DefaultValue = ((CurrencyField)field).DefaultValue;
-                ((IStorageCurrencyField)storageField).MinValue = ((CurrencyField)field).MinValue;
-                ((IStorageCurrencyField)storageField).MaxValue = ((CurrencyField)field).MaxValue;
-                ((IStorageCurrencyField)storageField).Currency = ((CurrencyField)field).Currency;
-            }
-            else if (field is DateField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(DateField));
-                ((IStorageDateField)storageField).DefaultValue = ((DateField)field).DefaultValue;
-                ((IStorageDateField)storageField).Format = ((DateField)field).Format;
-                ((IStorageDateField)storageField).UseCurrentTimeAsDefaultValue = ((DateField)field).UseCurrentTimeAsDefaultValue.Value;
-            }
-            else if (field is DateTimeField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(DateTimeField));
-                ((IStorageDateTimeField)storageField).DefaultValue = ((DateTimeField)field).DefaultValue;
-                ((IStorageDateTimeField)storageField).Format = ((DateTimeField)field).Format;
-                ((IStorageDateTimeField)storageField).UseCurrentTimeAsDefaultValue = ((DateTimeField)field).UseCurrentTimeAsDefaultValue.Value;
-            }
-            else if (field is EmailField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(EmailField));
-                ((IStorageEmailField)storageField).DefaultValue = ((EmailField)field).DefaultValue;
-                ((IStorageEmailField)storageField).MaxLength = ((EmailField)field).MaxLength;
-            }
-            else if (field is FileField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(FileField));
-                ((IStorageFileField)storageField).DefaultValue = ((FileField)field).DefaultValue;
-            }
-            //else if (field is FormulaField)
-            //{
-            //    storageField = new MongoFormulaField();
-            //    ((MongoFormulaField)storageField).ReturnType = ((FormulaField)field).ReturnType;
-            //    ((MongoFormulaField)storageField).FormulaText = ((FormulaField)field).FormulaText;
-            //    ((MongoFormulaField)storageField).DecimalPlaces = ((FormulaField)field).DecimalPlaces;
-            //}
-            else if (field is HtmlField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(HtmlField));
-                ((IStorageHtmlField)storageField).DefaultValue = ((HtmlField)field).DefaultValue;
-            }
-            else if (field is ImageField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(ImageField));
-                ((IStorageImageField)storageField).DefaultValue = ((ImageField)field).DefaultValue;
-            }
-            else if (field is MultiLineTextField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(MultiLineTextField));
-                ((IStorageMultiLineTextField)storageField).DefaultValue = ((MultiLineTextField)field).DefaultValue;
-                ((IStorageMultiLineTextField)storageField).MaxLength = ((MultiLineTextField)field).MaxLength;
-                ((IStorageMultiLineTextField)storageField).VisibleLineNumber = ((MultiLineTextField)field).VisibleLineNumber;
-            }
-            else if (field is MultiSelectField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(MultiSelectField));
-                ((IStorageMultiSelectField)storageField).DefaultValue = ((MultiSelectField)field).DefaultValue;
-                ((IStorageMultiSelectField)storageField).Options = new List<IStorageMultiSelectFieldOption>();
-                foreach (var option in ((MultiSelectField)field).Options)
-                {
-                    IStorageMultiSelectFieldOption storeOption = StorageObjectFactory.CreateEmptyMultiSelectFieldOptionObject();
-                    storeOption.Key = option.Key;
-                    storeOption.Value = option.Value;
-
-                    ((IStorageMultiSelectField)storageField).Options.Add(storeOption);
-                }
-            }
-            else if (field is NumberField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(NumberField));
-                ((IStorageNumberField)storageField).DefaultValue = ((NumberField)field).DefaultValue;
-                ((IStorageNumberField)storageField).MinValue = ((NumberField)field).MinValue;
-                ((IStorageNumberField)storageField).MaxValue = ((NumberField)field).MaxValue;
-                ((IStorageNumberField)storageField).DecimalPlaces = ((NumberField)field).DecimalPlaces.Value;
-            }
-            else if (field is PasswordField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PasswordField));
-                ((IStoragePasswordField)storageField).MaxLength = ((PasswordField)field).MaxLength;
-                ((IStoragePasswordField)storageField).MinLength= ((PasswordField)field).MinLength;
-                ((IStoragePasswordField)storageField).Encrypted = ((PasswordField)field).Encrypted??true;
-            }
-            else if (field is PercentField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PercentField));
-                ((IStoragePercentField)storageField).DefaultValue = ((PercentField)field).DefaultValue;
-                ((IStoragePercentField)storageField).MinValue = ((PercentField)field).MinValue;
-                ((IStoragePercentField)storageField).MaxValue = ((PercentField)field).MaxValue;
-                ((IStoragePercentField)storageField).DecimalPlaces = ((PercentField)field).DecimalPlaces.Value;
-            }
-            else if (field is PhoneField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(PhoneField));
-                ((IStoragePhoneField)storageField).DefaultValue = ((PhoneField)field).DefaultValue;
-                ((IStoragePhoneField)storageField).Format = ((PhoneField)field).Format;
-                ((IStoragePhoneField)storageField).MaxLength = ((PhoneField)field).MaxLength;
-            }
-            else if (field is GuidField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(GuidField));
-                ((IStorageGuidField)storageField).DefaultValue = ((GuidField)field).DefaultValue;
-                ((IStorageGuidField)storageField).GenerateNewId = ((GuidField)field).GenerateNewId;
-            }
-            else if (field is SelectField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(SelectField));
-                ((IStorageSelectField)storageField).DefaultValue = ((SelectField)field).DefaultValue;
-                ((IStorageSelectField)storageField).Options = new List<IStorageSelectFieldOption>();
-                foreach (var option in ((SelectField)field).Options)
-                {
-                    IStorageSelectFieldOption storeOption = StorageObjectFactory.CreateEmptySelectFieldOptionObject();
-                    storeOption.Key = option.Key;
-                    storeOption.Value = option.Value;
-
-                    ((IStorageSelectField)storageField).Options.Add(storeOption);
-                }
-
-            }
-            else if (field is TextField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(TextField));
-                ((IStorageTextField)storageField).DefaultValue = ((TextField)field).DefaultValue;
-                ((IStorageTextField)storageField).MaxLength = ((TextField)field).MaxLength;
-            }
-            else if (field is UrlField)
-            {
-                storageField = StorageObjectFactory.CreateEmptyFieldObject(typeof(UrlField));
-                ((IStorageUrlField)storageField).DefaultValue = ((UrlField)field).DefaultValue;
-                ((IStorageUrlField)storageField).MaxLength = ((UrlField)field).MaxLength;
-                ((IStorageUrlField)storageField).OpenTargetInNewWindow = ((UrlField)field).OpenTargetInNewWindow.Value;
-            }
-
-            storageField.Id = field.Id;
-            storageField.Name = field.Name;
-            storageField.Label = field.Label;
-            storageField.PlaceholderText = field.PlaceholderText;
-            storageField.Description = field.Description;
-            storageField.HelpText = field.HelpText;
-            storageField.Required = field.Required;
-            storageField.Unique = field.Unique;
-            storageField.Searchable = field.Searchable;
-            storageField.Auditable = field.Auditable;
-            storageField.System = field.System;
-
-            return storageField;
-        }
 
         public FieldResponse CreateField(Guid entityId, InputField inputField)
         {
@@ -1449,11 +933,11 @@ namespace WebVella.ERP.Api
                 if (inputField.Id == null || inputField.Id == Guid.Empty)
 					inputField.Id = Guid.NewGuid();
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Errors = ValidateField(entity, inputField, false);
 
-				field = Field.ConvertField(inputField);
+				field = inputField.MapTo<Field>();
 
 				if (response.Errors.Count > 0)
                 {
@@ -1466,7 +950,7 @@ namespace WebVella.ERP.Api
 
                 entity.Fields.Add(field);
 
-                IStorageEntity editedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity editedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(editedEntity);
                 if (!result)
                 {
@@ -1518,11 +1002,11 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Errors = ValidateField(entity, inputField, true);
 
-				field = Field.ConvertField(inputField);
+				field = inputField.MapTo<Field>();
 
                 if (response.Errors.Count > 0)
                 {
@@ -1539,7 +1023,7 @@ namespace WebVella.ERP.Api
 
                 entity.Fields.Add(field);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -1591,7 +1075,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 updatedField = entity.Fields.FirstOrDefault(f => f.Id == id);
 
@@ -1775,7 +1259,7 @@ namespace WebVella.ERP.Api
                     updatedField.System = inputField.System.Value;
 
                 response.Object = updatedField;
-                response.Errors = ValidateField(entity, InputField.ConvertField(updatedField), true);
+                response.Errors = ValidateField(entity, updatedField.MapTo<InputField>(), true);
 
                 if (response.Errors.Count > 0)
                 {
@@ -1785,7 +1269,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -1835,7 +1319,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 Field field = entity.Fields.FirstOrDefault(f => f.Id == id);
 
@@ -1850,7 +1334,7 @@ namespace WebVella.ERP.Api
 
                 entity.Fields.Remove(field);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -1901,7 +1385,7 @@ namespace WebVella.ERP.Api
 
                 foreach (IStorageField storageField in storageEntity.Fields)
                 {
-                    fieldList.Fields.Add(ConvertFieldFromStorage(storageField));
+                    fieldList.Fields.Add(storageField.MapTo<Field>());
                 }
 
                 response.Object = fieldList;
@@ -1954,7 +1438,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Field field = ConvertFieldFromStorage(storageField);
+                Field field = storageField.MapTo<Field>();
                 response.Object = field;
             }
             catch (Exception e)
@@ -1998,7 +1482,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Object = recordsList;
                 response.Errors = ValidateView(entity, recordsList, false);
@@ -2013,7 +1497,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordsLists.Add(recordsList);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2063,7 +1547,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Object = recordsList;
                 response.Errors = ValidateView(entity, recordsList, true);
@@ -2082,7 +1566,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordsLists.Add(recordsList);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2132,7 +1616,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordsList updatedList = entity.RecordsLists.FirstOrDefault(l => l.Id == id);
 
@@ -2164,7 +1648,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2214,7 +1698,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
 
@@ -2229,7 +1713,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordsLists.Remove(recordsList);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2275,7 +1759,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordsListCollection recordsListCollection = new RecordsListCollection();
                 recordsListCollection.RecordsLists = entity.RecordsLists;
@@ -2319,7 +1803,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
 
@@ -2375,7 +1859,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Object = recordView;
                 response.Errors = ValidateForm(entity, recordView, false);
@@ -2390,7 +1874,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordViewLists.Add(recordView);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2440,7 +1924,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 response.Object = recordView;
                 response.Errors = ValidateForm(entity, recordView, true);
@@ -2459,7 +1943,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordViewLists.Add(recordView);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2509,7 +1993,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordView updatedView = entity.RecordViewLists.FirstOrDefault(v => v.Id == id);
 
@@ -2537,7 +2021,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2587,7 +2071,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
 
@@ -2602,7 +2086,7 @@ namespace WebVella.ERP.Api
 
                 entity.RecordViewLists.Remove(recordView);
 
-                IStorageEntity updatedEntity = ConvertEntityToStorage(entity);
+                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
                 bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
@@ -2648,7 +2132,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordViewCollection recordViewList = new RecordViewCollection();
                 recordViewList.RecordViews = entity.RecordViewLists;
@@ -2692,7 +2176,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                Entity entity = ConvertEntityFromStorage(storageEntity);
+                Entity entity = storageEntity.MapTo<Entity>();
 
                 RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
 

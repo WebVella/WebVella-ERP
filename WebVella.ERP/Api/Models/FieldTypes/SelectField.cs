@@ -28,19 +28,6 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "options")]
 		public List<SelectFieldOption> Options { get; set; }
-
-		public static List<SelectFieldOption> ConvertOptions(IList<IStorageSelectFieldOption> storageOptions)
-		{
-			List<SelectFieldOption> options = new List<SelectFieldOption>();
-
-			foreach (var storageOption in storageOptions)
-			{
-				SelectFieldOption option = new SelectFieldOption(storageOption);
-				options.Add(option);
-			}
-
-			return options;
-		}
 	}
 
 	public class SelectFieldOption
