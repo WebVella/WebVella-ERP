@@ -12,18 +12,15 @@ namespace WebVella.ERP.Api
 {
     public class EntityManager
     {
-        public IStorageEntityRepository EntityRepository
-        {
-            get; set;
-        }
+        public IStorageService Storage { get; set; }
 
-        public IStorageObjectFactory StorageObjectFactory
-        {
-            get; set;
-        }
+        public IStorageEntityRepository EntityRepository { get; set; }
+
+        public IStorageObjectFactory StorageObjectFactory { get; set; }
 
         public EntityManager(IStorageService storage)
         {
+            Storage = storage;
             EntityRepository = storage.GetEntityRepository();
             StorageObjectFactory = storage.GetObjectFactory();
         }
@@ -69,9 +66,6 @@ namespace WebVella.ERP.Api
             errorList.AddRange(ValidationUtility.ValidateLabel(entity.Label));
 
             errorList.AddRange(ValidationUtility.ValidateLabelPlural(entity.LabelPlural));
-
-            if (!entity.System)
-                errorList.Add(new ErrorModel("system", null, "System is required!"));
 
             if (entity.RecordPermissions != null)
             {
@@ -951,6 +945,17 @@ namespace WebVella.ERP.Api
                 entity.Fields.Add(field);
 
                 IStorageEntity editedEntity = entity.MapTo<IStorageEntity>();
+
+                var recRep = Storage.GetRecordRepository();
+                var transaction = recRep.CreateTransaction();
+                try
+                {
+
+                    transaction.Begin();
+
+                    recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+
+
                 bool result = EntityRepository.Update(editedEntity);
                 if (!result)
                 {
@@ -958,6 +963,13 @@ namespace WebVella.ERP.Api
                     response.Success = false;
                     response.Message = "The field was not created! An internal error occurred!";
                     return response;
+                }
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
                 }
 
             }
@@ -1184,7 +1196,7 @@ namespace WebVella.ERP.Api
                     if (((InputPasswordField)inputField).MaxLength != null)
                         ((PasswordField)updatedField).MaxLength = ((InputPasswordField)inputField).MaxLength;
                     if (((InputPasswordField)inputField).MinLength != null)
-                        ((PasswordField)updatedField).MinLength= ((InputPasswordField)inputField).MinLength;
+                        ((PasswordField)updatedField).MinLength = ((InputPasswordField)inputField).MinLength;
                     if (((InputPasswordField)inputField).Encrypted != null)
                         ((PasswordField)updatedField).Encrypted = ((InputPasswordField)inputField).Encrypted;
                 }
@@ -1334,14 +1346,29 @@ namespace WebVella.ERP.Api
 
                 entity.Fields.Remove(field);
 
-                IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-                bool result = EntityRepository.Update(updatedEntity);
+                var recRep = Storage.GetRecordRepository();
+                var transaction = recRep.CreateTransaction();
+                try
+                {
+                    transaction.Begin();
+
+                    recRep.RemoveRecordField(entity.Name, field.Name);
+
+					IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+					bool result = EntityRepository.Update(updatedEntity);
                 if (!result)
                 {
                     response.Timestamp = DateTime.UtcNow;
                     response.Success = false;
                     response.Message = "The field was not updated! An internal error occurred!";
                     return response;
+                }
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
                 }
             }
             catch (Exception e)
