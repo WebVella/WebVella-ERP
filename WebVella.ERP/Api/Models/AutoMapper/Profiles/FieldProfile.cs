@@ -110,10 +110,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<UrlField, InputUrlField>();
 			Mapper.CreateMap<InputUrlField, UrlField>();
 
-			Mapper.CreateMap<SelectFieldOption, IStorageSelectFieldOption>();
+			Mapper.CreateMap<SelectFieldOption, IStorageSelectFieldOption>().ConstructUsing(x => CreateEmptySelectFieldOptionObject(x));
 			Mapper.CreateMap<IStorageSelectFieldOption, SelectFieldOption>();
 
-			Mapper.CreateMap<MultiSelectFieldOption, IStorageMultiSelectFieldOption>();
+			Mapper.CreateMap<MultiSelectFieldOption, IStorageMultiSelectFieldOption>().ConstructUsing(x => CreateEmptyMultiSelectFieldOptionObject(x));
 			Mapper.CreateMap<IStorageMultiSelectFieldOption, MultiSelectFieldOption>();
 
 			Mapper.CreateMap<Field, IStorageField>().ConstructUsing(x => CreateEmptyFieldObject(x))
@@ -319,5 +319,18 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			var storageService = service.StorageService;
 			return (IStorageUrlField)storageService.GetObjectFactory().CreateEmptyFieldObject(field.GetType());
 		}
+
+		protected IStorageSelectFieldOption CreateEmptySelectFieldOptionObject(SelectFieldOption field)
+		{
+			var storageService = service.StorageService;
+			return (IStorageSelectFieldOption)storageService.GetObjectFactory().CreateEmptySelectFieldOptionObject();
+		}
+
+		protected IStorageMultiSelectFieldOption CreateEmptyMultiSelectFieldOptionObject(MultiSelectFieldOption field)
+		{
+			var storageService = service.StorageService;
+			return (IStorageMultiSelectFieldOption)storageService.GetObjectFactory().CreateEmptyMultiSelectFieldOptionObject();
+		}
+
 	}
 }
