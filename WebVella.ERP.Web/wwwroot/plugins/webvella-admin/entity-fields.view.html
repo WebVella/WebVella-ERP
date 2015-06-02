@@ -53,7 +53,7 @@
                 <span class="input-group-addon" id="basic-addon1">
                     <i class="fa fa-search"></i>
                 </span>
-                <input ng-model="class" type="text" class="form-control" placeholder="Search field names">
+                <input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search field names">
             </div>
         </div>
     </form>
@@ -67,7 +67,7 @@
                     <th class="meta">Info</th>
             </thead>
             <tbody>
-                <tr ng-repeat="field in contentData.entity.fields">
+                <tr ng-repeat="field in contentData.entity.fields | filter: contentData.search">
                     <td class="actions">
                         <a class="btn btn-default" ng-click="contentData.manageFieldModal(field.id)">
                             <i class="fa fa-eye"></i>
