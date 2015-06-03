@@ -26,6 +26,11 @@
         {
             return new MongoEntityRelationRepository();
         }
+
+        public IStorageFS GetFS()
+        {
+            return new MongoStorageFS();
+        }
     }
 
    

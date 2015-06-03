@@ -7,5 +7,6 @@
         IStorageEntityRelationRepository GetEntityRelationRepository();
         IStorageEntityRepository GetEntityRepository();
         IStorageRecordRepository GetRecordRepository();
+        IStorageFS GetFS();
     }
 }
