@@ -113,8 +113,13 @@
         contentData.pageTitle = "Entities | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
         contentData.entities = resolvedEntityMetaList.entities;
+        contentData.entities = contentData.entities.sort(function (a, b) { 
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0; 
+        });
         contentData.roles = resolvedRolesList.entities;
-
+        contentData.search = {};
         //Create new entity modal
         contentData.openAddEntityModal = function () {
             var modalInstance = $modal.open({
