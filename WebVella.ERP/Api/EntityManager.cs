@@ -556,15 +556,16 @@ namespace WebVella.ERP.Api
                 Message = "The entity was successfully created!",
             };
 
-            Entity entity = inputEntity.MapTo<Entity>();
+			//in order to support external IDs (while import in example)
+			//we generate new ID only when it is not specified
+			if (!inputEntity.Id.HasValue)
+				inputEntity.Id = Guid.NewGuid();
+
+			Entity entity = inputEntity.MapTo<Entity>();
 
             try
             {
                 response.Object = entity;
-                //in order to support external IDs (while import in example)
-                //we generate new ID only when it is not specified
-                if (entity.Id == null)
-                    entity.Id = Guid.NewGuid();
 
                 response.Errors = ValidateEntity(entity, false);
 
