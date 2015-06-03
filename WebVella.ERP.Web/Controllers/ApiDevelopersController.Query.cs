@@ -8,6 +8,7 @@ using WebVella.ERP.Api.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using WebVella.ERP.Utilities.Dynamic;
+using WebVella.ERP.Storage;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,17 +31,22 @@ namespace WebVella.ERP.Web.Controllers
         EntityManager em;
         EntityRelationManager rm;
         RecordManager recMan;
+        IStorageFS fs;
 
         public ApiDevelopersController(IErpService service) : base(service)
         {
             em = new EntityManager(service.StorageService);
             rm = new EntityRelationManager(service.StorageService);
             recMan = new RecordManager(service);
+            fs = service.StorageService.GetFS();
         }
-
+      
+        /*
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/create-sample-query-data-structure")]
         public IActionResult CreateSampleQueryDataStructure()
         {
+            return Json("do nothing");
+
             //delete entities and create new one
             em.DeleteEntity(postEntityId);
             em.DeleteEntity(categoryEntityId);
@@ -50,7 +56,7 @@ namespace WebVella.ERP.Web.Controllers
             rm.Delete(postAuthorRelationId);
 
 
-            return Json("dropped");
+          
 
             #region << Create Entities >>
 
@@ -317,62 +323,37 @@ namespace WebVella.ERP.Web.Controllers
 
             return Json("Structure and data created successfully");
         }
+        */
 
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/developers/query/execute-sample-query")]
         public IActionResult ExecuteSampleQuery()
         {
-            return Json("");
+            fs.Delete("file.tmp");
+            fs.Delete("file1.tmp");
 
-            em.DeleteEntity(postEntityId);
+            int fileSize = 100;
+            byte[] buffer = new byte[fileSize];
+            for (int i = 0; i < fileSize; i++)
+                buffer[i] = (byte)(i % 256);
 
-            InputEntity inputPostEntity = new InputEntity();
-            inputPostEntity.Id = postEntityId;
-            inputPostEntity.Name = "test_field_operations";
-            inputPostEntity.Label = "test";
-            inputPostEntity.LabelPlural = "test";
-            inputPostEntity.System = false;
-            inputPostEntity.RecordPermissions = new RecordPermissions();
-            inputPostEntity.RecordPermissions.CanCreate.Add(userId);
-            inputPostEntity.RecordPermissions.CanDelete.Add(userId);
-            inputPostEntity.RecordPermissions.CanRead.Add(userId);
-            inputPostEntity.RecordPermissions.CanUpdate.Add(userId);
-            Entity postEntity = null;
-            {
-                var result = em.CreateEntity(inputPostEntity);
-                if (!result.Success)
-                    return DoResponse(result);
+            var file = fs.CreateTempFile(buffer, "tmp");
+            var bytes  = file.GetBytes();
 
-                postEntity = result.Object;
-            }
+            fs.Delete(file.FilePath);
 
-            for (int i = 0; i < 10; i++)
-            {
-                EntityRecord testRec = new EntityRecord();
-                testRec["id"] = Guid.NewGuid();
-                {
-                    QueryResponse result = recMan.CreateRecord("test_field_operations", testRec);
-                    if (!result.Success)
-                        return DoResponse(result);
-                }
-            }
+            List<Guid> roles = new List<Guid>();
+            for (int i = 0; i < 5; i++)
+                roles.Add(Guid.NewGuid());
 
-            InputTextField postTitle = new InputTextField();
-            postTitle.Id = Guid.NewGuid();
-            postTitle.Name = "title";
-            postTitle.Label = "Title";
-            postTitle.Required = true;
-            postTitle.Unique = false;
-            postTitle.DefaultValue = "test default value";
-            postTitle.System = false;
-            {
-                var result = em.CreateField(postEntity.Id, postTitle);
-                if (!result.Success)
-                    return DoResponse(result);
-            }
+            file = fs.Create("/file.tmp", buffer, DateTime.UtcNow, Guid.NewGuid(), roles);
 
-            em.DeleteField(postEntity.Id, postTitle.Id.Value);
+            file = fs.Copy("file.tmp", "file1.tmp");
+            file = fs.Copy("file1.tmp", "file.tmp", true );
 
-            return Json("ok");
+            fs.Delete("file.tmp");
+            fs.Delete("file1.tmp");
+
+            return Json(file.FilePath);
         }
 
     }
