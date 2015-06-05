@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope','$log'];
+    controller.$inject = ['$rootScope', '$log', '$cookies'];
 
     /* @ngInject */
-    function controller($rootScope, $log) {
+    function controller($rootScope, $log, $cookies) {
         $log.debug('vwApp> BEGIN controller.exec');
         /* jshint validthis:true */
         var appData = this;
@@ -32,8 +32,14 @@
         });
         //Side menu toggle
         appData.isMiniSidebar = false;
+        if ($cookies.isMiniSidebar) {
+            appData.isMiniSidebar = true;
+        }
+        
         $rootScope.$on("application-sidebar-mini-toggle", function (event) {
             appData.isMiniSidebar = !appData.isMiniSidebar;
+            $cookies.isMiniSidebar = appData.isMiniSidebar;
+
         });
         //Side menu visibility
         appData.sideMenuIsVisible = true;
