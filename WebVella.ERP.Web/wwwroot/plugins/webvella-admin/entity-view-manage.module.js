@@ -172,6 +172,7 @@
     function controller($scope, $log, $rootScope, $state, pageTitle, $modal,
                         resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast, resolvedViewLibrary) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
+
         /* jshint validthis:true */
         var contentData = this;
         contentData.search = {};
@@ -222,12 +223,14 @@
         }
 
         //Remove section
+        var tempCopyView = {};
+        var tempCopyViewRegion = {}
         contentData.removeSection = function (place) {
             var isConfirmed = confirm("Are you sure that you need to remove this section?");
             if (isConfirmed == true) {
                 // 1. Copy the view and contentRegion in a temp object
-                var tempCopyView = angular.copy(contentData.view);
-                var tempCopyViewRegion = angular.copy(contentData.viewContentRegion);
+                tempCopyView = angular.copy(contentData.view);
+                tempCopyViewRegion = angular.copy(contentData.viewContentRegion);
                 // 2. Apply the change to the temp object
                 tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, place)
                 // 3. Apply the changes of the temp ContentViewRegion to the temp view object

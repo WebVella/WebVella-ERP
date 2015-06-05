@@ -22,6 +22,7 @@
         serviceInstance.getEntityRecordsByName = getEntityRecordsByName;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
+        serviceInstance.toggleSidebar = toggleSidebar;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.reloadCurrentState = reloadCurrentState;
 
@@ -61,6 +62,13 @@
         function setBodyColorClass(color) {
             $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
             $rootScope.$emit("application-body-color-update", color);
+            $log.debug('rootScope>events> "application-body-color-update" emitted');
+        }
+
+        //////////////////////
+        function toggleSidebar() {
+            $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
+            $rootScope.$emit("application-sidebar-mini-toggle");
             $log.debug('rootScope>events> "application-body-color-update" emitted');
         }
 

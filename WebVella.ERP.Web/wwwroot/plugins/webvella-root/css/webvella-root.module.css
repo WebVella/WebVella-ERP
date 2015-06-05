@@ -2008,6 +2008,7 @@ table .btn-xs.btn-link {
     position: absolute;
     left: -206px;
     z-index: 10;
+    top:-14px;
 }
 
     .tabbable.spilled ul {
@@ -2027,6 +2028,10 @@ table .btn-xs.btn-link {
             color: #ccc;
         }
 
+            .tabbable.spilled ul a i {
+                margin-right:10px;
+            }
+
         .tabbable.spilled ul li:not(.active) a:hover {
             background: rgba(255,255,255,0.15);
             border-color: transparent;
@@ -2040,77 +2045,190 @@ table .btn-xs.btn-link {
             color: #333;
         }
 
+/* Mini Sidebar */
+.mini-sidebar .tabbable.spilled {
+    left:-50px;
+    margin:0;
+    top:14px;
+}
+.mini-sidebar .tabbable.spilled ul {
+    width:50px;
+    border:none !important;
+    margin:0;
+    padding:0;
+}
+
+
+.mini-sidebar .tabbable.spilled a {
+    margin-left:0;
+    margin-right:0;
+    padding-left:0;
+    padding-right:0;
+    min-width:50px !important;
+    width:50px;
+    border-radius:0;
+    text-align:center;
+    border:none;
+}
+
+    .mini-sidebar .tabbable.spilled a .text {
+        display: none;
+    }
+
+    .mini-sidebar .tabbable.spilled ul,
+    .mini-sidebar .tabbable.spilled a.back {
+        background-color: transparent !important;
+    }
+
+    .mini-sidebar .tabbable.spilled li.active a:hover {
+        border:none;
+    }
+
+.mini-sidebar .tabbable.spilled a.back {
+    right:0;
+}
+
+    .mini-sidebar .tabbable.spilled a i {
+        font-size: 18px;
+        margin-right: 0 !important;
+    }
+
 /* Theming */
 .theme-red .tabbable.spilled ul {
     border-left-color: #F44336 !important;
 }
 
+    .theme-red .tabbable.spilled ul li.active a i {
+        color: #F44336 !important;
+    }
+
 .theme-pink .tabbable.spilled ul {
     border-left-color: #E91E63 !important;
 }
+
+    .theme-pink .tabbable.spilled ul li.active a i {
+        color: #E91E63 !important;
+    }
 
 .theme-purple .tabbable.spilled ul {
     border-left-color: #9C27B0 !important;
 }
 
+    .theme-purple .tabbable.spilled ul li.active a i {
+        color: #9C27B0 !important;
+    }
 
 .theme-deep-purple .tabbable.spilled ul {
     border-left-color: #673AB7 !important;
 }
 
+    .theme-deep-purple .tabbable.spilled ul li.active a i {
+        color: #673AB7 !important;
+    }
+
 .theme-indigo .tabbable.spilled ul {
     border-left-color: #3F51B5 !important;
 }
+
+    .theme-indigo .tabbable.spilled ul li.active a i {
+        color: #3F51B5 !important;
+    }
 
 .theme-blue .tabbable.spilled ul {
     border-left-color: #2196F3 !important;
 }
 
+    .theme-blue .tabbable.spilled ul li.active a i {
+        color: #2196F3 !important;
+    }
+
 .theme-light-blue .tabbable.spilled ul {
     border-left-color: #03A9F4 !important;
 }
+
+    .theme-light-blue .tabbable.spilled ul li.active a i {
+        color: #03A9F4 !important;
+    }
 
 .theme-cyan .tabbable.spilled ul {
     border-left-color: #00BCD4 !important;
 }
 
+    .theme-cyan .tabbable.spilled ul li.active a i {
+        color: #00BCD4 !important;
+    }
+
 .theme-teal .tabbable.spilled ul {
     border-left-color: #009688 !important;
 }
+
+    .theme-teal .tabbable.spilled ul li.active a i {
+        color: #009688 !important;
+    }
 
 .theme-green .tabbable.spilled ul {
     border-left-color: #4CAF50 !important;
 }
 
+    .theme-green .tabbable.spilled ul li.active a i {
+        color: #4CAF50 !important;
+    }
 
 .theme-light-green .tabbable.spilled ul {
     border-left-color: #8BC34A !important;
 }
 
+    .theme-light-green .tabbable.spilled ul li.active a i {
+        color: #8BC34A !important;
+    }
+
 .theme-lime .tabbable.spilled ul {
     border-left-color: #CDDC39 !important;
 }
+
+    .theme-lime .tabbable.spilled ul li.active a i {
+        color: #CDDC39 !important;
+    }
 
 .theme-yellow .tabbable.spilled ul {
     border-left-color: #FDD835 !important;
 }
 
+    .theme-yellow .tabbable.spilled ul li.active a i {
+        color: #FDD835 !important;
+    }
+
 .theme-amber .tabbable.spilled ul {
     border-left-color: #FFC107 !important;
 }
+
+    .theme-amber .tabbable.spilled ul li.active a i {
+        color: #FFC107 !important;
+    }
 
 .theme-orange .tabbable.spilled ul {
     border-left-color: #FF9800 !important;
 }
 
+    .theme-orange .tabbable.spilled ul li.active a i {
+        color: #FF9800 !important;
+    }
+
 .theme-deep-orange .tabbable.spilled ul {
     border-left-color: #FF5722 !important;
 }
+
+    .theme-deep-orange .tabbable.spilled ul li.active a i {
+        color: #FF5722 !important;
+    }
 
 .theme-brown .tabbable.spilled ul {
     border-left-color: #795548 !important;
 }
 
+    .theme-brown .tabbable.spilled ul li.active a i {
+        color: #795548 !important;
+    }
 
 .tabbable.spilled .back {
     position: absolute;
@@ -2721,59 +2839,58 @@ span.not-editable {
 }
 
 .view-manage-section a:not(.btn) {
-    color:#ccc !important;
+    color: #ccc !important;
 }
 
-.view-manage-section a:not(.btn):hover {
-    color:#337ab7 !important;
-}
+    .view-manage-section a:not(.btn):hover {
+        color: #337ab7 !important;
+    }
 
 .view-manage-section .wrapper {
     padding: 10px;
-    background:#fafafa;
-    border-color:#ddd;
+    background: #fafafa;
+    border-color: #ddd;
 }
 
 .view-manage-section .section .panel-heading {
-    background:#fff;
-    color:#333;
-
-    border-radius:0;
+    background: #fff;
+    color: #333;
+    border-radius: 0;
 }
 
 .view-manage-section .section {
     border-color: #ccc;
-    border-width:3px;
+    border-width: 3px;
 }
 
-.view-manage-section .section:hover {
-    border-color: #aaa;
-}
+    .view-manage-section .section:hover {
+        border-color: #aaa;
+    }
 
 .drop-zone {
     border: 1px dashed #FDD835;
     background: #fffff0;
-    padding:0;
-    position:relative;
+    padding: 0;
+    position: relative;
 }
 
     .drop-zone > div {
-        padding:0;
-        min-height:30px;
+        padding: 0;
+        min-height: 30px;
     }
 
 .tab-pane .drop-zone {
-    padding-top:5px;
+    padding-top: 5px;
 }
 
-    .drop-zone:hover {
-        border-color: #EF5350;
-    }
+.drop-zone:hover {
+    border-color: #EF5350;
+}
 
-.zone-actions{
-    position:absolute;
-    right:5px;
-    top:5px;
+.zone-actions {
+    position: absolute;
+    right: 5px;
+    top: 5px;
 }
 
 
@@ -2785,18 +2902,19 @@ span.not-editable {
 }
 
 .view-manage-section .dropped-item .title,
-.as-sortable-dragging  .title{
+.as-sortable-dragging .title {
     font-weight: bold;
-    margin:0 5px;
+    margin: 0 5px;
     text-transform: uppercase;
     font-size: 12px;
-    display:inline-block;
-    width:60px;
+    display: inline-block;
+    width: 60px;
 }
 
 .as-sortable-dragging {
     /*width:200px !important;*/
 }
+
 .view-divider {
     position: relative;
     line-height: 50px;
@@ -2804,9 +2922,9 @@ span.not-editable {
     color: #ccc;
 }
 
-.view-divider.section span{
-    background:#fafafa;
-}
+    .view-divider.section span {
+        background: #fafafa;
+    }
 
     .view-divider:hover {
         cursor: pointer;
@@ -2841,54 +2959,54 @@ span.not-editable {
 
 
 .view-manage-section .as-sortable-placeholder {
-    background:#FFF9C4;
-    display:block;
-    width:100% !important;
+    background: #FFF9C4;
+    display: block;
+    width: 100% !important;
 }
 
 .view-manage-section .as-sortable-dragging {
-    position:relative;
-    border:none;
-    padding:0;
-    margin:0;
+    position: relative;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 
 .view-manage-section .row-actions {
-    margin-bottom:5px;
+    margin-bottom: 5px;
 }
 
 .view-manage-section .nav-tabs > li > a,
 .view-manage-section .nav-tabs > li > a:hover,
 .view-manage-section .nav-tabs > li > a:focus {
-    padding:7px 7px;
+    padding: 7px 7px;
 }
 
 .list-field-selection-box {
-    height:300px;
-    overflow-y:scroll;
-    background:#fafafa;
-    border:1px solid #ccc;
-    padding:5px;
+    height: 300px;
+    overflow-y: scroll;
+    background: #fafafa;
+    border: 1px solid #ccc;
+    padding: 5px;
 }
 
 .view-manage-section .panel-heading .btn + .btn {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 
 /*#endregion*/
 
 /*#region << Record details */
-.record-details{
-    padding:1em;
+.record-details {
+    padding: 1em;
 }
 
-.record-details .panel-heading.collapsable:hover {
-    cursor:pointer;
-}
+    .record-details .panel-heading.collapsable:hover {
+        cursor: pointer;
+    }
 
 .editable-field {
-    line-height:20px;
-    min-height:34px;
+    line-height: 20px;
+    min-height: 34px;
 }
 /*#endregion */
