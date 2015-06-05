@@ -30,6 +30,11 @@
         $rootScope.$on("application-body-color-update", function (event, color) {
             appData.bodyColor = color;
         });
+        //Side menu toggle
+        appData.isMiniSidebar = false;
+        $rootScope.$on("application-sidebar-mini-toggle", function (event) {
+            appData.isMiniSidebar = !appData.isMiniSidebar;
+        });
         //Side menu visibility
         appData.sideMenuIsVisible = true;
         $rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {

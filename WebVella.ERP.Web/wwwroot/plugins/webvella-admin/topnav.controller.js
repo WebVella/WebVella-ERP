@@ -12,10 +12,10 @@
         .controller('WebVellaAdminTopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$state', '$rootScope', '$timeout'];
+    controller.$inject = ['$log', '$state', '$rootScope', '$timeout', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($log,$state, $rootScope, $timeout) {
+    function controller($log, $state, $rootScope, $timeout, webvellaRootService) {
         $log.debug('webvellaAdmin>topnav> BEGIN controller.exec');
         /* jshint validthis:true */
         var topnavData = this;
@@ -26,9 +26,12 @@
             }, 0);
         }
 
-        activate();
+        topnavData.toggleSideNav = function () {
+            webvellaRootService.toggleSidebar();
+        }
+
         $log.debug('webvellaAdmin>topnav> END controller.exec');
-        function activate() {}
+
     }
     
 })();
