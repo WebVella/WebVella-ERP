@@ -1017,30 +1017,34 @@ namespace WebVella.ERP.Api
 		{
 			Field field = null;
 
+			if (data == null)
+				data = new Expando();
+
 			switch (type)
 			{
 				case FieldType.AutoNumberField:
 					field = new AutoNumberField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((AutoNumberField)field).DefaultValue = (decimal?)data["defaultValue"];
-					if (data["startingNumber"] != null)
+					if (HasKey(data, "startingNumber") && data["startingNumber"] != null)
 						((AutoNumberField)field).StartingNumber = (decimal?)data["startingNumber"];
-					if (data["displayFormat"] != null)
+					if (HasKey(data, "displayFormat") && data["displayFormat"] != null)
 						((AutoNumberField)field).DisplayFormat = (string)data["displayFormat"];
 					break;
 				case FieldType.CheckboxField:
 					field = new CheckboxField();
-					((CheckboxField)field).DefaultValue = (bool?)data["defaultValue"] ?? false;
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
+						((CheckboxField)field).DefaultValue = (bool?)data["defaultValue"] ?? false;
 					break;
 				case FieldType.CurrencyField:
 					field = new CurrencyField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((CurrencyField)field).DefaultValue = (decimal?)data["defaultValue"];
-					if (data["minValue"] != null)
+					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((CurrencyField)field).MinValue = (decimal?)data["minValue"];
-					if (data["maxValue"] != null)
+					if (HasKey(data, "maxValue") && data["maxValue"] != null)
 						((CurrencyField)field).MaxValue = (decimal?)data["maxValue"];
-					if (data["currency"] != null)
+					if (HasKey(data, "currency") && data["currency"] != null)
 					{
 						((CurrencyField)field).Currency = (CurrencyType)data["currency"];
 					}
@@ -1060,128 +1064,128 @@ namespace WebVella.ERP.Api
 					break;
 				case FieldType.DateField:
 					field = new DateField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((DateField)field).DefaultValue = (DateTime?)data["defaultValue"];
-					if (data["format"] != null)
+					if (HasKey(data, "format") && data["format"] != null)
 						((DateField)field).Format = (string)data["format"];
-					if (data["useCurrentTimeAsDefaultValue"] != null)
+					if (HasKey(data, "useCurrentTimeAsDefaultValue") && data["useCurrentTimeAsDefaultValue"] != null)
 						((DateField)field).UseCurrentTimeAsDefaultValue = (bool?)data["useCurrentTimeAsDefaultValue"];
 					break;
 				case FieldType.DateTimeField:
 					field = new DateTimeField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((DateTimeField)field).DefaultValue = (DateTime?)data["defaultValue"];
-					if (data["format"] != null)
+					if (HasKey(data, "format") && data["format"] != null)
 						((DateTimeField)field).Format = (string)data["format"];
-					if (data["useCurrentTimeAsDefaultValue"] != null)
+					if (HasKey(data, "useCurrentTimeAsDefaultValue") && data["useCurrentTimeAsDefaultValue"] != null)
 						((DateTimeField)field).UseCurrentTimeAsDefaultValue = (bool?)data["useCurrentTimeAsDefaultValue"];
 					break;
 				case FieldType.EmailField:
 					field = new EmailField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((EmailField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((EmailField)field).MaxLength = (int?)data["maxLength"];
 					break;
 				case FieldType.FileField:
 					field = new FileField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((FileField)field).DefaultValue = (string)data["defaultValue"];
 					break;
 				case FieldType.GuidField:
 					field = new GuidField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((GuidField)field).DefaultValue = (Guid?)data["defaultValue"];
-					if (data["generateNewId"] != null)
+					if (HasKey(data, "generateNewId") && data["generateNewId"] != null)
 						((GuidField)field).GenerateNewId = (bool?)data["generateNewId"];
 					break;
 				case FieldType.HtmlField:
 					field = new HtmlField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((HtmlField)field).DefaultValue = (string)data["defaultValue"];
 					break;
 				case FieldType.ImageField:
 					field = new ImageField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((ImageField)field).DefaultValue = (string)data["defaultValue"];
 					break;
 				case FieldType.MultiLineTextField:
 					field = new MultiLineTextField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((MultiLineTextField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((MultiLineTextField)field).MaxLength = (int?)data["maxLength"];
-					if (data["visibleLineNumber"] != null)
+					if (HasKey(data, "visibleLineNumber") && data["visibleLineNumber"] != null)
 						((MultiLineTextField)field).VisibleLineNumber = (int?)data["visibleLineNumber"];
 					break;
 				case FieldType.MultiSelectField:
 					field = new MultiSelectField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((MultiSelectField)field).DefaultValue = (IEnumerable<string>)data["defaultValue"];
-					if (data["options"] != null)
+					if (HasKey(data, "options") && data["options"] != null)
 						((MultiSelectField)field).Options = (List<MultiSelectFieldOption>)data["options"];
 					break;
 				case FieldType.NumberField:
 					field = new NumberField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((NumberField)field).DefaultValue = (int?)data["defaultValue"];
-					if (data["minValue"] != null)
+					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((NumberField)field).MinValue = (decimal?)data["minValue"];
-					if (data["maxValue"] != null)
+					if (HasKey(data, "maxValue") && data["maxValue"] != null)
 						((NumberField)field).MaxValue = (decimal?)data["maxValue"];
-					if (data["decimalPlaces"] != null)
+					if (HasKey(data, "decimalPlaces") && data["decimalPlaces"] != null)
 						((NumberField)field).DecimalPlaces = (byte?)data["decimalPlaces"];
 					break;
 				case FieldType.PasswordField:
 					field = new PasswordField();
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((PasswordField)field).MaxLength = (int?)data["maxLength"];
-					if (data["minLength"] != null)
+					if (HasKey(data, "minLength") && data["minLength"] != null)
 						((PasswordField)field).MinLength = (int?)data["minLength"];
-					if (data["encrypted"] != null)
+					if (HasKey(data, "encrypted") && data["encrypted"] != null)
 						((PasswordField)field).Encrypted = (bool?)data["encrypted"];
 					break;
 				case FieldType.PercentField:
 					field = new PercentField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((PercentField)field).DefaultValue = (decimal?)data["defaultValue"]; //0.01m;
-					if (data["minValue"] != null)
+					if (HasKey(data, "minValue") && data["minValue"] != null)
 						((PercentField)field).MinValue = (decimal?)data["minValue"];
-					if (data["maxValue"] != null)
+					if (HasKey(data, "maxValue") && data["maxValue"] != null)
 						((PercentField)field).MaxValue = (decimal?)data["maxValue"];
-					if (data["decimalPlaces"] != null)
+					if (HasKey(data, "decimalPlaces") && data["decimalPlaces"] != null)
 						((PercentField)field).DecimalPlaces = (byte?)data["decimalPlaces"];
 					break;
 				case FieldType.PhoneField:
 					field = new PhoneField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((PhoneField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["format"] != null)
+					if (HasKey(data, "format") && data["format"] != null)
 						((PhoneField)field).Format = (string)data["format"];
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((PhoneField)field).DefaultValue = (string)data["maxLength"];
 					break;
 				case FieldType.SelectField:
 					field = new SelectField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((SelectField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["options"] != null)
+					if (HasKey(data, "options") && data["options"] != null)
 						((SelectField)field).Options = (List<SelectFieldOption>)data["options"];
 					break;
 				case FieldType.TextField:
 					field = new TextField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((TextField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((TextField)field).MaxLength = (int?)data["maxLength"];
 					break;
 				case FieldType.UrlField:
 					field = new UrlField();
-					if (data["defaultValue"] != null)
+					if (HasKey(data, "defaultValue") && data["defaultValue"] != null)
 						((UrlField)field).DefaultValue = (string)data["defaultValue"];
-					if (data["maxLength"] != null)
+					if (HasKey(data, "maxLength") && data["maxLength"] != null)
 						((UrlField)field).MaxLength = (int?)data["maxLength"];
-					if (data["openTargetInNewWindow"] != null)
+					if (HasKey(data, "openTargetInNewWindow") && data["openTargetInNewWindow"] != null)
 						((UrlField)field).OpenTargetInNewWindow = (bool?)data["openTargetInNewWindow"];
 					break;
 				default:
@@ -2584,6 +2588,11 @@ namespace WebVella.ERP.Api
 			}
 
 			return record;
+		}
+
+		private static bool HasKey(Expando expando, string key)
+		{
+			return expando.GetProperties().Any(p => p.Key == key);
 		}
 
 		#endregion
