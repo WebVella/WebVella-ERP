@@ -1,0 +1,199 @@
+<div id="page-title">
+    <div id="page-meta">
+        <div class="aux-actions">
+            <a class="btn btn-success hidden-xs" ng-click="contentData.openManageAreaModal(null)"><i class="fa fa-plus"></i> Create New</a>
+        </div>
+        <div class="icon-box">
+            <i class="fa fa-sitemap"></i>
+        </div>
+        <div class="entity-box">
+            <h4 class="no-link" title="Area">Areas</h4>
+        </div>
+        <div class="spacer-box"></div>
+        <div class="divider-box">
+            <i class="fa fa-caret-right"></i>
+        </div>
+        <div class="lists-box">
+            <h4 class="no-link" title="Lists">List</h4>
+        </div>
+    </div>
+    <!--<div id="page-messages">
+        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+    </div>-->
+</div>
+
+<form id="filters" class="form-inline">
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="fa fa-search"></i>
+            </span>
+            <input ng-model="contentData.search.label" type="text" class="form-control" placeholder="Search areas">
+        </div>
+    </div>
+</form>
+<div id="list">
+
+    <table class="table table-bordered table-hover table-vertical-align-middle">
+        <thead>
+            <tr>
+                <th width="60">action</th>
+                <th width="60" class="text-center">weight</th>
+                <th width="60" class="text-center">color</th>
+                <th width="60" class="text-center">icon</th>
+                <th>name</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="area in contentData.areas | filter: contentData.search">
+
+                <td>
+                    <a ng-click="contentData.openManageAreaModal(area)" class="btn btn-default">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    {{area.weight}}
+                </td>
+                <td class="text-center">
+                    <div class="label go-bkg-{{area.color}} color-label" title="{{area.color}}"></div>
+                </td>
+                <td class="text-center"><i class="fa fa-{{area.icon_name}}" style="font-size:24px;" title="{{area.icon_name}}"></i></td>
+                <td>{{area.label}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+ </div>
+
+<script type="text/ng-template" id="manageAreaModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" ng-bind-html="popupData.modalTitle"></h3>
+    </div>
+    <div class="modal-body">
+        <form name="manageArea">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageArea.name.$invalid && !manageArea.name.$pristine || popupData.nameError}">
+                        <label class="required" for="areaName">Name</label>
+                        <input ng-model="popupData.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. sales"
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
+                        <div class="error" ng-show="manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
+                            <small class="error" ng-show="manageArea.name.$error.required && !popupData.nameError">
+                                required field
+                            </small>
+                            <small class="error" ng-show="manageArea.name.$error.pattern">
+                                only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+                            </small>
+                            <small class="error" ng-show="manageArea.name.$error.maxlength">
+                                must be less than 50 chars
+                            </small>
+                            <small class="error" ng-show="popupData.nameError">
+                                {{popupData.nameMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageArea.label.$invalid && !manageArea.label.$pristine || popupData.labelError }">
+                        <label class="required" for="label">Label</label>
+                        <input ng-model="popupData.area.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Sales"
+                               required ng-model-options="{allowInvalid:true}">
+                        <div class="error" ng-show="manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
+                            <small class="error" ng-show="manageArea.label.$error.required && !popupData.labelError">
+                                Area label is required.
+                            </small>
+                            <small class="error" ng-show="popupData.labelError">
+                                {{popupData.labelMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageArea.color.$invalid && !manageArea.color.$pristine || popupData.labelError }">
+                        <label class="required" for="color">Color</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="label go-bkg-{{popupData.area.color}}">&nbsp;</span></span>
+                            <select ng-model="popupData.area.color" class="form-control" id="color" name="color">
+                                <option value="red" selected>Red</option>
+                                <option value="pink">Pink</option>
+                                <option value="purple">Purple</option>
+                                <option value="deep-purple">Deep Purple</option>
+                                <option value="indigo">Indigo</option>
+                                <option value="blue">Blue</option>
+                                <option value="light-blue">Light Blue</option>
+                                <option value="cyan">Cyan</option>
+                                <option value="teal">Teal</option>
+                                <option value="green">Green</option>
+                                <option value="light-green">Light Green</option>
+                                <option value="lime">Lime</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="amber">Amber</option>
+                                <option value="orange">Orange</option>
+                                <option value="deep-orange">Deep Orange</option>
+                                <option value="brown">Brown</option>
+                            </select>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageArea.icon_name.$invalid && !manageArea.icon_name.$pristine || popupData.icon_nameError }">
+                        <label class="required" for="label">Icon name</label>
+                        <div class="input-group clean-addon">
+                            <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.area.icon_name}}"></i></span>
+                            <input ng-model="popupData.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="e.g. database"
+                                   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html">
+                            <span class="input-group-addon"><i class="fa fa-bars"></i></span>
+                        </div>
+                        <div class="error" ng-show="manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
+                            <small class="error" ng-show="createEntity.icon_name.$error.required && !popupData.icon_nameError">
+                                Icon name is required.
+                            </small>
+                            <small class="error" ng-show="popupData.icon_nameError">
+                                {{popupData.icon_nameMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : manageArea.weight.$invalid && !manageArea.weight.$pristine || popupData.weightError }">
+                        <label class="required" for="weight">Sort Weight</label>
+                        <input ng-model="popupData.area.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+                               required pattern="^[0-9]+(\.[0-9][0-9]?)?$">
+                        <div class="error" ng-show="manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
+                            <small class="error" ng-show="manageArea.weight.$error.required && !popupData.weightError">
+                                Entity weight is required
+                            </small>
+                            <small class="error" ng-show="manageArea.weight.$error.pattern && !popupData.weightError">
+                                Weight should be a positive integer or decimal number, with two decimal places after the dot
+                            </small>
+                            <small class="error" ng-show="popupData.weightError">
+                                {{popupData.weightMessage}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="popupData.ok()">Save Area</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="iconTypeaheadTemplate.html">
+    <a class="typeahead-icon-item">
+        <i class="fa fa-{{match.model}} fa-fw go-gray"></i>
+        <span bind-html-unsafe="match.model | typeaheadHighlight:query"></span>
+    </a>
+</script>

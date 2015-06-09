@@ -22,7 +22,7 @@
         //
         var directive = {
             restrict: 'A',
-            require:"ngModel",
+            require: "ngModel",
             link: link
         };
         return directive;

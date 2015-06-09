@@ -70,7 +70,7 @@ namespace WebVella.ERP.Web.Controllers
                     response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
             }
 
-            if(response.Errors.Count > 0)
+            if (response.Errors.Count > 0)
                 return DoBadRequestResponse(response);
 
             try
@@ -125,7 +125,7 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-			InputField field = new InputGuidField();
+            InputField field = new InputGuidField();
             try
             {
                 field = InputField.ConvertField(submitObj);
@@ -157,7 +157,7 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-			InputField field = new InputGuidField();
+            InputField field = new InputGuidField();
 
             Type inputFieldType = field.GetType();
 
@@ -233,7 +233,7 @@ namespace WebVella.ERP.Web.Controllers
         {
             try
             {
-                if (submitObj["id"].IsNullOrEmpty() )
+                if (submitObj["id"].IsNullOrEmpty())
                     submitObj["id"] = Guid.Empty;
                 var relation = submitObj.ToObject<EntityRelation>();
                 return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
@@ -293,13 +293,53 @@ namespace WebVella.ERP.Web.Controllers
         // Create an entity record
         // POST: api/v1/en_US/record/{entityName}
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
-        public IActionResult CreateEntity(string entityName, [FromBody]EntityRecord postObj)
+        public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
         {
             QueryResponse result = recMan.CreateRecord(entityName, postObj);
             if (!result.Success)
                 return DoResponse(result);
             return Json(result);
         }
+
+        // Update an entity record
+        // PUT: api/v1/en_US/record/{entityName}/{recordId}
+        [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+        public IActionResult UpdateEntityRecord(string entityName,Guid recordId, [FromBody]EntityRecord postObj)
+        {
+            QueryResponse result = recMan.UpdateRecord(entityName, postObj);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+        // Patch an entity record
+        // PATCH: api/v1/en_US/record/{entityName}/{recordId}
+        [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+        public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
+        {
+            QueryResponse result = recMan.UpdateRecord(entityName, postObj);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+        // Get an entity record list
+        // GET: api/v1/en_US/record/{entityName}/list
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
+        public IActionResult GetRecordsByEntityName(string entityName)
+        {
+
+            QuerySortObject sortObj = new QuerySortObject("label", QuerySortType.Ascending);
+
+            EntityQuery query = new EntityQuery(entityName,"*",null, new[] { sortObj },null,null);
+
+            QueryResponse result = recMan.Find(query);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+
 
         #endregion
     }
