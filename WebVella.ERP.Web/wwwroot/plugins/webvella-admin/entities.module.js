@@ -118,7 +118,7 @@
             if(a.name > b.name) return 1;
             return 0; 
         });
-        contentData.roles = resolvedRolesList.entities;
+        contentData.roles = resolvedRolesList.data;
         contentData.search = {};
         //Create new entity modal
         contentData.openAddEntityModal = function () {
@@ -159,7 +159,7 @@
 
         for (var i = 0; i < popupData.roles.length; i++) {
             //Enable all checkboxes for administrators
-            if (popupData.roles[i].name == "administrator") {
+            if (popupData.roles[i].name == "Administrator") {
                 popupData.entity.recordPermissions.canRead.push(popupData.roles[i].id);
                 popupData.entity.recordPermissions.canCreate.push(popupData.roles[i].id);
                 popupData.entity.recordPermissions.canUpdate.push(popupData.roles[i].id);
@@ -169,7 +169,7 @@
             //Now create the new entity.roles array
             var role = {};
             role.id = popupData.roles[i].id;
-            role.label = popupData.roles[i].label;
+            role.name = popupData.roles[i].name;
             role.canRead = false;
             if (popupData.entity.recordPermissions.canRead.indexOf(popupData.roles[i].id) > -1) {
                 role.canRead = true;

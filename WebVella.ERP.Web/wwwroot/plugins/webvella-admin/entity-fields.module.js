@@ -404,7 +404,7 @@
         popupData.modalInstance = $modalInstance;
         popupData.contentData = contentData;
 
-        popupData.field = resolvedField;
+        popupData.field = angular.copy(resolvedField);
 
         popupData.fieldTypes = contentData.fieldTypes;
         popupData.fieldType = null;

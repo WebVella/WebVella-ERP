@@ -62,6 +62,12 @@ function guid() {
         serviceInstance.initList = initList;
         serviceInstance.getEntityListsList = getEntityListsList;
         serviceInstance.getEntityRecordsList = getEntityRecordsList;
+        //Record
+        serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
+        serviceInstance.createRecord = createRecord;
+        serviceInstance.updateRecord = updateRecord;
+        serviceInstance.patchRecord = patchRecord;
+
         //#endregion
 
         //#region << Aux methods >>
@@ -731,6 +737,8 @@ function guid() {
 
         //#endregion
 
+
+        //#region << Records >>
         /////////////////////
         function initRecord() {
             var record = {};
@@ -742,6 +750,32 @@ function guid() {
             };
             return record;
         }
+
+        ///////////////////////
+        function getRecordsByEntityName(entityName,successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getRecordsByEntityName> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/'+entityName+'/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function createRecord(entityName,postObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>createRecord> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function updateRecord(recordId, entityName, patchObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>updateRecord> function called');
+            $http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ///////////////////////
+        function patchRecord(recordId, entityName, patchObject, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called');
+            $http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        //#endregion
 
 
 

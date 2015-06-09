@@ -99,8 +99,8 @@
         webvellaDesktopBrowsenavFactory.initBrowsenav();
         ////2. READY hook listener
         var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
-            for (var i = 0; i < resolvedAreasList.entities.length; i++) {
-                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedAreasList.entities[i]);
+            for (var i = 0; i < resolvedAreasList.data.length; i++) {
+                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedAreasList.data[i]);
                 webvellaDesktopBrowsenavFactory.addItem(menuItem);
             };
         })

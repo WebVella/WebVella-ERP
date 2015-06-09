@@ -71,7 +71,7 @@
             menuItem.nodes = [];
             menuItem.weight = area.weight;
             menuItem.color = area.color;
-            menuItem.iconName = area.iconName;
+            menuItem.iconName = area.icon_name;
             return menuItem
         }
 

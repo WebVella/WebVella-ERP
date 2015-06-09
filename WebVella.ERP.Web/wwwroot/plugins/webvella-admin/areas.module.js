@@ -1,7 +1,7 @@
-﻿/* entity-details.module.js */
+﻿/* areas-lists.module.js */
 
 /**
-* @desc this module manages the entity record details in the admin screen
+* @desc this module manages the entity record lists in the admin screen
 */
 
 (function () {
@@ -10,17 +10,17 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityDetailsController', controller)
-        .controller('DeleteEntityModalController', deleteEntityController);
+        .controller('WebVellaAdminAreasController', controller)
+        .controller('ManageAreaModalController', manageAreaController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-admin-entity-details', {
+        $stateProvider.state('webvella-admin-areas-lists', {
             parent: 'webvella-admin-base',
-            url: '/entities/:entityName', //  /desktop/areas after the parent state is prepended
+            url: '/areas/lists', 
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -33,14 +33,13 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAdminEntityDetailsController',
-                    templateUrl: '/plugins/webvella-admin/entity-details.view.html',
+                    controller: 'WebVellaAdminAreasController',
+                    templateUrl: '/plugins/webvella-admin/areas.view.html',
                     controllerAs: 'contentData'
                 }
             },
             resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedRolesList: resolveRolesList
+                resolvedAreaRecordsList: resolveAreaRecordsList
             },
             data: {
 
@@ -49,15 +48,15 @@
     };
 
 
-    // Resolve Function /////////////////////////
-    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    //#region << Resolve Functions >>/////////////////////////
 
+    resolveAreaRecordsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
-    function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+    function resolveAreaRecordsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+        $log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
-
+        
         // Process
         function successCallback(response) {
             if (response.object == null) {
@@ -81,75 +80,75 @@
             }
         }
 
-        webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+        webvellaAdminService.getRecordsByEntityName("area", successCallback, errorCallback);
+
 
         // Return
-        $log.debug('webvellaAdmin>entity-details> END state.resolved');
+        $log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved');
         return defer.promise;
     }
+    //#endregion
 
-    // Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
-
+    //#region << Controller >> ///////////////////////////////
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList', '$modal'];
     /* @ngInject */
-    function resolveRolesList($q, $log, webvellaRootService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        webvellaRootService.getEntityRecordsByName("role", successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
-        return defer.promise;
-    }
-
-    // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList', 'webvellaAdminService'];
-
-    /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $modal, resolvedRolesList, webvellaAdminService) {
-        $log.debug('webvellaAdmin>entity-details> START controller.exec');
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList, $modal) {
+        $log.debug('webvellaAdmin>areas-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        contentData.entity = resolvedCurrentEntityMeta;
-        //Update page title
-        contentData.pageTitle = "Entity Details | " + pageTitle;
+        contentData.search = {};
+        //#region << Update page title >>
+        contentData.pageTitle = "Areas List | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-        //Hide Sidemenu
-        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
-        $scope.$on("$destroy", function () {
-            $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
-        });
+        //#endregion
+
+        contentData.areas = resolvedAreaRecordsList.data.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });;
 
         //Create new entity modal
-        contentData.openDeleteEntityModal = function () {
+        contentData.openManageAreaModal = function (currentArea) {
+            contentData.currentArea = currentArea;
             var modalInstance = $modal.open({
                 animation: false,
-                templateUrl: 'deleteEntityModal.html',
-                controller: 'DeleteEntityModalController',
+                templateUrl: 'manageAreaModal.html',
+                controller: 'ManageAreaModalController',
                 controllerAs: "popupData",
-                size: "",
+                size: "lg",
                 resolve: {
-                    parentData: function () { return contentData; }
+                    contentData: function () {
+                        return contentData;
+                    }
                 }
             });
 
         }
 
+
+        $log.debug('webvellaAdmin>areas-list> END controller.exec');
+    }
+    //#endregion
+
+
+    //// Modal Controllers
+    manageAreaController.$inject = ['$modalInstance', '$log', '$sce', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+
+    /* @ngInject */
+    function manageAreaController($modalInstance, $log,$sce, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+        /* jshint validthis:true */
+        var popupData = this;
+        popupData.area = angular.copy(contentData.currentArea);
+        popupData.isUpdate = true;
+        if (popupData.area == null) {
+            popupData.area = {};
+            popupData.isUpdate = false;
+            popupData.modalTitle = $sce.trustAsHtml("Create new area");
+        }
+        else {
+            popupData.modalTitle = $sce.trustAsHtml('Edit area <span class="go-green">' + popupData.area.label + '</span>');
+        }
+
         //Awesome font icon names array 
-        contentData.icons = [
+        popupData.icons = [
   "adjust",
   "adn",
   "align-center",
@@ -671,98 +670,16 @@
   "youtube-square"
         ];
 
-        //Generate roles and checkboxes
-        contentData.entity.roles = [];
-        for (var i = 0; i < resolvedRolesList.data.length; i++) {
-
-            //Now create the new entity.roles array
-            var role = {};
-            role.id = resolvedRolesList.data[i].id;
-            role.label = resolvedRolesList.data[i].name;
-            role.canRead = false;
-            if (contentData.entity.recordPermissions.canRead.indexOf(resolvedRolesList.data[i].id) > -1) {
-                role.canRead = true;
-            }
-            role.canCreate = false;
-            if (contentData.entity.recordPermissions.canCreate.indexOf(resolvedRolesList.data[i].id) > -1) {
-                role.canCreate = true;
-            }
-            role.canUpdate = false;
-            if (contentData.entity.recordPermissions.canUpdate.indexOf(resolvedRolesList.data[i].id) > -1) {
-                role.canUpdate = true;
-            }
-            role.canDelete = false;
-            if (contentData.entity.recordPermissions.canDelete.indexOf(resolvedRolesList.data[i].id) > -1) {
-                role.canDelete = true;
-            }
-            contentData.entity.roles.push(role);
-        }
-
-        contentData.patchObject = {};
-        contentData.fieldUpdate = function (key, data) {
-            contentData.patchObject = {};
-            contentData.patchObject[key] = data;
-            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
-        }
-
-        // Helper function
-        function removeValueFromArray(array, value) {
-            for (var i = array.length - 1; i >= 0; i--) {
-                if (array[i] === value) {
-                    array.splice(i, 1);
-                    // break;       //<-- Uncomment  if only the first term has to be removed
-                }
-            }
-        }
-
-        contentData.permissionPatch = function (roleId, key, isEnabled) {
-            contentData.patchObject = {};
-            contentData.patchObject.recordPermissions = {};
-            contentData.patchObject.recordPermissions = contentData.entity.recordPermissions;
-            if (isEnabled) {
-                contentData.entity.recordPermissions[key].push(roleId);
-            }
-            else {
-                removeValueFromArray(contentData.entity.recordPermissions[key], roleId);
-            }
-            contentData.patchObject.recordPermissions[key] = contentData.entity.recordPermissions[key];
-            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
-        }
 
 
-        function patchSuccessCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
-            });
-            return true;
-        }
-        function patchFailedCallback(response) {
-            ngToast.create({
-                className: 'error',
-                content: '<h4>Error</h4><p>' + response.message + '</p>'
-            });
-            return false;
-        }
-
-        activate();
-        $log.debug('webvellaAdmin>entity-details> END controller.exec');
-        function activate() { }
-    }
-
-
-    //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
-
-    /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
-        /* jshint validthis:true */
-        var popupData = this;
-        popupData.entity = parentData.entity;
 
         popupData.ok = function () {
-            webvellaAdminService.deleteEntity(popupData.entity.id, successCallback, errorCallback)
+            if (!popupData.isUpdate) {
+                webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
+            }
+            else {
+                webvellaAdminService.updateRecord(popupData.area.id,"area", popupData.area, successCallback, errorCallback);
+            } 
         };
 
         popupData.cancel = function () {
@@ -773,21 +690,19 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<h4>Success</h4><p>The area was successfully saved</p>'
             });
             $modalInstance.close('success');
-            $timeout(function() {
-                $state.go("webvella-admin-entities");
-            }, 0);
+            webvellaRootService.reloadCurrentState($state);
         }
 
         function errorCallback(response) {
-            popupData.hasError = true;
-            popupData.errorMessage = response.message;
-
-
+            var location = $location;
+            //Process the response and generate the validation Messages
+            webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };
+
 
 })();

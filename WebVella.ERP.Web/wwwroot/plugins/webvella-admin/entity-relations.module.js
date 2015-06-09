@@ -144,6 +144,7 @@
         $log.debug('webvellaAdmin>entity-relations> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
+        contentData.search = {};
         contentData.allRelations = angular.copy(resolvedRelationsList);
         contentData.currentEntityRelation = [];
         contentData.entity = angular.copy(resolvedCurrentEntityMeta);

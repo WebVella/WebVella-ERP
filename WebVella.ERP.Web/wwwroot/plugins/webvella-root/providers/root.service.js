@@ -75,7 +75,7 @@
         ////////////////////
         function getEntityRecordsByName(entityName,successCallback, errorCallback) {
             $log.debug('webvellaRoot>providers>root.service>getEntityRecords> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiSandboxBaseUrl + '/entity/' + entityName + '/records/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////
