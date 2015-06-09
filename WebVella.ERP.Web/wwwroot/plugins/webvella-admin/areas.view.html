@@ -79,7 +79,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : manageArea.name.$invalid && !manageArea.name.$pristine || popupData.nameError}">
                         <label class="required" for="areaName">Name</label>
                         <input ng-model="popupData.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. sales"
-                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50"  ng-model-options="{allowInvalid:true}">
                         <div class="error" ng-show="manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="manageArea.name.$error.required && !popupData.nameError">
                                 required field
@@ -149,7 +149,8 @@
                         <div class="input-group clean-addon">
                             <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.area.icon_name}}"></i></span>
                             <input ng-model="popupData.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="e.g. database"
-                                   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html">
+                                   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html" 
+                                    ng-model-options="{allowInvalid:true}">
                             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
                         </div>
                         <div class="error" ng-show="manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
@@ -166,7 +167,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : manageArea.weight.$invalid && !manageArea.weight.$pristine || popupData.weightError }">
                         <label class="required" for="weight">Sort Weight</label>
                         <input ng-model="popupData.area.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
-                               required pattern="^[0-9]+(\.[0-9][0-9]?)?$">
+                               required pattern="^[0-9]+(\.[0-9][0-9]?)?$"  ng-model-options="{allowInvalid:true}">
                         <div class="error" ng-show="manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
                             <small class="error" ng-show="manageArea.weight.$error.required && !popupData.weightError">
                                 Entity weight is required

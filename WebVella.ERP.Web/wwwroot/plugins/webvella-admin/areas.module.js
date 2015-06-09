@@ -140,6 +140,7 @@
         popupData.isUpdate = true;
         if (popupData.area == null) {
             popupData.area = {};
+            popupData.area.id = null;
             popupData.isUpdate = false;
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
         }
@@ -675,6 +676,7 @@
 
         popupData.ok = function () {
             if (!popupData.isUpdate) {
+                
                 webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
             }
             else {
