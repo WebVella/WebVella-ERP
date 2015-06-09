@@ -224,7 +224,9 @@ namespace WebVella.ERP.Api
                 }
 
                 //fixes issue with ID comming from webapi request 
-                if (record["id"] is string)
+                if (record["id"] == null)
+                    recordId = Guid.NewGuid();
+                else if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
                 else if (record["id"] is Guid)
                     recordId = (Guid)record["id"];
