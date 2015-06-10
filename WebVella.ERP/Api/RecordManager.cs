@@ -217,16 +217,15 @@ namespace WebVella.ERP.Api
 
 
                 Guid recordId = Guid.Empty;
-                if (!record.Properties.ContainsKey("id"))
+                if (!record.Properties.ContainsKey("id") || record["id"] == null)
                 {
                     recordId = Guid.NewGuid();
                     storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
+                    record["id"] = recordId;
                 }
 
-                //fixes issue with ID comming from webapi request 
-                if (record["id"] == null)
-                    recordId = Guid.NewGuid();
-                else if (record["id"] is string)
+                //fixes issue with ID coming from webapi request 
+                if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
                 else if (record["id"] is Guid)
                     recordId = (Guid)record["id"];
