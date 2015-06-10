@@ -138,34 +138,10 @@
                 <div class="form-group">
                     <div class="row">
                         <label class="col-sm-2 control-label">Show in areas</label>
-                        <div class="col-sm-7">
-                            <table class="table table-bordered table-permissions">
-                                <thead>
-                                    <tr>
-                                        <th>area name</th>
-                                        <th style="width:100px" class="text-center">action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Sales</td>
-                                        <td>
-                                            <a href="javascript:void(0)" >
-                                                <i class='fa fa-fw fa-close go-red'></i> remove
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2" style="text-align:center;">
-                                            <a href="javascript:void(0)">
-                                                <i class='fa fa-fw fa-plus go-green'></i> add to new area
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                        <div class="col-sm-10">
+                            <label ng-repeat="area in contentData.areas" class="checkbox-inline">
+                                <input ng-change="contentData.areaChange(area.id)" type="checkbox" checklist-model="contentData.selectedAreasList" checklist-value="area.id"> {{area.label}}
+                            </label>
                         </div>
                     </div>
                 </div>
