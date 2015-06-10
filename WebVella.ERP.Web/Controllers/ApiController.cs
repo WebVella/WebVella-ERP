@@ -5,6 +5,8 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using WebVella.ERP.Api;
+using WebVella.ERP.Storage;
+using System.Collections.Generic;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,11 +15,17 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiController : ApiControllerBase
     {
+
+        //TODO - add created_by and modified_by fields where needed, when the login is done
         RecordManager recMan;
-        public ApiController(IErpService service) : base(service)
+
+        public IStorageService Storage { get; set; }
+        public ApiController(IErpService service, IStorageService storage) : base(service)
         {
+            Storage = storage;
             recMan = new RecordManager(service);
         }
+        
 
         #region << Entity Meta >>
         // Get all entity definitions
@@ -342,6 +350,78 @@ namespace WebVella.ERP.Web.Controllers
 
 
         #endregion
+
+        //#region << Area Specific >>
+
+        // Delete an area record
+        // DELETE: api/v1/en_US/area/{recordId}
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/area/{recordId}")]
+        public IActionResult DeleteAreaRecord(Guid recordId)
+        {
+            QueryResponse response = new QueryResponse();
+            //Begin transaction
+            var recRep = Storage.GetRecordRepository();
+            var transaction = recRep.CreateTransaction();
+            try
+            {
+                transaction.Begin();
+                //Delete all relations in the areas_entities collection/entity
+                List<EntityRecord> areasEntititesRelations = new List<EntityRecord>();
+                QueryObject areasEntititesRelationsFilterObj = EntityQuery.QueryEQ("area_id", recordId);
+                var areasEntititesRelationsQuery = new EntityQuery("areas_entities", "*", areasEntititesRelationsFilterObj, null, null, null);
+                var areasEntititesRelationsResult = recMan.Find(areasEntititesRelationsQuery);
+                if (!areasEntititesRelationsResult.Success) {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = areasEntititesRelationsResult.Message;
+                    transaction.Rollback();
+                    return Json(response);
+                }
+                if (areasEntititesRelationsResult.Object.Data != null && areasEntititesRelationsResult.Object.Data.Any())
+                {
+                    areasEntititesRelations = areasEntititesRelationsResult.Object.Data;
+                }
+                foreach (var relation in areasEntititesRelations)
+                {
+                    var relationDeleteResult = recMan.DeleteRecord("areas_entities", (Guid)relation["id"]);
+                    if (!relationDeleteResult.Success)
+                    {
+                        response.Timestamp = DateTime.UtcNow;
+                        response.Success = false;
+                        response.Message = relationDeleteResult.Message;
+                        transaction.Rollback();
+                        return Json(response);
+                    }
+                }
+
+                //Delete the area
+                var areaDeleteResult = recMan.DeleteRecord("area", recordId);
+                if (!areaDeleteResult.Success)
+                {
+                    response.Timestamp = DateTime.UtcNow;
+                    response.Success = false;
+                    response.Message = areaDeleteResult.Message;
+                    transaction.Rollback();
+                    return Json(response);
+                }
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+
+            response.Timestamp = DateTime.UtcNow;
+            response.Success = true;
+            response.Message = "Area successfully deleted";
+            return DoResponse(response);
+         }
+
+        //#endregion
+
+
     }
 }
 

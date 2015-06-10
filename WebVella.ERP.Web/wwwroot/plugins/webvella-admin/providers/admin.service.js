@@ -68,6 +68,9 @@ function guid() {
         serviceInstance.updateRecord = updateRecord;
         serviceInstance.patchRecord = patchRecord;
 
+        //Area
+        serviceInstance.deleteArea = deleteArea;
+
         //#endregion
 
         //#region << Aux methods >>
@@ -777,7 +780,13 @@ function guid() {
 
         //#endregion
 
-
+        //#region << Area specific >>
+        ///////////////////////
+        function deleteArea(recordId, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called');
+            $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+        //#endregion
 
 
     }
