@@ -22,9 +22,11 @@
         serviceInstance.getEntityRecordsByName = getEntityRecordsByName;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
+        serviceInstance.getSitemap = getSitemap;
         serviceInstance.toggleSidebar = toggleSidebar;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.reloadCurrentState = reloadCurrentState;
+
 
         ///////////////////////
         function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
@@ -109,6 +111,12 @@
             $timeout(function () {
                 state.go(state.current, {}, { reload: true });
             }, 0);
+        }
+
+    	////////////////////
+        function getSitemap(successCallback, errorCallback) {
+        	$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called');
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////

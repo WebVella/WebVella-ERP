@@ -32,46 +32,25 @@
             $log.debug('webvellaDesktop>providers>browsenav.factory>generateMenuItemFromArea> function called');
 
             //Redirect to the first entity of the area
-            var firstEntityName = null;
-            var firstEntitySectionName = null;
-            //When sections are implemented
-            //for (var i = 0; i < area.sections.length; i++) {
-            //    if (area.sections[i].entities.length > 0) {
-            //        firstEntityName = area.sections[i].entities[0].name;
-            //        firstEntitySectionName = area.sections[i].name;
-            //        break;
-            //    }
-            //}
-
-            //Working without sections 
-            firstEntityName = "order";
-            firstEntitySectionName = null;
-
-
             var menuItem = {};
             menuItem.label = area.label;
-
-            if (firstEntityName != null) {
-                menuItem.stateName = "webvella-areas-entities";
-                menuItem.stateParams = {
-                    "areaName": area.name,
-                    "sectionName": firstEntitySectionName,
-                    "entityName": firstEntityName
-                };
-            }
-            else {
-                //If no entities related raise error and cancel navigation
-                alert("This area has no entities attached");
-                $log.error('webvellaDesktop>providers>browsenav.factory>generateMenuItemFromArea> This area has no entities attached');
-                menuItem.stateName = "webvella-root-home";
-                menuItem.stateParams = {};
-            }
-
-            menuItem.parentName = "";
-            menuItem.nodes = [];
             menuItem.weight = area.weight;
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
+            menuItem.stateName = "webvella-areas-entities";
+
+            if (area.entities.length > 0) {
+            	area.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+            	menuItem.stateParams = {
+            		"areaName": area.name,
+            		"entityName": area.entities[0].name
+            	};
+            }
+            else {
+            	return null;
+            }
+
+
             return menuItem
         }
 
