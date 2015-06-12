@@ -29,7 +29,7 @@
                 }
             },
             resolve: {
-                resolvedAreasList: resolveAreasList
+                resolvedSitemap: resolveSitemap
             },
             data: {}
         });
@@ -53,10 +53,10 @@
     //#endregion
 
     //#region << Resolve Function >>
-    resolveAreasList.$inject = ['$q', '$log', 'webvellaRootService'];
+    resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
 
     /* @ngInject */
-    function resolveAreasList($q, $log, webvellaRootService) {
+    function resolveSitemap($q, $log, webvellaRootService) {
         $log.debug('webvellaDesktop>browse> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
@@ -70,7 +70,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("area", successCallback, errorCallback);
+        webvellaRootService.getSitemap(successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaDesktop>browse> END state.resolved');
@@ -80,10 +80,10 @@
 
 
     //#region << Controller >>
-    controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedAreasList', 'webvellaDesktopBrowsenavFactory'];
+    controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedAreasList, webvellaDesktopBrowsenavFactory) {
+    function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory) {
         $log.debug('webvellaDesktop>browse> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -99,9 +99,13 @@
         webvellaDesktopBrowsenavFactory.initBrowsenav();
         ////2. READY hook listener
         var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
-            for (var i = 0; i < resolvedAreasList.data.length; i++) {
-                var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedAreasList.data[i]);
-                webvellaDesktopBrowsenavFactory.addItem(menuItem);
+        	var sitemapAreas = angular.copy(resolvedSitemap.data);
+        	sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+			for (var i = 0; i < sitemapAreas.length; i++) {
+        		var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedSitemap.data[i]);
+                if (menuItem != null) {
+                	webvellaDesktopBrowsenavFactory.addItem(menuItem);
+                }
             };
         })
         ////3. UPDATED hook listener

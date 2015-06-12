@@ -78,7 +78,8 @@
                     <td class="name">
                         {{relation.label}}
                         <p class="go-gray">
-                            <span class="go-red" ng-show="relation.system">[SYS] </span>
+							<span class="go-green">{{relation.name}}</span>
+							<span class="go-red" ng-show="relation.system">[SYS] </span>
                             <span ng-show="relation.relationType == 1">One to One</span>
                             <span ng-show="relation.relationType == 2">One to Many</span>
                             <span ng-show="relation.relationType == 3">Many to Many</span>

@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-entities', {
             parent: 'webvella-areas-base',
-            url: '/:areaName/:sectionName/:entityName', // /areas/areaName/sectionName/entityName after the parent state is prepended
+            url: '/:areaName/:entityName', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAreasTopnavController',
