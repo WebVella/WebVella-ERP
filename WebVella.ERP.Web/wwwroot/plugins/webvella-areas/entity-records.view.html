@@ -20,11 +20,11 @@
             </span>
         </div>
         <div class="icon-box">
-            <i class="fa fa-users"></i>
+            <i class="fa fa-fw fa-{{contentData.entity.icon_name}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="Offers">Offers</h4>
-            <a href=""><i class="fa fa-gear"></i> Settings</a>
+            <h4 title="Offers">{{contentData.entity.label_plural}}</h4>
+            <a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">

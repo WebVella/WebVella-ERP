@@ -72,6 +72,7 @@ function guid() {
         serviceInstance.deleteArea = deleteArea;
         serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
         serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
+        serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
 
         //#endregion
 
@@ -798,6 +799,12 @@ function guid() {
         function createAreaEntityRelation(areaId, entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>createAreaEntityRelation> function called');
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'area/' + areaId + '/entity/' + entityId +'/relation' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+    	///////////////////////
+        function removeAreaEntityRelation(areaId, entityId, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>removeAreaEntityRelation> function called');
+        	$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + areaId + '/entity/' + entityId + '/relation' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //#endregion

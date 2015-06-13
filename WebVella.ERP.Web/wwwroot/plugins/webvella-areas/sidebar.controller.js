@@ -13,17 +13,15 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log','$rootScope', '$state'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state) {
+    function controller($log, $rootScope, $state,$stateParams, resolvedSitemap, webvellaAreasService) {
         $log.debug('webvellaAreas>sidebar> BEGIN controller.exec');
         /* jshint validthis:true */
         var sidebarData = this;
-
-        activate();
+        sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         $log.debug('webvellaAreas>sidebar> END controller.exec');
-        function activate() { }
     }
 
 })();

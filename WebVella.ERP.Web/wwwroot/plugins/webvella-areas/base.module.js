@@ -32,7 +32,7 @@
                 pageTitle: function () {
                     return "Webvella ERP";
                 },
-                resolvedCurrentArea: resolveCurrentArea
+                resolvedSitemap: resolveSitemap
             }
         });
     };
@@ -49,32 +49,31 @@
     //#endregion
 
 
-    // Resolve Function /////////////////////////
-    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
+	//#region << Resolve Function >>
 
-    /* @ngInject */
-    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
-        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
+    resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
+	/* @ngInject */
+    function resolveSitemap($q, $log, webvellaRootService) {
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
 
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        webvellaAreasService.getAreaByName("area", successCallback, errorCallback);
+    	webvellaRootService.getSitemap(successCallback, errorCallback);
 
-        // Return
-        $log.debug('webvellaAreas>entities> END state.resolved');
-        return defer.promise;
+    	// Return
+    	$log.debug('webvellaDesktop>browse> END state.resolved');
+    	return defer.promise;
     }
-
-
+	//#endregion
 
     //#region << Controller >>
     controller.$inject = ['$log'];

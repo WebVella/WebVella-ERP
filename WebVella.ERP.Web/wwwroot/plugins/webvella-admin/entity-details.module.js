@@ -807,7 +807,7 @@
             //console.log(areaId);
             //console.log(contentData.entity.id);
             $timeout(function () {
-                console.log(contentData.selectedAreasList);
+                //console.log(contentData.selectedAreasList);
                 if (contentData.selectedAreasList.indexOf(areaId) > -1) {
                     //Added
                     //console.log("added");
@@ -815,7 +815,8 @@
                 }
                 else {
                     //Removed
-                    //console.log("removed");
+                	//console.log("removed");
+                	webvellaAdminService.removeAreaEntityRelation(areaId, contentData.entity.id, patchAreaSuccessCallback, patchFailedCallback);
                 }
             },0);
         }
