@@ -37,7 +37,7 @@
             menuItem.weight = area.weight;
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
-            menuItem.stateName = "webvella-areas-entities";
+            menuItem.stateName = "webvella-entity-records";
 
             if (area.entities.length > 0) {
             	area.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });

@@ -474,6 +474,7 @@ namespace WebVella.ERP.Web.Controllers
 							entityObj["id"] = entityResult.Object.Id;
 							entityObj["name"] = entityResult.Object.Name;
 							entityObj["label"] = entityResult.Object.Label;
+							entityObj["label_plural"] = entityResult.Object.LabelPlural;
 							entityObj["icon_name"] = entityResult.Object.IconName;
 							entityObj["weight"] = entityResult.Object.Weight;
 							areaEntities.Add(entityObj);
@@ -516,6 +517,35 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(result);
 		}
 
+		// Delete an area entity relation
+		// DELETE: api/v1/en_US/area/{areaId}/entity/{entityId}/relation
+		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/area/{areaId}/entity/{entityId}/relation")]
+		public IActionResult DeleteAreaEntityRelation(Guid areaId, Guid entityId)
+		{
+
+			QueryObject filter = EntityQuery.QueryAND(EntityQuery.QueryEQ("area_id", areaId),EntityQuery.QueryEQ("entity_id", entityId));
+			EntityQuery queryRelations = new EntityQuery("areas_entities", "*", filter, null, null, null);
+			QueryResponse resultRelations = recMan.Find(queryRelations);
+			if (!resultRelations.Success)
+				return DoResponse(resultRelations);
+			if(resultRelations.Object.Data != null && resultRelations.Object.Data.Any()) {
+				EntityRecord recordForDeletion = resultRelations.Object.Data.First();
+			QueryResponse result = recMan.DeleteRecord("areas_entities", (Guid)recordForDeletion["id"]);
+				if (!result.Success) {
+					return DoResponse(result);
+					}
+				else {
+					return Json(result);
+				}
+
+			}
+			else {
+				QueryResponse responseNotFound = new QueryResponse();
+				responseNotFound.Success = false;
+				responseNotFound.Message = "No relation was found between areaId: " + areaId + " and entity Id: " + entityId;
+				return Json(responseNotFound);
+				}
+		}
 
 		//#endregion
 

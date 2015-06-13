@@ -104,7 +104,7 @@
         }
         if (firstEntityName != null) {
             $timeout(function () {
-                $state.go('webvella-areas-entities', { areaName: requestedArea.name, sectionName: firstEntitySectionName, entityName: firstEntityName });
+                $state.go('webvella-entity-records', { areaName: requestedArea.name, entityName: firstEntityName });
             }, 0);
             
         }

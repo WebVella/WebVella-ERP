@@ -10,14 +10,14 @@
     angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreasEntitiesController', controller);
+        .controller('WebVellaAreaEntityRecordsontroller', controller);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-areas-entities', {
+        $stateProvider.state('webvella-entity-records', {
             parent: 'webvella-areas-base',
             url: '/:areaName/:entityName', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
@@ -32,13 +32,13 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAreasEntitiesController',
-                    templateUrl: '/plugins/webvella-areas/entities.view.html',
+                    controller: 'WebVellaAreaEntityRecordsontroller',
+                    templateUrl: '/plugins/webvella-areas/entity-records.view.html',
                     controllerAs: 'contentData'
                 }
             },
             resolve: {
-                //resolvedCurrentArea: resolveCurrentArea
+            	//resolvedSitemap: resolveSitemap - from the parent
             },
             data: {
 
@@ -58,48 +58,23 @@
     };
 
 
-    // Resolve Function /////////////////////////
-    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
-
-    /* @ngInject */
-    function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
-        $log.debug('webvellaAreas>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        webvellaAreasService.getAreaByName("area", successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAreas>entities> END state.resolved');
-        return defer.promise;
-    }
-
-
-
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService',
-        'resolvedCurrentArea', '$timeout', 'webvellaAreasService'];
+    controller.$inject = ['$log', '$rootScope', '$state','$stateParams', 'pageTitle', 'webvellaRootService',
+        'resolvedSitemap', '$timeout', 'webvellaAreasService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, webvellaRootService,
-        resolvedCurrentArea, $timeout, webvellaAreasService) {
+    function controller($log, $rootScope, $state,$stateParams, pageTitle, webvellaRootService,
+        resolvedSitemap, $timeout, webvellaAreasService) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
         //#region << Set Environment >>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
-        contentData.currentArea = resolvedCurrentArea;
+        contentData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
+
+        contentData.entity = webvellaAreasService.getCurrentEntityFromArea($stateParams.entityName, contentData.currentArea);
         //#endregion
 
 

@@ -13,25 +13,25 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentArea', '$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout', 'webvellaAreasService', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, resolvedCurrentArea, $timeout) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout, webvellaAreasService, webvellaRootService) {
         $log.debug('webvellaAreas>topnav> BEGIN controller.exec');
         /* jshint validthis:true */
         var topnavData = this;
-        topnavData.currentArea = resolvedCurrentArea;
-
+        topnavData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         topnavData.navigateToHome = function () {
             $timeout(function () {
                 $state.go("webvella-desktop-browse");
             }, 0);
         }
 
+        topnavData.toggleSideNav = function () {
+        	webvellaRootService.toggleSidebar();
+        }
 
-        activate();
         $log.debug('webvellaAreas>topnav> END controller.exec');
-        function activate() { }
     }
 
 })();

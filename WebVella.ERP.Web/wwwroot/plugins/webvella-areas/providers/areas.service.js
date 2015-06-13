@@ -18,6 +18,8 @@
         var serviceInstance = this;
 
         serviceInstance.getAreaByName = getAreaByName;
+        serviceInstance.getCurrentAreaFromSitemap = getCurrentAreaFromSitemap;
+        serviceInstance.getCurrentEntityFromArea = getCurrentEntityFromArea;
         serviceInstance.getViewMetaByName = getViewMetaByName;
         serviceInstance.getEntityRecord = getEntityRecord;
         serviceInstance.createEntityRecord = createEntityRecord;
@@ -26,6 +28,32 @@
         function getAreaByName(areaName, successCallback, errorCallback) {
             $log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + '/meta/entity/' + areaName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+		///////////////////////
+        function getCurrentAreaFromSitemap(areaName, sitemap) {
+        	var currentArea = {};
+
+        	for (var i = 0; i < sitemap.length; i++) {
+        		if (sitemap[i].name == areaName) {
+        			currentArea = sitemap[i];
+        		}
+        	}
+        	currentArea.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+        	return currentArea;
+        }
+
+    	///////////////////////
+        function getCurrentEntityFromArea(entityName, area) {
+        	var currentEntity = {};
+
+        	for (var i = 0; i < area.entities.length; i++) {
+        		if (area.entities[i].name == entityName) {
+        			currentEntity = area.entities[i];
+        		}
+        	}
+
+        	return currentEntity;
         }
 
 
