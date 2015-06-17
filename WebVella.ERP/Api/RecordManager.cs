@@ -217,14 +217,13 @@ namespace WebVella.ERP.Api
 
 
                 Guid recordId = Guid.Empty;
-                if (!record.Properties.ContainsKey("id") || record["id"] == null)
+                if (!record.Properties.ContainsKey("id"))
                 {
                     recordId = Guid.NewGuid();
                     storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
-                    record["id"] = recordId;
                 }
 
-                //fixes issue with ID coming from webapi request 
+                //fixes issue with ID comming from webapi request 
                 if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
                 else if (record["id"] is Guid)
@@ -654,7 +653,7 @@ namespace WebVella.ERP.Api
                                     recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
                                     if (recValue.Value != null)
                                     {
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
                                         relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
                                         foreach (Guid id in relatedRecordIds)
                                         {
@@ -671,7 +670,7 @@ namespace WebVella.ERP.Api
                                     if (recValue.Value != null)
                                     {
 
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
+                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
                                         relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
                                         foreach (Guid id in relatedRecordIds)
                                         {
@@ -759,7 +758,7 @@ namespace WebVella.ERP.Api
                 IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
                 List<Field> fields = ExtractQueryFieldsMeta(query);
                 var recRepo = erpService.StorageService.GetRecordRepository();
-                response.Object = recRepo.Count(query.EntityName, query.Query );
+                response.Object = recRepo.Count(query.EntityName, query.Query);
             }
             catch (Exception ex)
             {
