@@ -1818,6 +1818,15 @@ table .btn-xs.btn-link {
     background-color: #FFFAF8;
 }
 
+.table.x-editable td {
+	position:relative;
+	height:51px;
+	vertical-align:middle;
+}
+
+.editable-buttons {
+	vertical-align:middle;
+}
 
 /*#endregion */
 
