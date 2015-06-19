@@ -96,10 +96,5 @@ namespace WebVella.ERP.Storage.Mongo
         {
             return new MongoRecordsListField();
         }
-
-        public IStorageRecordViewField CreateEmptyRecordViewFieldObject()
-        {
-            return new MongoRecordViewField();
-        }
     }
 }
