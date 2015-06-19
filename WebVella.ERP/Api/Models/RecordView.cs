@@ -30,10 +30,10 @@ namespace WebVella.ERP.Api.Models
 		public string Label { get; set; }
 
 		[JsonProperty(PropertyName = "default")]
-		public Boolean Default { get; set; }
+		public bool Default { get; set; }
 
 		[JsonProperty(PropertyName = "system")]
-		public Boolean System { get; set; }
+		public bool System { get; set; }
 
 		[JsonProperty(PropertyName = "weight")]
 		public decimal? Weight { get; set; }
@@ -63,7 +63,7 @@ namespace WebVella.ERP.Api.Models
 		}
 
 		[JsonProperty(PropertyName = "render")]
-		public Boolean Render { get; set; }
+		public bool Render { get; set; }
 
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
@@ -76,9 +76,6 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewSidebarList
 	{
 		public RecordViewSidebarList() {
-			EntityId = Guid.NewGuid();
-			ListId = Guid.NewGuid();
-			RelationId = Guid.NewGuid();
 		}
 
 		[JsonProperty(PropertyName = "entityId")]
@@ -105,7 +102,7 @@ namespace WebVella.ERP.Api.Models
 		public string Name { get; set; }
 
 		[JsonProperty(PropertyName = "render")]
-		public Boolean Render { get; set; }
+		public bool Render { get; set; }
 
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
@@ -140,10 +137,10 @@ namespace WebVella.ERP.Api.Models
 		public string CssClass { get; set; }
 
 		[JsonProperty(PropertyName = "showLabel")]
-		public Boolean ShowLabel { get; set; }
+		public bool ShowLabel { get; set; }
 
 		[JsonProperty(PropertyName = "collapsed")]
-		public Boolean Collapsed { get; set; }
+		public bool Collapsed { get; set; }
 
 		[JsonProperty(PropertyName = "weight")]
 		public decimal? Weight { get; set; }
@@ -178,31 +175,64 @@ namespace WebVella.ERP.Api.Models
 	{
 		public RecordViewColumn()
 		{
-			Items = new List<RecordViewItem>();
+			Items = new List<RecordViewItemBase>();
 		}
 
 		[JsonProperty(PropertyName = "items")]
-		public List<RecordViewItem> Items { get; set; }
+		public List<RecordViewItemBase> Items { get; set; }
 	}
 
-	////////////////////////
-	public class RecordViewItem
-	{
-		public RecordViewItem()
-		{
-			Id = Guid.Empty;
-			Type = "";
-		}
-		[JsonProperty(PropertyName = "id")]
-		public Guid Id { get; set; }
+    public enum RecordViewItemType
+    {
+        Field,
+        List,
+        View,
+        Html
+    }
 
-		[JsonProperty(PropertyName = "type")]
-		public string Type { get; set; }
-	}
+    ////////////////////////
+    public abstract class RecordViewItemBase
+    {
+    }
+
+    public class RecordViewFieldItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.Field; } }
+
+        [JsonProperty(PropertyName = "fieldId")]
+        public Guid FieldId { get; set; }
+    }
+
+    public class RecordViewListItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.List; } }
+
+        [JsonProperty(PropertyName = "listId")]
+        public Guid ListId { get; set; }
+    }
+
+    public class RecordViewViewItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.View; } }
+
+        [JsonProperty(PropertyName = "viewId")]
+        public Guid ViewId { get; set; }
+    }
+
+    public class RecordViewHtmlItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.Html; } }
+
+        [JsonProperty(PropertyName = "content")]
+        public string Content { get; set; }
+    }
 
 
-
-	public class RecordViewCollection
+    public class RecordViewCollection
 	{
 		[JsonProperty(PropertyName = "recordViews")]
 		public List<RecordView> RecordViews { get; set; }

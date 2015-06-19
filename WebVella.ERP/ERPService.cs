@@ -947,7 +947,7 @@ namespace WebVella.ERP
             recordsLists.Add(firstRecordList);
             return recordsLists;
         }
-
+        /*
         private List<RecordView> CreateTestFormCollection(Entity entity)
         {
             List<RecordView> recordViewList = new List<RecordView>();
@@ -982,7 +982,7 @@ namespace WebVella.ERP
 
             return recordViewList;
         }
-
+        */
         #endregion
     }
 }
