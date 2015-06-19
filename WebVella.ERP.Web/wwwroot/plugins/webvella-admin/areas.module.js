@@ -44,7 +44,8 @@
             },
             resolve: {
                 resolvedAreaRecordsList: resolveAreaRecordsList,
-                resolvedRolesList: resolveRolesList
+                resolvedRolesList: resolveRolesList,
+                resolvedEntityMetaList: resolveEntityMetaList
             },
             data: {
 
@@ -95,7 +96,6 @@
 
     // Resolve Roles list /////////////////////////
     resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
-
     /* @ngInject */
     function resolveRolesList($q, $log, webvellaRootService) {
         $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
@@ -118,12 +118,37 @@
         return defer.promise;
     }
 
+	// Resolve EntityMetaList /////////////////////////
+    resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaAdminService'];
+
+	/* @ngInject */
+    function resolveEntityMetaList($q, $log, webvellaAdminService) {
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	webvellaAdminService.getMetaEntityList(successCallback, errorCallback);
+
+    	// Return
+    	$log.debug('webvellaAdmin>entities> END state.resolved');
+    	return defer.promise;
+    }
+
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList', 'resolvedRolesList', '$modal'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,resolvedRolesList, $modal) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,resolvedRolesList,resolvedEntityMetaList, $modal) {
         $log.debug('webvellaAdmin>areas-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -139,6 +164,12 @@
             if (a.name > b.name) return 1;
             return 0;
         });
+        contentData.entities = resolvedEntityMetaList.entities.sort(function (a, b) {
+        	if (a.label < b.label) return -1;
+        	if (a.label > b.label) return 1;
+        	return 0;
+        });
+
         //Create new entity modal
         contentData.openManageAreaModal = function (currentArea) {
             contentData.currentArea = currentArea;
@@ -164,16 +195,17 @@
 
 
     //// Modal Controllers
-    manageAreaController.$inject = ['$modalInstance', '$log', '$sce','$modal', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageAreaController.$inject = ['$modalInstance', '$log', '$sce', '$modal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
 
     /* @ngInject */
-    function manageAreaController($modalInstance, $log,$sce,$modal, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageAreaController($modalInstance, $log,$sce,$modal,$filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
         $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
         /* jshint validthis:true */
         var popupData = this;
         popupData.modalInstance = $modalInstance;
         popupData.area = angular.copy(contentData.currentArea);
         popupData.roles = angular.copy(contentData.roles);
+        popupData.entities = angular.copy(contentData.entities);
         popupData.isUpdate = true;
         if (popupData.area == null) {
             popupData.area = {};
@@ -712,6 +744,23 @@
   "youtube-play",
   "youtube-square"
         ];
+
+		//Select entity typeahead
+
+    	//Manage View section
+        popupData.user = 2;
+
+        popupData.statuses = [
+		  { value: 1, text: 'status1' },
+		  { value: 2, text: 'status2' },
+		  { value: 3, text: 'status3' },
+		  { value: 4, text: 'status4' }
+        ];
+
+        popupData.showStatus = function () {
+        	var selected = $filter('filter')(popupData.statuses, { value: popupData.user });
+        	return (popupData.user && selected.length) ? selected[0].text : 'Not set';
+        };
 
         popupData.ok = function () {
             if (!popupData.isUpdate) {
