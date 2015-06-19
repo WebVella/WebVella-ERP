@@ -473,7 +473,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateForms(Guid entityId, List<RecordView> recordViewList, bool checkId = false)
+		private List<ErrorModel> ValidateRecordViews(Guid entityId, List<RecordView> recordViewList, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -482,17 +482,17 @@ namespace WebVella.ERP.Api
 
 			foreach (var recordView in recordViewList)
 			{
-				errorList.AddRange(ValidateForm(entity, recordView, checkId));
+				errorList.AddRange(ValidateRecordView(entity, recordView, checkId));
 			}
 
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateForm(Entity entity, RecordView recordView, bool checkId = false)
+		private List<ErrorModel> ValidateRecordView(Entity entity, RecordView recordView, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			if (!recordView.Id.HasValue || recordView.Id.Value == Guid.Empty)
+			if ( recordView.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
 			if (checkId)
@@ -512,6 +512,8 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabel(recordView.Label));
 
+            //TODO validate new meta - fields were before
+            /*
 			foreach (var field in recordView.Fields)
 			{
 				if (!field.Id.HasValue && field.Id.Value == Guid.Empty)
@@ -539,7 +541,7 @@ namespace WebVella.ERP.Api
 
 				if (!field.Column.HasValue)
 					errorList.Add(new ErrorModel("recordViewLists.column.position", null, "Column is required!"));
-			}
+			}*/
 
 			return errorList;
 		}
@@ -2111,7 +2113,7 @@ namespace WebVella.ERP.Api
 				Entity entity = storageEntity.MapTo<Entity>();
 
 				response.Object = recordView;
-				response.Errors = ValidateForm(entity, recordView, false);
+				response.Errors = ValidateRecordView(entity, recordView, false);
 
 				if (response.Errors.Count > 0)
 				{
@@ -2176,7 +2178,7 @@ namespace WebVella.ERP.Api
 				Entity entity = storageEntity.MapTo<Entity>();
 
 				response.Object = recordView;
-				response.Errors = ValidateForm(entity, recordView, true);
+				response.Errors = ValidateRecordView(entity, recordView, true);
 
 				if (response.Errors.Count > 0)
 				{
@@ -2254,13 +2256,19 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
+                /*
+
+                //TODO fix update - RecordView is completelly changed
+
 				if (!string.IsNullOrWhiteSpace(recordView.Label))
 					updatedView.Label = recordView.Label;
 				if (recordView.Fields != null)
 					updatedView.Fields = recordView.Fields;
 
+                */
+
 				response.Object = recordView;
-				response.Errors = ValidateForm(entity, recordView, true);
+				response.Errors = ValidateRecordView(entity, recordView, true);
 
 				if (response.Errors.Count > 0)
 				{
