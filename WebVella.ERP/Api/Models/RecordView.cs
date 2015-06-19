@@ -4,7 +4,20 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-	public class RecordView
+    public enum RecordViewType
+    {
+        Details
+    }
+
+    public enum RecordViewItemType
+    {
+        Field,
+        List,
+        View,
+        Html
+    }
+
+    public class RecordView
 	{
 		public RecordView()
 		{
@@ -15,7 +28,7 @@ namespace WebVella.ERP.Api.Models
 			System = false;
 			Weight = 1;
 			CssClass = "";
-			Type = "";
+			Type = RecordViewType.Details;
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
 		}
@@ -42,7 +55,7 @@ namespace WebVella.ERP.Api.Models
 		public string CssClass { get; set; }
 
 		[JsonProperty(PropertyName = "type")]
-		public string Type { get; set; }
+		public RecordViewType Type { get; set; }
 
 		[JsonProperty(PropertyName = "regions")]
 		public List<RecordViewRegion> Regions { get; set; }
@@ -182,13 +195,7 @@ namespace WebVella.ERP.Api.Models
 		public List<RecordViewItemBase> Items { get; set; }
 	}
 
-    public enum RecordViewItemType
-    {
-        Field,
-        List,
-        View,
-        Html
-    }
+  
 
     ////////////////////////
     public abstract class RecordViewItemBase
