@@ -9,7 +9,7 @@ namespace WebVella.ERP.Storage
     {
         IStorageEntity CreateEmptyEntityObject();
         IStorageRecordPermissions CreateEmptyRecordPermissionsObject();
-        IStorageField CreateEmptyFieldObject( Type type );
+        IStorageField CreateEmptyFieldObject(Type type);
         IStorageRecordsList CreateEmptyRecordsListObject();
         IStorageRecordView CreateEmptyRecordViewObject();
         IStorageEntityRelation CreateEmptyEntityRelationObject();
@@ -17,6 +17,5 @@ namespace WebVella.ERP.Storage
         IStorageSelectFieldOption CreateEmptySelectFieldOptionObject();
         IStorageRecordsListFilter CreateEmptyRecordsListFilterObject();
         IStorageRecordsListField CreateEmptyRecordsListFieldObject();
-        IStorageRecordViewField CreateEmptyRecordViewFieldObject();
     }
 }
