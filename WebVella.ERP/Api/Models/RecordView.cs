@@ -196,10 +196,28 @@ namespace WebVella.ERP.Api.Models
     {
     }
 
+    public class RecordViewHtmlItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.Html; } }
+
+        [JsonProperty(PropertyName = "content")]
+        public string Content { get; set; }
+    }
+
     public class RecordViewFieldItem : RecordViewItemBase
     {
         [JsonProperty(PropertyName = "type")]
         public static RecordViewItemType ItemType { get { return RecordViewItemType.Field; } }
+
+        [JsonProperty(PropertyName = "fieldId")]
+        public Guid FieldId { get; set; }
+    }
+
+    public class RecordViewRelationFieldItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.RelationField; } }
 
         [JsonProperty(PropertyName = "fieldId")]
         public Guid FieldId { get; set; }
@@ -223,14 +241,7 @@ namespace WebVella.ERP.Api.Models
         public Guid ViewId { get; set; }
     }
 
-    public class RecordViewHtmlItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.Html; } }
 
-        [JsonProperty(PropertyName = "content")]
-        public string Content { get; set; }
-    }
 
 
     public class RecordViewCollection
