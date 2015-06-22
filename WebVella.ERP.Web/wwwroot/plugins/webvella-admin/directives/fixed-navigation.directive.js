@@ -42,12 +42,14 @@
                 
                 var bottomScrollHeight = 50;
 
-                var tabsElement = document.getElementById('tabs-header');
-                var tabsElementHeight = tabsElement.getBoundingClientRect().height;
+            	//var tabsElement = document.getElementByClass('tabs-header');
+                var tabsElement = document.getElementsByClassName("nav-tabs");
+                var tabsElementHeight = tabsElement[0].getBoundingClientRect().height;
                 var sideDropZoneHeight = clh - rectInitial.top - bottomScrollHeight - tabsElementHeight;
-                var tabsPane = document.getElementById('tabs-pane');
-                tabsPane.style.height = sideDropZoneHeight + "px";
-
+                var tabsPane = document.getElementsByClassName('tab-pane');
+                for (var i = 0; i < tabsPane.length; i++) {
+                	tabsPane[i].style.height = sideDropZoneHeight + "px";
+                };
 
                 var styles = {
                     "position": "fixed",

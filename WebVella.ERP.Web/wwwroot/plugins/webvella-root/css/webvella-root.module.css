@@ -2980,7 +2980,7 @@ span.not-editable {
 }
 
 .as-sortable-dragging {
-    /*width:200px !important;*/
+    width:200px !important;
 }
 
 .view-divider {

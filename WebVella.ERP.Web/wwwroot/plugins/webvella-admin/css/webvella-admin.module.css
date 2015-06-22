@@ -2,6 +2,14 @@
     Admin
 *****************************/
 /*#region << Admin >> */
+.view-library .tab-pane{
+	 overflow-y:auto;
+}
 
+.view-manage-section .fa.pull-right,
+.view-library .fa.pull-right {
+	position:relative;
+	top:3px;
+}
 
 /*#endregion */
