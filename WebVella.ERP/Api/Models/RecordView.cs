@@ -184,10 +184,11 @@ namespace WebVella.ERP.Api.Models
 
     public enum RecordViewItemType
     {
-        Field,
+		Html,
+		Field,
+		RelationField,
         List,
-        View,
-        Html
+        View
     }
 
     ////////////////////////
