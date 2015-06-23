@@ -194,6 +194,11 @@
         //#region << Initialize View and Content Region >>
         contentData.view = angular.copy(resolvedCurrentView);
         contentData.library = angular.copy(resolvedViewLibrary);
+        contentData.library.items = contentData.library.items.sort(function (a, b) {
+        	if (a.type < b.type) return -1;
+        	if (a.type > b.type) return 1;
+        	return 0;
+        });
         contentData.library.items.forEach(function (item) {
         	var search = "";
         	if (item.type != null) {
@@ -392,11 +397,11 @@
             }
             moveSuccess = function () {
                 // Items should be able to be copied if it is not field, view or list
-                if (eventObj.source.itemScope.item.type !== "field"
+            	if (eventObj.source.itemScope.item.type !== "field"
+				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
                     && eventObj.source.itemScope.item.type !== "view"
                     && eventObj.source.itemScope.item.type !== "list") {
                     var objectCopy = angular.copy(eventObj.source.itemScope.item);
-                    objectCopy.id = guid();
                     eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
                 }
 
@@ -431,6 +436,7 @@
 
             if (eventObj.source.itemScope.item.type != "field"
                 && eventObj.source.itemScope.item.type != "view"
+				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
                 && eventObj.source.itemScope.item.type != "list") {
                 //can be managed
                 openItemSettingsModal();
@@ -440,7 +446,20 @@
                 //1. Update the view 
                 for (var i = 0; i < contentData.view.regions.length; i++) {
                     if (contentData.view.regions[i].name === "content") {
-                        contentData.view.regions[i] = contentData.viewContentRegion;
+                    	var cleanedRegion = angular.copy(contentData.viewContentRegion);
+                    	for (var j = 0; j < cleanedRegion.sections.length; j++) {
+                    		delete cleanedRegion.sections[j]["$$hashKey"];
+                    		for (var g = 0; g < cleanedRegion.sections[j].rows.length; g++) {
+                    			delete cleanedRegion.sections[j].rows[g]["$$hashKey"];
+                    			for (var k = 0; k < cleanedRegion.sections[j].rows[g].columns.length; k++) {
+                    				delete cleanedRegion.sections[j].rows[g].columns[k]["$$hashKey"];
+                    				for (var m = 0; m < cleanedRegion.sections[j].rows[g].columns[k].items.length; m++) {
+                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["$$hashKey"];
+                    				}
+                    			}
+                    		}
+                    	}
+                    	contentData.view.regions[i] = cleanedRegion;
                     }
                 }
                 //2. Call the service
@@ -451,12 +470,12 @@
 
         contentData.dragControlListeners = {
             accept: function (sourceItemHandleScope, destSortableScope) {
-                for (var i = 0; i < destSortableScope.modelValue.length; i++) {
-                    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
-                        return false;
-                        break;
-                    }
-                }
+                //for (var i = 0; i < destSortableScope.modelValue.length; i++) {
+                //    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
+                //        return false;
+                //        break;
+                //    }
+                //}
 
                 return true
             },
