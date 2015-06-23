@@ -16,6 +16,33 @@ namespace WebVella.ERP.Storage.Mongo
 		public decimal? MaxValue { get; set; }
 
 		[BsonElement("currency")]
-		public CurrencyType Currency { get; set; }
+		public IStorageCurrencyType Currency { get; set; }
     }
+
+	public class MongoCurrencyType : IStorageCurrencyType
+	{
+		[BsonElement("symbol")]
+		public string Symbol { get; set; }
+
+		[BsonElement("symbolNative")]
+		public string SymbolNative { get; set; }
+
+		[BsonElement("name")]
+		public string Name { get; set; }
+
+		[BsonElement("namePlural")]
+		public string NamePlural { get; set; }
+
+		[BsonElement("code")]
+		public string Code { get; set; }
+
+		[BsonElement("decimalDigits")]
+		public int DecimalDigits { get; set; }
+
+		[BsonElement("rounding")]
+		public int Rounding { get; set; }
+
+		[BsonElement("symbolPlacement")]
+		public CurrencySymbolPlacement SymbolPlacement { get; set; }
+	}
 }

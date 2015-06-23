@@ -17,5 +17,6 @@ namespace WebVella.ERP.Storage
         IStorageSelectFieldOption CreateEmptySelectFieldOptionObject();
         IStorageRecordsListFilter CreateEmptyRecordsListFilterObject();
         IStorageRecordsListField CreateEmptyRecordsListFieldObject();
+		IStorageCurrencyType CreateEmptyCurrencyTypeObject();
     }
 }

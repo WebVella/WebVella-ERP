@@ -116,6 +116,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<MultiSelectFieldOption, IStorageMultiSelectFieldOption>().ConstructUsing(x => CreateEmptyMultiSelectFieldOptionObject(x));
 			Mapper.CreateMap<IStorageMultiSelectFieldOption, MultiSelectFieldOption>();
 
+			Mapper.CreateMap<CurrencyType, IStorageCurrencyType>().ConstructUsing(x => CreateEmptyCurrencyTypeObject(x));
+			Mapper.CreateMap<IStorageCurrencyType, CurrencyType>();
+
 			Mapper.CreateMap<Field, IStorageField>().ConstructUsing(x => CreateEmptyFieldObject(x))
 				.Include<AutoNumberField, IStorageAutoNumberField>()
 				.Include<CheckboxField, IStorageCheckboxField>()
@@ -332,5 +335,10 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			return (IStorageMultiSelectFieldOption)storageService.GetObjectFactory().CreateEmptyMultiSelectFieldOptionObject();
 		}
 
+		protected IStorageCurrencyType CreateEmptyCurrencyTypeObject(CurrencyType field)
+		{
+			var storageService = service.StorageService;
+			return (IStorageCurrencyType)storageService.GetObjectFactory().CreateEmptyCurrencyTypeObject();
+		}
 	}
 }
