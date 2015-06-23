@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoSystemSettings : MongoDocumentBase, IStorageSystemSettings
     {
-        public int Version { get; set; }
+		[BsonElement("version")]
+		public int Version { get; set; }
     }
 }

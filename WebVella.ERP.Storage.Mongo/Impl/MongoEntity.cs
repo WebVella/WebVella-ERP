@@ -1,29 +1,40 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     internal class MongoEntity : MongoDocumentBase, IStorageEntity
     {
-        public string Name { get; set; }
+		[BsonElement("name")]
+		public string Name { get; set; }
 
-        public string Label { get; set; }
+		[BsonElement("label")]
+		public string Label { get; set; }
 
-        public string LabelPlural { get; set; }
+		[BsonElement("labelPlural")]
+		public string LabelPlural { get; set; }
 
-        public bool System { get; set; }
+		[BsonElement("system")]
+		public bool System { get; set; }
 
-        public string IconName { get; set; }
+		[BsonElement("iconName")]
+		public string IconName { get; set; }
 
-        public decimal Weight { get; set; }
+		[BsonElement("weight")]
+		public decimal Weight { get; set; }
 
-        public IStorageRecordPermissions RecordPermissions { get; set; }
+		[BsonElement("recordPermissions")]
+		public IStorageRecordPermissions RecordPermissions { get; set; }
 
-        public List<IStorageField> Fields { get; set; }
+		[BsonElement("fields")]
+		public List<IStorageField> Fields { get; set; }
 
-        public List<IStorageRecordsList> RecordsLists { get; set; }
+		[BsonElement("recordsLists")]
+		public List<IStorageRecordsList> RecordsLists { get; set; }
 
-        public List<IStorageRecordView> RecordViewList { get; set; }
+		[BsonElement("recordViewList")]
+		public List<IStorageRecordView> RecordViewList { get; set; }
 
         public MongoEntity()
         {
@@ -36,13 +47,17 @@ namespace WebVella.ERP.Storage.Mongo
 
     public class MongoRecordPermissions : IStorageRecordPermissions
     {
-        public List<Guid> CanRead { get; set; }
+		[BsonElement("canRead")]
+		public List<Guid> CanRead { get; set; }
 
-        public List<Guid> CanCreate { get; set; }
+		[BsonElement("canCreate")]
+		public List<Guid> CanCreate { get; set; }
 
-        public List<Guid> CanUpdate { get; set; }
+		[BsonElement("canUpdate")]
+		public List<Guid> CanUpdate { get; set; }
 
-        public List<Guid> CanDelete { get; set; }
+		[BsonElement("canDelete")]
+		public List<Guid> CanDelete { get; set; }
 
         public MongoRecordPermissions()
         {

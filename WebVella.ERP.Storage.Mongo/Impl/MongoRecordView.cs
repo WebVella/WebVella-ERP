@@ -115,7 +115,8 @@ namespace WebVella.ERP.Storage.Mongo
 
         public MongoRecordViewSection()
         {
-            Name = "";
+			Id = Guid.NewGuid();
+			Name = "";
             Label = "";
             CssClass = "";
             ShowLabel = true;
@@ -125,7 +126,10 @@ namespace WebVella.ERP.Storage.Mongo
             Rows = new List<IStorageRecordViewRow>();
         }
 
-        [BsonElement("name")]
+		[BsonElement("id")]
+		public Guid Id { get; set; }
+
+		[BsonElement("name")]
         public string Name { get; set; }
 
         [BsonElement("label")]
@@ -156,16 +160,19 @@ namespace WebVella.ERP.Storage.Mongo
     {
         public MongoRecordViewRow()
         {
-            Weight = 1;
+			Id = Guid.NewGuid();
+			Weight = 1;
             Columns = new List<IStorageRecordViewColumn>();
         }
 
-        [BsonElement("weight")]
+		[BsonElement("id")]
+		public Guid Id { get; set; }
+
+		[BsonElement("weight")]
         public decimal? Weight { get; set; }
 
         [BsonElement("columns")]
         public List<IStorageRecordViewColumn> Columns { get; set; }
-
     }
 
     ////////////////////////
@@ -174,11 +181,15 @@ namespace WebVella.ERP.Storage.Mongo
         public RecordViewColumn()
         {
             Items = new List<IStorageRecordViewItemBase>();
+			GridColCount = 0;
         }
 
         [BsonElement("items")]
         public List<IStorageRecordViewItemBase> Items { get; set; }
-    }
+
+		[BsonElement("gridColCount")]
+		public int GridColCount { get; set; }
+	}
 
 
 

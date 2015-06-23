@@ -89,7 +89,9 @@ namespace WebVella.ERP.Storage
     ////////////////////////
     public class IStorageRecordViewSection
     {
-        string Name { get; set; }
+		Guid Id { get; set; }
+
+		string Name { get; set; }
 
         string Label { get; set; }
 
@@ -110,17 +112,20 @@ namespace WebVella.ERP.Storage
     ////////////////////////
     public interface IStorageRecordViewRow
     {
-        decimal? Weight { get; set; }
+		Guid Id { get; set; }
+
+		decimal? Weight { get; set; }
 
         List<IStorageRecordViewColumn> Columns { get; set; }
-
     }
 
     ////////////////////////
     public interface IStorageRecordViewColumn
     {
         List<IStorageRecordViewItemBase> Items { get; set; }
-    }
+
+		int GridColCount { get; set; }
+	}
 
     ////////////////////////
     public interface IStorageRecordViewItemBase

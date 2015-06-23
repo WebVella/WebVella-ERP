@@ -1,14 +1,18 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoDateTimeField : MongoBaseField, IStorageDateTimeField
     {
-        public DateTime? DefaultValue { get; set; }
+		[BsonElement("defaultValue")]
+		public DateTime? DefaultValue { get; set; }
 
-        public string Format { get; set; }
+		[BsonElement("format")]
+		public string Format { get; set; }
 
-        public bool UseCurrentTimeAsDefaultValue { get; set; }
+		[BsonElement("useCurrentTimeAsDefaultValue")]
+		public bool UseCurrentTimeAsDefaultValue { get; set; }
     }
 }

@@ -1,10 +1,12 @@
-﻿using WebVella.ERP.Storage;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using WebVella.ERP.Storage;
 
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoCheckboxField : MongoBaseField, IStorageCheckboxField
     {
-        public bool DefaultValue { get; set; }
+		[BsonElement("defaultValue")]
+		public bool DefaultValue { get; set; }
     }
 }
