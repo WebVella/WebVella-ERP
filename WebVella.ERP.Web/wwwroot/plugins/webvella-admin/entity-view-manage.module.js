@@ -175,7 +175,6 @@
 
         /* jshint validthis:true */
         var contentData = this;
-        contentData.search = {};
         //#region << Initialize Current Entity >>
         contentData.entity = resolvedCurrentEntityMeta;
         //#endregion
@@ -193,8 +192,51 @@
         //#endregion
 
         //#region << Initialize View and Content Region >>
-        contentData.view = resolvedCurrentView;
-        contentData.library = resolvedViewLibrary;
+        contentData.view = angular.copy(resolvedCurrentView);
+        contentData.library = angular.copy(resolvedViewLibrary);
+        contentData.library.items = contentData.library.items.sort(function (a, b) {
+        	if (a.type < b.type) return -1;
+        	if (a.type > b.type) return 1;
+        	return 0;
+        });
+        contentData.library.items.forEach(function (item) {
+        	var search = "";
+        	if (item.type != null) {
+        		search += item.type + " ";
+        	}
+        	if (item.tag != null) {
+        		search += item.tag + " ";
+        	}
+        	if (item.fieldName != null) {
+        		search += item.fieldName + " ";
+        	}
+        	if (item.fieldLabel != null) {
+        		search += item.fieldLabel + " ";
+        	}
+        	if (item.entityName != null) {
+        		search += item.entityName + " ";
+        	}
+        	if (item.entityLabel != null) {
+        		search += item.entityLabel + " ";
+        	}
+        	if (item.viewName != null) {
+        		search += item.viewName + " ";
+        	}
+        	if (item.viewLabel != null) {
+        		search += item.viewLabel + " ";
+        	}
+        	if (item.listName != null) {
+        		search += item.listName + " ";
+        	}
+        	if (item.listLabel != null) {
+        		search += item.listLabel + " ";
+        	}
+        	if (item.entityLabelPlural != null) {
+        		search += item.entityLabelPlural + " ";
+        	}
+        	item.search = search;
+        });
+
         contentData.viewContentRegion = {};
         for (var i = 0; i < contentData.view.regions.length; i++) {
             if (contentData.view.regions[i].name === "content") {
@@ -206,7 +248,7 @@
         //#region << Section Management >>
 
         //Create or Update view section
-        contentData.manageSectionModalOpen = function (sectionObj, place) {
+        contentData.manageSectionModalOpen = function (sectionObj, weight) {
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'manageSectionModal.html',
@@ -216,7 +258,7 @@
                 resolve: {
                     parentData: function () { return contentData; },
                     section: function () { return sectionObj },
-                    place: function () { return place },
+                    weight: function () { return weight },
                 }
             });
 
@@ -225,14 +267,14 @@
         //Remove section
         var tempCopyView = {};
         var tempCopyViewRegion = {}
-        contentData.removeSection = function (place) {
+        contentData.removeSection = function (id) {
             var isConfirmed = confirm("Are you sure that you need to remove this section?");
             if (isConfirmed == true) {
                 // 1. Copy the view and contentRegion in a temp object
                 tempCopyView = angular.copy(contentData.view);
                 tempCopyViewRegion = angular.copy(contentData.viewContentRegion);
                 // 2. Apply the change to the temp object
-                tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, place)
+                tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id)
                 // 3. Apply the changes of the temp ContentViewRegion to the temp view object
                 for (var i = 0; i < tempCopyView.regions.length; i++) {
                     if (tempCopyView.regions[i].name === "content") {
@@ -267,7 +309,7 @@
         //#region << Row Management >>
 
         //Create view row
-        contentData.manageRowModalOpen = function (rowObj, sectionObj, place) {
+        contentData.manageRowModalOpen = function (rowObj, sectionObj, weight) {
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'manageRowModal.html',
@@ -278,14 +320,14 @@
                     parentData: function () { return contentData; },
                     row: function () { return rowObj },
                     section: function () { return sectionObj },
-                    place: function () { return place },
+                    weight: function () { return weight },
                 }
             });
 
         }
 
         //Remove row
-        contentData.removeRow = function (place, sectionId) {
+        contentData.removeRow = function (id, sectionId) {
             var isConfirmed = confirm("Are you sure that you need to remove this row?");
             if (isConfirmed == true) {
                 // 1. Copy the view and contentRegion in a temp object
@@ -294,7 +336,7 @@
                 // 2. Apply the change to the temp object
                 for (var m = 0; m < tempCopyViewRegion.sections.length; m++) {
                     if (tempCopyViewRegion.sections[m].id == sectionId) {
-                        tempCopyViewRegion.sections[m].rows = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, place)
+                        tempCopyViewRegion.sections[m].rows = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, id)
                     }
                 }
                 // 3. Apply the changes of the temp ContentViewRegion to the temp view object
@@ -314,9 +356,14 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
 
-            //Initialize both view and the content region with the new value
-            contentData.view = tempCopyView;
-            contentData.viewContentRegion = tempCopyViewRegion;
+        	//Initialize both view and the content region with the new value
+
+            contentData.view = response.object;
+            for (var i = 0; i < response.object.regions.length; i++) {
+            	if (response.object.regions[i].name === "content") {
+            		contentData.viewContentRegion = response.object.regions[i];
+            	}
+            }
         }
         function errorRowRemoveCallback(response) {
             ngToast.create({
@@ -350,11 +397,11 @@
             }
             moveSuccess = function () {
                 // Items should be able to be copied if it is not field, view or list
-                if (eventObj.source.itemScope.item.type !== "field"
+            	if (eventObj.source.itemScope.item.type !== "field"
+				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
                     && eventObj.source.itemScope.item.type !== "view"
                     && eventObj.source.itemScope.item.type !== "list") {
                     var objectCopy = angular.copy(eventObj.source.itemScope.item);
-                    objectCopy.id = guid();
                     eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
                 }
 
@@ -389,6 +436,7 @@
 
             if (eventObj.source.itemScope.item.type != "field"
                 && eventObj.source.itemScope.item.type != "view"
+				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
                 && eventObj.source.itemScope.item.type != "list") {
                 //can be managed
                 openItemSettingsModal();
@@ -398,7 +446,20 @@
                 //1. Update the view 
                 for (var i = 0; i < contentData.view.regions.length; i++) {
                     if (contentData.view.regions[i].name === "content") {
-                        contentData.view.regions[i] = contentData.viewContentRegion;
+                    	var cleanedRegion = angular.copy(contentData.viewContentRegion);
+                    	for (var j = 0; j < cleanedRegion.sections.length; j++) {
+                    		delete cleanedRegion.sections[j]["$$hashKey"];
+                    		for (var g = 0; g < cleanedRegion.sections[j].rows.length; g++) {
+                    			delete cleanedRegion.sections[j].rows[g]["$$hashKey"];
+                    			for (var k = 0; k < cleanedRegion.sections[j].rows[g].columns.length; k++) {
+                    				delete cleanedRegion.sections[j].rows[g].columns[k]["$$hashKey"];
+                    				for (var m = 0; m < cleanedRegion.sections[j].rows[g].columns[k].items.length; m++) {
+                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["$$hashKey"];
+                    				}
+                    			}
+                    		}
+                    	}
+                    	contentData.view.regions[i] = cleanedRegion;
                     }
                 }
                 //2. Call the service
@@ -409,12 +470,12 @@
 
         contentData.dragControlListeners = {
             accept: function (sourceItemHandleScope, destSortableScope) {
-                for (var i = 0; i < destSortableScope.modelValue.length; i++) {
-                    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
-                        return false;
-                        break;
-                    }
-                }
+                //for (var i = 0; i < destSortableScope.modelValue.length; i++) {
+                //    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
+                //        return false;
+                //        break;
+                //    }
+                //}
 
                 return true
             },
@@ -437,9 +498,9 @@
     //#region << Modal Controllers >> /////////////////////
 
     //Section Modal
-    ManageSectionModalController.$inject = ['parentData', 'section', 'place', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state','$scope'];
     /* @ngInject */
-    function ManageSectionModalController(parentData, section, place, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function ManageSectionModalController(parentData, section, weight, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,$scope) {
         $log.debug('webvellaAdmin>entities>createSectionModal> START controller.exec');
         /* jshint validthis:true */
 
@@ -447,10 +508,11 @@
         var popupData = this;
         popupData.section = null;
         popupData.isUpdate = true;
+        popupData.isValid = true;
         if (section == null) {
             popupData.isUpdate = false;
             popupData.section = angular.copy(webvellaAdminService.initViewSection());
-            popupData.section.place = place;
+            popupData.section.weight = weight;
         }
         else {
             popupData.section = angular.copy(section);
@@ -466,23 +528,40 @@
                     popupData.viewContentRegion = popupData.view.regions[i];
                 }
             }
+        	// Validate unique username on add. It cannot be managed on update
+            if (!popupData.isUpdate) {
+            	popupData.isValid = true;
+            	for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
+            		if (popupData.viewContentRegion.sections[i].name == popupData.section.name) {
+            			popupData.isValid = false;
+            		}
+            	}
+            	if (!popupData.isValid) {
+            		$scope.manageSection.name.$dirty = true;
+            		$scope.manageSection.name.$invalid = true;
+            		$scope.manageSection.name.$pristine = false;
+            		$scope.manageSection.name.$setValidity("unique", false);
+            	}
+            }
             //#region << Update the temporary view object for submission >>
-            if (popupData.isUpdate) {
+            if (popupData.isUpdate && popupData.isValid) {
                 popupData.viewContentRegion.sections = webvellaAdminService.safeUpdateArrayPlace(popupData.section, popupData.viewContentRegion.sections);
             }
-            else {
+            else if (popupData.isValid) {
                 popupData.viewContentRegion.sections = webvellaAdminService.safeAddArrayPlace(popupData.section, popupData.viewContentRegion.sections);
             }
             //#endregion
 
-            //Update the view with the correct values for the content region
-            for (var i = 0; i < popupData.view.regions.length; i++) {
-                if (popupData.view.regions[i].name === "content") {
-                    popupData.view.regions[i] = popupData.viewContentRegion;
-                }
-            }
+            if (popupData.isValid) {
+            	//Update the view with the correct values for the content region
+            	for (var i = 0; i < popupData.view.regions.length; i++) {
+            		if (popupData.view.regions[i].name === "content") {
+            			popupData.view.regions[i] = popupData.viewContentRegion;
+            		}
+            	}
 
-            webvellaAdminService.updateEntityView(popupData.view, parentData.entity.name, successCallback, errorCallback);
+            	webvellaAdminService.updateEntityView(popupData.view, parentData.entity.name, successCallback, errorCallback);
+            }
         };
 
         popupData.cancel = function () {
@@ -516,19 +595,19 @@
     };
 
     //Row Modal
-    ManageRowModalController.$inject = ['parentData', 'row', 'section', 'place', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
     /* @ngInject */
-    function ManageRowModalController(parentData, row, section, place, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function ManageRowModalController(parentData, row, section, weight, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
         $log.debug('webvellaAdmin>entities>createRowModal> START controller.exec');
         /* jshint validthis:true */
         var popupData = this;
-        popupData.section = angular.copy(section);;
+        popupData.section = angular.copy(section);
         popupData.columnsCount = 1;
         popupData.isUpdate = true;
         if (row == null) {
             popupData.isUpdate = false;
             popupData.row = angular.copy(webvellaAdminService.initViewRow(1));
-            popupData.row.place = place;
+            popupData.row.weight = angular.copy(weight);
         }
         else {
             popupData.row = angular.copy(row);
@@ -552,9 +631,9 @@
                 var originalRowColumns = 0;
                 var newRowColumns = angular.copy(popupData.columnsCount);
                 for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
-                    if (parentData.viewContentRegion.sections[i].id == popupData.section.id) {
+                    if (parentData.viewContentRegion.sections[i].name == popupData.section.name) {
                         for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
-                            if (parentData.viewContentRegion.sections[i].rows[j].id == popupData.row.id) {
+                        	if (parseInt(parentData.viewContentRegion.sections[i].rows[j].weight) == parseInt(row.weight)) {
                                 originalRowColumns = parentData.viewContentRegion.sections[i].rows[j].columns.length;
                             }
                         }
