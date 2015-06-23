@@ -55,6 +55,8 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoRecordsListFilter>();
             BsonClassMap.RegisterClassMap<MongoRecordPermissions>();
 
+            BsonClassMap.RegisterClassMap<MongoCurrencyType>();
+
             BsonClassMap.RegisterClassMap<MongoRecordView>();
             BsonClassMap.RegisterClassMap<MongoRecordViewSidebar>();
             BsonClassMap.RegisterClassMap<MongoRecordViewSidebarList>();

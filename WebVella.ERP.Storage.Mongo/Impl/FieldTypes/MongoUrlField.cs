@@ -8,7 +8,7 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("defaultValue")]
 		public string DefaultValue { get; set; }
 
-		[BsonElement("MaxLength")]
+		[BsonElement("maxLength")]
 		public int? MaxLength { get; set; }
 
 		[BsonElement("openTargetInNewWindow")]
