@@ -8,7 +8,7 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("defaultValue")]
 		public decimal? DefaultValue { get; set; }
 
-		[BsonElement("DisplayFormat")]
+		[BsonElement("displayFormat")]
 		public string DisplayFormat { get; set; }
 
 		[BsonElement("startingNumber")]
