@@ -96,5 +96,10 @@ namespace WebVella.ERP.Storage.Mongo
         {
             return new MongoRecordsListField();
         }
+
+		public IStorageCurrencyType CreateEmptyCurrencyTypeObject()
+		{
+			return new MongoCurrencyType();
+		}
     }
 }
