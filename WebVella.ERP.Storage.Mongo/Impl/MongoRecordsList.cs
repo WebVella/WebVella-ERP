@@ -2,22 +2,29 @@
 using System.Collections.Generic;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoRecordsList : IStorageRecordsList
     {
-        public Guid Id { get; set; }
+		[BsonElement("id")]
+		public Guid Id { get; set; }
 
-        public string Name { get; set; }
+		[BsonElement("name")]
+		public string Name { get; set; }
 
-        public string Label { get; set; }
+		[BsonElement("label")]
+		public string Label { get; set; }
 
-        public RecordsListTypes Type { get; set; }
+		[BsonElement("type")]
+		public RecordsListTypes Type { get; set; }
 
-        public IList<IStorageRecordsListFilter> Filters { get; set; }
+		[BsonElement("filters")]
+		public IList<IStorageRecordsListFilter> Filters { get; set; }
 
-        public IList<IStorageRecordsListField> Fields { get; set; }
+		[BsonElement("fields")]
+		public IList<IStorageRecordsListField> Fields { get; set; }
 
         public MongoRecordsList()
         {
@@ -28,21 +35,28 @@ namespace WebVella.ERP.Storage.Mongo
 
     public class MongoRecordsListFilter : IStorageRecordsListFilter
     {
-        public Guid EntityId { get; set; }
+		[BsonElement("entityId")]
+		public Guid EntityId { get; set; }
 
-        public Guid FieldId { get; set; }
+		[BsonElement("fieldId")]
+		public Guid FieldId { get; set; }
 
-        public FilterOperatorTypes Operator { get; set; }
+		[BsonElement("operator")]
+		public FilterOperatorTypes Operator { get; set; }
 
-        public string Value { get; set; }
+		[BsonElement("value")]
+		public string Value { get; set; }
     }
 
     public class MongoRecordsListField : IStorageRecordsListField
     {
-        public Guid Id { get; set; }
+		[BsonElement("id")]
+		public Guid Id { get; set; }
 
-        public Guid EntityId { get; set; }
+		[BsonElement("entityId")]
+		public Guid EntityId { get; set; }
 
-        public int Position { get; set; }
+		[BsonElement("position")]
+		public int Position { get; set; }
     }
 }

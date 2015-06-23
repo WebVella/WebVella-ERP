@@ -1,13 +1,17 @@
-﻿using WebVella.ERP.Storage;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoAutoNumberField : MongoBaseField, IStorageAutoNumberField
     {
-        public decimal? DefaultValue { get; set; }
+		[BsonElement("defaultValue")]
+		public decimal? DefaultValue { get; set; }
 
-        public string DisplayFormat { get; set; }
+		[BsonElement("DisplayFormat")]
+		public string DisplayFormat { get; set; }
 
-        public decimal? StartingNumber { get; set; }
+		[BsonElement("startingNumber")]
+		public decimal? StartingNumber { get; set; }
     }
 }

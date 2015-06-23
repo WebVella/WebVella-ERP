@@ -1,19 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoMultiSelectField : MongoBaseField, IStorageMultiSelectField
     {
-        public IEnumerable<string> DefaultValue { get; set; }
+		[BsonElement("defaultValue")]
+		public IEnumerable<string> DefaultValue { get; set; }
 
-        public IList<IStorageMultiSelectFieldOption> Options { get; set; }
+		[BsonElement("options")]
+		public IList<IStorageMultiSelectFieldOption> Options { get; set; }
     }
 
     public class MongoMultiSelectFieldOption : IStorageMultiSelectFieldOption
     {
-        public string Key { get; set; }
+		[BsonElement("key")]
+		public string Key { get; set; }
 
-        public string Value { get; set; }
+		[BsonElement("value")]
+		public string Value { get; set; }
     }
 }

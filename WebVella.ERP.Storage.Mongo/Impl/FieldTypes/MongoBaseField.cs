@@ -31,26 +31,37 @@ namespace WebVella.ERP.Storage.Mongo
     //    )]
     public abstract class MongoBaseField : IStorageField
     {
-        public Guid Id { get; set; }
+		[BsonElement("id")]
+		public Guid Id { get; set; }
 
-        public string Name { get; set; }
+		[BsonElement("name")]
+		public string Name { get; set; }
 
-        public string Label { get; set; }
+		[BsonElement("label")]
+		public string Label { get; set; }
 
-        public string PlaceholderText { get; set; }
+		[BsonElement("placeholderText")]
+		public string PlaceholderText { get; set; }
 
-        public string Description { get; set; }
+		[BsonElement("Description")]
+		public string Description { get; set; }
 
-        public string HelpText { get; set; }
+		[BsonElement("helpText")]
+		public string HelpText { get; set; }
 
-        public bool Required { get; set; }
+		[BsonElement("required")]
+		public bool Required { get; set; }
 
-        public bool Unique { get; set; }
+		[BsonElement("unique")]
+		public bool Unique { get; set; }
 
-        public bool Searchable { get; set; }
+		[BsonElement("searchable")]
+		public bool Searchable { get; set; }
 
-        public bool Auditable { get; set; }
+		[BsonElement("auditable")]
+		public bool Auditable { get; set; }
 
-        public bool System { get; set; }
+		[BsonElement("system")]
+		public bool System { get; set; }
     }
 }

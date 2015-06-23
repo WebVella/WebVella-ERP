@@ -13,7 +13,7 @@ namespace WebVella.ERP.Api.Models
     {
         Html,
         Field,
-        RelationField,
+		FieldFromRelation,
         List,
         View
     }
@@ -44,10 +44,10 @@ namespace WebVella.ERP.Api.Models
         public string Label { get; set; }
 
         [JsonProperty(PropertyName = "default")]
-        public bool Default { get; set; }
+        public bool? Default { get; set; }
 
         [JsonProperty(PropertyName = "system")]
-        public bool System { get; set; }
+        public bool? System { get; set; }
 
         [JsonProperty(PropertyName = "weight")]
         public decimal? Weight { get; set; }
@@ -132,7 +132,8 @@ namespace WebVella.ERP.Api.Models
 
         public RecordViewSection()
         {
-            Name = "";
+			Id = Guid.NewGuid();
+			Name = "";
             Label = "";
             CssClass = "";
             ShowLabel = true;
@@ -142,7 +143,10 @@ namespace WebVella.ERP.Api.Models
             Rows = new List<RecordViewRow>();
         }
 
-        [JsonProperty(PropertyName = "name")]
+		[JsonProperty(PropertyName = "id")]
+		public Guid Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
         [JsonProperty(PropertyName = "label")]
@@ -173,11 +177,15 @@ namespace WebVella.ERP.Api.Models
     {
         public RecordViewRow()
         {
-            Weight = 1;
+			Id = Guid.NewGuid();
+			Weight = 1;
             Columns = new List<RecordViewColumn>();
         }
 
-        [JsonProperty(PropertyName = "weight")]
+		[JsonProperty(PropertyName = "id")]
+		public Guid Id { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
         public decimal? Weight { get; set; }
 
         [JsonProperty(PropertyName = "columns")]
@@ -191,11 +199,15 @@ namespace WebVella.ERP.Api.Models
         public RecordViewColumn()
         {
             Items = new List<RecordViewItemBase>();
+			GridColCount = 0;
         }
 
         [JsonProperty(PropertyName = "items")]
         public List<RecordViewItemBase> Items { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "gridColCount")]
+		public int GridColCount { get; set; }
+	}
 
 
 
@@ -234,7 +246,7 @@ namespace WebVella.ERP.Api.Models
     public class RecordViewRelationFieldItem : RecordViewItemBase
     {
         [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.RelationField; } }
+        public static RecordViewItemType ItemType { get { return RecordViewItemType.FieldFromRelation; } }
 
         [JsonProperty(PropertyName = "relationId")]
         public Guid RelationId { get; set; }
