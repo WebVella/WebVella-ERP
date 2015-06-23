@@ -545,7 +545,7 @@ function guid() {
                 "fieldLabel": "Username"
             },
             {
-            	"type": "relationField",
+            	"type": "fieldFromRelation",
             	"relationId": guid(),
             	"entityId": guid(),
             	"entityName": "account",
