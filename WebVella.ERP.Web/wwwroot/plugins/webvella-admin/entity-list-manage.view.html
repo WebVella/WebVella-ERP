@@ -103,17 +103,24 @@
 
                     <div class="form-group">
                         <div class="row">
-
                             <label class="col-sm-2 control-label" for="label">Records Limit</label>
                             <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "empty" }}</a>
+                                <a href="javascript:void(0)" editable-text="contentData.list.recordsLimit" onbeforesave="contentData.fieldUpdate('recordsLimit', $data)">{{ contentData.list.recordsLimit || "empty" }}</a>
                             </div>
                             <label class="col-sm-2 control-label" for="weight">Page size</label>
                             <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "empty" }}</a>
+                                <a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "empty" }}</a>
                             </div>
                         </div>
                     </div>
+					<div class="form-group">
+						<div class="row">
+							<label class="col-sm-2 control-label" for="label">CSS Class</label>
+							<div class="col-sm-4 position-relative">
+								<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
+							</div>
+						</div>
+					</div>
                 </div>
 
             </div>
@@ -154,6 +161,14 @@
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 									<i class="fa fa-fw fa-file-text-o go-teal"></i> {{item.entityLabel}} > {{item.viewLabel}}
 								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-code go-teal"></i> No tag
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-code go-teal"></i> {{item.tag}}
+								</div>
                             </div>
                         </div>
                     </div>
@@ -178,6 +193,16 @@
 									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.viewLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
 								</div>
                             </div>
                         </div>
@@ -417,6 +442,8 @@
                 </table>
             </div>
         </div>
+
+		<pre>{{contentData.list | json}}</pre>
     </div>
 
 
