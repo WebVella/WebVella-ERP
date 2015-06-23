@@ -193,10 +193,54 @@
         contentData.fieldsLibrary = {};
         contentData.fieldsLibrary.items = [];
         for (var i = 0; i < resolvedViewLibrary.items.length; i++) {
-            if (resolvedViewLibrary.items[i].type === "field") {
+        	if (resolvedViewLibrary.items[i].type === "field" || resolvedViewLibrary.items[i].type === "fieldFromRelation" || resolvedViewLibrary.items[i].type === "view") {
                 contentData.fieldsLibrary.items.push(resolvedViewLibrary.items[i])
             }
         }
+
+        contentData.fieldsLibrary.items = contentData.fieldsLibrary.items.sort(function (a, b) {
+        	if (a.type < b.type) return -1;
+        	if (a.type > b.type) return 1;
+        	return 0;
+        });
+        contentData.fieldsLibrary.items.forEach(function (item) {
+        	var search = "";
+        	if (item.type != null) {
+        		search += item.type + " ";
+        	}
+        	if (item.tag != null) {
+        		search += item.tag + " ";
+        	}
+        	if (item.fieldName != null) {
+        		search += item.fieldName + " ";
+        	}
+        	if (item.fieldLabel != null) {
+        		search += item.fieldLabel + " ";
+        	}
+        	if (item.entityName != null) {
+        		search += item.entityName + " ";
+        	}
+        	if (item.entityLabel != null) {
+        		search += item.entityLabel + " ";
+        	}
+        	if (item.viewName != null) {
+        		search += item.viewName + " ";
+        	}
+        	if (item.viewLabel != null) {
+        		search += item.viewLabel + " ";
+        	}
+        	if (item.listName != null) {
+        		search += item.listName + " ";
+        	}
+        	if (item.listLabel != null) {
+        		search += item.listLabel + " ";
+        	}
+        	if (item.entityLabelPlural != null) {
+        		search += item.entityLabelPlural + " ";
+        	}
+        	item.search = search;
+        });
+
 
         //#endregion
 

@@ -111,7 +111,7 @@ span.divider {
     top: 0;
     bottom: 0;
     position: absolute;
-    width: 220px;
+    width: 180px;
     z-index: 9;
 }
 
@@ -736,7 +736,7 @@ span.divider {
 /*#region << Content >> */
 
 #content {
-    margin-left: 220px;
+    margin-left: 180px;
     background: white;
 }
 
@@ -2906,12 +2906,21 @@ span.not-editable {
     margin-top: 10px;
 }
 
-.view-manage-section a:not(.btn) {
+.view-manage-section a:not(.btn):not(.editable) {
     color: #ccc !important;
 }
 
-    .view-manage-section a:not(.btn):hover {
+    .view-manage-section a:not(.btn):not(.editable):hover {
         color: #337ab7 !important;
+    }
+
+
+.view-manage-section a.editable {
+    color: #333 !important;
+}
+
+    .view-manage-section a.editable:hover {
+        color: #333 !important;
     }
 
 .view-manage-section .wrapper {
@@ -2980,7 +2989,7 @@ span.not-editable {
 }
 
 .as-sortable-dragging {
-    /*width:200px !important;*/
+    width:200px !important;
 }
 
 .view-divider {

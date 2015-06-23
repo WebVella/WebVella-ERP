@@ -462,6 +462,7 @@ function guid() {
                 "default": false,
                 "system": false,
                 "weight": 1.0,
+                "cssClass": "",
                 "type": "details_general",
                 "regions": [
                     {
@@ -480,29 +481,24 @@ function guid() {
         }
         ////////////////////////
         function initViewSection() {
-            var section = {
-                "id": guid(),
-                "title": "Section",
-                "showTitle": true,
+        	var section = {
+				"id":guid(),
+            	"name": "section",
+            	"label": "Section",
+            	"cssClass": "",
+                "showLabel": true,
                 "collapsed": false,
-                "place": 1,
+                "weight": 1,
                 "tabOrder": "left-right",
-                "rows": [{
-                    "id": guid(),
-                    "place": 1,
-                    "columns": [{
-                        "gridColCount": 12,
-                        "items": []
-                    }]
-                }]
+                "rows": []
             }
             return section;
         }
         ///////////////////////
         function initViewRow(columnCount) {
-            var row = {
-                "id": guid(),
-                "place": 1,
+        	var row = {
+        		"id": guid(),
+                "weight": 1,
                 "columns": []
             }
 
@@ -538,20 +534,43 @@ function guid() {
             //Test data
             object.items = [
             {
-                "id": guid(),
-                "type": "field",
-                "originFieldId": null,
+            	"type": "html",
+            	"tag": "",
+            	"content": "<h1>Title</h1>",
             },
             {
-                "id": guid(),
                 "type": "field",
-                "originFieldId": null,
+                "fieldId": guid(),
+                "fieldName": "username",
+                "fieldLabel": "Username"
             },
             {
-                "id": guid(),
-                "type": "static",
-                "originFieldId": null,
-                "name":"heading"
+            	"type": "fieldFromRelation",
+            	"relationId": guid(),
+            	"entityId": guid(),
+            	"entityName": "account",
+            	"entityLabel": "Account",
+            	"fieldId": guid(),
+            	"fieldName": "email",
+				"fieldLabel": "Email"
+            },
+            {
+                "type": "view",
+                "viewId": guid(),
+                "viewName": "short-info",
+                "viewLabel": "Short Info",
+                "entityId": guid(),
+                "entityName": "account",
+                "entityLabel": "Account"
+            },
+            {
+            	"type": "list",
+            	"viewId": guid(),
+            	"listName": "short-list",
+            	"listLabel": "Short List",
+            	"entityId": guid(),
+            	"entityName": "account",
+            	"entityLabelPlural": "Accounts"
             }
             ];
             var response = {};
@@ -611,25 +630,25 @@ function guid() {
         ////////////////////
         function safeAddArrayPlace(newObject, array) {
             //If the place is empty or null give it a very high number which will be made correct later
-            if (newObject.place === "" || newObject.place === null) {
-                newObject.place = 99999;
+        	if (newObject.weight === "" || newObject.weight === null) {
+        		newObject.weight = 99999;
             }
 
             //Sort and Free a place
-            array.sort(function (a, b) { return parseFloat(a.place) - parseFloat(b.place) });
+        	array.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             for (var i = 0; i < array.length; i++) {
-                if (array[i].place >= newObject.place) {
-                    array[i].place = array[i].place + 1;
+            	if (parseInt(array[i].weight) >= parseInt(newObject.weight)) {
+            		array[i].weight = parseInt(array[i].weight) + 1;
                 }
             }
 
             //Insert the element on its desired position
-            array.splice(newObject.place - 1, 0, newObject);
+            array.splice(parseInt(newObject.weight) - 1, 0, newObject);
 
             //Fix possible gaps
-            array.sort(function (a, b) { return parseFloat(a.place) - parseFloat(b.place) });
+            array.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             for (var i = 0; i < array.length; i++) {
-                array[i].place = i + 1;
+            	array[i].weight = i + 1;
             }
 
             return array;
@@ -637,13 +656,13 @@ function guid() {
         /////////////////////
         function safeUpdateArrayPlace(updateObject, array) {
             //If the place is empty or null give it a very high number which will be made correct later
-            if (updateObject.place === "" || updateObject.place === null) {
-                updateObject.place = 99999;
+        	if (updateObject.weight === "" || updateObject.weight === null) {
+            	updateObject.weight = 99999;
             }
             for (var i = 0; i < array.length; i++) {
                 //If this is an element that has the same place as the newly updated one increment its place
-                if (array[i].place >= updateObject.place && array[i].id != updateObject.id) {
-                    array[i].place = array[i].place + 1;
+            	if (parseInt(array[i].weight) >= parseInt(updateObject.weight) && array[i].id != updateObject.id) {
+            		array[i].weight = parseInt(array[i].weight) + 1;
                 }
                 //Find the element and update it
                 if (array[i].id == updateObject.id) {
@@ -652,23 +671,30 @@ function guid() {
 
             }
             //Sort again
-            array.sort(function (a, b) { return parseFloat(a.place) - parseFloat(b.place) });
+            array.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             //Recalculate the places to remove gaps
             for (var i = 0; i < array.length; i++) {
-                array[i].place = i + 1;
+            	array[i].weight = i + 1;
             }
 
             return array;
         }
         /////////////////////
-        function safeRemoveArrayPlace(array, place) {
-            var placeIndex = place - 1;
-            array.splice(placeIndex, 1);
+        function safeRemoveArrayPlace(array, id) {
+        	var elementIndex = -1;
+        	for (var i = 0; i < array.length; i++) {
+        		if (array[i].id === id) {
+        			elementIndex = i;
+        		}
+        	}
+        	if (elementIndex != -1) {
+        		array.splice(elementIndex, 1);
+        	}
             //Sort again
-            array.sort(function (a, b) { return parseFloat(a.place) - parseFloat(b.place) });
+            array.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             //Recalculate the places to remove gaps
             for (var i = 0; i < array.length; i++) {
-                array[i].place = i + 1;
+            	array[i].weight = i + 1;
             }
             return array;
         }
