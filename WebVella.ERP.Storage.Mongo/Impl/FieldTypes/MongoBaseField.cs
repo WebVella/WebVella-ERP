@@ -43,7 +43,7 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("placeholderText")]
 		public string PlaceholderText { get; set; }
 
-		[BsonElement("Description")]
+		[BsonElement("description")]
 		public string Description { get; set; }
 
 		[BsonElement("helpText")]
