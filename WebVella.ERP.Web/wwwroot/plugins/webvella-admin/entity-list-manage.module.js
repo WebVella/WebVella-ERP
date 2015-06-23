@@ -186,14 +186,15 @@
         //#endregion
 
         //#region << Initialize the list >>
-        contentData.list = resolvedCurrentEntityList;
+        contentData.list = angular.copy(resolvedCurrentEntityList);
         //#endregion
 
         //#region << Initialize the library >>
         contentData.fieldsLibrary = {};
         contentData.fieldsLibrary.items = [];
         for (var i = 0; i < resolvedViewLibrary.items.length; i++) {
-        	if (resolvedViewLibrary.items[i].type === "field" || resolvedViewLibrary.items[i].type === "fieldFromRelation" || resolvedViewLibrary.items[i].type === "view") {
+        	if (resolvedViewLibrary.items[i].type === "field" || resolvedViewLibrary.items[i].type === "fieldFromRelation" || resolvedViewLibrary.items[i].type === "view"
+			 || resolvedViewLibrary.items[i].type === "html") {
                 contentData.fieldsLibrary.items.push(resolvedViewLibrary.items[i])
             }
         }

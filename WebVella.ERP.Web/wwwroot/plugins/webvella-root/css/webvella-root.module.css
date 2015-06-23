@@ -2915,11 +2915,11 @@ span.not-editable {
     }
 
 
-.view-manage-section a.editable {
+.view-manage-section a.editable:not(.editable-empty) {
     color: #333 !important;
 }
 
-    .view-manage-section a.editable:hover {
+    .view-manage-section a.editable:not(.editable-empty):hover {
         color: #333 !important;
     }
 
