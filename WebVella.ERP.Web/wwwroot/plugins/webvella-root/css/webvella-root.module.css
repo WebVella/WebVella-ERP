@@ -1828,6 +1828,12 @@ table .btn-xs.btn-link {
 	vertical-align:middle;
 }
 
+
+
+.table.table-noborder,
+.table.table-noborder td {
+	border:none;
+}
 /*#endregion */
 
 /*#region << Colors >> */
