@@ -43,7 +43,10 @@
             	area.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             	menuItem.stateParams = {
             		"areaName": area.name,
-            		"entityName": area.entities[0].name
+            		"entityName": area.entities[0].name,
+            		"listName": "boz", //TODO we should find the default list and put its name here
+					"filter":"all",
+            		"page": 1
             	};
             }
             else {

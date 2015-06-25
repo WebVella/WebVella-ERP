@@ -112,70 +112,23 @@
         </div>
     </div>
 </form>
+
 <div id="list">
     <table class="table table-bordered table-hover table-vertical-align-middle">
         <thead>
             <tr>
                 <th class="actions"></th>
-                <th class="name">Name</th>
-                <th class="country">Country</th>
-                <th class="countryAbbr">Country Abbr</th>
-                <th class="zip">ZIP</th>
-                <th class="state">State/Province</th>
-                <th class="stateAbbr">State/Province Abbr</th>
-                <th class="city">City</th>
-                <th class="address">Address</th>
-                <th class="address2">Address2</th>
+                <th class="{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{fieldMeta.label}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr ng-repeat="record in contentData.records">
                 <td>
-                    <a href="" class="btn btn-default">
+                    <a ng-click='cotnentData.viewRecord({{record.id}})' class="btn btn-default">
                         <i class="fa fa-eye"></i>
                     </a>
                 </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="" class="btn btn-default">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="" class="btn btn-default">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
+                <td class="{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{record[fieldMeta.name]}}</td>
             </tr>
         </tbody>
     </table>

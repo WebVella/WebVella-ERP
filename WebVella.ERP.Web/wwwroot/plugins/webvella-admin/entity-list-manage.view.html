@@ -148,7 +148,11 @@
 					<div class="drop-zone">
 						<div as-sortable ng-model="contentData.list.columns">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
-								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
+								<div  ng-if='item.type == "field" && item.fieldName == "id"' class="clearfix">
+									<i class="fa fa-fw fa-lock go-red pull-left"></i>
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "field" && item.fieldName != "id"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
@@ -306,7 +310,7 @@
             </div>
         </div>
 
-		<pre>{{contentData.list | json}}</pre>
+		<!--<pre>{{contentData.list | json}}</pre>-->
     </div>
 
 

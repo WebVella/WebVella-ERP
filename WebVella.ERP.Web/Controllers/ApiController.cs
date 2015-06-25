@@ -463,7 +463,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (area["$areas_area_relation"] != null && ((List<EntityRecord>)area["$areas_area_relation"]).Any()) // Just in case
 					{
 						List<EntityRecord> areaEntityIds = (List<EntityRecord>)area["$areas_area_relation"];
-						var entityColumnsNeeded = "id,name,label,icon_name,weight";
+						var entityColumnsNeeded = "id,name,label,icon_name,weight,recordLists,recordViewList";
 						foreach (var entityId in areaEntityIds)
 						{
 							EntityResponse entityResult = entityManager.ReadEntity((Guid)entityId["entity_id"]);

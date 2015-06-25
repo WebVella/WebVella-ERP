@@ -23,7 +23,7 @@
         serviceInstance.getViewMetaByName = getViewMetaByName;
         serviceInstance.getEntityRecord = getEntityRecord;
         serviceInstance.createEntityRecord = createEntityRecord;
-
+        serviceInstance.getListRecords = getListRecords;
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
             $log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called');
@@ -63,61 +63,69 @@
             var response = {};
             response.success = true;
             response.message = "success";
-            response.object = {
-                "id": guid(),
-                "name": "",
-                "label": "",
-                "default": true,
-                "system": false,
-                "weight": 1.0,
-                "type": "details_general",
-                "regions": [
-                    {
-                        "id": guid(),
-                        "name": "content",
-                        "sections": [
-                            {
-                                "id": guid(),
-                                "title": "Basic info",
-                                "showTitle": true,
-                                "collapsed": false,
-                                "place": 0,
-                                "tabOrder": "left-right",
-                                "rows": [
-                                    {
-                                        "id": guid(),
-                                        "place": 1,
-                                        "columns": [{
-                                            "gridColCount": 12,
-                                            "items": [
-                                                {
-                                                    "id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
-                                                    "name": "title",
-                                                    "originFieldId": null,
-                                                    "originFieldName": null,
-                                                    "type": "field"
-                                                },
-                                                 {
-                                                     "id": "e878470b-492e-43af-af87-a137049eef9f",
-                                                     "name": "author",
-                                                     "originFieldId": "083bd9b0-fac0-4f55-852e-9f73f345af2f",
-                                                     "originFieldName": "name",
-                                                     "type": "field"
-                                                 }
-                                            ]
-                                        }],
-                                    }],
 
-                            }],
+            var view = {
+            	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
+            	"name": "details",
+            	"label": "Details",
+            	"default": true,
+            	"system": true,
+            	"weight": 1,
+            	"cssClass": "",
+            	"type": "general",
+            	"regions": [
+                    {
+                    	"name": "content",
+                    	"render": false,
+                    	"cssClass": "",
+                    	"sections": [
+							 {
+							 	"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
+							 	"name": "general",
+							 	"label": "General",
+							 	"cssClass": "",
+							 	"showLabel": true,
+							 	"collapsed": false,
+							 	"weight": 1,
+							 	"tabOrder": "left-right",
+							 	"rows": [
+									{
+										"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
+										"weight": 1,
+										"columns": [
+										{
+											"gridColCount": 12,
+											"items": [
+											{
+												"_t": "RecordViewFieldItem",
+												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+												"type": "field",
+												"fieldName": "username",
+												"fieldLabel": "Username"
+											}
+											]
+										}
+										]
+									}
+							 	]
+							 }
+                    	],
                     },
                     {
-                        "id": null,
-                        "name": "sidebar",
-                        "sections": []
+                    	"render": false,
+                    	"cssClass": "",
+                    	"lists": [
+						  {
+						  	"entityId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+						  	"listId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+						  	"relationId": "48818fa7-77b4-cedd-71e4-80e106038abf"
+						  }
+                    	]
                     }
-                ],
+            	],
 
             };
+            response.object = view;
             handleSuccessResult(response, status, successCallback, errorCallback);
         }
 
@@ -259,6 +267,75 @@
         function createEntityRecord(postObject, entityName, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>createEntityRecord> function called');
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+		/////////////////////
+        function getListRecords(listName, entityName,page, successCallback, errorCallback) {
+        	$log.debug('webvellaAreas>providers>areas.service>getListRecords> function called');
+        	var response = {};
+        	response.success = true;
+        	response.message = "success";
+        	response.object = {
+        		"fieldsMeta": [
+                  {
+                  	"fieldType": 18,
+                  	"defaultValue": "",
+                  	"maxLength": null,
+                  	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a63",
+                  	"name": "id",
+                  	"label": "Id",
+                  	"placeholderText": null,
+                  	"description": null,
+                  	"helpText": null,
+                  	"required": true,
+                  	"unique": false,
+                  	"searchable": false,
+                  	"auditable": false,
+                  	"system": true
+                  },
+                  {
+                  	"fieldType": 18,
+                  	"defaultValue": "",
+                  	"maxLength": null,
+                  	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
+                  	"name": "title",
+                  	"label": "Title",
+                  	"placeholderText": null,
+                  	"description": null,
+                  	"helpText": null,
+                  	"required": true,
+                  	"unique": false,
+                  	"searchable": false,
+                  	"auditable": false,
+                  	"system": false
+                  },
+                  {
+                  	"fieldType": 18,
+                  	"defaultValue": "",
+                  	"maxLength": null,
+                  	"id": "37964efb-f66b-4be9-b8ce-2820054946a6",
+                  	"name": "content",
+                  	"label": "Content",
+                  	"placeholderText": null,
+                  	"description": null,
+                  	"helpText": null,
+                  	"required": false,
+                  	"unique": false,
+                  	"searchable": false,
+                  	"auditable": false,
+                  	"system": false
+                  }
+
+        		],
+        		"data": [
+                  {
+                  	"id": "47964efb-f66b-4be9-b8ce-2820054946a6",
+                  	"title": "post 3 title",
+                  	"content": "post 3 content",
+                  }
+        		]
+        	};
+        	handleSuccessResult(response, status, successCallback, errorCallback);
         }
 
         //// Aux methods //////////////////////////////////////////////////////
