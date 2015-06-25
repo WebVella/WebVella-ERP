@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-entity-records', {
             parent: 'webvella-areas-base',
-            url: '/:areaName/:entityName', // /areas/areaName/sectionName/entityName after the parent state is prepended
+            url: '/:areaName/:entityName/:listName/:filter/:page', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAreasTopnavController',
@@ -38,7 +38,7 @@
                 }
             },
             resolve: {
-            	//resolvedSitemap: resolveSitemap - from the parent
+            	resolvedListRecords: resolveListRecords
             },
             data: {
 
@@ -57,17 +57,48 @@
         $log.debug('webvellaAreas>entities> END module.run');
     };
 
+	//#region << Resolve Function >>
+    resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state'];
+
+	/* @ngInject */
+    function resolveListRecords($q, $log, webvellaAreasService, $state) {
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	webvellaAreasService.getListRecords("boz","boz", 1, successCallback, errorCallback);
+
+    	// Return
+    	$log.debug('webvellaDesktop>browse> END state.resolved');
+    	return defer.promise;
+    }
+	//#endregion
+
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state','$stateParams', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService'];
+        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords'];
 
     /* @ngInject */
     function controller($log, $rootScope, $state,$stateParams, pageTitle, webvellaRootService,
-        resolvedSitemap, $timeout, webvellaAreasService) {
+        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
+        contentData.records = angular.copy(resolvedListRecords.data);
+        contentData.recordsMeta = angular.copy(resolvedListRecords.fieldsMeta);
+
+
+
         //#region << Set Environment >>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
