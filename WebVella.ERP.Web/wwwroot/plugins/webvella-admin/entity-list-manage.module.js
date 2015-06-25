@@ -400,6 +400,24 @@
         	}
         }
 
+        contentData.DeleteSortRule = function (index) {
+        	contentData.list.sorts.splice(index, 1);
+        	if(contentData.list.sorts.length == 0) {
+        		contentData.list.sorts = null;
+        	}
+        }
+
+        contentData.AddSortRule = function () {
+        	if (contentData.list.sorts == null) {
+        		contentData.list.sorts = [];
+        	}
+        	var subrule = {
+        		"fieldName": "",
+        		"sortType": "Ascending"
+        	};
+        	contentData.list.sorts.push(subrule);
+        }
+
 		//#endregion
 
 

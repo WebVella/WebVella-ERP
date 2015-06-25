@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <h3 class="page-header">Fields</h3>
+        <h3 class="page-header">List Columns</h3>
         <div class="row">
 			<div class="col-xs-6">
 				<h5>Selected columns</h5>
@@ -146,7 +146,7 @@
 			<div class="col-xs-6">
 				<div class="list-field-selection-box">
 					<div class="drop-zone">
-						<div as-sortable ng-model="contentData.list.items">
+						<div as-sortable ng-model="contentData.list.columns">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
 								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
@@ -260,8 +260,8 @@
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
 						<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
-						<a class="btn btn-default btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
-						<a class="btn btn-default btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
+						<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
+						<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
 					</span>
 					<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType">
 						<option value="AND">all</option>
@@ -278,53 +278,29 @@
 		</script>
 
         <h3 class="page-header">Sort</h3>
-        <div class="panel panel-default">
+		<div ng-show="contentData.list.sorts == null" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+        <div class="panel panel-default" ng-hide="contentData.list.sorts == null">
             <div class="panel-heading clearfix">
                 <span class="pull-right">
-                    <a class="btn btn-success btn-sm">add new sort</a>
+                    <a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
                 </span>
             </div>
             <div class="panel-body">
-                <table class="table">
-                    <tr>
-                        <td style="width:60px"></td>
+                <table class="table table-noborder">
+                    <tr ng-repeat="sortRule in contentData.list.sorts">
+                        <td style="width:60px"><span ng-if="$index != 0">than</span></td>
                         <td>
-                            <select class="form-control">
-                                <option value="SA" selected="">sort from low to high by</option>
-                                <option value="SD">sort from high to low by</option>
+                            <select class="form-control" ng-model="sortRule.sortType">
+                                <option value="Ascending">sort from low to high by</option>
+                                <option value="Descending">sort from high to low by</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:60px">then</td>
-                        <td>
-                            <select class="form-control">
-                                <option value="SA" selected="">sort from low to high by</option>
-                                <option value="SD">sort from high to low by</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
+							<select class="form-control" ng-model="sortRule.fieldName" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items"></select>
+						</td>
+						<td style="width:60px;">
+							<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+						</td>
                     </tr>
                 </table>
             </div>
