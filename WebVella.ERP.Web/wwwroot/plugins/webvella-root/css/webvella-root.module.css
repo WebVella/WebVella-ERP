@@ -776,6 +776,49 @@ span.divider {
     padding: 10px 10px 10px 20px;
 }
 
+#page-meta accordion .panel-group {
+	margin-left:-20px;
+	margin-right:-10px;
+	margin-top:10px;
+	margin-bottom:-10px;
+}
+
+#page-meta accordion .panel-group .panel{
+	margin:0;
+	border-radius:0;
+	box-shadow:none;
+	border:none!important;
+}
+
+#page-meta accordion .panel-group .panel .panel-heading{
+	display:none;
+}
+
+#page-meta accordion .panel-group .panel .panel-body{
+	border:none !important;
+	background:#555;
+	color:#9E9E9E;
+}
+	#page-meta accordion .panel-group .panel .panel-body a {
+		color:#eee;
+	}
+
+	#page-meta accordion .panel-group .panel .panel-body .filter {
+		border-left:none;
+	}
+
+	#page-meta accordion .panel-group .panel .panel-body .divider {
+		border-top:1px dashed #888;
+	}
+
+	#page-meta accordion .panel-group .panel .panel-body .list-inline {
+		margin-left:-10px;
+	}
+
+	#page-meta accordion .panel-group .panel .panel-body .list-inline > li {
+		padding:5px 10px;
+	}
+
 /*Theming*/
 .theme-red #page-title #page-meta {
     background: #FFFAFB;
@@ -1828,6 +1871,12 @@ table .btn-xs.btn-link {
 	vertical-align:middle;
 }
 
+
+
+.table.table-noborder,
+.table.table-noborder td {
+	border:none;
+}
 /*#endregion */
 
 /*#region << Colors >> */
@@ -2127,7 +2176,8 @@ table .btn-xs.btn-link {
 }
 
 
-.mini-sidebar .tabbable.spilled a {
+.mini-sidebar .tabbable.spilled a,
+#sidebar a.back{
     margin-left:0;
     margin-right:0;
     padding-left:0;
@@ -2139,12 +2189,14 @@ table .btn-xs.btn-link {
     border:none;
 }
 
-    .mini-sidebar .tabbable.spilled a .text {
+    .mini-sidebar .tabbable.spilled a .text,
+	.mini-sidebar #sidebar a.back .text {
         display: none;
     }
 
     .mini-sidebar .tabbable.spilled ul,
-    .mini-sidebar .tabbable.spilled a.back {
+    .mini-sidebar .tabbable.spilled a.back,
+	 .mini-sidebar #sidebar a.back{
         background-color: transparent !important;
     }
 
@@ -2152,11 +2204,13 @@ table .btn-xs.btn-link {
         border:none;
     }
 
-.mini-sidebar .tabbable.spilled a.back {
+.mini-sidebar .tabbable.spilled a.back,
+.mini-sidebar #sidebar a.back {
     right:0;
 }
 
-    .mini-sidebar .tabbable.spilled a i {
+    .mini-sidebar .tabbable.spilled a i,
+	 .mini-sidebar #sidebar a.back i{
         font-size: 18px;
         margin-right: 0 !important;
     }
@@ -2312,12 +2366,35 @@ table .btn-xs.btn-link {
     padding-right: 20px;
 }
 
+#sidebar a.back {
+    line-height: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px 0 0 5px;
+    color: #ccc;
+	display:block;
+    text-align: center;
+	margin-top:10px;
+	width:90px;
+	float:right;
+}
+
+.mini-sidebar #sidebar a.back {
+	width:100%;	
+	float:none;
+}
+
     .tabbable.spilled .back:hover {
         background: rgba(255,255,255,0.30);
         text-decoration: none;
         color: #eee;
     }
 
+#sidebar a.back:hover {
+        background: rgba(255,255,255,0.30);
+        text-decoration: none;
+        color: #eee;
+}
 /*#endregion */
 
 /*#region << Inline edit styles >> */

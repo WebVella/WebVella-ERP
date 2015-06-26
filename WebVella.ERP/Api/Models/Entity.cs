@@ -61,11 +61,11 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "fields")]
 		public List<Field> Fields { get; set; }
 
-		[JsonProperty(PropertyName = "recordsLists")]
-		public List<RecordsList> RecordsLists { get; set; }
+		[JsonProperty(PropertyName = "recordLists")]
+		public List<RecordList> RecordLists { get; set; }
 
-		[JsonProperty(PropertyName = "recordViewLists")]
-		public List<RecordView> RecordViewLists { get; set; }
+		[JsonProperty(PropertyName = "recordViews")]
+		public List<RecordView> RecordViews { get; set; }
 	}
 
 	public class RecordPermissions

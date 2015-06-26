@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-record-view', {
             parent: 'webvella-areas-base',
-            url: '/:areaName/:entityName/records/details/:viewName', // /areas/areaName/sectionName/entityName after the parent state is prepended
+            url: '/:areaName/:entityName/:recordId/:viewName', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAreasTopnavController',
@@ -27,8 +27,8 @@
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
-                    controller: 'WebVellaAreasSidebarController',
-                    templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+                	controller: 'WebVellaAreasRecordViewSidebarController',
+                	templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
@@ -72,19 +72,21 @@
             record = response.object;
             //Cycle through the view, find all fields and attach their data and meta info
             for (var regionIndex = 0; regionIndex < extendedView.regions.length; regionIndex++) {
-                for (var sectionIndex = 0; sectionIndex < extendedView.regions[regionIndex].sections.length; sectionIndex++) {
-                    for (var rowIndex = 0; rowIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-                        for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-                            for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-                                for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
-                                    if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].id) {
-                                        extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            	if (extendedView.regions[regionIndex].name == "content") {
+            		for (var sectionIndex = 0; sectionIndex < extendedView.regions[regionIndex].sections.length; sectionIndex++) {
+            			for (var rowIndex = 0; rowIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
+            				for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+            					for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+            						for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
+            							if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].id) {
+            								extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
+            							}
+            						}
+            					}
+            				}
+            			}
+            		}
+            	}
             }
             extendedView.data = record.data;
             defer.resolve(extendedView);
@@ -112,18 +114,24 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService',
-        'resolvedCurrentArea', '$timeout', 'resolvedExtendedViewData'];
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData'];
 
     /* @ngInject */
     function controller($log, $rootScope, $state, pageTitle, webvellaRootService,
-        resolvedCurrentArea, $timeout, resolvedExtendedViewData) {
+        resolvedSitemap, $timeout, resolvedExtendedViewData) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
         //#region <<Set pageTitle>>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
-        contentData.currentArea = resolvedCurrentArea;
+        contentData.siteMap = angular.copy(resolvedSitemap);
+        contentData.currentArea = null;
+        for (var i = 0; i < contentData.siteMap.data.length; i++) {
+        	if (contentData.siteMap.data[i].name == $state.params.areaName) {
+        		contentData.currentArea = contentData.siteMap.data[i];
+        	};
+        }
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
         //#endregion
 
@@ -142,6 +150,14 @@
         contentData.viewData = contentData.recordView.data[0];
         //#endregion
 
+    	//#region << Intialize current entity >>
+        contentData.currentEntity = null;
+        for (var i = 0; i < contentData.currentArea.entities.length; i++) {
+        	if (contentData.currentArea.entities[i].name === $state.params.entityName) {
+        		contentData.currentEntity = contentData.currentArea.entities[i];
+        	}
+        }
+		//#endregion
 
         //#region << logic >>
 

@@ -370,49 +370,49 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateViews(Guid entityId, List<RecordsList> recordsLists, bool checkId = false)
+		private List<ErrorModel> ValidateRecordLists(Guid entityId, List<RecordList> recordLists, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
 			IStorageEntity storageEntity = EntityRepository.Read(entityId);
 			Entity entity = storageEntity.MapTo<Entity>();
 
-			foreach (var recordList in recordsLists)
+			foreach (var recordList in recordLists)
 			{
-				errorList.AddRange(ValidateView(entity, recordList, checkId));
+				errorList.AddRange(ValidateRecordList(entity, recordList, checkId));
 			}
 
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateView(Entity entity, RecordsList recordslist, bool checkId = false)
+		private List<ErrorModel> ValidateRecordList(Entity entity, RecordList recordlist, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
-
-			if (!recordslist.Id.HasValue || recordslist.Id.Value == Guid.Empty)
+			/*
+			if (!recordlist.Id.HasValue || recordlist.Id.Value == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
 			if (checkId)
 			{
-				int listSameIdCount = entity.RecordsLists.Where(f => f.Id == recordslist.Id).Count();
+				int listSameIdCount = entity.RecordLists.Where(f => f.Id == recordlist.Id).Count();
 
 				if (listSameIdCount > 1)
 					errorList.Add(new ErrorModel("id", null, "There is already a list with such Id!"));
 
-				int listSameNameCount = entity.Fields.Where(f => f.Name == recordslist.Name).Count();
+				int listSameNameCount = entity.Fields.Where(f => f.Name == recordlist.Name).Count();
 
 				if (listSameNameCount > 1)
 					errorList.Add(new ErrorModel("name", null, "There is already a list with such Name!"));
 			}
 
-			errorList.AddRange(ValidationUtility.ValidateName(recordslist.Name));
+			errorList.AddRange(ValidationUtility.ValidateName(recordlist.Name));
 
-			errorList.AddRange(ValidationUtility.ValidateLabel(recordslist.Label));
+			errorList.AddRange(ValidationUtility.ValidateLabel(recordlist.Label));
 
-			if (recordslist.Filters != null && recordslist.Filters.Count > 0)
+			if (recordlist.Filters != null && recordlist.Filters.Count > 0)
 			{
 
-				foreach (var filter in recordslist.Filters)
+				foreach (var filter in recordlist.Filters)
 				{
 					if (!filter.FieldId.HasValue || filter.FieldId.Value == Guid.Empty)
 						errorList.Add(new ErrorModel("recordsLists.filters.fieldId", null, "FieldId is required!"));
@@ -439,9 +439,9 @@ namespace WebVella.ERP.Api
 				}
 			}
 
-			if (recordslist.Fields != null && recordslist.Fields.Count > 0)
+			if (recordlist.Fields != null && recordlist.Fields.Count > 0)
 			{
-				foreach (var field in recordslist.Fields)
+				foreach (var field in recordlist.Fields)
 				{
 					if (!field.Id.HasValue || field.Id.Value == Guid.Empty)
 						errorList.Add(new ErrorModel("recordsLists.fields.id", null, "Id is required!"));
@@ -468,12 +468,12 @@ namespace WebVella.ERP.Api
 				}
 			}
 			else
-				errorList.Add(new ErrorModel("recordsLists.fields", recordslist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
-
+				errorList.Add(new ErrorModel("recordsLists.fields", recordlist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
+				*/
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordViews(Guid entityId, List<RecordView> recordViewList, bool checkId = false)
+		private List<ErrorModel> ValidateRecordViews(Guid entityId, List<InputRecordView> recordViewList, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -488,16 +488,43 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordView(Entity entity, RecordView recordView, bool checkId = false)
+		private List<ErrorModel> ValidateRecordView(Entity entity, InputRecordView recordView, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			if ( recordView.Id == Guid.Empty)
+			EntityListResponse entityResponse = ReadEntities();
+			List<Entity> entities = new List<Entity>();
+			if (entityResponse.Object != null)
+				entities = entityResponse.Object.Entities;
+
+			RecordListCollectionResponse recordListsResponse = ReadRecordLists();
+			List<RecordList> recordLists = new List<RecordList>();
+			if (recordListsResponse.Object != null)
+				recordLists = recordListsResponse.Object.RecordLists;
+
+			RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
+			List<RecordView> recordViews = new List<RecordView>();
+			if (recordViewsResponse.Object != null)
+				recordViews = recordViewsResponse.Object.RecordViews;
+
+			EntityRelationManager relationManager = new EntityRelationManager(Storage);
+			EntityRelationListResponse relationListResponse = relationManager.Read();
+			List<EntityRelation> relationList = new List<EntityRelation>();
+			if (relationListResponse.Object != null)
+				relationList = relationListResponse.Object;
+
+			FieldListResponse fieldsResponse = ReadFields(entity.Id);
+			List<Field> fields = new List<Field>();
+			if (fieldsResponse.Object != null)
+				fields = fieldsResponse.Object.Fields;
+
+
+			if (!recordView.Id.HasValue || recordView.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
 			if (checkId)
 			{
-				int viewSameIdCount = entity.RecordsLists.Where(f => f.Id == recordView.Id).Count();
+				int viewSameIdCount = entity.RecordLists.Where(f => f.Id == recordView.Id).Count();
 
 				if (viewSameIdCount > 1)
 					errorList.Add(new ErrorModel("id", null, "There is already a view with such Id!"));
@@ -512,36 +539,197 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabel(recordView.Label));
 
-            //TODO validate new meta - fields were before
-            /*
-			foreach (var field in recordView.Fields)
+			if (!recordView.Weight.HasValue)
+				recordView.Weight = 1;
+
+			if (!recordView.Default.HasValue)
+				recordView.Default = false;
+
+			if (!recordView.System.HasValue)
+				recordView.System = false;
+
+			if (string.IsNullOrWhiteSpace(recordView.Type))
+				errorList.Add(new ErrorModel("type", null, "Type is required!"));
+			else
 			{
-				if (!field.Id.HasValue && field.Id.Value == Guid.Empty)
-					errorList.Add(new ErrorModel("recordViewLists.fields.id", null, "Id is required!"));
+				RecordViewType type;
+				if (!Enum.TryParse(recordView.Type, out type))
+					errorList.Add(new ErrorModel("type", recordView.Type, "Type is not valid!"));
+			}
 
-				if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
+			if (recordView.Regions != null && recordView.Regions.Count > 0)
+			{
+				foreach (var region in recordView.Regions)
 				{
-					IStorageEntity verifiedEntity = EntityRepository.Read(field.EntityId.Value);
-
-					if (verifiedEntity != null || field.EntityId == entity.Id)
-					{
-						Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
-
-						if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
-							errorList.Add(new ErrorModel("recordViewLists.fields.id", entity.Id.ToString(), "Field with such Id does not exist!"));
-					}
+					if (string.IsNullOrWhiteSpace(region.Name))
+						errorList.Add(new ErrorModel("regions.name", region.Name, "Name is required!"));
 					else
-						errorList.Add(new ErrorModel("recordViewLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
+					{
+						if (recordView.Regions.Where(r => r.Name == region.Name).Count() > 1)
+							errorList.Add(new ErrorModel("regions.name", region.Name, "There is already region with such name!"));
+
+						errorList.AddRange(ValidationUtility.ValidateName(region.Name, key: "regions.name"));
+					}
+
+					if (!region.Render.HasValue)
+						region.Render = false;
+
+					if (region.Sections != null && region.Sections.Count > 0)
+					{
+						foreach (var section in region.Sections)
+						{
+							if (!section.Id.HasValue || section.Id == Guid.Empty)
+							{
+								errorList.Add(new ErrorModel("regions.sections.id", null, "Id is required!"));
+							}
+							else
+							{
+								if (region.Sections.Where(s => s.Id == section.Id).Count() > 1)
+									errorList.Add(new ErrorModel("regions.sections.id", null, "There is already a section with such Id!"));
+							}
+
+							if (string.IsNullOrWhiteSpace(section.Name))
+							{
+								errorList.Add(new ErrorModel("regions.sections.name", region.Name, "Name is required!"));
+							}
+							else
+							{
+								if (region.Sections.Where(s => s.Name == section.Name).Count() > 1)
+									errorList.Add(new ErrorModel("regions.sections.name", section.Name, "There is already section with such name!"));
+
+								errorList.AddRange(ValidationUtility.ValidateName(section.Name, key: "regions.sections.name"));
+							}
+
+							errorList.AddRange(ValidationUtility.ValidateLabel(section.Label, key: "regions.sections.label"));
+
+							if (!section.ShowLabel.HasValue)
+								section.ShowLabel = false;
+
+							if (!section.Collapsed.HasValue)
+								section.Collapsed = false;
+
+							if (!section.Weight.HasValue)
+								section.Weight = 1;
+
+							foreach (var row in section.Rows)
+							{
+								if (!row.Id.HasValue || row.Id == Guid.Empty)
+								{
+									errorList.Add(new ErrorModel("regions.sections.rows.id", null, "Id is required!"));
+								}
+								else
+								{
+									if (section.Rows.Where(r => r.Id == row.Id).Count() > 1)
+										errorList.Add(new ErrorModel("regions.sections.rows.id", null, "There is already a row with such Id!"));
+								}
+
+								if (!row.Weight.HasValue)
+									row.Weight = 1;
+
+								foreach (var column in row.Columns)
+								{
+									foreach (var item in column.Items)
+									{
+										if (item is InputRecordViewFieldItem)
+										{
+											if (!((InputRecordViewFieldItem)item).FieldId.HasValue || ((InputRecordViewFieldItem)item).FieldId == Guid.Empty)
+											{
+												errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "Filed id is required!"));
+											}
+											else
+											{
+												if (column.Items.Where(i => i is InputRecordViewFieldItem && ((InputRecordViewFieldItem)i).FieldId == ((InputRecordViewFieldItem)item).FieldId).Count() > 1)
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "There is already an item with such field id!"));
+
+												if (!entity.Fields.Any(f => f.Id == ((InputRecordViewFieldItem)item).FieldId))
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "Wrong Id. There is no field with such id!"));
+											}
+										}
+										else if (item is InputRecordViewListItem)
+										{
+											if (!((InputRecordViewListItem)item).ListId.HasValue || ((InputRecordViewListItem)item).ListId == Guid.Empty)
+											{
+												errorList.Add(new ErrorModel("regions.sections.rows.columns.listId", null, "List id is required!"));
+											}
+											else
+											{
+												if (column.Items.Where(i => i is InputRecordViewListItem && ((InputRecordViewListItem)i).ListId == ((InputRecordViewListItem)item).ListId).Count() > 1)
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.listId", null, "There is already an item with such list id!"));
+
+												if (!recordLists.Any(l => l.Id == ((InputRecordViewListItem)item).ListId))
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.listId", null, "Wrong Id. There is no list with such id!"));
+											}
+										}
+										else if (item is InputRecordViewViewItem)
+										{
+											if (!((InputRecordViewViewItem)item).ViewId.HasValue || ((InputRecordViewViewItem)item).ViewId == Guid.Empty)
+											{
+												errorList.Add(new ErrorModel("regions.sections.rows.columns.viewId", null, "View id is required!"));
+											}
+											else
+											{
+												if (column.Items.Where(i => i is InputRecordViewViewItem && ((InputRecordViewViewItem)i).ViewId == ((InputRecordViewViewItem)item).ViewId).Count() > 1)
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.viewId", null, "There is already an item with such view id!"));
+
+												if (!recordViews.Any(v => v.Id == ((InputRecordViewViewItem)item).ViewId))
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.viewId", null, "Wrong Id. There is no view with such id!"));
+											}
+										}
+										else if (item is InputRecordViewRelationFieldItem)
+										{
+											if (!((InputRecordViewRelationFieldItem)item).RelationId.HasValue || ((InputRecordViewRelationFieldItem)item).RelationId == Guid.Empty)
+											{
+												errorList.Add(new ErrorModel("regions.sections.rows.columns.relationId", null, "Relation id is required!"));
+											}
+											else
+											{
+												if (!relationList.Any(r => r.Id == ((InputRecordViewRelationFieldItem)item).RelationId))
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.relationId", null, "Wrong Id. There is no relation with such id!"));
+											}
+
+											if (!((InputRecordViewRelationFieldItem)item).FieldId.HasValue || ((InputRecordViewRelationFieldItem)item).FieldId == Guid.Empty)
+											{
+												errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "Field id is required!"));
+											}
+											else if (((InputRecordViewRelationFieldItem)item).RelationId.HasValue && ((InputRecordViewRelationFieldItem)item).RelationId != Guid.Empty)
+											{
+												if (column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldId == ((InputRecordViewRelationFieldItem)item).FieldId).Count() > 1)
+													errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "There is already an item with such field id!"));
+
+												EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((InputRecordViewRelationFieldItem)item).RelationId.Value);
+
+												if (relation != null)
+												{
+													Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+													Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+
+													bool isExistInOrigin = false;
+													if (originEntity != null && originEntity.Fields != null)
+														isExistInOrigin = originEntity.Fields.Any(f => f.Id == ((InputRecordViewRelationFieldItem)item).FieldId);
+
+													bool isExistInTarget = false;
+													if (targetEntity != null && targetEntity.Fields != null)
+														isExistInTarget = targetEntity.Fields.Any(f => f.Id == ((InputRecordViewRelationFieldItem)item).FieldId);
+
+													if (!isExistInOrigin && !isExistInTarget)
+														errorList.Add(new ErrorModel("regions.sections.rows.columns.fieldId", null, "Wrong Id. There is no field with such id!"));
+												}
+											}
+
+										}
+										else if (item is InputRecordViewHtmlItem)
+										{
+											((InputRecordViewHtmlItem)item).Tag = ((InputRecordViewHtmlItem)item).Tag.Trim();
+											((InputRecordViewHtmlItem)item).Content = ((InputRecordViewHtmlItem)item).Content.Trim();
+										}
+									}
+								}
+							}
+
+						}
+					}
 				}
-				else
-					errorList.Add(new ErrorModel("recordViewLists.fields.entityId", null, "EntityId is required!"));
-
-				if (!field.Position.HasValue)
-					errorList.Add(new ErrorModel("recordViewLists.fields.position", null, "Position is required!"));
-
-				if (!field.Column.HasValue)
-					errorList.Add(new ErrorModel("recordViewLists.column.position", null, "Column is required!"));
-			}*/
+			}
 
 			return errorList;
 		}
@@ -580,8 +768,8 @@ namespace WebVella.ERP.Api
 				}
 
 				entity.Fields = CreateEntityDefaultFields(entity);
-				entity.RecordsLists = CreateEntityDefaultRecordsLists(entity);
-				entity.RecordViewLists = CreateEntityDefaultRecordViews(entity);
+				entity.RecordLists = CreateEntityDefaultRecordLists(entity);
+				entity.RecordViews = CreateEntityDefaultRecordViews(entity);
 
 				IStorageEntity storageEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Create(storageEntity);
@@ -1658,6 +1846,44 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
+		public FieldListResponse ReadFields()
+		{
+			FieldListResponse response = new FieldListResponse
+			{
+				Success = true,
+				Message = "The field was successfully returned!",
+			};
+
+			try
+			{
+				List<IStorageEntity> storageEntities = EntityRepository.Read();
+
+				FieldList fieldList = new FieldList();
+
+				foreach (IStorageEntity entity in storageEntities)
+				{
+					fieldList.Fields.AddRange(entity.Fields.MapTo<Field>());
+				}
+
+				response.Object = fieldList;
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
 		public FieldResponse ReadField(Guid entityId, Guid id)
 		{
 			FieldResponse response = new FieldResponse
@@ -1713,9 +1939,9 @@ namespace WebVella.ERP.Api
 
 		#region << RecordsList methods >>
 
-		public RecordsListResponse CreateRecordsList(Guid entityId, RecordsList recordsList)
+		public RecordListResponse CreateRecordList(Guid entityId, RecordList recordList)
 		{
-			RecordsListResponse response = new RecordsListResponse
+			RecordListResponse response = new RecordListResponse
 			{
 				Success = true,
 				Message = "The list was successfully created!",
@@ -1735,8 +1961,8 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				response.Object = recordsList;
-				response.Errors = ValidateView(entity, recordsList, false);
+				response.Object = recordList;
+				response.Errors = ValidateRecordList(entity, recordList, false);
 
 				if (response.Errors.Count > 0)
 				{
@@ -1746,7 +1972,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.RecordsLists.Add(recordsList);
+				entity.RecordLists.Add(recordList);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -1762,7 +1988,7 @@ namespace WebVella.ERP.Api
 			catch (Exception e)
 			{
 				response.Success = false;
-				response.Object = recordsList;
+				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
 				response.Message = e.Message + e.StackTrace;
@@ -1772,15 +1998,15 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordsList;
+			response.Object = recordList;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
 		}
 
-		public RecordsListResponse UpdateRecordsList(Guid entityId, RecordsList recordsList)
+		public RecordListResponse UpdateRecordList(Guid entityId, RecordList recordList)
 		{
-			RecordsListResponse response = new RecordsListResponse
+			RecordListResponse response = new RecordListResponse
 			{
 				Success = true,
 				Message = "The list was successfully updated!",
@@ -1800,8 +2026,8 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				response.Object = recordsList;
-				response.Errors = ValidateView(entity, recordsList, true);
+				response.Object = recordList;
+				response.Errors = ValidateRecordList(entity, recordList, true);
 
 				if (response.Errors.Count > 0)
 				{
@@ -1811,11 +2037,11 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				RecordsList viewForDelete = entity.RecordsLists.FirstOrDefault(r => r.Id == recordsList.Id);
-				if (viewForDelete.Id == recordsList.Id)
-					entity.RecordsLists.Remove(viewForDelete);
+				RecordList viewForDelete = entity.RecordLists.FirstOrDefault(r => r.Id == recordList.Id);
+				if (viewForDelete.Id == recordList.Id)
+					entity.RecordLists.Remove(viewForDelete);
 
-				entity.RecordsLists.Add(recordsList);
+				entity.RecordLists.Add(recordList);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -1831,7 +2057,7 @@ namespace WebVella.ERP.Api
 			catch (Exception e)
 			{
 				response.Success = false;
-				response.Object = recordsList;
+				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
 				response.Message = e.Message + e.StackTrace;
@@ -1841,15 +2067,15 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordsList;
+			response.Object = recordList;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
 		}
 
-		public RecordsListResponse PartialUpdateRecordsList(Guid entityId, Guid id, RecordsList recordsList)
+		public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, RecordList recordList)
 		{
-			RecordsListResponse response = new RecordsListResponse
+			RecordListResponse response = new RecordListResponse
 			{
 				Success = true,
 				Message = "The list was successfully updated!",
@@ -1869,7 +2095,7 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordsList updatedList = entity.RecordsLists.FirstOrDefault(l => l.Id == id);
+				RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
 
 				if (updatedList == null)
 				{
@@ -1878,18 +2104,18 @@ namespace WebVella.ERP.Api
 					response.Message = "List with such Id does not exist!";
 					return response;
 				}
-
-				if (!string.IsNullOrWhiteSpace(recordsList.Label))
-					updatedList.Label = recordsList.Label;
-				if (!recordsList.Type.HasValue)
-					updatedList.Type = recordsList.Type;
-				if (recordsList.Filters != null)
-					updatedList.Filters = recordsList.Filters;
-				if (recordsList.Fields != null)
-					updatedList.Fields = recordsList.Fields;
-
-				response.Object = recordsList;
-				response.Errors = ValidateView(entity, recordsList, true);
+				/*
+				if (!string.IsNullOrWhiteSpace(recordList.Label))
+					updatedList.Label = recordList.Label;
+				if (!recordList.Type.HasValue)
+					updatedList.Type = recordList.Type;
+				if (recordList.Filters != null)
+					updatedList.Filters = recordList.Filters;
+				if (recordList.Fields != null)
+					updatedList.Fields = recordList.Fields;
+				*/
+				response.Object = recordList;
+				response.Errors = ValidateRecordList(entity, recordList, true);
 
 				if (response.Errors.Count > 0)
 				{
@@ -1913,7 +2139,7 @@ namespace WebVella.ERP.Api
 			catch (Exception e)
 			{
 				response.Success = false;
-				response.Object = recordsList;
+				response.Object = recordList;
 				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
 				response.Message = e.Message + e.StackTrace;
@@ -1923,15 +2149,15 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordsList;
+			response.Object = recordList;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
 		}
 
-		public RecordsListResponse DeleteRecordsList(Guid entityId, Guid id)
+		public RecordListResponse DeleteRecordList(Guid entityId, Guid id)
 		{
-			RecordsListResponse response = new RecordsListResponse
+			RecordListResponse response = new RecordListResponse
 			{
 				Success = true,
 				Message = "The list was successfully deleted!",
@@ -1951,9 +2177,9 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
+				RecordList recordList = entity.RecordLists.FirstOrDefault(v => v.Id == id);
 
-				if (recordsList == null)
+				if (recordList == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
@@ -1962,7 +2188,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.RecordsLists.Remove(recordsList);
+				entity.RecordLists.Remove(recordList);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -1990,9 +2216,9 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordsListCollectionResponse ReadRecordsLists(Guid entityId)
+		public RecordListCollectionResponse ReadRecordLists(Guid entityId)
 		{
-			RecordsListCollectionResponse response = new RecordsListCollectionResponse
+			RecordListCollectionResponse response = new RecordListCollectionResponse
 			{
 				Success = true,
 				Message = "The lists were successfully returned!",
@@ -2012,10 +2238,10 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordsListCollection recordsListCollection = new RecordsListCollection();
-				recordsListCollection.RecordsLists = entity.RecordsLists;
+				RecordListCollection recordListCollection = new RecordListCollection();
+				recordListCollection.RecordLists = entity.RecordLists;
 
-				response.Object = recordsListCollection;
+				response.Object = recordListCollection;
 			}
 			catch (Exception e)
 			{
@@ -2034,9 +2260,50 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordsListResponse ReadRecordsList(Guid entityId, Guid id)
+		public RecordListCollectionResponse ReadRecordLists()
 		{
-			RecordsListResponse response = new RecordsListResponse
+			RecordListCollectionResponse response = new RecordListCollectionResponse
+			{
+				Success = true,
+				Message = "The lists were successfully returned!",
+			};
+
+			try
+			{
+				List<IStorageEntity> storageEntities = EntityRepository.Read();
+
+				//Entity entity = storageEntity.MapTo<Entity>();
+
+				RecordListCollection recordListCollection = new RecordListCollection();
+				recordListCollection.RecordLists = new List<RecordList>();
+
+				foreach (IStorageEntity entity in storageEntities)
+				{
+					recordListCollection.RecordLists.AddRange(entity.RecordLists.MapTo<RecordList>());
+				}
+
+				response.Object = recordListCollection;
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
+		public RecordListResponse ReadRecordList(Guid entityId, Guid id)
+		{
+			RecordListResponse response = new RecordListResponse
 			{
 				Success = true,
 				Message = "The list was successfully returned!",
@@ -2056,7 +2323,7 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordsList recordsList = entity.RecordsLists.FirstOrDefault(v => v.Id == id);
+				RecordList recordsList = entity.RecordLists.FirstOrDefault(v => v.Id == id);
 
 				if (recordsList == null)
 				{
@@ -2090,13 +2357,18 @@ namespace WebVella.ERP.Api
 
 		#region << RecordView methods >>
 
-		public RecordViewResponse CreateRecordView(Guid entityId, RecordView recordView)
+		public RecordViewResponse CreateRecordView(Guid entityId, InputRecordView inputRecordView)
 		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
 				Message = "The record view was successfully created!",
 			};
+
+			if (!inputRecordView.Id.HasValue)
+				inputRecordView.Id = Guid.NewGuid();
+
+			RecordView recordView = inputRecordView.MapTo<RecordView>();
 
 			try
 			{
@@ -2113,7 +2385,9 @@ namespace WebVella.ERP.Api
 				Entity entity = storageEntity.MapTo<Entity>();
 
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, recordView, false);
+				response.Errors = ValidateRecordView(entity, inputRecordView, false);
+
+				recordView = inputRecordView.MapTo<RecordView>();
 
 				if (response.Errors.Count > 0)
 				{
@@ -2123,7 +2397,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.RecordViewLists.Add(recordView);
+				entity.RecordViews.Add(recordView);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -2155,13 +2429,15 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordViewResponse UpdateRecordView(Guid entityId, RecordView recordView)
+		public RecordViewResponse UpdateRecordView(Guid entityId, InputRecordView inputRecordView)
 		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
 				Message = "The record view was successfully updated!",
 			};
+
+			RecordView recordView = inputRecordView.MapTo<RecordView>();
 
 			try
 			{
@@ -2178,7 +2454,9 @@ namespace WebVella.ERP.Api
 				Entity entity = storageEntity.MapTo<Entity>();
 
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, recordView, true);
+				response.Errors = ValidateRecordView(entity, inputRecordView, true);
+
+				recordView = inputRecordView.MapTo<RecordView>();
 
 				if (response.Errors.Count > 0)
 				{
@@ -2188,11 +2466,11 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				RecordView recordViewForDelete = entity.RecordViewLists.FirstOrDefault(r => r.Id == recordView.Id);
+				RecordView recordViewForDelete = entity.RecordViews.FirstOrDefault(r => r.Id == recordView.Id);
 				if (recordViewForDelete.Id == recordView.Id)
-					entity.RecordViewLists.Remove(recordViewForDelete);
+					entity.RecordViews.Remove(recordViewForDelete);
 
-				entity.RecordViewLists.Add(recordView);
+				entity.RecordViews.Add(recordView);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -2224,13 +2502,15 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, RecordView recordView)
+		public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
 		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
 				Message = "The record view was successfully updated!",
 			};
+
+			RecordView recordView = inputRecordView.MapTo<RecordView>();
 
 			try
 			{
@@ -2246,7 +2526,7 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordView updatedView = entity.RecordViewLists.FirstOrDefault(v => v.Id == id);
+				RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
 
 				if (updatedView == null)
 				{
@@ -2256,19 +2536,31 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-                /*
 
-                //TODO fix update - RecordView is completelly changed
 
-				if (!string.IsNullOrWhiteSpace(recordView.Label))
-					updatedView.Label = recordView.Label;
-				if (recordView.Fields != null)
-					updatedView.Fields = recordView.Fields;
+				//TODO fix update - RecordView is completelly changed
 
-                */
+				if (inputRecordView.Label != null)
+					updatedView.Label = inputRecordView.Label;
+				if (inputRecordView.Default.HasValue)
+					updatedView.Default = inputRecordView.Default;
+				if (inputRecordView.System.HasValue)
+					updatedView.System = inputRecordView.System;
+				if (inputRecordView.Weight.HasValue)
+					updatedView.Weight = inputRecordView.Weight;
+				if (inputRecordView.CssClass != null)
+					updatedView.CssClass = inputRecordView.CssClass;
+				if (string.IsNullOrEmpty(inputRecordView.Type))
+					updatedView.Type = inputRecordView.Type;
+				if (inputRecordView.Regions != null)
+					updatedView.Regions = inputRecordView.Regions.MapTo<RecordViewRegion>();
+				if (inputRecordView.Sidebar != null)
+					updatedView.Sidebar = inputRecordView.Sidebar.MapTo<RecordViewSidebar>();
 
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, recordView, true);
+				response.Errors = ValidateRecordView(entity, recordView.MapTo<InputRecordView>(), true);
+
+				recordView = inputRecordView.MapTo<RecordView>();
 
 				if (response.Errors.Count > 0)
 				{
@@ -2330,7 +2622,7 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
+				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
 
 				if (recordView == null)
 				{
@@ -2341,7 +2633,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				entity.RecordViewLists.Remove(recordView);
+				entity.RecordViews.Remove(recordView);
 
 				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
 				bool result = EntityRepository.Update(updatedEntity);
@@ -2391,8 +2683,145 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
+				EntityListResponse entityResponse = ReadEntities();
+				List<Entity> entities = new List<Entity>();
+				if (entityResponse.Object != null)
+					entities = entityResponse.Object.Entities;
+
+				RecordListCollectionResponse recordListsResponse = ReadRecordLists();
+				List<RecordList> recordLists = new List<RecordList>();
+				if (recordListsResponse.Object != null)
+					recordLists = recordListsResponse.Object.RecordLists;
+
+				RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
+				List<RecordView> recordViews = new List<RecordView>();
+				if (recordViewsResponse.Object != null)
+					recordViews = recordViewsResponse.Object.RecordViews;
+
+				FieldListResponse fieldsResponse = ReadFields(entity.Id);
+				List<Field> fields = new List<Field>();
+				if (fieldsResponse.Object != null)
+					fields = fieldsResponse.Object.Fields;
+
+				foreach (var recordView in entity.RecordViews)
+				{
+					foreach (var region in recordView.Regions)
+					{
+						foreach (var section in region.Sections)
+						{
+							foreach (var row in section.Rows)
+							{
+								foreach (var column in row.Columns)
+								{
+									foreach (var item in column.Items)
+									{
+										if (item is RecordViewFieldItem)
+										{
+											Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
+											if (field != null)
+											{
+												((RecordViewFieldItem)item).FieldName = field.Name;
+												((RecordViewFieldItem)item).FieldLabel = field.Label;
+												((RecordViewFieldItem)item).FieldTypeId = field.GetFieldType();
+											}
+										}
+										if (item is RecordViewListItem)
+										{
+											RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
+											if (list != null)
+											{
+												((RecordViewListItem)item).ListName = list.Name;
+												((RecordViewListItem)item).ListLabel = list.Label;
+											}
+
+											Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
+											if (listEntity != null)
+											{
+												((RecordViewListItem)item).EntityName = listEntity.Name;
+												((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
+											}
+										}
+										if (item is RecordViewViewItem)
+										{
+											RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
+											if (recView != null)
+											{
+												((RecordViewViewItem)item).ViewName = recView.Name;
+												((RecordViewViewItem)item).ViewLabel = recView.Label;
+											}
+
+											Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
+											if (listEntity != null)
+											{
+												((RecordViewViewItem)item).EntityName = listEntity.Name;
+												((RecordViewViewItem)item).EntityLabel = listEntity.Label;
+											}
+										}
+										if (item is RecordViewRelationFieldItem)
+										{
+											Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
+											if (relEntity != null)
+											{
+												((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
+												((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
+											}
+
+											Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
+											if (field != null)
+											{
+												((RecordViewRelationFieldItem)item).FieldName = field.Name;
+												((RecordViewRelationFieldItem)item).FieldLabel = field.Label;
+												((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
 				RecordViewCollection recordViewList = new RecordViewCollection();
-				recordViewList.RecordViews = entity.RecordViewLists;
+				recordViewList.RecordViews = entity.RecordViews;
+
+				response.Object = recordViewList;
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
+		public RecordViewCollectionResponse ReadRecordViews()
+		{
+			RecordViewCollectionResponse response = new RecordViewCollectionResponse
+			{
+				Success = true,
+				Message = "The record views were successfully returned!",
+			};
+
+			try
+			{
+				List<IStorageEntity> storageEntities = EntityRepository.Read();
+
+				RecordViewCollection recordViewList = new RecordViewCollection();
+				recordViewList.RecordViews = new List<RecordView>();
+
+				foreach (IStorageEntity entity in storageEntities)
+				{
+					recordViewList.RecordViews.AddRange(entity.RecordViewList.MapTo<RecordView>());
+				}
 
 				response.Object = recordViewList;
 			}
@@ -2435,7 +2864,7 @@ namespace WebVella.ERP.Api
 
 				Entity entity = storageEntity.MapTo<Entity>();
 
-				RecordView recordView = entity.RecordViewLists.FirstOrDefault(r => r.Id == id);
+				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
 
 				if (recordView == null)
 				{
@@ -2444,6 +2873,101 @@ namespace WebVella.ERP.Api
 					response.Message = "Validation error occurred!";
 					response.Errors.Add(new ErrorModel("id", id.ToString(), "Record View with such Id does not exist!"));
 					return response;
+				}
+
+				EntityListResponse entityResponse = ReadEntities();
+				List<Entity> entities = new List<Entity>();
+				if (entityResponse.Object != null)
+					entities = entityResponse.Object.Entities;
+
+				RecordListCollectionResponse recordListsResponse = ReadRecordLists();
+				List<RecordList> recordLists = new List<RecordList>();
+				if (recordListsResponse.Object != null)
+					recordLists = recordListsResponse.Object.RecordLists;
+
+				RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
+				List<RecordView> recordViews = new List<RecordView>();
+				if (recordViewsResponse.Object != null)
+					recordViews = recordViewsResponse.Object.RecordViews;
+
+				FieldListResponse fieldsResponse = ReadFields(entity.Id);
+				List<Field> fields = new List<Field>();
+				if (fieldsResponse.Object != null)
+					fields = fieldsResponse.Object.Fields;
+
+				foreach (var region in recordView.Regions)
+				{
+					foreach (var section in region.Sections)
+					{
+						foreach (var row in section.Rows)
+						{
+							foreach (var column in row.Columns)
+							{
+								foreach (var item in column.Items)
+								{
+									if (item is RecordViewFieldItem)
+									{
+										Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
+										if (field != null)
+										{
+											((RecordViewFieldItem)item).FieldName = field.Name;
+											((RecordViewFieldItem)item).FieldLabel = field.Label;
+											((RecordViewFieldItem)item).FieldTypeId = field.GetFieldType();
+										}
+									}
+									if (item is RecordViewListItem)
+									{
+										RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
+										if (list != null)
+										{
+											((RecordViewListItem)item).ListName = list.Name;
+											((RecordViewListItem)item).ListLabel = list.Label;
+										}
+
+										Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
+										if (listEntity != null)
+										{
+											((RecordViewListItem)item).EntityName = listEntity.Name;
+											((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
+										}
+									}
+									if (item is RecordViewViewItem)
+									{
+										RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
+										if (recView != null)
+										{
+											((RecordViewViewItem)item).ViewName = recView.Name;
+											((RecordViewViewItem)item).ViewLabel = recView.Label;
+										}
+
+										Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
+										if (listEntity != null)
+										{
+											((RecordViewViewItem)item).EntityName = listEntity.Name;
+											((RecordViewViewItem)item).EntityLabel = listEntity.Label;
+										}
+									}
+									if (item is RecordViewRelationFieldItem)
+									{
+										Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
+										if (relEntity != null)
+										{
+											((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
+											((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
+										}
+
+										Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
+										if (field != null)
+										{
+											((RecordViewRelationFieldItem)item).FieldName = field.Name;
+											((RecordViewRelationFieldItem)item).FieldLabel = field.Label;
+											((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 
 				response.Object = recordView;
@@ -2570,12 +3094,12 @@ namespace WebVella.ERP.Api
 			return fields;
 		}
 
-		private List<RecordsList> CreateEntityDefaultRecordsLists(Entity entity)
+		private List<RecordList> CreateEntityDefaultRecordLists(Entity entity)
 		{
-			List<RecordsList> recordsLists = new List<RecordsList>();
+			List<RecordList> recordLists = new List<RecordList>();
 
 
-			return recordsLists;
+			return recordLists;
 		}
 
 		private List<RecordView> CreateEntityDefaultRecordViews(Entity entity)

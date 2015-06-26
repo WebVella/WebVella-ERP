@@ -30,6 +30,7 @@ namespace WebVella.ERP.Web.Controllers
 
 
 		#region << Entity Meta >>
+
 		// Get all entity definitions
 		// GET: api/v1/en_US/meta/entity/list/
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
@@ -123,6 +124,7 @@ namespace WebVella.ERP.Web.Controllers
 		#endregion
 
 		#region << Entity Fields >>
+
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/field")]
 		public IActionResult CreateField(string Id, [FromBody]JObject submitObj)
 		{
@@ -215,6 +217,105 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(new EntityManager(service.StorageService).DeleteField(entityId, fieldId));
 		}
 
+		#endregion
+
+		#region << Record Lists >>
+
+		#endregion
+
+		#region << Record Views >>
+
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
+		public IActionResult CreateRecordView(string Id, [FromBody]JObject submitObj)
+		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			Guid entityId;
+			if (!Guid.TryParse(Id, out entityId))
+			{
+				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
+
+			InputRecordView view = new InputRecordView();
+			try
+			{
+				view = InputRecordView.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(new EntityManager(service.StorageService).CreateRecordView(entityId, view));
+		}
+
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
+		public IActionResult UpdateRecordView(string Id, string ViewId, [FromBody]JObject submitObj)
+		{
+			FieldResponse response = new FieldResponse();
+
+			Guid entityId;
+			if (!Guid.TryParse(Id, out entityId))
+			{
+				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
+
+			Guid viewId;
+			if (!Guid.TryParse(ViewId, out viewId))
+			{
+				response.Errors.Add(new ErrorModel("ViewId", ViewId, "ViewId parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
+
+			InputRecordView view = new InputRecordView();
+
+			Type inputViewType = view.GetType();
+
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
+
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
+
+			try
+			{
+				view = InputRecordView.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(entityId, view));
+		}
+
+		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
+		public IActionResult DeleteRecordView(string Id, string ViewId)
+		{
+			FieldResponse response = new FieldResponse();
+
+			Guid entityId;
+			if (!Guid.TryParse(Id, out entityId))
+			{
+				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
+
+			Guid viewId;
+			if (!Guid.TryParse(ViewId, out viewId))
+			{
+				response.Errors.Add(new ErrorModel("ViewId", ViewId, "ViewId parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
+
+			return DoResponse(new EntityManager(service.StorageService).DeleteRecordView(entityId, viewId));
+		}
 
 		#endregion
 
@@ -463,7 +564,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (area["$areas_area_relation"] != null && ((List<EntityRecord>)area["$areas_area_relation"]).Any()) // Just in case
 					{
 						List<EntityRecord> areaEntityIds = (List<EntityRecord>)area["$areas_area_relation"];
-						var entityColumnsNeeded = "id,name,label,icon_name,weight";
+						var entityColumnsNeeded = "id,name,label,icon_name,weight,recordLists,recordViews";
 						foreach (var entityId in areaEntityIds)
 						{
 							EntityResponse entityResult = entityManager.ReadEntity((Guid)entityId["entity_id"]);
@@ -477,6 +578,8 @@ namespace WebVella.ERP.Web.Controllers
 							entityObj["label_plural"] = entityResult.Object.LabelPlural;
 							entityObj["icon_name"] = entityResult.Object.IconName;
 							entityObj["weight"] = entityResult.Object.Weight;
+							entityObj["recordLists"] = entityResult.Object.RecordLists;
+							entityObj["recordViews"] = entityResult.Object.RecordViews;
 							areaEntities.Add(entityObj);
 						}
 						area["entities"] = areaEntities;

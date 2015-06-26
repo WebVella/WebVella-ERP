@@ -17,6 +17,6 @@
 </div>
 <ul class="nav nav-pills nav-stacked">
     <li role="presentation" ui-sref-active="active" ng-repeat="entity in sidebarData.currentArea.entities">
-        <a ui-sref='webvella-entity-records({areaName: "{{sidebarData.currentArea.name}}", entityName: "{{entity.name}}"})'><i class="fa fa-{{entity.icon_name}} fa-fw"></i><span class="text">{{entity.label_plural}}</span></a>
+        <a ui-sref='webvella-entity-records({areaName: "{{sidebarData.currentArea.name}}", entityName: "{{entity.name}}", listName: "boz",filter:"all", page: 1})'><i class="fa fa-{{entity.icon_name}} fa-fw"></i><span class="text">{{entity.label_plural}}</span></a>
     </li>
 </ul>

@@ -48,9 +48,9 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoEntity>();
             BsonClassMap.RegisterClassMap<MongoEntityRelation>();
 
-            BsonClassMap.RegisterClassMap<MongoRecordsList>();
-            BsonClassMap.RegisterClassMap<MongoRecordsListField>();
-            BsonClassMap.RegisterClassMap<MongoRecordsListFilter>();
+            BsonClassMap.RegisterClassMap<MongoRecordList>();
+            BsonClassMap.RegisterClassMap<MongoRecordListField>();
+            BsonClassMap.RegisterClassMap<MongoRecordListFilter>();
             BsonClassMap.RegisterClassMap<MongoRecordPermissions>();
 
             BsonClassMap.RegisterClassMap<MongoCurrencyType>();
@@ -61,12 +61,12 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoRecordViewRegion>();
             BsonClassMap.RegisterClassMap<MongoRecordViewSection>();
             BsonClassMap.RegisterClassMap<MongoRecordViewRow>();
-            BsonClassMap.RegisterClassMap<RecordViewColumn>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewColumn>();
             BsonClassMap.RegisterClassMap<MongoRecordViewItemBase>();
-            BsonClassMap.RegisterClassMap<RecordViewFieldItem>();
-            BsonClassMap.RegisterClassMap<RecordViewListItem>();
-            BsonClassMap.RegisterClassMap<RecordViewViewItem>();
-            BsonClassMap.RegisterClassMap<RecordViewHtmlItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewFieldItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewListItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewViewItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewHtmlItem>();
 
             BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
             BsonClassMap.RegisterClassMap<MongoCheckboxField>();
