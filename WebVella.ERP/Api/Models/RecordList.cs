@@ -1,0 +1,148 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using WebVella.ERP.Storage;
+
+namespace WebVella.ERP.Api.Models
+{
+	public enum RecordListType
+	{
+		General 
+	}
+
+	public enum RecordListItemType
+	{
+		Field,
+		FieldFromRelation
+	}
+
+	public class RecordList
+    {
+		[JsonProperty(PropertyName = "id")]
+		public Guid Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "default")]
+		public bool? Default { get; set; }
+
+		[JsonProperty(PropertyName = "system")]
+		public bool? System { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "type")]
+		public RecordListType Type { get; set; }
+
+		[JsonProperty(PropertyName = "recordsLimit")]
+		public int RecordsLimit { get; set; }
+
+		[JsonProperty(PropertyName = "pageSize")]
+		public int PageSize { get; set; }
+
+		[JsonProperty(PropertyName = "columns")]
+		public List<RecordListItemBase> Columns { get; set; }
+
+		[JsonProperty(PropertyName = "query")]
+		public RecordListQuery Query { get; set; }
+
+		[JsonProperty(PropertyName = "sorts")]
+		public List<RecordListSort> Sorts { get; set; }
+	}
+
+    public class RecordListQuery
+    {
+        [JsonProperty(PropertyName = "queryType")]
+		public QueryType QueryType { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldValue")]
+		public string fieldValue { get; set; }
+
+		[JsonProperty(PropertyName = "subQueries")]
+		public List<RecordListQuery> SubQueries { get; set; }
+    }
+
+	public class RecordListSort
+	{
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "sortType")]
+		public QuerySortType SortType { get; set; }
+	}
+
+	public abstract class RecordListItemBase
+	{
+	}
+
+	public class RecordListFieldItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static RecordListItemType ItemType { get { return RecordListItemType.Field; } }
+
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+	}
+
+	public class RecordListRelationFieldItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static RecordListItemType ItemType { get { return RecordListItemType.FieldFromRelation; } }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
+
+		[JsonProperty(PropertyName = "entityLabel")]
+		public string EntityLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+	}
+
+	public class RecordListCollection
+    {
+        [JsonProperty(PropertyName = "recordLists")]
+        public List<RecordList> RecordLists { get; set; }
+    }
+
+    public class RecordListResponse : BaseResponseModel
+    {
+        [JsonProperty(PropertyName = "object")]
+        public RecordList Object { get; set; }
+    }
+
+    public class RecordListCollectionResponse : BaseResponseModel
+    {
+        [JsonProperty(PropertyName = "object")]
+        public RecordListCollection Object { get; set; }
+    }
+}
