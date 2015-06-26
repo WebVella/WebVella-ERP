@@ -553,7 +553,7 @@ namespace WebVella.ERP.Api
 			else
 			{
 				RecordViewType type;
-				if (!Enum.TryParse(recordView.Type, out type))
+				if (!Enum.TryParse(recordView.Type, true, out type))
 					errorList.Add(new ErrorModel("type", recordView.Type, "Type is not valid!"));
 			}
 

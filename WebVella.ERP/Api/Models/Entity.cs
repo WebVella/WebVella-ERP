@@ -34,6 +34,11 @@ namespace WebVella.ERP.Api.Models
 
 	public class Entity
 	{
+		public Entity() {
+			RecordViews = new List<RecordView>();
+			RecordLists = new List<RecordList>();
+		}
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 

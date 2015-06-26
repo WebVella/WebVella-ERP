@@ -270,30 +270,23 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << Record Views >>
 
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
-		public IActionResult CreateRecordView(string Id, [FromBody]JObject submitObj)
-		{
-			RecordViewResponse response = new RecordViewResponse();
+		//[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
+		//public IActionResult CreateRecordView(Guid Id, [FromBody]JObject submitObj)
+		//{
+		//	RecordViewResponse response = new RecordViewResponse();
 
-			Guid entityId;
-			if (!Guid.TryParse(Id, out entityId))
-			{
-				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
+		//	InputRecordView view = new InputRecordView();
+		//	try
+		//	{
+		//		view = InputRecordView.Convert(submitObj);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+		//	}
 
-			InputRecordView view = new InputRecordView();
-			try
-			{
-				view = InputRecordView.Convert(submitObj);
-			}
-			catch (Exception e)
-			{
-				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
-			}
-
-			return DoResponse(new EntityManager(service.StorageService).CreateRecordView(entityId, view));
-		}
+		//	return DoResponse(new EntityManager(service.StorageService).CreateRecordView(Id, view));
+		//}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
 		public IActionResult CreateRecordViewByName(string Name, [FromBody]JObject submitObj)
@@ -314,23 +307,9 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		public IActionResult UpdateRecordView(string Id, string ViewId, [FromBody]JObject submitObj)
+		public IActionResult UpdateRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
-
-			Guid entityId;
-			if (!Guid.TryParse(Id, out entityId))
-			{
-				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
-
-			Guid viewId;
-			if (!Guid.TryParse(ViewId, out viewId))
-			{
-				response.Errors.Add(new ErrorModel("ViewId", ViewId, "ViewId parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
 
 			InputRecordView view = new InputRecordView();
 
@@ -355,7 +334,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(entityId, view));
+			return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Id, view));
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
@@ -390,23 +369,9 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		public IActionResult PatchRecordView(string Id, string ViewId, [FromBody]JObject submitObj)
+		public IActionResult PatchRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
-
-			Guid entityId;
-			if (!Guid.TryParse(Id, out entityId))
-			{
-				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
-
-			Guid viewId;
-			if (!Guid.TryParse(ViewId, out viewId))
-			{
-				response.Errors.Add(new ErrorModel("ViewId", ViewId, "ViewId parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
 
 			InputRecordView view = new InputRecordView();
 
@@ -431,7 +396,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(entityId, viewId, view));
+			return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(Id, ViewId, view));
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
@@ -466,7 +431,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		public IActionResult DeleteRecordView(string Id, string ViewId)
+		public IActionResult DeleteRecordView(Guid Id, Guid ViewId)
 		{
 			return DoResponse(new EntityManager(service.StorageService).DeleteRecordView(Id, ViewId));
 		}
@@ -478,7 +443,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-		public IActionResult GetRecordView(string Id, string ViewId)
+		public IActionResult GetRecordView(Guid Id, Guid ViewId)
 		{
 			return DoResponse(new EntityManager(service.StorageService).ReadRecordView(Id, ViewId));
 		}
@@ -489,13 +454,13 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(new EntityManager(service.StorageService).ReadRecordView(Name, ViewName));
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Id}/view/")]
-		public IActionResult GetRecordViews(string Id)
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
+		public IActionResult GetRecordViews(Guid Id)
 		{
 			return DoResponse(new EntityManager(service.StorageService).ReadRecordViews(Id));
 		}
 
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/")]
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
 		public IActionResult GetRecordViewsByName(string Name)
 		{
 			return DoResponse(new EntityManager(service.StorageService).ReadRecordViews(Name));

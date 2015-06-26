@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityViewsController', controller);
+        .controller('WebVellaAdminEntityViewsController', controller)
+	    .controller('CreateViewModalController', createViewModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -38,8 +39,7 @@
                 }
             },
             resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedCurrentEntityViews: resolveCurrentEntityViews // TODO this should be removed once the views are implemented in the entity Meta
+                resolvedCurrentEntityMeta: resolveCurrentEntityMeta
             },
             data: {
 
@@ -85,58 +85,20 @@
         $log.debug('webvellaAdmin>entity-details> END state.resolved');
         return defer.promise;
     }
-
-
-    // TODO this should be removed once the views are implemented in the entity Meta
-    resolveCurrentEntityViews.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-    /* @ngInject */
-    function resolveCurrentEntityViews($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-views> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        function errorCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        webvellaAdminService.getEntityViewList($stateParams.entityName, successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAdmin>entity-views> END state.resolved');
-        return defer.promise;
-    }
-
-
+ 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityViews'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal'];
 
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityViews) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
-        contentData.entity = resolvedCurrentEntityMeta;
-        contentData.views = resolvedCurrentEntityViews.views; // TODO this should be removed once the views are implemented in the entity Meta
-
+        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.views = angular.copy(resolvedCurrentEntityMeta.recordViews);
+        if (contentData.views == null) {
+        	contentData.views = [];
+        }
         //Update page title
         contentData.pageTitle = "Entity Views | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
@@ -148,64 +110,71 @@
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
         });
 
-        //Create new entity modal
-        contentData.openDeleteEntityModal = function () {
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: 'deleteEntityModal.html',
-                controller: 'DeleteEntityModalController',
-                controllerAs: "popupData",
-                size: "",
-                resolve: {
-                    parentData: function () { return contentData; }
-                }
-            });
+    	//Create new view modal
+        contentData.createView = function () {
+
+        	var modalInstance = $modal.open({
+        		animation: false,
+        		templateUrl: 'createViewModal.html',
+        		controller: 'CreateViewModalController',
+        		controllerAs: "popupData",
+        		size: "",
+        		resolve: {
+        			contentData: function () {
+        				return contentData;
+        			}
+        		}
+        	});
 
         }
 
-        activate();
+
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
-        function activate() { }
     }
 
 
-    //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	//// Modal Controllers
+    createViewModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService'];
 
-    /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
-        /* jshint validthis:true */
-        var popupData = this;
-        popupData.entity = parentData.entity;
+	/* @ngInject */
+    function createViewModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService) {
+    	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec');
+    	/* jshint validthis:true */
+    	var popupData = this;
+    	popupData.modalInstance = $modalInstance;
+    	popupData.view = webvellaAdminService.initView();
+    	popupData.currentEntity = angular.copy(contentData.entity);
 
-        popupData.ok = function () {
-            webvellaAdminService.deleteEntity(popupData.entity.id, successCallback, errorCallback)
-        };
+    	popupData.ok = function () {
+    		webvellaAdminService.createEntityView(popupData.view, popupData.currentEntity.name, successCallback, errorCallback);
+    	};
 
-        popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
+    	popupData.cancel = function () {
+    		$modalInstance.dismiss('cancel');
+    	};
 
-        /// Aux
-        function successCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
-            });
-            $modalInstance.close('success');
-            $timeout(function () {
-                $state.go("webvella-admin-entities");
-            }, 0)
-        }
+    	/// Aux
+    	function successCallback(response) {
+    		ngToast.create({
+    			className: 'success',
+    			content: '<h4>Success</h4><p>The view was successfully saved</p>'
+    		});
+    		$modalInstance.close('success');
+    		webvellaRootService.reloadCurrentState($state);
+    	}
 
-        function errorCallback(response) {
-            popupData.hasError = true;
-            popupData.errorMessage = response.message;
+    	function errorCallback(response) {
+    		var location = $location;
+    		//Process the response and generate the validation Messages
+    		webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+    	}
 
-
-        }
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+    	$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec');
     };
 
+
+
+
 })();
+
+

@@ -53,6 +53,7 @@ function guid() {
         serviceInstance.initViewRow = initViewRow;
         serviceInstance.initViewRowColumn = initViewRowColumn;
         serviceInstance.getEntityView = getEntityView;
+        serviceInstance.createEntityView = createEntityView;
         serviceInstance.updateEntityView = updateEntityView;
         serviceInstance.safeAddArrayPlace = safeAddArrayPlace;
         serviceInstance.safeUpdateArrayPlace = safeUpdateArrayPlace;
@@ -452,26 +453,27 @@ function guid() {
         function initView() {
             $log.debug('webvellaAdmin>providers>admin.service>initView> function called');
             var view = {
-            	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
-                "name": "details",
-                "label": "Details",
+            	"id": null,
+                "name": "",
+                "label": "",
                 "default": false,
                 "system": false,
                 "weight": 1,
                 "cssClass": "",
-                "type": "general",
+                "type": "details",
                 "regions": [
                     {
-                        "id": guid(),
-                        "name": "content",
-                        "sections": []
-                    },
-                    {
-                        "id": guid(),
-                        "name": "sidebar",
+                    	"name": "content",
+                    	"render": false,
+                    	"cssClass": "",
                         "sections": []
                     }
-                ]
+                ],
+                "sidebar": {
+                	"render": false,
+                	"cssClass": "",
+					"list":[]
+                }
             };
             return view;
         }
@@ -627,6 +629,11 @@ function guid() {
             response.object = view;
 
             successCallback(response);
+        }
+    	//////////////////////
+        function createEntityView(viewObj, entityName, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>createRelation> function called');
+        	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/view", data: viewObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
         //////////////////////
         function updateEntityView(viewObj, entityName, successCallback, errorCallback) {
