@@ -32,8 +32,50 @@
         </div>
         <div class="lists-box">
             <h4 title="Newest active offers">Full details</h4>
-            <a href=""><i class="fa fa-table"></i> Other Record Views</a>
+            <a  href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
         </div>
+		<accordion>
+			<accordion-group is-open="moreListsOpened">
+				<form class="form-inline">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">
+								<i class="fa fa-search"></i>
+							</span>
+							<input ng-model="class" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="exampleInputName2" placeholder="list label">
+						</div>
+					</div>
+					<div class="form-group hidden-xs hidden-sm">
+						<div class="filter">
+							<div class="field">Actions</div>
+							<ul class="criterias list-inline">
+								<li>
+									<a href=""><i class="fa fa-plus"></i> Create new list</a>
+								</li>
+								<li>
+									<a href=""><i class="fa fa-thumb-tack"></i> Set as default</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</form>
+				<hr class="divider" />
+				<ul class="list-inline">
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+				</ul>
+			</accordion-group>
+		</accordion>
     </div>
     <!--<div id="page-messages">
         <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
@@ -43,31 +85,31 @@
 <div class="record-details">
 
     <div class="panel panel-default" ng-repeat="section in contentData.contentRegion.sections">
-        <div class="panel-heading collapsable ng-hide" ng-show="section.showTitle" ng-click="contentData.toggleSectionCollapse(section)">
+        <div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
             <span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
             <span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
-            {{section.title}}
+            {{section.label}}
         </div>
-        <div class="panel-body ng-hide" ng-hide="section.collapsed && section.showTitle">
+        <div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
             <div class="form-horizontal">
 
                 <div class="row" ng-repeat="row in section.rows">
                     <div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
                         <div class="form-group" ng-repeat="item in column.items">
                             <!--If item is field WITH NO relation-->
-                            <div class="row editable-field" ng-if="item.type === 'field' && item.originFieldId === null">
-                                <label class="col-sm-3 control-label">{{item.meta.label}}</label>
+                            <div class="row editable-field" ng-if="item.type === 'field'">
+                                <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative">
                                     <!-- If type 18 - textbox -->
-                                    <a ng-if="item.meta.fieldType === 18" href="#" editable-text="contentData.viewData['{{item.meta.name}}']" ng-bind="contentData.viewData['{{item.meta.name}}'] || 'empty' "></a>
+                                    <a ng-if="item.fieldTypeId === 18" href="#" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
 
                                 </div>
                             </div>
                             <!--If item is field WITH relation-->
-                            <div class="row editable-field" ng-if="item.type === 'field' && item.originFieldId != null">
-                                <label class="col-sm-3 control-label">{{item.meta.label}}</label>
+                            <div class="row editable-field" ng-if="item.type === 'fieldFromRelation'">
+                                <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative">
-                                    <p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['author']['name'] || 'empty' "></a></p>
+                                    <p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['{{item.fieldName}}']['name'] || 'empty' "></a></p>
                                 </div>
                             </div>
 

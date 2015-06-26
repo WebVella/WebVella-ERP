@@ -401,14 +401,28 @@ function guid() {
 										"weight": 1,
 										"columns": [
 										{
-											"gridColCount":12,
+											"gridColCount":6,
 											"items": [
 											{
                     							"_t": "RecordViewFieldItem",
                     							"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
                     							"type": "field",
                     							"fieldName": "username",
-                    							"fieldLabel": "Username"
+                    							"fieldLabel": "Username",
+												"fieldTypeId": 18
+											}
+											]
+										},
+										{
+											"gridColCount": 6,
+											"items": [
+											{
+												"_t": "RecordViewFieldItem",
+												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+												"type": "field",
+												"fieldName": "title",
+												"fieldLabel": "Title",
+												"fieldTypeId": 18
 											}
 											]
 										}
@@ -526,21 +540,24 @@ function guid() {
             	"type": "field",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
             	"fieldName": "id",
-            	"fieldLabel": "Id"
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
             },
             {
             	"_t": "RecordViewFieldItem",
             	"type": "field",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
                 "fieldName": "username",
-                "fieldLabel": "Username"
+                "fieldLabel": "Username",
+                "fieldTypeId": 18
             },
             {
             	"_t": "RecordViewFieldItem",
             	"type": "field",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab9",
             	"fieldName": "email",
-            	"fieldLabel": "Email"
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
             },
             {
             	"_t": "RecordViewRelationFieldItem",
@@ -551,7 +568,8 @@ function guid() {
             	"entityLabel": "Account",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
             	"fieldName": "email",
-				"fieldLabel": "Email"
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
             },
             {
             	"_t": "RecordViewViewItem",
@@ -738,14 +756,16 @@ function guid() {
             	"type": "field",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
             	"fieldName": "id",
-            	"fieldLabel": "Id"
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
 			},
 				{
 					"_t": "RecordViewFieldItem",
 					"type": "field",
 					"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
 					"fieldName": "username",
-					"fieldLabel": "Username"
+					"fieldLabel": "Username",
+					"fieldTypeId": 18
 				},
 							{
 								"_t": "RecordViewRelationFieldItem",
@@ -756,7 +776,8 @@ function guid() {
 								"entityLabel": "Account",
 								"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
 								"fieldName": "email",
-								"fieldLabel": "Email"
+								"fieldLabel": "Email",
+								"fieldTypeId": 18
 							}],
 				"query": {
 					"queryType": "AND",
