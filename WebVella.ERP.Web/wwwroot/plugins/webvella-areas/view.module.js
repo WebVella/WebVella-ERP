@@ -104,7 +104,7 @@
         }
         if (firstEntityName != null) {
             $timeout(function () {
-                $state.go('webvella-entity-records', { areaName: requestedArea.name, entityName: firstEntityName });
+            	$state.go('webvella-entity-records', { areaName: requestedArea.name, entityName: firstEntityName, listName: "boz", filter: "all", page: 1 });
             }, 0);
             
         }

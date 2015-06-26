@@ -193,56 +193,92 @@
 
         //#region << Initialize View and Content Region >>
         contentData.view = angular.copy(resolvedCurrentView);
-        contentData.library = angular.copy(resolvedViewLibrary);
-        contentData.library.items = contentData.library.items.sort(function (a, b) {
+        contentData.viewContentRegion = {};
+        for (var i = 0; i < contentData.view.regions.length; i++) {
+        	if (contentData.view.regions[i].name === "content") {
+        		contentData.viewContentRegion = contentData.view.regions[i];
+        	}
+        }
+    	//Get fields already used in the view so they need to be removed from the library
+        var usedItemsArray = [];
+        for (var j = 0; j < contentData.viewContentRegion.sections.length; j++) {
+        	for (var k = 0; k < contentData.viewContentRegion.sections[j].rows.length; k++) {
+        		for (var l = 0; l < contentData.viewContentRegion.sections[j].rows[k].columns.length; l++) {
+        			for (var m = 0; m < contentData.viewContentRegion.sections[j].rows[k].columns[l].items.length; m++) {
+        				usedItemsArray.push(contentData.viewContentRegion.sections[j].rows[k].columns[l].items[m]);
+        			}
+        		}
+        	}
+        }
+
+        contentData.tempLibrary = angular.copy(resolvedViewLibrary);
+        contentData.tempLibrary.items = contentData.tempLibrary.items.sort(function (a, b) {
         	if (a.type < b.type) return -1;
         	if (a.type > b.type) return 1;
         	return 0;
         });
-        contentData.library.items.forEach(function (item) {
-        	var search = "";
-        	if (item.type != null) {
-        		search += item.type + " ";
+        contentData.library = {};
+        contentData.library.items = [];
+        contentData.tempLibrary.items.forEach(function (item) {
+        	var notUsed = true;
+        	for (var k = 0; k < usedItemsArray.length; k++) {
+        		if (item.type === "field" && usedItemsArray[k].type === "field"
+						&& item.fieldId == usedItemsArray[k].fieldId) {
+        			notUsed = false;
+        		}
+        		else if (item.type === "fieldFromRelation" && usedItemsArray[k].type === "fieldFromRelation"
+						&& item.fieldId == usedItemsArray[k].fieldId && item.relationId == usedItemsArray[k].relationId) {
+        			notUsed = false;
+        		}
+        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
+        			notUsed = false;
+        		}
+        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId == usedItemsArray[k].listId) {
+        			notUsed = false;
+        		}
         	}
-        	if (item.tag != null) {
-        		search += item.tag + " ";
+        	if (notUsed) {
+        		var search = "";
+        		if (item.type != null) {
+        			search += item.type + " ";
+        		}
+        		if (item.tag != null) {
+        			search += item.tag + " ";
+        		}
+        		if (item.fieldName != null) {
+        			search += item.fieldName + " ";
+        		}
+        		if (item.fieldLabel != null) {
+        			search += item.fieldLabel + " ";
+        		}
+        		if (item.entityName != null) {
+        			search += item.entityName + " ";
+        		}
+        		if (item.entityLabel != null) {
+        			search += item.entityLabel + " ";
+        		}
+        		if (item.viewName != null) {
+        			search += item.viewName + " ";
+        		}
+        		if (item.viewLabel != null) {
+        			search += item.viewLabel + " ";
+        		}
+        		if (item.listName != null) {
+        			search += item.listName + " ";
+        		}
+        		if (item.listLabel != null) {
+        			search += item.listLabel + " ";
+        		}
+        		if (item.entityLabelPlural != null) {
+        			search += item.entityLabelPlural + " ";
+        		}
+        		item.search = search;
+        		contentData.library.items.push(item);
         	}
-        	if (item.fieldName != null) {
-        		search += item.fieldName + " ";
-        	}
-        	if (item.fieldLabel != null) {
-        		search += item.fieldLabel + " ";
-        	}
-        	if (item.entityName != null) {
-        		search += item.entityName + " ";
-        	}
-        	if (item.entityLabel != null) {
-        		search += item.entityLabel + " ";
-        	}
-        	if (item.viewName != null) {
-        		search += item.viewName + " ";
-        	}
-        	if (item.viewLabel != null) {
-        		search += item.viewLabel + " ";
-        	}
-        	if (item.listName != null) {
-        		search += item.listName + " ";
-        	}
-        	if (item.listLabel != null) {
-        		search += item.listLabel + " ";
-        	}
-        	if (item.entityLabelPlural != null) {
-        		search += item.entityLabelPlural + " ";
-        	}
-        	item.search = search;
         });
 
-        contentData.viewContentRegion = {};
-        for (var i = 0; i < contentData.view.regions.length; i++) {
-            if (contentData.view.regions[i].name === "content") {
-                contentData.viewContentRegion = contentData.view.regions[i];
-            }
-        }
+
+
         //#endregion
 
         //#region << Section Management >>

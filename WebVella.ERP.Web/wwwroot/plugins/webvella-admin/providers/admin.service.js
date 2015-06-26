@@ -14,6 +14,7 @@ function guid() {
       s4() + '-' + s4() + s4() + s4();
 }
 
+
 (function () {
     'use strict';
 
@@ -371,81 +372,76 @@ function guid() {
         function sampleView() {
             $log.debug('webvellaAdmin>providers>admin.service>initView> function called');
             var view = {
-                "id": guid(),
-                "name": "",
-                "label": "",
-                "default": true,
-                "system": false,
-                "weight":1.0,
-                "type": "details_general",
+            	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
+            	"name": "details",
+            	"label": "Details",
+            	"default": true,
+            	"system": true,
+            	"weight": 1,
+            	"cssClass": "",
+            	"type": "general",
                 "regions": [
                     {
-                        "id": guid(),
-                        "name": "content",
-                        "sections": [{
-                            "id": guid(),
-                            "title": "Section title",
-                            "showTitle": true,
-                            "collapsed": false,
-                            "place": 0,
-                            "tabOrder": "left-right",
-                            "rows": [
-                                {
-                                    "id": guid(),
-                                    "place": 1,
-                                    "columns": [{
-                                        "gridColCount": 12,
-                                        "items": [
-                                                {
-                                                    "id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
-                                                    "name": "title",
-                                                    "originFieldId": null,
-                                                    "originFieldName": null,
-                                                    "type": "field"
-                                                },
-                                                 {
-                                                     "id": "e878470b-492e-43af-af87-a137049eef9f",
-                                                     "name": "author",
-                                                     "originFieldId": "083bd9b0-fac0-4f55-852e-9f73f345af2f",
-                                                     "originFieldName": "name",
-                                                     "type": "field"
-                                                 },
-                                            {
-                                                "id": guid(),
-                                                "originFieldId": null,
-                                                "type": "h2_heading",
-                                                "originFieldName": null,
-                                                "name": "somename",
-                                                "content": "This is a heading"
-                                            },
-                                            {
-                                                "id": guid(),
-                                                "originFieldId": null,
-                                                "type": "html",
-                                                "name": "somename",
-                                                "content": "This is some html content"
-                                            },
-                                            {
-                                                "id": guid(),
-                                                "originFieldId": null,
-                                                "originFieldName": null,
-                                                "type": "image",
-                                                "name": "somename",
-                                                "src": "/url/to/image",
-                                                "title": "",
-                                                "alt": ""
-                                            }
-                                        ]
-                                    }],
-                                }
-                            ],
-
-                        }],
+                    	"name": "content",
+                    	"render": false,
+                    	"cssClass": "",
+                    	"sections": [
+							 {
+ 								"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
+ 								"name": "general",
+ 								"label": "General",
+ 								"cssClass": "",
+ 								"showLabel": true,
+ 								"collapsed": false,
+ 								"weight": 1,
+ 								"tabOrder": "left-right",
+ 								"rows": [
+									{
+										"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
+										"weight": 1,
+										"columns": [
+										{
+											"gridColCount":6,
+											"items": [
+											{
+                    							"_t": "RecordViewFieldItem",
+                    							"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+                    							"type": "field",
+                    							"fieldName": "username",
+                    							"fieldLabel": "Username",
+												"fieldTypeId": 18
+											}
+											]
+										},
+										{
+											"gridColCount": 6,
+											"items": [
+											{
+												"_t": "RecordViewFieldItem",
+												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+												"type": "field",
+												"fieldName": "title",
+												"fieldLabel": "Title",
+												"fieldTypeId": 18
+											}
+											]
+										}
+										]
+									}
+ 								]
+							 }
+						],
                     },
                     {
-                        "id": null,
-                        "name": "sidebar",
-                        "sections": []
+                    	"render": false,
+                    	"cssClass": "",
+                    	"lists": [
+						  {
+				  			"entityId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+				  			"listId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+				  			"relationId": "48818fa7-77b4-cedd-71e4-80e106038abf"
+						  }
+                    	]
                     }
                 ],
 
@@ -456,14 +452,14 @@ function guid() {
         function initView() {
             $log.debug('webvellaAdmin>providers>admin.service>initView> function called');
             var view = {
-                "id": null,
-                "name": "",
-                "label": "",
+            	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
+                "name": "details",
+                "label": "Details",
                 "default": false,
                 "system": false,
-                "weight": 1.0,
+                "weight": 1,
                 "cssClass": "",
-                "type": "details_general",
+                "type": "general",
                 "regions": [
                     {
                         "id": guid(),
@@ -534,28 +530,50 @@ function guid() {
             //Test data
             object.items = [
             {
+            	"_t": "RecordViewHtmlItem",
             	"type": "html",
             	"tag": "",
             	"content": "<h1>Title</h1>",
             },
             {
-                "type": "field",
-                "fieldId": guid(),
-                "fieldName": "username",
-                "fieldLabel": "Username"
+            	"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
+            	"fieldName": "id",
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
             },
             {
+            	"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+                "fieldName": "username",
+                "fieldLabel": "Username",
+                "fieldTypeId": 18
+            },
+            {
+            	"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab9",
+            	"fieldName": "email",
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
+            },
+            {
+            	"_t": "RecordViewRelationFieldItem",
             	"type": "fieldFromRelation",
-            	"relationId": guid(),
-            	"entityId": guid(),
+            	"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
+            	"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
             	"entityName": "account",
             	"entityLabel": "Account",
-            	"fieldId": guid(),
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
             	"fieldName": "email",
-				"fieldLabel": "Email"
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
             },
             {
-                "type": "view",
+            	"_t": "RecordViewViewItem",
+            	"type": "view",
                 "viewId": guid(),
                 "viewName": "short-info",
                 "viewLabel": "Short Info",
@@ -564,8 +582,9 @@ function guid() {
                 "entityLabel": "Account"
             },
             {
+            	"_t": "RecordViewListItem",
             	"type": "list",
-            	"viewId": guid(),
+            	"listId": guid(),
             	"listName": "short-list",
             	"listLabel": "Short List",
             	"entityId": guid(),
@@ -580,7 +599,7 @@ function guid() {
             successCallback(response);
         }
         ///////////////////////
-        function getEntityViewList(entityId, successCallback, errorCallback) {
+        function getEntityViewList(entityName, successCallback, errorCallback) {
             var list = [];
             var view = initView();
             //Test data
@@ -589,7 +608,7 @@ function guid() {
             view.label = "Details";
             view.default = true;
             view.system = true;
-            view.type = "details_general";
+            view.type = "general";
 
             list.push(view);
             var response = {};
@@ -601,14 +620,7 @@ function guid() {
         //////////////////////
         function getEntityView(viewName, entityName, successCallback, errorCallback) {
             //This function will call the getEntityViewList, loop through views and return the view data for now
-            var view = initView();
-            //Test data
-            view.id = "7937a4a3-e074-4e2f-aca2-1467a29bb433";
-            view.name = "details";
-            view.label = "Details";
-            view.default = true;
-            view.system = true;
-            view.type = "details_general";
+        	var view = sampleView();
 
             var response = {};
             response.success = true;
@@ -705,40 +717,93 @@ function guid() {
         ///////////////////////
         function initList() {
             $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
-            var list = {
-                "id": null,
-                "name": "",
-                "label": "",
-                "default": false,
-                "system": false,
-                "type": "general",
-                "weight": 1.0,
-                "fields": [],
-                "filters": {
-                    "static": [],
-                    "dynamic":[]
-                },
-                "sorting": []
-            }
+            var list =
+{
+    "id": guid(),
+    "name": "",
+    "label": "",
+    "default": true,
+    "system": false,
+    "weight": 1,
+    "type": "general",
+    "cssClass": "",
+    "recordsLimit": 10,
+    "pageSize": 10,
+    "columns": [],
+    "query": null,
+    "sorts": null
+}
             return list;
         }
 
         function sampleList() {
             $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
-            var list = {
-                "id": guid(),
-                "name": "general_list",
-                "label": "General list",
-                "default": false,
-                "system": false,
-                "type": "general",
-                "weight": 1.0,
-                "fields": [],
-                "filters": {
-                    "static": [],
-                    "dynamic": []
-                },
-                "sorting": []
+            var list = 
+            {
+            	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
+				"name": "recent_orders",
+				"label": "Recent Orders",
+				"default": true,
+				"system": true,
+				"weight": 1,
+				"type": "general",
+				"cssClass": "",
+				"recordsLimit": 100,
+				"pageSize": 10,
+				"columns": [
+			{
+				"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
+            	"fieldName": "id",
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
+			},
+				{
+					"_t": "RecordViewFieldItem",
+					"type": "field",
+					"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+					"fieldName": "username",
+					"fieldLabel": "Username",
+					"fieldTypeId": 18
+				},
+							{
+								"_t": "RecordViewRelationFieldItem",
+								"type": "fieldFromRelation",
+								"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
+								"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
+								"entityName": "account",
+								"entityLabel": "Account",
+								"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
+								"fieldName": "email",
+								"fieldLabel": "Email",
+								"fieldTypeId": 18
+							}],
+				"query": {
+					"queryType": "AND",
+					"fieldName": "",
+					"fieldValue": "",
+					"subQueries": [
+						{
+							"queryType": "EQ",
+							"fieldName": "username",
+							"fieldValue": "mozart",
+							"subQueries": []
+						},
+						{
+							"queryType": "CONTAINS",
+							"fieldName": "email",
+							"fieldValue": "domain.com",
+							"subQueries": []
+						}
+					]
+				},
+				"sorts": [
+					{
+						"fieldName": "username",
+						"sortType": "Descending"
+					}
+				]
             }
             return list;
         }
