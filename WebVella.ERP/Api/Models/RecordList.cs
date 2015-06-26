@@ -7,7 +7,7 @@ namespace WebVella.ERP.Api.Models
 {
 	public enum RecordListType
 	{
-		General 
+		General
 	}
 
 	public enum RecordListItemType
@@ -16,8 +16,104 @@ namespace WebVella.ERP.Api.Models
 		FieldFromRelation
 	}
 
+	#region << Input classes >>
+
+	public class InputRecordList
+	{
+		[JsonProperty(PropertyName = "id")]
+		public Guid? Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "default")]
+		public bool? Default { get; set; }
+
+		[JsonProperty(PropertyName = "system")]
+		public bool? System { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; }
+
+		[JsonProperty(PropertyName = "recordsLimit")]
+		public int? RecordsLimit { get; set; }
+
+		[JsonProperty(PropertyName = "pageSize")]
+		public int? PageSize { get; set; }
+
+		[JsonProperty(PropertyName = "columns")]
+		public List<InputRecordListItemBase> Columns { get; set; }
+
+		[JsonProperty(PropertyName = "query")]
+		public InputRecordListQuery Query { get; set; }
+
+		[JsonProperty(PropertyName = "sorts")]
+		public List<InputRecordListSort> Sorts { get; set; }
+	}
+
+	public class InputRecordListQuery
+	{
+		[JsonProperty(PropertyName = "queryType")]
+		public QueryType QueryType { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldValue")]
+		public string FieldValue { get; set; }
+
+		[JsonProperty(PropertyName = "subQueries")]
+		public List<InputRecordListQuery> SubQueries { get; set; }
+	}
+
+	public class InputRecordListSort
+	{
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "sortType")]
+		public string SortType { get; set; }
+	}
+
+	public class InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; }
+	}
+
+	public class InputRecordListFieldItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid? FieldId { get; set; }
+	}
+
+	public class InputRecordListRelationFieldItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid? EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid? FieldId { get; set; }
+	}
+
+	#endregion
+
+	#region << Default classes >>
+
 	public class RecordList
-    {
+	{
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
@@ -58,20 +154,20 @@ namespace WebVella.ERP.Api.Models
 		public List<RecordListSort> Sorts { get; set; }
 	}
 
-    public class RecordListQuery
-    {
-        [JsonProperty(PropertyName = "queryType")]
+	public class RecordListQuery
+	{
+		[JsonProperty(PropertyName = "queryType")]
 		public QueryType QueryType { get; set; }
 
 		[JsonProperty(PropertyName = "fieldName")]
 		public string FieldName { get; set; }
 
 		[JsonProperty(PropertyName = "fieldValue")]
-		public string fieldValue { get; set; }
+		public string FieldValue { get; set; }
 
 		[JsonProperty(PropertyName = "subQueries")]
 		public List<RecordListQuery> SubQueries { get; set; }
-    }
+	}
 
 	public class RecordListSort
 	{
@@ -128,21 +224,23 @@ namespace WebVella.ERP.Api.Models
 		public string FieldLabel { get; set; }
 	}
 
+	#endregion
+
 	public class RecordListCollection
-    {
-        [JsonProperty(PropertyName = "recordLists")]
-        public List<RecordList> RecordLists { get; set; }
-    }
+	{
+		[JsonProperty(PropertyName = "recordLists")]
+		public List<RecordList> RecordLists { get; set; }
+	}
 
-    public class RecordListResponse : BaseResponseModel
-    {
-        [JsonProperty(PropertyName = "object")]
-        public RecordList Object { get; set; }
-    }
+	public class RecordListResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordList Object { get; set; }
+	}
 
-    public class RecordListCollectionResponse : BaseResponseModel
-    {
-        [JsonProperty(PropertyName = "object")]
-        public RecordListCollection Object { get; set; }
-    }
+	public class RecordListCollectionResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordListCollection Object { get; set; }
+	}
 }

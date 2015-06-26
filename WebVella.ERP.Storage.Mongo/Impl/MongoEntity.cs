@@ -34,13 +34,13 @@ namespace WebVella.ERP.Storage.Mongo
 		public List<IStorageRecordList> RecordLists { get; set; }
 
 		[BsonElement("recordViews")]
-		public List<IStorageRecordView> RecordViewList { get; set; }
+		public List<IStorageRecordView> RecordViews { get; set; }
 
         public MongoEntity()
         {
             Fields = new List<IStorageField>();
             RecordLists = new List<IStorageRecordList>();
-            RecordViewList = new List<IStorageRecordView>();
+            RecordViews = new List<IStorageRecordView>();
             RecordPermissions = new MongoRecordPermissions();
         }
     }

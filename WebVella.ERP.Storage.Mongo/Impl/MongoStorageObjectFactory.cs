@@ -87,16 +87,6 @@ namespace WebVella.ERP.Storage.Mongo
             return new MongoSelectFieldOption();
         }
 
-        public IStorageRecordListFilter CreateEmptyRecordListFilterObject()
-        {
-            return new MongoRecordListFilter();
-        }
-
-        public IStorageRecordListField CreateEmptyRecordListFieldObject()
-        {
-            return new MongoRecordListField();
-        }
-
 		public IStorageCurrencyType CreateEmptyCurrencyTypeObject()
 		{
 			return new MongoCurrencyType();
