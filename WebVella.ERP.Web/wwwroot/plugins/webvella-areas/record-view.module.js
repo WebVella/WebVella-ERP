@@ -27,8 +27,8 @@
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
-                    controller: 'WebVellaAreasSidebarController',
-                    templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+                	controller: 'WebVellaAreasRecordViewSidebarController',
+                	templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
@@ -150,6 +150,14 @@
         contentData.viewData = contentData.recordView.data[0];
         //#endregion
 
+    	//#region << Intialize current entity >>
+        contentData.currentEntity = null;
+        for (var i = 0; i < contentData.currentArea.entities.length; i++) {
+        	if (contentData.currentArea.entities[i].name === $state.params.entityName) {
+        		contentData.currentEntity = contentData.currentArea.entities[i];
+        	}
+        }
+		//#endregion
 
         //#region << logic >>
 
