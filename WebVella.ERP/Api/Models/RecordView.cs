@@ -55,7 +55,7 @@ namespace WebVella.ERP.Api.Models
 		
 		public static InputRecordView Convert(JObject inputField)
 		{
-			InputRecordView view = null;
+			InputRecordView view = new InputRecordView();
 
 			InputRecordView rawView = JsonConvert.DeserializeObject<InputRecordView>(inputField.ToString());
 

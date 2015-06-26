@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-success" on-click="javascript: alert('should open a modal with only view name and label. After success could be redirected to view management')"><i class="fa fa-fw fa-plus"></i> Create new view</a>
+            <a class="btn btn-success" ng-click="contentData.createView()"><i class="fa fa-fw fa-plus"></i> Create new view</a>
         </div>
         <!--<div class="icon-box">
             <i class="fa fa-database"></i>
@@ -47,7 +47,7 @@
 
     </div>
 
-    <form id="filters" class="form-inline">
+    <form id="filters" class="form-inline" ng-hide="contentData.views.length == 0">
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">
@@ -58,8 +58,8 @@
         </div>
     </form>
     <div id="list">
-        <div class="alert alert-info" ng-show="contentData.entity.views.length == 0">No records found!</div>
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.entity.views.length == 0">
+        <div class="alert alert-info" ng-show="contentData.views.length == 0">No records found!</div>
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.views.length == 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
@@ -83,4 +83,59 @@
 
 
 </div>
+
+
+
+<script type="text/ng-template" id="createViewModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Create view</h3>
+	</div>
+	<div class="modal-body">
+		<form name="createView">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : createView.name.$invalid && !createView.name.$pristine || popupData.nameError}">
+						<label class="required" for="name">Name</label>
+						<input ng-model="popupData.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+						<div class="error" ng-show="createView.name.$dirty && createView.name.$invalid || popupData.nameError">
+							<small class="error" ng-show="createView.name.$error.required && !popupData.nameError">
+								required field
+							</small>
+							<small class="error" ng-show="createView.name.$error.pattern">
+								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+							</small>
+							<small class="error" ng-show="createView.name.$error.maxlength">
+								must be less than 50 chars
+							</small>
+							<small class="error" ng-show="popupData.nameError">
+								{{popupData.nameMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : createView.label.$invalid && !createView.label.$pristine || popupData.labelError }">
+						<label class="required" for="label">Label</label>
+						<input ng-model="popupData.view.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+							   required ng-model-options="{allowInvalid:true}">
+						<div class="error" ng-show="createView.label.$dirty && createView.label.$invalid || popupData.labelError">
+							<small class="error" ng-show="createView.label.$error.required && !popupData.labelError">
+								Area label is required.
+							</small>
+							<small class="error" ng-show="popupData.labelError">
+								{{popupData.labelMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Create View</button>
+		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
 

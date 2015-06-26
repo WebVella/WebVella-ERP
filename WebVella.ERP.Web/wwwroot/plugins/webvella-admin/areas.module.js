@@ -13,9 +13,7 @@
         .controller('WebVellaAdminAreasController', controller)
         .controller('ManageAreaModalController', manageAreaController)
         .controller('DeleteAreaModalController', DeleteAreaModalController);
-
-
-    
+   
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
