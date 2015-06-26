@@ -176,9 +176,9 @@ namespace WebVella.ERP.Storage.Mongo
     }
 
     ////////////////////////
-    public class RecordViewColumn : IStorageRecordViewColumn
+    public class MongoRecordViewColumn : IStorageRecordViewColumn
     {
-        public RecordViewColumn()
+        public MongoRecordViewColumn()
         {
             Items = new List<IStorageRecordViewItemBase>();
 			GridColCount = 0;
@@ -198,25 +198,25 @@ namespace WebVella.ERP.Storage.Mongo
     {
     }
 
-    public class RecordViewFieldItem : MongoRecordViewItemBase, IStorageRecordViewFieldItem
+    public class MongoRecordViewFieldItem : MongoRecordViewItemBase, IStorageRecordViewFieldItem
     {
         [BsonElement("fieldId")]
         public Guid FieldId { get; set; }
     }
 
-    public class RecordViewListItem : MongoRecordViewItemBase, IStorageRecordViewListItem
+    public class MongoRecordViewListItem : MongoRecordViewItemBase, IStorageRecordViewListItem
     {
         [BsonElement("listId")]
         public Guid ListId { get; set; }
     }
 
-    public class RecordViewViewItem : MongoRecordViewItemBase, IStorageRecordViewViewItem
+    public class MongoRecordViewViewItem : MongoRecordViewItemBase, IStorageRecordViewViewItem
     {
         [BsonElement("viewId")]
         public Guid ViewId { get; set; }
     }
 
-    public class RecordViewHtmlItem : MongoRecordViewItemBase, IStorageRecordViewHtmlItem
+    public class MongoRecordViewHtmlItem : MongoRecordViewItemBase, IStorageRecordViewHtmlItem
     {
         [BsonElement("tag")]
         public string Tag { get; set; }
@@ -225,7 +225,7 @@ namespace WebVella.ERP.Storage.Mongo
         public string Content { get; set; }
     }
 
-    public class RecordViewRelationFieldItem : MongoRecordViewItemBase, IStorageRecordViewRelationFieldItem
+    public class MongoRecordViewRelationFieldItem : MongoRecordViewItemBase, IStorageRecordViewRelationFieldItem
     {
         [BsonElement("fieldId")]
         public Guid FieldId { get; set; }

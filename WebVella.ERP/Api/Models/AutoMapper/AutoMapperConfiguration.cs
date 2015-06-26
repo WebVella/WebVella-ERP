@@ -34,8 +34,6 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 				Mapper.AddProfile(new RecordPermissionsProfile(service));
 				Mapper.AddProfile(new FieldProfile(service));
 				Mapper.AddProfile(new RecordsListProfile(service));
-				Mapper.AddProfile(new RecordsListFilterProfile(service));
-				Mapper.AddProfile(new RecordsListFieldProfile(service));
 				Mapper.AddProfile(new RecordViewProfile(service));
 				//Mapper.AddProfile(new RecordViewFieldProfile(service));
 			}

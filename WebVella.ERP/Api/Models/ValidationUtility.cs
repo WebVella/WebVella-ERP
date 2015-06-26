@@ -8,7 +8,7 @@ namespace WebVella.ERP.Api.Models
     {
         private const string NAME_VALIDATION_PATTERN = @"^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$";
 
-        public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 50)
+        public static List<ErrorModel> ValidateName(string name, int minLen = 2, int maxLen = 50, string key = "name")
         {
             name = name.Trim();
 
@@ -21,24 +21,24 @@ namespace WebVella.ERP.Api.Models
             List<ErrorModel> errors = new List<ErrorModel>();
             if (string.IsNullOrWhiteSpace(name))
             {
-                errors.Add(new ErrorModel("name", name, "Name is required!"));
+                errors.Add(new ErrorModel(key, name, "Name is required!"));
                 return errors;
             }
 
             if (name.Length < minLen)
-                errors.Add(new ErrorModel("name", name, string.Format("The Name must be at least {0} characters long!", minLen)));
+                errors.Add(new ErrorModel(key, name, string.Format("The Name must be at least {0} characters long!", minLen)));
 
             if (name.Length > maxLen)
-                errors.Add(new ErrorModel("name", name, string.Format("The length of Name must be less or equal than {0} characters!", maxLen)));
+                errors.Add(new ErrorModel(key, name, string.Format("The length of Name must be less or equal than {0} characters!", maxLen)));
 
             Match match = Regex.Match(name, NAME_VALIDATION_PATTERN);
             if (!match.Success || match.Value != name.Trim())
-                errors.Add(new ErrorModel("name", name, "Name can only contains underscores and lowercase alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
+                errors.Add(new ErrorModel(key, name, "Name can only contains underscores and lowercase alphanumeric characters. It must begin with a letter, not include spaces, not end with an underscore, and not contain two consecutive underscores.!"));
 
             return errors;
         }
 
-        public static List<ErrorModel> ValidateLabel(string label, int minLen = 1, int maxLen = 50)
+        public static List<ErrorModel> ValidateLabel(string label, int minLen = 1, int maxLen = 50, string key = "label")
         {
             label = label.Trim();
 
@@ -51,15 +51,15 @@ namespace WebVella.ERP.Api.Models
             List<ErrorModel> errors = new List<ErrorModel>();
             if (string.IsNullOrWhiteSpace(label))
             {
-                errors.Add(new ErrorModel("label", label, "Label is required!"));
+                errors.Add(new ErrorModel(key, label, "Label is required!"));
                 return errors;
             }
 
             if (label.Length < minLen)
-                errors.Add(new ErrorModel("label", label, string.Format("The Label must be at least {0} characters long!", minLen)));
+                errors.Add(new ErrorModel(key, label, string.Format("The Label must be at least {0} characters long!", minLen)));
 
             if (label.Length > maxLen)
-                errors.Add(new ErrorModel("label", label, string.Format("The length of Label must be less or equal than {0} characters!", maxLen)));
+                errors.Add(new ErrorModel(key, label, string.Format("The length of Label must be less or equal than {0} characters!", maxLen)));
 
             return errors;
         }
