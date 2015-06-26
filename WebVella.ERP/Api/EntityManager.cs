@@ -2359,6 +2359,46 @@ namespace WebVella.ERP.Api
 
 		public RecordViewResponse CreateRecordView(Guid entityId, InputRecordView inputRecordView)
 		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return CreateRecordView(entity, inputRecordView);
+		}
+
+		public RecordViewResponse CreateRecordView(string entityName, InputRecordView inputRecordView)
+		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return CreateRecordView(entity, inputRecordView);
+		}
+
+		private RecordViewResponse CreateRecordView(Entity entity, InputRecordView inputRecordView)
+		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
@@ -2372,18 +2412,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				response.Object = recordView;
 				response.Errors = ValidateRecordView(entity, inputRecordView, false);
 
@@ -2431,6 +2459,46 @@ namespace WebVella.ERP.Api
 
 		public RecordViewResponse UpdateRecordView(Guid entityId, InputRecordView inputRecordView)
 		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return UpdateRecordView(entity, inputRecordView);
+		}
+
+		public RecordViewResponse UpdateRecordView(string entityName, InputRecordView inputRecordView)
+		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return UpdateRecordView(entity, inputRecordView);
+		}
+
+		private RecordViewResponse UpdateRecordView(Entity entity, InputRecordView inputRecordView)
+		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
@@ -2441,18 +2509,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				response.Object = recordView;
 				response.Errors = ValidateRecordView(entity, inputRecordView, true);
 
@@ -2504,6 +2560,64 @@ namespace WebVella.ERP.Api
 
 		public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
 		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
+
+			if (updatedView == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "View with such Id does not exist!";
+				return response;
+			}
+
+			return PartialUpdateRecordView(entity, updatedView, inputRecordView);
+		}
+
+		public RecordViewResponse PartialUpdateRecordView(string entityName, string name, InputRecordView inputRecordView)
+		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Name == name);
+
+			if (updatedView == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "View with such Name does not exist!";
+				return response;
+			}
+
+			return PartialUpdateRecordView(entity, updatedView, inputRecordView);
+		}
+
+		private RecordViewResponse PartialUpdateRecordView(Entity entity, RecordView updatedView, InputRecordView inputRecordView)
+		{
 			RecordViewResponse response = new RecordViewResponse
 			{
 				Success = true,
@@ -2514,32 +2628,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
-				RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
-
-				if (updatedView == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "View with such Id does not exist!";
-					return response;
-				}
-
-
-
-				//TODO fix update - RecordView is completelly changed
-
 				if (inputRecordView.Label != null)
 					updatedView.Label = inputRecordView.Label;
 				if (inputRecordView.Default.HasValue)
@@ -2661,7 +2749,108 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
+		public RecordViewResponse DeleteRecordView(string entityName, string name)
+		{
+			RecordViewResponse response = new RecordViewResponse
+			{
+				Success = true,
+				Message = "The record view was successfully deleted!",
+			};
+
+			try
+			{
+				IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return response;
+				}
+
+				Entity entity = storageEntity.MapTo<Entity>();
+
+				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Name == name);
+
+				if (recordView == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The record view was not deleted. Validation error occurred!";
+					response.Errors.Add(new ErrorModel("name", name, "Record view with such Name does not exist!"));
+					return response;
+				}
+
+				entity.RecordViews.Remove(recordView);
+
+				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+				bool result = EntityRepository.Update(updatedEntity);
+				if (!result)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The record view was not updated! An internal error occurred!";
+					return response;
+				}
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The record view was not deleted. An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.UtcNow;
+			return response;
+		}
+
 		public RecordViewCollectionResponse ReadRecordViews(Guid entityId)
+		{
+			RecordViewCollectionResponse response = new RecordViewCollectionResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return ReadRecordViews(entity);
+		}
+
+		public RecordViewCollectionResponse ReadRecordViews(string entityName)
+		{
+			RecordViewCollectionResponse response = new RecordViewCollectionResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return ReadRecordViews(entity);
+		}
+
+		private RecordViewCollectionResponse ReadRecordViews(Entity entity)
 		{
 			RecordViewCollectionResponse response = new RecordViewCollectionResponse
 			{
@@ -2671,18 +2860,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				EntityListResponse entityResponse = ReadEntities();
 				List<Entity> entities = new List<Entity>();
 				if (entityResponse.Object != null)
@@ -2803,46 +2980,66 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordViewCollectionResponse ReadRecordViews()
+		public RecordViewResponse ReadRecordView(Guid entityId, Guid id)
 		{
-			RecordViewCollectionResponse response = new RecordViewCollectionResponse
-			{
-				Success = true,
-				Message = "The record views were successfully returned!",
-			};
+			RecordViewResponse response = new RecordViewResponse();
 
-			try
-			{
-				List<IStorageEntity> storageEntities = EntityRepository.Read();
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
-				RecordViewCollection recordViewList = new RecordViewCollection();
-				recordViewList.RecordViews = new List<RecordView>();
-
-				foreach (IStorageEntity entity in storageEntities)
-				{
-					recordViewList.RecordViews.AddRange(entity.RecordViewList.MapTo<RecordView>());
-				}
-
-				response.Object = recordViewList;
-			}
-			catch (Exception e)
+			if (storageEntity == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
+				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
 
-			response.Timestamp = DateTime.Now;
+			Entity entity = storageEntity.MapTo<Entity>();
 
-			return response;
+			RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
+
+			if (recordView == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Record View with such Id does not exist!";
+				return response;
+			}
+
+
+			return ReadRecordView(entity, recordView);
 		}
 
-		public RecordViewResponse ReadRecordView(Guid entityId, Guid id)
+		public RecordViewResponse ReadRecordView(string entityName, string name)
+		{
+			RecordViewResponse response = new RecordViewResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Name == name);
+
+			if (recordView == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Record View with such Name does not exist!";
+				return response;
+			}
+
+			return ReadRecordView(entity, recordView);
+		}
+
+		private RecordViewResponse ReadRecordView(Entity entity, RecordView recordView)
 		{
 			RecordViewResponse response = new RecordViewResponse
 			{
@@ -2852,29 +3049,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
-				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
-
-				if (recordView == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Validation error occurred!";
-					response.Errors.Add(new ErrorModel("id", id.ToString(), "Record View with such Id does not exist!"));
-					return response;
-				}
-
 				EntityListResponse entityResponse = ReadEntities();
 				List<Entity> entities = new List<Entity>();
 				if (entityResponse.Object != null)
@@ -2971,6 +3145,45 @@ namespace WebVella.ERP.Api
 				}
 
 				response.Object = recordView;
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
+		public RecordViewCollectionResponse ReadRecordViews()
+		{
+			RecordViewCollectionResponse response = new RecordViewCollectionResponse
+			{
+				Success = true,
+				Message = "The record views were successfully returned!",
+			};
+
+			try
+			{
+				List<IStorageEntity> storageEntities = EntityRepository.Read();
+
+				RecordViewCollection recordViewList = new RecordViewCollection();
+				recordViewList.RecordViews = new List<RecordView>();
+
+				foreach (IStorageEntity entity in storageEntities)
+				{
+					recordViewList.RecordViews.AddRange(entity.RecordViewList.MapTo<RecordView>());
+				}
+
+				response.Object = recordViewList;
 			}
 			catch (Exception e)
 			{
