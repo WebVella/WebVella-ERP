@@ -3212,7 +3212,7 @@ namespace WebVella.ERP.Api
 
 				foreach (IStorageEntity entity in storageEntities)
 				{
-					recordViewList.RecordViews.AddRange(entity.RecordViewList.MapTo<RecordView>());
+					recordViewList.RecordViews.AddRange(entity.RecordViews.MapTo<RecordView>());
 				}
 
 				response.Object = recordViewList;

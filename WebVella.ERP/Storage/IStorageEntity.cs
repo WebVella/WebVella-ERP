@@ -23,7 +23,7 @@ namespace WebVella.ERP.Storage
 
         List<IStorageRecordList> RecordLists { get; set; }
 
-        List<IStorageRecordView> RecordViewList { get; set; }
+        List<IStorageRecordView> RecordViews { get; set; }
     }
 
     public interface IStorageRecordPermissions
