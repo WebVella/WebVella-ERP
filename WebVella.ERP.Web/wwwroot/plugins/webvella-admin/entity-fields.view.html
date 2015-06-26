@@ -758,19 +758,39 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group" ng-class="{ 'has-error' : popupData.optionsError}">
-                                <label class="control-label">Maximum Length</label>
-                                <textarea class="form-control" ng-model="popupData.field.options" name="options" rows="4"></textarea>
-                                <div class="error" ng-show="popupData.maxLengthError">
-                                    <small class="error" ng-show="popupData.maxLengthError">
-                                        {{popupData.maxLengthMessage}}
-                                    </small>
-                                </div>
-                                <p class="form-description">List of string values, separated by a new line</p>
-                            </div>
-                        </div>
                     </div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="control-label">Options</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12" style="padding-bottom:1em;">
+							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupData.addDropdownValue()">add option</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-bordered" ng-hide="popupData.field.options.length == 0">
+								<thead>
+									<tr>
+										<th>value</th>
+										<th>label</th>
+										<th style="width:60px;"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="option in popupData.field.options">
+										<td><input class="form-control" ng-model="option.key" /></td>
+										<td><input class="form-control" ng-model="option.value" /></td>
+										<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
                 </div>
                 <!--Number 12 -->
                 <div ng-if="popupData.wizard.selectedType.id == 12">
@@ -1091,19 +1111,39 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group" ng-class="{ 'has-error' : popupData.optionsError}">
-                                <label class="control-label">Options</label>
-                                <textarea class="form-control" ng-model="popupData.field.options" name="options" rows="4"></textarea>
-                                <div class="error" ng-show="popupData.optionsError">
-                                    <small class="error" ng-show="popupData.optionsError">
-                                        {{popupData.optionsMessage}}
-                                    </small>
-                                </div>
-                                <p class="form-description">List of string values, separated by a new line</p>
-                            </div>
-                        </div>
                     </div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="control-label">Options</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12" style="padding-bottom:1em;">
+							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupData.addDropdownValue()">add option</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-bordered" ng-hide="popupData.field.options.length == 0">
+								<thead>
+									<tr>
+										<th>value</th>
+										<th>label</th>
+										<th style="width:60px;"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="option in popupData.field.options">
+										<td><input class="form-control" ng-model="option.key" /></td>
+										<td><input class="form-control" ng-model="option.value" /></td>
+										<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
                 </div>
                 <!--Text 18 -->
                 <div ng-if="popupData.wizard.selectedType.id == 18">
@@ -1834,19 +1874,39 @@
                         </div>
 
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group" ng-class="{ 'has-error' : popupData.optionsError}">
-                            <label class="control-label">Maximum Length</label>
-                            <textarea class="form-control" ng-model="popupData.field.options" name="options" rows="4"></textarea>
-                            <div class="error" ng-show="popupData.maxLengthError">
-                                <small class="error" ng-show="popupData.maxLengthError">
-                                    {{popupData.maxLengthMessage}}
-                                </small>
-                            </div>
-                            <p class="form-description">List of string values, separated by a new line</p>
-                        </div>
-                    </div>
                 </div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label">Options</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12" style="padding-bottom:1em;">
+						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupData.addDropdownValue()">add option</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<table class="table table-bordered" ng-hide="popupData.field.options.length == 0">
+							<thead>
+								<tr>
+									<th>value</th>
+									<th>label</th>
+									<th style="width:60px;"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="option in popupData.field.options">
+									<td><input class="form-control" ng-model="option.key" /></td>
+									<td><input class="form-control" ng-model="option.value" /></td>
+									<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
             </div>
             <!--Number 12 -->
             <div ng-if="popupData.fieldType.id == 12">
@@ -2165,21 +2225,40 @@
                                 </small>
                             </div>
                         </div>
-
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group" ng-class="{ 'has-error' : popupData.optionsError}">
-                            <label class="control-label">Maximum Length</label>
-                            <textarea class="form-control" ng-model="popupData.field.options" name="options" rows="4"></textarea>
-                            <div class="error" ng-show="popupData.maxLengthError">
-                                <small class="error" ng-show="popupData.maxLengthError">
-                                    {{popupData.maxLengthMessage}}
-                                </small>
-                            </div>
-                            <p class="form-description">List of string values, separated by a new line</p>
-                        </div>
                     </div>
                 </div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label">Options</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12" style="padding-bottom:1em;">
+						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupData.addDropdownValue()">add option</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<table class="table table-bordered" ng-hide="popupData.field.options.length == 0">
+							<thead>
+								<tr>
+									<th>value</th>
+									<th>label</th>
+									<th style="width:60px;"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="option in popupData.field.options">
+									<td><input class="form-control" ng-model="option.key"/></td>
+									<td><input class="form-control" ng-model="option.value" /></td>
+									<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
             </div>
             <!--Text 18 -->
             <div ng-if="popupData.fieldType.id == 18">
@@ -2279,7 +2358,7 @@
             </div>
 
         </form>
-
+		<!--<pre>{{popupData.field | json}}</pre>-->
     </div>
     <div class="modal-footer">
         <p ng-show="popupData.wizard.steps[1].active">

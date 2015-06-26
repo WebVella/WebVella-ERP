@@ -67,8 +67,9 @@
     		defer.resolve(response.object);
     	}
 
-    	webvellaRootService.getSitemap(successCallback, errorCallback);
-
+    	//webvellaRootService.getSitemap(successCallback, errorCallback);
+    	webvellaRootService.getSitemapSample(successCallback, errorCallback);
+    	
     	// Return
     	$log.debug('webvellaDesktop>browse> END state.resolved');
     	return defer.promise;
