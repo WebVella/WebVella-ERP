@@ -31,13 +31,11 @@ namespace WebVella.ERP.Storage.Mongo
         private MongoStaticContext()
 		{
 			repositories = new List<object>();
-			var configuration = new Configuration().AddJsonFile("config.json");
-			var connectionString = configuration.Get("Storage:ConnectionString");
 
-			if (string.IsNullOrWhiteSpace(connectionString))
+			if (string.IsNullOrWhiteSpace(Settings.ConnectionString))
 				throw new Exception("The connection string to storage (mongo database) is not specified in config.json");
 
-			MongoUrl mongoUrl = new MongoUrl(connectionString);
+			MongoUrl mongoUrl = new MongoUrl(Settings.ConnectionString);
 			Server = new MongoClient(mongoUrl).GetServer();
 			Database = Server.GetDatabase(mongoUrl.DatabaseName);
 
