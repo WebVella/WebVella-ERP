@@ -28,14 +28,13 @@ namespace WebVella.ERP.Web
 
             services.AddSingleton<IStorageService, MongoStorageService>();
             services.AddSingleton<IErpService, ErpService>();
-
-            //AutoMapperConfiguration.Initialize
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-             IErpService service = app.ApplicationServices.GetService<IErpService>();
-             AutoMapperConfiguration.Configure(service);
+            Settings.Initialize(Configuration);
+            IErpService service = app.ApplicationServices.GetService<IErpService>();
+            AutoMapperConfiguration.Configure(service);
 
             //app.Run(async context =>
             //{
