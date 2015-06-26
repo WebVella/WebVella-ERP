@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-    public class MongoRecordsList : IStorageRecordsList
+    public class MongoRecordList : IStorageRecordList
     {
 		[BsonElement("id")]
 		public Guid Id { get; set; }
@@ -21,19 +21,19 @@ namespace WebVella.ERP.Storage.Mongo
 		public RecordsListTypes Type { get; set; }
 
 		[BsonElement("filters")]
-		public IList<IStorageRecordsListFilter> Filters { get; set; }
+		public IList<IStorageRecordListFilter> Filters { get; set; }
 
 		[BsonElement("fields")]
-		public IList<IStorageRecordsListField> Fields { get; set; }
+		public IList<IStorageRecordListField> Fields { get; set; }
 
-        public MongoRecordsList()
+        public MongoRecordList()
         {
-            Filters = new List<IStorageRecordsListFilter>();
-            Fields = new List<IStorageRecordsListField>();
+            Filters = new List<IStorageRecordListFilter>();
+            Fields = new List<IStorageRecordListField>();
         }
     }
 
-    public class MongoRecordsListFilter : IStorageRecordsListFilter
+    public class MongoRecordListFilter : IStorageRecordListFilter
     {
 		[BsonElement("entityId")]
 		public Guid EntityId { get; set; }
@@ -48,7 +48,7 @@ namespace WebVella.ERP.Storage.Mongo
 		public string Value { get; set; }
     }
 
-    public class MongoRecordsListField : IStorageRecordsListField
+    public class MongoRecordListField : IStorageRecordListField
     {
 		[BsonElement("id")]
 		public Guid Id { get; set; }

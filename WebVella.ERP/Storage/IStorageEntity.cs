@@ -21,7 +21,7 @@ namespace WebVella.ERP.Storage
 
         List<IStorageField> Fields { get; set; }
 
-        List<IStorageRecordsList> RecordsLists { get; set; }
+        List<IStorageRecordList> RecordLists { get; set; }
 
         List<IStorageRecordView> RecordViewList { get; set; }
     }

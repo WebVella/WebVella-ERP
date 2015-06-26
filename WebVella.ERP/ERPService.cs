@@ -907,44 +907,44 @@ namespace WebVella.ERP
             return fields;
         }
 
-        private List<RecordsList> CreateTestViewCollection(Entity entity)
+        private List<RecordList> CreateTestViewCollection(Entity entity)
         {
-            List<RecordsList> recordsLists = new List<RecordsList>();
+            List<RecordList> recordsLists = new List<RecordList>();
 
-            RecordsList firstRecordList = new RecordsList();
+            //RecordList firstRecordList = new RecordList();
 
-            firstRecordList.Id = Guid.NewGuid();
-            firstRecordList.Name = "SearchPopupviewname";
-            firstRecordList.Label = "Search Popup view label";
-            firstRecordList.Type = Api.RecordsListTypes.SearchPopup;
+            //firstRecordList.Id = Guid.NewGuid();
+            //firstRecordList.Name = "SearchPopupviewname";
+            //firstRecordList.Label = "Search Popup view label";
+            //firstRecordList.Type = Api.RecordsListTypes.SearchPopup;
 
-            firstRecordList.Filters = new List<RecordsListFilter>();
+            //firstRecordList.Filters = new List<RecordListFilter>();
 
-            RecordsListFilter filter = new RecordsListFilter();
-            filter.EntityId = entity.Id;
-            filter.FieldId = entity.Fields[1].Id;
-            filter.Operator = Api.FilterOperatorTypes.Equals;
-            filter.Value = "false";
+            //RecordListFilter filter = new RecordListFilter();
+            //filter.EntityId = entity.Id;
+            //filter.FieldId = entity.Fields[1].Id;
+            //filter.Operator = Api.FilterOperatorTypes.Equals;
+            //filter.Value = "false";
 
-            firstRecordList.Filters.Add(filter);
+            //firstRecordList.Filters.Add(filter);
 
-            firstRecordList.Fields = new List<RecordsListField>();
+            //firstRecordList.Fields = new List<RecordListField>();
 
-            RecordsListField field1 = new RecordsListField();
-            field1.EntityId = entity.Id;
-            field1.Id = entity.Fields[3].Id;
-            field1.Position = 1;
+            //RecordListField field1 = new RecordListField();
+            //field1.EntityId = entity.Id;
+            //field1.Id = entity.Fields[3].Id;
+            //field1.Position = 1;
 
-            firstRecordList.Fields.Add(field1);
+            //firstRecordList.Fields.Add(field1);
 
-            RecordsListField field2 = new RecordsListField();
-            field2.EntityId = entity.Id;
-            field2.Id = entity.Fields[10].Id;
-            field2.Position = 2;
+            //RecordListField field2 = new RecordListField();
+            //field2.EntityId = entity.Id;
+            //field2.Id = entity.Fields[10].Id;
+            //field2.Position = 2;
 
-            firstRecordList.Fields.Add(field2);
+            //firstRecordList.Fields.Add(field2);
 
-            recordsLists.Add(firstRecordList);
+            //recordsLists.Add(firstRecordList);
             return recordsLists;
         }
         /*

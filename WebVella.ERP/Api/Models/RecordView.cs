@@ -1,209 +1,489 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public enum RecordViewType
-    {
-        Details
-    }
+	public enum RecordViewType
+	{
+		Details
+	}
 
-    public enum RecordViewItemType
-    {
-        Html,
-        Field,
+	public enum RecordViewItemType
+	{
+		Html,
+		Field,
 		FieldFromRelation,
-        List,
-        View
-    }
+		List,
+		View
+	}
 
-    public class RecordView
-    {
-        public RecordView()
-        {
-            Id = Guid.NewGuid();
-            Name = "";
-            Label = "";
-            Default = false;
-            System = false;
-            Weight = 1;
-            CssClass = "";
-            Type = RecordViewType.Details;
-            Regions = new List<RecordViewRegion>();
-            Sidebar = new RecordViewSidebar();
-        }
+	#region << Input Classes >>
 
-        [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+	public class InputRecordView
+	{
+		[JsonProperty(PropertyName = "id")]
+		public Guid? Id { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "label")]
-        public string Label { get; set; }
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "default")]
-        public bool? Default { get; set; }
+		[JsonProperty(PropertyName = "default")]
+		public bool? Default { get; set; }
 
-        [JsonProperty(PropertyName = "system")]
-        public bool? System { get; set; }
+		[JsonProperty(PropertyName = "system")]
+		public bool? System { get; set; }
 
-        [JsonProperty(PropertyName = "weight")]
-        public decimal? Weight { get; set; }
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
 
-        [JsonProperty(PropertyName = "cssClass")]
-        public string CssClass { get; set; }
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
 
-        [JsonProperty(PropertyName = "type")]
-        public RecordViewType Type { get; set; }
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; }
 
-        [JsonProperty(PropertyName = "regions")]
-        public List<RecordViewRegion> Regions { get; set; }
+		[JsonProperty(PropertyName = "regions")]
+		public List<InputRecordViewRegion> Regions { get; set; }
 
-        [JsonProperty(PropertyName = "sidebar")]
-        public RecordViewSidebar Sidebar { get; set; }
+		[JsonProperty(PropertyName = "sidebar")]
+		public InputRecordViewSidebar Sidebar { get; set; }
+		
+		public static InputRecordView Convert(JObject inputField)
+		{
+			InputRecordView view = null;
 
-    }
+			InputRecordView rawView = JsonConvert.DeserializeObject<InputRecordView>(inputField.ToString());
 
-    ////////////////////////
-    public class RecordViewSidebar
-    {
-        public RecordViewSidebar()
-        {
-            Render = false;
-            CssClass = "";
-            Lists = new List<RecordViewSidebarList>();
-        }
+			view.Id = rawView.Id;
+			view.Name = rawView.Name;
+			view.Label = rawView.Label;
+			view.Default = rawView.Default;
+			view.System = rawView.System;
+			view.Weight = rawView.Weight;
+			view.CssClass = rawView.CssClass;
+			view.Type = rawView.Type;
+			view.Sidebar = rawView.Sidebar;
+			view.Regions = new List<InputRecordViewRegion>();
 
-        [JsonProperty(PropertyName = "render")]
-        public bool Render { get; set; }
+			foreach (var rawRegion in rawView.Regions)
+			{
+				InputRecordViewRegion region = new InputRecordViewRegion();
 
-        [JsonProperty(PropertyName = "cssClass")]
-        public string CssClass { get; set; }
+				region.Name = rawRegion.Name;
+				region.Render = rawRegion.Render;
+				region.CssClass = rawRegion.CssClass;
+				region.Sections = new List<InputRecordViewSection>();
 
-        [JsonProperty(PropertyName = "lists")]
-        public List<RecordViewSidebarList> Lists { get; set; }
-    }
+				foreach (var rawSection in rawRegion.Sections)
+				{
+					InputRecordViewSection section = new InputRecordViewSection();
 
-    ////////////////////////
-    public class RecordViewSidebarList
-    {
-        public RecordViewSidebarList()
-        {
-        }
+					section.Id = rawSection.Id;
+					section.Name = rawSection.Name;
+					section.Label = rawSection.Label;
+					section.CssClass = rawSection.CssClass;
+					section.ShowLabel = rawSection.ShowLabel;
+					section.Collapsed = rawSection.Collapsed;
+					section.Weight = rawSection.Weight;
+					section.TabOrder = rawSection.TabOrder;
+					section.Rows = new List<InputRecordViewRow>();
 
-        [JsonProperty(PropertyName = "entityId")]
-        public Guid EntityId { get; set; }
+					foreach (var rawRow in rawSection.Rows)
+					{
+						InputRecordViewRow row = new InputRecordViewRow();
+						row.Id = rawRow.Id;
+						row.Weight = rawRow.Weight;
+						row.Columns = new List<InputRecordViewColumn>();
 
-        [JsonProperty(PropertyName = "listId")]
-        public Guid ListId { get; set; }
+						foreach (var rawColumn in rawRow.Columns)
+						{
+							InputRecordViewColumn column = new InputRecordViewColumn();
+							column.Items = new List<InputRecordViewItemBase>();
 
-        [JsonProperty(PropertyName = "relationId")]
-        public Guid RelationId { get; set; }
-    }
+							foreach (var rawItem in rawColumn.Items)
+							{
+								InputRecordViewItemBase item = null;
+								switch (rawItem.Type.ToLower())
+								{
+									case "field":
+										{
+											item = JsonConvert.DeserializeObject<InputRecordViewFieldItem>(rawItem.ToString());
+										}
+										break;
+									case "list":
+										{
+											item = JsonConvert.DeserializeObject<InputRecordViewListItem>(rawItem.ToString());
+										}
+										break;
+									case "view":
+										{
+											item = JsonConvert.DeserializeObject<InputRecordViewViewItem>(rawItem.ToString());
+										}
+										break;
+									case "FieldFromRelation":
+										{
+											item = JsonConvert.DeserializeObject<InputRecordViewRelationFieldItem>(rawItem.ToString());
+										}
+										break;
+									case "html":
+										{
+											item = JsonConvert.DeserializeObject<InputRecordViewHtmlItem>(rawItem.ToString());
+										}
+										break;
+								}
 
-    ////////////////////////
-    public class RecordViewRegion
-    {
-        public RecordViewRegion()
-        {
-            Name = "";
-            Render = true;
-            CssClass = "";
-        }
+								if (item != null)
+									column.Items.Add(item);
+							}
+							row.Columns.Add(column);
+						}
+						section.Rows.Add(row);
+					}
+					region.Sections.Add(section);
+				}
+				view.Regions.Add(region);
+			}
+			return view;
+		}
+	}
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+	////////////////////////
+	public class InputRecordViewSidebar
+	{
+		[JsonProperty(PropertyName = "render")]
+		public bool? Render { get; set; }
 
-        [JsonProperty(PropertyName = "render")]
-        public bool Render { get; set; }
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
 
-        [JsonProperty(PropertyName = "cssClass")]
-        public string CssClass { get; set; }
+		[JsonProperty(PropertyName = "lists")]
+		public List<InputRecordViewSidebarList> Lists { get; set; }
+	}
 
-        [JsonProperty(PropertyName = "sections")]
-        public List<RecordViewSection> Sections { get; set; }
-    }
+	////////////////////////
+	public class InputRecordViewSidebarList
+	{
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid? EntityId { get; set; }
 
-    ////////////////////////
-    public class RecordViewSection
-    {
+		[JsonProperty(PropertyName = "listId")]
+		public Guid? ListId { get; set; }
 
-        public RecordViewSection()
-        {
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+	}
+
+	////////////////////////
+	public class InputRecordViewRegion
+	{
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "render")]
+		public bool? Render { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "sections")]
+		public List<InputRecordViewSection> Sections { get; set; }
+	}
+
+	////////////////////////
+	public class InputRecordViewSection
+	{
+		[JsonProperty(PropertyName = "id")]
+		public Guid? Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "showLabel")]
+		public bool? ShowLabel { get; set; }
+
+		[JsonProperty(PropertyName = "collapsed")]
+		public bool? Collapsed { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
+
+		[JsonProperty(PropertyName = "tabOrder")]
+		public string TabOrder { get; set; }
+
+		[JsonProperty(PropertyName = "rows")]
+		public List<InputRecordViewRow> Rows { get; set; }
+
+	}
+
+	////////////////////////
+	public class InputRecordViewRow
+	{
+		[JsonProperty(PropertyName = "id")]
+		public Guid? Id { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
+
+		[JsonProperty(PropertyName = "columns")]
+		public List<InputRecordViewColumn> Columns { get; set; }
+	}
+
+	////////////////////////
+	public class InputRecordViewColumn
+	{
+		[JsonProperty(PropertyName = "items")]
+		public List<InputRecordViewItemBase> Items { get; set; }
+
+		[JsonProperty(PropertyName = "gridColCount")]
+		public int? GridColCount { get; set; }
+	}
+
+
+
+	////////////////////////
+	public class InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; }
+	}
+
+	public class InputRecordViewFieldItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid? FieldId { get; set; }
+	}
+
+	public class InputRecordViewListItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "listId")]
+		public Guid? ListId { get; set; }
+	}
+
+	public class InputRecordViewViewItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid? ViewId { get; set; }
+	}
+
+	public class InputRecordViewRelationFieldItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid? FieldId { get; set; }
+	}
+
+	public class InputRecordViewHtmlItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "tag")]
+		public string Tag { get; set; }
+
+		[JsonProperty(PropertyName = "content")]
+		public string Content { get; set; }
+	}
+
+	#endregion
+
+	#region << Default Classes >>
+
+	public class RecordView
+	{
+		public RecordView()
+		{
 			Id = Guid.NewGuid();
 			Name = "";
-            Label = "";
-            CssClass = "";
-            ShowLabel = true;
-            Collapsed = false;
-            Weight = 1;
-            TabOrder = "left-right";
-            Rows = new List<RecordViewRow>();
-        }
+			Label = "";
+			Default = false;
+			System = false;
+			Weight = 1;
+			CssClass = "";
+			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.Details);
+			Regions = new List<RecordViewRegion>();
+			Sidebar = new RecordViewSidebar();
+		}
 
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
 		[JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "label")]
-        public string Label { get; set; }
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
 
-        [JsonProperty(PropertyName = "cssClass")]
-        public string CssClass { get; set; }
+		[JsonProperty(PropertyName = "default")]
+		public bool? Default { get; set; }
 
-        [JsonProperty(PropertyName = "showLabel")]
-        public bool ShowLabel { get; set; }
+		[JsonProperty(PropertyName = "system")]
+		public bool? System { get; set; }
 
-        [JsonProperty(PropertyName = "collapsed")]
-        public bool Collapsed { get; set; }
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
 
-        [JsonProperty(PropertyName = "weight")]
-        public decimal? Weight { get; set; }
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
 
-        [JsonProperty(PropertyName = "tabOrder")]
-        public string TabOrder { get; set; }
+		[JsonProperty(PropertyName = "type")]
+		public string Type { get; set; }
 
-        [JsonProperty(PropertyName = "rows")]
-        public List<RecordViewRow> Rows { get; set; }
+		[JsonProperty(PropertyName = "regions")]
+		public List<RecordViewRegion> Regions { get; set; }
 
-    }
+		[JsonProperty(PropertyName = "sidebar")]
+		public RecordViewSidebar Sidebar { get; set; }
 
-    ////////////////////////
-    public class RecordViewRow
-    {
-        public RecordViewRow()
-        {
+	}
+
+	////////////////////////
+	public class RecordViewSidebar
+	{
+		public RecordViewSidebar()
+		{
+			Render = false;
+			CssClass = "";
+			Lists = new List<RecordViewSidebarList>();
+		}
+
+		[JsonProperty(PropertyName = "render")]
+		public bool Render { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "lists")]
+		public List<RecordViewSidebarList> Lists { get; set; }
+	}
+
+	////////////////////////
+	public class RecordViewSidebarList
+	{
+		public RecordViewSidebarList()
+		{
+		}
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "listId")]
+		public Guid ListId { get; set; }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+	}
+
+	////////////////////////
+	public class RecordViewRegion
+	{
+		public RecordViewRegion()
+		{
+			Name = "";
+			Render = true;
+			CssClass = "";
+		}
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "render")]
+		public bool Render { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "sections")]
+		public List<RecordViewSection> Sections { get; set; }
+	}
+
+	////////////////////////
+	public class RecordViewSection
+	{
+
+		public RecordViewSection()
+		{
+			Id = Guid.NewGuid();
+			Name = "";
+			Label = "";
+			CssClass = "";
+			ShowLabel = true;
+			Collapsed = false;
+			Weight = 1;
+			TabOrder = "left-right";
+			Rows = new List<RecordViewRow>();
+		}
+
+		[JsonProperty(PropertyName = "id")]
+		public Guid Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "cssClass")]
+		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "showLabel")]
+		public bool ShowLabel { get; set; }
+
+		[JsonProperty(PropertyName = "collapsed")]
+		public bool Collapsed { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
+
+		[JsonProperty(PropertyName = "tabOrder")]
+		public string TabOrder { get; set; }
+
+		[JsonProperty(PropertyName = "rows")]
+		public List<RecordViewRow> Rows { get; set; }
+
+	}
+
+	////////////////////////
+	public class RecordViewRow
+	{
+		public RecordViewRow()
+		{
 			Id = Guid.NewGuid();
 			Weight = 1;
-            Columns = new List<RecordViewColumn>();
-        }
+			Columns = new List<RecordViewColumn>();
+		}
 
 		[JsonProperty(PropertyName = "id")]
 		public Guid Id { get; set; }
 
 		[JsonProperty(PropertyName = "weight")]
-        public decimal? Weight { get; set; }
+		public decimal? Weight { get; set; }
 
-        [JsonProperty(PropertyName = "columns")]
-        public List<RecordViewColumn> Columns { get; set; }
+		[JsonProperty(PropertyName = "columns")]
+		public List<RecordViewColumn> Columns { get; set; }
 
-    }
+	}
 
-    ////////////////////////
-    public class RecordViewColumn
-    {
-        public RecordViewColumn()
-        {
-            Items = new List<RecordViewItemBase>();
+	////////////////////////
+	public class RecordViewColumn
+	{
+		public RecordViewColumn()
+		{
+			Items = new List<RecordViewItemBase>();
 			GridColCount = 0;
-        }
+		}
 
-        [JsonProperty(PropertyName = "items")]
-        public List<RecordViewItemBase> Items { get; set; }
+		[JsonProperty(PropertyName = "items")]
+		public List<RecordViewItemBase> Items { get; set; }
 
 		[JsonProperty(PropertyName = "gridColCount")]
 		public int GridColCount { get; set; }
@@ -211,78 +491,136 @@ namespace WebVella.ERP.Api.Models
 
 
 
-    ////////////////////////
-    public abstract class RecordViewItemBase
-    {
-    }
+	////////////////////////
+	public abstract class RecordViewItemBase
+	{
+	}
 
-    public class RecordViewFieldItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.Field; } }
+	public class RecordViewFieldItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Field); } }
 
-        [JsonProperty(PropertyName = "fieldId")]
-        public Guid FieldId { get; set; }
-    }
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid FieldId { get; set; }
 
-    public class RecordViewListItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.List; } }
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
 
-        [JsonProperty(PropertyName = "listId")]
-        public Guid ListId { get; set; }
-    }
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
 
-    public class RecordViewViewItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.View; } }
+		[JsonProperty(PropertyName = "fieldTypeId")]
+		public FieldType FieldTypeId { get; set; }
+	}
 
-        [JsonProperty(PropertyName = "viewId")]
-        public Guid ViewId { get; set; }
-    }
+	public class RecordViewListItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.List); } }
 
-    public class RecordViewRelationFieldItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.FieldFromRelation; } }
+		[JsonProperty(PropertyName = "listId")]
+		public Guid ListId { get; set; }
 
-        [JsonProperty(PropertyName = "relationId")]
-        public Guid RelationId { get; set; }
+		[JsonProperty(PropertyName = "listName")]
+		public string ListName { get; set; }
 
-        [JsonProperty(PropertyName = "fieldId")]
-        public Guid FieldId { get; set; }
-    }
+		[JsonProperty(PropertyName = "listLabel")]
+		public string ListLabel { get; set; }
 
-    public class RecordViewHtmlItem : RecordViewItemBase
-    {
-        [JsonProperty(PropertyName = "type")]
-        public static RecordViewItemType ItemType { get { return RecordViewItemType.Html; } }
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
 
-        [JsonProperty(PropertyName = "tag")]
-        public string Tag { get; set; }
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
 
-        [JsonProperty(PropertyName = "content")]
-        public string Content { get; set; }
-    }
+		[JsonProperty(PropertyName = "entityLabelPlural")]
+		public string EntityLabelPlural { get; set; }
+	}
 
+	public class RecordViewViewItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.View); } }
 
-    public class RecordViewCollection
-    {
-        [JsonProperty(PropertyName = "recordViews")]
-        public List<RecordView> RecordViews { get; set; }
-    }
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid ViewId { get; set; }
 
-    public class RecordViewResponse : BaseResponseModel
-    {
-        [JsonProperty(PropertyName = "object")]
-        public RecordView Object { get; set; }
-    }
+		[JsonProperty(PropertyName = "viewName")]
+		public string ViewName { get; set; }
 
-    public class RecordViewCollectionResponse : BaseResponseModel
-    {
-        [JsonProperty(PropertyName = "object")]
-        public RecordViewCollection Object { get; set; }
-    }
+		[JsonProperty(PropertyName = "viewLabel")]
+		public string ViewLabel { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
+
+		[JsonProperty(PropertyName = "entityLabel")]
+		public string EntityLabel { get; set; }
+	}
+
+	public class RecordViewRelationFieldItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation); } }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
+
+		[JsonProperty(PropertyName = "entityLabel")]
+		public string EntityLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldTypeId")]
+		public FieldType FieldTypeId { get; set; }
+	}
+
+	public class RecordViewHtmlItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Html); } }
+
+		[JsonProperty(PropertyName = "tag")]
+		public string Tag { get; set; }
+
+		[JsonProperty(PropertyName = "content")]
+		public string Content { get; set; }
+	}
+
+	#endregion
+
+	public class RecordViewCollection
+	{
+		[JsonProperty(PropertyName = "recordViews")]
+		public List<RecordView> RecordViews { get; set; }
+	}
+
+	public class RecordViewResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordView Object { get; set; }
+	}
+
+	public class RecordViewCollectionResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordViewCollection Object { get; set; }
+	}
 }

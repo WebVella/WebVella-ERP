@@ -5,7 +5,7 @@ using WebVella.ERP.Api;
 namespace WebVella.ERP.Storage
 {
 
-    public interface IStorageRecordsListFilter
+    public interface IStorageRecordListFilter
     {
         Guid EntityId { get; set; }
 
@@ -16,7 +16,7 @@ namespace WebVella.ERP.Storage
         string Value { get; set; }
     }
 
-    public interface IStorageRecordsListField
+    public interface IStorageRecordListField
     {
         Guid Id { get; set; }
 
@@ -25,7 +25,7 @@ namespace WebVella.ERP.Storage
         int Position { get; set; }
     }
 
-    public interface IStorageRecordsList
+    public interface IStorageRecordList
 	{
         Guid Id { get; set; }
 
@@ -35,8 +35,8 @@ namespace WebVella.ERP.Storage
 
         RecordsListTypes Type { get; set; }
 
-        IList<IStorageRecordsListFilter> Filters { get; set; }
+        IList<IStorageRecordListFilter> Filters { get; set; }
 
-        IList<IStorageRecordsListField> Fields { get; set; }
+        IList<IStorageRecordListField> Fields { get; set; }
     }
 }
