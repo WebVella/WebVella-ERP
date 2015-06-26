@@ -14,6 +14,7 @@ function guid() {
       s4() + '-' + s4() + s4() + s4();
 }
 
+
 (function () {
     'use strict';
 
@@ -400,14 +401,28 @@ function guid() {
 										"weight": 1,
 										"columns": [
 										{
-											"gridColCount":12,
+											"gridColCount":6,
 											"items": [
 											{
                     							"_t": "RecordViewFieldItem",
                     							"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
                     							"type": "field",
                     							"fieldName": "username",
-                    							"fieldLabel": "Username"
+                    							"fieldLabel": "Username",
+												"fieldTypeId": 18
+											}
+											]
+										},
+										{
+											"gridColCount": 6,
+											"items": [
+											{
+												"_t": "RecordViewFieldItem",
+												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+												"type": "field",
+												"fieldName": "title",
+												"fieldLabel": "Title",
+												"fieldTypeId": 18
 											}
 											]
 										}
@@ -523,20 +538,38 @@ function guid() {
             {
             	"_t": "RecordViewFieldItem",
             	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
+            	"fieldName": "id",
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
+            },
+            {
+            	"_t": "RecordViewFieldItem",
+            	"type": "field",
             	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
                 "fieldName": "username",
-                "fieldLabel": "Username"
+                "fieldLabel": "Username",
+                "fieldTypeId": 18
+            },
+            {
+            	"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab9",
+            	"fieldName": "email",
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
             },
             {
             	"_t": "RecordViewRelationFieldItem",
             	"type": "fieldFromRelation",
-            	"relationId": guid(),
-            	"entityId": guid(),
+            	"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
+            	"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
             	"entityName": "account",
             	"entityLabel": "Account",
-            	"fieldId": guid(),
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
             	"fieldName": "email",
-				"fieldLabel": "Email"
+            	"fieldLabel": "Email",
+            	"fieldTypeId": 18
             },
             {
             	"_t": "RecordViewViewItem",
@@ -684,128 +717,93 @@ function guid() {
         ///////////////////////
         function initList() {
             $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
-            var list = {
-            	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
-            	"name": "recent_orders",
-            	"label": "Recent Orders",
-            	"default": true,
-            	"system": true,
-            	"weight": 1,
-            	"type": "general",
-            	"cssClass": "",
-            	"recordsLimit": 100,
-            	"pageSize": 10,
-            	"columns": [{
-            		"_t": "RecordViewFieldItem",
-            		"type": "field",
-            		"fieldId": guid(),
-            		"fieldName": "username",
-            		"fieldLabel": "Username"
-            	},
-						  {
-						  	"_t": "RecordViewRelationFieldItem",
-						  	"type": "fieldFromRelation",
-						  	"relationId": guid(),
-						  	"entityId": guid(),
-						  	"entityName": "account",
-						  	"entityLabel": "Account",
-						  	"fieldId": guid(),
-						  	"fieldName": "email",
-						  	"fieldLabel": "Email"
-						  },
-						  {
-						  	"_t": "RecordViewViewItem",
-						  	"type": "view",
-						  	"viewId": guid(),
-						  	"viewName": "short-info",
-						  	"viewLabel": "Short Info",
-						  	"entityId": guid(),
-						  	"entityName": "account",
-						  	"entityLabel": "Account"
-						  },
-						  {
-						  	"_t": "RecordViewHtmlItem",
-						  	"type": "html",
-						  	"tag": "",
-						  	"content": "<h1>Title</h1>",
-						  }
-            	],
-            	"query": {
-            		"queryType": "EQ",
-            		"fieldName": "name",
-            		"fieldValue": "mozart",
-            		"subQueries": []
-            	},
-            	"sorts": [
-				  {
-				  	"fieldName": "name",
-				  	"sortType": "Ascending"
-				  }
-            	]
-            }
+            var list =
+{
+    "id": guid(),
+    "name": "",
+    "label": "",
+    "default": true,
+    "system": false,
+    "weight": 1,
+    "type": "general",
+    "cssClass": "",
+    "recordsLimit": 10,
+    "pageSize": 10,
+    "columns": [],
+    "query": null,
+    "sorts": null
+}
             return list;
         }
 
         function sampleList() {
             $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
-            var list = {
+            var list = 
+            {
             	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
-            	"name": "recent_orders",
-            	"label": "Recent Orders",
-            	"default": true,
-            	"system": true,
-            	"weight": 1,
-            	"type": "general",
-            	"cssClass": "",
-            	"recordsLimit": 100,
-            	"pageSize": 10,
-            	"columns": [{
-            		"_t": "RecordViewFieldItem",
-            		"type": "field",
-            		"fieldId": guid(),
-            		"fieldName": "username",
-            		"fieldLabel": "Username"
-            	},
-						  {
-						  	"_t": "RecordViewRelationFieldItem",
-						  	"type": "fieldFromRelation",
-						  	"relationId": guid(),
-						  	"entityId": guid(),
-						  	"entityName": "account",
-						  	"entityLabel": "Account",
-						  	"fieldId": guid(),
-						  	"fieldName": "email",
-						  	"fieldLabel": "Email"
-						  },
-						  {
-						  	"_t": "RecordViewViewItem",
-						  	"type": "view",
-						  	"viewId": guid(),
-						  	"viewName": "short-info",
-						  	"viewLabel": "Short Info",
-						  	"entityId": guid(),
-						  	"entityName": "account",
-						  	"entityLabel": "Account"
-						  },
-						  {
-						  	"_t": "RecordViewHtmlItem",
-						  	"type": "html",
-						  	"tag": "",
-						  	"content": "<h1>Title</h1>",
-						  }
-            	],
-            	"query": {
-            		"queryType": "EQ",
-            		"fieldName": "name",
-            		"fieldValue": "mozart",
-            		"subQueries": []
-            	},
-            	"sorts": [
-				  {
-				  	"fieldName": "name",
-				  	"sortType": "Ascending"
-				  }
-            	]
+				"name": "recent_orders",
+				"label": "Recent Orders",
+				"default": true,
+				"system": true,
+				"weight": 1,
+				"type": "general",
+				"cssClass": "",
+				"recordsLimit": 100,
+				"pageSize": 10,
+				"columns": [
+			{
+				"_t": "RecordViewFieldItem",
+            	"type": "field",
+            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
+            	"fieldName": "id",
+            	"fieldLabel": "Id",
+            	"fieldTypeId": 18
+			},
+				{
+					"_t": "RecordViewFieldItem",
+					"type": "field",
+					"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+					"fieldName": "username",
+					"fieldLabel": "Username",
+					"fieldTypeId": 18
+				},
+							{
+								"_t": "RecordViewRelationFieldItem",
+								"type": "fieldFromRelation",
+								"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
+								"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
+								"entityName": "account",
+								"entityLabel": "Account",
+								"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
+								"fieldName": "email",
+								"fieldLabel": "Email",
+								"fieldTypeId": 18
+							}],
+				"query": {
+					"queryType": "AND",
+					"fieldName": "",
+					"fieldValue": "",
+					"subQueries": [
+						{
+							"queryType": "EQ",
+							"fieldName": "username",
+							"fieldValue": "mozart",
+							"subQueries": []
+						},
+						{
+							"queryType": "CONTAINS",
+							"fieldName": "email",
+							"fieldValue": "domain.com",
+							"subQueries": []
+						}
+					]
+				},
+				"sorts": [
+					{
+						"fieldName": "username",
+						"sortType": "Descending"
+					}
+				]
             }
             return list;
         }

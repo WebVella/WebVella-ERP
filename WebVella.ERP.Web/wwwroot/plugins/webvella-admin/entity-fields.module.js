@@ -315,6 +315,10 @@
             popupData.wizard.steps[1].active = false;
             popupData.wizard.steps[1].completed = true;
             popupData.wizard.steps[2].active = true;
+            if (typeId == 17 || typeId == 11) //If dropdown || multiselect
+            {
+            	popupData.field.options = [];
+            }
         }
         popupData.setActiveStep = function (stepIndex) {
             if (popupData.wizard.steps[stepIndex].completed) {
@@ -375,6 +379,20 @@
         popupData.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+
+    	//Dropdown or Multiselect
+        popupData.addDropdownValue = function () {
+        	var option = {
+        		key: null,
+        		value: null
+        	};
+        	popupData.field.options.push(option);
+        }
+
+        popupData.deleteDropdownValue = function (index) {
+        	popupData.field.options.splice(index, 1);
+        }
+
 
         /// Aux
         function successCallback(response) {
@@ -475,7 +493,18 @@
             });
         }
 
+    	//Dropdown or Multiselect
+        popupData.addDropdownValue = function () {
+        	var option = {
+        		key: null,
+        		value: null
+        	};
+        	popupData.field.options.push(option);
+        }
 
+        popupData.deleteDropdownValue = function (index) {
+        	popupData.field.options.splice(index,1);
+        }
 
         /// Aux
         function successCallback(response) {

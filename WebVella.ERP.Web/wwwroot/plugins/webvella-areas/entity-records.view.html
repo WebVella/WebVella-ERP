@@ -32,10 +32,52 @@
         </div>
         <div class="lists-box">
             <h4 title="Newest active offers">Newest active offers</h4>
-            <a href=""><i class="fa fa-table"></i> Other Lists and Charts</a>
+            <a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
         </div>
-    </div>
-    <div id="page-messages">
+		<accordion>
+			<accordion-group is-open="moreListsOpened">
+				<form class="form-inline">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">
+								<i class="fa fa-search"></i>
+							</span>
+							<input ng-model="class" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="exampleInputName2" placeholder="list label">
+						</div>
+					</div>
+					<div class="form-group hidden-xs hidden-sm">
+						<div class="filter">
+							<div class="field">Actions</div>
+							<ul class="criterias list-inline">
+								<li>
+									<a href=""><i class="fa fa-plus"></i> Create new list</a>
+								</li>
+								<li>
+									<a href=""><i class="fa fa-thumb-tack"></i> Set as default</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</form>	
+				<hr class="divider"/>
+				<ul class="list-inline">
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
+					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+				</ul>		
+			</accordion-group>
+		</accordion>
+</div>
+    <div id="page-messages" class="hide">
         <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
     </div>
 </div>
@@ -112,70 +154,23 @@
         </div>
     </div>
 </form>
+
 <div id="list">
     <table class="table table-bordered table-hover table-vertical-align-middle">
         <thead>
             <tr>
                 <th class="actions"></th>
-                <th class="name">Name</th>
-                <th class="country">Country</th>
-                <th class="countryAbbr">Country Abbr</th>
-                <th class="zip">ZIP</th>
-                <th class="state">State/Province</th>
-                <th class="stateAbbr">State/Province Abbr</th>
-                <th class="city">City</th>
-                <th class="address">Address</th>
-                <th class="address2">Address2</th>
+                <th class="{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{fieldMeta.label}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr ng-repeat="record in contentData.records">
                 <td>
-                    <a href="" class="btn btn-default">
+                    <a ui-sref='webvella-areas-record-view({areaName:"sales",entityName:"customer",recordId:"123",viewName:"boz"})' class="btn btn-default">
                         <i class="fa fa-eye"></i>
                     </a>
                 </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="" class="btn btn-default">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="" class="btn btn-default">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </td>
-                <td class="name">University ABC</td>
-                <td class="country">United States of America</td>
-                <td class="countryAbbr">US</td>
-                <td class="zip">9000</td>
-                <td class="state">New York</td>
-                <td class="stateAbbr">NY</td>
-                <td class="city">New York</td>
-                <td class="address">14 Tottenham Court Road</td>
-                <td class="address2">Room 66</td>
+                <td class="{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{record[fieldMeta.name]}}</td>
             </tr>
         </tbody>
     </table>

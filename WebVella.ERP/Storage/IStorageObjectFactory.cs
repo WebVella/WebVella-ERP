@@ -10,13 +10,26 @@ namespace WebVella.ERP.Storage
         IStorageEntity CreateEmptyEntityObject();
         IStorageRecordPermissions CreateEmptyRecordPermissionsObject();
         IStorageField CreateEmptyFieldObject(Type type);
-        IStorageRecordsList CreateEmptyRecordsListObject();
+        IStorageRecordList CreateEmptyRecordListObject();
         IStorageRecordView CreateEmptyRecordViewObject();
         IStorageEntityRelation CreateEmptyEntityRelationObject();
         IStorageMultiSelectFieldOption CreateEmptyMultiSelectFieldOptionObject();
         IStorageSelectFieldOption CreateEmptySelectFieldOptionObject();
-        IStorageRecordsListFilter CreateEmptyRecordsListFilterObject();
-        IStorageRecordsListField CreateEmptyRecordsListFieldObject();
+        IStorageRecordListFilter CreateEmptyRecordListFilterObject();
+        IStorageRecordListField CreateEmptyRecordListFieldObject();
 		IStorageCurrencyType CreateEmptyCurrencyTypeObject();
-    }
+
+		IStorageRecordViewSidebar CreateEmptyRecordViewSidebarObject();
+        IStorageRecordViewSidebarList CreateEmptyRecordViewSidebarListObject();
+		IStorageRecordViewRegion CreateEmptyRecordViewRegionObject();
+		IStorageRecordViewSection CreateEmptyRecordViewSectionObject();
+		IStorageRecordViewRow CreateEmptyRecordViewRowObject();
+		IStorageRecordViewColumn CreateEmptyRecordViewColumnObject();
+		IStorageRecordViewItemBase CreateEmptyRecordViewItemBaseObject();
+		IStorageRecordViewFieldItem CreateEmptyRecordViewFieldItemObject();
+		IStorageRecordViewListItem CreateEmptyRecordViewListItemObject();
+		IStorageRecordViewViewItem CreateEmptyRecordViewViewItemObject();
+		IStorageRecordViewRelationFieldItem CreateEmptyRecordViewRelationFieldItemObject();
+		IStorageRecordViewHtmlItem CreateEmptyRecordViewHtmlItemObject();
+	}
 }

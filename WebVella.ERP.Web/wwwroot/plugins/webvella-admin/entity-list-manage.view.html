@@ -57,7 +57,7 @@
 
 
     <div class="view-manage-section">
-        <h3>Basic info</h3>
+        <h3 class="page-header">Basic info</h3>
         <div class="panel panel-default" style="margin-top:2em;">
             <div class="panel-body">
                 <div class="form-horizontal">
@@ -75,7 +75,6 @@
                     </div>
                     <div class="form-group">
                         <div class="row">
-
                             <label class="col-sm-2 control-label" for="label">Label</label>
                             <div class="col-sm-4 position-relative">
                                 <a href="javascript:void(0)" editable-text="contentData.list.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "empty" }}</a>
@@ -126,10 +125,13 @@
             </div>
         </div>
 
-        <h3>Fields</h3>
+        <h3 class="page-header">List Columns</h3>
         <div class="row">
+			<div class="col-xs-6">
+				<h5>Selected columns</h5>
+			</div>
             <div class="col-xs-6">
-                <h4>Library</h4>
+                <h5>Library</h5>
                 <!--<form class="form" style="margin-bottom:1em;">
                     <div class="form-group">
                         <div class="input-group">
@@ -139,69 +141,70 @@
                     </div>
                 </form>-->
             </div>
-            <div class="col-xs-6">
-                <h4>List columns</h4>
-            </div>
         </div>
         <div class="row">
+			<div class="col-xs-6">
+				<div class="list-field-selection-box">
+					<div class="drop-zone">
+						<div as-sortable ng-model="contentData.list.columns">
+							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
+								<div  ng-if='item.type == "field" && item.fieldName == "id"' class="clearfix">
+									<i class="fa fa-fw fa-lock go-red pull-left"></i>
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "field" && item.fieldName != "id"' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.fieldLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.viewLabel}}
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
+								</div>
+								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
+									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
             <div class="col-xs-6">
                 <div class="list-field-selection-box">
                     <div class="drop-zone">
                         <div as-sortable ng-model="contentData.fieldsLibrary.items">
                             <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.fieldsLibrary.items | filter: {search:contentData.search}">
 								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal"></i> {{item.fieldLabel}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal"></i> {{item.entityLabel}} > {{item.fieldLabel}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-file-text-o go-teal"></i> {{item.entityLabel}} > {{item.viewLabel}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-code go-teal"></i> No tag
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-code go-teal"></i> {{item.tag}}
-								</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="list-field-selection-box">
-                    <div class="drop-zone">
-                        <div as-sortable ng-model="contentData.list.items">
-                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.items">
-								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.fieldLabel}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.viewLabel}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-right"></i>
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
 								</div>
                             </div>
@@ -209,241 +212,105 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
 
-        <h3>Filters</h3>
+        <h3 class="page-header">Query</h3>
 
-        <div class="panel panel-default">
+		<div ng-if="contentData.list.query != null" ng-include="contentData.getIncludeFile(contentData.list.query)" onLoad="parent = null; parentQuery = contentData.list.query"></div>
+		<div ng-if="contentData.list.query == null"><a class="btn btn-success" ng-click="contentData.AddSection(null)">add query section</a></div>
+
+		<script type="text/ng-template" id="queryRule.html">
+			<table class="table table-noborder">
+				<tr>
+					<td>
+						<select class="form-control" ng-model="parentQuery.fieldName" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items">
+						</select>
+					</td>
+					<td>
+						<select class="form-control" ng-model="parentQuery.queryType">
+							<option value="EQ">is equal to</option>
+							<option value="NE">is not equal to</option>
+							<option value="LT">is less than</option>
+							<option value="LTE">is less than or equal</option>
+							<option value="GT">is greater than</option>
+							<option value="GTE">is greater than or equal</option>
+							<option value="CONTAINS">contains</option>
+							<option value="NOTCONTAINS">does not contain</option>
+							<option value="STARTSWITH">starts with</option>
+							<option value="NOTSTARTSWITH">does not start with</option>
+						</select>
+					</td>
+					<td>
+						<select class="form-control" disabled>
+							<option value="val" selected="">the value</option>
+							<!--<option value="valInField">the value in the field</option>-->
+						</select>
+					</td>
+					<td>
+						<input class="form-control" ng-model="parentQuery.fieldValue" />
+					</td>
+					<td style="width:60px;">
+						<a ng-hide="parent.subQueries.length <= 1" class="btn btn-default go-red"  ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
+						<span ng-hide="parent.subQueries.length > 1" class="btn go-red "  tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
+					</td>
+				</tr>
+			</table>
+		</script>
+
+		<script type="text/ng-template" id="querySection.html">
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<span class="pull-right">
+						<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
+						<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
+						<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
+					</span>
+					<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType">
+						<option value="AND">all</option>
+						<option value="OR">any</option>
+					</select>
+					<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
+				</div>
+				<div class="panel-body">
+					<!--<pre>{{parentQuery | json}}</pre>-->
+					<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>
+				</div>
+			</div>
+
+		</script>
+
+        <h3 class="page-header">Sort</h3>
+		<div ng-show="contentData.list.sorts == null" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+        <div class="panel panel-default" ng-hide="contentData.list.sorts == null">
             <div class="panel-heading clearfix">
                 <span class="pull-right">
-                    <a class="btn btn-default btn-sm">add rule section</a>
-                    <a class="btn btn-success btn-sm">add new rule</a>
+                    <a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
                 </span>
-                <select class="form-control pull-left" style="width:80px;">
-                    <option value="all">all</option>
-                    <option value="any">any</option>
-                </select>
-                <span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
             </div>
             <div class="panel-body">
-                <table class="table">
-                    <tr>
-                        <td style="width:60px"></td>
+                <table class="table table-noborder">
+                    <tr ng-repeat="sortRule in contentData.list.sorts">
+                        <td style="width:60px"><span ng-if="$index != 0">than</span></td>
                         <td>
-                            <select class="form-control">
-                                <option>name</option>
+                            <select class="form-control" ng-model="sortRule.sortType">
+                                <option value="Ascending">sort from low to high by</option>
+                                <option value="Descending">sort from high to low by</option>
                             </select>
                         </td>
                         <td>
-                            <select class="form-control">
-                                    <option value="EX">is equal to</option>
-                                    <option value="XEX">is not equal to</option>
-                                    <option value="LT">is less than</option>
-                                    <option value="LTE">is less than or equal</option>
-                                    <option value="GT">is greater than</option>
-                                    <option value="GTE">is greater than or equal</option>
-                                    <option value="" disabled="">---------------</option>
-                                    <option value="CT">contains</option>
-                                    <option value="XCT">does not contain</option>
-                                    <option value="SW">starts with</option>
-                                    <option value="XSW">does not start with</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input class="form-control" />
-                        </td>
-                        <td style="width:60px;">
-                            <a class="btn btn-danger btn-sm"><i class="fa fa-fw fa-close"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:60px">and</td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="EX">is equal to</option>
-                                <option value="XEX">is not equal to</option>
-                                <option value="LT">is less than</option>
-                                <option value="LTE">is less than or equal</option>
-                                <option value="GT">is greater than</option>
-                                <option value="GTE">is greater than or equal</option>
-                                <option value="" disabled="">---------------</option>
-                                <option value="CT">contains</option>
-                                <option value="XCT">does not contain</option>
-                                <option value="SW">starts with</option>
-                                <option value="XSW">does not start with</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input class="form-control" />
-                        </td>
-                        <td style="width:60px;">
-                            <a class="btn btn-danger btn-sm"><i class="fa fa-fw fa-close"></i></a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <p><select class="form-control" style="width:100px"><option>AND</option><option>OR</option></select></p>
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <span class="pull-right">
-                    <a class="btn btn-default btn-sm">add rule section</a>
-                    <a class="btn btn-success btn-sm">add new rule</a>
-                </span>
-                <select class="form-control pull-left" style="width:80px;">
-                    <option value="all">all</option>
-                    <option value="any">any</option>
-                </select>
-                <span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
-            </div>
-            <div class="panel-body">
-                <table class="table">
-                    <tr>
-                        <td style="width:60px"></td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="EX">is equal to</option>
-                                <option value="XEX">is not equal to</option>
-                                <option value="LT">is less than</option>
-                                <option value="LTE">is less than or equal</option>
-                                <option value="GT">is greater than</option>
-                                <option value="GTE">is greater than or equal</option>
-                                <option value="" disabled="">---------------</option>
-                                <option value="CT">contains</option>
-                                <option value="XCT">does not contain</option>
-                                <option value="SW">starts with</option>
-                                <option value="XSW">does not start with</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input class="form-control" />
-                        </td>
-                        <td style="width:60px;">
-                            <a class="btn btn-danger btn-sm"><i class="fa fa-fw fa-close"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:60px">and</td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="EX">is equal to</option>
-                                <option value="XEX">is not equal to</option>
-                                <option value="LT">is less than</option>
-                                <option value="LTE">is less than or equal</option>
-                                <option value="GT">is greater than</option>
-                                <option value="GTE">is greater than or equal</option>
-                                <option value="" disabled="">---------------</option>
-                                <option value="CT">contains</option>
-                                <option value="XCT">does not contain</option>
-                                <option value="SW">starts with</option>
-                                <option value="XSW">does not start with</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input class="form-control" />
-                        </td>
-                        <td style="width:60px;">
-                            <a class="btn btn-danger btn-sm"><i class="fa fa-fw fa-close"></i></a>
-                        </td>
+							<select class="form-control" ng-model="sortRule.fieldName" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items"></select>
+						</td>
+						<td style="width:60px;">
+							<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+						</td>
                     </tr>
                 </table>
             </div>
         </div>
 
-        <h3>Sort</h3>
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <span class="pull-right">
-                    <a class="btn btn-success btn-sm">add new sort</a>
-                </span>
-            </div>
-            <div class="panel-body">
-                <table class="table">
-                    <tr>
-                        <td style="width:60px"></td>
-                        <td>
-                            <select class="form-control">
-                                <option value="SA" selected="">sort from low to high by</option>
-                                <option value="SD">sort from high to low by</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:60px">then</td>
-                        <td>
-                            <select class="form-control">
-                                <option value="SA" selected="">sort from low to high by</option>
-                                <option value="SD">sort from high to low by</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option>name</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-control">
-                                <option value="val" selected="">the value</option>
-                                <option value="valInField">the value in the field</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-		<pre>{{contentData.list | json}}</pre>
+		<!--<pre>{{contentData.list | json}}</pre>-->
     </div>
 
 

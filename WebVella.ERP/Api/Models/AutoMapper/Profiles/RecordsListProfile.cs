@@ -15,14 +15,14 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 		protected override void Configure()
 		{
-			Mapper.CreateMap<RecordsList, IStorageRecordsList>().ConstructUsing(x => CreateEmptyRecordsListObject(x));
-			Mapper.CreateMap<IStorageRecordsList, RecordsList>();
+			Mapper.CreateMap<RecordList, IStorageRecordList>().ConstructUsing(x => CreateEmptyRecordListObject(x));
+			Mapper.CreateMap<IStorageRecordList, RecordList>();
 		}
 
-		protected IStorageRecordsList CreateEmptyRecordsListObject(RecordsList list)
+		protected IStorageRecordList CreateEmptyRecordListObject(RecordList list)
 		{
 			var storageService = service.StorageService;
-			return storageService.GetObjectFactory().CreateEmptyRecordsListObject();
+			return storageService.GetObjectFactory().CreateEmptyRecordListObject();
 		}
 	}
 }

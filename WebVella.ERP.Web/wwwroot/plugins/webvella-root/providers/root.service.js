@@ -23,6 +23,7 @@
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
         serviceInstance.getSitemap = getSitemap;
+        serviceInstance.getSitemapSample = getSitemapSample;
         serviceInstance.toggleSidebar = toggleSidebar;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.reloadCurrentState = reloadCurrentState;
@@ -118,6 +119,127 @@
         	$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called');
         	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
+        function getSitemapSample(successCallback, errorCallback) {
+        	var response = {
+        		"object": {
+        			"fieldsMeta": null,
+        			"data": [
+						{
+							"id": "37eebe3e-c5b0-4079-8844-2f9e1604a035",
+							"name": "sales",
+							"label": "Sales",
+							"color": "green",
+							"icon_name": "money",
+							"weight": 5.0,
+							"roles": "[]",
+							"$areas_area_relation": [{"entity_id": "8e1e6b37-d840-458e-afc9-51474c463fec"},{"entity_id": "c10e40a0-3520-41f5-bdb6-ec05f76194c5"}],
+							"entities": [
+								{
+									"id": "8e1e6b37-d840-458e-afc9-51474c463fec",
+									"name": "document",
+									"label": "Document",
+									"label_plural": "Documents",
+									"icon_name": "database",
+									"weight": 100.0,
+									"lists": [],
+									"views": null
+								},
+								{ 
+									"id": "c10e40a0-3520-41f5-bdb6-ec05f76194c5",
+									"name": "customer",
+									"label": "Customer",
+									"label_plural": "Customers",
+									"icon_name": "users",
+									"weight": 1.0,
+									"lists": [],
+									"views": null
+								}]
+						},
+						{
+							"id": "9d6203bf-db07-4f54-835c-15ed4c167fce",
+							"name": "logistics",
+							"label": "Logistics",
+							"color": "brown",
+							"icon_name": "truck",
+							"weight": 3.0,
+							"roles": "[]",
+							"$areas_area_relation": [{ "entity_id": "90a8c644-fad9-4254-8177-d7d83b262426" }],
+							"entities": [
+									{
+										"id": "90a8c644-fad9-4254-8177-d7d83b262426",
+										"name": "software",
+										"label": "Software",
+										"label_plural": "Softwares",
+										"icon_name": "database",
+										"weight": 1.0,
+										"lists": [
+											{
+												"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
+												"name": "recent_orders",
+												"label": "Recent Orders",
+												"default": true,
+												"system": true,
+												"weight": 1,
+												"type": "general",
+												"cssClass": "",
+												"recordsLimit": 100,
+												"pageSize": 10,
+												"columns": [{
+													"_t": "RecordViewFieldItem",
+													"type": "field",
+													"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+													"fieldName": "username",
+													"fieldLabel": "Username",
+													"fieldTypeId": 18
+												},
+															{
+																"_t": "RecordViewRelationFieldItem",
+																"type": "fieldFromRelation",
+																"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
+																"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
+																"entityName": "account",
+																"entityLabel": "Account",
+																"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
+																"fieldName": "email",
+																"fieldLabel": "Email",
+																"fieldTypeId": 18
+															}],
+												"query": {
+													"queryType": "AND",
+													"fieldName": "",
+													"fieldValue": "",
+													"subQueries": [
+														{
+															"queryType": "EQ",
+															"fieldName": "username",
+															"fieldValue": "mozart",
+															"subQueries": []
+														},
+														{
+															"queryType": "CONTAINS",
+															"fieldName": "email",
+															"fieldValue": "domain.com",
+															"subQueries": []
+														}
+													]
+												},
+												"sorts": [
+													{
+														"fieldName": "username",
+														"sortType": "Descending"
+													}
+												]
+											}
+										],
+										"views": null
+									}]
+						}]
+        		}, "timestamp": "0001-01-01T00:00:00", "success": true, "message": "Query successfully executed", "errors": []
+        	}
+        	handleSuccessResult(response, 200, successCallback, errorCallback)
+        }
+
 
         //// Aux methods //////////////////////////////////////////////////////
 

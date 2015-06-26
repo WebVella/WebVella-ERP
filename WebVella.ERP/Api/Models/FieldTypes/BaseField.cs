@@ -259,6 +259,50 @@ namespace WebVella.ERP
 
 			return null;
 		}
+
+		public FieldType GetFieldType()
+		{
+			if (this is AutoNumberField)
+				return FieldType.AutoNumberField;
+			else if (this is CheckboxField)
+				return FieldType.CheckboxField;
+			else if (this is CurrencyField)
+				return FieldType.CurrencyField;
+			else if (this is DateField)
+				return FieldType.DateField;
+			else if (this is DateTimeField)
+				return FieldType.DateTimeField;
+			else if (this is EmailField)
+				return FieldType.EmailField;
+			else if (this is FileField)
+				return FieldType.FileField;
+			else if (this is ImageField)
+				return FieldType.ImageField;
+			else if (this is HtmlField)
+				return FieldType.HtmlField;
+			else if (this is MultiLineTextField)
+				return FieldType.MultiLineTextField;
+			else if (this is MultiSelectField)
+				return FieldType.MultiSelectField;
+			else if (this is NumberField)
+				return FieldType.NumberField;
+			else if (this is PasswordField)
+				return FieldType.PasswordField;
+			else if (this is PercentField)
+				return FieldType.PercentField;
+			else if (this is PhoneField)
+				return FieldType.PhoneField;
+			else if (this is GuidField)
+				return FieldType.GuidField;
+			else if (this is SelectField)
+				return FieldType.SelectField;
+			else if (this is TextField)
+				return FieldType.TextField;
+			else if (this is UrlField)
+				return FieldType.UrlField;
+
+			return FieldType.GuidField;
+		}
 	}
 
 	public class FieldList

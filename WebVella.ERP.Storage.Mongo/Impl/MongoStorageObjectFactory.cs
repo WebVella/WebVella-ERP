@@ -67,9 +67,9 @@ namespace WebVella.ERP.Storage.Mongo
             return new MongoRecordPermissions();
         }
 
-        public IStorageRecordsList CreateEmptyRecordsListObject()
+        public IStorageRecordList CreateEmptyRecordListObject()
         {
-            return new MongoRecordsList();
+            return new MongoRecordList();
         }
 
         public IStorageRecordView CreateEmptyRecordViewObject()
@@ -87,19 +87,79 @@ namespace WebVella.ERP.Storage.Mongo
             return new MongoSelectFieldOption();
         }
 
-        public IStorageRecordsListFilter CreateEmptyRecordsListFilterObject()
+        public IStorageRecordListFilter CreateEmptyRecordListFilterObject()
         {
-            return new MongoRecordsListFilter();
+            return new MongoRecordListFilter();
         }
 
-        public IStorageRecordsListField CreateEmptyRecordsListFieldObject()
+        public IStorageRecordListField CreateEmptyRecordListFieldObject()
         {
-            return new MongoRecordsListField();
+            return new MongoRecordListField();
         }
 
 		public IStorageCurrencyType CreateEmptyCurrencyTypeObject()
 		{
 			return new MongoCurrencyType();
 		}
-    }
+
+		public IStorageRecordViewSidebar CreateEmptyRecordViewSidebarObject()
+		{
+			return new MongoRecordViewSidebar();
+		}
+
+		public IStorageRecordViewSidebarList CreateEmptyRecordViewSidebarListObject()
+		{
+			return new MongoRecordViewSidebarList();
+		}
+
+		public IStorageRecordViewRegion CreateEmptyRecordViewRegionObject()
+		{
+			return new MongoRecordViewRegion();
+		}
+
+		public IStorageRecordViewSection CreateEmptyRecordViewSectionObject()
+		{
+			return new MongoRecordViewSection();
+		}
+
+		public IStorageRecordViewRow CreateEmptyRecordViewRowObject()
+		{
+			return new MongoRecordViewRow();
+		}
+
+		public IStorageRecordViewColumn CreateEmptyRecordViewColumnObject()
+		{
+			return new MongoRecordViewColumn();
+		}
+
+		public IStorageRecordViewItemBase CreateEmptyRecordViewItemBaseObject()
+		{
+			return new MongoRecordViewFieldItem();
+		}
+
+		public IStorageRecordViewFieldItem CreateEmptyRecordViewFieldItemObject()
+		{
+			return new MongoRecordViewFieldItem();
+		}
+
+		public IStorageRecordViewListItem CreateEmptyRecordViewListItemObject()
+		{
+			return new MongoRecordViewListItem();
+		}
+
+		public IStorageRecordViewViewItem CreateEmptyRecordViewViewItemObject()
+		{
+			return new MongoRecordViewViewItem();
+		}
+
+		public IStorageRecordViewRelationFieldItem CreateEmptyRecordViewRelationFieldItemObject()
+		{
+			return new MongoRecordViewRelationFieldItem();
+		}
+
+		public IStorageRecordViewHtmlItem CreateEmptyRecordViewHtmlItemObject()
+		{
+			return new MongoRecordViewHtmlItem();
+		}
+	}
 }
