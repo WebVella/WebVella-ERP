@@ -190,7 +190,8 @@
 													"type": "field",
 													"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
 													"fieldName": "username",
-													"fieldLabel": "Username"
+													"fieldLabel": "Username",
+													"fieldTypeId": 18
 												},
 															{
 																"_t": "RecordViewRelationFieldItem",
@@ -201,7 +202,8 @@
 																"entityLabel": "Account",
 																"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
 																"fieldName": "email",
-																"fieldLabel": "Email"
+																"fieldLabel": "Email",
+																"fieldTypeId": 18
 															}],
 												"query": {
 													"queryType": "AND",

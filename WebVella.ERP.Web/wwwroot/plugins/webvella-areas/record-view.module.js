@@ -19,7 +19,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-areas-record-view', {
             parent: 'webvella-areas-base',
-            url: '/:areaName/:entityName/:viewName', // /areas/areaName/sectionName/entityName after the parent state is prepended
+            url: '/:areaName/:entityName/:recordId/:viewName', // /areas/areaName/sectionName/entityName after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAreasTopnavController',
@@ -72,19 +72,21 @@
             record = response.object;
             //Cycle through the view, find all fields and attach their data and meta info
             for (var regionIndex = 0; regionIndex < extendedView.regions.length; regionIndex++) {
-                for (var sectionIndex = 0; sectionIndex < extendedView.regions[regionIndex].sections.length; sectionIndex++) {
-                    for (var rowIndex = 0; rowIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-                        for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-                            for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-                                for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
-                                    if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].id) {
-                                        extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            	if (extendedView.regions[regionIndex].name == "content") {
+            		for (var sectionIndex = 0; sectionIndex < extendedView.regions[regionIndex].sections.length; sectionIndex++) {
+            			for (var rowIndex = 0; rowIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
+            				for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+            					for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+            						for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
+            							if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].id) {
+            								extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
+            							}
+            						}
+            					}
+            				}
+            			}
+            		}
+            	}
             }
             extendedView.data = record.data;
             defer.resolve(extendedView);

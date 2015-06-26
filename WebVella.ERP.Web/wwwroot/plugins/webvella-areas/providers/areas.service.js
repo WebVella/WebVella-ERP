@@ -93,15 +93,29 @@
 										"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
 										"weight": 1,
 										"columns": [
+									{
+										"gridColCount": 6,
+										"items": [
 										{
-											"gridColCount": 12,
+											"_t": "RecordViewFieldItem",
+											"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
+											"type": "field",
+											"fieldName": "username",
+											"fieldLabel": "Username",
+											"fieldTypeId": 18
+										}
+										]
+									},
+										{
+											"gridColCount": 6,
 											"items": [
 											{
 												"_t": "RecordViewFieldItem",
 												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
 												"type": "field",
-												"fieldName": "username",
-												"fieldLabel": "Username"
+												"fieldName": "title",
+												"fieldLabel": "Title",
+												"fieldTypeId": 18
 											}
 											]
 										}
@@ -252,7 +266,7 @@
                   {
                       "id": "14fe2908-bc68-4d6a-8bd3-667c20843a18",
                       "title": "post 3 title",
-                      "content": "post 3 content",
+                      "username": "boz",
                       "author": {
                           "id": "031cca7c-1da4-48d3-a8e6-8e9315643b13",
                           "name": "Test author name"
@@ -330,7 +344,7 @@
         		"data": [
                   {
                   	"id": "47964efb-f66b-4be9-b8ce-2820054946a6",
-                  	"title": "post 3 title",
+                  	"username": "boz",
                   	"content": "post 3 content",
                   }
         		]
