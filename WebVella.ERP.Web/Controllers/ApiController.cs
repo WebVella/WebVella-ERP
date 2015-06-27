@@ -344,7 +344,7 @@ namespace WebVella.ERP.Web.Controllers
 
             foreach (var relation in entityRelations)
             {
-                Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.OriginEntityId : relation.TargetEntityId;
+                Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
                 Entity relatedEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
 
                 //TODO validation
