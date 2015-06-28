@@ -103,6 +103,7 @@ namespace WebVella.ERP.Api.Models
 						foreach (var rawColumn in rawRow.Columns)
 						{
 							InputRecordViewColumn column = new InputRecordViewColumn();
+							column.GridColCount = rawColumn.GridColCount;
 							column.Items = new List<InputRecordViewItemBase>();
 
 							foreach (var rawItem in rawColumn.Items)

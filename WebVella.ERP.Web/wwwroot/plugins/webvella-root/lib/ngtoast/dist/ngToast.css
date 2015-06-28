@@ -1,5 +1,5 @@
 /*!
- * ngToast v1.5.2 (http://tameraydin.github.io/ngToast)
+ * ngToast v1.5.4 (http://tameraydin.github.io/ngToast)
  * Copyright 2015 Tamer Aydin (http://tamerayd.in)
  * Licensed under MIT (http://tameraydin.mit-license.org/)
  */
@@ -69,4 +69,8 @@
 }
 .ng-toast .ng-toast__message .alert {
   display: inline-block;
+}
+.ng-toast .ng-toast__message__count {
+  display: inline-block;
+  margin: 0 15px 0 5px;
 }

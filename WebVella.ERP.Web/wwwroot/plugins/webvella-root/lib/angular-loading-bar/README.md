@@ -18,7 +18,13 @@ This is mostly cool because you simply include it in your app, and it works.  Th
     angular.module('myApp', ['angular-loading-bar', 'ngAnimate'])
     ```
     
-2. include the supplied CSS file (or create your own).
+2. include the supplied JS and CSS file (or create your own CSS to override defaults).
+
+    ```html
+    <link rel='stylesheet' href='build/loading-bar.min.css' type='text/css' media='all' />
+    <script type='text/javascript' src='build/loading-bar.min.js'></script>
+    ```
+
 3. That's it -- you're done!
 
 #### via bower:
@@ -30,6 +36,11 @@ $ bower install angular-loading-bar
 $ npm install angular-loading-bar
 ```
 
+#### via CDN:
+```html
+ <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.css' type='text/css' media='all' />
+ <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.js'></script>
+```
 
 ## Why I created this
 There are a couple projects similar to this out there, but none were ideal for me.  All implementations I've seen require that you maintain state on behalf of the loading bar.  In other words, you're setting the value of the loading/progress bar manually from potentially many different locations.  This becomes complicated when you have a very large application with several services all making independant XHR requests. It becomes even more complicated if you want these services to be loosly coupled.
@@ -82,8 +93,14 @@ angular.module('myApp', ['angular-loading-bar'])
 The loading bar can also be forced to ignore certain requests, for example, when long-polling or periodically sending debugging information back to the server.
 
 ```js
-// ignore particular $http requests:
+// ignore a particular $http GET:
 $http.get('/status', {
+  ignoreLoadingBar: true
+});
+
+// ignore a particular $http POST.  Note: POST and GET have different
+// method signatures:
+$http.post('/save', data, {
   ignoreLoadingBar: true
 });
 

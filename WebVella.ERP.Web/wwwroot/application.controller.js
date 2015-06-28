@@ -32,14 +32,16 @@
         });
         //Side menu toggle
         appData.isMiniSidebar = false;
-        if ($cookies.isMiniSidebar) {
-            appData.isMiniSidebar = true;
+        $rootScope.isMiniSidebar = false;
+        if ($cookies.get("isMiniSidebar") == "true") {
+        	appData.isMiniSidebar = true;
+        	$rootScope.isMiniSidebar = true;
         }
         
         $rootScope.$on("application-sidebar-mini-toggle", function (event) {
-            appData.isMiniSidebar = !appData.isMiniSidebar;
-            $cookies.isMiniSidebar = appData.isMiniSidebar;
-
+        	appData.isMiniSidebar = !appData.isMiniSidebar;
+        	$rootScope.isMiniSidebar = appData.isMiniSidebar;
+        	$cookies.put("isMiniSidebar", appData.isMiniSidebar);
         });
         //Side menu visibility
         appData.sideMenuIsVisible = true;

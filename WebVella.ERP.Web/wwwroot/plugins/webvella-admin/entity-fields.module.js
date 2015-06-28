@@ -401,7 +401,7 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state);
+            webvellaRootService.reloadCurrentState($state, {});
         }
 
         function errorCallback(response) {
@@ -513,7 +513,7 @@
                 content: '<h4>Success</h4><p>' + response.message + '</p>'
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state);
+            webvellaRootService.reloadCurrentState($state, {});
         }
 
         function errorCallback(response) {

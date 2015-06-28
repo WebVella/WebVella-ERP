@@ -20,10 +20,14 @@
         $log.debug('webvellaAdmin>sidebar> BEGIN controller.exec');
         /* jshint validthis:true */
         var sidebarData = this;
+        sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
 
-        activate();
+        $rootScope.$on("application-sidebar-mini-toggle", function (event) {
+        	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
+        });
+
         $log.debug('webvellaAdmin>sidebar> END controller.exec');
-        function activate() { }
+
     }
 
 })();
