@@ -263,6 +263,12 @@ namespace WebVella.ERP.Api.Models
 	{
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid? FieldId { get; set; }
+		//[JsonProperty(PropertyName = "fieldLabel")]
+		//public string FieldLabel { get; set; }
+		//[JsonProperty(PropertyName = "fieldName")]
+		//public string FieldName { get; set; }
+		//[JsonProperty(PropertyName = "fieldTypeId")]
+		//public int FieldTypeId { get; set; }
 	}
 
 	public class InputRecordViewListItem : InputRecordViewItemBase

@@ -239,41 +239,41 @@
         		}
         	}
         	if (notUsed) {
-        		var search = "";
-        		if (item.type != null) {
-        			search += item.type + " ";
-        		}
-        		if (item.tag != null) {
-        			search += item.tag + " ";
-        		}
-        		if (item.fieldName != null) {
-        			search += item.fieldName + " ";
-        		}
-        		if (item.fieldLabel != null) {
-        			search += item.fieldLabel + " ";
-        		}
-        		if (item.entityName != null) {
-        			search += item.entityName + " ";
-        		}
-        		if (item.entityLabel != null) {
-        			search += item.entityLabel + " ";
-        		}
-        		if (item.viewName != null) {
-        			search += item.viewName + " ";
-        		}
-        		if (item.viewLabel != null) {
-        			search += item.viewLabel + " ";
-        		}
-        		if (item.listName != null) {
-        			search += item.listName + " ";
-        		}
-        		if (item.listLabel != null) {
-        			search += item.listLabel + " ";
-        		}
-        		if (item.entityLabelPlural != null) {
-        			search += item.entityLabelPlural + " ";
-        		}
-        		item.search = search;
+        		//var search = "";
+        		//if (item.type != null) {
+        		//	search += item.type + " ";
+        		//}
+        		//if (item.tag != null) {
+        		//	search += item.tag + " ";
+        		//}
+        		//if (item.fieldName != null) {
+        		//	search += item.fieldName + " ";
+        		//}
+        		//if (item.fieldLabel != null) {
+        		//	search += item.fieldLabel + " ";
+        		//}
+        		//if (item.entityName != null) {
+        		//	search += item.entityName + " ";
+        		//}
+        		//if (item.entityLabel != null) {
+        		//	search += item.entityLabel + " ";
+        		//}
+        		//if (item.viewName != null) {
+        		//	search += item.viewName + " ";
+        		//}
+        		//if (item.viewLabel != null) {
+        		//	search += item.viewLabel + " ";
+        		//}
+        		//if (item.listName != null) {
+        		//	search += item.listName + " ";
+        		//}
+        		//if (item.listLabel != null) {
+        		//	search += item.listLabel + " ";
+        		//}
+        		//if (item.entityLabelPlural != null) {
+        		//	search += item.entityLabelPlural + " ";
+        		//}
+        		//item.search = search;
         		contentData.library.items.push(item);
         	}
         });
@@ -492,6 +492,9 @@
                     				delete cleanedRegion.sections[j].rows[g].columns[k]["$$hashKey"];
                     				for (var m = 0; m < cleanedRegion.sections[j].rows[g].columns[k].items.length; m++) {
                     					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["$$hashKey"];
+                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldLabel"];
+                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldName"];
+                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldTypeId"];
                     				}
                     			}
                     		}
