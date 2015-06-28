@@ -154,7 +154,7 @@
             }
         }
 
-        webvellaAdminService.getEntityViewLibrary($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+        webvellaAdminService.getEntityViewLibrary($stateParams.entityName, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved');
@@ -199,12 +199,12 @@
         contentData.tempFieldsLibrary = {};
         contentData.tempFieldsLibrary.items = [];
 
-        for (var i = 0; i < resolvedViewLibrary.items.length; i++) {
-        	if (resolvedViewLibrary.items[i].type === "field" || resolvedViewLibrary.items[i].type === "fieldFromRelation" || resolvedViewLibrary.items[i].type === "view"
-			 || resolvedViewLibrary.items[i].type === "html") {
-        		contentData.tempFieldsLibrary.items.push(resolvedViewLibrary.items[i]);
-        		if (resolvedViewLibrary.items[i].type === "field") {
-        			contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary.items[i]);
+        for (var i = 0; i < resolvedViewLibrary.length; i++) {
+        	if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view"
+			 || resolvedViewLibrary[i].type === "html") {
+        		contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
+        		if (resolvedViewLibrary[i].type === "field") {
+        			contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
         		}
             }
         }

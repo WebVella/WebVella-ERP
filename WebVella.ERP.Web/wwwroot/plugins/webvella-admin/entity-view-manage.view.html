@@ -277,12 +277,7 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label for="tabOrder">Row columns</label>
-						<select class="form-control" ng-model="popupData.columnsCount">
-							<option value="1">One column</option>
-							<option value="2">Two columns</option>
-							<option value="3">Three columns</option>
-							<option value="4">Four columns</option>
-						</select>
+						<select class="form-control" ng-model="popupData.selectedRowOption" ng-options="option.value for option in popupData.rowOptions"></select>
 					</div>
 				</div>
 				<div class="col-sm-6">

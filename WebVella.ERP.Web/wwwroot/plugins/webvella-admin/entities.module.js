@@ -783,7 +783,7 @@
                 content: '<h4>Success</h4><p>The entity was successfully created</p>'
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state);
+            webvellaRootService.reloadCurrentState($state, {});
         }
 
         function errorCallback(response) {

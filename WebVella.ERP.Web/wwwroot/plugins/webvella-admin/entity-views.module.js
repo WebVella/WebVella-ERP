@@ -134,10 +134,10 @@
 
 
 	//// Modal Controllers
-    createViewModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService'];
+    createViewModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
 
 	/* @ngInject */
-    function createViewModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService) {
+    function createViewModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
     	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec');
     	/* jshint validthis:true */
     	var popupData = this;
@@ -160,7 +160,9 @@
     			content: '<h4>Success</h4><p>The view was successfully saved</p>'
     		});
     		$modalInstance.close('success');
-    		webvellaRootService.reloadCurrentState($state);
+    		$timeout(function () { 
+    			webvellaRootService.reloadCurrentState($state, {});
+    		}, 0);
     	}
 
     	function errorCallback(response) {

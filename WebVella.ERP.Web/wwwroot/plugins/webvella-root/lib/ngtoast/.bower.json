@@ -1,6 +1,6 @@
 {
   "name": "ngToast",
-  "version": "1.5.2",
+  "version": "1.5.4",
   "main": [
     "dist/ngToast.js",
     "dist/ngToast.css"
@@ -10,9 +10,9 @@
     "Levi Thomason (http://www.levithomason.com)"
   ],
   "dependencies": {
-    "angular": ">=1.2.15 <=1.4.0",
-    "angular-animate": ">=1.2.17 <=1.4.0",
-    "angular-sanitize": ">=1.2.15 <=1.4.0"
+    "angular": ">=1.2.15 <1.5",
+    "angular-animate": ">=1.2.17 <1.5",
+    "angular-sanitize": ">=1.2.15 <1.5"
   },
   "devDependencies": {
     "bootstrap": "~3.3.2",
@@ -33,14 +33,14 @@
     "index.html"
   ],
   "homepage": "https://github.com/tameraydin/ngToast",
-  "_release": "1.5.2",
+  "_release": "1.5.4",
   "_resolution": {
     "type": "version",
-    "tag": "1.5.2",
-    "commit": "2bc5b2bb01656ef21bb76246bb892dcefa418513"
+    "tag": "1.5.4",
+    "commit": "db1774ca64f02254c64195c2b4044d4abefab5c2"
   },
   "_source": "git://github.com/tameraydin/ngToast.git",
-  "_target": "~1.5.2",
+  "_target": "~1.5.4",
   "_originalSource": "ngtoast",
   "_direct": true
 }

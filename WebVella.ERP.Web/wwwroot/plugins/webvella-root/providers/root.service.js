@@ -107,10 +107,11 @@
         }
 
         //////////////////
-        function reloadCurrentState(state) {
-            $log.debug('webvellaRoot>providers>root.service>reloadCurrentState> function called');
+        function reloadCurrentState(state,params) {
+        	$log.debug('webvellaRoot>providers>root.service>reloadCurrentState> function called');
+
             $timeout(function () {
-                state.go(state.current, {}, { reload: true });
+        	    state.go(state.current, params, { reload: true });
             }, 0);
         }
 

@@ -156,7 +156,7 @@
             }
         }
 
-        webvellaAdminService.getEntityViewLibrary($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+        webvellaAdminService.getEntityViewLibrary($stateParams.entityName, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved');
@@ -211,7 +211,8 @@
         	}
         }
 
-        contentData.tempLibrary = angular.copy(resolvedViewLibrary);
+        contentData.tempLibrary = {};
+        contentData.tempLibrary.items = angular.copy(resolvedViewLibrary);
         contentData.tempLibrary.items = contentData.tempLibrary.items.sort(function (a, b) {
         	if (a.type < b.type) return -1;
         	if (a.type > b.type) return 1;
@@ -638,16 +639,39 @@
         /* jshint validthis:true */
         var popupData = this;
         popupData.section = angular.copy(section);
-        popupData.columnsCount = 1;
+        popupData.rowOptions = [
+		{
+			key: 1,
+			value:"One column"
+		},
+		{
+			key: 2,
+			value: "Two columns"
+		},
+		{
+			key: 3,
+			value: "Three columns"
+		},
+		{
+			key: 4,
+			value: "Four columns"
+		}
+
+        ];
         popupData.isUpdate = true;
         if (row == null) {
             popupData.isUpdate = false;
             popupData.row = angular.copy(webvellaAdminService.initViewRow(1));
             popupData.row.weight = angular.copy(weight);
+            popupData.selectedRowOption = popupData.rowOptions[0];
         }
         else {
             popupData.row = angular.copy(row);
-            popupData.columnsCount = popupData.row.columns.length;
+            for (var i = 0; i < popupData.rowOptions.length; i++) {
+            	if(popupData.row.columns.length == popupData.rowOptions[i].key){
+					popupData.selectedRowOption = popupData.rowOptions[i];
+				}
+            }
         }
 
         popupData.ok = function () {
@@ -665,7 +689,7 @@
             if (popupData.isUpdate) {
                 //A. Check if the row's column differ from the original number
                 var originalRowColumns = 0;
-                var newRowColumns = angular.copy(popupData.columnsCount);
+                var newRowColumns = angular.copy(popupData.selectedRowOption.key);
                 for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
                     if (parentData.viewContentRegion.sections[i].name == popupData.section.name) {
                         for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
@@ -700,7 +724,7 @@
                 popupData.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupData.row, popupData.section.rows);
             }
             else {
-                popupData.row.columns = webvellaAdminService.initViewRow(popupData.columnsCount).columns;
+            	popupData.row.columns = webvellaAdminService.initViewRow(popupData.selectedRowOption.key).columns;
                 popupData.section.rows = webvellaAdminService.safeAddArrayPlace(popupData.row, popupData.section.rows);
             }
             //#endregion

@@ -518,87 +518,18 @@ function guid() {
         }
         ///////////////////////
         function initViewRowColumn(columnCount) {
+
             var column = {
-                "gridColCount": 12 / columnCount,
+            	"gridColCount": 12 / parseInt(columnCount),
                 "items": []
             }
 
             return column;
         }
         //////////////////////
-        function getEntityViewLibrary(viewName, entityName, successCallback, errorCallback) {
-            //This function will call the getEntityViewList, loop through views and return the view data for now
-            var object = {};
-            //Test data
-            object.items = [
-            {
-            	"_t": "RecordViewHtmlItem",
-            	"type": "html",
-            	"tag": "",
-            	"content": "<h1>Title</h1>",
-            },
-            {
-            	"_t": "RecordViewFieldItem",
-            	"type": "field",
-            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038333",
-            	"fieldName": "id",
-            	"fieldLabel": "Id",
-            	"fieldTypeId": 18
-            },
-            {
-            	"_t": "RecordViewFieldItem",
-            	"type": "field",
-            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
-                "fieldName": "username",
-                "fieldLabel": "Username",
-                "fieldTypeId": 18
-            },
-            {
-            	"_t": "RecordViewFieldItem",
-            	"type": "field",
-            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab9",
-            	"fieldName": "email",
-            	"fieldLabel": "Email",
-            	"fieldTypeId": 18
-            },
-            {
-            	"_t": "RecordViewRelationFieldItem",
-            	"type": "fieldFromRelation",
-            	"relationId": "48818fa7-77b4-cedd-71e4-80e106038ab1",
-            	"entityId": "48818fa7-77b4-cedd-71e4-80e106038ab2",
-            	"entityName": "account",
-            	"entityLabel": "Account",
-            	"fieldId": "48818fa7-77b4-cedd-71e4-80e106038ab3",
-            	"fieldName": "email",
-            	"fieldLabel": "Email",
-            	"fieldTypeId": 18
-            },
-            {
-            	"_t": "RecordViewViewItem",
-            	"type": "view",
-                "viewId": guid(),
-                "viewName": "short-info",
-                "viewLabel": "Short Info",
-                "entityId": guid(),
-                "entityName": "account",
-                "entityLabel": "Account"
-            },
-            {
-            	"_t": "RecordViewListItem",
-            	"type": "list",
-            	"listId": guid(),
-            	"listName": "short-list",
-            	"listLabel": "Short List",
-            	"entityId": guid(),
-            	"entityName": "account",
-            	"entityLabelPlural": "Accounts"
-            }
-            ];
-            var response = {};
-            response.success = true;
-            response.object = object;
-
-            successCallback(response);
+        function getEntityViewLibrary(entityName, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>getEntityViewLibrary> function called');
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/'+entityName+'/getEntityViewLibrary' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
         ///////////////////////
         function getEntityViewList(entityName, successCallback, errorCallback) {
@@ -621,14 +552,8 @@ function guid() {
         }
         //////////////////////
         function getEntityView(viewName, entityName, successCallback, errorCallback) {
-            //This function will call the getEntityViewList, loop through views and return the view data for now
-        	var view = sampleView();
-
-            var response = {};
-            response.success = true;
-            response.object = view;
-
-            successCallback(response);
+        	$log.debug('webvellaAdmin>providers>admin.service>getEntityView> function called');
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
     	//////////////////////
         function createEntityView(viewObj, entityName, successCallback, errorCallback) {
@@ -637,14 +562,8 @@ function guid() {
         }
         //////////////////////
         function updateEntityView(viewObj, entityName, successCallback, errorCallback) {
-            //TODO - pending implementation
-            var view = viewObj;
-            var response = {};
-            response.success = true;
-            response.object = view;
-            response.message = "entity view updated";
-
-            successCallback(response);
+        	$log.debug('webvellaAdmin>providers>admin.service>updateEntityView> function called');
+        	$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewObj.name, data: viewObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
         ////////////////////
         function safeAddArrayPlace(newObject, array) {
