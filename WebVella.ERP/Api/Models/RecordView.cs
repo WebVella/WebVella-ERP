@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using WebVella.ERP.Utilities;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -52,103 +55,11 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "sidebar")]
 		public InputRecordViewSidebar Sidebar { get; set; }
-		
+
 		public static InputRecordView Convert(JObject inputField)
 		{
-			InputRecordView view = new InputRecordView();
+			InputRecordView view = JsonConvert.DeserializeObject<InputRecordView>(inputField.ToString(), new RecordViewItemConverter());
 
-			InputRecordView rawView = JsonConvert.DeserializeObject<InputRecordView>(inputField.ToString());
-
-			view.Id = rawView.Id;
-			view.Name = rawView.Name;
-			view.Label = rawView.Label;
-			view.Default = rawView.Default;
-			view.System = rawView.System;
-			view.Weight = rawView.Weight;
-			view.CssClass = rawView.CssClass;
-			view.Type = rawView.Type;
-			view.Sidebar = rawView.Sidebar;
-			view.Regions = new List<InputRecordViewRegion>();
-
-			foreach (var rawRegion in rawView.Regions)
-			{
-				InputRecordViewRegion region = new InputRecordViewRegion();
-
-				region.Name = rawRegion.Name;
-				region.Render = rawRegion.Render;
-				region.CssClass = rawRegion.CssClass;
-				region.Sections = new List<InputRecordViewSection>();
-
-				foreach (var rawSection in rawRegion.Sections)
-				{
-					InputRecordViewSection section = new InputRecordViewSection();
-
-					section.Id = rawSection.Id;
-					section.Name = rawSection.Name;
-					section.Label = rawSection.Label;
-					section.CssClass = rawSection.CssClass;
-					section.ShowLabel = rawSection.ShowLabel;
-					section.Collapsed = rawSection.Collapsed;
-					section.Weight = rawSection.Weight;
-					section.TabOrder = rawSection.TabOrder;
-					section.Rows = new List<InputRecordViewRow>();
-
-					foreach (var rawRow in rawSection.Rows)
-					{
-						InputRecordViewRow row = new InputRecordViewRow();
-						row.Id = rawRow.Id;
-						row.Weight = rawRow.Weight;
-						row.Columns = new List<InputRecordViewColumn>();
-
-						foreach (var rawColumn in rawRow.Columns)
-						{
-							InputRecordViewColumn column = new InputRecordViewColumn();
-							column.GridColCount = rawColumn.GridColCount;
-							column.Items = new List<InputRecordViewItemBase>();
-
-							foreach (var rawItem in rawColumn.Items)
-							{
-								InputRecordViewItemBase item = null;
-								switch (rawItem.Type.ToLower())
-								{
-									case "field":
-										{
-											item = JsonConvert.DeserializeObject<InputRecordViewFieldItem>(rawItem.ToString());
-										}
-										break;
-									case "list":
-										{
-											item = JsonConvert.DeserializeObject<InputRecordViewListItem>(rawItem.ToString());
-										}
-										break;
-									case "view":
-										{
-											item = JsonConvert.DeserializeObject<InputRecordViewViewItem>(rawItem.ToString());
-										}
-										break;
-									case "FieldFromRelation":
-										{
-											item = JsonConvert.DeserializeObject<InputRecordViewRelationFieldItem>(rawItem.ToString());
-										}
-										break;
-									case "html":
-										{
-											item = JsonConvert.DeserializeObject<InputRecordViewHtmlItem>(rawItem.ToString());
-										}
-										break;
-								}
-
-								if (item != null)
-									column.Items.Add(item);
-							}
-							row.Columns.Add(column);
-						}
-						section.Rows.Add(row);
-					}
-					region.Sections.Add(section);
-				}
-				view.Regions.Add(region);
-			}
 			return view;
 		}
 	}
@@ -243,6 +154,7 @@ namespace WebVella.ERP.Api.Models
 	////////////////////////
 	public class InputRecordViewColumn
 	{
+		//[JsonConverter(typeof(RecordViewItemConverter))]
 		[JsonProperty(PropertyName = "items")]
 		public List<InputRecordViewItemBase> Items { get; set; }
 
@@ -630,4 +542,26 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "object")]
 		public RecordViewCollection Object { get; set; }
 	}
+
+	public class RecordViewItemConverter : JsonCreationConverter<InputRecordViewItemBase>
+	{
+		protected override InputRecordViewItemBase Create(Type objectType, JObject jObject)
+		{
+			string type = jObject["type"].ToString().ToLower();
+
+			if (type == "list")
+				if (objectType == typeof(InputRecordViewListItem))
+					return new InputRecordViewListItem();
+			if (type == "view")
+				return new InputRecordViewViewItem();
+			if (type == "fieldfromrelation")
+				return new InputRecordViewRelationFieldItem();
+			if (type == "html")
+				return new InputRecordViewHtmlItem();
+
+			return new InputRecordViewFieldItem();
+		}
+	}
+
+
 }
