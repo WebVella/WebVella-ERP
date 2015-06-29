@@ -2436,7 +2436,6 @@ namespace WebVella.ERP.Api
 					response.Message = "The record view was not created! An internal error occurred!";
 					return response;
 				}
-
 			}
 			catch (Exception e)
 			{
