@@ -228,7 +228,7 @@ namespace WebVella.ERP.Api.Models
 			System = false;
 			Weight = 1;
 			CssClass = "";
-			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.Details);
+			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.Details).ToLower();
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
 		}

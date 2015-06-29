@@ -123,7 +123,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<RecordView, IStorageRecordView>().ConstructUsing(x => CreateEmptyRecordViewObject(x))
 				.ForMember(x => x.Type, opt => opt.MapFrom(y => GetViewTypeId(y.Type)));
 			Mapper.CreateMap<IStorageRecordView, RecordView>()
-				.ForMember(x => x.Type, opt => opt.MapFrom(y => Enum.GetName(typeof(RecordViewType), y.Type)));
+				.ForMember(x => x.Type, opt => opt.MapFrom(y => Enum.GetName(typeof(RecordViewType), y.Type).ToLower()));
 			Mapper.CreateMap<RecordView, InputRecordView>();
 			Mapper.CreateMap<InputRecordView, RecordView>()
 				.ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty));
