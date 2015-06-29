@@ -844,9 +844,7 @@
             return false;
         }
 
-        activate();
         $log.debug('webvellaAdmin>entity-details> END controller.exec');
-        function activate() { }
     }
 
 

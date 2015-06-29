@@ -68,7 +68,7 @@
     	}
 
     	//webvellaRootService.getSitemap(successCallback, errorCallback);
-    	webvellaRootService.getSitemapSample(successCallback, errorCallback);
+    	webvellaRootService.getSitemap(successCallback, errorCallback);
     	
     	// Return
     	$log.debug('webvellaDesktop>browse> END state.resolved');

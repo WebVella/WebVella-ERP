@@ -54,11 +54,11 @@
 		</ul>
 
 	</div>
+	<a class="btn btn-link go-red pull-right">[ Delete view ]</a>
 	<ul class="nav nav-pills">
-		<li class="pull-right"></li>
-		<li role="presentation"><a href="#">Basic info</a></li>
-		<li role="presentation" class="active"><a href="#">Content</a></li>
-		<li role="presentation"><a href="#">Sidebar</a></li>
+		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
+		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
+		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
 	</ul>
 	<hr class="divider" />
 	<div class="view-manage-section">
