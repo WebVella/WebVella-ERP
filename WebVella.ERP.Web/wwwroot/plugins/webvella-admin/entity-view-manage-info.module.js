@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityViewManageInfoController', controller);
+        .controller('WebVellaAdminEntityViewManageInfoController', controller)
+		.controller('DeleteViewModalController', deleteViewModalController);
 
     //#region << Configuration >> /////////////////////////
     config.$inject = ['$stateProvider'];
@@ -163,22 +164,78 @@
         function patchSuccessCallback(response) {
         	ngToast.create({
         		className: 'success',
-        		content: '<h4>Success</h4><p>' + response.message + '</p>'
+        		content: '<span class="go-green">Success:</span> ' + response.message
         	});
         	return true;
         }
         function patchFailedCallback(response) {
         	ngToast.create({
         		className: 'error',
-        		content: '<h4>Error</h4><p>' + response.message + '</p>'
+        		content: '<span class="go-red">Error:</span> ' + response.message
         	});
         	return false;
+        }
+
+    	//Delete
+    	//Delete field
+    	//Create new field modal
+        contentData.deleteViewModal = function () {
+        	var modalInstance = $modal.open({
+        		animation: false,
+        		templateUrl: 'deleteViewModal.html',
+        		controller: 'DeleteViewModalController',
+        		controllerAs: "popupData",
+        		size: "",
+        		resolve: {
+        			parentData: function () { return contentData; }
+        		}
+        	});
         }
 
         $log.debug('webvellaAdmin>entity-view-manage-info> END controller.exec');
 
     }
     //#endregion
+	//// Modal Controllers
+    deleteViewModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+
+	/* @ngInject */
+    function deleteViewModalController(parentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+    	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+    	/* jshint validthis:true */
+    	var popupData = this;
+    	popupData.parentData = parentData;
+
+    	popupData.ok = function () {
+
+    		webvellaAdminService.deleteEntityView(popupData.parentData.view.name, popupData.parentData.entity.name, successCallback, errorCallback);
+
+    	};
+
+    	popupData.cancel = function () {
+    		$modalInstance.dismiss('cancel');
+    	};
+
+    	/// Aux
+    	function successCallback(response) {
+    		ngToast.create({
+    			className: 'success',
+    			content: '<span class="go-green">Success:</span> ' + response.message
+    		});
+    		$modalInstance.close('success');
+    		$timeout(function () {
+    			$state.go("webvella-admin-entity-views", { entityName: popupData.parentData.entity.name }, { reload: true });
+    		}, 0);
+    	}
+
+    	function errorCallback(response) {
+    		popupData.hasError = true;
+    		popupData.errorMessage = response.message;
+
+
+    	}
+    	$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+    };
 
 
 })();
