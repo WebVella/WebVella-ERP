@@ -21,55 +21,55 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
+<div id="text">
+	<form id="filters" class="form-inline" ng-show="contentData.areas.length > 0">
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<i class="fa fa-search"></i>
+				</span>
+				<input ng-model="contentData.search.label" type="text" class="form-control" placeholder="Search areas">
+			</div>
+		</div>
+	</form>
+	<div id="list">
 
-<form id="filters" class="form-inline" ng-show="contentData.areas.length > 0">
-	<div class="form-group">
-		<div class="input-group">
-			<span class="input-group-addon">
-				<i class="fa fa-search"></i>
-			</span>
-			<input ng-model="contentData.search.label" type="text" class="form-control" placeholder="Search areas">
+
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.areas.length > 0">
+			<thead>
+				<tr>
+					<th width="60">action</th>
+					<th width="60" class="text-center">weight</th>
+					<th width="60" class="text-center">color</th>
+					<th width="60" class="text-center">icon</th>
+					<th>name</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="area in contentData.areas | filter: contentData.search">
+
+					<td>
+						<a ng-click="contentData.openManageAreaModal(area)" class="btn btn-default">
+							<i class="fa fa-pencil"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						{{area.weight}}
+					</td>
+					<td class="text-center">
+						<div class="label go-bkg-{{area.color}} color-label" title="{{area.color}}"></div>
+					</td>
+					<td class="text-center"><i class="fa fa-{{area.icon_name}}" style="font-size:24px;" title="{{area.icon_name}}"></i></td>
+					<td>{{area.label}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="alert alert-info" ng-show="contentData.areas.length == 0" style="margin-top:2em;">
+			<strong>No items!</strong> There are no areas created yet
 		</div>
 	</div>
-</form>
-<div id="list">
-
-
-	<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.areas.length > 0">
-		<thead>
-			<tr>
-				<th width="60">action</th>
-				<th width="60" class="text-center">weight</th>
-				<th width="60" class="text-center">color</th>
-				<th width="60" class="text-center">icon</th>
-				<th>name</th>
-
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="area in contentData.areas | filter: contentData.search">
-
-				<td>
-					<a ng-click="contentData.openManageAreaModal(area)" class="btn btn-default">
-						<i class="fa fa-pencil"></i>
-					</a>
-				</td>
-				<td class="text-center">
-					{{area.weight}}
-				</td>
-				<td class="text-center">
-					<div class="label go-bkg-{{area.color}} color-label" title="{{area.color}}"></div>
-				</td>
-				<td class="text-center"><i class="fa fa-{{area.icon_name}}" style="font-size:24px;" title="{{area.icon_name}}"></i></td>
-				<td>{{area.label}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<div class="alert alert-info" ng-show="contentData.areas.length == 0" style="margin-top:2em;">
-		<strong>No items!</strong> There are no areas created yet
-	</div>
 </div>
-
 <script type="text/ng-template" id="manageAreaModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>

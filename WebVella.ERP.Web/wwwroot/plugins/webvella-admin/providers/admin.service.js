@@ -55,6 +55,7 @@ function guid() {
         serviceInstance.getEntityView = getEntityView;
         serviceInstance.createEntityView = createEntityView;
         serviceInstance.updateEntityView = updateEntityView;
+        serviceInstance.patchEntityView = patchEntityView;
         serviceInstance.safeAddArrayPlace = safeAddArrayPlace;
         serviceInstance.safeUpdateArrayPlace = safeUpdateArrayPlace;
         serviceInstance.safeRemoveArrayPlace = safeRemoveArrayPlace;
@@ -564,6 +565,11 @@ function guid() {
         function updateEntityView(viewObj, entityName, successCallback, errorCallback) {
         	$log.debug('webvellaAdmin>providers>admin.service>updateEntityView> function called');
         	$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewObj.name, data: viewObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+    	//////////////////////
+        function patchEntityView(viewObj, viewName, entityName, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>patchEntityView> function called');
+        	$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName, data: viewObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
         ////////////////////
         function safeAddArrayPlace(newObject, array) {
