@@ -95,7 +95,7 @@
             //Notify with a toast about the error and show the server response.message
             ngToast.create({
                 className: 'error',
-                content: '<h4>Error</h4><p>' + response.message +'</p>'
+                content: '<span class="go-red">Error:</span> ' + response.message
             });
             //Scroll top
             // set the location.hash to the id of

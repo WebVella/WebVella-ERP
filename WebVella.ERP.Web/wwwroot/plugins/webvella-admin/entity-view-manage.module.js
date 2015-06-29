@@ -327,7 +327,7 @@
         function successSectionRemoveCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
 
             //Initialize both view and the content region with the new value
@@ -337,7 +337,7 @@
         function errorSectionRemoveCallback(response) {
             ngToast.create({
                 className: 'error',
-                content: '<h4>Error</h4><p>' + response.message + '</p>'
+                content: '<span class="go-red">Error:</span> ' + response.message
             });
         }
 
@@ -390,7 +390,7 @@
         function successRowRemoveCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
 
         	//Initialize both view and the content region with the new value
@@ -405,7 +405,7 @@
         function errorRowRemoveCallback(response) {
             ngToast.create({
                 className: 'error',
-                content: '<h4>Error</h4><p>' + response.message + '</p>'
+                content: '<span class="go-red">Error:</span> ' + response.message
             });
         }
 
@@ -452,7 +452,7 @@
                 if (response.success) {
                     ngToast.create({
                         className: 'success',
-                        content: '<h4>Success</h4><p>' + response.message + '</p>'
+                        content: '<span class="go-green">Success:</span> ' + response.message
                     });
 
                     moveSuccess();
@@ -465,7 +465,7 @@
             function errorCallback(response) {
                 ngToast.create({
                     className: 'error',
-                    content: '<h4>Error</h4><p>' + response.message + '</p>'
+                    content: '<span class="go-red">Error:</span> ' + response.message
                 });
                 moveFailure();
             }
@@ -612,7 +612,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
             //Initialize both view and the content region
@@ -757,7 +757,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
             //Initialize both view and the content region
@@ -798,7 +798,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
         }

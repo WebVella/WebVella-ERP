@@ -157,7 +157,7 @@
     	function successCallback(response) {
     		ngToast.create({
     			className: 'success',
-    			content: '<h4>Success</h4><p>The view was successfully saved</p>'
+    			content: '<span class="go-green">Success:</span> '+ 'The view was successfully saved'
     		});
     		$modalInstance.close('success');
     		$timeout(function () { 

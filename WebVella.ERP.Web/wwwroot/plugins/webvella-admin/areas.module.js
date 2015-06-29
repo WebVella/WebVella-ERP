@@ -779,7 +779,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>The area was successfully saved</p>'
+                content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
             });
             $modalInstance.close('success');
             webvellaRootService.reloadCurrentState($state, {});
@@ -835,7 +835,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
