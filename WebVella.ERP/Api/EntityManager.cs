@@ -2637,7 +2637,7 @@ namespace WebVella.ERP.Api
 					updatedView.Weight = inputRecordView.Weight;
 				if (inputRecordView.CssClass != null)
 					updatedView.CssClass = inputRecordView.CssClass;
-				if (string.IsNullOrEmpty(inputRecordView.Type))
+				if (!string.IsNullOrEmpty(inputRecordView.Type))
 					updatedView.Type = inputRecordView.Type;
 				if (inputRecordView.Regions != null)
 					updatedView.Regions = inputRecordView.Regions.MapTo<RecordViewRegion>();
@@ -2645,9 +2645,7 @@ namespace WebVella.ERP.Api
 					updatedView.Sidebar = inputRecordView.Sidebar.MapTo<RecordViewSidebar>();
 
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, recordView.MapTo<InputRecordView>(), true);
-
-				recordView = inputRecordView.MapTo<RecordView>();
+				response.Errors = ValidateRecordView(entity, updatedView.MapTo<InputRecordView>(), true);
 
 				if (response.Errors.Count > 0)
 				{
