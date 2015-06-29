@@ -418,7 +418,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Field); } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Field).ToLower(); } }
 
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid FieldId { get; set; }
@@ -436,7 +436,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewListItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.List); } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.List).ToLower(); } }
 
 		[JsonProperty(PropertyName = "listId")]
 		public Guid ListId { get; set; }
@@ -460,7 +460,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewViewItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.View); } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.View).ToLower(); } }
 
 		[JsonProperty(PropertyName = "viewId")]
 		public Guid ViewId { get; set; }
@@ -484,7 +484,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewRelationFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation); } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation).ToLower(); } }
 
 		[JsonProperty(PropertyName = "relationId")]
 		public Guid RelationId { get; set; }
@@ -514,7 +514,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewHtmlItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Html); } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Html).ToLower(); } }
 
 		[JsonProperty(PropertyName = "tag")]
 		public string Tag { get; set; }
