@@ -263,15 +263,113 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).DeleteField(entityId, fieldId));
         }
 
-        #endregion
+		#endregion
 
-        #region << Record Lists >>
+		#region << Record Lists >>
 
-        #endregion
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/list")]
+		public IActionResult CreateRecordListByName(string Name, [FromBody]JObject submitObj)
+		{
+			RecordListResponse response = new RecordListResponse();
 
-        #region << Record Views >>
+			InputRecordList list = new InputRecordList();
+			try
+			{
+				list = InputRecordList.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
 
-        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/getEntityViewLibrary")]
+			return DoResponse(new EntityManager(service.StorageService).CreateRecordList(Name, list));
+		}
+
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		public IActionResult UpdateRecordListByName(string Name, string ListName, [FromBody]JObject submitObj)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			InputRecordList list = new InputRecordList();
+
+			Type inputViewType = list.GetType();
+
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
+
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
+
+			try
+			{
+				list = InputRecordList.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(new EntityManager(service.StorageService).UpdateRecordList(Name, list));
+		}
+
+		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		public IActionResult PatchRecordListByName(string Name, string ListName, [FromBody]JObject submitObj)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			InputRecordList list = new InputRecordList();
+
+			Type inputListType = list.GetType();
+
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputListType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
+
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
+
+			try
+			{
+				list = InputRecordList.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordList(Name, ListName, list));
+		}
+
+		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		public IActionResult DeleteRecordListByName(string Name, string ListName)
+		{
+			return DoResponse(new EntityManager(service.StorageService).DeleteRecordList(Name, ListName));
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
+		public IActionResult GetRecordListByName(string Name, string ListName)
+		{
+			return DoResponse(new EntityManager(service.StorageService).ReadRecordList(Name, ListName));
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list")]
+		public IActionResult GetRecordListsByName(string Name)
+		{
+			return DoResponse(new EntityManager(service.StorageService).ReadRecordLists(Name));
+		}
+
+		#endregion
+
+		#region << Record Views >>
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/getEntityViewLibrary")]
         public IActionResult GetEntityLibrary(string entityName)
         {
             var result = new EntityLibraryItemsResponse() { Success = true, Timestamp = DateTime.UtcNow };
@@ -390,8 +488,7 @@ namespace WebVella.ERP.Web.Controllers
 
         //	return DoResponse(new EntityManager(service.StorageService).CreateRecordView(Id, view));
         //}
-
-
+		
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
         public IActionResult CreateRecordViewByName(string Name, [FromBody]JObject submitObj)
         {
@@ -410,41 +507,41 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).CreateRecordView(Name, view));
         }
 
-        //[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-        //public IActionResult UpdateRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
-        //{
-        //    FieldResponse response = new FieldResponse();
+		//[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
+		//public IActionResult UpdateRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
+		//{
+		//    RecordViewResponse response = new RecordViewResponse();
 
-        //    InputRecordView view = new InputRecordView();
+		//    InputRecordView view = new InputRecordView();
 
-        //    Type inputViewType = view.GetType();
+		//    Type inputViewType = view.GetType();
 
-        //    foreach (var prop in submitObj.Properties())
-        //    {
-        //        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-        //        if (count < 1)
-        //            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-        //    }
+		//    foreach (var prop in submitObj.Properties())
+		//    {
+		//        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+		//        if (count < 1)
+		//            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+		//    }
 
-        //    if (response.Errors.Count > 0)
-        //        return DoBadRequestResponse(response);
+		//    if (response.Errors.Count > 0)
+		//        return DoBadRequestResponse(response);
 
-        //    try
-        //    {
-        //        view = InputRecordView.Convert(submitObj);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
-        //    }
+		//    try
+		//    {
+		//        view = InputRecordView.Convert(submitObj);
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+		//    }
 
-        //    return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Id, view));
-        //}
+		//    return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Id, view));
+		//}
 
-        [AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
         public IActionResult UpdateRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
         {
-            FieldResponse response = new FieldResponse();
+			RecordViewResponse response = new RecordViewResponse();
 
             InputRecordView view = new InputRecordView();
 
@@ -472,41 +569,41 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Name, view));
         }
 
-        //[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
-        //public IActionResult PatchRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
-        //{
-        //    FieldResponse response = new FieldResponse();
+		//[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
+		//public IActionResult PatchRecordView(Guid Id, Guid ViewId, [FromBody]JObject submitObj)
+		//{
+		//    RecordViewResponse response = new RecordViewResponse();
 
-        //    InputRecordView view = new InputRecordView();
+		//    InputRecordView view = new InputRecordView();
 
-        //    Type inputViewType = view.GetType();
+		//    Type inputViewType = view.GetType();
 
-        //    foreach (var prop in submitObj.Properties())
-        //    {
-        //        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-        //        if (count < 1)
-        //            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-        //    }
+		//    foreach (var prop in submitObj.Properties())
+		//    {
+		//        int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+		//        if (count < 1)
+		//            response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+		//    }
 
-        //    if (response.Errors.Count > 0)
-        //        return DoBadRequestResponse(response);
+		//    if (response.Errors.Count > 0)
+		//        return DoBadRequestResponse(response);
 
-        //    try
-        //    {
-        //        view = InputRecordView.Convert(submitObj);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
-        //    }
+		//    try
+		//    {
+		//        view = InputRecordView.Convert(submitObj);
+		//    }
+		//    catch (Exception e)
+		//    {
+		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+		//    }
 
-        //    return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(Id, ViewId, view));
-        //}
+		//    return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(Id, ViewId, view));
+		//}
 
-        [AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
+		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
         public IActionResult PatchRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
         {
-            FieldResponse response = new FieldResponse();
+			RecordViewResponse response = new RecordViewResponse();
 
             InputRecordView view = new InputRecordView();
 
