@@ -824,7 +824,7 @@
         function patchAreaSuccessCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>Areas list saved</p>'
+                content: '<span class="go-green">Success:</span> ' + 'Areas list saved'
             });
             return true;
         }
@@ -832,14 +832,14 @@
         function patchSuccessCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             return true;
         }
         function patchFailedCallback(response) {
             ngToast.create({
                 className: 'error',
-                content: '<h4>Error</h4><p>' + response.message + '</p>'
+                content: '<span class="go-red">Error:</span> ' + response.message
             });
             return false;
         }
@@ -870,7 +870,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
             $timeout(function() {

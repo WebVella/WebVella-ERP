@@ -420,7 +420,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>The entity was successfully created</p>'
+                content: '<span class="go-green">Success:</span> ' + 'The entity was successfully created'
             });
             $modalInstance.close('success');
             webvellaRootService.reloadCurrentState($state, {});
@@ -474,7 +474,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<h4>Success</h4><p>' + response.message + '</p>'
+                content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
