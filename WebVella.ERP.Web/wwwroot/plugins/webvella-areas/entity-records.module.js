@@ -97,15 +97,21 @@
         contentData.records = angular.copy(resolvedListRecords.data);
         contentData.recordsMeta = angular.copy(resolvedListRecords.fieldsMeta);
 
-
-
         //#region << Set Environment >>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
         contentData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
+
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 
         contentData.entity = webvellaAreasService.getCurrentEntityFromArea($stateParams.entityName, contentData.currentArea);
+        contentData.defaultView = {};
+        for (var i = 0; i < contentData.entity.recordViews.length; i++) {
+        	if (contentData.entity.recordViews[i].default) {
+        		contentData.defaultView = contentData.entity.recordViews[i];
+        	}
+        }
+
         //#endregion
 
 

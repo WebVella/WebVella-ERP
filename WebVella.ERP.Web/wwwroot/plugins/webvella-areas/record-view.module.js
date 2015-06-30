@@ -95,14 +95,14 @@
         //// Process
         function getViewSuccessCallback(response) {
             extendedView = response.object;
-            webvellaAreasService.getEntityRecord("121212", "area", getRecordSuccessCallback, errorCallback);
+            webvellaAreasService.getEntityRecord($stateParams.recordId, $stateParams.entityName, getRecordSuccessCallback, errorCallback);
         }
 
         function errorCallback(response) {
             alert("Error getting the view");
         }
 
-        webvellaAreasService.getViewMetaByName("area", "area", getViewSuccessCallback, errorCallback);
+        webvellaAreasService.getViewByName($stateParams.viewName, $stateParams.entityName, getViewSuccessCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAreas>entities> END state.resolved');
