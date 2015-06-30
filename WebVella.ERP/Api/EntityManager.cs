@@ -370,7 +370,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordLists(Guid entityId, List<RecordList> recordLists, bool checkId = false)
+		private List<ErrorModel> ValidateRecordLists(Guid entityId, List<InputRecordList> recordLists, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -385,10 +385,10 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordList(Entity entity, RecordList recordlist, bool checkId = false)
+		private List<ErrorModel> ValidateRecordList(Entity entity, InputRecordList recordlist, bool checkId = false)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
-			/*
+			
 			if (!recordlist.Id.HasValue || recordlist.Id.Value == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
@@ -409,67 +409,39 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabel(recordlist.Label));
 
-			if (recordlist.Filters != null && recordlist.Filters.Count > 0)
-			{
 
-				foreach (var filter in recordlist.Filters)
-				{
-					if (!filter.FieldId.HasValue || filter.FieldId.Value == Guid.Empty)
-						errorList.Add(new ErrorModel("recordsLists.filters.fieldId", null, "FieldId is required!"));
 
-					if (filter.EntityId.HasValue && filter.EntityId.Value != Guid.Empty)
-					{
-						IStorageEntity verifiedEntity = EntityRepository.Read(filter.EntityId.Value);
+			//if (recordlist.Fields != null && recordlist.Fields.Count > 0)
+			//{
+			//	foreach (var field in recordlist.Fields)
+			//	{
+			//		if (!field.Id.HasValue || field.Id.Value == Guid.Empty)
+			//			errorList.Add(new ErrorModel("recordsLists.fields.id", null, "Id is required!"));
 
-						if (verifiedEntity != null || filter.EntityId == entity.Id)
-						{
-							Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
+			//		if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
+			//		{
+			//			IStorageEntity verifiedEntity = EntityRepository.Read(field.EntityId.Value);
 
-							if (currentEntity.Fields.Where(f => f.Id == filter.FieldId).Count() == 0)
-								errorList.Add(new ErrorModel("recordsLists.filters.fieldId", filter.FieldId.ToString(), "Filter with such Id does not exist!"));
-						}
-						else
-							errorList.Add(new ErrorModel("recordsLists.filters.entityId", filter.EntityId.ToString(), "Entity with such Id does not exist!"));
-					}
-					else
-						errorList.Add(new ErrorModel("recordsLists.filters.entityId", null, "EntityId is required!"));
+			//			if (verifiedEntity != null || field.EntityId == entity.Id)
+			//			{
+			//				Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
 
-					if (string.IsNullOrWhiteSpace(filter.Value))
-						errorList.Add(new ErrorModel("recordsLists.filters.value", null, "Value is required!"));
-				}
-			}
+			//				if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
+			//					errorList.Add(new ErrorModel("recordsLists.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
+			//			}
+			//			else
+			//				errorList.Add(new ErrorModel("recordsLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
+			//		}
+			//		else
+			//			errorList.Add(new ErrorModel("recordsLists.fields.entityId", null, "EntityId is required!"));
 
-			if (recordlist.Fields != null && recordlist.Fields.Count > 0)
-			{
-				foreach (var field in recordlist.Fields)
-				{
-					if (!field.Id.HasValue || field.Id.Value == Guid.Empty)
-						errorList.Add(new ErrorModel("recordsLists.fields.id", null, "Id is required!"));
-
-					if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
-					{
-						IStorageEntity verifiedEntity = EntityRepository.Read(field.EntityId.Value);
-
-						if (verifiedEntity != null || field.EntityId == entity.Id)
-						{
-							Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
-
-							if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
-								errorList.Add(new ErrorModel("recordsLists.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
-						}
-						else
-							errorList.Add(new ErrorModel("recordsLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
-					}
-					else
-						errorList.Add(new ErrorModel("recordsLists.fields.entityId", null, "EntityId is required!"));
-
-					if (!field.Position.HasValue)
-						errorList.Add(new ErrorModel("recordsLists.fields.position", null, "Position is required!"));
-				}
-			}
-			else
-				errorList.Add(new ErrorModel("recordsLists.fields", recordlist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
-				*/
+			//		if (!field.Position.HasValue)
+			//			errorList.Add(new ErrorModel("recordsLists.fields.position", null, "Position is required!"));
+			//	}
+			//}
+			//else
+			//	errorList.Add(new ErrorModel("recordsLists.fields", recordlist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
+				
 			return errorList;
 		}
 
@@ -1938,7 +1910,47 @@ namespace WebVella.ERP.Api
 
 		#region << RecordsList methods >>
 
-		public RecordListResponse CreateRecordList(Guid entityId, RecordList recordList)
+		public RecordListResponse CreateRecordList(Guid entityId, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return CreateRecordList(entity, inputRecordList);
+		}
+
+		public RecordListResponse CreateRecordList(string entityName, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return CreateRecordList(entity, inputRecordList);
+		}
+
+		private RecordListResponse CreateRecordList(Entity entity, InputRecordList inputRecordList)
 		{
 			RecordListResponse response = new RecordListResponse
 			{
@@ -1946,22 +1958,18 @@ namespace WebVella.ERP.Api
 				Message = "The list was successfully created!",
 			};
 
+
+			if (!inputRecordList.Id.HasValue)
+				inputRecordList.Id = Guid.NewGuid();
+
+			RecordList recordList = inputRecordList.MapTo<RecordList>();
+
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, recordList, false);
+				response.Errors = ValidateRecordList(entity, inputRecordList, false);
+
+				recordList = inputRecordList.MapTo<RecordList>();
 
 				if (response.Errors.Count > 0)
 				{
@@ -2003,7 +2011,47 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordListResponse UpdateRecordList(Guid entityId, RecordList recordList)
+		public RecordListResponse UpdateRecordList(Guid entityId, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return UpdateRecordList(entity, inputRecordList);
+		}
+
+		public RecordListResponse UpdateRecordList(string entityName, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return UpdateRecordList(entity, inputRecordList);
+		}
+
+		private RecordListResponse UpdateRecordList(Entity entity, InputRecordList inputRecordList)
 		{
 			RecordListResponse response = new RecordListResponse
 			{
@@ -2011,22 +2059,14 @@ namespace WebVella.ERP.Api
 				Message = "The list was successfully updated!",
 			};
 
+			RecordList recordList = inputRecordList.MapTo<RecordList>();
+
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, recordList, true);
+				response.Errors = ValidateRecordList(entity, inputRecordList, true);
+
+				recordList = inputRecordList.MapTo<RecordList>();
 
 				if (response.Errors.Count > 0)
 				{
@@ -2072,7 +2112,65 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, RecordList recordList)
+		public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
+
+			if (updatedList == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "List with such Id does not exist!";
+				return response;
+			}
+
+			return PartialUpdateRecordList(entity, updatedList, inputRecordList);
+		}
+
+		public RecordListResponse PartialUpdateRecordList(string entityName, string name, InputRecordList inputRecordList)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
+
+			if (updatedList == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "List with such Name does not exist!";
+				return response;
+			}
+
+			return PartialUpdateRecordList(entity, updatedList, inputRecordList);
+		}
+
+		private RecordListResponse PartialUpdateRecordList(Entity entity, RecordList updatedList, InputRecordList inputRecordList)
 		{
 			RecordListResponse response = new RecordListResponse
 			{
@@ -2082,39 +2180,31 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				if (inputRecordList.Label != null)
+					updatedList.Label = inputRecordList.Label;
+				if (inputRecordList.Default.HasValue)
+					updatedList.Default = inputRecordList.Default;
+				if (inputRecordList.System.HasValue)
+					updatedList.System = inputRecordList.System;
+				if (inputRecordList.Weight.HasValue)
+					updatedList.Weight = inputRecordList.Weight;
+				if (inputRecordList.CssClass != null)
+					updatedList.CssClass = inputRecordList.CssClass;
+				if (inputRecordList.Type != null)
+					updatedList.Type = inputRecordList.Type;
+				if (inputRecordList.RecordsLimit.HasValue)
+					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
+				if (inputRecordList.PageSize.HasValue)
+					updatedList.PageSize = inputRecordList.PageSize.Value;
+				if (inputRecordList.Columns != null)
+					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
+				if (inputRecordList.Query != null)
+					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
+				if (inputRecordList.Sorts != null)
+					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
 
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
-				RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
-
-				if (updatedList == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "List with such Id does not exist!";
-					return response;
-				}
-				/*
-				if (!string.IsNullOrWhiteSpace(recordList.Label))
-					updatedList.Label = recordList.Label;
-				if (!recordList.Type.HasValue)
-					updatedList.Type = recordList.Type;
-				if (recordList.Filters != null)
-					updatedList.Filters = recordList.Filters;
-				if (recordList.Fields != null)
-					updatedList.Fields = recordList.Fields;
-				*/
-				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, recordList, true);
+				response.Object = inputRecordList.MapTo<RecordList>();
+				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
 
 				if (response.Errors.Count > 0)
 				{
@@ -2138,7 +2228,7 @@ namespace WebVella.ERP.Api
 			catch (Exception e)
 			{
 				response.Success = false;
-				response.Object = recordList;
+				response.Object = inputRecordList.MapTo<RecordList>();
 				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
 				response.Message = e.Message + e.StackTrace;
@@ -2148,7 +2238,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordList;
+			response.Object = updatedList;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
@@ -2215,7 +2305,107 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
+		public RecordListResponse DeleteRecordList(string entityName, string name)
+		{
+			RecordListResponse response = new RecordListResponse
+			{
+				Success = true,
+				Message = "The list was successfully deleted!",
+			};
+
+			try
+			{
+				IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return response;
+				}
+
+				Entity entity = storageEntity.MapTo<Entity>();
+
+				RecordList recordList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
+
+				if (recordList == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The list was not deleted. Validation error occurred!";
+					response.Errors.Add(new ErrorModel("name", name, "List with such Name does not exist!"));
+					return response;
+				}
+
+				entity.RecordLists.Remove(recordList);
+
+				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+				bool result = EntityRepository.Update(updatedEntity);
+				if (!result)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "The list was not updated! An internal error occurred!";
+					return response;
+				}
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "The list was not deleted. An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.UtcNow;
+			return response;
+		}
+
 		public RecordListCollectionResponse ReadRecordLists(Guid entityId)
+		{
+			RecordListCollectionResponse response = new RecordListCollectionResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+
+			return ReadRecordLists(entity);
+		}
+
+		public RecordListCollectionResponse ReadRecordLists(string entityName)
+		{
+			RecordListCollectionResponse response = new RecordListCollectionResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			return ReadRecordLists(entity);
+		}
+
+		public RecordListCollectionResponse ReadRecordLists(Entity entity)
 		{
 			RecordListCollectionResponse response = new RecordListCollectionResponse
 			{
@@ -2225,22 +2415,188 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				EntityListResponse entityResponse = ReadEntities();
+				List<Entity> entities = new List<Entity>();
+				if (entityResponse.Object != null)
+					entities = entityResponse.Object.Entities;
 
-				if (storageEntity == null)
+				FieldListResponse fieldsResponse = ReadFields(entity.Id);
+				List<Field> fields = new List<Field>();
+				if (fieldsResponse.Object != null)
+					fields = fieldsResponse.Object.Fields;
+
+				if (entity.RecordLists != null)
 				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
+					foreach (var recordList in entity.RecordLists)
+					{
+						if (recordList.Columns != null)
+						{
+							foreach (var column in recordList.Columns)
+							{
+								if (column is RecordListFieldItem)
+								{
+									Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
+									if (field != null)
+									{
+										((RecordListFieldItem)column).FieldName = field.Name;
+										((RecordListFieldItem)column).FieldLabel = field.Label;
+									}
+								}
+								if (column is RecordListRelationFieldItem)
+								{
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
+									if (relEntity != null)
+									{
+										((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
+										((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
+									}
 
-				Entity entity = storageEntity.MapTo<Entity>();
+									Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
+									if (field != null)
+									{
+										((RecordListRelationFieldItem)column).FieldName = field.Name;
+										((RecordListRelationFieldItem)column).FieldLabel = field.Label;
+									}
+								}
+							}
+						}
+					}
+				}
 
 				RecordListCollection recordListCollection = new RecordListCollection();
 				recordListCollection.RecordLists = entity.RecordLists;
 
 				response.Object = recordListCollection;
+			}
+			catch (Exception e)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+#if DEBUG
+				response.Message = e.Message + e.StackTrace;
+#else
+                response.Message = "An internal error occurred!";
+#endif
+				return response;
+			}
+
+			response.Timestamp = DateTime.Now;
+
+			return response;
+		}
+
+		public RecordListResponse ReadRecordList(Guid entityId, Guid id)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordList recordList = entity.RecordLists.FirstOrDefault(r => r.Id == id);
+
+			if (recordList == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Record List with such Id does not exist!";
+				return response;
+			}
+
+
+			return ReadRecordList(entity, recordList);
+		}
+
+		public RecordListResponse ReadRecordList(string entityName, string name)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			RecordList recordList = entity.RecordLists.FirstOrDefault(r => r.Name == name);
+
+			if (recordList == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Record List with such Name does not exist!";
+				return response;
+			}
+
+			return ReadRecordList(entity, recordList);
+		}
+
+		private RecordListResponse ReadRecordList(Entity entity, RecordList recordList)
+		{
+			RecordListResponse response = new RecordListResponse
+			{
+				Success = true,
+				Message = "The list was successfully returned!",
+			};
+
+			try
+			{
+				EntityListResponse entityResponse = ReadEntities();
+				List<Entity> entities = new List<Entity>();
+				if (entityResponse.Object != null)
+					entities = entityResponse.Object.Entities;
+
+				FieldListResponse fieldsResponse = ReadFields(entity.Id);
+				List<Field> fields = new List<Field>();
+				if (fieldsResponse.Object != null)
+					fields = fieldsResponse.Object.Fields;
+
+				if (recordList.Columns != null)
+				{
+					foreach (var column in recordList.Columns)
+					{
+						if (column is RecordListFieldItem)
+						{
+							Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
+							if (field != null)
+							{
+								((RecordListFieldItem)column).FieldName = field.Name;
+								((RecordListFieldItem)column).FieldLabel = field.Label;
+							}
+						}
+						if (column is RecordListRelationFieldItem)
+						{
+							Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
+							if (relEntity != null)
+							{
+								((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
+								((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
+							}
+
+							Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
+							if (field != null)
+							{
+								((RecordListRelationFieldItem)column).FieldName = field.Name;
+								((RecordListRelationFieldItem)column).FieldLabel = field.Label;
+							}
+						}
+					}
+				}
+
+				response.Object = recordList;
 			}
 			catch (Exception e)
 			{
@@ -2282,58 +2638,6 @@ namespace WebVella.ERP.Api
 				}
 
 				response.Object = recordListCollection;
-			}
-			catch (Exception e)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "An internal error occurred!";
-#endif
-				return response;
-			}
-
-			response.Timestamp = DateTime.Now;
-
-			return response;
-		}
-
-		public RecordListResponse ReadRecordList(Guid entityId, Guid id)
-		{
-			RecordListResponse response = new RecordListResponse
-			{
-				Success = true,
-				Message = "The list was successfully returned!",
-			};
-
-			try
-			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
-				RecordList recordsList = entity.RecordLists.FirstOrDefault(v => v.Id == id);
-
-				if (recordsList == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Validation error occurred!";
-					response.Errors.Add(new ErrorModel("id", id.ToString(), "List with such Id does not exist!"));
-					return response;
-				}
-
-				response.Object = recordsList;
 			}
 			catch (Exception e)
 			{
@@ -2678,7 +2982,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordView;
+			response.Object = updatedView;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
