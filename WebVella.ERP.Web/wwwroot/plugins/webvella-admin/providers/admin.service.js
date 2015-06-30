@@ -55,6 +55,7 @@ function guid() {
         serviceInstance.getEntityView = getEntityView;
         serviceInstance.createEntityView = createEntityView;
         serviceInstance.updateEntityView = updateEntityView;
+        serviceInstance.deleteEntityView = deleteEntityView;
         serviceInstance.patchEntityView = patchEntityView;
         serviceInstance.safeAddArrayPlace = safeAddArrayPlace;
         serviceInstance.safeUpdateArrayPlace = safeUpdateArrayPlace;
@@ -571,6 +572,12 @@ function guid() {
         	$log.debug('webvellaAdmin>providers>admin.service>patchEntityView> function called');
         	$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName, data: viewObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+    	///////////////////////
+        function deleteEntityView(viewName, entityName, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>deleteEntityView> function called');
+        	$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
         ////////////////////
         function safeAddArrayPlace(newObject, array) {
             //If the place is empty or null give it a very high number which will be made correct later

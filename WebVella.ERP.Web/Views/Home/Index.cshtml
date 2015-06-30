@@ -78,7 +78,10 @@
                 $logProvider.debugEnabled(wvAppConstants.debugEnabled);
 
                 ngToastProvider.configure({
-                    animation: 'fade'
+                	animation: 'fade',
+                	horizontalPosition: 'center',
+                	timeout: 4000,
+                	maxNumber:1
                 });
             };
 

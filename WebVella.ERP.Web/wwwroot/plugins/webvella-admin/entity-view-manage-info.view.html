@@ -54,7 +54,7 @@
 		</ul>
 
 	</div>
-	<a class="btn btn-link go-red pull-right">[ Delete view ]</a>
+	<a ng-click="contentData.deleteViewModal()" class="btn btn-link go-red pull-right">[ Delete view ]</a>
 	<ul class="nav nav-pills">
 		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
 		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
@@ -79,7 +79,7 @@
 				<div class="row">
 					<label class="col-sm-2 control-label" for="default">Default</label>
 					<div class="col-sm-4 position-relative">
-						<a href="javascript:void(0)" editable-checkbox="contentData.view.default" e-title="make this default view" onbeforesave="contentData.defaultOptionPatch(role.id, 'default', $data)">
+						<a href="javascript:void(0)" editable-checkbox="contentData.view.default" e-title="make this default view" onbeforesave="contentData.fieldUpdate('default',$data)">
 							<span ng-show="contentData.view.default"><i class='fa fa-fw fa-check go-green'></i> true</span>
 							<span ng-show="!contentData.view.default"><i class='fa fa-fw fa-close go-red'></i> false</span>
 						</a>
@@ -118,3 +118,20 @@
 
 	</div>
 </div>
+
+<script type="text/ng-template" id="deleteViewModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Delete a view</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div ng-hide="popupData.hasError">
+			<p>Are you sure that you need this view deleted?</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete View</button>
+		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
