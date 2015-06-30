@@ -2528,10 +2528,15 @@ table .btn-xs.btn-link {
 
 a.editable,
 span.editable {
-	color: #337ab7;
+	color: #333;
+	overflow: hidden;
 	display: inline-block;
 	line-height: 20px;
 	padding: 6px 12px;
+	background-color: #fafafa;
+	border: 1px solid #ccc;
+	padding-right: 40px;
+	padding-right: 40px;
 	border: 1px solid transparent;
 	border-radius: 3px;
 	position: relative;

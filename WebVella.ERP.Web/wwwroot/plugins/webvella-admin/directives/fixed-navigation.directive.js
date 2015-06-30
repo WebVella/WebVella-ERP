@@ -45,27 +45,28 @@
             	//var tabsElement = document.getElementByClass('tabs-header');
                 var tabsElement = document.getElementsByClassName("nav-tabs");
                 var tabsElementHeight = tabsElement[0].getBoundingClientRect().height;
-                var sideDropZoneHeight = clh - rectInitial.top - bottomScrollHeight - tabsElementHeight;
-                var tabsPane = document.getElementsByClassName('tab-pane');
-                for (var i = 0; i < tabsPane.length; i++) {
-                	tabsPane[i].style.height = sideDropZoneHeight + "px";
-                };
+                var sideDropZoneHeight = clh - rectInitial.top - bottomScrollHeight;
+
 
                 var styles = {
                     "position": "fixed",
                     "right": '14px',
                     "background": "white",
+					"overflow-y":"scroll",
                     "display": 'block',
                     "top": '14px',
-                    "width":rect.width + "px"
+                    "width": rect.width + "px",
+                    "height":sideDropZoneHeight + "px"
                 };
                 var reverseStyles = {
                     "position": "static",
                     "right": 'auto',
                     "background": "white",
+                    "overflow-y": "scroll",
                     "display": 'block',
                     "top": 'auto',
-                    "width": "auto"
+                    "width": "auto",
+                    "height": sideDropZoneHeight + "px"
                 };
                 if (offsetY > rectInitial.top) {
                     element.css(styles);

@@ -648,6 +648,23 @@ namespace WebVella.ERP.Web.Controllers
         #endregion
 
         #region << Records >>
+        // Get an entity record list
+        // GET: api/v1/en_US/record/{entityName}/list
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+        public IActionResult GetRecord(string recordId, string entityName)
+        {
+
+            QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
+
+            EntityQuery query = new EntityQuery(entityName, "*", filterObj, null, null, null);
+
+            QueryResponse result = recMan.Find(query);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+
         // Create an entity record
         // POST: api/v1/en_US/record/{entityName}
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
@@ -857,7 +874,7 @@ namespace WebVella.ERP.Web.Controllers
         public IActionResult CreateAreaEntityRelation(Guid areaId, Guid entityId)
         {
             EntityRecord record = new EntityRecord();
-            record["id"] = null;
+            record["id"] = Guid.NewGuid();
             record["area_id"] = areaId;
             record["entity_id"] = entityId;
             //TODO - created and modified by when we have the functionality

@@ -94,40 +94,42 @@
 					<table class="table table-bordered table-permissions">
 						<thead>
 							<tr>
-								<th style="width:80px" class="text-center">create</th>
-								<th style="width:80px" class="text-center">read</th>
-								<th style="width:80px" class="text-center">update</th>
-								<th style="width:80px" class="text-center">delete</th>
-								<th>role name</th>
+								<th style="max-width:250px">role name</th>
+								<th>create</th>
+								<th>read</th>
+								<th>update</th>
+								<th>delete</th>
+
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="role in contentData.entity.roles">
-								<td class="text-center position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
+								<td>{{role.label}}</td>
+								<td class="position-relative">
+									<a style="width:80px;" href="javascript:void(0)" editable-checkbox="role.canRead" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
 										<i ng-show="role.canRead" class='fa fa-fw fa-check go-green'></i>
 										<i ng-show="!role.canRead" class='fa fa-fw fa-close go-red'></i>
 									</a>
 								</td>
-								<td class="text-center position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
+								<td class="position-relative">
+									<a  style="width:80px;" href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
 										<i ng-show="role.canCreate" class='fa fa-fw fa-check go-green'></i>
 										<i ng-show="!role.canCreate" class='fa fa-fw fa-close go-red'></i>
 									</a>
 								</td>
-								<td class="text-center position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
+								<td class="position-relative">
+									<a  style="width:80px;" href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
 										<i ng-show="role.canUpdate" class='fa fa-fw fa-check go-green'></i>
 										<i ng-show="!role.canUpdate" class='fa fa-fw fa-close go-red'></i>
 									</a>
 								</td>
-								<td class="text-center position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
+								<td class="position-relative">
+									<a  style="width:80px;" href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="permission granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
 										<i ng-show="role.canDelete" class='fa fa-fw fa-check go-green'></i>
 										<i ng-show="!role.canDelete" class='fa fa-fw fa-close go-red'></i>
 									</a>
 								</td>
-								<td>{{role.label}}</td>
+
 							</tr>
 						</tbody>
 					</table>
