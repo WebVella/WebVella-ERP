@@ -484,7 +484,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewRelationFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return "fieldFromRelation" /*Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation).ToLower();*/ } }
+		public static string ItemType { get { return "fieldFromRelation"; /*Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation).ToLower();*/ } }
 
 		[JsonProperty(PropertyName = "relationId")]
 		public Guid RelationId { get; set; }
