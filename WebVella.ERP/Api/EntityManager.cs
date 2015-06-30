@@ -984,14 +984,158 @@ namespace WebVella.ERP.Api
 			try
 			{
 				List<IStorageEntity> storageEntityList = EntityRepository.Read();
+				List<Entity> entities = storageEntityList.MapTo<Entity>();
 
-				EntityList entityList = new EntityList();
-				foreach (var storageEntity in storageEntityList)
+				List<RecordList> recordLists = new List<RecordList>();
+				List<RecordView> recordViews = new List<RecordView>();
+				List<Field> fields = new List<Field>();
+
+				foreach(var entity in entities)
 				{
-					Entity entity = storageEntity.MapTo<Entity>();
-					entityList.Entities.Add(entity);
+					recordLists.AddRange(entity.RecordLists);
+					recordViews.AddRange(entity.RecordViews);
+					fields.AddRange(entity.Fields);
 				}
 
+				foreach (var entity in entities)
+				{
+					if (entity.RecordLists != null)
+					{
+						foreach (var recordList in entity.RecordLists)
+						{
+							if (recordList.Columns != null)
+							{
+								foreach (var column in recordList.Columns)
+								{
+									if (column is RecordListFieldItem)
+									{
+										Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
+										if (field != null)
+										{
+											((RecordListFieldItem)column).FieldName = field.Name;
+											((RecordListFieldItem)column).FieldLabel = field.Label;
+										}
+									}
+									if (column is RecordListRelationFieldItem)
+									{
+										Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
+										if (relEntity != null)
+										{
+											((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
+											((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
+										}
+
+										Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
+										if (field != null)
+										{
+											((RecordListRelationFieldItem)column).FieldName = field.Name;
+											((RecordListRelationFieldItem)column).FieldLabel = field.Label;
+										}
+									}
+								}
+							}
+						}
+					}
+
+					if (entity.RecordViews != null)
+					{
+						foreach (var recordView in entity.RecordViews)
+						{
+							if (recordView.Regions == null)
+								continue;
+
+							foreach (var region in recordView.Regions)
+							{
+								if (region.Sections == null)
+									continue;
+
+								foreach (var section in region.Sections)
+								{
+									if (section.Rows == null)
+										continue;
+
+									foreach (var row in section.Rows)
+									{
+										if (row.Columns == null)
+											continue;
+
+										foreach (var column in row.Columns)
+										{
+											if (column.Items == null)
+												continue;
+
+											foreach (var item in column.Items)
+											{
+												if (item is RecordViewFieldItem)
+												{
+													Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
+													if (field != null)
+													{
+														((RecordViewFieldItem)item).FieldName = field.Name;
+														((RecordViewFieldItem)item).FieldLabel = field.Label;
+														((RecordViewFieldItem)item).FieldTypeId = field.GetFieldType();
+													}
+												}
+												if (item is RecordViewListItem)
+												{
+													RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
+													if (list != null)
+													{
+														((RecordViewListItem)item).ListName = list.Name;
+														((RecordViewListItem)item).ListLabel = list.Label;
+													}
+
+													Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
+													if (listEntity != null)
+													{
+														((RecordViewListItem)item).EntityName = listEntity.Name;
+														((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
+													}
+												}
+												if (item is RecordViewViewItem)
+												{
+													RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
+													if (recView != null)
+													{
+														((RecordViewViewItem)item).ViewName = recView.Name;
+														((RecordViewViewItem)item).ViewLabel = recView.Label;
+													}
+
+													Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
+													if (listEntity != null)
+													{
+														((RecordViewViewItem)item).EntityName = listEntity.Name;
+														((RecordViewViewItem)item).EntityLabel = listEntity.Label;
+													}
+												}
+												if (item is RecordViewRelationFieldItem)
+												{
+													Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
+													if (relEntity != null)
+													{
+														((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
+														((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
+													}
+
+													Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
+													if (field != null)
+													{
+														((RecordViewRelationFieldItem)item).FieldName = field.Name;
+														((RecordViewRelationFieldItem)item).FieldLabel = field.Label;
+														((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				EntityList entityList = new EntityList();
+				entityList.Entities = entities;
 				response.Object = entityList;
 			}
 			catch (Exception e)
@@ -1020,13 +1164,18 @@ namespace WebVella.ERP.Api
 				Timestamp = DateTime.UtcNow
 			};
 
-			Entity entity = new Entity();
-
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(id);
-				if (storageEntity != null)
-					response.Object = storageEntity.MapTo<Entity>();
+				EntityListResponse entityListResponse = ReadEntities();
+
+				if (entityListResponse != null && entityListResponse.Object != null)
+				{
+					List<Entity> entities = entityListResponse.Object.Entities;
+
+					Entity entity = entities.FirstOrDefault(e => e.Id == id);
+					if (entity != null)
+						response.Object = entity;
+				}
 			}
 			catch (Exception e)
 			{
@@ -1054,13 +1203,18 @@ namespace WebVella.ERP.Api
 				Timestamp = DateTime.UtcNow
 			};
 
-			Entity entity = new Entity();
-
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(name);
-				if (storageEntity != null)
-					response.Object = storageEntity.MapTo<Entity>();
+				EntityListResponse entityListResponse = ReadEntities();
+
+				if (entityListResponse != null && entityListResponse.Object != null)
+				{
+					List<Entity> entities = entityListResponse.Object.Entities;
+
+					Entity entity = entities.FirstOrDefault(e => e.Name == name);
+					if (entity != null)
+						response.Object = entity;
+				}
 			}
 			catch (Exception e)
 			{
@@ -2416,54 +2570,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				EntityListResponse entityResponse = ReadEntities();
-				List<Entity> entities = new List<Entity>();
-				if (entityResponse.Object != null)
-					entities = entityResponse.Object.Entities;
-
-				FieldListResponse fieldsResponse = ReadFields(entity.Id);
-				List<Field> fields = new List<Field>();
-				if (fieldsResponse.Object != null)
-					fields = fieldsResponse.Object.Fields;
-
-				if (entity.RecordLists != null)
-				{
-					foreach (var recordList in entity.RecordLists)
-					{
-						if (recordList.Columns != null)
-						{
-							foreach (var column in recordList.Columns)
-							{
-								if (column is RecordListFieldItem)
-								{
-									Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
-									if (field != null)
-									{
-										((RecordListFieldItem)column).FieldName = field.Name;
-										((RecordListFieldItem)column).FieldLabel = field.Label;
-									}
-								}
-								if (column is RecordListRelationFieldItem)
-								{
-									Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
-									if (relEntity != null)
-									{
-										((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
-										((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
-									}
-
-									Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
-									if (field != null)
-									{
-										((RecordListRelationFieldItem)column).FieldName = field.Name;
-										((RecordListRelationFieldItem)column).FieldLabel = field.Label;
-									}
-								}
-							}
-						}
-					}
-				}
-
 				RecordListCollection recordListCollection = new RecordListCollection();
 				recordListCollection.RecordLists = entity.RecordLists;
 
@@ -2554,49 +2660,7 @@ namespace WebVella.ERP.Api
 			};
 
 			try
-			{
-				EntityListResponse entityResponse = ReadEntities();
-				List<Entity> entities = new List<Entity>();
-				if (entityResponse.Object != null)
-					entities = entityResponse.Object.Entities;
-
-				FieldListResponse fieldsResponse = ReadFields(entity.Id);
-				List<Field> fields = new List<Field>();
-				if (fieldsResponse.Object != null)
-					fields = fieldsResponse.Object.Fields;
-
-				if (recordList.Columns != null)
-				{
-					foreach (var column in recordList.Columns)
-					{
-						if (column is RecordListFieldItem)
-						{
-							Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
-							if (field != null)
-							{
-								((RecordListFieldItem)column).FieldName = field.Name;
-								((RecordListFieldItem)column).FieldLabel = field.Label;
-							}
-						}
-						if (column is RecordListRelationFieldItem)
-						{
-							Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
-							if (relEntity != null)
-							{
-								((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
-								((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
-							}
-
-							Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
-							if (field != null)
-							{
-								((RecordListRelationFieldItem)column).FieldName = field.Name;
-								((RecordListRelationFieldItem)column).FieldLabel = field.Label;
-							}
-						}
-					}
-				}
-
+			{				
 				response.Object = recordList;
 			}
 			catch (Exception e)
@@ -2627,8 +2691,6 @@ namespace WebVella.ERP.Api
 			try
 			{
 				List<IStorageEntity> storageEntities = EntityRepository.Read();
-
-				//Entity entity = storageEntity.MapTo<Entity>();
 
 				RecordListCollection recordListCollection = new RecordListCollection();
 				recordListCollection.RecordLists = new List<RecordList>();
@@ -3161,122 +3223,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				EntityListResponse entityResponse = ReadEntities();
-				List<Entity> entities = new List<Entity>();
-				if (entityResponse.Object != null)
-					entities = entityResponse.Object.Entities;
-
-				RecordListCollectionResponse recordListsResponse = ReadRecordLists();
-				List<RecordList> recordLists = new List<RecordList>();
-				if (recordListsResponse.Object != null)
-					recordLists = recordListsResponse.Object.RecordLists;
-
-				RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
-				List<RecordView> recordViews = new List<RecordView>();
-				if (recordViewsResponse.Object != null)
-					recordViews = recordViewsResponse.Object.RecordViews;
-
-				FieldListResponse fieldsResponse = ReadFields(entity.Id);
-				List<Field> fields = new List<Field>();
-				if (fieldsResponse.Object != null)
-					fields = fieldsResponse.Object.Fields;
-
-				if (entity.RecordViews != null)
-				{
-					foreach (var recordView in entity.RecordViews)
-					{
-						if (recordView.Regions == null)
-							continue;
-
-						foreach (var region in recordView.Regions)
-						{
-							if (region.Sections == null)
-								continue;
-
-							foreach (var section in region.Sections)
-							{
-								if (section.Rows == null)
-									continue;
-
-								foreach (var row in section.Rows)
-								{
-									if (row.Columns == null)
-										continue;
-
-									foreach (var column in row.Columns)
-									{
-										if (column.Items == null)
-											continue;
-
-										foreach (var item in column.Items)
-										{
-											if (item is RecordViewFieldItem)
-											{
-												Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
-												if (field != null)
-												{
-													((RecordViewFieldItem)item).FieldName = field.Name;
-													((RecordViewFieldItem)item).FieldLabel = field.Label;
-													((RecordViewFieldItem)item).FieldTypeId = field.GetFieldType();
-												}
-											}
-											if (item is RecordViewListItem)
-											{
-												RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
-												if (list != null)
-												{
-													((RecordViewListItem)item).ListName = list.Name;
-													((RecordViewListItem)item).ListLabel = list.Label;
-												}
-
-												Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
-												if (listEntity != null)
-												{
-													((RecordViewListItem)item).EntityName = listEntity.Name;
-													((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
-												}
-											}
-											if (item is RecordViewViewItem)
-											{
-												RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
-												if (recView != null)
-												{
-													((RecordViewViewItem)item).ViewName = recView.Name;
-													((RecordViewViewItem)item).ViewLabel = recView.Label;
-												}
-
-												Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
-												if (listEntity != null)
-												{
-													((RecordViewViewItem)item).EntityName = listEntity.Name;
-													((RecordViewViewItem)item).EntityLabel = listEntity.Label;
-												}
-											}
-											if (item is RecordViewRelationFieldItem)
-											{
-												Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
-												if (relEntity != null)
-												{
-													((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
-													((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
-												}
-
-												Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
-												if (field != null)
-												{
-													((RecordViewRelationFieldItem)item).FieldName = field.Name;
-													((RecordViewRelationFieldItem)item).FieldLabel = field.Label;
-													((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
 				RecordViewCollection recordViewList = new RecordViewCollection();
 				recordViewList.RecordViews = entity.RecordViews;
 
@@ -3367,116 +3313,7 @@ namespace WebVella.ERP.Api
 			};
 
 			try
-			{
-				EntityListResponse entityResponse = ReadEntities();
-				List<Entity> entities = new List<Entity>();
-				if (entityResponse.Object != null)
-					entities = entityResponse.Object.Entities;
-
-				RecordListCollectionResponse recordListsResponse = ReadRecordLists();
-				List<RecordList> recordLists = new List<RecordList>();
-				if (recordListsResponse.Object != null)
-					recordLists = recordListsResponse.Object.RecordLists;
-
-				RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
-				List<RecordView> recordViews = new List<RecordView>();
-				if (recordViewsResponse.Object != null)
-					recordViews = recordViewsResponse.Object.RecordViews;
-
-				FieldListResponse fieldsResponse = ReadFields(entity.Id);
-				List<Field> fields = new List<Field>();
-				if (fieldsResponse.Object != null)
-					fields = fieldsResponse.Object.Fields;
-
-				if (recordView.Regions != null)
-				{
-					foreach (var region in recordView.Regions)
-					{
-						if (region.Sections == null)
-							continue;
-
-						foreach (var section in region.Sections)
-						{
-							if (section.Rows == null)
-								continue;
-
-							foreach (var row in section.Rows)
-							{
-								if (row.Columns == null)
-									continue;
-
-								foreach (var column in row.Columns)
-								{
-									if (column.Items == null)
-										continue;
-
-									foreach (var item in column.Items)
-									{
-										if (item is RecordViewFieldItem)
-										{
-											Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
-											if (field != null)
-											{
-												((RecordViewFieldItem)item).FieldName = field.Name;
-												((RecordViewFieldItem)item).FieldLabel = field.Label;
-												((RecordViewFieldItem)item).FieldTypeId = field.GetFieldType();
-											}
-										}
-										if (item is RecordViewListItem)
-										{
-											RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
-											if (list != null)
-											{
-												((RecordViewListItem)item).ListName = list.Name;
-												((RecordViewListItem)item).ListLabel = list.Label;
-											}
-
-											Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
-											if (listEntity != null)
-											{
-												((RecordViewListItem)item).EntityName = listEntity.Name;
-												((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
-											}
-										}
-										if (item is RecordViewViewItem)
-										{
-											RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
-											if (recView != null)
-											{
-												((RecordViewViewItem)item).ViewName = recView.Name;
-												((RecordViewViewItem)item).ViewLabel = recView.Label;
-											}
-
-											Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
-											if (listEntity != null)
-											{
-												((RecordViewViewItem)item).EntityName = listEntity.Name;
-												((RecordViewViewItem)item).EntityLabel = listEntity.Label;
-											}
-										}
-										if (item is RecordViewRelationFieldItem)
-										{
-											Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
-											if (relEntity != null)
-											{
-												((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
-												((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
-											}
-
-											Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
-											if (field != null)
-											{
-												((RecordViewRelationFieldItem)item).FieldName = field.Name;
-												((RecordViewRelationFieldItem)item).FieldLabel = field.Label;
-												((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+			{				
 				response.Object = recordView;
 			}
 			catch (Exception e)
