@@ -99,6 +99,11 @@ namespace WebVella.ERP.Storage.Mongo
                 if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
                     MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
 
+                var relRepo = new MongoEntityRelationRepository();
+                var entityRelations = relRepo.Read().Where(x => x.OriginEntityId == entity.Id || x.TargetEntityId == entity.Id).ToList();
+                foreach ( var relation in entityRelations)
+                    relRepo.Delete(relation.Id);
+             
                 var result = MongoStaticContext.Context.Entities.Delete(Query.EQ("_id", id));
                 transaction.Commit();
                 return result;

@@ -953,8 +953,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				//TODO: Delete records and delete records of related entities
-
+				//entity, entity records and relations are deleted in storage repository 
 				EntityRepository.Delete(id);
 			}
 			catch (Exception e)
