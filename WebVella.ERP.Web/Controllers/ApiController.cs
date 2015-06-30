@@ -345,13 +345,13 @@ namespace WebVella.ERP.Web.Controllers
             foreach (var relation in entityRelations)
             {
                 Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
-                Entity relatedEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
+                Entity relatedEntity = entMan.ReadEntity(relatedEntityId).Object;
 
                 //TODO validation
                 if (relatedEntity == null)
                     throw new Exception(string.Format("Invalid relation '{0}'. Related entity '{1}' do not exist.", relation.Name, relatedEntityId));
 
-                foreach (var field in entity.Fields)
+                foreach (var field in relatedEntity.Fields)
                 {
                     itemList.Add(new
                     {
