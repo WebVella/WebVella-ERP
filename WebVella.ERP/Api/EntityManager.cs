@@ -2534,9 +2534,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordListCollectionResponse response = new RecordListCollectionResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			EntityResponse entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -2544,8 +2551,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			Entity entity = entityResponse.Object;
 
 			return ReadRecordLists(entity);
 		}
@@ -2554,9 +2560,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordListCollectionResponse response = new RecordListCollectionResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			EntityResponse entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -2564,7 +2577,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			return ReadRecordLists(entity);
 		}
@@ -2605,9 +2618,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			EntityResponse entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -2615,7 +2635,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			RecordList recordList = entity.RecordLists.FirstOrDefault(r => r.Id == id);
 
@@ -2635,9 +2655,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			EntityResponse entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -2645,7 +2672,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			RecordList recordList = entity.RecordLists.FirstOrDefault(r => r.Name == name);
 
@@ -3186,9 +3213,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewCollectionResponse response = new RecordViewCollectionResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			EntityResponse entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -3196,8 +3230,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			Entity entity = entityResponse.Object;
 
 			return ReadRecordViews(entity);
 		}
@@ -3206,9 +3239,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewCollectionResponse response = new RecordViewCollectionResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			EntityResponse entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -3216,7 +3256,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 
 			return ReadRecordViews(entity);
@@ -3258,9 +3298,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			EntityResponse entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -3268,7 +3315,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
 
@@ -3288,9 +3335,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			EntityResponse entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -3298,7 +3352,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Name == name);
 
