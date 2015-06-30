@@ -985,6 +985,12 @@ namespace WebVella.ERP.Api
 				List<IStorageEntity> storageEntityList = EntityRepository.Read();
 				List<Entity> entities = storageEntityList.MapTo<Entity>();
 
+				EntityRelationManager relationManager = new EntityRelationManager(Storage);
+				EntityRelationListResponse relationListResponse = relationManager.Read();
+				List<EntityRelation> relationList = new List<EntityRelation>();
+				if (relationListResponse.Object != null)
+					relationList = relationListResponse.Object;
+
 				List<RecordList> recordLists = new List<RecordList>();
 				List<RecordView> recordViews = new List<RecordView>();
 				List<Field> fields = new List<Field>();
@@ -1017,9 +1023,10 @@ namespace WebVella.ERP.Api
 									}
 									if (column is RecordListRelationFieldItem)
 									{
-										Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordListRelationFieldItem)column).EntityId);
+										Entity relEntity = GetEntityByFieldId(((RecordListRelationFieldItem)column).FieldId, entities);
 										if (relEntity != null)
 										{
+											((RecordListRelationFieldItem)column).EntityId = relEntity.Id;
 											((RecordListRelationFieldItem)column).EntityName = relEntity.Name;
 											((RecordListRelationFieldItem)column).EntityLabel = relEntity.Label;
 										}
@@ -1077,41 +1084,44 @@ namespace WebVella.ERP.Api
 												}
 												if (item is RecordViewListItem)
 												{
-													RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
+													Entity listEntity = GetEntityByListId(((RecordViewListItem)item).ListId, entities);
+													RecordList list = listEntity.RecordLists.FirstOrDefault(l => l.Id == ((RecordViewListItem)item).ListId);
 													if (list != null)
 													{
 														((RecordViewListItem)item).ListName = list.Name;
 														((RecordViewListItem)item).ListLabel = list.Label;
 													}
 
-													Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewListItem)item).EntityId);
 													if (listEntity != null)
 													{
+														((RecordViewListItem)item).EntityId = listEntity.Id;
 														((RecordViewListItem)item).EntityName = listEntity.Name;
 														((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
 													}
 												}
 												if (item is RecordViewViewItem)
 												{
-													RecordView recView = recordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
+													Entity viewEntity = GetEntityByViewId(((RecordViewViewItem)item).ViewId, entities);
+													RecordView recView = viewEntity.RecordViews.FirstOrDefault(v => v.Id == ((RecordViewViewItem)item).ViewId);
 													if (recView != null)
 													{
 														((RecordViewViewItem)item).ViewName = recView.Name;
 														((RecordViewViewItem)item).ViewLabel = recView.Label;
 													}
 
-													Entity listEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewViewItem)item).EntityId);
-													if (listEntity != null)
+													if (viewEntity != null)
 													{
-														((RecordViewViewItem)item).EntityName = listEntity.Name;
-														((RecordViewViewItem)item).EntityLabel = listEntity.Label;
+														((RecordViewViewItem)item).EntityId = viewEntity.Id;
+														((RecordViewViewItem)item).EntityName = viewEntity.Name;
+														((RecordViewViewItem)item).EntityLabel = viewEntity.Label;
 													}
 												}
 												if (item is RecordViewRelationFieldItem)
 												{
-													Entity relEntity = entities.FirstOrDefault(e => e.Id == ((RecordViewRelationFieldItem)item).EntityId);
+													Entity relEntity = GetEntityByFieldId(((RecordViewRelationFieldItem)item).FieldId, entities);
 													if (relEntity != null)
 													{
+														((RecordViewRelationFieldItem)item).EntityId = relEntity.Id;
 														((RecordViewRelationFieldItem)item).EntityName = relEntity.Name;
 														((RecordViewRelationFieldItem)item).EntityLabel = relEntity.Label;
 													}
@@ -3507,6 +3517,63 @@ namespace WebVella.ERP.Api
 		private static bool HasKey(Expando expando, string key)
 		{
 			return expando.GetProperties().Any(p => p.Key == key);
+		}
+
+		private Entity GetEntityByListId(Guid listId)
+		{
+			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<Entity> entities = storageEntityList.MapTo<Entity>();
+
+			return GetEntityByListId(listId, entities);
+		}
+
+		private static Entity GetEntityByListId(Guid listId, List<Entity> entities)
+		{
+			foreach (var entity in entities)
+			{
+				if (entity.RecordLists.Any(l => l.Id == listId))
+					return entity;
+			}
+
+			return null;
+		}
+
+		private Entity GetEntityByViewId(Guid viewId)
+		{
+			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<Entity> entities = storageEntityList.MapTo<Entity>();
+
+			return GetEntityByViewId(viewId, entities);
+		}
+
+		private static Entity GetEntityByViewId(Guid viewId, List<Entity> entities)
+		{
+			foreach (var entity in entities)
+			{
+				if (entity.RecordViews.Any(v => v.Id == viewId))
+					return entity;
+			}
+
+			return null;
+		}
+
+		private Entity GetEntityByFieldId(Guid fieldId)
+		{
+			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<Entity> entities = storageEntityList.MapTo<Entity>();
+
+			return GetEntityByFieldId(fieldId, entities);
+		}
+
+		private static Entity GetEntityByFieldId(Guid fieldId, List<Entity> entities)
+		{
+			foreach (var entity in entities)
+			{
+				if (entity.Fields.Any(v => v.Id == fieldId))
+					return entity;
+			}
+
+			return null;
 		}
 
 		#endregion
