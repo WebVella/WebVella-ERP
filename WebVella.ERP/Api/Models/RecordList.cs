@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using WebVella.ERP.Storage;
+using WebVella.ERP.Utilities;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -58,6 +60,13 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "sorts")]
 		public List<InputRecordListSort> Sorts { get; set; }
+
+		public static InputRecordList Convert(JObject inputList)
+		{
+			InputRecordList list = JsonConvert.DeserializeObject<InputRecordList>(inputList.ToString(), new RecordListItemConverter());
+
+			return list;
+		}
 	}
 
 	public class InputRecordListQuery
@@ -136,7 +145,7 @@ namespace WebVella.ERP.Api.Models
 		public string CssClass { get; set; }
 
 		[JsonProperty(PropertyName = "type")]
-		public RecordListType Type { get; set; }
+		public string Type { get; set; }
 
 		[JsonProperty(PropertyName = "recordsLimit")]
 		public int RecordsLimit { get; set; }
@@ -157,7 +166,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordListQuery
 	{
 		[JsonProperty(PropertyName = "queryType")]
-		public QueryType QueryType { get; set; }
+		public string QueryType { get; set; }
 
 		[JsonProperty(PropertyName = "fieldName")]
 		public string FieldName { get; set; }
@@ -175,7 +184,7 @@ namespace WebVella.ERP.Api.Models
 		public string FieldName { get; set; }
 
 		[JsonProperty(PropertyName = "sortType")]
-		public QuerySortType SortType { get; set; }
+		public string SortType { get; set; }
 	}
 
 	public abstract class RecordListItemBase
@@ -185,7 +194,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordListFieldItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static RecordListItemType ItemType { get { return RecordListItemType.Field; } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.Field).ToLower(); } }
 
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid FieldId { get; set; }
@@ -200,7 +209,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordListRelationFieldItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static RecordListItemType ItemType { get { return RecordListItemType.FieldFromRelation; } }
+		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.FieldFromRelation).ToLower(); } }
 
 		[JsonProperty(PropertyName = "relationId")]
 		public Guid RelationId { get; set; }
@@ -242,5 +251,19 @@ namespace WebVella.ERP.Api.Models
 	{
 		[JsonProperty(PropertyName = "object")]
 		public RecordListCollection Object { get; set; }
+	}
+
+	public class RecordListItemConverter : JsonCreationConverter<InputRecordListItemBase>
+	{
+		protected override InputRecordListItemBase Create(Type objectType, JObject jObject)
+		{
+			string type = jObject["type"].ToString().ToLower();
+
+			if (type == "fieldfromrelation")
+				if (objectType == typeof(InputRecordListRelationFieldItem))
+					return new InputRecordListRelationFieldItem();
+
+			return new InputRecordListFieldItem();
+		}
 	}
 }
