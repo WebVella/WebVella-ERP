@@ -78,7 +78,7 @@
             				for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
             					for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
             						for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
-            							if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].id) {
+            							if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldId) {
             								extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
             							}
             						}
@@ -114,11 +114,11 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData','ngToast'];
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
 
     /* @ngInject */
     function controller($log, $rootScope, $state,$scope, pageTitle, webvellaRootService,webvellaAdminService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData,ngToast) {
+        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -159,15 +159,30 @@
         }
 		//#endregion
 
-        //#region << logic >>
+        //#region << Logic >>
 
         contentData.toggleSectionCollapse = function (section) {
             section.collapsed = !section.collapsed;
         }
 
-        contentData.fieldUpdate = function (key, data) {
+        contentData.fieldUpdate = function (item, data) {
+        	data = data.toString().trim();
         	contentData.patchObject = {};
-        	contentData.patchObject[key] = data;
+        	var validation = {
+        		success: true,
+				message: "successful validation"
+        	};
+        	switch(item.fieldTypeId) {
+
+        		//Auto increment number
+				case 1:
+        		validation = checkInt(data);
+        		if (!validation.success) {
+        			return validation.message;
+        		}
+        		break;
+        	}
+        	contentData.patchObject[item.fieldName] = data;
         	//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
         	webvellaAdminService.patchRecord(contentData.viewData.id, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
         }
@@ -187,6 +202,32 @@
         	return false;
         }
 
+    	//Auto increment
+        contentData.getAutoIncrementString = function (item) {
+        	var fieldValue = contentData.viewData[item.fieldName];
+        	if (!fieldValue) {
+        		return "empty";
+        	}
+        	else if (item.meta.displayFormat) {
+        		return item.meta.displayFormat.replace("{0}", fieldValue);
+        	}
+        	else {
+        		return fieldValue;
+        	}
+        }
+
+    	//Checkbox
+        contentData.getCheckboxString = function (item) {
+        	var fieldValue = contentData.viewData[item.fieldName];
+        	if (fieldValue) {
+        		return "true";
+        	}
+        	else {
+        		return "false";
+        	}
+        }
+
+    	//DateTime 
         $scope.picker = { opened: false };
 
         $scope.openPicker = function () {
