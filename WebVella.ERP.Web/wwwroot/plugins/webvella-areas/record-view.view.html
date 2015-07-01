@@ -93,11 +93,19 @@
                             <div class="row editable-field" ng-if="item.type === 'field'">
                                 <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative">
-									<!-- If type 1 - textbox -->
+									<!-- If type 1 - autoincrement -->
 									<a ng-if="item.fieldTypeId === 1" href="javascript:void(0)" 
 									   editable-text="contentData.viewData['{{item.fieldName}}']" 
-									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "
-									   onbeforesave="contentData.fieldUpdate('auto_increment', $data)">
+									   ng-bind="contentData.getAutoIncrementString(item)"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+									</a>
+									
+									<!-- If type 2 - checkbox -->
+									<a ng-if="item.fieldTypeId === 2" href="javascript:void(0)"
+									   editable-checkbox="contentData.viewData['{{item.fieldName}}']" 
+									   e-title="set as TRUE"
+									    onbeforesave="contentData.fieldUpdate(item, $data)">
+										{{contentData.getCheckboxString(item)}}
 									</a>
 
 									<!-- If type 5 - date -->
