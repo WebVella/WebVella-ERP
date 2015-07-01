@@ -26,7 +26,7 @@
         serviceInstance.getSitemapSample = getSitemapSample;
         serviceInstance.toggleSidebar = toggleSidebar;
         serviceInstance.generateValidationMessages = generateValidationMessages;
-        serviceInstance.reloadCurrentState = reloadCurrentState;
+        serviceInstance.GoToState = GoToState;
 
 
         ///////////////////////
@@ -76,9 +76,9 @@
         }
 
         ////////////////////
-        function getEntityRecordsByName(entityName,successCallback, errorCallback) {
+        function getEntityRecordsByName(listName, entityName, filter, page, successCallback, errorCallback) {
             $log.debug('webvellaRoot>providers>root.service>getEntityRecords> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////
@@ -107,11 +107,11 @@
         }
 
         //////////////////
-        function reloadCurrentState(state,params) {
-        	$log.debug('webvellaRoot>providers>root.service>reloadCurrentState> function called');
+        function GoToState(state, stateName, params) {
+        	$log.debug('webvellaRoot>providers>root.service>GoToState> function called');
 
             $timeout(function () {
-        	    state.go(state.current, params, { reload: true });
+            	state.go(stateName, params, { reload: true });
             }, 0);
         }
 

@@ -84,7 +84,7 @@
             }
         }
 
-        webvellaAdminService.getRecordsByEntityName("area", successCallback, errorCallback);
+        webvellaAdminService.getRecordsByEntityName("null","area","null","null", successCallback, errorCallback);
 
 
         // Return
@@ -109,7 +109,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("role", successCallback, errorCallback);
+        webvellaRootService.getEntityRecordsByName("null","role","null","null", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entities> END state.resolved');
@@ -782,7 +782,7 @@
                 content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state, {});
+            webvellaRootService.GoToState($state,$state.current.name, {});
         }
 
         function errorCallback(response) {
@@ -839,7 +839,7 @@
             });
             $modalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state, {});
+            webvellaRootService.GoToState($state,$state.current.name, {});
         }
 
         function errorCallback(response) {

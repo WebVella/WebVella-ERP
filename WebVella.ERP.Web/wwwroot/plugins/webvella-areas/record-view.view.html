@@ -31,7 +31,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 title="Newest active offers">Full details</h4>
+            <h4 title="Newest active offers">{{contentData.recordView.label}}</h4>
             <a  href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
         </div>
 		<accordion>
@@ -61,18 +61,11 @@
 				</form>
 				<hr class="divider" />
 				<ul class="list-inline">
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li class="col-sm-3" ng-repeat="view in contentData.currentEntity.recordViews">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name})'>
+							<i class="fa fa-fw fa-file-text-o"></i> {{view.label}}
+						</a>
+					</li>
 				</ul>
 			</accordion-group>
 		</accordion>
@@ -100,8 +93,36 @@
                             <div class="row editable-field" ng-if="item.type === 'field'">
                                 <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative">
-                                    <!-- If type 18 - textbox -->
-                                    <a ng-if="item.fieldTypeId === 18" href="#" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
+									<!-- If type 1 - textbox -->
+									<a ng-if="item.fieldTypeId === 1" href="javascript:void(0)" 
+									   editable-text="contentData.viewData['{{item.fieldName}}']" 
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "
+									   onbeforesave="contentData.fieldUpdate('auto_increment', $data)">
+									</a>
+
+									<!-- If type 5 - date -->
+									<div class="row" ng-if="item.fieldTypeId === 5">
+										<div class="col-sm-6">
+											<a ng-if="item.fieldTypeId === 5" 
+											   href="javascript:void(0)" 
+											   editable-bsdate="contentData.viewData['{{item.fieldName}}']" 
+											   e-datepicker-popup="dd MMM yyyy" 
+											   e-init-date="false"  
+											   e-is-open="picker.opened" 
+											   onshow="openPicker()"
+											   onhide="closePicker()"
+											   ng-bind="contentData.viewData['{{item.fieldName}}'] | date: 'dd MMM yyyy' || 'empty' ">
+											</a>
+										</div>
+										<div class="col-sm-6">
+											<a ng-if="item.fieldTypeId === 5" href="javascript:void(0)" editable-bstime="contentData.viewData['{{item.fieldName}}']" e-show-meridian="false" e-minute-step="10" ng-bind="contentData.viewData['{{item.fieldName}}'] | date: 'HH:mm' || 'empty' "></a>
+										</div>
+									</div>
+									
+									<!-- If type 16 - unique identifier -->
+									<span ng-if="item.fieldTypeId === 16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
+									<!-- If type 18 - textbox -->
+                                    <a ng-if="item.fieldTypeId === 18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
 
                                 </div>
                             </div>

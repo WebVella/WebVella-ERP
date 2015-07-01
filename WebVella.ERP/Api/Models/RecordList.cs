@@ -72,7 +72,7 @@ namespace WebVella.ERP.Api.Models
 	public class InputRecordListQuery
 	{
 		[JsonProperty(PropertyName = "queryType")]
-		public QueryType QueryType { get; set; }
+		public string QueryType { get; set; }
 
 		[JsonProperty(PropertyName = "fieldName")]
 		public string FieldName { get; set; }
