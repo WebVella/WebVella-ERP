@@ -115,7 +115,7 @@
 	</form>
 
 	<div id="list">
-		<table class="table table-bordered table-hover table-vertical-align-middle">
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.records.length == 0">
 			<thead>
 				<tr>
 					<th class="actions"></th>
@@ -133,6 +133,9 @@
 				</tr>
 			</tbody>
 		</table>
+		<div class="alert alert-info" ng-show="contentData.records.length == 0">
+			There are no records matching your query
+		</div>
 		<ul class="pager">
 			<li ng-class="{disabled: contentData.currentPage == 1}" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 			<li ng-class="{disabled: contentData.currentListView.pageSize > contentData.records.length}" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>

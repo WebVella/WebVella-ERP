@@ -771,7 +771,6 @@
             contentData.entity.roles.push(role);
         }
 
-        contentData.patchObject = {};
         contentData.fieldUpdate = function (key, data) {
             contentData.patchObject = {};
             contentData.patchObject[key] = data;
