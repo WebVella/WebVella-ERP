@@ -134,7 +134,75 @@ namespace WebVella.ERP
 
 			return field;
 		}
+
+		public static Type GetFieldType(FieldType fieldType)
+		{
+			Type type = typeof(InputGuidField);
+
+			switch (fieldType)
+			{
+				case FieldType.AutoNumberField:
+					type = typeof(InputAutoNumberField);
+					break;
+				case FieldType.CheckboxField:
+					type = typeof(InputCheckboxField);
+					break;
+				case FieldType.CurrencyField:
+					type = typeof(InputCurrencyField);
+					break;
+				case FieldType.DateField:
+					type = typeof(InputDateField);
+					break;
+				case FieldType.DateTimeField:
+					type = typeof(InputDateTimeField);
+					break;
+				case FieldType.EmailField:
+					type = typeof(InputEmailField);
+					break;
+				case FieldType.FileField:
+					type = typeof(InputFileField);
+					break;
+				case FieldType.HtmlField:
+					type = typeof(InputHtmlField);
+					break;
+				case FieldType.ImageField:
+					type = typeof(InputImageField);
+					break;
+				case FieldType.MultiLineTextField:
+					type = typeof(InputMultiLineTextField);
+					break;
+				case FieldType.MultiSelectField:
+					type = typeof(InputMultiSelectField);
+					break;
+				case FieldType.NumberField:
+					type = typeof(InputNumberField);
+					break;
+				case FieldType.PasswordField:
+					type = typeof(InputPasswordField);
+					break;
+				case FieldType.PercentField:
+					type = typeof(InputPercentField);
+					break;
+				case FieldType.PhoneField:
+					type = typeof(InputPhoneField);
+					break;
+				case FieldType.GuidField:
+					type = typeof(InputGuidField);
+					break;
+				case FieldType.SelectField:
+					type = typeof( InputSelectField);
+					break;
+				case FieldType.TextField:
+					type = typeof(InputTextField);
+					break;
+				case FieldType.UrlField:
+					type = typeof(InputUrlField);
+					break;
 			}
+
+			return type;
+		}
+	}
 
 	public abstract class Field
 	{
