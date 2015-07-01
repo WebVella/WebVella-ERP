@@ -385,6 +385,7 @@ ngToast
 #page-topnav {
 	height: 56px;
 	border-bottom: 2px solid #90A4AE;
+	border-top:1px solid #ccc;
 	position: relative;
 	padding: 12px 20px 12px 30px;
 	overflow: hidden;
@@ -2575,8 +2576,12 @@ span.editable {
 
 
 /*Checkbox*/
+.editable-checkbox {
+	padding-top:20px !important;
+}
 .editable-checkbox label {
 	line-height: 30px;
+	margin-right:15px;
 }
 
 	.editable-checkbox label:hover {
