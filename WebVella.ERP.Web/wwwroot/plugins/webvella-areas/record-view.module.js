@@ -113,11 +113,11 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'webvellaRootService',
+    controller.$inject = ['$log', '$rootScope', '$state','$scope', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'resolvedExtendedViewData'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, webvellaRootService,
+    function controller($log, $rootScope, $state,$scope, pageTitle, webvellaRootService,
         resolvedSitemap, $timeout, resolvedExtendedViewData) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
@@ -166,6 +166,19 @@
         }
 
         //#endregion
+
+        $scope.picker = { opened: false };
+
+        $scope.openPicker = function () {
+        	$timeout(function () {
+        		$scope.picker.opened = true;
+        	});
+        };
+
+        $scope.closePicker = function () {
+        	$scope.picker.opened = false;
+        };
+
 
         $log.debug('webvellaAreas>entities> END controller.exec');
     }

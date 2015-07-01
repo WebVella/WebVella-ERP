@@ -423,7 +423,7 @@
                 content: '<span class="go-green">Success:</span> ' + 'The entity was successfully created'
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state, {});
+            webvellaRootService.GoToState($state, $state.current.name, {});
         }
 
         function errorCallback(response) {

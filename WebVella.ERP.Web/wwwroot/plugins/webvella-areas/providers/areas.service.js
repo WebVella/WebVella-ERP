@@ -76,72 +76,10 @@
         }
 
 		/////////////////////
-        function getListRecords(listName, entityName,page, successCallback, errorCallback) {
+        function getListRecords(listName, entityName, filter, page, successCallback, errorCallback) {
+        	//api/v1/en_US/record/{entityName}/list/{listName}
         	$log.debug('webvellaAreas>providers>areas.service>getListRecords> function called');
-        	var response = {};
-        	response.success = true;
-        	response.message = "success";
-        	response.object = {
-        		"fieldsMeta": [
-                  {
-                  	"fieldType": 18,
-                  	"defaultValue": "",
-                  	"maxLength": null,
-                  	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a63",
-                  	"name": "id",
-                  	"label": "Id",
-                  	"placeholderText": null,
-                  	"description": null,
-                  	"helpText": null,
-                  	"required": true,
-                  	"unique": false,
-                  	"searchable": false,
-                  	"auditable": false,
-                  	"system": true
-                  },
-                  {
-                  	"fieldType": 18,
-                  	"defaultValue": "",
-                  	"maxLength": null,
-                  	"id": "60b9dfe5-6dc7-4445-9481-83a1655b9a60",
-                  	"name": "title",
-                  	"label": "Title",
-                  	"placeholderText": null,
-                  	"description": null,
-                  	"helpText": null,
-                  	"required": true,
-                  	"unique": false,
-                  	"searchable": false,
-                  	"auditable": false,
-                  	"system": false
-                  },
-                  {
-                  	"fieldType": 18,
-                  	"defaultValue": "",
-                  	"maxLength": null,
-                  	"id": "37964efb-f66b-4be9-b8ce-2820054946a6",
-                  	"name": "content",
-                  	"label": "Content",
-                  	"placeholderText": null,
-                  	"description": null,
-                  	"helpText": null,
-                  	"required": false,
-                  	"unique": false,
-                  	"searchable": false,
-                  	"auditable": false,
-                  	"system": false
-                  }
-
-        		],
-        		"data": [
-                  {
-                  	"id": "47964efb-f66b-4be9-b8ce-2820054946a6",
-                  	"username": "boz",
-                  	"content": "post 3 content",
-                  }
-        		]
-        	};
-        	handleSuccessResult(response, status, successCallback, errorCallback);
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////

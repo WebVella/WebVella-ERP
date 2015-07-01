@@ -160,9 +160,7 @@
     			content: '<span class="go-green">Success:</span> '+ 'The view was successfully saved'
     		});
     		$modalInstance.close('success');
-    		$timeout(function () { 
-    			webvellaRootService.reloadCurrentState($state, {});
-    		}, 0);
+    		webvellaRootService.GoToState($state, $state.current.name, {});
     	}
 
     	function errorCallback(response) {

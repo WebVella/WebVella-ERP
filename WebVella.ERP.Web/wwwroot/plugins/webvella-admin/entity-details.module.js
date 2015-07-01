@@ -106,7 +106,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("role", successCallback, errorCallback);
+        webvellaRootService.getEntityRecordsByName("null", "role", "null", "null", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entities> END state.resolved');
@@ -130,7 +130,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("area", successCallback, errorCallback);
+        webvellaRootService.getEntityRecordsByName("null", "area", "null", "null", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entities> END state.resolved');
