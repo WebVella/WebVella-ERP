@@ -1773,11 +1773,6 @@ div.form-control {
 	margin-right: 0;
 }
 
-	.form .form-group:last-child,
-	.form-horizontal .form-group:last-child {
-		margin-bottom: 0;
-	}
-
 .form .table,
 .form-horizontal .table {
 	margin-bottom: 0;
@@ -2593,6 +2588,15 @@ span.editable {
 	margin-top: 10px;
 }
 
+/*Date picker*/
+.editable-bsdate .input-group {
+	width:160px;
+}
+
+.editable-bsdate .dropdown-menu {
+	top:100%;
+	left:0;
+}
 
 /* Not editable */
 
@@ -3174,10 +3178,18 @@ span.not-editable {
 
 .dropped-item {
 	margin: 5px;
-	padding: 5px;
 	border: 1px solid #bdbdbd;
 	background: #eee;
 }
+
+	.dropped-item:hover {
+		border: 1px solid #9e9e9e;
+		background: #e5e5e5;
+	}
+
+	.dropped-item .as-sortable-item-handle {
+		padding:5px;
+	}
 
 .view-manage-section .dropped-item .title,
 .as-sortable-dragging .title {
@@ -3298,3 +3310,26 @@ span.not-editable {
 	top: 3px;
 }
 /*#endregion*/
+
+/*#region << BS Time */
+
+/* temporary workaround for display editable-bstime in bs3 - up/down symbols not shown */
+.editable-bstime .editable-input i.icon-chevron-up:before {
+  content: '\e113';
+}
+.editable-bstime .editable-input i.icon-chevron-down:before {
+  content: '\e114';
+}
+.editable-bstime .editable-input i.icon-chevron-up,
+.editable-bstime .editable-input i.icon-chevron-down {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+}
+
+/*#endregion */

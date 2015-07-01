@@ -58,10 +58,10 @@
     };
 
 	//#region << Resolve Function >>
-    resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state'];
+    resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams'];
 
 	/* @ngInject */
-    function resolveListRecords($q, $log, webvellaAreasService, $state) {
+    function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams) {
     	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
     	// Initialize
     	var defer = $q.defer();
@@ -75,7 +75,7 @@
     		defer.resolve(response.object);
     	}
 
-    	webvellaAreasService.getListRecords("boz","boz", 1, successCallback, errorCallback);
+    	webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page, successCallback, errorCallback);
 
     	// Return
     	$log.debug('webvellaDesktop>browse> END state.resolved');
@@ -104,12 +104,21 @@
 
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 
+		//Get the current entity meta
         contentData.entity = webvellaAreasService.getCurrentEntityFromArea($stateParams.entityName, contentData.currentArea);
+
+    	//Select default details view
         contentData.defaultView = {};
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
         	if (contentData.entity.recordViews[i].default) {
         		contentData.defaultView = contentData.entity.recordViews[i];
         	}
+        }
+        contentData.currentPage = parseInt($stateParams.page);
+    	//Select the current list view details
+		//TODO needs to be implemented
+        contentData.currentListView = {
+        	"pageSize": 25
         }
 
         //#endregion
@@ -118,15 +127,11 @@
         contentData.createNewRecordModal = function () {
             var record = {};
             record.id = guid();
-            record["name"] = "sales";
             record["created_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
             record["last_modified_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
             record["created_on"] = moment().toISOString();
-            record["color"] = "green";
-            record["icon_name"] = "money";
-            record["label"] = "Sales";
-            record["weight"] = 1.0;
-            webvellaAreasService.createEntityRecord(record,"area",successCallback,errorCallback)
+            record["last_modified_on"] = moment().toISOString();
+            webvellaAreasService.createEntityRecord(record,"test",successCallback,errorCallback)
         }
 
         function successCallback(response) {
@@ -138,12 +143,18 @@
         }
 
         contentData.goDesktopBrowse = function () {
-            $timeout(function () {
-                $state.go("webvella-desktop-browse");
-            }, 0);
-            
+        	webvellaRootService.GoToState($state, "webvella-desktop-browse", {});
         }
-
+        contentData.selectPage = function (page, event) {
+        	var params = {
+        		areaName:$stateParams.areaName,
+        		entityName:$stateParams.entityName,
+        		listName:$stateParams.listName,
+        		filter:$stateParams.filter,
+        		page:page,
+        	};
+        	webvellaRootService.GoToState($state, $state.current.name, params);
+        }
 
         $log.debug('webvellaAreas>entities> END controller.exec');
     }
