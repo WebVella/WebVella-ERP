@@ -389,6 +389,26 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
+			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<Entity> entities = storageEntityList.MapTo<Entity>();
+
+			EntityRelationManager relationManager = new EntityRelationManager(Storage);
+			EntityRelationListResponse relationListResponse = relationManager.Read();
+			List<EntityRelation> relationList = new List<EntityRelation>();
+			if (relationListResponse.Object != null)
+				relationList = relationListResponse.Object;
+
+			List<RecordList> recordLists = new List<RecordList>();
+			List<RecordView> recordViews = new List<RecordView>();
+			List<Field> fields = new List<Field>();
+
+			foreach (var ent in entities)
+			{
+				recordLists.AddRange(ent.RecordLists);
+				recordViews.AddRange(ent.RecordViews);
+				fields.AddRange(ent.Fields);
+			}
+
 			if (!recordlist.Id.HasValue || recordlist.Id.Value == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
@@ -409,38 +429,146 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabel(recordlist.Label));
 
+			if (recordlist.Default.HasValue)
+				recordlist.Default = false;
+			if (recordlist.System.HasValue)
+				recordlist.System = false;
+			if (recordlist.Weight.HasValue)
+				recordlist.Weight = 1;
+			if (recordlist.RecordsLimit.HasValue)
+				recordlist.RecordsLimit = 1;
+			if (recordlist.PageSize.HasValue)
+				recordlist.PageSize = 10;
+			if (recordlist.CssClass != null)
+				recordlist.CssClass = recordlist.CssClass.Trim();
 
+			if (recordlist.Type != null)
+			{
+				RecordListType type;
+				if (!Enum.TryParse<RecordListType>(recordlist.Type, true, out type))
+					errorList.Add(new ErrorModel("type", recordlist.Type, "There is no such type!"));
+			}
+			else
+				errorList.Add(new ErrorModel("type", recordlist.Type, "Type is required!"));
 
-			//if (recordlist.Fields != null && recordlist.Fields.Count > 0)
-			//{
-			//	foreach (var field in recordlist.Fields)
-			//	{
-			//		if (!field.Id.HasValue || field.Id.Value == Guid.Empty)
-			//			errorList.Add(new ErrorModel("recordsLists.fields.id", null, "Id is required!"));
+			if (recordlist.Columns != null && recordlist.Columns.Count > 0)
+			{
+				foreach (var column in recordlist.Columns)
+				{
+					if (column is InputRecordListFieldItem)
+					{
+						if (!((InputRecordListFieldItem)column).FieldId.HasValue || ((InputRecordListFieldItem)column).FieldId == Guid.Empty)
+						{
+							errorList.Add(new ErrorModel("columns.fieldId", null, "Filed id is required!"));
+						}
+						else
+						{
+							if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldId == ((InputRecordListFieldItem)column).FieldId).Count() > 1)
+								errorList.Add(new ErrorModel("columns.fieldId", null, "There is already an item with such field id!"));
 
-			//		if (field.EntityId.HasValue && field.EntityId.Value != Guid.Empty)
-			//		{
-			//			IStorageEntity verifiedEntity = EntityRepository.Read(field.EntityId.Value);
+							if (!entity.Fields.Any(f => f.Id == ((InputRecordListFieldItem)column).FieldId))
+								errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong Id. There is no field with such id!"));
+						}
+					}					
+					else if (column is InputRecordListRelationFieldItem)
+					{
+						if (!((InputRecordListRelationFieldItem)column).RelationId.HasValue || ((InputRecordListRelationFieldItem)column).RelationId == Guid.Empty)
+						{
+							errorList.Add(new ErrorModel("columns.relationId", null, "Relation id is required!"));
+						}
+						else
+						{
+							if (!relationList.Any(r => r.Id == ((InputRecordListRelationFieldItem)column).RelationId))
+								errorList.Add(new ErrorModel("columns.relationId", null, "Wrong Id. There is no relation with such id!"));
+						}
 
-			//			if (verifiedEntity != null || field.EntityId == entity.Id)
-			//			{
-			//				Entity currentEntity = verifiedEntity != null ? verifiedEntity.MapTo<Entity>() : entity;
+						if (!((InputRecordListRelationFieldItem)column).FieldId.HasValue || ((InputRecordListRelationFieldItem)column).FieldId == Guid.Empty)
+						{
+							errorList.Add(new ErrorModel("columns.fieldId", null, "Field id is required!"));
+						}
+						else if (((InputRecordListRelationFieldItem)column).RelationId.HasValue && ((InputRecordListRelationFieldItem)column).RelationId != Guid.Empty)
+						{
+							if (recordlist.Columns.Where(i => i is InputRecordListRelationFieldItem && ((InputRecordListRelationFieldItem)i).FieldId == ((InputRecordListRelationFieldItem)column).FieldId).Count() > 1)
+								errorList.Add(new ErrorModel("columns.fieldId", null, "There is already an item with such field id!"));
 
-			//				if (currentEntity.Fields.Where(f => f.Id == field.Id).Count() == 0)
-			//					errorList.Add(new ErrorModel("recordsLists.fields.id", field.Id.ToString(), "Field with such Id does not exist!"));
-			//			}
-			//			else
-			//				errorList.Add(new ErrorModel("recordsLists.fields.entityId", field.EntityId.ToString(), "Entity with such Id does not exist!"));
-			//		}
-			//		else
-			//			errorList.Add(new ErrorModel("recordsLists.fields.entityId", null, "EntityId is required!"));
+							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((InputRecordListRelationFieldItem)column).RelationId.Value);
 
-			//		if (!field.Position.HasValue)
-			//			errorList.Add(new ErrorModel("recordsLists.fields.position", null, "Position is required!"));
-			//	}
-			//}
-			//else
-			//	errorList.Add(new ErrorModel("recordsLists.fields", recordlist.Fields.ToString(), "Fields cannot be null or empty. It must contain at least field!"));
+							if (relation != null)
+							{
+								Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
+								Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+
+								bool isExistInOrigin = false;
+								if (originEntity != null && originEntity.Fields != null)
+									isExistInOrigin = originEntity.Fields.Any(f => f.Id == ((InputRecordListRelationFieldItem)column).FieldId);
+
+								bool isExistInTarget = false;
+								if (targetEntity != null && targetEntity.Fields != null)
+									isExistInTarget = targetEntity.Fields.Any(f => f.Id == ((InputRecordListRelationFieldItem)column).FieldId);
+
+								if (!isExistInOrigin && !isExistInTarget)
+									errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong Id. There is no field with such id!"));
+							}
+						}
+
+					}
+				}
+			}
+
+			if (recordlist.Query != null)
+			{
+				List<ErrorModel> queryErrors = ValidateRecordListQuery(recordlist.Query);
+				errorList.AddRange(queryErrors);
+            }
+
+			if (recordlist.Sorts != null)
+			{
+				foreach (var sort in recordlist.Sorts)
+				{
+					if (string.IsNullOrWhiteSpace(sort.FieldName))
+						errorList.Add(new ErrorModel("sorts.fieldName", sort.FieldName, "FieldName is required!"));
+
+					if (string.IsNullOrWhiteSpace(sort.SortType))
+						errorList.Add(new ErrorModel("sorts.sortType", sort.SortType, "SortType is required!"));
+					else
+					{
+						QuerySortType sortType;
+						if (!Enum.TryParse<QuerySortType>(sort.SortType, true, out sortType))
+							errorList.Add(new ErrorModel("sorts.sortType", sort.SortType, "There is no such sort type!"));
+					}
+				}
+			}
+			
+			return errorList;
+		}
+
+		private List<ErrorModel> ValidateRecordListQuery(InputRecordListQuery query)
+		{
+			List<ErrorModel> errorList = new List<ErrorModel>();
+
+			if (string.IsNullOrWhiteSpace(query.FieldName))
+				errorList.Add(new ErrorModel("query.fieldName", query.FieldName, "FieldName is required!"));
+
+			if (string.IsNullOrWhiteSpace(query.FieldValue))
+				errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
+
+			if (string.IsNullOrWhiteSpace(query.QueryType))
+				errorList.Add(new ErrorModel("query.queryType", query.QueryType, "QueryType is required!"));
+			else
+			{
+				QueryType queryType;
+				if (!Enum.TryParse<QueryType>(query.QueryType, true, out queryType))
+					errorList.Add(new ErrorModel("query.queryType", query.QueryType, "There is no such query type!"));
+			}
+
+			if(query.SubQueries != null && query.SubQueries.Count > 0)
+			{
+				foreach(var subQuery in query.SubQueries)
+				{
+					List<ErrorModel> subQueryErrors = ValidateRecordListQuery(subQuery);
+					errorList.AddRange(subQueryErrors);
+                }
+			}
 
 			return errorList;
 		}
@@ -464,20 +592,8 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			EntityListResponse entityResponse = ReadEntities();
-			List<Entity> entities = new List<Entity>();
-			if (entityResponse.Object != null)
-				entities = entityResponse.Object.Entities;
-
-			RecordListCollectionResponse recordListsResponse = ReadRecordLists();
-			List<RecordList> recordLists = new List<RecordList>();
-			if (recordListsResponse.Object != null)
-				recordLists = recordListsResponse.Object.RecordLists;
-
-			RecordViewCollectionResponse recordViewsResponse = ReadRecordViews();
-			List<RecordView> recordViews = new List<RecordView>();
-			if (recordViewsResponse.Object != null)
-				recordViews = recordViewsResponse.Object.RecordViews;
+			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
 			EntityRelationManager relationManager = new EntityRelationManager(Storage);
 			EntityRelationListResponse relationListResponse = relationManager.Read();
@@ -485,10 +601,16 @@ namespace WebVella.ERP.Api
 			if (relationListResponse.Object != null)
 				relationList = relationListResponse.Object;
 
-			FieldListResponse fieldsResponse = ReadFields(entity.Id);
+			List<RecordList> recordLists = new List<RecordList>();
+			List<RecordView> recordViews = new List<RecordView>();
 			List<Field> fields = new List<Field>();
-			if (fieldsResponse.Object != null)
-				fields = fieldsResponse.Object.Fields;
+
+			foreach (var ent in entities)
+			{
+				recordLists.AddRange(ent.RecordLists);
+				recordViews.AddRange(ent.RecordViews);
+				fields.AddRange(ent.Fields);
+			}
 
 
 			if (!recordView.Id.HasValue || recordView.Id == Guid.Empty)
@@ -2169,10 +2291,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordList;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordList(entity.Id, recordList.Id);
 		}
 
 		public RecordListResponse UpdateRecordList(Guid entityId, InputRecordList inputRecordList)
@@ -2270,10 +2389,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordList;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordList(entity.Id, recordList.Id);
 		}
 
 		public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, InputRecordList inputRecordList)
@@ -2402,10 +2518,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = updatedList;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordList(entity.Id, updatedList.Id);
 		}
 
 		public RecordListResponse DeleteRecordList(Guid entityId, Guid id)
@@ -2838,7 +2951,7 @@ namespace WebVella.ERP.Api
 					response.Message = "The record view was not created! An internal error occurred!";
 					return response;
 				}
-			}
+            }
 			catch (Exception e)
 			{
 				response.Success = false;
@@ -2852,10 +2965,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordView;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordView(entity.Id, recordView.Id);
 		}
 
 		public RecordViewResponse UpdateRecordView(Guid entityId, InputRecordView inputRecordView)
@@ -2953,10 +3063,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = recordView;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordView(entity.Id, recordView.Id);
 		}
 
 		public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
@@ -3081,10 +3188,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			response.Object = updatedView;
-			response.Timestamp = DateTime.UtcNow;
-
-			return response;
+			return ReadRecordView(entity.Id, recordView.Id);
 		}
 
 		public RecordViewResponse DeleteRecordView(Guid entityId, Guid id)
