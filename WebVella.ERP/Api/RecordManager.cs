@@ -785,11 +785,25 @@ namespace WebVella.ERP.Api
                 var pair = fieldValue.Value;
 
                 if (field is AutoNumberField)
-                    return pair.Value as decimal?;
+                {
+                    if (pair.Value == null)
+                        return null;
+                    if (pair.Value is string)
+                        return decimal.Parse(pair.Value as string);
+
+                    return Convert.ToDecimal(pair.Value);
+                }
                 else if (field is CheckboxField)
                     return pair.Value as bool?;
                 else if (field is CurrencyField)
-                    return pair.Value as decimal?;
+                {
+                    if (pair.Value == null)
+                        return null;
+                    if (pair.Value is string)
+                        return decimal.Parse(pair.Value as string);
+
+                    return Convert.ToDecimal(pair.Value);
+                }
                 else if (field is DateField)
                     return pair.Value as DateTime?;
                 else if (field is DateTimeField)
@@ -832,7 +846,14 @@ namespace WebVella.ERP.Api
                     return pair.Value;
                 }
                 else if (field is PercentField)
-                    return pair.Value as decimal?;
+                {
+                    if (pair.Value == null)
+                        return null;
+                    if (pair.Value is string)
+                        return decimal.Parse(pair.Value as string);
+
+                    return Convert.ToDecimal(pair.Value);
+                }
                 else if (field is PhoneField)
                     return pair.Value as string;
                 else if (field is GuidField)
