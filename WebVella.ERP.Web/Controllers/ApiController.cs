@@ -792,6 +792,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			postObj["id"] = recordId;
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			if (!result.Success)
 				return DoResponse(result);

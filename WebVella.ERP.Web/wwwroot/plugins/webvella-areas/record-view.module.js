@@ -113,12 +113,12 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state','$scope', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData','ngToast'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state,$scope, pageTitle, webvellaRootService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData) {
+    function controller($log, $rootScope, $state,$scope, pageTitle, webvellaRootService,webvellaAdminService,
+        resolvedSitemap, $timeout, resolvedExtendedViewData,ngToast) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -165,7 +165,27 @@
             section.collapsed = !section.collapsed;
         }
 
-        //#endregion
+        contentData.fieldUpdate = function (key, data) {
+        	contentData.patchObject = {};
+        	contentData.patchObject[key] = data;
+        	//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
+        	webvellaAdminService.patchRecord(contentData.viewData.id, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+        }
+
+        function patchSuccessCallback(response) {
+        	ngToast.create({
+        		className: 'success',
+        		content: '<span class="go-green">Success:</span> ' + response.message
+        	});
+        	return true;
+        }
+        function patchFailedCallback(response) {
+        	ngToast.create({
+        		className: 'error',
+        		content: '<span class="go-red">Error:</span> ' + response.message
+        	});
+        	return false;
+        }
 
         $scope.picker = { opened: false };
 
@@ -178,7 +198,7 @@
         $scope.closePicker = function () {
         	$scope.picker.opened = false;
         };
-
+    	//#endregion
 
         $log.debug('webvellaAreas>entities> END controller.exec');
     }

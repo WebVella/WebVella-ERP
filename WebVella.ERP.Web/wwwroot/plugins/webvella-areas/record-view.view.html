@@ -93,6 +93,13 @@
                             <div class="row editable-field" ng-if="item.type === 'field'">
                                 <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative">
+									<!-- If type 1 - textbox -->
+									<a ng-if="item.fieldTypeId === 1" href="javascript:void(0)" 
+									   editable-text="contentData.viewData['{{item.fieldName}}']" 
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "
+									   onbeforesave="contentData.fieldUpdate('auto_increment', $data)">
+									</a>
+
 									<!-- If type 5 - date -->
 									<div class="row" ng-if="item.fieldTypeId === 5">
 										<div class="col-sm-6">
