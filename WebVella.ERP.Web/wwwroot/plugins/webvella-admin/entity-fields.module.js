@@ -401,7 +401,7 @@
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state, {});
+            webvellaRootService.GoToState($state, $state.current.name, {});
         }
 
         function errorCallback(response) {
@@ -513,7 +513,7 @@
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
             $modalInstance.close('success');
-            webvellaRootService.reloadCurrentState($state, {});
+            webvellaRootService.GoToState($state, $state.current.name, {});
         }
 
         function errorCallback(response) {

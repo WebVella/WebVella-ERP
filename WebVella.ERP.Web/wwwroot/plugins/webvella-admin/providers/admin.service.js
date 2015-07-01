@@ -788,9 +788,9 @@ function guid() {
         }
 
         ///////////////////////
-        function getRecordsByEntityName(entityName,successCallback, errorCallback) {
+        function getRecordsByEntityName(listName, entityName, filter, page,successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getRecordsByEntityName> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/'+entityName+'/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////////
