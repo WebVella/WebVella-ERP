@@ -171,8 +171,15 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			InputField field = new InputGuidField();
+			FieldType fieldType = FieldType.GuidField;
 
-			Type inputFieldType = field.GetType();
+            var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
+			if (fieldTypeProp != null)
+			{
+				fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
+			}
+
+			Type inputFieldType = InputField.GetFieldType(fieldType);
 
 			foreach (var prop in submitObj.Properties())
 			{
@@ -216,8 +223,15 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			InputField field = new InputGuidField();
+			FieldType fieldType = FieldType.GuidField;
 
-			Type inputFieldType = field.GetType();
+			var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
+			if (fieldTypeProp != null)
+			{
+				fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
+			}
+
+			Type inputFieldType = InputField.GetFieldType(fieldType);
 
 			foreach (var prop in submitObj.Properties())
 			{
