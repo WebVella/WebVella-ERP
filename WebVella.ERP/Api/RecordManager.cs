@@ -12,7 +12,6 @@ namespace WebVella.ERP.Api
     {
         private IErpService erpService;
 
-        private const string ID_FIELD_NAME = "Id";
         private const string WILDCARD_SYMBOL = "*";
         private const char FIELDS_SEPARATOR = ',';
         private const char RELATION_SEPARATOR = '.';
@@ -805,9 +804,30 @@ namespace WebVella.ERP.Api
                     return Convert.ToDecimal(pair.Value);
                 }
                 else if (field is DateField)
-                    return pair.Value as DateTime?;
+                {
+                    if (pair.Value == null)
+                        return null;
+
+                    DateTime? date = null;
+                    if (pair.Value is string)
+                        date = DateTime.Parse(pair.Value as string);
+                    else
+                        date = pair.Value as DateTime?;
+
+                    if (date != null)
+                        return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0,0,0, DateTimeKind.Utc);
+                }
                 else if (field is DateTimeField)
+                {
+
+                    if (pair.Value == null)
+                        return null;
+
+                    if (pair.Value is string)
+                        return DateTime.Parse(pair.Value as string);
+
                     return pair.Value as DateTime?;
+                }
                 else if (field is EmailField)
                     return pair.Value as string;
                 else if (field is FileField)
