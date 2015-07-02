@@ -122,6 +122,7 @@
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
+
         //#region <<Set pageTitle>>
         contentData.pageTitle = "Area Entities | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -175,15 +176,38 @@
         	switch(item.fieldTypeId) {
 
         		//Auto increment number
-				case 1:
-        		validation = checkInt(data);
-        		if (!validation.success) {
-        			return validation.message;
-        		}
+        		case 1:
+        			if (!data && item.meta.required) {
+        				return "This is a required field";
+        			}
+        			validation = checkInt(data);
+        			if (!validation.success) {
+        				return validation.message;
+        			}
+        			if (!data) {
+        				data = null;
+        			}
+        			break;
 				//Checkbox
         		case 2:
         			data = (data === "true"); // convert string to boolean
-        		break;
+        			break;
+        		//Auto increment number
+        		case 3:
+        			validation = checkDecimal(data);
+        			if (!validation.success) {
+        				return validation.message;
+        			}
+        			if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+        				return "Decimal places should be "+item.meta.currency.decimalDigits+" or less";
+        			}
+        			break;
+        		case 4:
+        			data = moment(data).toISOString();
+        			break;
+        		case 5:
+        			data = moment(data).toISOString();
+        			break;
         	}
         	contentData.patchObject[item.fieldName] = data;
         	//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
@@ -236,25 +260,23 @@
         	}
         	else if (item.meta.currency != null && item.meta.currency != {} && item.meta.currency.symbol) {
         		if (item.meta.currency.symbolPlacement == 1) {
-        			return item.meta.currency.symbol + "" + fieldValue
+        			return item.meta.currency.symbol + " " + fieldValue
         		}
         		else {
-        			return fieldValue + "" + item.meta.currency.symbol
+        			return fieldValue + " " + item.meta.currency.symbol
         		}
         	}
         	else {
         		return fieldValue;
         	}
         }
-    	//DateTime 
+    	//Date & DateTime 
         $scope.picker = { opened: false };
-
         $scope.openPicker = function () {
         	$timeout(function () {
         		$scope.picker.opened = true;
         	});
         };
-
         $scope.closePicker = function () {
         	$scope.picker.opened = false;
         };
