@@ -135,7 +135,8 @@
 						<span ng-switch-when="3">{{contentData.getCurrencyString(record,fieldMeta)}}</span>
 						<span ng-switch-when="4">{{contentData.getDateString(record,fieldMeta)}}</span>
 						<span ng-switch-when="5">{{contentData.getDateTimeString(record,fieldMeta)}}</span>
-						<span ng-switch-when="6">{{record[fieldMeta.name]}}</span>
+						<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,fieldMeta)"></span>
+						<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,fieldMeta)"></span>
 						<span ng-switch-when="16">{{record[fieldMeta.name]}}</span>
 					</td>
 				</tr>

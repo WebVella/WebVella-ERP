@@ -185,8 +185,10 @@
 									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty'"
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
-
-									
+									<!-- If type 7 - fileupload -->
+									<div ng-switch-when="7" class="form-control-static">
+										File upload
+									</div>
 									<!-- If type 16 - unique identifier -->
 									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
 									<!-- If type 18 - textbox -->

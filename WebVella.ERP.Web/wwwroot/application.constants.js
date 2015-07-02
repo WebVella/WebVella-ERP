@@ -93,10 +93,10 @@ function checkEmail(data) {
 		response.message = "Empty value is OK";
 		return response;
 	}
-
-	if (data.toString().indexOf(",") > -1) {
+	var regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+	if (!regex.test(data.toString())) {
 		response.success = false;
-		response.message = "Comma is not allowed. Use '.' for decimal separator";
+		response.message = "Invalid email format";
 		return response;
 	}
 

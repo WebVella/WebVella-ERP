@@ -1807,10 +1807,6 @@ form .error {
 	margin: 0 !important;
 }
 
-.form-horizontal .form-control-static {
-	padding-left: 14px;
-}
-
 .input-group.clean-addon .form-control {
 	border-right: 0;
 }
