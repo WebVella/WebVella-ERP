@@ -94,11 +94,9 @@
                                 <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
                                 <div class="col-sm-9 position-relative" ng-switch="item.fieldTypeId">
 									<!-- If type 1 - autoincrement -->
-									<a ng-switch-when="1" href="javascript:void(0)" 
-									   editable-text="contentData.viewData['{{item.fieldName}}']" 
-									   ng-bind="contentData.getAutoIncrementString(item)"
-									   onbeforesave="contentData.fieldUpdate(item, $data)">
-									</a>
+									<div ng-switch-when="1"  class="form-control-static"
+									   ng-bind="contentData.getAutoIncrementString(item)">
+									</div>
 									<!-- If type 2 - checkbox -->
 									<a ng-switch-when="2" href="javascript:void(0)"
 									   editable-checkbox="contentData.viewData['{{item.fieldName}}']" 
@@ -114,19 +112,19 @@
 									</a>
 									<!-- If type 4 - date -->
 									<a ng-switch-when="4"
-										ng-if="contentData.viewData['{{item.fieldName}}'] != null"
+										ng-if="contentData.viewData[item.fieldName] != null"
 										href="javascript:void(0)"
-										editable-bsdate="contentData.viewData['{{item.fieldName}}']"
+										editable-bsdate="contentData.viewData[item.fieldName]"
 										e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
 										e-init-date="false"
 										e-is-open="picker.opened"
 										onshow="openPicker()"
 										onhide="closePicker()"
-										ng-bind="contentData.viewData['{{item.fieldName}}'] | date: '{{item.meta.format | "dd MMM yyyy"}}'"
+										ng-bind="contentData.getDateString(item)"
 										onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
 									<a ng-switch-when="4"
-									   ng-if="contentData.viewData['{{item.fieldName}}'] == null"
+									   ng-if="contentData.viewData[item.fieldName] == null"
 									   href="javascript:void(0)"
 									   editable-bsdate="contentData.viewData['{{item.fieldName}}']"
 									   e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
@@ -139,21 +137,55 @@
 									<!-- If type 5 - datetime -->
 									<div class="row" ng-switch-when="5">
 										<div class="col-sm-6">
-											<a ng-if="item.fieldTypeId === 5" 
-											   href="javascript:void(0)" 
-											   editable-bsdate="contentData.viewData['{{item.fieldName}}']" 
-											   e-datepicker-popup="dd MMM yyyy" 
-											   e-init-date="false"  
-											   e-is-open="picker.opened" 
+											<a ng-if="contentData.viewData[item.fieldName] != null"
+											   href="javascript:void(0)"
+											   editable-bsdate="contentData.viewData[item.fieldName]"
+											   e-datepicker-popup="dd MMM yyyy"
+											   e-init-date="false"
+											   e-is-open="picker.opened"
 											   onshow="openPicker()"
 											   onhide="closePicker()"
-											   ng-bind="contentData.viewData['{{item.fieldName}}'] | date: 'dd MMM yyyy' || 'empty' ">
+											   ng-bind="contentData.getDateString(item)"
+											   onbeforesave="contentData.fieldUpdate(item, $data)">
+											</a>
+											<a ng-if="contentData.viewData[item.fieldName] == null"
+											   href="javascript:void(0)"
+											   editable-bsdate="contentData.viewData['{{item.fieldName}}']"
+											   e-datepicker-popup="dd MMM yyyy"
+											   e-init-date="false"
+											   e-is-open="picker.opened"
+											   onshow="openPicker()"
+											   onhide="closePicker()"
+											   onbeforesave="contentData.fieldUpdate(item, $data)">
+												<span class="editable-empty">empty</span>
 											</a>
 										</div>
 										<div class="col-sm-6">
-											<a ng-if="item.fieldTypeId === 5" href="javascript:void(0)" editable-bstime="contentData.viewData['{{item.fieldName}}']" e-show-meridian="false" e-minute-step="10" ng-bind="contentData.viewData['{{item.fieldName}}'] | date: 'HH:mm' || 'empty' "></a>
+											<a ng-if="contentData.viewData[item.fieldName] != null"
+											   href="javascript:void(0)" 
+											   editable-bstime="contentData.viewData['{{item.fieldName}}']" 
+											   e-show-meridian="false" 
+											   e-minute-step="10" 
+											   ng-bind="contentData.getTimeString(item)"
+											   onbeforesave="contentData.fieldUpdate(item, $data)">
+											</a>
+											<a ng-if="contentData.viewData[item.fieldName] == null"
+											   href="javascript:void(0)"
+											   editable-bstime="contentData.viewData['{{item.fieldName}}']"
+											   e-show-meridian="false"
+											   e-minute-step="10"
+											   onbeforesave="contentData.fieldUpdate(item, $data)">
+												<span class="editable-empty">empty</span>
+											</a>
 										</div>
 									</div>
+									<!-- If type 6 - email -->
+									<a ng-switch-when="6" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty'"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+									</a>
+
 									
 									<!-- If type 16 - unique identifier -->
 									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>

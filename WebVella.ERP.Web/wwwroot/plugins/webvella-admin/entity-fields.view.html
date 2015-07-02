@@ -1385,16 +1385,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.startingNumber.$invalid && !manageFieldForm.startingNumber.$pristine || popupData.startingNumberError}">
                             <label class="control-label">Starting number</label>
-                            <input class="form-control" ng-model="popupData.field.startingNumber" name="startingNumber" type="text"
-                                   pattern="^[0-9]*$" />
-                            <div class="error" ng-show="manageFieldForm.startingNumber.$dirty && manageFieldForm.startingNumber.$invalid || popupData.startingNumberError">
-                                <small class="error" ng-show="manageFieldForm.startingNumber.$error.pattern && !popupData.startingNumberError">
-                                    only numbers
-                                </small>
-                                <small class="error" ng-show="popupData.startingNumberError">
-                                    {{popupData.startingNumberMessage}}
-                                </small>
-                            </div>
+                            <input class="form-control disabled" value="{{popupData.field.startingNumber}}" disabled/>
                         </div>
                     </div>
                 </div>

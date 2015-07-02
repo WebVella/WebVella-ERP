@@ -83,4 +83,24 @@ function decimalPlaces(num) {
 		 - (match[2] ? +match[2] : 0));
 }
 
+
+function checkEmail(data) {
+	var response = {
+		success: true,
+		message: "It is email"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+
+	if (data.toString().indexOf(",") > -1) {
+		response.success = false;
+		response.message = "Comma is not allowed. Use '.' for decimal separator";
+		return response;
+	}
+
+
+	return response;
+}
 // Later can be used in controller as a dependency
