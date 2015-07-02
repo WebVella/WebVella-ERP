@@ -338,7 +338,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="buffer"></param>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public IStorageFile CreateTempFile(byte[] buffer, string extension = null)
+        public IStorageFile CreateTempFile( string filename, byte[] buffer, string extension = null)
         {
             if (!string.IsNullOrWhiteSpace(extension))
             {
@@ -347,9 +347,8 @@ namespace WebVella.ERP.Storage.Mongo
                     extension = "." + extension;
             }
 
-            string filename = ObjectId.GenerateNewId().ToString().ToLowerInvariant();
-
-            var tmpFilePath = FOLDER_SEPARATOR + TMP_FOLDER_NAME + FOLDER_SEPARATOR + filename + extension ?? string.Empty;
+            string section = ObjectId.GenerateNewId().ToString().ToLowerInvariant();
+            var tmpFilePath = FOLDER_SEPARATOR + TMP_FOLDER_NAME + FOLDER_SEPARATOR + section + FOLDER_SEPARATOR + filename + extension ?? string.Empty;
             using (var stream = gfs.OpenWrite(tmpFilePath, new MongoGridFSCreateOptions { UploadDate = DateTime.UtcNow }))
             {
                 stream.Write(buffer, 0, buffer.Length);

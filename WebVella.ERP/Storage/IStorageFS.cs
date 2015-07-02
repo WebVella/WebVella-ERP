@@ -14,7 +14,7 @@ namespace WebVella.ERP.Storage
         IStorageFile Move(string sourceFilepath, string destinationFilepath, bool overwrite = false);
         void Delete(string filepath);
 
-        IStorageFile CreateTempFile(byte[] buffer, string extension = null);
+        IStorageFile CreateTempFile(string filename, byte[] buffer, string extension = null);
         void CleanupExpiredTempFiles(TimeSpan expirationPeriod);
     }
 }

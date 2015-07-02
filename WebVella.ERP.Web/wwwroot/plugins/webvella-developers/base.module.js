@@ -40,10 +40,10 @@
 
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory', 'Upload'];
 
     /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory, upload) {
         $log.debug('webvellaDevelopers>base> BEGIN module.run');
         $rootScope.$on('webvellaDesktop-browsenav-ready', function (event) {
             var item = {
@@ -64,21 +64,51 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', 'webvellaDevelopersQueryService'];
+    controller.$inject = ['$log', '$scope', '$timeout', 'webvellaDevelopersQueryService', 'Upload'];
 
     /* @ngInject */
-    function controller($log, queryService) {
+    function controller($log, $scope, $timeout, queryService, Upload) {
         $log.debug('webvellaDevelopers>base> BEGIN controller.exec');
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.executeSampleQuery = executeSampleQuery;
         pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
         pluginData.result = "";
-
+        
         $log.debug('webvellaDevelopers>base> END controller.exec');
 
-        function activate() {
+        $scope.$watch('pluginData.files', function () {
+            pluginData.upload(pluginData.files);
+        });
 
+        pluginData.upload = function (files) {
+            if (files && files.length) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    $log.info(file);
+                    Upload.upload({
+                        url: 'http://localhost:2202/fs/upload/',
+                        fields: {
+                            'username': 'test'
+                        },
+                        file: file
+                    }).progress(function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        $log.info(progressPercentage+ '%' );
+                    }).success(function (data, status, headers, config) {
+                        $timeout(function () {
+                            //$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                            $log.info(data);
+                            $log.info(status);
+                            $log.info(headers);
+                            $log.info(config);
+                        });
+                    });
+                }
+            }
+        };
+
+        function activate() {
         }
 
         function executeSampleQuery() {
