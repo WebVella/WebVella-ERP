@@ -1,6 +1,10 @@
 <div id="developers" ui-view="contentView">
-	<div><button ng-click="pluginData.createSampleQueryDataStructure()">create sample query data structure</button></div>
-	<div><button ng-click="pluginData.executeSampleQuery()">execute sample query</button></div>
+	<!--<div><button ng-click="pluginData.createSampleQueryDataStructure()">create sample query data structure</button></div>
+	<div><button ng-click="pluginData.executeSampleQuery()">execute sample query</button></div>-->
+
+    <div class="button" ngf-select ng-model="pluginData.files" ngf-multiple="false">Select File</div>
+    
+
 </div>
 
 <pre>

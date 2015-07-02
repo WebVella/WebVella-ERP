@@ -22,6 +22,12 @@ namespace WebVella.ERP.Web.Controllers
             return Json(response);
         }
 
+        public IActionResult DoPageNotFoundResponse()
+        {
+            Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return Json(new { });
+        }
+
         public IActionResult DoBadRequestResponse(BaseResponseModel response, string message = null, Exception ex = null)
         {
             response.Timestamp = DateTime.UtcNow;

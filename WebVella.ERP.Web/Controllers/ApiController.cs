@@ -8,6 +8,9 @@ using System.Linq;
 using WebVella.ERP.Api;
 using WebVella.ERP.Storage;
 using System.Collections.Generic;
+using Microsoft.AspNet.Http;
+using Microsoft.Net.Http.Headers;
+using System.IO;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -22,6 +25,7 @@ namespace WebVella.ERP.Web.Controllers
         EntityManager entityManager;
 
         public IStorageService Storage { get; set; }
+
         public ApiController(IErpService service, IStorageService storage) : base(service)
         {
             Storage = storage;
@@ -823,8 +827,6 @@ namespace WebVella.ERP.Web.Controllers
             return Json(result);
         }
 
-
-
         #endregion
 
         #region << Area Specific >>
@@ -1029,6 +1031,50 @@ namespace WebVella.ERP.Web.Controllers
 
         #endregion
 
+        [HttpGet]
+        [Route("/fs/{*filepath}")]
+        public IActionResult Download([FromRoute] string filepath)
+        {
+            //TODO  authorize
+            if (string.IsNullOrWhiteSpace(filepath))
+                return DoPageNotFoundResponse();
+
+            if (!filepath.StartsWith("/"))
+                filepath = "/" + filepath;
+
+            filepath = filepath.ToLowerInvariant();
+
+            var fs = service.StorageService.GetFS();
+            var file = fs.Find(filepath);
+
+            if (file == null)
+                return DoPageNotFoundResponse();
+
+            return File( file.GetBytes(), System.Net.Mime.MediaTypeNames.Application.Octet );
+        }
+
+        [AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
+        public IActionResult Upload([FromForm] IFormFile file)
+        {
+            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
+            var fs = service.StorageService.GetFS();
+            var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
+            return Json(new { Url = createdFile.FilePath });
+        }
+
+        private static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
 
     }
 }
