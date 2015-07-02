@@ -180,6 +180,9 @@
         		if (!validation.success) {
         			return validation.message;
         		}
+				//Checkbox
+        		case 2:
+        			data = (data === "true"); // convert string to boolean
         		break;
         	}
         	contentData.patchObject[item.fieldName] = data;
@@ -215,7 +218,6 @@
         		return fieldValue;
         	}
         }
-
     	//Checkbox
         contentData.getCheckboxString = function (item) {
         	var fieldValue = contentData.viewData[item.fieldName];
@@ -226,7 +228,24 @@
         		return "false";
         	}
         }
-
+    	//Currency
+        contentData.getCurrencyString = function (item) {
+        	var fieldValue = contentData.viewData[item.fieldName];
+        	if (!fieldValue) {
+        		return "empty";
+        	}
+        	else if (item.meta.currency != null && item.meta.currency != {} && item.meta.currency.symbol) {
+        		if (item.meta.currency.symbolPlacement == 1) {
+        			return item.meta.currency.symbol + "" + fieldValue
+        		}
+        		else {
+        			return fieldValue + "" + item.meta.currency.symbol
+        		}
+        	}
+        	else {
+        		return fieldValue;
+        	}
+        }
     	//DateTime 
         $scope.picker = { opened: false };
 

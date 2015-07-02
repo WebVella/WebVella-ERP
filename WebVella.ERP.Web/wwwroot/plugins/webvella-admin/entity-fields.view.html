@@ -89,9 +89,10 @@
                 </tr>
             </tbody>
         </table>
+
+
     </div>
 </div>
-
 <script type="text/ng-template" id="createFieldModal.html">
     <div class="modal-header" id="modal-top">
         <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -411,41 +412,8 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label class="control-label">Currency Name</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Name Plural</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label">Symbol</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label">Code</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label">Decimal digits</label>
-                                <input class="form-control" type="text" />
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label">Decimal rounding</label>
-                                <input class="form-control" type="text" />
+                                <label class="control-label">Currency</label>
+                                <select class="form-control" ng-model="popupData.selectedCurrencyMeta" ng-options="item.code as item.name for item in popupData.contentData.currencyMetas"></select>
                             </div>
                         </div>
                     </div>
@@ -1523,47 +1491,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Currency Name</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Name Plural</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label class="control-label">Symbol</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label class="control-label">Code</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label class="control-label">Decimal digits</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label class="control-label">Decimal rounding</label>
-                            <input class="form-control" type="text" />
-                        </div>
-                    </div>
-                </div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label">Currency</label>
+							<select class="form-control" ng-model="popupData.selectedCurrencyMeta" ng-options="item.code as item.name for item in popupData.contentData.currencyMetas"></select>
+						</div>
+					</div>
+				</div>
 
             </div>
             <!--Date 4 -->

@@ -92,24 +92,28 @@
                             <!--If item is field WITH NO relation-->
                             <div class="row editable-field" ng-if="item.type === 'field'">
                                 <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
-                                <div class="col-sm-9 position-relative">
+                                <div class="col-sm-9 position-relative" ng-switch="item.fieldTypeId">
 									<!-- If type 1 - autoincrement -->
-									<a ng-if="item.fieldTypeId === 1" href="javascript:void(0)" 
+									<a ng-switch-when="1" href="javascript:void(0)" 
 									   editable-text="contentData.viewData['{{item.fieldName}}']" 
 									   ng-bind="contentData.getAutoIncrementString(item)"
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
-									
 									<!-- If type 2 - checkbox -->
-									<a ng-if="item.fieldTypeId === 2" href="javascript:void(0)"
+									<a ng-switch-when="2" href="javascript:void(0)"
 									   editable-checkbox="contentData.viewData['{{item.fieldName}}']" 
 									   e-title="set as TRUE"
 									    onbeforesave="contentData.fieldUpdate(item, $data)">
 										{{contentData.getCheckboxString(item)}}
 									</a>
-
+									<!-- If type 3 - currency -->
+									<a ng-switch-when="3" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   ng-bind="contentData.getCurrencyString(item)"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+									</a>
 									<!-- If type 5 - date -->
-									<div class="row" ng-if="item.fieldTypeId === 5">
+									<div class="row" ng-switch-when="5">
 										<div class="col-sm-6">
 											<a ng-if="item.fieldTypeId === 5" 
 											   href="javascript:void(0)" 
@@ -128,9 +132,9 @@
 									</div>
 									
 									<!-- If type 16 - unique identifier -->
-									<span ng-if="item.fieldTypeId === 16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
+									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
 									<!-- If type 18 - textbox -->
-                                    <a ng-if="item.fieldTypeId === 18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
+                                    <a ng-switch-when="18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
 
                                 </div>
                             </div>
