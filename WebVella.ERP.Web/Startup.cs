@@ -10,6 +10,7 @@ using WebVella.ERP;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Storage.Mongo;
 using WebVella.ERP.Api.Models.AutoMapper;
+using System.Globalization;
 
 namespace WebVella.ERP.Web
 {
@@ -32,6 +33,8 @@ namespace WebVella.ERP.Web
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
             Settings.Initialize(Configuration);
             IErpService service = app.ApplicationServices.GetService<IErpService>();
             AutoMapperConfiguration.Configure(service);
