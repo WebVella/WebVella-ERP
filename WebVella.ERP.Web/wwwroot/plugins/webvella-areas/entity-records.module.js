@@ -188,10 +188,10 @@
         	}
         	else if (fieldMeta.currency != null && fieldMeta.currency != {} && fieldMeta.currency.symbol) {
         		if (fieldMeta.currency.symbolPlacement == 1) {
-        			return fieldMeta.currency.symbol + "" + fieldValue
+        			return fieldMeta.currency.symbol + " " + fieldValue
         		}
         		else {
-        			return fieldValue + "" + fieldMeta.currency.symbol
+        			return fieldValue + " " + fieldMeta.currency.symbol
         		}
         	}
         	else {
