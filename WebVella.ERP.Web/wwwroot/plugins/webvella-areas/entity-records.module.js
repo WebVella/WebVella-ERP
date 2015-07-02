@@ -208,7 +208,26 @@
         	var fieldValue = record[fieldMeta.name];
         	return moment(fieldValue).format('DD MMMM YYYY HH:mm');
         }
-
+    	//6.Email
+        contentData.getEmailString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return "<a href='mailto:" + fieldValue + "' taget='_blank'>" + fieldValue + "</a>";
+        	}
+        	else {
+        		return "";
+        	}
+        }
+    	//7.File
+        contentData.getEmailString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return "<a href='mailto:" + fieldValue + "' taget='_blank'>" + fieldValue + "</a>";
+        	}
+        	else {
+        		return "";
+        	}
+        }
         $log.debug('webvellaAreas>entities> END controller.exec');
     }
 

@@ -114,11 +114,11 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$filter','$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants', 'Upload'];
 
     /* @ngInject */
     function controller($filter, $log, $rootScope, $state,$scope, pageTitle, webvellaRootService,webvellaAdminService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
+        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants, Upload) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -204,6 +204,7 @@
         			if (!validation.success) {
         				return validation.message;
         			}
+
         			break;
         	}
         	contentData.patchObject[item.fieldName] = data;
