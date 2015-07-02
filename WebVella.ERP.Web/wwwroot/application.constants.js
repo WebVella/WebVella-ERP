@@ -21,8 +21,17 @@ function checkInt(data) {
 		success: true,
 		message: "It is integer"
 	}
-
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
 	if (!isNaN(parseFloat(data)) && !isFinite(data)) {
+		response.success = false;
+		response.message = "Only integer is accepted";
+		return response;
+	}
+
+	if (data.toString().indexOf(",") > -1 || data.toString().indexOf(".") > -1) {
 		response.success = false;
 		response.message = "Only integer is accepted";
 		return response;
@@ -45,18 +54,33 @@ function checkDecimal(data) {
 		success: true,
 		message: "It is decimal"
 	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
 	if (data.toString().indexOf(",") > -1) {
 		response.success = false;
 		response.message = "Comma is not allowed. Use '.' for decimal separator";
 		return response;
 	}
-	if (!isNaN(parseFloat(data)) && !isFinite(data)) {
+	if (isNaN(parseFloat(data)) && !isFinite(data)) {
 		response.success = false;
 		response.message = "Only decimal is accepted";
 		return response;
 	}
 
 	return response;
+}
+
+function decimalPlaces(num) {
+	var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+	if (!match) { return 0; }
+	return Math.max(
+		 0,
+		 // Number of digits right of decimal point.
+		 (match[1] ? match[1].length : 0)
+		 // Adjust for scientific notation.
+		 - (match[2] ? +match[2] : 0));
 }
 
 // Later can be used in controller as a dependency
