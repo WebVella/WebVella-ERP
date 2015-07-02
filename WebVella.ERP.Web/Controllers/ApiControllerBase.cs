@@ -16,7 +16,7 @@ namespace WebVella.ERP.Web.Controllers
 
         public IActionResult DoResponse( BaseResponseModel response )
         {
-            if (response.Errors.Count > 0)
+            if (response.Errors.Count > 0 || !response.Success )
                 Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json(response);
