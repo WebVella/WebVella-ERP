@@ -129,7 +129,14 @@
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{record[fieldMeta.name]}}</td>
+					<td class="wv-{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}" ng-switch="fieldMeta.fieldType">
+						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,fieldMeta)}}</span>
+						<span ng-switch-when="2">{{contentData.getCheckboxString(record,fieldMeta)}}</span>
+						<span ng-switch-when="3">{{contentData.getCurrencyString(record,fieldMeta)}}</span>
+						<span ng-switch-when="4">{{contentData.getDateString(record,fieldMeta)}}</span>
+						<span ng-switch-when="5">{{contentData.getDateTimeString(record,fieldMeta)}}</span>
+						<span ng-switch-when="16">{{record[fieldMeta.name]}}</span>
+					</td>
 				</tr>
 			</tbody>
 		</table>

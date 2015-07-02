@@ -157,6 +157,59 @@
         	webvellaRootService.GoToState($state, $state.current.name, params);
         }
 
+    	//1.Auto increment
+        contentData.getAutoIncrementString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else if (fieldMeta.displayFormat) {
+        		return fieldMeta.displayFormat.replace("{0}", fieldValue);
+        	}
+        	else {
+        		return fieldValue;
+        	}
+        }
+    	//2.Checkbox
+        contentData.getCheckboxString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return "true";
+        	}
+        	else {
+        		return "false";
+        	}
+        }
+    	//3.Currency
+        contentData.getCurrencyString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else if (fieldMeta.currency != null && fieldMeta.currency != {} && fieldMeta.currency.symbol) {
+        		if (fieldMeta.currency.symbolPlacement == 1) {
+        			return fieldMeta.currency.symbol + "" + fieldValue
+        		}
+        		else {
+        			return fieldValue + "" + fieldMeta.currency.symbol
+        		}
+        	}
+        	else {
+        		return fieldValue;
+        	}
+        }
+    	//4.Date
+        contentData.getDateString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	return moment(fieldValue).format('DD MMMM YYYY');
+        }
+
+    	//5.Datetime
+        contentData.getDateTimeString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	return moment(fieldValue).format('DD MMMM YYYY HH:mm');
+        }
+
         $log.debug('webvellaAreas>entities> END controller.exec');
     }
 

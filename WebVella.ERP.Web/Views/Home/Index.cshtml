@@ -34,6 +34,7 @@
 
     <!-- plugin:webvella-root -->
     <script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-i18n/angular-locale_en-us.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
     <script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js"></script>
@@ -76,7 +77,7 @@
             function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
                 $urlRouterProvider.otherwise('/desktop/browse');
                 $logProvider.debugEnabled(wvAppConstants.debugEnabled);
-
+                moment.locale('en');
                 ngToastProvider.configure({
                 	animation: 'fade',
                 	horizontalPosition: 'center',
