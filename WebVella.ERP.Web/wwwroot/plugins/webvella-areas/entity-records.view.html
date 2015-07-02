@@ -135,6 +135,7 @@
 						<span ng-switch-when="3">{{contentData.getCurrencyString(record,fieldMeta)}}</span>
 						<span ng-switch-when="4">{{contentData.getDateString(record,fieldMeta)}}</span>
 						<span ng-switch-when="5">{{contentData.getDateTimeString(record,fieldMeta)}}</span>
+						<span ng-switch-when="6">{{record[fieldMeta.name]}}</span>
 						<span ng-switch-when="16">{{record[fieldMeta.name]}}</span>
 					</td>
 				</tr>
@@ -144,8 +145,10 @@
 			There are no records matching your query
 		</div>
 		<ul class="pager">
-			<li ng-class="{disabled: contentData.currentPage == 1}" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-			<li ng-class="{disabled: contentData.currentListView.pageSize > contentData.records.length}" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+			<li ng-if="contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+			<li ng-if="contentData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+			<li ng-if="contentData.currentListView.pageSize <= contentData.records.length" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+			<li ng-if="contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
 </div>

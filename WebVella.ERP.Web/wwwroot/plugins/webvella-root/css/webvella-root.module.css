@@ -1828,6 +1828,10 @@ form .error {
 	color: #bdbdbd;
 }
 
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+	background-color: #f2f2f2!important;
+}
+
 /*#endregion */
 
 /*#region << Tables >> */

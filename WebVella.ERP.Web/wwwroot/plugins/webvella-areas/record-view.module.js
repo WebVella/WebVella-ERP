@@ -113,11 +113,11 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
+    controller.$inject = ['$filter','$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
         'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state,$scope, pageTitle, webvellaRootService,webvellaAdminService,
+    function controller($filter, $log, $rootScope, $state,$scope, pageTitle, webvellaRootService,webvellaAdminService,
         resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
@@ -177,16 +177,7 @@
 
         		//Auto increment number
         		case 1:
-        			if (!data && item.meta.required) {
-        				return "This is a required field";
-        			}
-        			validation = checkInt(data);
-        			if (!validation.success) {
-        				return validation.message;
-        			}
-        			if (!data) {
-        				data = null;
-        			}
+        			//Readonly
         			break;
 				//Checkbox
         		case 2:
@@ -207,6 +198,12 @@
         			break;
         		case 5:
         			data = moment(data).toISOString();
+        			break;
+        		case 6:
+        			validation = checkEmail(data);
+        			if (!validation.success) {
+        				return validation.message;
+        			}
         			break;
         	}
         	contentData.patchObject[item.fieldName] = data;
@@ -271,6 +268,24 @@
         	}
         }
     	//Date & DateTime 
+        contentData.getDateString = function (item) {
+        	var fieldValue = contentData.viewData[item.fieldName];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else {
+        		return $filter('date')(fieldValue, "dd MMM yyyy");
+        	}
+        }
+        contentData.getTimeString = function (item) {
+        	var fieldValue = contentData.viewData[item.fieldName];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else {
+        		return $filter('date')(fieldValue, "HH:mm");
+        	}
+        }
         $scope.picker = { opened: false };
         $scope.openPicker = function () {
         	$timeout(function () {

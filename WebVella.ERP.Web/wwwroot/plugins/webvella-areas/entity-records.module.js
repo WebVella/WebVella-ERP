@@ -203,7 +203,6 @@
         	var fieldValue = record[fieldMeta.name];
         	return moment(fieldValue).format('DD MMMM YYYY');
         }
-
     	//5.Datetime
         contentData.getDateTimeString = function (record, fieldMeta) {
         	var fieldValue = record[fieldMeta.name];
