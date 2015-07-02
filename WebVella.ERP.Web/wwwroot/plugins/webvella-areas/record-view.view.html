@@ -112,7 +112,31 @@
 									   ng-bind="contentData.getCurrencyString(item)"
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
-									<!-- If type 5 - date -->
+									<!-- If type 4 - date -->
+									<a ng-switch-when="4"
+										ng-if="contentData.viewData['{{item.fieldName}}'] != null"
+										href="javascript:void(0)"
+										editable-bsdate="contentData.viewData['{{item.fieldName}}']"
+										e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
+										e-init-date="false"
+										e-is-open="picker.opened"
+										onshow="openPicker()"
+										onhide="closePicker()"
+										ng-bind="contentData.viewData['{{item.fieldName}}'] | date: '{{item.meta.format | "dd MMM yyyy"}}'"
+										onbeforesave="contentData.fieldUpdate(item, $data)">
+									</a>
+									<a ng-switch-when="4"
+									   ng-if="contentData.viewData['{{item.fieldName}}'] == null"
+									   href="javascript:void(0)"
+									   editable-bsdate="contentData.viewData['{{item.fieldName}}']"
+									   e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
+									   e-init-date="false"
+									   e-is-open="picker.opened"
+									   onshow="openPicker()"
+									   onhide="closePicker()"
+									   onbeforesave="contentData.fieldUpdate(item, $data)"><span class="editable-empty">empty</span>
+									</a>
+									<!-- If type 5 - datetime -->
 									<div class="row" ng-switch-when="5">
 										<div class="col-sm-6">
 											<a ng-if="item.fieldTypeId === 5" 
