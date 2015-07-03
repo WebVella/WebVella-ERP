@@ -88,9 +88,6 @@
                     $log.info(file);
                     Upload.upload({
                         url: 'http://localhost:2202/fs/upload/',
-                        fields: {
-                            'username': 'test'
-                        },
                         file: file
                     }).progress(function (evt) {
                         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
@@ -102,6 +99,18 @@
                             $log.info(status);
                             $log.info(headers);
                             $log.info(config);
+                            queryService.moveFile( { 'source': data.url, 'target': "/test/test.pdf" },
+                                function (response) {
+                                    $log.debug('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
+                                    $log.debug(response);
+                                    pluginData.result = response;
+                                },
+				                function (response) {
+				                    $log.debug('webvellaDevelopers>base> END controller.moveFile> ERROR');
+				                    $log.debug(response);
+				                    pluginData.result = response;
+				                });
+
                         });
                     });
                 }

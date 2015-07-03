@@ -19,7 +19,8 @@
 
         serviceInstance.executeSampleQuery = executeSampleQuery;
         serviceInstance.createSampleQueryDataStructure = createSampleQueryDataStructure;
-        
+        serviceInstance.moveFile = moveFile;
+
         /////////////////////////
         function executeSampleQuery(postObject,successCallback, errorCallback) {
             $log.debug('webvellaDevelopers>providers>query.service>execute sample query> function called');
@@ -32,6 +33,14 @@
         	$log.debug('webvellaDevelopers>providers>query.service>execute sample query> function called');
         	var postData = {};
         	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/developers/query/create-sample-query-data-structure', data: postData }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+
+        /////////////////////////
+        function moveFile(postObject, successCallback, errorCallback) {
+            $log.debug('webvellaDevelopers>providers>query.service>move fs> function called');
+            $log.info(postObject)
+            $http({ method: 'POST', url: "/fs/move/", data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         //// Aux methods //////////////////////////////////////////////////////
