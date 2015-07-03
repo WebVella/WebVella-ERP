@@ -1059,7 +1059,38 @@ namespace WebVella.ERP.Web.Controllers
             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
             var fs = service.StorageService.GetFS();
             var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
-            return Json(new { Url = createdFile.FilePath });
+            return Json(new { url = "/fs"  + createdFile.FilePath });
+        }
+
+        [AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
+        public IActionResult Move([FromBody]JObject submitObj)
+        {
+            string source = submitObj["source"].Value<string>();
+            string target = submitObj["target"].Value<string>();
+            bool overwrite = false;
+            if (submitObj["overwrite"] != null )
+                overwrite = submitObj["overwrite"].Value<bool>();
+
+            source = source.ToLowerInvariant();
+            target = target.ToLowerInvariant();
+
+            if (source.StartsWith("/fs/"))
+                source = source.Substring(3);
+
+            if (source.StartsWith("fs/"))
+                source = source.Substring(2);
+
+            if (target.StartsWith("/fs/"))
+                target = target.Substring(3);
+
+            if (target.StartsWith("fs/"))
+                target = target.Substring(2);
+
+            var fs = service.StorageService.GetFS();
+            var sourceFile = fs.Find(source);
+
+            var movedFile = fs.Move(source, target, overwrite );
+            return Json(new { url = "/fs" + movedFile.FilePath });
         }
 
         private static byte[] ReadFully(Stream input)
