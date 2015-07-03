@@ -1059,7 +1059,7 @@ namespace WebVella.ERP.Web.Controllers
             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
             var fs = service.StorageService.GetFS();
             var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
-            return Json(new { Url = createdFile.FilePath });
+            return Json(new { url = createdFile.FilePath });
         }
 
         private static byte[] ReadFully(Stream input)

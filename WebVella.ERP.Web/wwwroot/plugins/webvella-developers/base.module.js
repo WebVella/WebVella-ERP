@@ -93,12 +93,12 @@
                         },
                         file: file
                     }).progress(function (evt) {
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        $log.info(progressPercentage+ '%' );
+                        $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        $log.info($scope.progressPercentage + '%');
                     }).success(function (data, status, headers, config) {
                         $timeout(function () {
                             //$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
-                            $log.info(data);
+                            $log.info(data.url);
                             $log.info(status);
                             $log.info(headers);
                             $log.info(config);

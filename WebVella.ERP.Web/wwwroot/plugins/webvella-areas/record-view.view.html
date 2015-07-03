@@ -1,39 +1,39 @@
 <div id="page-title">
-    <div id="page-meta">
-        <!--<div class="aux-actions">
-            <a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
-            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
-            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
-            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
-                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                </ul>
-            </span>
-        </div>-->
-        <div class="icon-box">
-            <i class="fa fa-users"></i>
-        </div>
-        <div class="entity-box">
-            <h4>{{contentData.currentEntity.label}}</h4>
-            <a href=""><i class="fa fa-gear"></i> Settings</a>
-        </div>
-        <div class="spacer-box"></div>
-        <div class="divider-box">
-            <i class="fa fa-caret-right"></i>
-        </div>
-        <div class="lists-box">
-            <h4 title="Newest active offers">{{contentData.recordView.label}}</h4>
-            <a  href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
-        </div>
+	<div id="page-meta">
+		<!--<div class="aux-actions">
+			<a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
+			<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+			<a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
+			<span class="dropdown  hidden-xs  hidden-sm" dropdown>
+				<a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
+				<ul class="dropdown-menu dropdown-menu-right">
+					<li>
+						<a href>Account settings</a>
+					</li>
+					<li>
+						<a href>Account settings</a>
+					</li>
+					<li>
+						<a href>Account settings</a>
+					</li>
+				</ul>
+			</span>
+		</div>-->
+		<div class="icon-box">
+			<i class="fa fa-users"></i>
+		</div>
+		<div class="entity-box">
+			<h4>{{contentData.currentEntity.label}}</h4>
+			<a href=""><i class="fa fa-gear"></i> Settings</a>
+		</div>
+		<div class="spacer-box"></div>
+		<div class="divider-box">
+			<i class="fa fa-caret-right"></i>
+		</div>
+		<div class="lists-box">
+			<h4 title="Newest active offers">{{contentData.recordView.label}}</h4>
+			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
+		</div>
 		<accordion>
 			<accordion-group is-open="moreListsOpened">
 				<form class="form-inline">
@@ -69,39 +69,39 @@
 				</ul>
 			</accordion-group>
 		</accordion>
-    </div>
-    <!--<div id="page-messages">
-        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-    </div>-->
+	</div>
+	<!--<div id="page-messages">
+		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+	</div>-->
 </div>
 
 <div class="record-details">
 
-    <div class="panel panel-default" ng-repeat="section in contentData.contentRegion.sections">
-        <div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
-            <span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
-            <span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
-            {{section.label}}
-        </div>
-        <div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-            <div class="form-horizontal">
+	<div class="panel panel-default" ng-repeat="section in contentData.contentRegion.sections">
+		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
+			<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+			<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+			{{section.label}}
+		</div>
+		<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+			<div class="form-horizontal">
 
-                <div class="row" ng-repeat="row in section.rows">
-                    <div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
-                        <div class="form-group" ng-repeat="item in column.items">
-                            <!--If item is field WITH NO relation-->
-                            <div class="row editable-field" ng-if="item.type === 'field'">
-                                <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
-                                <div class="col-sm-9 position-relative" ng-switch="item.fieldTypeId">
+				<div class="row" ng-repeat="row in section.rows">
+					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+						<div class="form-group" ng-repeat="item in column.items">
+							<!--If item is field WITH NO relation-->
+							<div class="row editable-field" ng-if="item.type === 'field'">
+								<label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
+								<div class="col-sm-9 position-relative" ng-switch="item.fieldTypeId">
 									<!-- If type 1 - autoincrement -->
-									<div ng-switch-when="1"  class="form-control-static"
-									   ng-bind="contentData.getAutoIncrementString(item)">
+									<div ng-switch-when="1" class="form-control-static"
+										 ng-bind="contentData.getAutoIncrementString(item)">
 									</div>
 									<!-- If type 2 - checkbox -->
 									<a ng-switch-when="2" href="javascript:void(0)"
-									   editable-checkbox="contentData.viewData['{{item.fieldName}}']" 
+									   editable-checkbox="contentData.viewData['{{item.fieldName}}']"
 									   e-title="set as TRUE"
-									    onbeforesave="contentData.fieldUpdate(item, $data)">
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
 										{{contentData.getCheckboxString(item)}}
 									</a>
 									<!-- If type 3 - currency -->
@@ -112,16 +112,16 @@
 									</a>
 									<!-- If type 4 - date -->
 									<a ng-switch-when="4"
-										ng-if="contentData.viewData[item.fieldName] != null"
-										href="javascript:void(0)"
-										editable-bsdate="contentData.viewData[item.fieldName]"
-										e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
-										e-init-date="false"
-										e-is-open="picker.opened"
-										onshow="openPicker()"
-										onhide="closePicker()"
-										ng-bind="contentData.getDateString(item)"
-										onbeforesave="contentData.fieldUpdate(item, $data)">
+									   ng-if="contentData.viewData[item.fieldName] != null"
+									   href="javascript:void(0)"
+									   editable-bsdate="contentData.viewData[item.fieldName]"
+									   e-datepicker-popup="{{item.meta.format || 'dd MMM yyyy'}}"
+									   e-init-date="false"
+									   e-is-open="picker.opened"
+									   onshow="openPicker()"
+									   onhide="closePicker()"
+									   ng-bind="contentData.getDateString(item)"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
 									<a ng-switch-when="4"
 									   ng-if="contentData.viewData[item.fieldName] == null"
@@ -132,7 +132,8 @@
 									   e-is-open="picker.opened"
 									   onshow="openPicker()"
 									   onhide="closePicker()"
-									   onbeforesave="contentData.fieldUpdate(item, $data)"><span class="editable-empty">empty</span>
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+										<span class="editable-empty">empty</span>
 									</a>
 									<!-- If type 5 - datetime -->
 									<div class="row" ng-switch-when="5">
@@ -162,10 +163,10 @@
 										</div>
 										<div class="col-sm-6">
 											<a ng-if="contentData.viewData[item.fieldName] != null"
-											   href="javascript:void(0)" 
-											   editable-bstime="contentData.viewData['{{item.fieldName}}']" 
-											   e-show-meridian="false" 
-											   e-minute-step="10" 
+											   href="javascript:void(0)"
+											   editable-bstime="contentData.viewData['{{item.fieldName}}']"
+											   e-show-meridian="false"
+											   e-minute-step="10"
 											   ng-bind="contentData.getTimeString(item)"
 											   onbeforesave="contentData.fieldUpdate(item, $data)">
 											</a>
@@ -186,30 +187,46 @@
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
 									</a>
 									<!-- If type 7 - fileupload -->
-									<div ng-switch-when="7" class="form-control-static">
-										File upload
+									<div ng-switch-when="7">
+										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false'>Browse</a>
+										<div class="progress" ng-show="!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] > 0 && contentData.progress[item.fieldName] <= 100">
+											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.fieldName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.fieldName] || '0'}}%;">
+												<span ng-show="contentData.progress[item.fieldName] < 100">{{contentData.progress[item.fieldName] || '0'}}%</span>
+												<span ng-show="contentData.progress[item.fieldName] == 100">almost done...</span>
+											</div>
+										</div>
+										<div class="input-group file-upload" ng-show='contentData.viewData[item.fieldName]'>
+											<a class="form-control link-icon" href="{{contentData.viewData[item.fieldName]}}" target="_blank">view file</a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item.fieldName)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+										</div>
+									</div>
+									<!-- If type 7 - html -->
+									<div ng-switch-when="8">
+										<textarea ng-model="page.body"
+												  name="pageBody"
+												  ckeditor="editorOptions" ></textarea>
 									</div>
 									<!-- If type 16 - unique identifier -->
 									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
 									<!-- If type 18 - textbox -->
-                                    <a ng-switch-when="18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
+									<a ng-switch-when="18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
 
-                                </div>
-                            </div>
-                            <!--If item is field WITH relation-->
-                            <div class="row editable-field" ng-if="item.type === 'fieldFromRelation'">
-                                <label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
-                                <div class="col-sm-9 position-relative">
-                                    <p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['{{item.fieldName}}']['name'] || 'empty' "></a></p>
-                                </div>
-                            </div>
+								</div>
+							</div>
+							<!--If item is field WITH relation-->
+							<div class="row editable-field" ng-if="item.type === 'fieldFromRelation'">
+								<label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
+								<div class="col-sm-9 position-relative">
+									<p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['{{item.fieldName}}']['name'] || 'empty' "></a></p>
+								</div>
+							</div>
 
-                        </div>
-                    </div>
-                </div>
+						</div>
+					</div>
+				</div>
 
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 
 </div>
