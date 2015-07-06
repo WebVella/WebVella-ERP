@@ -385,7 +385,7 @@ ngToast
 #page-topnav {
 	height: 56px;
 	border-bottom: 2px solid #90A4AE;
-	border-top:1px solid #ccc;
+	border-top: 1px solid #ccc;
 	position: relative;
 	padding: 12px 20px 12px 30px;
 	overflow: hidden;
@@ -1825,7 +1825,7 @@ form .error {
 }
 
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-	background-color: #f2f2f2!important;
+	background-color: #f2f2f2 !important;
 }
 
 /*#endregion */
@@ -1857,6 +1857,9 @@ table .btn-xs.btn-link {
 	font-size: 13px;
 }
 
+.table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+	border-bottom-width: 1px;
+}
 
 .table.table-permissions thead th {
 	font-weight: normal;
@@ -2577,30 +2580,31 @@ span.editable {
 
 /*Checkbox*/
 .editable-checkbox {
-	padding-top:20px !important;
-}
-.editable-checkbox label {
-	line-height: 30px;
-	margin-right:15px;
+	padding-top: 20px !important;
 }
 
-	.editable-checkbox label:hover {
-		cursor: pointer;
+	.editable-checkbox label {
+		line-height: 30px;
+		margin-right: 15px;
 	}
 
-.editable-checkbox input {
-	vertical-align: text-bottom;
-	margin-top: 10px;
-}
+		.editable-checkbox label:hover {
+			cursor: pointer;
+		}
+
+	.editable-checkbox input {
+		vertical-align: text-bottom;
+		margin-top: 10px;
+	}
 
 /*Date picker*/
 .editable-bsdate .input-group {
-	width:160px;
+	width: 160px;
 }
 
 .editable-bsdate .dropdown-menu {
-	top:100%;
-	left:0;
+	top: 100%;
+	left: 0;
 }
 
 /* Not editable */
@@ -2648,6 +2652,21 @@ span.not-editable {
 		color: #333;
 		cursor: pointer;
 	}
+
+.input-group.file-upload .form-control {
+	color: #337ab7;
+}
+
+.input-group.file-upload .input-group-addon {
+	padding-left: 6px;
+	padding-right: 6px;
+	color: #BDBDBD;
+	text-align: center;
+}
+
+.input-group.file-upload .input-group-addon:hover {
+	color:#F44336;
+}
 
 /*#endregion */
 
@@ -3193,7 +3212,7 @@ span.not-editable {
 	}
 
 	.dropped-item .as-sortable-item-handle {
-		padding:5px;
+		padding: 5px;
 	}
 
 .view-manage-section .dropped-item .title,
@@ -3320,21 +3339,213 @@ span.not-editable {
 
 /* temporary workaround for display editable-bstime in bs3 - up/down symbols not shown */
 .editable-bstime .editable-input i.icon-chevron-up:before {
-  content: '\e113';
+	content: '\e113';
 }
+
 .editable-bstime .editable-input i.icon-chevron-down:before {
-  content: '\e114';
+	content: '\e114';
 }
+
 .editable-bstime .editable-input i.icon-chevron-up,
 .editable-bstime .editable-input i.icon-chevron-down {
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: 'Glyphicons Halflings';
-  -webkit-font-smoothing: antialiased;
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	-webkit-font-smoothing: antialiased;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
 }
 
 /*#endregion */
+
+/*#region << Link icons >>*/
+/*
+FILE FORMAT ICONS
+by Greg Schoppe (http://gschoppe.com)
+USAGE: include FontAwesome on page, as shown on http://fontawesome.io
+       then include this css file, and target links by adding the link-icon
+       class.  Note: try to avoid or manually label links to websites, as that
+       detection code is necessarily janky. when in doubt, just end all external
+       links with a trailing slash (/), a query string (?), or a link target (#)
+*/
+a.link-icon:before,
+a.link-icon.link-file[href]:before {
+	content: "\f016"; /* generic file icon */
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+	width: 20px;
+	text-align: left;
+	margin-right: 0;
+}
+
+a[href$=".txt"].link-icon:before,
+a.link-icon.link-text[href]:before {
+	content: "\f0f6"; /*Text*/
+}
+
+a[href$=".pdf"].link-icon:before,
+a.link-icon.link-pdf[href]:before {
+	content: "\f1c1"; /*PDF*/
+}
+
+a[href$=".doc"].link-icon:before,
+a[href$=".docx"].link-icon:before,
+a.link-icon.link-word[href]:before {
+	content: "\f1c2"; /*Word*/
+}
+
+a[href$=".xls"].link-icon:before,
+a[href$=".xlsx"].link-icon:before,
+a.link-icon.link-excel[href]:before {
+	content: "\f1c3"; /*Excel*/
+}
+
+a[href$=".ppt"].link-icon:before,
+a[href$=".pptx"].link-icon:before,
+a.link-icon.link-powerpoint[href]:before {
+	content: "\f1c4"; /*Powerpoint*/
+}
+
+a[href$=".gif"].link-icon:before,
+a[href$=".jpg"].link-icon:before,
+a[href$=".jpeg"].link-icon:before,
+a[href$=".png"].link-icon:before,
+a[href$=".bmp"].link-icon:before,
+a[href$=".tif"].link-icon:before,
+a.link-icon.link-image[href]:before {
+	content: "\f1c5"; /*Image*/
+}
+
+a[href$=".zip"].link-icon:before,
+a[href$=".zipx"].link-icon:before,
+a[href$=".rar"].link-icon:before,
+a[href$=".tar"].link-icon:before,
+a[href$=".gz"].link-icon:before,
+a[href$=".dmg"].link-icon:before,
+a[href$=".iso"].link-icon:before,
+a.link-icon.link-archive[href]:before {
+	content: "\f1c6"; /*Archive*/
+}
+
+a[href$=".wav"].link-icon:before,
+a[href$=".mp3"].link-icon:before,
+a[href$=".fla"].link-icon:before,
+a[href$=".flac"].link-icon:before,
+a[href$=".ra"].link-icon:before,
+a[href$=".rma"].link-icon:before,
+a[href$=".aif"].link-icon:before,
+a[href$=".aiff"].link-icon:before,
+a[href$=".aa"].link-icon:before,
+a[href$=".aac"].link-icon:before,
+a[href$=".aax"].link-icon:before,
+a[href$=".ac3"].link-icon:before,
+a[href$=".au"].link-icon:before,
+a[href$=".ogg"].link-icon:before,
+a[href$=".avr"].link-icon:before,
+a[href$=".3ga"].link-icon:before,
+a[href$=".flac"].link-icon:before,
+a[href$=".mid"].link-icon:before,
+a[href$=".midi"].link-icon:before,
+a[href$=".m4a"].link-icon:before,
+a[href$=".mp4a"].link-icon:before,
+a[href$=".amz"].link-icon:before,
+a[href$=".mka"].link-icon:before,
+a[href$=".asx"].link-icon:before,
+a[href$=".pcm"].link-icon:before,
+a[href$=".m3u"].link-icon:before,
+a[href$=".wma"].link-icon:before,
+a[href$=".xwma"].link-icon:before,
+a.link-icon.link-audio[href]:before {
+	content: "\f1c7"; /*Audio*/
+}
+
+a[href$=".avi"].link-icon:before,
+a[href$=".mpg"].link-icon:before,
+a[href$=".mp4"].link-icon:before,
+a[href$=".mkv"].link-icon:before,
+a[href$=".mov"].link-icon:before,
+a[href$=".wmv"].link-icon:before,
+a[href$=".vp6"].link-icon:before,
+a[href$=".264"].link-icon:before,
+a[href$=".vid"].link-icon:before,
+a[href$=".rv"].link-icon:before,
+a[href$=".webm"].link-icon:before,
+a[href$=".swf"].link-icon:before,
+a[href$=".h264"].link-icon:before,
+a[href$=".flv"].link-icon:before,
+a[href$=".mk3d"].link-icon:before,
+a[href$=".gifv"].link-icon:before,
+a[href$=".oggv"].link-icon:before,
+a[href$=".3gp"].link-icon:before,
+a[href$=".m4v"].link-icon:before,
+a[href$=".movie"].link-icon:before,
+a[href$=".divx"].link-icon:before,
+a.link-icon.link-video[href]:before {
+	content: "\f1c8"; /*Video*/
+}
+
+a[href$=".css"].link-icon:before,
+a[href$=".js"].link-icon:before,
+a[href$=".py"].link-icon:before,
+a[href$=".git"].link-icon:before,
+a[href$=".py"].link-icon:before,
+a[href$=".cpp"].link-icon:before,
+a[href$=".h"].link-icon:before,
+a[href$=".ini"].link-icon:before,
+a[href$=".config"].link-icon:before,
+a.link-icon.link-code[href]:before {
+	content: "\f1c9"; /*code*/
+}
+
+a[href$=".exe"].link-icon:before,
+a[href$=".jar"].link-icon:before,
+a[href$=".dll"].link-icon:before,
+a[href$=".bat"].link-icon:before,
+a[href$=".pl"].link-icon:before,
+a[href$=".scr"].link-icon:before,
+a[href$=".msi"].link-icon:before,
+a[href$=".app"].link-icon:before,
+a[href$=".deb"].link-icon:before,
+a[href$=".apk"].link-icon:before,
+a[href$=".jar"].link-icon:before,
+a[href$=".vb"].link-icon:before,
+a[href$=".prg"].link-icon:before,
+a[href$=".sh"].link-icon:before,
+a.link-icon.link-exe[href]:before {
+	content: "\f085"; /*Executable*/
+}
+
+a[href$=".com"].link-icon:before,
+a[href$=".net"].link-icon:before,
+a[href$=".org"].link-icon:before,
+a[href$=".edu"].link-icon:before,
+a[href$=".gov"].link-icon:before,
+a[href$=".mil"].link-icon:before,
+a[href$="/"].link-icon:before,
+a[href$=".html"].link-icon:before,
+a[href$=".htm"].link-icon:before,
+a[href$=".xhtml"].link-icon:before,
+a[href$=".jhtml"].link-icon:before,
+a[href$=".php"].link-icon:before,
+a[href$=".php3"].link-icon:before,
+a[href$=".php4"].link-icon:before,
+a[href$=".php5"].link-icon:before,
+a[href$=".phtml"].link-icon:before,
+a[href$=".asp"].link-icon:before,
+a[href$=".aspx"].link-icon:before,
+a[href$=".cfm"].link-icon:before,
+a[href*="?"].link-icon:before,
+a[href*="#"].link-icon:before,
+a.link-icon:not([href*='.']):before,
+a.link-icon.link[href]:before {
+	content: "\f0c1"; /*link*/
+}
+
+/*#endregion*/
