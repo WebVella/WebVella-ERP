@@ -34,7 +34,7 @@
                     return "Webvella ERP";
                 }
             },
-            data: { }
+            data: {}
         });
     };
 
@@ -74,7 +74,7 @@
         pluginData.executeSampleQuery = executeSampleQuery;
         pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
         pluginData.result = "";
-        
+
         $log.debug('webvellaDevelopers>base> END controller.exec');
 
         $scope.$watch('pluginData.files', function () {
@@ -91,7 +91,7 @@
                         file: file
                     }).progress(function (evt) {
                         var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        $log.info(progressPercentage+ '%' );
+                        $log.info(progressPercentage + '%');
                     }).success(function (data, status, headers, config) {
                         $timeout(function () {
                             //$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
@@ -99,7 +99,7 @@
                             //$log.info(status);
                             //$log.info(headers);
                             //$log.info(config);
-                            queryService.moveFile( { 'source': data.object.url, 'target': "/test/test.pdf", overwrite: true },
+                            queryService.moveFile({ 'source': data.object.url, 'target': "/test/test.pdf", overwrite: true },
                                 function (response) {
                                     $log.info('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
                                     pluginData.result = response;
@@ -134,34 +134,34 @@
         }
 
         function executeSampleQuery() {
-        	$log.debug('webvellaDevelopers>base> BEGIN controller.executeSampleQuery');
-        	queryService.executeSampleQuery({},
+            $log.debug('webvellaDevelopers>base> BEGIN controller.executeSampleQuery');
+            queryService.executeSampleQuery({},
 				function (response) {
-					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> SUCCESS');
-					$log.debug(response);
-					pluginData.result = response;
+				    $log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> SUCCESS');
+				    $log.debug(response);
+				    pluginData.result = response;
 				},
 				function (response) {
-					$log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> ERROR');
-					$log.debug(response);
-					pluginData.result = response;
+				    $log.debug('webvellaDevelopers>base> END controller.executeSampleQuery> ERROR');
+				    $log.debug(response);
+				    pluginData.result = response;
 				}
 			);
-        	
+
         }
 
         function createSampleQueryDataStructure() {
-        	$log.debug('webvellaDevelopers>base> BEGIN controller.createSampleQueryDataStructure');
-        	queryService.createSampleQueryDataStructure({}, 
+            $log.debug('webvellaDevelopers>base> BEGIN controller.createSampleQueryDataStructure');
+            queryService.createSampleQueryDataStructure({},
 				function (response) {
-					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> SUCCESS');
-					$log.debug(response);
-					pluginData.result = response;
+				    $log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> SUCCESS');
+				    $log.debug(response);
+				    pluginData.result = response;
 				},
 				function (response) {
-					$log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> ERROR');
-					$log.debug(response);
-					pluginData.result = response;
+				    $log.debug('webvellaDevelopers>base> END controller.createSampleQueryDataStructure> ERROR');
+				    $log.debug(response);
+				    pluginData.result = response;
 				}
 			);
         }
