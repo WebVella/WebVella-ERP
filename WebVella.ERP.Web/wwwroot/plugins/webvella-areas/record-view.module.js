@@ -189,7 +189,7 @@
 						data = (data === "true"); // convert string to boolean
 						break;
 						//Auto increment number
-					case 3:
+					case 3: //Currency
 						validation = checkDecimal(data);
 						if (!validation.success) {
 							return validation.message;
@@ -198,18 +198,24 @@
 							return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
 						}
 						break;
-					case 4:
+					case 4: //Date
 						data = moment(data).toISOString();
 						break;
-					case 5:
+					case 5: //Datetime
 						data = moment(data).toISOString();
 						break;
-					case 6:
+					case 6: //Email
 						validation = checkEmail(data);
 						if (!validation.success) {
 							return validation.message;
 						}
-
+						break;
+					case 11: // Multiselect
+						//We need to convert data which is "2,3" comma separated string to string array
+						if (data !== '[object Array]') {
+							data = data.split(',');
+						}
+						
 						break;
 				}
 			}
@@ -307,24 +313,22 @@
 		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		contentData.progress = {}; //data wrapper for the progress percentage for each upload
 
-		/////////Register watches
+		/////////Register variables
 		for (var sectionIndex = 0; sectionIndex < contentData.contentRegion.sections.length; sectionIndex++) {
 			for (var rowIndex = 0; rowIndex < contentData.contentRegion.sections[sectionIndex].rows.length; rowIndex++) {
 				for (var columnIndex = 0; columnIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
 					for (var itemIndex = 0; itemIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 7) {
+						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 7
+							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 9) {
 							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
 							var FieldName = item.fieldName;
-							var DataName = "contentData.files." + FieldName;
 							contentData.progress[FieldName] = 0;
-							$scope.$watch(DataName, function () {
-								contentData.upload(contentData.files[FieldName], item);
-							});
 						}
 					}
 				}
 			}
 		}
+
 		contentData.upload = function (files, item) {
 			var fieldName = item.fieldName;
 			function moveSuccessCallback(response) {
@@ -347,7 +351,6 @@
 			}
 			webvellaAdminService.uploadFileToTemp(files, fieldName, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
 		};
-
 
 		contentData.deleteFileUpload = function (item) {
 			var fieldName = item.fieldName;
@@ -400,7 +403,21 @@
 			]
 		};
 
-
+		//Checkbox list
+		contentData.getCheckboxlistString = function (fieldData, array) {
+			if (fieldData) {
+				var selected = [];
+				angular.forEach(array, function (s) {
+					if (fieldData.indexOf(s.key) >= 0) {
+						selected.push(s.value);
+					}
+				});
+				return selected.length ? selected.join(', ') : 'Not set';
+			}
+			else {
+				return 'empty';
+			}
+		}
 
 		//#endregion
 

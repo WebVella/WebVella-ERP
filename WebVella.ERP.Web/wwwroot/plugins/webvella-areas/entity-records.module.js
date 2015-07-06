@@ -238,6 +238,16 @@
         		return "";
         	}
         }
+    	//9.Image
+        contentData.getImageString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return "<img src='" + fieldValue + "' class='table-image'/>";
+        	}
+        	else {
+        		return "";
+        	}
+        }
         $log.debug('webvellaAreas>entities> END controller.exec');
     }
 

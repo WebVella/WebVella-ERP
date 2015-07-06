@@ -1828,6 +1828,28 @@ form .error {
 	background-color: #f2f2f2 !important;
 }
 
+.form .image-upload,
+.form-horizontal .image-upload {
+	position:relative;
+}
+
+.form .image-upload .delete-link,
+.form-horizontal .image-upload .delete-link{
+	position:absolute;
+	left:5px;
+	top:5px;
+	padding:10px;
+	border-radius:30px;
+	background:rgba(0,0,0,0.2);
+	color:#d9534f;
+}
+
+.form .image-upload .delete-link:hover,
+.form-horizontal .image-upload .delete-link:hover{
+	background:#d9534f;
+	color:white;
+}
+
 /* Convert horizontal to vertical for a row*/
 
 .go-vertical .row.field > label{
@@ -2590,6 +2612,16 @@ span.editable {
 		z-index: 2;
 	}
 
+/*Textarea*/
+
+.editable pre {
+	font-style:normal;
+	padding:0;
+	border:none;
+	background:none;
+	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size:14px;
+}
 
 /*Checkbox*/
 .editable-checkbox {
@@ -2609,6 +2641,11 @@ span.editable {
 		vertical-align: text-bottom;
 		margin-top: 10px;
 	}
+
+/* Checkbox list */
+.editable-checklist label:hover {
+	cursor: pointer;
+}
 
 /*Date picker*/
 .editable-bsdate .input-group {
