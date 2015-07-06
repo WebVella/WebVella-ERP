@@ -187,7 +187,7 @@
 									</a>
 									<!-- If type 7 - fileupload -->
 									<div ng-switch-when="7">
-										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false'>Browse</a>
+										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.fieldName],item)" ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false'>Browse</a>
 										<div class="progress" ng-show="!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] > 0 && contentData.progress[item.fieldName] <= 100">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.fieldName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.fieldName] || '0'}}%;">
 												<span ng-show="contentData.progress[item.fieldName] < 100">{{contentData.progress[item.fieldName] || '0'}}%</span>
@@ -206,17 +206,34 @@
 									</div>
 									<!-- If type 9 - image -->
 									<div ng-switch-when="9">
-										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false'>Browse</a>
+										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.fieldName],item)" ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false' accept="image/*">Browse</a>
 										<div class="progress" ng-show="!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] > 0 && contentData.progress[item.fieldName] <= 100">
 											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.fieldName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.fieldName] || '0'}}%;">
 												<span ng-show="contentData.progress[item.fieldName] < 100">{{contentData.progress[item.fieldName] || '0'}}%</span>
 												<span ng-show="contentData.progress[item.fieldName] == 100">almost done...</span>
 											</div>
 										</div>
-										<div class="input-group file-upload" ng-show='contentData.viewData[item.fieldName]'>
-											<a class="form-control link-icon" href="{{contentData.viewData[item.fieldName]}}" target="_blank">view file</a>
-											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item.fieldName)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+										<div class="image-upload" ng-show='contentData.viewData[item.fieldName]'>
+											<img class="img-thumbnail" ng-src="{{contentData.viewData[item.fieldName]}}" />
+											<a class="delete-link" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
+									</div>
+									<!-- If type 10 - textarea -->
+									<a ng-switch-when="10" href="javascript:void(0)"
+									   editable-textarea="contentData.viewData['{{item.fieldName}}']"
+									   e-rows="7" e-cols="40"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+										<pre>{{ contentData.viewData[item.fieldName] || 'empty' }}</pre>
+									</a>
+									<!-- If type 11 - multichoice -->
+									<div ng-switch-when="11">
+										<a href="#" editable-checklist="contentData.viewData[item.fieldName]" e-ng-options="s.key as s.value for s in item.meta.options" 
+										   ng-bind="contentData.getCheckboxlistString(contentData.viewData[item.fieldName],item.meta.options)"
+										   onbeforesave="contentData.fieldUpdate(item, $data)">
+										</a>
+										<pre>{{item.fieldName | json}}</pre>
+										<pre>{{contentData.viewData | json}}</pre>
+										<pre>{{contentData.viewData[item.fieldName] | json}}</pre>
 									</div>
 									<!-- If type 16 - unique identifier -->
 									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>

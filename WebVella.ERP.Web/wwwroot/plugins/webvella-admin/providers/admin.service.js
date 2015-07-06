@@ -252,7 +252,7 @@ function guid() {
                 case 10:
                     field.defaultValue = null;
                     field.maxLength = null;
-                    field.visibleLineNumber = false;
+                    //field.visibleLineNumber = false;
                     break;
                 case 11:
                     field.defaultValue = null;
