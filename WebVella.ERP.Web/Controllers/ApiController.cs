@@ -1054,16 +1054,17 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
-        public IActionResult Upload([FromForm] IFormFile file)
+        public IActionResult UploadFile([FromForm] IFormFile file)
         {
             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
             var fs = service.StorageService.GetFS();
             var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
-            return Json(new { url = "/fs"  + createdFile.FilePath });
+            
+            return DoResponse( new FSResponse( new FSResult { Url = "/fs"  + createdFile.FilePath, Filename= fileName } ) );
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
-        public IActionResult Move([FromBody]JObject submitObj)
+        public IActionResult MoveFile([FromBody]JObject submitObj)
         {
             string source = submitObj["source"].Value<string>();
             string target = submitObj["target"].Value<string>();
@@ -1086,11 +1087,34 @@ namespace WebVella.ERP.Web.Controllers
             if (target.StartsWith("fs/"))
                 target = target.Substring(2);
 
+            var fileName = target.Split(new char[] { '/' }).LastOrDefault();
+
             var fs = service.StorageService.GetFS();
             var sourceFile = fs.Find(source);
 
             var movedFile = fs.Move(source, target, overwrite );
-            return Json(new { url = "/fs" + movedFile.FilePath });
+            return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
+        }
+
+        [AcceptVerbs(new[] { "DELETE" }, Route = "/fs/delete/{*filepath}")]
+        public IActionResult DeleteFile([FromRoute] string filepath)
+        {
+
+            filepath = filepath.ToLowerInvariant();
+
+            if (filepath.StartsWith("/fs/"))
+                filepath = filepath.Substring(3);
+
+            if (filepath.StartsWith("fs/"))
+                filepath = filepath.Substring(2);
+
+            var fileName = filepath.Split(new char[] { '/' }).LastOrDefault();
+
+            var fs = service.StorageService.GetFS();
+            var sourceFile = fs.Find(filepath);
+
+            fs.Delete(filepath);
+            return DoResponse(new FSResponse(new FSResult { Url = "/fs" + filepath, Filename = fileName }));
         }
 
         private static byte[] ReadFully(Stream input)

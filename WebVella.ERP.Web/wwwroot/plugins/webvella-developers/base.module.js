@@ -95,19 +95,32 @@
                     }).success(function (data, status, headers, config) {
                         $timeout(function () {
                             //$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
-                            $log.info(data);
-                            $log.info(status);
-                            $log.info(headers);
-                            $log.info(config);
-                            queryService.moveFile( { 'source': data.url, 'target': "/test/test.pdf" },
+                            //$log.info(data);
+                            //$log.info(status);
+                            //$log.info(headers);
+                            //$log.info(config);
+                            queryService.moveFile( { 'source': data.object.url, 'target': "/test/test.pdf", overwrite: true },
                                 function (response) {
-                                    $log.debug('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
-                                    $log.debug(response);
+                                    $log.info('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
                                     pluginData.result = response;
+
+                                    queryService.deleteFile("/fs/test/test.pdf",
+                                        function (response) {
+                                            $log.info('webvellaDevelopers>base> END controller.deleteFile> SUCCESS');
+                                            $log.info(response);
+                                            pluginData.result = response;
+                                        },
+                                        function (response) {
+                                            $log.info('webvellaDevelopers>base> END controller.deleteFile> ERROR');
+                                            $log.info(response);
+                                            pluginData.result = response;
+                                        });
+
+
                                 },
 				                function (response) {
-				                    $log.debug('webvellaDevelopers>base> END controller.moveFile> ERROR');
-				                    $log.debug(response);
+				                    $log.info('webvellaDevelopers>base> END controller.moveFile> ERROR');
+				                    $log.info(response);
 				                    pluginData.result = response;
 				                });
 
