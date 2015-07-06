@@ -5,6 +5,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
 using System.Security.Cryptography;
 using WebVella.ERP.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace WebVella.ERP.Api
 {
@@ -815,7 +816,7 @@ namespace WebVella.ERP.Api
                         date = pair.Value as DateTime?;
 
                     if (date != null)
-                        return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0,0,0, DateTimeKind.Utc);
+                        return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
                 }
                 else if (field is DateTimeField)
                 {
@@ -841,7 +842,16 @@ namespace WebVella.ERP.Api
                 else if (field is MultiLineTextField)
                     return pair.Value as string;
                 else if (field is MultiSelectField)
-                    return pair.Value as IEnumerable<string>;
+                {
+                    if (pair.Value == null)
+                        return null;
+                    else if (pair.Value is JArray)
+                        return ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+                    else if (pair.Value is List<object>)
+                        return ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
+                    else
+                        return pair.Value as IEnumerable<string>;
+                }
                 else if (field is NumberField)
                 {
                     if (pair.Value == null)
