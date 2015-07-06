@@ -22,12 +22,12 @@ function guid() {
         .module('webvellaAdmin')
         .service('webvellaAdminService', service);
 
-    service.$inject = ['$log', '$http', 'wvAppConstants'];
+    service.$inject = ['$log', '$http', 'wvAppConstants', 'Upload'];
 
 
 
     /* @ngInject */
-    function service($log, $http, wvAppConstants) {
+    function service($log, $http, wvAppConstants, Upload) {
         var serviceInstance = this;
 
         //#region << Include functions >>
@@ -71,6 +71,9 @@ function guid() {
         serviceInstance.createRecord = createRecord;
         serviceInstance.updateRecord = updateRecord;
         serviceInstance.patchRecord = patchRecord;
+        serviceInstance.uploadFileToTemp = uploadFileToTemp;
+        serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
+        serviceInstance.deleteFileFromFS = deleteFileFromFS;
 
         //Area
         serviceInstance.deleteArea = deleteArea;
@@ -811,6 +814,46 @@ function guid() {
             $http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
+    	///////////////////////
+        function uploadFileToTemp(files, fieldName, progressCallback, successCallback, errorCallback) {
+        	//"/fs/upload/" file
+        	$log.debug('webvellaAdmin>providers>admin.service>uploadFileToTemp> function called');
+        	if (files && files.length) {
+        		for (var i = 0; i < files.length; i++) {
+        			var file = files[i];
+        			$log.info(file);
+        			Upload.upload({
+        				url: '/fs/upload/',
+        				fields: {},
+        				file: file
+        			}).progress(function (evt) {
+        				progressCallback(evt);
+        			}).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); })
+					.error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        		}
+        	}
+        }
+        
+    	///////////////////////
+        function moveFileFromTempToFS(source, target, overwrite, successCallback, errorCallback) {
+        	//"/fs/move/"
+        	$log.debug('webvellaAdmin>providers>admin.service>moveFileFromTempToFS> function called');
+        	var postObject = {
+        		source: source,
+        		target: target,
+        		overwrite: overwrite
+        	}
+        	$http({ method: 'POST', url: '/fs/move', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+    	///////////////////////
+        function deleteFileFromFS(filepath, successCallback, errorCallback) {
+        	///fs/delete/{*filepath}"
+        	$log.debug('webvellaAdmin>providers>admin.service>deleteFileFromFS> function called');
+        	$http({ method: 'DELETE', url: filepath }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+        
+        
         //#endregion
 
         //#region << Area specific >>

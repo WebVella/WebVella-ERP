@@ -1828,6 +1828,19 @@ form .error {
 	background-color: #f2f2f2 !important;
 }
 
+/* Convert horizontal to vertical for a row*/
+
+.go-vertical .row.field > label{
+	width:100%;
+	display:block;
+	text-align:left;
+}
+
+.go-vertical .row.field > div{
+	width:100%;
+	display:block;
+}
+
 /*#endregion */
 
 /*#region << Tables >> */

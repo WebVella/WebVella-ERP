@@ -76,8 +76,7 @@
 </div>
 
 <div class="record-details">
-
-	<div class="panel panel-default" ng-repeat="section in contentData.contentRegion.sections">
+	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.contentRegion.sections">
 		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
 			<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
 			<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
@@ -90,7 +89,7 @@
 					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 						<div class="form-group" ng-repeat="item in column.items">
 							<!--If item is field WITH NO relation-->
-							<div class="row editable-field" ng-if="item.type === 'field'">
+							<div class="row editable-field field" ng-if="item.type === 'field'">
 								<label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
 								<div class="col-sm-9 position-relative" ng-switch="item.fieldTypeId">
 									<!-- If type 1 - autoincrement -->
@@ -197,14 +196,27 @@
 										</div>
 										<div class="input-group file-upload" ng-show='contentData.viewData[item.fieldName]'>
 											<a class="form-control link-icon" href="{{contentData.viewData[item.fieldName]}}" target="_blank">view file</a>
-											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item.fieldName)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 										</div>
 									</div>
-									<!-- If type 7 - html -->
+									<!-- If type 8 - html -->
 									<div ng-switch-when="8">
-										<textarea ng-model="page.body"
-												  name="pageBody"
-												  ckeditor="editorOptions" ></textarea>
+										<!--<div style="background:white" ng-model="contentData.viewData['{{item.fieldName}}']" contenteditable="true"></div>-->
+										<div class="form-control" ng-model="contentData.viewData[item.fieldName]" ckeditor="editorOptions" contenteditable="true" ng-blur="contentData.htmlFieldUpdate(item)"></div>
+									</div>
+									<!-- If type 9 - image -->
+									<div ng-switch-when="9">
+										<a ng-show='!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select ng-model='contentData.files[item.fieldName]' ngf-multiple='false'>Browse</a>
+										<div class="progress" ng-show="!contentData.viewData[item.fieldName] && contentData.progress[item.fieldName] > 0 && contentData.progress[item.fieldName] <= 100">
+											<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.fieldName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.fieldName] || '0'}}%;">
+												<span ng-show="contentData.progress[item.fieldName] < 100">{{contentData.progress[item.fieldName] || '0'}}%</span>
+												<span ng-show="contentData.progress[item.fieldName] == 100">almost done...</span>
+											</div>
+										</div>
+										<div class="input-group file-upload" ng-show='contentData.viewData[item.fieldName]'>
+											<a class="form-control link-icon" href="{{contentData.viewData[item.fieldName]}}" target="_blank">view file</a>
+											<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item.fieldName)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+										</div>
 									</div>
 									<!-- If type 16 - unique identifier -->
 									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
