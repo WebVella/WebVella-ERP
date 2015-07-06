@@ -295,6 +295,9 @@ namespace WebVella.ERP.Storage.Mongo
             var transaction = MongoStaticContext.Context.CreateTransaction();
             try
             {
+                if (overwrite)
+                    Delete(destinationFilepath);
+
                 //create new file
                 byte[] buffer = srcFile.GetBytes();
                 var newFile = Create(destinationFilepath, buffer, srcFile.LastModificationDate, srcFile.OwnerId, srcFile.AvailableToRoles);
