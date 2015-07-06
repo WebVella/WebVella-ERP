@@ -114,11 +114,11 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants', 'Upload'];
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
 
 	/* @ngInject */
 	function controller($filter, $log, $rootScope, $state, $scope, pageTitle, webvellaRootService, webvellaAdminService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants, Upload) {
+        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
@@ -166,46 +166,52 @@
 			section.collapsed = !section.collapsed;
 		}
 
+		contentData.htmlFieldUpdate = function (item) {
+			contentData.fieldUpdate(item, contentData.viewData[item.fieldName]);
+		}
+
 		contentData.fieldUpdate = function (item, data) {
-			data = data.toString().trim();
 			contentData.patchObject = {};
 			var validation = {
 				success: true,
 				message: "successful validation"
 			};
-			switch (item.fieldTypeId) {
+			if (data != null) {
+				data = data.toString().trim();
+				switch (item.fieldTypeId) {
 
-				//Auto increment number
-				case 1:
-					//Readonly
-					break;
-					//Checkbox
-				case 2:
-					data = (data === "true"); // convert string to boolean
-					break;
 					//Auto increment number
-				case 3:
-					validation = checkDecimal(data);
-					if (!validation.success) {
-						return validation.message;
-					}
-					if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
-						return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
-					}
-					break;
-				case 4:
-					data = moment(data).toISOString();
-					break;
-				case 5:
-					data = moment(data).toISOString();
-					break;
-				case 6:
-					validation = checkEmail(data);
-					if (!validation.success) {
-						return validation.message;
-					}
+					case 1:
+						//Readonly
+						break;
+						//Checkbox
+					case 2:
+						data = (data === "true"); // convert string to boolean
+						break;
+						//Auto increment number
+					case 3:
+						validation = checkDecimal(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+							return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
+						}
+						break;
+					case 4:
+						data = moment(data).toISOString();
+						break;
+					case 5:
+						data = moment(data).toISOString();
+						break;
+					case 6:
+						validation = checkEmail(data);
+						if (!validation.success) {
+							return validation.message;
+						}
 
-					break;
+						break;
+				}
 			}
 			contentData.patchObject[item.fieldName] = data;
 			//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
@@ -307,48 +313,64 @@
 				for (var columnIndex = 0; columnIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
 					for (var itemIndex = 0; itemIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
 						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 7) {
-							var FieldName = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldName;
+							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
+							var FieldName = item.fieldName;
 							var DataName = "contentData.files." + FieldName;
 							contentData.progress[FieldName] = 0;
 							$scope.$watch(DataName, function () {
-								contentData.upload(contentData.files[FieldName], FieldName);
+								contentData.upload(contentData.files[FieldName], item);
 							});
 						}
 					}
 				}
 			}
 		}
-		contentData.upload = function (files,fieldName) {
-			if (files && files.length) {
-				for (var i = 0; i < files.length; i++) {
-					var file = files[i];
-					$log.info(file);
-					Upload.upload({
-						url: 'http://localhost:2202/fs/upload/',
-						fields: {},
-						file: file
-					}).progress(function (evt) {
-						contentData.progress[fieldName] = parseInt(100.0 * evt.loaded / evt.total);
-					}).success(function (data, status, headers, config) {
-						$timeout(function () {
-							//$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
-							//$log.info(data.url);
-							//$log.info(status);
-							//$log.info(headers);
-							//$log.info(config);
-							contentData.viewData[fieldName] = data.url;
-							//$log.info("result is -> " + contentData.viewData[fieldName]);
-
-						});
-					});
-				}
+		contentData.upload = function (files, item) {
+			var fieldName = item.fieldName;
+			function moveSuccessCallback(response) {
+				contentData.viewData[fieldName] = response.object.url;
+				contentData.fieldUpdate(item, response.object.url);
 			}
+
+			function uploadSuccessCallback(response) {
+				var tempPath = response.object.url;
+				var fileName = response.object.filename;
+				var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+				var overwrite = false;
+				webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+			}
+			function uploadErrorCallback(response) {
+				alert(response.message);
+			}
+			function uploadProgressCallback(response) {
+				contentData.progress[fieldName] = parseInt(100.0 * response.loaded / response.total);
+			}
+			webvellaAdminService.uploadFileToTemp(files, fieldName, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
 		};
-		contentData.deleteFileUpload = function (fieldName) {
-			$timeout(function () {
-				contentData.viewData[fieldName] = null;
-				contentData.progress[fieldName] = 0;
-			}, 0);
+
+
+		contentData.deleteFileUpload = function (item) {
+			var fieldName = item.fieldName;
+			var filePath = contentData.viewData[fieldName];
+
+			function deleteSuccessCallback(response) {
+				$timeout(function () {
+					contentData.viewData[fieldName] = null;
+					contentData.progress[fieldName] = 0;
+					contentData.fieldUpdate(item,null);
+				}, 0);
+				return true;
+			}
+			function deleteFailedCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message
+				});
+				return false;
+			}
+
+			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+
 		}
 
 		//Html
@@ -377,6 +399,7 @@
 				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
 			]
 		};
+
 
 
 		//#endregion

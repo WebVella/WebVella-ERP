@@ -219,10 +219,20 @@
         	}
         }
     	//7.File
-        contentData.getEmailString = function (record, fieldMeta) {
+        contentData.getFileString = function (record, fieldMeta) {
         	var fieldValue = record[fieldMeta.name];
         	if (fieldValue) {
-        		return "<a href='mailto:" + fieldValue + "' taget='_blank'>" + fieldValue + "</a>";
+        		return "<a href='"+fieldValue+"' taget='_blank' class='link-icon'>view file</a>";
+        	}
+        	else {
+        		return "";
+        	}
+        }
+    	//8.Html
+        contentData.getHtmlString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return fieldValue;
         	}
         	else {
         		return "";

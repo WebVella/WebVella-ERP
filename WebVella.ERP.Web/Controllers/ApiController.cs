@@ -1096,7 +1096,7 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
         }
 
-        [AcceptVerbs(new[] { "DELETE" }, Route = "/fs/delete/{*filepath}")]
+        [AcceptVerbs(new[] { "DELETE" }, Route = "{*filepath}")]
         public IActionResult DeleteFile([FromRoute] string filepath)
         {
 
