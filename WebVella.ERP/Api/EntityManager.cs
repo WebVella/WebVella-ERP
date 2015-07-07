@@ -546,12 +546,6 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			if (string.IsNullOrWhiteSpace(query.FieldName))
-				errorList.Add(new ErrorModel("query.fieldName", query.FieldName, "FieldName is required!"));
-
-			if (string.IsNullOrWhiteSpace(query.FieldValue))
-				errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
-
 			if (string.IsNullOrWhiteSpace(query.QueryType))
 				errorList.Add(new ErrorModel("query.queryType", query.QueryType, "QueryType is required!"));
 			else
@@ -559,6 +553,14 @@ namespace WebVella.ERP.Api
 				QueryType queryType;
 				if (!Enum.TryParse<QueryType>(query.QueryType, true, out queryType))
 					errorList.Add(new ErrorModel("query.queryType", query.QueryType, "There is no such query type!"));
+				else
+				{
+					if (queryType != QueryType.AND && queryType != QueryType.OR && string.IsNullOrWhiteSpace(query.FieldName))
+						errorList.Add(new ErrorModel("query.fieldName", query.FieldName, "FieldName is required!"));
+
+					if (queryType != QueryType.AND && queryType != QueryType.OR && query.FieldValue == null)
+						errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
+				}
 			}
 
 			if(query.SubQueries != null && query.SubQueries.Count > 0)
