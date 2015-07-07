@@ -46,7 +46,7 @@ function guid() {
         serviceInstance.createRelation = createRelation;
         serviceInstance.updateRelation = updateRelation;
         serviceInstance.deleteRelation = deleteRelation;
-
+		//View
         serviceInstance.sampleView = sampleView;
         serviceInstance.initView = initView;
         serviceInstance.initViewSection = initViewSection;
@@ -62,10 +62,12 @@ function guid() {
         serviceInstance.safeRemoveArrayPlace = safeRemoveArrayPlace;
         serviceInstance.getEntityViewList = getEntityViewList;
         serviceInstance.getEntityViewLibrary = getEntityViewLibrary;
-
+		//List
         serviceInstance.initList = initList;
-        serviceInstance.getEntityListsList = getEntityListsList;
-        serviceInstance.getEntityRecordsList = getEntityRecordsList;
+        serviceInstance.getEntityLists = getEntityLists;
+        serviceInstance.getEntityList = getEntityList;
+        serviceInstance.createEntityList = createEntityList;
+        serviceInstance.patchEntityList = patchEntityList;
         //Record
         serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
         serviceInstance.createRecord = createRecord;
@@ -175,20 +177,15 @@ function guid() {
             $http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
-
         ///////////////////////
         function deleteEntity(entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>deleteEntity> function called');
             $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
-
-
         //#endregion << Entity >>
 
         //#region << Field >>
-
-
         ///////////////////////
         function initField(typeId) {
             $log.debug('webvellaAdmin>providers>admin.service>initField> function called');
@@ -304,7 +301,6 @@ function guid() {
             return field;
         }
 
-
         ///////////////////////
         function createField(postObject, entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>createField> function called');
@@ -326,7 +322,6 @@ function guid() {
         //#endregion
 
         //#region << Relations  >>
-
         ///////////////////////
         function initRelation() {
             $log.debug('webvellaAdmin>providers>admin.service>initRelation> function called');
@@ -345,7 +340,6 @@ function guid() {
             };
             return relation;
         }
-
 
         ///////////////////////
         function getRelationsList(successCallback, errorCallback) {
@@ -660,21 +654,21 @@ function guid() {
         function initList() {
             $log.debug('webvellaAdmin>providers>admin.service>initList> function called');
             var list =
-{
-    "id": guid(),
-    "name": "",
-    "label": "",
-    "default": true,
-    "system": false,
-    "weight": 1,
-    "type": "general",
-    "cssClass": "",
-    "recordsLimit": 10,
-    "pageSize": 10,
-    "columns": [],
-    "query": null,
-    "sorts": null
-}
+				{
+					"id": null,
+					"name": "",
+					"label": "",
+					"default": false,
+					"system": false,
+					"weight": 1,
+					"type": "general",
+					"cssClass": "",
+					"recordsLimit": 10,
+					"pageSize": 10,
+					"columns": [],
+					"query": null,
+					"sorts": null
+				}
             return list;
         }
 
@@ -750,30 +744,30 @@ function guid() {
             return list;
         }
 
-
-        ///////////////////////
-        function getEntityListsList(entityName, successCallback, errorCallback) {
-            var lists = [];
-            var list = sampleList();
-            lists.push(list);
-            var response = {};
-            response.success = true;
-            response.object = {};
-            response.object.lists = list;
-            successCallback(response);
+    	///////////////////////
+        function getEntityLists(entityName, successCallback, errorCallback) {
+        	//api/v1/en_US/meta/entity/{Name}/list
+        	$log.debug('webvellaAdmin>providers>admin.service>getEntityLists> function called');
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
-
         ///////////////////////
-        function getEntityRecordsList(listName, entityName, successCallback, errorCallback) {
-            var list = sampleList();
-
-            var response = {};
-            response.success = true;
-            response.object = list;
-
-            successCallback(response);
+        function getEntityList(listName, entityName, successCallback, errorCallback) {
+        	//api/v1/en_US/meta/entity/{Name}/list/{ListName}"
+        	$log.debug('webvellaAdmin>providers>admin.service>getEntityList> function called');
+        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
-
+    	//////////////////////
+        function createEntityList(submitObj, entityName, successCallback, errorCallback) {
+        	//"api/v1/en_US/meta/entity/{Name}/list") -> submitObj
+        	$log.debug('webvellaAdmin>providers>admin.service>createRelation> function called');
+        	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list", data: submitObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+    	//////////////////////
+        function patchEntityList(submitObj, listName, entityName, successCallback, errorCallback) {
+        	//"api/v1/en_US/meta/entity/{Name}/list/{ListName}") -> submitObj
+        	$log.debug('webvellaAdmin>providers>admin.service>patchEntityList> function called');
+        	$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listName, data: submitObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
         //#endregion
 
 

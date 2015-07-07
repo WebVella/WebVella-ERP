@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-
+			<a class="btn btn-success" ng-click="contentData.createListModal()"><i class="fa fa-fw fa-plus"></i> Create list</a>
         </div>
         <!--<div class="icon-box">
             <i class="fa fa-database"></i>
@@ -49,7 +49,7 @@
 
 
     <form id="filters" class="form-inline">
-        <div class="form-group">
+        <div class="form-group" >
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">
                     <i class="fa fa-search"></i>
@@ -60,7 +60,7 @@
     </form>
     <div id="list">
 
-        <table class="table table-bordered table-hover table-vertical-align-middle">
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.lists.length > 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
@@ -80,8 +80,64 @@
                 </tr>
             </tbody>
         </table>
+		<div class="alert alert-info" ng-show="contentData.lists.length == 0">
+			No items found.
+		</div>
     </div>
 
 
 </div>
 
+
+<script type="text/ng-template" id="createListModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Create list</h3>
+	</div>
+	<div class="modal-body">
+		<form name="createListForm">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : createListForm.name.$invalid && !createListForm.name.$pristine || popupData.nameError}">
+						<label class="required" for="name">Name</label>
+						<input ng-model="popupData.list.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+						<div class="error" ng-show="createListForm.name.$dirty && createListForm.name.$invalid || popupData.nameError">
+							<small class="error" ng-show="createListForm.name.$error.required && !popupData.nameError">
+								required field
+							</small>
+							<small class="error" ng-show="createListForm.name.$error.pattern">
+								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+							</small>
+							<small class="error" ng-show="createListForm.name.$error.maxlength">
+								must be less than 50 chars
+							</small>
+							<small class="error" ng-show="popupData.nameError">
+								{{popupData.nameMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : createListForm.label.$invalid && !createListForm.label.$pristine || popupData.labelError }">
+						<label class="required" for="label">Label</label>
+						<input ng-model="popupData.list.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+							   required ng-model-options="{allowInvalid:true}">
+						<div class="error" ng-show="createListForm.label.$dirty && createListForm.label.$invalid || popupData.labelError">
+							<small class="error" ng-show="createListForm.label.$error.required && !popupData.labelError">
+								Area label is required.
+							</small>
+							<small class="error" ng-show="popupData.labelError">
+								{{popupData.labelMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Create List</button>
+		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>

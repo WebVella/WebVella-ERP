@@ -77,7 +77,9 @@
                         <div class="row">
                             <label class="col-sm-2 control-label" for="label">Label</label>
                             <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
+                                <a href="javascript:void(0)" 
+								   editable-text="contentData.list.label" 
+								   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
                             </div>
                             <label class="col-sm-2 control-label" for="weight">Weight</label>
                             <div class="col-sm-4 position-relative">
@@ -90,7 +92,10 @@
                         <div class="row">
                             <label class="col-sm-2 control-label" for="name">Default</label>
                             <div class="col-sm-4">
-                                <a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
+                                <a href="javascript:void(0)" 
+								   editable-checkbox="contentData.list.default" 
+								   e-title="Make this default list?"
+								   onbeforesave="contentData.fieldUpdate('default', $data)">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
                             </div>
                             <label class="col-sm-2 control-label" for="name">System</label>
                             <div class="col-sm-4">
