@@ -192,6 +192,7 @@
     	}
     	var column = {};
     	column.fieldId = idFieldGuid;
+    	column.type = "field";
     	popupData.list.columns.unshift(column);
 
     	popupData.ok = function () {
