@@ -151,7 +151,7 @@
 			<div class="col-xs-6">
 				<div class="list-field-selection-box">
 					<div class="drop-zone">
-						<div as-sortable ng-model="contentData.list.columns">
+						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
 								<div  ng-if='item.type == "field" && item.fieldName == "id"' class="clearfix">
 									<i class="fa fa-fw fa-lock go-red pull-left"></i>
@@ -190,7 +190,7 @@
             <div class="col-xs-6">
                 <div class="list-field-selection-box">
                     <div class="drop-zone">
-                        <div as-sortable ng-model="contentData.fieldsLibrary.items">
+                        <div as-sortable="contentData.dragControlListeners" ng-model="contentData.fieldsLibrary.items">
                             <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.fieldsLibrary.items | filter: {search:contentData.search}">
 								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
@@ -230,11 +230,11 @@
 			<table class="table table-noborder">
 				<tr>
 					<td>
-						<select class="form-control" ng-model="parentQuery.fieldName" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items">
+						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items">
 						</select>
 					</td>
 					<td>
-						<select class="form-control" ng-model="parentQuery.queryType">
+						<select class="form-control" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
 							<option value="EQ">is equal to</option>
 							<option value="NE">is not equal to</option>
 							<option value="LT">is less than</option>
@@ -253,8 +253,14 @@
 							<!--<option value="valInField">the value in the field</option>-->
 						</select>
 					</td>
-					<td>
-						<input class="form-control" ng-model="parentQuery.fieldValue" />
+					<td class="position-relative" width="250">
+						<div class="editable-field field">
+							<a href="javascript:void(0)" style="width: 100%;border: 1px solid #ccc;background-color: white;"
+							   editable-text="parentQuery.fieldValue"
+							   ng-bind="parentQuery.fieldValue || 'empty string' "
+							   onaftersave="contentData.updateQuery()"></a>
+						</div>
+						<!--<input class="form-control" ng-model="parentQuery.fieldValue" />-->
 					</td>
 					<td style="width:60px;">
 						<a ng-hide="parent.subQueries.length <= 1" class="btn btn-default go-red"  ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
@@ -272,7 +278,7 @@
 						<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
 						<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
 					</span>
-					<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType">
+					<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
 						<option value="AND">all</option>
 						<option value="OR">any</option>
 					</select>
@@ -287,8 +293,8 @@
 		</script>
 
         <h3 class="page-header">Sort</h3>
-		<div ng-show="contentData.list.sorts == null" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
-        <div class="panel panel-default" ng-hide="contentData.list.sorts == null">
+		<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+        <div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
             <div class="panel-heading clearfix">
                 <span class="pull-right">
                     <a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
@@ -299,13 +305,13 @@
                     <tr ng-repeat="sortRule in contentData.list.sorts">
                         <td style="width:60px"><span ng-if="$index != 0">than</span></td>
                         <td>
-                            <select class="form-control" ng-model="sortRule.sortType">
-                                <option value="Ascending">sort from low to high by</option>
-                                <option value="Descending">sort from high to low by</option>
+                            <select class="form-control" ng-model="sortRule.sortType" ng-change="contentData.updateSorts()">
+                                <option value="ascending">sort from low to high by</option>
+                                <option value="descending">sort from high to low by</option>
                             </select>
                         </td>
                         <td>
-							<select class="form-control" ng-model="sortRule.fieldName" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items"></select>
+							<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items"></select>
 						</td>
 						<td style="width:60px;">
 							<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
@@ -314,7 +320,6 @@
                 </table>
             </div>
         </div>
-
 		<!--<pre>{{contentData.list | json}}</pre>-->
     </div>
 

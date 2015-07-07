@@ -3261,7 +3261,7 @@ span.not-editable {
 		background: #e5e5e5;
 	}
 
-	.dropped-item .as-sortable-item-handle {
+	.dropped-item > div {
 		padding: 5px;
 	}
 
