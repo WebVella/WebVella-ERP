@@ -91,6 +91,31 @@ namespace WebVella.ERP.Storage.Mongo
 		{
 			return new MongoCurrencyType();
 		}
+		
+		public IStorageRecordListSort CreateEmptyRecordListSortObject()
+		{
+			return new MongoRecordListSort();
+		}
+
+		public IStorageRecordListQuery CreateEmptyRecordListQueryObject()
+		{
+			return new MongoRecordListQuery();
+		}
+
+		public IStorageRecordListItemBase CreateEmptyRecordListItemBaseObject()
+		{
+			return new MongoRecordListFieldItem();
+		}
+
+		public IStorageRecordListFieldItem CreateEmptyRecordListFieldItemObject()
+		{
+			return new MongoRecordListFieldItem();
+		}
+
+		public IStorageRecordListRelationFieldItem CreateEmptyRecordListRelationFieldItemObject()
+		{
+			return new MongoRecordListRelationFieldItem();
+		}
 
 		public IStorageRecordViewSidebar CreateEmptyRecordViewSidebarObject()
 		{
