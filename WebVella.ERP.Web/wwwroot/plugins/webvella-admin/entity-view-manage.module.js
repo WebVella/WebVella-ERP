@@ -211,7 +211,13 @@
         		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
         			notUsed = false;
         		}
+        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId == usedItemsArray[k].viewId) {
+        			notUsed = false;
+        		}
         		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId == usedItemsArray[k].listId) {
+        			notUsed = false;
+        		}
+        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId == usedItemsArray[k].listId) {
         			notUsed = false;
         		}
         	}
@@ -414,7 +420,9 @@
             	if (eventObj.source.itemScope.item.type !== "field"
 				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
                     && eventObj.source.itemScope.item.type !== "view"
-                    && eventObj.source.itemScope.item.type !== "list") {
+					&& eventObj.source.itemScope.item.type !== "viewFromRelation"
+                    && eventObj.source.itemScope.item.type !== "list"
+					&& eventObj.source.itemScope.item.type !== "listFromRelation") {
                     var objectCopy = angular.copy(eventObj.source.itemScope.item);
                     eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, objectCopy);
                 }
@@ -450,8 +458,10 @@
 
             if (eventObj.source.itemScope.item.type != "field"
                 && eventObj.source.itemScope.item.type != "view"
+				&& eventObj.source.itemScope.item.type != "viewFromRelation"
 				&& eventObj.source.itemScope.item.type !== "fieldFromRelation"
-                && eventObj.source.itemScope.item.type != "list") {
+                && eventObj.source.itemScope.item.type != "list"
+				&& eventObj.source.itemScope.item.type != "listFromRelation") {
                 //can be managed
                 openItemSettingsModal();
             }

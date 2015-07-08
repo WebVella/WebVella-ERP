@@ -72,12 +72,12 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				Guid entityId;
-				if (!Guid.TryParse(StringId, out entityId))
-				{
-					response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
-					return DoResponse(response);
-				}
+			Guid entityId;
+			if (!Guid.TryParse(StringId, out entityId))
+			{
+				response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
+				return DoResponse(response);
+			}
 
 				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
 				if (storageEntity == null)
@@ -91,20 +91,20 @@ namespace WebVella.ERP.Web.Controllers
 
 				Type inputEntityType = entity.GetType();
 
-				foreach (var prop in submitObj.Properties())
-				{
-					int count = inputEntityType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-					if (count < 1)
-						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-				}
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputEntityType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
 
-				if (response.Errors.Count > 0)
-					return DoBadRequestResponse(response);
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
 
 				InputEntity inputEntity = submitObj.ToObject<InputEntity>();
 
 				foreach (var prop in submitObj.Properties())
-				{
+			{
 					if (prop.Name.ToLower() == "label")
 						entity.Label = inputEntity.Label;
 					if (prop.Name.ToLower() == "labelplural")
@@ -117,7 +117,7 @@ namespace WebVella.ERP.Web.Controllers
 						entity.Weight = inputEntity.Weight;
 					if (prop.Name.ToLower() == "recordpermissions")
 						entity.RecordPermissions = inputEntity.RecordPermissions;
-				}
+			}
 			}
 			catch (Exception e)
 			{
@@ -241,19 +241,19 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				Guid entityId;
-				if (!Guid.TryParse(Id, out entityId))
-				{
+			Guid entityId;
+			if (!Guid.TryParse(Id, out entityId))
+			{
 					response.Errors.Add(new ErrorModel("Id", Id, "id parameter is not valid Guid value"));
 					return DoBadRequestResponse(response, "Field was not updated!");
-				}
+			}
 
-				Guid fieldId;
-				if (!Guid.TryParse(FieldId, out fieldId))
-				{
+			Guid fieldId;
+			if (!Guid.TryParse(FieldId, out fieldId))
+			{
 					response.Errors.Add(new ErrorModel("FieldId", FieldId, "FieldId parameter is not valid Guid value"));
 					return DoBadRequestResponse(response, "Field was not updated!");
-				}
+			}
 
 				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
 				if (storageEntity == null)
@@ -270,29 +270,29 @@ namespace WebVella.ERP.Web.Controllers
 					return DoBadRequestResponse(response, "Field was not updated!");
 				}
 
-				FieldType fieldType = FieldType.GuidField;
+			FieldType fieldType = FieldType.GuidField;
 
-				var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
-				if (fieldTypeProp != null)
-				{
-					fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
-				}
+			var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
+			if (fieldTypeProp != null)
+			{
+				fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
+			}
 				else
 				{
 					response.Errors.Add(new ErrorModel("fieldType", null, "fieldType is required!"));
 					return DoBadRequestResponse(response, "Field was not updated!");
 				}
 
-				Type inputFieldType = InputField.GetFieldType(fieldType);
-				foreach (var prop in submitObj.Properties())
-				{
-					int count = inputFieldType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-					if (count < 1)
-						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-				}
+			Type inputFieldType = InputField.GetFieldType(fieldType);
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputFieldType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
 
-				if (response.Errors.Count > 0)
-					return DoBadRequestResponse(response);
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
 
 				InputField inputField = InputField.ConvertField(submitObj);
 
@@ -479,7 +479,7 @@ namespace WebVella.ERP.Web.Controllers
 							}
 							break;
 						case FieldType.UrlField:
-							{
+			{
 								field = new InputUrlField();
 								if (prop.Name.ToLower() == "defaultvalue")
 									((InputUrlField)field).DefaultValue = ((InputUrlField)inputField).DefaultValue;
@@ -599,7 +599,7 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			RecordListResponse response = new RecordListResponse();
 			Entity entity = new Entity();
-			InputRecordList list = new InputRecordList();
+            InputRecordList list = new InputRecordList();
 
 			try
 			{
@@ -638,31 +638,31 @@ namespace WebVella.ERP.Web.Controllers
 				InputRecordList inputList = InputRecordList.Convert(submitObj);
 
 				foreach (var prop in submitObj.Properties())
-				{
+					{
 
-					if (prop.Name.ToLower() == "label")
-						list.Label = inputList.Label;
-					if (prop.Name.ToLower() == "default")
-						list.Default = inputList.Default;
-					if (prop.Name.ToLower() == "system")
-						list.System = inputList.System;
-					if (prop.Name.ToLower() == "weight")
-						list.Weight = inputList.Weight;
-					if (prop.Name.ToLower() == "cssclass")
-						list.CssClass = inputList.CssClass;
-					if (prop.Name.ToLower() == "type")
-						list.Type = inputList.Type;
-					if (prop.Name.ToLower() == "recordslimit")
-						list.RecordsLimit = inputList.RecordsLimit;
-					if (prop.Name.ToLower() == "pagesize")
-						list.PageSize = inputList.PageSize;
-					if (prop.Name.ToLower() == "columns")
-						list.Columns = inputList.Columns;
-					if (prop.Name.ToLower() == "query")
-						list.Query = inputList.Query;
-					if (prop.Name.ToLower() == "sorts")
-						list.Sorts = inputList.Sorts;
-				}
+						if (prop.Name.ToLower() == "label")
+							list.Label = inputList.Label;
+						if (prop.Name.ToLower() == "default")
+							list.Default = inputList.Default;
+						if (prop.Name.ToLower() == "system")
+							list.System = inputList.System;
+						if (prop.Name.ToLower() == "weight")
+							list.Weight = inputList.Weight;
+						if (prop.Name.ToLower() == "cssclass")
+							list.CssClass = inputList.CssClass;
+						if (prop.Name.ToLower() == "type")
+							list.Type = inputList.Type;
+						if (prop.Name.ToLower() == "recordslimit")
+							list.RecordsLimit = inputList.RecordsLimit;
+						if (prop.Name.ToLower() == "pagesize")
+							list.PageSize = inputList.PageSize;
+						if (prop.Name.ToLower() == "columns")
+							list.Columns = inputList.Columns;
+						if (prop.Name.ToLower() == "query")
+							list.Query = inputList.Query;
+						if (prop.Name.ToLower() == "sorts")
+							list.Sorts = inputList.Sorts;
+					}
 			}
 			catch (Exception e)
 			{
@@ -721,43 +721,40 @@ namespace WebVella.ERP.Web.Controllers
 
 			foreach (var field in entity.Fields)
 			{
-				itemList.Add(new
+                itemList.Add(new RecordViewFieldItem
 				{
-					type = "field",
-					fieldId = field.Id,
-					fieldName = field.Name,
-					fieldLabel = field.Label,
-					fieldTypeId = field.GetFieldType()
+                    FieldId = field.Id,
+                    FieldName = field.Name,
+                    FieldLabel = field.Label,
+                    FieldTypeId = field.GetFieldType()
 				});
 
 			}
 
 			foreach (var view in entity.RecordViews)
 			{
-				itemList.Add(new
+                itemList.Add(new RecordViewViewItem
 				{
-					type = "view",
-					viewId = view.Id,
-					viewName = view.Name,
-					viewLabel = view.Label,
-					entityId = entity.Id,
-					entityName = entity.Name,
-					entityLabel = entity.Label
+                    ViewId = view.Id,
+                    ViewName = view.Name,
+                    ViewLabel = view.Label,
+                    EntityId = entity.Id,
+                    EntityName = entity.Name,
+                    EntityLabel = entity.Label
 				});
 			}
 
 			foreach (var list in entity.RecordLists)
 			{
-				itemList.Add(new
+                itemList.Add(new RecordViewListItem
 				{
-					type = "list",
-					listId = list.Id,
-					listName = list.Name,
-					listLabel = list.Label,
-					entityId = entity.Id,
-					entityName = entity.Name,
-					entityLabel = entity.Label,
-					entityLabelPlural = entity.LabelPlural
+                    ListId = list.Id,
+                    ListName = list.Name,
+                    ListLabel = list.Label,
+                    EntityId = entity.Id,
+                    EntityName = entity.Name,
+                    EntityLabel = entity.Label,
+                    EntityLabelPlural = entity.LabelPlural
 				});
 			}
 
@@ -775,17 +772,46 @@ namespace WebVella.ERP.Web.Controllers
 
 				foreach (var field in relatedEntity.Fields)
 				{
-					itemList.Add(new
+                    itemList.Add(new RecordViewRelationFieldItem
+                    {
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        FieldId = field.Id,
+                        FieldName = field.Name,
+                        FieldLabel = field.Label,
+                        FieldTypeId = field.GetFieldType()
+                    });
+                }
+
+                foreach (var view in relatedEntity.RecordViews )
+                {
+                    itemList.Add(new RecordViewRelationViewItem
+                    {
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        ViewId = view.Id,
+                        ViewName = view.Name,
+                        ViewLabel = view.Label
+                    });
+                }
+
+                foreach (var list in relatedEntity.RecordLists)
+                {
+                    itemList.Add(new RecordViewRelationListItem
 					{
-						type = "fieldFromRelation",
-						relationId = relation.Id,
-						entityId = relatedEntity.Id,
-						entityName = relatedEntity.Name,
-						entityLabel = relatedEntity.Label,
-						fieldId = field.Id,
-						fieldName = field.Name,
-						fieldLabel = field.Label,
-						fieldTypeId = field.GetFieldType()
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        EntityLabelPlural = relatedEntity.LabelPlural,
+                        ListId = list.Id,
+                        ListName = list.Name,
+                        ListLabel = list.Label,
+                        
 					});
 				}
 			}
@@ -953,21 +979,21 @@ namespace WebVella.ERP.Web.Controllers
 				}
 				view = updatedView.MapTo<InputRecordView>();
 
-				Type inputViewType = view.GetType();
-				foreach (var prop in submitObj.Properties())
-				{
-					int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-					if (count < 1)
-						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-				}
+			Type inputViewType = view.GetType();
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
 
-				if (response.Errors.Count > 0)
-					return DoBadRequestResponse(response);
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
 
 				InputRecordView inputView = InputRecordView.Convert(submitObj);
 
 				foreach (var prop in submitObj.Properties())
-				{
+			{
 					if (prop.Name.ToLower() == "label")
 						view.Label = inputView.Label;
 					if (prop.Name.ToLower() == "default")

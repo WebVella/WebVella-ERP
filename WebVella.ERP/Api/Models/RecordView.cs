@@ -204,7 +204,25 @@ namespace WebVella.ERP.Api.Models
 		public Guid? FieldId { get; set; }
 	}
 
-	public class InputRecordViewHtmlItem : InputRecordViewItemBase
+    public class InputRecordViewRelationViewItem : InputRecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid? RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "viewId")]
+        public Guid? ViewId { get; set; }
+    }
+
+    public class InputRecordViewRelationListItem : InputRecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid? RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "listId")]
+        public Guid? ListId { get; set; }
+    }
+
+    public class InputRecordViewHtmlItem : InputRecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "tag")]
 		public string Tag { get; set; }
@@ -450,7 +468,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "entityId")]
 		public Guid EntityId { get; set; }
 
-		[JsonProperty(PropertyName = "entityName")]
+        [JsonProperty(PropertyName = "entityLabel")]
+        public string EntityLabel { get; set; }
+
+        [JsonProperty(PropertyName = "entityName")]
 		public string EntityName { get; set; }
 
 		[JsonProperty(PropertyName = "entityLabelPlural")]
@@ -511,7 +532,66 @@ namespace WebVella.ERP.Api.Models
 		public FieldType FieldTypeId { get; set; }
 	}
 
-	public class RecordViewHtmlItem : RecordViewItemBase
+    public class RecordViewRelationViewItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static string ItemType { get { return "viewFromRelation"; } }
+
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "entityId")]
+        public Guid EntityId { get; set; }
+
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
+
+        [JsonProperty(PropertyName = "entityLabel")]
+        public string EntityLabel { get; set; }
+
+        [JsonProperty(PropertyName = "viewId")]
+        public Guid ViewId { get; set; }
+
+        [JsonProperty(PropertyName = "viewName")]
+        public string ViewName { get; set; }
+
+        [JsonProperty(PropertyName = "viewLabel")]
+        public string ViewLabel { get; set; }
+    }
+
+    public class RecordViewRelationListItem : RecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "type")]
+        public static string ItemType { get { return "listFromRelation"; } }
+
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "entityId")]
+        public Guid EntityId { get; set; }
+
+        [JsonProperty(PropertyName = "entityName")]
+        public string EntityName { get; set; }
+
+        [JsonProperty(PropertyName = "entityLabel")]
+        public string EntityLabel { get; set; }
+
+        [JsonProperty(PropertyName = "entityLabelPlural")]
+        public string EntityLabelPlural { get; set; }
+
+        [JsonProperty(PropertyName = "listId")]
+        public Guid ListId { get; set; }
+
+        [JsonProperty(PropertyName = "listName")]
+        public string ListName { get; set; }
+
+        [JsonProperty(PropertyName = "listLabel")]
+        public string ListLabel { get; set; }
+
+        
+    }
+
+    public class RecordViewHtmlItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
 		public static string ItemType { get { return Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.Html).ToLower(); } }
@@ -555,7 +635,11 @@ namespace WebVella.ERP.Api.Models
 				return new InputRecordViewViewItem();
 			if (type == "fieldfromrelation")
 				return new InputRecordViewRelationFieldItem();
-			if (type == "html")
+            if (type == "viewfromrelation")
+                return new InputRecordViewRelationViewItem();
+            if (type == "listfromrelation")
+                return new InputRecordViewRelationListItem();
+            if (type == "html")
 				return new InputRecordViewHtmlItem();
 
 			return new InputRecordViewFieldItem();
