@@ -550,7 +550,6 @@ namespace WebVella.ERP.Api.Models
 			string type = jObject["type"].ToString().ToLower();
 
 			if (type == "list")
-				if (objectType == typeof(InputRecordViewListItem))
 					return new InputRecordViewListItem();
 			if (type == "view")
 				return new InputRecordViewViewItem();
