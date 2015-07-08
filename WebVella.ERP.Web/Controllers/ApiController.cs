@@ -464,43 +464,40 @@ namespace WebVella.ERP.Web.Controllers
 
             foreach (var field in entity.Fields)
             {
-                itemList.Add(new
+                itemList.Add(new RecordViewFieldItem
                 {
-                    type = "field",
-                    fieldId = field.Id,
-                    fieldName = field.Name,
-                    fieldLabel = field.Label,
-                    fieldTypeId = field.GetFieldType()
+                    FieldId = field.Id,
+                    FieldName = field.Name,
+                    FieldLabel = field.Label,
+                    FieldTypeId = field.GetFieldType()
                 });
 
             }
 
             foreach (var view in entity.RecordViews)
             {
-                itemList.Add(new
+                itemList.Add(new RecordViewViewItem
                 {
-                    type = "view",
-                    viewId = view.Id,
-                    viewName = view.Name,
-                    viewLabel = view.Label,
-                    entityId = entity.Id,
-                    entityName = entity.Name,
-                    entityLabel = entity.Label
+                    ViewId = view.Id,
+                    ViewName = view.Name,
+                    ViewLabel = view.Label,
+                    EntityId = entity.Id,
+                    EntityName = entity.Name,
+                    EntityLabel = entity.Label
                 });
             }
 
             foreach (var list in entity.RecordLists)
             {
-                itemList.Add(new
+                itemList.Add(new RecordViewListItem
                 {
-                    type = "list",
-                    listId = list.Id,
-                    listName = list.Name,
-                    listLabel = list.Label,
-                    entityId = entity.Id,
-                    entityName = entity.Name,
-                    entityLabel = entity.Label,
-                    entityLabelPlural = entity.LabelPlural
+                    ListId = list.Id,
+                    ListName = list.Name,
+                    ListLabel = list.Label,
+                    EntityId = entity.Id,
+                    EntityName = entity.Name,
+                    EntityLabel = entity.Label,
+                    EntityLabelPlural = entity.LabelPlural
                 });
             }
 
@@ -518,47 +515,44 @@ namespace WebVella.ERP.Web.Controllers
 
                 foreach (var field in relatedEntity.Fields)
                 {
-                    itemList.Add(new
+                    itemList.Add(new RecordViewRelationFieldItem
                     {
-                        type = "fieldFromRelation",
-                        relationId = relation.Id,
-                        entityId = relatedEntity.Id,
-                        entityName = relatedEntity.Name,
-                        entityLabel = relatedEntity.Label,
-                        fieldId = field.Id,
-                        fieldName = field.Name,
-                        fieldLabel = field.Label,
-                        fieldTypeId = field.GetFieldType()
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        FieldId = field.Id,
+                        FieldName = field.Name,
+                        FieldLabel = field.Label,
+                        FieldTypeId = field.GetFieldType()
                     });
                 }
 
                 foreach (var view in relatedEntity.RecordViews )
                 {
-                    itemList.Add(new
+                    itemList.Add(new RecordViewRelationViewItem
                     {
-                        type = "viewFromRelation",
-                        relationId = relation.Id,
-                        entityId = relatedEntity.Id,
-                        entityName = relatedEntity.Name,
-                        entityLabel = relatedEntity.Label,
-                        viewId = view.Id,
-                        viewName = view.Name,
-                        viewLabel = view.Label
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        ViewId = view.Id,
+                        ViewName = view.Name,
+                        ViewLabel = view.Label
                     });
                 }
 
                 foreach (var list in relatedEntity.RecordLists)
                 {
-                    itemList.Add(new
+                    itemList.Add(new RecordViewRelationListItem
                     {
-                        type = "listFromRelation",
-                        relationId = relation.Id,
-                        entityId = relatedEntity.Id,
-                        entityName = relatedEntity.Name,
-                        entityLabel = relatedEntity.Label,
-                        listId = list.Id,
-                        listName = list.Name,
-                        listLabel = list.Label
+                        RelationId = relation.Id,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        ListId = list.Id,
+                        ListName = list.Name,
+                        ListLabel = list.Label
                     });
                 }
             }

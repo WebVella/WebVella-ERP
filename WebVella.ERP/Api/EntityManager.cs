@@ -1220,7 +1220,8 @@ namespace WebVella.ERP.Api
 													{
 														((RecordViewListItem)item).EntityId = listEntity.Id;
 														((RecordViewListItem)item).EntityName = listEntity.Name;
-														((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
+                                                        ((RecordViewListItem)item).EntityLabel = listEntity.Label;
+                                                        ((RecordViewListItem)item).EntityLabelPlural = listEntity.LabelPlural;
 													}
 												}
 												if (item is RecordViewViewItem)
