@@ -95,7 +95,13 @@
 														<div as-sortable-item-handle ng-if='item.type == "view"'>
 															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}
 														</div>
+														<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
+															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}
+														</div>
 														<div as-sortable-item-handle ng-if='item.type == "list"'>
+															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}
+														</div>
+														<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
 															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.tag == "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
@@ -132,7 +138,9 @@
 								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.fieldLabel}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.fieldLabel}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.listLabel}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
 							</div>

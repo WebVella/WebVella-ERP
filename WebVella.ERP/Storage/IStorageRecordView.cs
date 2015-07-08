@@ -135,6 +135,20 @@ namespace WebVella.ERP.Storage
 
         Guid FieldId { get; set; }
     }
+
+    public interface IStorageRecordViewRelationViewItem : IStorageRecordViewItemBase
+    {
+        Guid RelationId { get; set; }
+
+        Guid ViewId { get; set; }
+    }
+
+    public interface IStorageRecordViewRelationListItem : IStorageRecordViewItemBase
+    {
+        Guid RelationId { get; set; }
+
+        Guid ListId { get; set; }
+    }
 }
 
 
