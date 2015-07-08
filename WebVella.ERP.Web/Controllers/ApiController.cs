@@ -1187,70 +1187,75 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
 		public IActionResult GetRecordsByEntityName(string entityName, string listName, string filter, int page)
 		{
+			if (page < 1)
+				page = 1;
+			int limit = 25;
+			int skip = (page - 1) * limit;
+
 			QuerySortObject sObj = new QuerySortObject("label", QuerySortType.Ascending);
-			EntityQuery resultQuery = new EntityQuery(entityName, "*", null, new[] { sObj }, 0, 25);
+			EntityQuery resultQuery = new EntityQuery(entityName, "*", null, new[] { sObj }, skip, limit);
 
-			//RecordListResponse listResponse = entityManager.ReadRecordList(entityName, listName);
+			RecordListResponse listResponse = entityManager.ReadRecordList(entityName, listName);
 
-			//if (listResponse != null && listResponse.Object != null)
-			//{
-			//	RecordList list = listResponse.Object;
+			if (listResponse != null && listResponse.Object != null)
+			{
+				RecordList list = listResponse.Object;
 
-			//	List<QuerySortObject> sortList = new List<QuerySortObject>();
-			//	if (list.Sorts != null && list.Sorts.Count > 0)
-			//	{
-			//		foreach (var sort in list.Sorts)
-			//		{
-			//			QuerySortType sortType;
-			//			if (Enum.TryParse<QuerySortType>(sort.SortType, out sortType))
-			//			{
-			//				QuerySortObject sortObj = new QuerySortObject(sort.FieldName, sortType);
+				List<QuerySortObject> sortList = new List<QuerySortObject>();
+				if (list.Sorts != null && list.Sorts.Count > 0)
+				{
+					foreach (var sort in list.Sorts)
+					{
+						QuerySortType sortType;
+						if (Enum.TryParse<QuerySortType>(sort.SortType, out sortType))
+						{
+							QuerySortObject sortObj = new QuerySortObject(sort.FieldName, sortType);
 
-			//				sortList.Add(sortObj);
-			//			}
-			//		}
+							sortList.Add(sortObj);
+						}
+					}
 
-			//		resultQuery.Sort = sortList.ToArray();
-			//	}
+					resultQuery.Sort = sortList.ToArray();
+				}
 
-			//	QueryObject queryObj = null;
-			//	if (list.Query != null)
-			//	{
-			//		queryObj = GenrateQuery(list.Query);
+				QueryObject queryObj = null;
+				if (list.Query != null)
+				{
+					queryObj = GenerateQuery(list.Query);
 
-			//		resultQuery.Query = queryObj;
-			//	}
+					resultQuery.Query = queryObj;
+				}
 
-			//	string queryFields = null;
-			//	if (list.Columns != null)
-			//	{
-			//		foreach (var column in list.Columns)
-			//		{
-			//			if (column is RecordListFieldItem)
-			//			{
-			//				queryFields += ((RecordListFieldItem)column).FieldName + ", ";
-			//			}
+				string queryFields = null;
+				if (list.Columns != null)
+				{
+					foreach (var column in list.Columns)
+					{
+						if (column is RecordListFieldItem)
+						{
+							queryFields += ((RecordListFieldItem)column).FieldName + ", ";
+						}
 
-			//			if (column is RecordListRelationFieldItem)
-			//			{
-			//				EntityRelationManager relManager = new EntityRelationManager(Storage);
-			//				EntityRelationResponse relResponse = relManager.Read(((RecordListRelationFieldItem)column).RelationId);
+						if (column is RecordListRelationFieldItem)
+						{
+							EntityRelationManager relManager = new EntityRelationManager(Storage);
+							EntityRelationResponse relResponse = relManager.Read(((RecordListRelationFieldItem)column).RelationId);
 
-			//				string relName = relResponse != null && relResponse.Object != null ? string.Format("${0}.", relResponse.Object.Name) : "";
-			//				queryFields += string.Format("{0}{1}, ", relName, ((RecordListRelationFieldItem)column).FieldName);
-			//			}
-			//		}
+							string relName = relResponse != null && relResponse.Object != null ? string.Format("${0}.", relResponse.Object.Name) : "";
+							queryFields += string.Format("{0}{1}, ", relName, ((RecordListRelationFieldItem)column).FieldName);
+						}
+					}
 
-			//		if (queryFields.EndsWith(", "))
-			//			queryFields = queryFields.Remove(queryFields.Length - 2);
+					if (queryFields.EndsWith(", "))
+						queryFields = queryFields.Remove(queryFields.Length - 2);
 
-			//		resultQuery.Fields = queryFields;
+					resultQuery.Fields = queryFields;
 
-			//	}
+				}
 
-			//	if (list.RecordsLimit > 0)
-			//		resultQuery.Limit = list.RecordsLimit;
-			//}
+				if (list.RecordsLimit > 0)
+					resultQuery.Limit = list.RecordsLimit;
+			}
 
 			QueryResponse result = recMan.Find(resultQuery);
 			if (!result.Success)
@@ -1259,7 +1264,7 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(result);
 		}
 
-		private QueryObject GenrateQuery(RecordListQuery query)
+		private QueryObject GenerateQuery(RecordListQuery query)
 		{
 			QueryObject queryObj = new QueryObject();
 
@@ -1275,7 +1280,7 @@ namespace WebVella.ERP.Web.Controllers
 					queryObj.SubQueries = new List<QueryObject>();
 					foreach (var subQuery in query.SubQueries)
 					{
-						QueryObject subQueryObj = GenrateQuery(subQuery);
+						QueryObject subQueryObj = GenerateQuery(subQuery);
 						queryObj.SubQueries.Add(subQueryObj);
 					}
 				}

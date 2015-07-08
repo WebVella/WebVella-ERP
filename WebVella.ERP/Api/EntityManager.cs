@@ -560,15 +560,18 @@ namespace WebVella.ERP.Api
 
 					if (queryType != QueryType.AND && queryType != QueryType.OR && query.FieldValue == null)
 						errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
-				}
-			}
 
-			if (query.SubQueries != null && query.SubQueries.Count > 0)
-			{
-				foreach (var subQuery in query.SubQueries)
-				{
-					List<ErrorModel> subQueryErrors = ValidateRecordListQuery(subQuery);
-					errorList.AddRange(subQueryErrors);
+					if ((queryType == QueryType.AND || queryType == QueryType.OR) && (query.SubQueries == null || query.SubQueries.Count == 0))
+						errorList.Add(new ErrorModel("query.subQueries", null, "SubQueries must have at least one item!"));
+
+					if (query.SubQueries != null && query.SubQueries.Count > 0)
+					{
+						foreach (var subQuery in query.SubQueries)
+						{
+							List<ErrorModel> subQueryErrors = ValidateRecordListQuery(subQuery);
+							errorList.AddRange(subQueryErrors);
+						}
+					}
 				}
 			}
 
