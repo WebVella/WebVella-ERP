@@ -24,7 +24,6 @@
         serviceInstance.setBodyColorClass = setBodyColorClass;
         serviceInstance.getSitemap = getSitemap;
         serviceInstance.getSitemapSample = getSitemapSample;
-        serviceInstance.toggleSidebar = toggleSidebar;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.GoToState = GoToState;
 
@@ -65,13 +64,6 @@
         function setBodyColorClass(color) {
             $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
             $rootScope.$emit("application-body-color-update", color);
-            $log.debug('rootScope>events> "application-body-color-update" emitted');
-        }
-
-        //////////////////////
-        function toggleSidebar() {
-            $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
-            $rootScope.$emit("application-sidebar-mini-toggle");
             $log.debug('rootScope>events> "application-body-color-update" emitted');
         }
 
