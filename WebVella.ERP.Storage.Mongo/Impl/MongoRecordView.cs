@@ -233,4 +233,22 @@ namespace WebVella.ERP.Storage.Mongo
         [BsonElement("relationId")]
         public Guid RelationId { get; set; }
     }
+
+    public class MongoRecordViewRelationViewItem : MongoRecordViewItemBase, IStorageRecordViewRelationViewItem
+    {
+        [BsonElement("viewId")]
+        public Guid ViewId { get; set; }
+
+        [BsonElement("relationId")]
+        public Guid RelationId { get; set; }
+    }
+
+    public class MongoRecordViewRelationListItem : MongoRecordViewItemBase, IStorageRecordViewRelationListItem
+    {
+        [BsonElement("listId")]
+        public Guid ListId { get; set; }
+
+        [BsonElement("relationId")]
+        public Guid RelationId { get; set; }
+    }
 }

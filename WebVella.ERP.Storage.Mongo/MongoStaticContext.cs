@@ -72,6 +72,9 @@ namespace WebVella.ERP.Storage.Mongo
             BsonClassMap.RegisterClassMap<MongoRecordViewViewItem>();
             BsonClassMap.RegisterClassMap<MongoRecordViewHtmlItem>();
             BsonClassMap.RegisterClassMap<MongoRecordViewRelationFieldItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewRelationListItem>();
+            BsonClassMap.RegisterClassMap<MongoRecordViewRelationViewItem>();
+           
             
 
             BsonClassMap.RegisterClassMap<MongoAutoNumberField>();
