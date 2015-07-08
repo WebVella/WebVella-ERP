@@ -38,6 +38,11 @@ span.divider {
 	text-align: left;
 }
 
+.collapsing {
+    -webkit-transition: none;
+    transition: none;
+}
+
 /*
 ngToast
 */
@@ -834,6 +839,14 @@ ngToast
 				#page-meta accordion .panel-group .panel .panel-body .list-inline > li {
 					padding: 5px 10px;
 				}
+
+#page-meta .list-inline .active a i {
+	color:#d9534f;
+}
+
+#page-meta .list-inline .active a i:before {
+content: "\f061";
+}
 
 /*Theming*/
 .theme-red #page-title #page-meta {
