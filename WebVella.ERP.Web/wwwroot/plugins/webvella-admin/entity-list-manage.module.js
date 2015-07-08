@@ -117,7 +117,7 @@
             }
         }
 
-        webvellaAdminService.getEntityRecordsList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
+        webvellaAdminService.getEntityList($stateParams.listName, $stateParams.entityName, successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entity-records-list>resolveEntityRecordsList END state.resolved');
@@ -163,9 +163,11 @@
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityList', 'resolvedViewLibrary'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityList',
+						'resolvedViewLibrary', 'webvellaAdminService'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityList, resolvedViewLibrary) {
+    function controller($scope, $log, $rootScope, $state, ngToast, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityList,
+						resolvedViewLibrary, webvellaAdminService) {
         $log.debug('webvellaAdmin>entity-records-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -187,6 +189,44 @@
 
         //#region << Initialize the list >>
         contentData.list = angular.copy(resolvedCurrentEntityList);
+
+        function patchSuccessCallback(response) {
+        	ngToast.create({
+        		className: 'success',
+        		content: '<span class="go-green">Success:</span> ' + response.message
+        	});
+        }
+        function patchErrorCallback(response) {
+        	ngToast.create({
+        		className: 'error',
+        		content: '<span class="go-red">Error:</span> ' + response.message
+        	});
+        }
+
+        contentData.fieldUpdate = function (fieldName, data) {
+        	var postObj = {};
+        	postObj[fieldName] = data;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
+        contentData.updateColumns = function () {
+        	var postObj = {};
+        	postObj.columns = contentData.list.columns;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
+        contentData.updateQuery = function () {
+        	var postObj = {};
+        	postObj.query = contentData.list.query;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
+        contentData.updateSorts = function () {
+        	var postObj = {};
+        	postObj.sorts = contentData.list.sorts;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
         //#endregion
 
         //#region << Initialize the library >>
@@ -220,8 +260,6 @@
         for (var j = 0; j < contentData.list.columns.length; j++) {
         	usedItemsArray.push(contentData.list.columns[j]);
         }
-
-
         contentData.tempFieldsLibrary.items.forEach(function (item) {
         	var notUsed = true;
         	for (var k = 0; k < usedItemsArray.length; k++) {
@@ -277,8 +315,6 @@
         	contentData.fieldsLibrary.items.push(item);
 		}
         });
-
-
         //#endregion
 
         //#region << Logic >>
@@ -286,9 +322,9 @@
             //Add Item at the end of the columns list
         	contentData.list.columns.push(item);
             //Remove from library
-            contentData.fieldsLibrary.items.splice(index, 1);
+        	contentData.fieldsLibrary.items.splice(index, 1);
+        	contentData.updateColumns();
         }
-
         contentData.moveToLibrary = function (item, index) {
             //Add Item at the end of the columns list
             contentData.fieldsLibrary.items.push(item);
@@ -300,9 +336,33 @@
             	if (a.type > b.type) return 1;
             	return 0;
             });
+            contentData.updateColumns();
         }
 
-        //#endregion
+        contentData.dragControlListeners = {
+        	accept: function (sourceItemHandleScope, destSortableScope) {
+        		//for (var i = 0; i < destSortableScope.modelValue.length; i++) {
+        		//    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
+        		//        return false;
+        		//        break;
+        		//    }
+        		//}
+
+        		return true
+        	},
+        	itemMoved: function (eventObj) {
+        		//Item is moved from one column to another
+        		//executeDragViewChange(eventObj);
+        		contentData.updateColumns();
+        	},
+        	orderChanged: function (eventObj) {
+        		//Item is moved within the same column
+        		//executeDragViewChange(eventObj);
+        		contentData.updateColumns();
+        	}
+        };
+  
+    	//#endregion
 
     	//#region << Query >>
     	//Attach guid to each area and rule so we can find it when managed
@@ -318,7 +378,6 @@
         	}
         	return null;
         }
-
         function deleteInTreeById(startElement, matchingId) {
         	if (startElement.id == matchingId) {
         		return startElement;
@@ -331,8 +390,6 @@
         	}
         	return null;
         }
-
-
         contentData.getIncludeFile = function (query) {
         switch(query.queryType) {
         	case "EQ":
@@ -357,17 +414,16 @@
         		return 'querySection.html';
 	        }
         }
-
         contentData.AddRule = function (query) {
         	var subquery = {
         		"queryType": "EQ",
-        		"fieldName": "",
+        		"fieldName": "id",
         		"fieldValue": "",
         		"subQueries": []
         	};
         	query.subQueries.push(subquery);
+        	contentData.updateQuery();
         }
-
         contentData.AddSection = function (query) {
         	var subquery = {
         		"queryType": "AND",
@@ -376,7 +432,7 @@
         		"subQueries": [
 					{
 						"queryType": "EQ",
-						"fieldName": "",
+						"fieldName": "id",
 						"fieldValue": "",
 						"subQueries": []
 					}
@@ -388,8 +444,8 @@
         	else {
         		contentData.list.query = subquery;
         	}
+        	contentData.updateQuery();
         }
-
         contentData.DeleteItem = function (parent, index) {
         	if (parent != null) {
         		parent.subQueries.splice(index, 1);
@@ -398,26 +454,26 @@
         		contentData.list.query = {};
         		contentData.list.query = null;
         	}
+        	contentData.updateQuery();
         }
-
         contentData.DeleteSortRule = function (index) {
         	contentData.list.sorts.splice(index, 1);
         	if(contentData.list.sorts.length == 0) {
         		contentData.list.sorts = null;
         	}
+        	contentData.updateSorts();
         }
-
         contentData.AddSortRule = function () {
         	if (contentData.list.sorts == null) {
         		contentData.list.sorts = [];
         	}
         	var subrule = {
-        		"fieldName": "",
-        		"sortType": "Ascending"
+        		"fieldName": "id",
+        		"sortType": "ascending"
         	};
         	contentData.list.sorts.push(subrule);
+        	contentData.updateSorts();
         }
-
 		//#endregion
 
 

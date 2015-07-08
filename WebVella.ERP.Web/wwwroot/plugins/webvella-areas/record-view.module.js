@@ -190,6 +190,9 @@
 						break;
 						//Auto increment number
 					case 3: //Currency
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						validation = checkDecimal(data);
 						if (!validation.success) {
 							return validation.message;
@@ -199,23 +202,74 @@
 						}
 						break;
 					case 4: //Date
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						data = moment(data).toISOString();
 						break;
 					case 5: //Datetime
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						data = moment(data).toISOString();
 						break;
 					case 6: //Email
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						validation = checkEmail(data);
 						if (!validation.success) {
 							return validation.message;
 						}
 						break;
 					case 11: // Multiselect
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						//We need to convert data which is "2,3" comma separated string to string array
 						if (data !== '[object Array]') {
 							data = data.split(',');
 						}
-						
+						break;
+					//Number
+					case 12:
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkDecimal(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (!data) {
+							data = null;
+						}
+						break;
+					//Percent
+					case 14:
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkPercent(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (!data) {
+							data = null;
+						}
+						break;
+					case 15: //Phone
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkPhone(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						break;
+					case 17: // Dropdown
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
 						break;
 				}
 			}
@@ -412,11 +466,19 @@
 						selected.push(s.value);
 					}
 				});
-				return selected.length ? selected.join(', ') : 'Not set';
+				return selected.length ? selected.join(', ') : 'empty';
 			}
 			else {
 				return 'empty';
 			}
+		}
+
+		//Password
+		contentData.dummyPasswordModels = {};//as the password value is of know use being encrypted, we will assign dummy models
+		//Dropdown
+		contentData.getDropdownString = function (fieldData, array) {
+			var selected = $filter('filter')(array, { key: fieldData });
+			return (fieldData && selected.length) ? selected[0].value : 'empty';
 		}
 
 		//#endregion
