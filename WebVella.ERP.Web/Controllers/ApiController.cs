@@ -550,9 +550,11 @@ namespace WebVella.ERP.Web.Controllers
                         EntityId = relatedEntity.Id,
                         EntityName = relatedEntity.Name,
                         EntityLabel = relatedEntity.Label,
+                        EntityLabelPlural = relatedEntity.LabelPlural,
                         ListId = list.Id,
                         ListName = list.Name,
-                        ListLabel = list.Label
+                        ListLabel = list.Label,
+                        
                     });
                 }
             }
