@@ -39,7 +39,7 @@ namespace WebVella.ERP.Web.Controllers
             }
 #else
             if (string.IsNullOrEmpty( message ))
-                response.Message = "The entity relation was not created. An internal error occurred!";
+                response.Message = "An internal error occurred!";
 #endif
             Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(response);
