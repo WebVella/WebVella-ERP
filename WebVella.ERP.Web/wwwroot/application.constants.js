@@ -83,6 +83,50 @@ function decimalPlaces(num) {
 		 - (match[2] ? +match[2] : 0));
 }
 
+function checkPercent(data) {
+	var response = {
+		success: true,
+		message: "It is decimal"
+	}
+	if (!data) {
+		response.message = "Empty value is OK";
+		return response;
+	}
+	if (data.toString().indexOf(",") > -1) {
+		response.success = false;
+		response.message = "Comma is not allowed. Use '.' for decimal separator";
+		return response;
+	}
+	if (isNaN(parseFloat(data)) && !isFinite(data)) {
+		response.success = false;
+		response.message = "Only decimal is accepted";
+		return response;
+	}
+
+	if (data > 1) {
+		response.success = false;
+		response.message = "Only decimal values between 0 and 1 are accepted";
+		return response;
+	}
+
+	return response;
+}
+
+function checkPhone(data) {
+	var response = {
+		success: true,
+		message: "It is decimal"
+	}
+	if (!phoneUtils.isValidNumber(data)) {
+		response.success= false,
+		response.message = "Not a valid phone. Should start with + followed by the country code digits";
+		return response;
+	}
+
+
+	return response;
+}
+
 
 function checkEmail(data) {
 	var response = {

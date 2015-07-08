@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.AspNet.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
+using WebVella.ERP.Api.Models.AutoMapper;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -338,8 +339,35 @@ namespace WebVella.ERP.Web.Controllers
         public IActionResult PatchRecordListByName(string Name, string ListName, [FromBody]JObject submitObj)
         {
             RecordListResponse response = new RecordListResponse();
-
+			Entity entity = new Entity();
             InputRecordList list = new InputRecordList();
+
+			try
+			{
+				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(Name);
+
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+
+				entity = storageEntity.MapTo<Entity>();
+
+				RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == ListName);
+
+				if (updatedList == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "List with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+
+				list = updatedList.MapTo<InputRecordList>();
+				InputRecordList inputList = InputRecordList.Convert(submitObj);
 
             Type inputListType = list.GetType();
 
@@ -348,21 +376,42 @@ namespace WebVella.ERP.Web.Controllers
                 int count = inputListType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
                 if (count < 1)
                     response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+					else
+					{
+						if (prop.Name.ToLower() == "label")
+							list.Label = inputList.Label;
+						if (prop.Name.ToLower() == "default")
+							list.Default = inputList.Default;
+						if (prop.Name.ToLower() == "system")
+							list.System = inputList.System;
+						if (prop.Name.ToLower() == "weight")
+							list.Weight = inputList.Weight;
+						if (prop.Name.ToLower() == "cssclass")
+							list.CssClass = inputList.CssClass;
+						if (prop.Name.ToLower() == "type")
+							list.Type = inputList.Type;
+						if (prop.Name.ToLower() == "recordslimit")
+							list.RecordsLimit = inputList.RecordsLimit;
+						if (prop.Name.ToLower() == "pagesize")
+							list.PageSize = inputList.PageSize;
+						if (prop.Name.ToLower() == "columns")
+							list.Columns = inputList.Columns;
+						if (prop.Name.ToLower() == "query")
+							list.Query = inputList.Query;
+						if (prop.Name.ToLower() == "sorts")
+							list.Sorts = inputList.Sorts;
+					}
             }
 
             if (response.Errors.Count > 0)
                 return DoBadRequestResponse(response);
-
-            try
-            {
-                list = InputRecordList.Convert(submitObj);
             }
             catch (Exception e)
             {
                 return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
             }
 
-            return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordList(Name, ListName, list));
+			return DoResponse(new EntityManager(service.StorageService).UpdateRecordList(entity, list));
         }
 
         [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
@@ -1080,7 +1129,7 @@ namespace WebVella.ERP.Web.Controllers
             if (file == null)
                 return DoPageNotFoundResponse();
 
-            return File( file.GetBytes(), System.Net.Mime.MediaTypeNames.Application.Octet );
+			return File(file.GetBytes(), System.Net.Mime.MediaTypeNames.Application.Octet);
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
@@ -1090,7 +1139,7 @@ namespace WebVella.ERP.Web.Controllers
             var fs = service.StorageService.GetFS();
             var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
             
-            return DoResponse( new FSResponse( new FSResult { Url = "/fs"  + createdFile.FilePath, Filename= fileName } ) );
+			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + createdFile.FilePath, Filename = fileName }));
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
@@ -1099,7 +1148,7 @@ namespace WebVella.ERP.Web.Controllers
             string source = submitObj["source"].Value<string>();
             string target = submitObj["target"].Value<string>();
             bool overwrite = false;
-            if (submitObj["overwrite"] != null )
+			if (submitObj["overwrite"] != null)
                 overwrite = submitObj["overwrite"].Value<bool>();
 
             source = source.ToLowerInvariant();
@@ -1122,7 +1171,7 @@ namespace WebVella.ERP.Web.Controllers
             var fs = service.StorageService.GetFS();
             var sourceFile = fs.Find(source);
 
-            var movedFile = fs.Move(source, target, overwrite );
+			var movedFile = fs.Move(source, target, overwrite);
             return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
         }
 

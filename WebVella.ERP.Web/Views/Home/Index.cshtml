@@ -16,6 +16,7 @@
     <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.css" rel="stylesheet" />
 	<link href="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" />   
+
     <!-- plugin:webvella-desktop-->
     <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
 
@@ -26,7 +27,7 @@
     @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
 
 </head>
-<body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':appData.isMiniSidebar, 'not-visible-side-menu': !appData.sideMenuIsVisible}">
+<body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar, 'not-visible-side-menu': !appData.sideMenuIsVisible}">
     <toast></toast>
 
     <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
@@ -54,7 +55,8 @@
     <script src="~/plugins/webvella-root/lib/offline/offline.min.js"></script>
     <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
 	<script src="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.js"></script>
-    
+	<script src="~/plugins/webvella-root/lib/libphonenumber/libphonenumber.js"></script>    
+	<script src="~/plugins/webvella-root/lib/ngstorage/ngstorage.js"></script>
    
     @* Core Application module definition *@
     <script>
@@ -67,7 +69,7 @@
                     'ngAnimate', 'ngTouch', 'ngCookies', 'ngSanitize',
                      // 3rd Party Modules
                     'ui.router', 'ngMessages', 'angular-loading-bar', 'ngToast', 'xeditable', 'ui.bootstrap', 'ui.sortable', 'checklist-model',
-					'ngCkeditor', 'ngFileUpload',
+					'ngCkeditor', 'ngFileUpload', 'ngStorage',
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 

@@ -546,12 +546,6 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			if (string.IsNullOrWhiteSpace(query.FieldName))
-				errorList.Add(new ErrorModel("query.fieldName", query.FieldName, "FieldName is required!"));
-
-			if (string.IsNullOrWhiteSpace(query.FieldValue))
-				errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
-
 			if (string.IsNullOrWhiteSpace(query.QueryType))
 				errorList.Add(new ErrorModel("query.queryType", query.QueryType, "QueryType is required!"));
 			else
@@ -559,6 +553,14 @@ namespace WebVella.ERP.Api
 				QueryType queryType;
 				if (!Enum.TryParse<QueryType>(query.QueryType, true, out queryType))
 					errorList.Add(new ErrorModel("query.queryType", query.QueryType, "There is no such query type!"));
+				else
+				{
+					if (queryType != QueryType.AND && queryType != QueryType.OR && string.IsNullOrWhiteSpace(query.FieldName))
+						errorList.Add(new ErrorModel("query.fieldName", query.FieldName, "FieldName is required!"));
+
+					if (queryType != QueryType.AND && queryType != QueryType.OR && query.FieldValue == null)
+						errorList.Add(new ErrorModel("query.fieldValue", query.FieldValue, "FieldValue is required!"));
+				}
 			}
 
 			if(query.SubQueries != null && query.SubQueries.Count > 0)
@@ -2334,7 +2336,7 @@ namespace WebVella.ERP.Api
 			return UpdateRecordList(entity, inputRecordList);
 		}
 
-		private RecordListResponse UpdateRecordList(Entity entity, InputRecordList inputRecordList)
+		public RecordListResponse UpdateRecordList(Entity entity, InputRecordList inputRecordList)
 		{
 			RecordListResponse response = new RecordListResponse
 			{
@@ -2392,134 +2394,134 @@ namespace WebVella.ERP.Api
 			return ReadRecordList(entity.Id, recordList.Id);
 		}
 
-		public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, InputRecordList inputRecordList)
-		{
-			RecordListResponse response = new RecordListResponse();
+		//public RecordListResponse PartialUpdateRecordList(Guid entityId, Guid id, InputRecordList inputRecordList)
+		//{
+		//	RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+		//	IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
-			if (storageEntity == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "Entity with such Id does not exist!";
-				return response;
-			}
+		//	if (storageEntity == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "Entity with such Id does not exist!";
+		//		return response;
+		//	}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+		//	Entity entity = storageEntity.MapTo<Entity>();
 
-			RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
+		//	RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Id == id);
 
-			if (updatedList == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "List with such Id does not exist!";
-				return response;
-			}
+		//	if (updatedList == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "List with such Id does not exist!";
+		//		return response;
+		//	}
 
-			return PartialUpdateRecordList(entity, updatedList, inputRecordList);
-		}
+		//	return PartialUpdateRecordList(entity, updatedList, inputRecordList);
+		//}
 
-		public RecordListResponse PartialUpdateRecordList(string entityName, string name, InputRecordList inputRecordList)
-		{
-			RecordListResponse response = new RecordListResponse();
+		//public RecordListResponse PartialUpdateRecordList(string entityName, string name, InputRecordList inputRecordList)
+		//{
+		//	RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+		//	IStorageEntity storageEntity = EntityRepository.Read(entityName);
 
-			if (storageEntity == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "Entity with such Name does not exist!";
-				return response;
-			}
+		//	if (storageEntity == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "Entity with such Name does not exist!";
+		//		return response;
+		//	}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+		//	Entity entity = storageEntity.MapTo<Entity>();
 
-			RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
+		//	RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
 
-			if (updatedList == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "List with such Name does not exist!";
-				return response;
-			}
+		//	if (updatedList == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "List with such Name does not exist!";
+		//		return response;
+		//	}
 
-			return PartialUpdateRecordList(entity, updatedList, inputRecordList);
-		}
+		//	return PartialUpdateRecordList(entity, updatedList, inputRecordList);
+		//}
 
-		private RecordListResponse PartialUpdateRecordList(Entity entity, RecordList updatedList, InputRecordList inputRecordList)
-		{
-			RecordListResponse response = new RecordListResponse
-			{
-				Success = true,
-				Message = "The list was successfully updated!",
-			};
+		//private RecordListResponse PartialUpdateRecordList(Entity entity, RecordList updatedList, InputRecordList inputRecordList)
+//		{
+//			RecordListResponse response = new RecordListResponse
+//			{
+//				Success = true,
+//				Message = "The list was successfully updated!",
+//			};
 
-			try
-			{
-				if (inputRecordList.Label != null)
-					updatedList.Label = inputRecordList.Label;
-				if (inputRecordList.Default.HasValue)
-					updatedList.Default = inputRecordList.Default;
-				if (inputRecordList.System.HasValue)
-					updatedList.System = inputRecordList.System;
-				if (inputRecordList.Weight.HasValue)
-					updatedList.Weight = inputRecordList.Weight;
-				if (inputRecordList.CssClass != null)
-					updatedList.CssClass = inputRecordList.CssClass;
-				if (inputRecordList.Type != null)
-					updatedList.Type = inputRecordList.Type;
-				if (inputRecordList.RecordsLimit.HasValue)
-					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
-				if (inputRecordList.PageSize.HasValue)
-					updatedList.PageSize = inputRecordList.PageSize.Value;
-				if (inputRecordList.Columns != null)
-					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
-				if (inputRecordList.Query != null)
-					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
-				if (inputRecordList.Sorts != null)
-					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
+//			try
+//			{
+//				if (inputRecordList.Label != null)
+//					updatedList.Label = inputRecordList.Label;
+//				if (inputRecordList.Default.HasValue)
+//					updatedList.Default = inputRecordList.Default;
+//				if (inputRecordList.System.HasValue)
+//					updatedList.System = inputRecordList.System;
+//				if (inputRecordList.Weight.HasValue)
+//					updatedList.Weight = inputRecordList.Weight;
+//				if (inputRecordList.CssClass != null)
+//					updatedList.CssClass = inputRecordList.CssClass;
+//				if (inputRecordList.Type != null)
+//					updatedList.Type = inputRecordList.Type;
+//				if (inputRecordList.RecordsLimit.HasValue)
+//					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
+//				if (inputRecordList.PageSize.HasValue)
+//					updatedList.PageSize = inputRecordList.PageSize.Value;
+//				if (inputRecordList.Columns != null)
+//					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
+//				if (inputRecordList.Query != null)
+//					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
+//				if (inputRecordList.Sorts != null)
+//					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
 
-				response.Object = inputRecordList.MapTo<RecordList>();
-				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
+//				response.Object = inputRecordList.MapTo<RecordList>();
+//				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
 
-				if (response.Errors.Count > 0)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The list was not updated. Validation error occurred!";
-					return response;
-				}
+//				if (response.Errors.Count > 0)
+//				{
+//					response.Timestamp = DateTime.UtcNow;
+//					response.Success = false;
+//					response.Message = "The list was not updated. Validation error occurred!";
+//					return response;
+//				}
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
-				if (!result)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The list was not updated! An internal error occurred!";
-					return response;
-				}
+//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+//				bool result = EntityRepository.Update(updatedEntity);
+//				if (!result)
+//				{
+//					response.Timestamp = DateTime.UtcNow;
+//					response.Success = false;
+//					response.Message = "The list was not updated! An internal error occurred!";
+//					return response;
+//				}
 
-			}
-			catch (Exception e)
-			{
-				response.Success = false;
-				response.Object = inputRecordList.MapTo<RecordList>();
-				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The list was not updated. An internal error occurred!";
-#endif
-				return response;
-			}
+//			}
+//			catch (Exception e)
+//			{
+//				response.Success = false;
+//				response.Object = inputRecordList.MapTo<RecordList>();
+//				response.Timestamp = DateTime.UtcNow;
+//#if DEBUG
+//				response.Message = e.Message + e.StackTrace;
+//#else
+//                response.Message = "The list was not updated. An internal error occurred!";
+//#endif
+//				return response;
+//			}
 
-			return ReadRecordList(entity.Id, updatedList.Id);
-		}
+//			return ReadRecordList(entity.Id, updatedList.Id);
+//		}
 
 		public RecordListResponse DeleteRecordList(Guid entityId, Guid id)
 		{

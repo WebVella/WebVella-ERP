@@ -24,7 +24,7 @@
 		</div>
 		<div class="entity-box">
 			<h4>{{contentData.currentEntity.label}}</h4>
-			<a href=""><i class="fa fa-gear"></i> Settings</a>
+			<a href="javascript:void(0)" ui-sref="webvella-admin-entity-view-manage-info({entityName:contentData.currentEntity.name,viewName:contentData.recordView.name})"><i class="fa fa-gear"></i> Settings</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -42,7 +42,7 @@
 							<span class="input-group-addon" id="basic-addon1">
 								<i class="fa fa-search"></i>
 							</span>
-							<input ng-model="class" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="exampleInputName2" placeholder="list label">
+							<input ng-model="viewFilter" type="text" class="form-control" placeholder="view label">
 						</div>
 					</div>
 					<div class="form-group hidden-xs hidden-sm">
@@ -61,8 +61,8 @@
 				</form>
 				<hr class="divider" />
 				<ul class="list-inline">
-					<li class="col-sm-3" ng-repeat="view in contentData.currentEntity.recordViews">
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name})'>
+					<li  style="padding-right:30px;" ng-repeat="view in contentData.currentEntity.recordViews | filter: {label:viewFilter}" ui-sref-active="active">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.currentEntity.name,recordId:contentData.viewData.id,viewName:view.name})'>
 							<i class="fa fa-fw fa-file-text-o"></i> {{view.label}}
 						</a>
 					</li>
@@ -231,14 +231,50 @@
 										   ng-bind="contentData.getCheckboxlistString(contentData.viewData[item.fieldName],item.meta.options)"
 										   onbeforesave="contentData.fieldUpdate(item, $data)">
 										</a>
-										<pre>{{item.fieldName | json}}</pre>
-										<pre>{{contentData.viewData | json}}</pre>
-										<pre>{{contentData.viewData[item.fieldName] | json}}</pre>
 									</div>
+									<!-- If type 12 - number -->
+									<a ng-switch-when="12" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+										{{ contentData.viewData[item.fieldName] || 'empty' }}
+									</a>
+									<!-- If type 13 - password -->
+									<a ng-switch-when="13" href="javascript:void(0)"
+									   editable-text="contentData.dummyPasswordModels['{{item.fieldName}}']"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+										<span class="go-gray" style="font-style:italic">encrypted text</span>
+									</a>
+									<!-- If type 14 - percent -->
+									<a ng-switch-when="14" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+										{{ contentData.viewData[item.fieldName] || 'empty' }}
+									</a>
+									<!-- If type 15 - phone -->
+									<a ng-switch-when="15" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty'"
+									   onbeforesave="contentData.fieldUpdate(item, $data)">
+									</a>
 									<!-- If type 16 - unique identifier -->
-									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData['{{item.fieldName}}']"></span>
+									<span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData[item.fieldName] || 'empty'"></span>
+									<!-- If type 17 - dropdown -->
+									<div ng-switch-when="17">
+										<a href="#" editable-select="contentData.viewData[item.fieldName]" e-ng-options="s.key as s.value for s in item.meta.options"
+										   ng-bind="contentData.getDropdownString(contentData.viewData[item.fieldName],item.meta.options)"
+										   onbeforesave="contentData.fieldUpdate(item, $data)">
+										</a>
+									</div>
 									<!-- If type 18 - textbox -->
-									<a ng-switch-when="18" href="javascript:void(0)" editable-text="contentData.viewData['{{item.fieldName}}']" ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "></a>
+									<a ng-switch-when="18" href="javascript:void(0)" 
+									   editable-text="contentData.viewData['{{item.fieldName}}']" 
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "
+									   onbeforesave="contentData.fieldUpdate(item, $data)"></a>
+									<!-- If type 19 - url -->
+									<a ng-switch-when="19" href="javascript:void(0)"
+									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   ng-bind="contentData.viewData['{{item.fieldName}}'] || 'empty' "
+									   onbeforesave="contentData.fieldUpdate(item, $data)"></a>
 
 								</div>
 							</div>

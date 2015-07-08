@@ -85,11 +85,11 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state','$stateParams', 'pageTitle', 'webvellaRootService',
+    controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state,$stateParams, pageTitle, webvellaRootService,
+    function controller($filter,$log, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
@@ -116,9 +116,11 @@
         }
         contentData.currentPage = parseInt($stateParams.page);
     	//Select the current list view details
-		//TODO needs to be implemented
-        contentData.currentListView = {
-        	"pageSize": 25
+        contentData.currentListView = {};
+        for (var i = 0; i < contentData.entity.recordLists.length; i++) {
+        	if (contentData.entity.recordLists[i].name == $stateParams.listName) {
+        		contentData.currentListView = contentData.entity.recordLists[i];
+        	}
         }
 
         //#endregion
@@ -212,7 +214,7 @@
         contentData.getEmailString = function (record, fieldMeta) {
         	var fieldValue = record[fieldMeta.name];
         	if (fieldValue) {
-        		return "<a href='mailto:" + fieldValue + "' taget='_blank'>" + fieldValue + "</a>";
+        		return "<a href='mailto:" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
         	}
         	else {
         		return "";
@@ -243,6 +245,48 @@
         	var fieldValue = record[fieldMeta.name];
         	if (fieldValue) {
         		return "<img src='" + fieldValue + "' class='table-image'/>";
+        	}
+        	else {
+        		return "";
+        	}
+        }
+    	//14.Percent
+        contentData.getPercentString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else {
+        		return fieldValue * 100 + "%";
+        	}
+        }
+    	//15.Phone
+        contentData.getPhoneString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else {
+        		return phoneUtils.formatInternational(fieldValue);
+        	}
+        }
+    	//17.Dropdown
+        contentData.getDropdownString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (!fieldValue) {
+        		return "";
+        	}
+        	else {
+        		var selected = $filter('filter')(fieldMeta.options, { key: fieldValue });
+        		return (fieldValue && selected.length) ? selected[0].value : 'empty';
+        	}
+
+        }
+    	//18.Url
+        contentData.getUrlString = function (record, fieldMeta) {
+        	var fieldValue = record[fieldMeta.name];
+        	if (fieldValue) {
+        		return "<a href='" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
         	}
         	else {
         		return "";

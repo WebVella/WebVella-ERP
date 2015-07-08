@@ -1,8 +1,8 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-link hidden-xs" ng-click="contentData.createNewRecordModal()"><i class="fa fa-plus"></i> Create New</a>
-            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
+            <a class="btn btn-success hidden-xs" ng-click="contentData.createNewRecordModal()"><i class="fa fa-plus"></i> Create New</a>
+            <!--<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
             <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
             <span class="dropdown  hidden-xs  hidden-sm" dropdown>
                 <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
@@ -17,7 +17,7 @@
                         <a href>Account settings</a>
                     </li>
                 </ul>
-            </span>
+            </span>-->
         </div>
         <div class="icon-box">
             <i class="fa fa-fw fa-{{contentData.entity.icon_name}}"></i>
@@ -31,7 +31,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 title="Newest active offers">Newest active offers</h4>
+            <h4 title="Newest active offers">{{contentData.currentListView.label}}</h4>
             <a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
         </div>
 		<accordion>
@@ -42,7 +42,7 @@
 							<span class="input-group-addon" id="basic-addon1">
 								<i class="fa fa-search"></i>
 							</span>
-							<input ng-model="class" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="exampleInputName2" placeholder="list label">
+							<input ng-model="listFilter" type="text" class="form-control" placeholder="list label">
 						</div>
 					</div>
 					<div class="form-group hidden-xs hidden-sm">
@@ -61,18 +61,7 @@
 				</form>	
 				<hr class="divider"/>
 				<ul class="list-inline">
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List one Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List two Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List three Label</a></li>
-					<li class="col-sm-3"><a href=""><i class="fa fa-fw fa-bars"></i> List four Label</a></li>
+					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="webvella-entity-records({areaName:contentData.currentArea.name,entityName:contentData.entity.name,listName:list.name,filter:'all',page:1})"><i class="fa fa-fw fa-bars"></i> {{list.label}}</a></li>
 				</ul>		
 			</accordion-group>
 		</accordion>
@@ -140,7 +129,14 @@
 						<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,fieldMeta)"></span>
 						<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,fieldMeta)"></span>
 						<pre ng-switch-when="10" ng-bind="record[fieldMeta.name]"></pre>
+						<span ng-switch-when="12" ng-bind="record[fieldMeta.name]"></span>
+						<span ng-switch-when="13">******</span>
+						<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,fieldMeta)"></span>
+						<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,fieldMeta)"></span>
 						<span ng-switch-when="16">{{record[fieldMeta.name]}}</span>
+						<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,fieldMeta)"></span>
+						<span ng-switch-when="18">{{record[fieldMeta.name]}}</span>
+						<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,fieldMeta)"></span>
 					</td>
 				</tr>
 			</tbody>

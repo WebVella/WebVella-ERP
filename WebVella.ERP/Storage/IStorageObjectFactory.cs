@@ -17,6 +17,12 @@ namespace WebVella.ERP.Storage
         IStorageSelectFieldOption CreateEmptySelectFieldOptionObject();
 		IStorageCurrencyType CreateEmptyCurrencyTypeObject();
 
+		IStorageRecordListSort CreateEmptyRecordListSortObject();
+		IStorageRecordListQuery CreateEmptyRecordListQueryObject();
+		IStorageRecordListItemBase CreateEmptyRecordListItemBaseObject();
+		IStorageRecordListFieldItem CreateEmptyRecordListFieldItemObject();
+		IStorageRecordListRelationFieldItem CreateEmptyRecordListRelationFieldItemObject();
+
 		IStorageRecordViewSidebar CreateEmptyRecordViewSidebarObject();
         IStorageRecordViewSidebarList CreateEmptyRecordViewSidebarListObject();
 		IStorageRecordViewRegion CreateEmptyRecordViewRegionObject();
