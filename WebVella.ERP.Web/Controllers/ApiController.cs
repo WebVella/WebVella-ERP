@@ -42,7 +42,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
 		public IActionResult GetEntityMetaList()
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadEntities());
+			return DoResponse(entityManager.ReadEntities());
 		}
 
 		// Get entity meta
@@ -50,7 +50,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}")]
 		public IActionResult GetEntityMeta(string Name)
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadEntity(Name));
+			return DoResponse(entityManager.ReadEntity(Name));
 		}
 
 
@@ -59,7 +59,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity")]
 		public IActionResult CreateEntity([FromBody]InputEntity submitObj)
 		{
-			return DoResponse(new EntityManager(service.StorageService).CreateEntity(submitObj));
+			return DoResponse(entityManager.CreateEntity(submitObj));
 		}
 
 		// Create an entity
@@ -68,38 +68,63 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult PatchEntity(string StringId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
-
-			Guid entityId;
-			if (!Guid.TryParse(StringId, out entityId))
-			{
-				response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
-
-			InputEntity inputEntity = new InputEntity();
-
-			Type inputEntityType = inputEntity.GetType();
-
-			foreach (var prop in submitObj.Properties())
-			{
-				int count = inputEntityType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-				if (count < 1)
-					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-			}
-
-			if (response.Errors.Count > 0)
-				return DoBadRequestResponse(response);
+			InputEntity entity = new InputEntity();
 
 			try
 			{
-				inputEntity = submitObj.ToObject<InputEntity>();
+				Guid entityId;
+				if (!Guid.TryParse(StringId, out entityId))
+				{
+					response.Errors.Add(new ErrorModel("id", StringId, "id parameter is not valid Guid value"));
+					return DoResponse(response);
+				}
+
+				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+				entity = storageEntity.MapTo<Entity>().MapTo<InputEntity>();
+
+				Type inputEntityType = entity.GetType();
+
+				foreach (var prop in submitObj.Properties())
+				{
+					int count = inputEntityType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+					if (count < 1)
+						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+				}
+
+				if (response.Errors.Count > 0)
+					return DoBadRequestResponse(response);
+
+				InputEntity inputEntity = submitObj.ToObject<InputEntity>();
+
+				foreach (var prop in submitObj.Properties())
+				{
+					if (prop.Name.ToLower() == "label")
+						entity.Label = inputEntity.Label;
+					if (prop.Name.ToLower() == "labelplural")
+						entity.LabelPlural = inputEntity.LabelPlural;
+					if (prop.Name.ToLower() == "system")
+						entity.System = inputEntity.System;
+					if (prop.Name.ToLower() == "iconname")
+						entity.IconName = inputEntity.IconName;
+					if (prop.Name.ToLower() == "weight")
+						entity.Weight = inputEntity.Weight;
+					if (prop.Name.ToLower() == "recordpermissions")
+						entity.RecordPermissions = inputEntity.RecordPermissions;
+				}
 			}
 			catch (Exception e)
 			{
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).PartialUpdateEntity(entityId, inputEntity));
+			return DoResponse(entityManager.UpdateEntity(entity));
 		}
 
 
@@ -108,7 +133,6 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{StringId}")]
 		public IActionResult DeleteEntity(string StringId)
 		{
-			EntityManager manager = new EntityManager(service.StorageService);
 			EntityResponse response = new EntityResponse();
 
 			// Parse each string representation.
@@ -116,7 +140,7 @@ namespace WebVella.ERP.Web.Controllers
 			Guid id = Guid.Empty;
 			if (Guid.TryParse(StringId, out newGuid))
 			{
-				response = manager.DeleteEntity(newGuid);
+				response = entityManager.DeleteEntity(newGuid);
 			}
 			else
 			{
@@ -153,7 +177,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).CreateField(entityId, field));
+			return DoResponse(entityManager.CreateField(entityId, field));
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
@@ -205,59 +229,294 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).UpdateField(entityId, field));
+			return DoResponse(entityManager.UpdateField(entityId, field));
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
 		public IActionResult PatchField(string Id, string FieldId, [FromBody]JObject submitObj)
 		{
 			FieldResponse response = new FieldResponse();
-
-			Guid entityId;
-			if (!Guid.TryParse(Id, out entityId))
-			{
-				response.Errors.Add(new ErrorModel("id", Id, "id parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
-
-			Guid fieldId;
-			if (!Guid.TryParse(FieldId, out fieldId))
-			{
-				response.Errors.Add(new ErrorModel("id", FieldId, "FieldId parameter is not valid Guid value"));
-				return DoResponse(response);
-			}
-
+			Entity entity = new Entity();
 			InputField field = new InputGuidField();
-			FieldType fieldType = FieldType.GuidField;
-
-			var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
-			if (fieldTypeProp != null)
-			{
-				fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
-			}
-
-			Type inputFieldType = InputField.GetFieldType(fieldType);
-
-			foreach (var prop in submitObj.Properties())
-			{
-				int count = inputFieldType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-				if (count < 1)
-					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-			}
-
-			if (response.Errors.Count > 0)
-				return DoBadRequestResponse(response);
 
 			try
 			{
-				field = InputField.ConvertField(submitObj);
+				Guid entityId;
+				if (!Guid.TryParse(Id, out entityId))
+				{
+					response.Errors.Add(new ErrorModel("Id", Id, "id parameter is not valid Guid value"));
+					return DoBadRequestResponse(response, "Field was not updated!");
+				}
+
+				Guid fieldId;
+				if (!Guid.TryParse(FieldId, out fieldId))
+				{
+					response.Errors.Add(new ErrorModel("FieldId", FieldId, "FieldId parameter is not valid Guid value"));
+					return DoBadRequestResponse(response, "Field was not updated!");
+				}
+
+				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
+				if (storageEntity == null)
+				{
+					response.Errors.Add(new ErrorModel("Id", Id, "Entity with such Id does not exist!"));
+					return DoBadRequestResponse(response, "Field was not updated!");
+				}
+				entity = storageEntity.MapTo<Entity>();
+
+				Field updatedField = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+				if (updatedField == null)
+				{
+					response.Errors.Add(new ErrorModel("FieldId", FieldId, "Field with such Id does not exist!"));
+					return DoBadRequestResponse(response, "Field was not updated!");
+				}
+
+				FieldType fieldType = FieldType.GuidField;
+
+				var fieldTypeProp = submitObj.Properties().SingleOrDefault(k => k.Name.ToLower() == "fieldtype");
+				if (fieldTypeProp != null)
+				{
+					fieldType = (FieldType)Enum.ToObject(typeof(FieldType), fieldTypeProp.Value.ToObject<int>());
+				}
+				else
+				{
+					response.Errors.Add(new ErrorModel("fieldType", null, "fieldType is required!"));
+					return DoBadRequestResponse(response, "Field was not updated!");
+				}
+
+				Type inputFieldType = InputField.GetFieldType(fieldType);
+				foreach (var prop in submitObj.Properties())
+				{
+					int count = inputFieldType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+					if (count < 1)
+						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+				}
+
+				if (response.Errors.Count > 0)
+					return DoBadRequestResponse(response);
+
+				InputField inputField = InputField.ConvertField(submitObj);
+
+				foreach (var prop in submitObj.Properties())
+				{
+					switch (fieldType)
+					{
+						case FieldType.AutoNumberField:
+							{
+								field = new InputAutoNumberField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputAutoNumberField)field).DefaultValue = ((InputAutoNumberField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "U")
+									((InputAutoNumberField)field).DisplayFormat = ((InputAutoNumberField)inputField).DisplayFormat;
+								if (prop.Name.ToLower() == "startingnumber")
+									((InputAutoNumberField)field).StartingNumber = ((InputAutoNumberField)inputField).StartingNumber;
+							}
+							break;
+						case FieldType.CheckboxField:
+							{
+								field = new InputCheckboxField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputCheckboxField)field).DefaultValue = ((InputCheckboxField)inputField).DefaultValue;
+							}
+							break;
+						case FieldType.CurrencyField:
+							{
+								field = new InputCurrencyField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputCurrencyField)field).DefaultValue = ((InputCurrencyField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "minvalue")
+									((InputCurrencyField)field).MinValue = ((InputCurrencyField)inputField).MinValue;
+								if (prop.Name.ToLower() == "maxvalue")
+									((InputCurrencyField)field).MaxValue = ((InputCurrencyField)inputField).MaxValue;
+								if (prop.Name.ToLower() == "currency")
+									((InputCurrencyField)field).Currency = ((InputCurrencyField)inputField).Currency;
+							}
+							break;
+						case FieldType.DateField:
+							{
+								field = new InputDateField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputDateField)field).DefaultValue = ((InputDateField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "format")
+									((InputDateField)field).Format = ((InputDateField)inputField).Format;
+								if (prop.Name.ToLower() == "usecurrenttimeasdefaultvalue")
+									((InputDateField)field).UseCurrentTimeAsDefaultValue = ((InputDateField)inputField).UseCurrentTimeAsDefaultValue;
+							}
+							break;
+						case FieldType.DateTimeField:
+							{
+								field = new InputDateTimeField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputDateTimeField)field).DefaultValue = ((InputDateTimeField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "format")
+									((InputDateTimeField)field).Format = ((InputDateTimeField)inputField).Format;
+								if (prop.Name.ToLower() == "usecurrenttimeasdefaultvalue")
+									((InputDateTimeField)field).UseCurrentTimeAsDefaultValue = ((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue;
+							}
+							break;
+						case FieldType.EmailField:
+							{
+								field = new InputEmailField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputEmailField)field).DefaultValue = ((InputEmailField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputEmailField)field).MaxLength = ((InputEmailField)inputField).MaxLength;
+							}
+							break;
+						case FieldType.FileField:
+							{
+								field = new InputFileField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputFileField)field).DefaultValue = ((InputFileField)inputField).DefaultValue;
+							}
+							break;
+						case FieldType.HtmlField:
+							{
+								field = new InputHtmlField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputHtmlField)field).DefaultValue = ((InputHtmlField)inputField).DefaultValue;
+							}
+							break;
+						case FieldType.ImageField:
+							{
+								field = new InputImageField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputImageField)field).DefaultValue = ((InputImageField)inputField).DefaultValue;
+							}
+							break;
+						case FieldType.MultiLineTextField:
+							{
+								field = new InputMultiLineTextField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputMultiLineTextField)field).DefaultValue = ((InputMultiLineTextField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputMultiLineTextField)field).MaxLength = ((InputMultiLineTextField)inputField).MaxLength;
+								if (prop.Name.ToLower() == "visiblelinenumber")
+									((InputMultiLineTextField)field).VisibleLineNumber = ((InputMultiLineTextField)inputField).VisibleLineNumber;
+							}
+							break;
+						case FieldType.MultiSelectField:
+							{
+								field = new InputMultiSelectField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputMultiSelectField)field).DefaultValue = ((InputMultiSelectField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "options")
+									((InputMultiSelectField)field).Options = ((InputMultiSelectField)inputField).Options;
+							}
+							break;
+						case FieldType.NumberField:
+							{
+								field = new InputNumberField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputNumberField)field).DefaultValue = ((InputNumberField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "minvalue")
+									((InputNumberField)field).MinValue = ((InputNumberField)inputField).MinValue;
+								if (prop.Name.ToLower() == "maxvalue")
+									((InputNumberField)field).MaxValue = ((InputNumberField)inputField).MaxValue;
+								if (prop.Name.ToLower() == "decimalplaces")
+									((InputNumberField)field).DecimalPlaces = ((InputNumberField)inputField).DecimalPlaces;
+							}
+							break;
+						case FieldType.PasswordField:
+							{
+								field = new InputPasswordField();
+								if (prop.Name.ToLower() == "maxlength")
+									((InputPasswordField)field).MaxLength = ((InputPasswordField)inputField).MaxLength;
+								if (prop.Name.ToLower() == "minlength")
+									((InputPasswordField)field).MinLength = ((InputPasswordField)inputField).MinLength;
+								if (prop.Name.ToLower() == "encrypted")
+									((InputPasswordField)field).Encrypted = ((InputPasswordField)inputField).Encrypted;
+							}
+							break;
+						case FieldType.PercentField:
+							{
+								field = new InputPercentField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputPercentField)field).DefaultValue = ((InputPercentField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "minvalue")
+									((InputPercentField)field).MinValue = ((InputPercentField)inputField).MinValue;
+								if (prop.Name.ToLower() == "maxvalue")
+									((InputPercentField)field).MaxValue = ((InputPercentField)inputField).MaxValue;
+								if (prop.Name.ToLower() == "decimalplaces")
+									((InputPercentField)field).DecimalPlaces = ((InputPercentField)inputField).DecimalPlaces;
+							}
+							break;
+						case FieldType.PhoneField:
+							{
+								field = new InputPhoneField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputPhoneField)field).DefaultValue = ((InputPhoneField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "format")
+									((InputPhoneField)field).Format = ((InputPhoneField)inputField).Format;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputPhoneField)field).MaxLength = ((InputPhoneField)inputField).MaxLength;
+							}
+							break;
+						case FieldType.GuidField:
+							{
+								field = new InputGuidField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputGuidField)field).DefaultValue = ((InputGuidField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "generatenewid")
+									((InputGuidField)field).GenerateNewId = ((InputGuidField)inputField).GenerateNewId;
+							}
+							break;
+						case FieldType.SelectField:
+							{
+								field = new InputSelectField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputSelectField)field).DefaultValue = ((InputSelectField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "options")
+									((InputSelectField)field).Options = ((InputSelectField)inputField).Options;
+							}
+							break;
+						case FieldType.TextField:
+							{
+								field = new InputTextField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputTextField)field).DefaultValue = ((InputTextField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputTextField)field).MaxLength = ((InputTextField)inputField).MaxLength;
+							}
+							break;
+						case FieldType.UrlField:
+							{
+								field = new InputUrlField();
+								if (prop.Name.ToLower() == "defaultvalue")
+									((InputUrlField)field).DefaultValue = ((InputUrlField)inputField).DefaultValue;
+								if (prop.Name.ToLower() == "maxlength")
+									((InputUrlField)field).MaxLength = ((InputUrlField)inputField).MaxLength;
+								if (prop.Name.ToLower() == "opentargetinnewwindow")
+									((InputUrlField)field).OpenTargetInNewWindow = ((InputUrlField)inputField).OpenTargetInNewWindow;
+							}
+							break;
+					}
+
+					if (prop.Name.ToLower() == "label")
+						field.Label = inputField.Label;
+					else if (prop.Name.ToLower() == "placeholdertext")
+						field.PlaceholderText = inputField.PlaceholderText;
+					else if (prop.Name.ToLower() == "description")
+						field.Description = inputField.Description;
+					else if (prop.Name.ToLower() == "helptext")
+						field.HelpText = inputField.HelpText;
+					else if (prop.Name.ToLower() == "required")
+						field.Required = inputField.Required;
+					else if (prop.Name.ToLower() == "unique")
+						field.Unique = inputField.Unique;
+					else if (prop.Name.ToLower() == "searchable")
+						field.Searchable = inputField.Searchable;
+					else if (prop.Name.ToLower() == "auditable")
+						field.Auditable = inputField.Auditable;
+					else if (prop.Name.ToLower() == "system")
+						field.System = inputField.System;
+				}
 			}
 			catch (Exception e)
 			{
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).PartialUpdateField(entityId, fieldId, field));
+			return DoResponse(entityManager.UpdateField(entity, field));
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/field/{FieldId}")]
@@ -279,7 +538,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).DeleteField(entityId, fieldId));
+			return DoResponse(entityManager.DeleteField(entityId, fieldId));
 		}
 
 		#endregion
@@ -301,7 +560,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).CreateRecordList(Name, list));
+			return DoResponse(entityManager.CreateRecordList(Name, list));
 		}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
@@ -332,7 +591,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).UpdateRecordList(Name, list));
+			return DoResponse(entityManager.UpdateRecordList(Name, list));
 		}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
@@ -340,12 +599,11 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			RecordListResponse response = new RecordListResponse();
 			Entity entity = new Entity();
-            InputRecordList list = new InputRecordList();
+			InputRecordList list = new InputRecordList();
 
 			try
 			{
 				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(Name);
-
 				if (storageEntity == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -353,11 +611,9 @@ namespace WebVella.ERP.Web.Controllers
 					response.Message = "Entity with such Name does not exist!";
 					return DoBadRequestResponse(response);
 				}
-
 				entity = storageEntity.MapTo<Entity>();
 
 				RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == ListName);
-
 				if (updatedList == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -365,9 +621,7 @@ namespace WebVella.ERP.Web.Controllers
 					response.Message = "List with such Name does not exist!";
 					return DoBadRequestResponse(response);
 				}
-
 				list = updatedList.MapTo<InputRecordList>();
-				InputRecordList inputList = InputRecordList.Convert(submitObj);
 
 				Type inputListType = list.GetType();
 
@@ -376,60 +630,64 @@ namespace WebVella.ERP.Web.Controllers
 					int count = inputListType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
 					if (count < 1)
 						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-					else
-					{
-						if (prop.Name.ToLower() == "label")
-							list.Label = inputList.Label;
-						if (prop.Name.ToLower() == "default")
-							list.Default = inputList.Default;
-						if (prop.Name.ToLower() == "system")
-							list.System = inputList.System;
-						if (prop.Name.ToLower() == "weight")
-							list.Weight = inputList.Weight;
-						if (prop.Name.ToLower() == "cssclass")
-							list.CssClass = inputList.CssClass;
-						if (prop.Name.ToLower() == "type")
-							list.Type = inputList.Type;
-						if (prop.Name.ToLower() == "recordslimit")
-							list.RecordsLimit = inputList.RecordsLimit;
-						if (prop.Name.ToLower() == "pagesize")
-							list.PageSize = inputList.PageSize;
-						if (prop.Name.ToLower() == "columns")
-							list.Columns = inputList.Columns;
-						if (prop.Name.ToLower() == "query")
-							list.Query = inputList.Query;
-						if (prop.Name.ToLower() == "sorts")
-							list.Sorts = inputList.Sorts;
-					}
 				}
 
 				if (response.Errors.Count > 0)
 					return DoBadRequestResponse(response);
+
+				InputRecordList inputList = InputRecordList.Convert(submitObj);
+
+				foreach (var prop in submitObj.Properties())
+				{
+
+					if (prop.Name.ToLower() == "label")
+						list.Label = inputList.Label;
+					if (prop.Name.ToLower() == "default")
+						list.Default = inputList.Default;
+					if (prop.Name.ToLower() == "system")
+						list.System = inputList.System;
+					if (prop.Name.ToLower() == "weight")
+						list.Weight = inputList.Weight;
+					if (prop.Name.ToLower() == "cssclass")
+						list.CssClass = inputList.CssClass;
+					if (prop.Name.ToLower() == "type")
+						list.Type = inputList.Type;
+					if (prop.Name.ToLower() == "recordslimit")
+						list.RecordsLimit = inputList.RecordsLimit;
+					if (prop.Name.ToLower() == "pagesize")
+						list.PageSize = inputList.PageSize;
+					if (prop.Name.ToLower() == "columns")
+						list.Columns = inputList.Columns;
+					if (prop.Name.ToLower() == "query")
+						list.Query = inputList.Query;
+					if (prop.Name.ToLower() == "sorts")
+						list.Sorts = inputList.Sorts;
+				}
 			}
 			catch (Exception e)
 			{
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).UpdateRecordList(entity, list));
+			return DoResponse(entityManager.UpdateRecordList(entity, list));
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
 		public IActionResult DeleteRecordListByName(string Name, string ListName)
 		{
-			return DoResponse(new EntityManager(service.StorageService).DeleteRecordList(Name, ListName));
+			return DoResponse(entityManager.DeleteRecordList(Name, ListName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}")]
 		public IActionResult GetRecordListByName(string Name, string ListName)
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadRecordList(Name, ListName));
+			return DoResponse(entityManager.ReadRecordList(Name, ListName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list")]
 		public IActionResult GetRecordListsByName(string Name)
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadRecordLists(Name));
+			return DoResponse(entityManager.ReadRecordLists(Name));
 		}
 
 		#endregion
@@ -440,7 +698,6 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetEntityLibrary(string entityName)
 		{
 			var result = new EntityLibraryItemsResponse() { Success = true, Timestamp = DateTime.UtcNow };
-			var entMan = new EntityManager(service.StorageService);
 			var relMan = new EntityRelationManager(service.StorageService);
 
 			if (string.IsNullOrWhiteSpace(entityName))
@@ -450,7 +707,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			}
 
-			var entity = entMan.ReadEntity(entityName).Object;
+			var entity = entityManager.ReadEntity(entityName).Object;
 			if (entity == null)
 			{
 				result.Errors.Add(new ErrorModel { Message = "Entity not found." });
@@ -510,7 +767,7 @@ namespace WebVella.ERP.Web.Controllers
 			foreach (var relation in entityRelations)
 			{
 				Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
-				Entity relatedEntity = entMan.ReadEntity(relatedEntityId).Object;
+				Entity relatedEntity = entityManager.ReadEntity(relatedEntityId).Object;
 
 				//TODO validation
 				if (relatedEntity == null)
@@ -553,7 +810,7 @@ namespace WebVella.ERP.Web.Controllers
 		//		return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 		//	}
 
-		//	return DoResponse(new EntityManager(service.StorageService).CreateRecordView(Id, view));
+		//	return DoResponse(entityManager.CreateRecordView(Id, view));
 		//}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
@@ -571,7 +828,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).CreateRecordView(Name, view));
+			return DoResponse(entityManager.CreateRecordView(Name, view));
 		}
 
 		//[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
@@ -602,7 +859,7 @@ namespace WebVella.ERP.Web.Controllers
 		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 		//    }
 
-		//    return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Id, view));
+		//    return DoResponse(entityManager.UpdateRecordView(Id, view));
 		//}
 
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
@@ -633,7 +890,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).UpdateRecordView(Name, view));
+			return DoResponse(entityManager.UpdateRecordView(Name, view));
 		}
 
 		//[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
@@ -664,68 +921,107 @@ namespace WebVella.ERP.Web.Controllers
 		//        return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 		//    }
 
-		//    return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(Id, ViewId, view));
+		//    return DoResponse(entityManager.PartialUpdateRecordView(Id, ViewId, view));
 		//}
 
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
 		public IActionResult PatchRecordViewByName(string Name, string ViewName, [FromBody]JObject submitObj)
 		{
 			RecordViewResponse response = new RecordViewResponse();
-
+			Entity entity = new Entity();
 			InputRecordView view = new InputRecordView();
-
-			Type inputViewType = view.GetType();
-
-			foreach (var prop in submitObj.Properties())
-			{
-				int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
-				if (count < 1)
-					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
-			}
-
-			if (response.Errors.Count > 0)
-				return DoBadRequestResponse(response);
 
 			try
 			{
-				view = InputRecordView.Convert(submitObj);
+				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(Name);
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+				entity = storageEntity.MapTo<Entity>();
+
+				RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Name == ViewName);
+				if (updatedView == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "View with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+				view = updatedView.MapTo<InputRecordView>();
+
+				Type inputViewType = view.GetType();
+				foreach (var prop in submitObj.Properties())
+				{
+					int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+					if (count < 1)
+						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+				}
+
+				if (response.Errors.Count > 0)
+					return DoBadRequestResponse(response);
+
+				InputRecordView inputView = InputRecordView.Convert(submitObj);
+
+				foreach (var prop in submitObj.Properties())
+				{
+					if (prop.Name.ToLower() == "label")
+						view.Label = inputView.Label;
+					if (prop.Name.ToLower() == "default")
+						view.Default = inputView.Default;
+					if (prop.Name.ToLower() == "system")
+						view.System = inputView.System;
+					if (prop.Name.ToLower() == "weight")
+						view.Weight = inputView.Weight;
+					if (prop.Name.ToLower() == "cssclass")
+						view.CssClass = inputView.CssClass;
+					if (prop.Name.ToLower() == "type")
+						view.Type = inputView.Type;
+					if (prop.Name.ToLower() == "regions")
+						view.Regions = inputView.Regions;
+					if (prop.Name.ToLower() == "sidebar")
+						view.Sidebar = inputView.Sidebar;
+				}
 			}
 			catch (Exception e)
 			{
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
 
-			return DoResponse(new EntityManager(service.StorageService).PartialUpdateRecordView(Name, ViewName, view));
+			return DoResponse(entityManager.UpdateRecordView(entity, view));
 		}
 
 		//[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
 		//public IActionResult DeleteRecordView(Guid Id, Guid ViewId)
 		//{
-		//    return DoResponse(new EntityManager(service.StorageService).DeleteRecordView(Id, ViewId));
+		//    return DoResponse(entityManager.DeleteRecordView(Id, ViewId));
 		//}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
 		public IActionResult DeleteRecordViewByName(string Name, string ViewName)
 		{
-			return DoResponse(new EntityManager(service.StorageService).DeleteRecordView(Name, ViewName));
+			return DoResponse(entityManager.DeleteRecordView(Name, ViewName));
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}")]
 		public IActionResult GetRecordViewByName(string Name, string ViewName)
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadRecordView(Name, ViewName));
+			return DoResponse(entityManager.ReadRecordView(Name, ViewName));
 		}
 
 		//[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
 		//      public IActionResult GetRecordViews(Guid Id)
 		//      {
-		//          return DoResponse(new EntityManager(service.StorageService).ReadRecordViews(Id));
+		//          return DoResponse(entityManager.ReadRecordViews(Id));
 		//      }
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view")]
 		public IActionResult GetRecordViewsByName(string Name)
 		{
-			return DoResponse(new EntityManager(service.StorageService).ReadRecordViews(Name));
+			return DoResponse(entityManager.ReadRecordViews(Name));
 		}
 
 		#endregion
@@ -865,15 +1161,100 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
 		public IActionResult GetRecordsByEntityName(string entityName, string listName, string filter, int page)
 		{
-			//TODO - apply getting records based on the list params
-			QuerySortObject sortObj = new QuerySortObject("label", QuerySortType.Ascending);
+			QuerySortObject sObj = new QuerySortObject("label", QuerySortType.Ascending);
+			EntityQuery resultQuery = new EntityQuery(entityName, "*", null, new[] { sObj }, 0, 25);
 
-			EntityQuery query = new EntityQuery(entityName, "*", null, new[] { sortObj }, 0, 25);
+			//RecordListResponse listResponse = entityManager.ReadRecordList(entityName, listName);
 
-			QueryResponse result = recMan.Find(query);
+			//if (listResponse != null && listResponse.Object != null)
+			//{
+			//	RecordList list = listResponse.Object;
+
+			//	List<QuerySortObject> sortList = new List<QuerySortObject>();
+			//	if (list.Sorts != null && list.Sorts.Count > 0)
+			//	{
+			//		foreach (var sort in list.Sorts)
+			//		{
+			//			QuerySortType sortType;
+			//			if (Enum.TryParse<QuerySortType>(sort.SortType, out sortType))
+			//			{
+			//				QuerySortObject sortObj = new QuerySortObject(sort.FieldName, sortType);
+
+			//				sortList.Add(sortObj);
+			//			}
+			//		}
+
+			//		resultQuery.Sort = sortList.ToArray();
+			//	}
+
+			//	QueryObject queryObj = null;
+			//	if (list.Query != null)
+			//	{
+			//		queryObj = GenrateQuery(list.Query);
+
+			//		resultQuery.Query = queryObj;
+			//	}
+
+			//	string queryFields = null;
+			//	if (list.Columns != null)
+			//	{
+			//		foreach (var column in list.Columns)
+			//		{
+			//			if (column is RecordListFieldItem)
+			//			{
+			//				queryFields += ((RecordListFieldItem)column).FieldName + ", ";
+			//			}
+
+			//			if (column is RecordListRelationFieldItem)
+			//			{
+			//				EntityRelationManager relManager = new EntityRelationManager(Storage);
+			//				EntityRelationResponse relResponse = relManager.Read(((RecordListRelationFieldItem)column).RelationId);
+
+			//				string relName = relResponse != null && relResponse.Object != null ? string.Format("${0}.", relResponse.Object.Name) : "";
+			//				queryFields += string.Format("{0}{1}, ", relName, ((RecordListRelationFieldItem)column).FieldName);
+			//			}
+			//		}
+
+			//		if (queryFields.EndsWith(", "))
+			//			queryFields = queryFields.Remove(queryFields.Length - 2);
+
+			//		resultQuery.Fields = queryFields;
+
+			//	}
+
+			//	if (list.RecordsLimit > 0)
+			//		resultQuery.Limit = list.RecordsLimit;
+			//}
+
+			QueryResponse result = recMan.Find(resultQuery);
 			if (!result.Success)
 				return DoResponse(result);
+
 			return Json(result);
+		}
+
+		private QueryObject GenrateQuery(RecordListQuery query)
+		{
+			QueryObject queryObj = new QueryObject();
+
+			QueryType type;
+			if (Enum.TryParse<QueryType>(query.QueryType, out type))
+			{
+				queryObj.FieldName = query.FieldName;
+				queryObj.FieldValue = query.FieldValue;
+				queryObj.QueryType = type;
+
+				if (query.SubQueries != null)
+				{
+					queryObj.SubQueries = new List<QueryObject>();
+					foreach (var subQuery in query.SubQueries)
+					{
+						QueryObject subQueryObj = GenrateQuery(subQuery);
+						queryObj.SubQueries.Add(subQueryObj);
+					}
+				}
+			}
+			return queryObj;
 		}
 
 		#endregion
@@ -1080,6 +1461,8 @@ namespace WebVella.ERP.Web.Controllers
 
 		#endregion
 
+		#region << Files >>
+
 		[HttpGet]
 		[Route("/fs/{*filepath}")]
 		public IActionResult Download([FromRoute] string filepath)
@@ -1180,6 +1563,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
+		#endregion
 	}
 }
 

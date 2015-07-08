@@ -441,7 +441,7 @@ namespace WebVella.ERP
 				InputField fieldObj = new InputTextField();
                 fieldObj.Label = "TextField_edited";
 
-                fieldResponse = entityManager.PartialUpdateField(entity.Id, field.Id.Value, fieldObj);
+                //fieldResponse = entityManager.PartialUpdateField(entity.Id, field.Id.Value, fieldObj);
 
                 //fieldResponse = entityManager.DeleteField(entity.Id.Value, field.Id.Value);
 

@@ -469,7 +469,7 @@ namespace WebVella.ERP.Api
 							if (!entity.Fields.Any(f => f.Id == ((InputRecordListFieldItem)column).FieldId))
 								errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong Id. There is no field with such id!"));
 						}
-					}					
+					}
 					else if (column is InputRecordListRelationFieldItem)
 					{
 						if (!((InputRecordListRelationFieldItem)column).RelationId.HasValue || ((InputRecordListRelationFieldItem)column).RelationId == Guid.Empty)
@@ -519,7 +519,7 @@ namespace WebVella.ERP.Api
 			{
 				List<ErrorModel> queryErrors = ValidateRecordListQuery(recordlist.Query);
 				errorList.AddRange(queryErrors);
-            }
+			}
 
 			if (recordlist.Sorts != null)
 			{
@@ -538,7 +538,7 @@ namespace WebVella.ERP.Api
 					}
 				}
 			}
-			
+
 			return errorList;
 		}
 
@@ -563,13 +563,13 @@ namespace WebVella.ERP.Api
 				}
 			}
 
-			if(query.SubQueries != null && query.SubQueries.Count > 0)
+			if (query.SubQueries != null && query.SubQueries.Count > 0)
 			{
-				foreach(var subQuery in query.SubQueries)
+				foreach (var subQuery in query.SubQueries)
 				{
 					List<ErrorModel> subQueryErrors = ValidateRecordListQuery(subQuery);
 					errorList.AddRange(subQueryErrors);
-                }
+				}
 			}
 
 			return errorList;
@@ -984,77 +984,77 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public EntityResponse PartialUpdateEntity(Guid id, InputEntity inputEntity)
-		{
-			EntityResponse response = new EntityResponse
-			{
-				Success = true,
-				Message = "The entity was successfully updated!",
-			};
+//		public EntityResponse PartialUpdateEntity(Guid id, InputEntity inputEntity)
+//		{
+//			EntityResponse response = new EntityResponse
+//			{
+//				Success = true,
+//				Message = "The entity was successfully updated!",
+//			};
 
-			Entity entity = null;
+//			Entity entity = null;
 
-			try
-			{
-				IStorageEntity storageEntity = EntityRepository.Read(id);
-				entity = storageEntity.MapTo<Entity>();
+//			try
+//			{
+//				IStorageEntity storageEntity = EntityRepository.Read(id);
+//				entity = storageEntity.MapTo<Entity>();
 
-				if (inputEntity.Label != null)
-					entity.Label = inputEntity.Label;
-				if (inputEntity.LabelPlural != null)
-					entity.LabelPlural = inputEntity.LabelPlural;
-				if (inputEntity.System != null)
-					entity.System = inputEntity.System.Value;
-				if (inputEntity.IconName != null)
-					entity.IconName = inputEntity.IconName;
-				if (inputEntity.Weight != null)
-					entity.Weight = inputEntity.Weight.Value;
-				if (inputEntity.RecordPermissions != null)
-					entity.RecordPermissions = inputEntity.RecordPermissions;
+//				if (inputEntity.Label != null)
+//					entity.Label = inputEntity.Label;
+//				if (inputEntity.LabelPlural != null)
+//					entity.LabelPlural = inputEntity.LabelPlural;
+//				if (inputEntity.System != null)
+//					entity.System = inputEntity.System.Value;
+//				if (inputEntity.IconName != null)
+//					entity.IconName = inputEntity.IconName;
+//				if (inputEntity.Weight != null)
+//					entity.Weight = inputEntity.Weight.Value;
+//				if (inputEntity.RecordPermissions != null)
+//					entity.RecordPermissions = inputEntity.RecordPermissions;
 
-				response.Object = entity;
-				response.Errors = ValidateEntity(entity, true);
+//				response.Object = entity;
+//				response.Errors = ValidateEntity(entity, true);
 
-				if (response.Errors.Count > 0)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The entity was not updated. Validation error occurred!";
-					return response;
-				}
+//				if (response.Errors.Count > 0)
+//				{
+//					response.Timestamp = DateTime.UtcNow;
+//					response.Success = false;
+//					response.Message = "The entity was not updated. Validation error occurred!";
+//					return response;
+//				}
 
-				storageEntity = entity.MapTo<IStorageEntity>();
+//				storageEntity = entity.MapTo<IStorageEntity>();
 
-				bool result = EntityRepository.Update(storageEntity);
+//				bool result = EntityRepository.Update(storageEntity);
 
-				if (!result)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The entity was not updated! An internal error occurred!";
-					return response;
-				}
+//				if (!result)
+//				{
+//					response.Timestamp = DateTime.UtcNow;
+//					response.Success = false;
+//					response.Message = "The entity was not updated! An internal error occurred!";
+//					return response;
+//				}
 
-			}
-			catch (Exception e)
-			{
-				response.Success = false;
-				response.Object = entity;
-				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The entity was not updated. An internal error occurred!";
-#endif
-				return response;
-			}
+//			}
+//			catch (Exception e)
+//			{
+//				response.Success = false;
+//				response.Object = entity;
+//				response.Timestamp = DateTime.UtcNow;
+//#if DEBUG
+//				response.Message = e.Message + e.StackTrace;
+//#else
+//                response.Message = "The entity was not updated. An internal error occurred!";
+//#endif
+//				return response;
+//			}
 
-			IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
-			response.Object = updatedEntity.MapTo<Entity>();
-			response.Timestamp = DateTime.UtcNow;
+//			IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
+//			response.Object = updatedEntity.MapTo<Entity>();
+//			response.Timestamp = DateTime.UtcNow;
 
-			return response;
-		}
+//			return response;
+//		}
 
 		public EntityResponse DeleteEntity(Guid id)
 		{
@@ -1665,6 +1665,25 @@ namespace WebVella.ERP.Api
 
 		public FieldResponse UpdateField(Guid entityId, InputField inputField)
 		{
+			FieldResponse response = new FieldResponse();
+
+            IStorageEntity storageEntity = EntityRepository.Read(entityId);
+
+			if (storageEntity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+
+			Entity entity = storageEntity.MapTo<Entity>();
+
+			return UpdateField(entity, inputField);
+		}
+
+		public FieldResponse UpdateField(Entity entity, InputField inputField)
+		{
 			FieldResponse response = new FieldResponse
 			{
 				Success = true,
@@ -1675,18 +1694,6 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
-
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
-
 				response.Errors = ValidateField(entity, inputField, true);
 
 				field = inputField.MapTo<Field>();
@@ -1736,251 +1743,251 @@ namespace WebVella.ERP.Api
 			return response;
 		}
 
-		public FieldResponse PartialUpdateField(Guid entityId, Guid id, InputField inputField)
-		{
-			FieldResponse response = new FieldResponse
-			{
-				Success = true,
-				Message = "The field was successfully updated!",
-			};
+		//		public FieldResponse PartialUpdateField(Guid entityId, Guid id, InputField inputField)
+		//		{
+		//			FieldResponse response = new FieldResponse
+		//			{
+		//				Success = true,
+		//				Message = "The field was successfully updated!",
+		//			};
 
-			Field updatedField = null;
+		//			Field updatedField = null;
 
-			try
-			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+		//			try
+		//			{
+		//				IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
-				if (storageEntity == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Entity with such Id does not exist!";
-					return response;
-				}
+		//				if (storageEntity == null)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "Entity with such Id does not exist!";
+		//					return response;
+		//				}
 
-				Entity entity = storageEntity.MapTo<Entity>();
+		//				Entity entity = storageEntity.MapTo<Entity>();
 
-				updatedField = entity.Fields.FirstOrDefault(f => f.Id == id);
+		//				updatedField = entity.Fields.FirstOrDefault(f => f.Id == id);
 
-				if (updatedField == null)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "Field with such Id does not exist!";
-					return response;
-				}
+		//				if (updatedField == null)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "Field with such Id does not exist!";
+		//					return response;
+		//				}
 
-				if (updatedField is AutoNumberField)
-				{
-					if (((InputAutoNumberField)inputField).DefaultValue != null)
-						((AutoNumberField)updatedField).DefaultValue = ((InputAutoNumberField)inputField).DefaultValue;
-					if (((InputAutoNumberField)inputField).DisplayFormat != null)
-						((AutoNumberField)updatedField).DisplayFormat = ((InputAutoNumberField)inputField).DisplayFormat;
-					if (((InputAutoNumberField)inputField).StartingNumber != null)
-						((AutoNumberField)updatedField).StartingNumber = ((InputAutoNumberField)inputField).StartingNumber;
-				}
-				else if (updatedField is CheckboxField)
-				{
-					if (((InputCheckboxField)inputField).DefaultValue != null)
-						((CheckboxField)updatedField).DefaultValue = ((InputCheckboxField)inputField).DefaultValue;
-				}
-				else if (updatedField is CurrencyField)
-				{
-					if (((InputCurrencyField)inputField).DefaultValue != null)
-						((CurrencyField)updatedField).DefaultValue = ((InputCurrencyField)inputField).DefaultValue;
-					if (((InputCurrencyField)inputField).MinValue != null)
-						((CurrencyField)updatedField).MinValue = ((InputCurrencyField)inputField).MinValue;
-					if (((InputCurrencyField)inputField).MaxValue != null)
-						((CurrencyField)updatedField).MaxValue = ((InputCurrencyField)inputField).MaxValue;
-					if (((InputCurrencyField)inputField).Currency != null)
-						((CurrencyField)updatedField).Currency = ((InputCurrencyField)inputField).Currency;
-				}
-				else if (updatedField is DateField)
-				{
-					if (((InputDateField)inputField).DefaultValue != null)
-						((DateField)updatedField).DefaultValue = ((InputDateField)inputField).DefaultValue;
-					if (((InputDateField)inputField).Format != null)
-						((DateField)updatedField).Format = ((InputDateField)inputField).Format;
-					if (((InputDateField)inputField).UseCurrentTimeAsDefaultValue != null)
-						((DateField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateField)inputField).UseCurrentTimeAsDefaultValue;
-				}
-				else if (updatedField is DateTimeField)
-				{
-					if (((InputDateTimeField)inputField).DefaultValue != null)
-						((DateTimeField)updatedField).DefaultValue = ((InputDateTimeField)inputField).DefaultValue;
-					if (((InputDateTimeField)inputField).Format != null)
-						((DateTimeField)updatedField).Format = ((InputDateTimeField)inputField).Format;
-					if (((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue != null)
-						((DateTimeField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue;
-				}
-				else if (updatedField is EmailField)
-				{
-					if (((InputEmailField)inputField).DefaultValue != null)
-						((EmailField)updatedField).DefaultValue = ((InputEmailField)inputField).DefaultValue;
-					if (((InputEmailField)inputField).MaxLength != null)
-						((EmailField)updatedField).MaxLength = ((InputEmailField)inputField).MaxLength;
-				}
-				else if (updatedField is FileField)
-				{
-					if (((InputFileField)inputField).DefaultValue != null)
-						((FileField)updatedField).DefaultValue = ((InputFileField)inputField).DefaultValue;
-				}
-				else if (updatedField is HtmlField)
-				{
-					if (((InputHtmlField)inputField).DefaultValue != null)
-						((HtmlField)updatedField).DefaultValue = ((InputHtmlField)inputField).DefaultValue;
-				}
-				else if (updatedField is ImageField)
-				{
-					if (((InputImageField)inputField).DefaultValue != null)
-						((ImageField)updatedField).DefaultValue = ((InputImageField)inputField).DefaultValue;
-				}
-				else if (updatedField is MultiLineTextField)
-				{
-					if (((InputMultiLineTextField)inputField).DefaultValue != null)
-						((MultiLineTextField)updatedField).DefaultValue = ((InputMultiLineTextField)inputField).DefaultValue;
-					if (((InputMultiLineTextField)inputField).MaxLength != null)
-						((MultiLineTextField)updatedField).MaxLength = ((InputMultiLineTextField)inputField).MaxLength;
-					if (((InputMultiLineTextField)inputField).VisibleLineNumber != null)
-						((MultiLineTextField)updatedField).VisibleLineNumber = ((InputMultiLineTextField)inputField).VisibleLineNumber;
-				}
-				else if (updatedField is MultiSelectField)
-				{
-					if (((InputMultiSelectField)inputField).DefaultValue != null)
-						((MultiSelectField)updatedField).DefaultValue = ((InputMultiSelectField)inputField).DefaultValue;
-					if (((InputMultiSelectField)inputField).Options != null)
-						((MultiSelectField)updatedField).Options = ((InputMultiSelectField)inputField).Options;
-				}
-				else if (updatedField is NumberField)
-				{
-					if (((InputNumberField)inputField).DefaultValue != null)
-						((NumberField)updatedField).DefaultValue = ((InputNumberField)inputField).DefaultValue;
-					if (((InputNumberField)inputField).MinValue != null)
-						((NumberField)updatedField).MinValue = ((InputNumberField)inputField).MinValue;
-					if (((InputNumberField)inputField).MaxValue != null)
-						((NumberField)updatedField).MaxValue = ((InputNumberField)inputField).MaxValue;
-					if (((InputNumberField)inputField).DecimalPlaces != null)
-						((NumberField)updatedField).DecimalPlaces = ((InputNumberField)inputField).DecimalPlaces;
-				}
-				else if (updatedField is PasswordField)
-				{
-					if (((InputPasswordField)inputField).MaxLength != null)
-						((PasswordField)updatedField).MaxLength = ((InputPasswordField)inputField).MaxLength;
-					if (((InputPasswordField)inputField).MinLength != null)
-						((PasswordField)updatedField).MinLength = ((InputPasswordField)inputField).MinLength;
-					if (((InputPasswordField)inputField).Encrypted != null)
-						((PasswordField)updatedField).Encrypted = ((InputPasswordField)inputField).Encrypted;
-				}
-				else if (updatedField is PercentField)
-				{
-					if (((InputPercentField)inputField).DefaultValue != null)
-						((PercentField)updatedField).DefaultValue = ((InputPercentField)inputField).DefaultValue;
-					if (((InputPercentField)inputField).MinValue != null)
-						((PercentField)updatedField).MinValue = ((InputPercentField)inputField).MinValue;
-					if (((InputPercentField)inputField).MaxValue != null)
-						((PercentField)updatedField).MaxValue = ((InputPercentField)inputField).MaxValue;
-					if (((InputPercentField)inputField).DecimalPlaces != null)
-						((PercentField)updatedField).DecimalPlaces = ((InputPercentField)inputField).DecimalPlaces;
-				}
-				else if (updatedField is PhoneField)
-				{
-					if (((InputPhoneField)inputField).DefaultValue != null)
-						((PhoneField)updatedField).DefaultValue = ((InputPhoneField)inputField).DefaultValue;
-					if (((InputPhoneField)inputField).Format != null)
-						((PhoneField)updatedField).Format = ((InputPhoneField)inputField).Format;
-					if (((InputPhoneField)inputField).MaxLength != null)
-						((PhoneField)updatedField).MaxLength = ((InputPhoneField)inputField).MaxLength;
-				}
-				else if (updatedField is GuidField)
-				{
-					if (((InputGuidField)inputField).DefaultValue != null)
-						((GuidField)updatedField).DefaultValue = ((InputGuidField)inputField).DefaultValue;
-					if (((InputGuidField)inputField).GenerateNewId != null)
-						((GuidField)updatedField).GenerateNewId = ((InputGuidField)inputField).GenerateNewId;
-				}
-				else if (updatedField is SelectField)
-				{
-					if (((InputSelectField)inputField).DefaultValue != null)
-						((SelectField)updatedField).DefaultValue = ((InputSelectField)inputField).DefaultValue;
-					if (((InputSelectField)inputField).Options != null)
-						((SelectField)updatedField).Options = ((InputSelectField)inputField).Options;
-				}
-				else if (updatedField is TextField)
-				{
-					if (((InputTextField)inputField).DefaultValue != null)
-						((TextField)updatedField).DefaultValue = ((InputTextField)inputField).DefaultValue;
-					if (((InputTextField)inputField).MaxLength != null)
-						((TextField)updatedField).MaxLength = ((InputTextField)inputField).MaxLength;
-				}
-				else if (updatedField is UrlField)
-				{
-					if (((InputUrlField)inputField).DefaultValue != null)
-						((UrlField)updatedField).DefaultValue = ((InputUrlField)inputField).DefaultValue;
-					if (((InputUrlField)inputField).MaxLength != null)
-						((UrlField)updatedField).MaxLength = ((InputUrlField)inputField).MaxLength;
-					if (((InputUrlField)inputField).OpenTargetInNewWindow != null)
-						((UrlField)updatedField).OpenTargetInNewWindow = ((InputUrlField)inputField).OpenTargetInNewWindow;
-				}
+		//				if (updatedField is AutoNumberField)
+		//				{
+		//					if (((InputAutoNumberField)inputField).DefaultValue != null)
+		//						((AutoNumberField)updatedField).DefaultValue = ((InputAutoNumberField)inputField).DefaultValue;
+		//					if (((InputAutoNumberField)inputField).DisplayFormat != null)
+		//						((AutoNumberField)updatedField).DisplayFormat = ((InputAutoNumberField)inputField).DisplayFormat;
+		//					if (((InputAutoNumberField)inputField).StartingNumber != null)
+		//						((AutoNumberField)updatedField).StartingNumber = ((InputAutoNumberField)inputField).StartingNumber;
+		//				}
+		//				else if (updatedField is CheckboxField)
+		//				{
+		//					if (((InputCheckboxField)inputField).DefaultValue != null)
+		//						((CheckboxField)updatedField).DefaultValue = ((InputCheckboxField)inputField).DefaultValue;
+		//				}
+		//				else if (updatedField is CurrencyField)
+		//				{
+		//					if (((InputCurrencyField)inputField).DefaultValue != null)
+		//						((CurrencyField)updatedField).DefaultValue = ((InputCurrencyField)inputField).DefaultValue;
+		//					if (((InputCurrencyField)inputField).MinValue != null)
+		//						((CurrencyField)updatedField).MinValue = ((InputCurrencyField)inputField).MinValue;
+		//					if (((InputCurrencyField)inputField).MaxValue != null)
+		//						((CurrencyField)updatedField).MaxValue = ((InputCurrencyField)inputField).MaxValue;
+		//					if (((InputCurrencyField)inputField).Currency != null)
+		//						((CurrencyField)updatedField).Currency = ((InputCurrencyField)inputField).Currency;
+		//				}
+		//				else if (updatedField is DateField)
+		//				{
+		//					if (((InputDateField)inputField).DefaultValue != null)
+		//						((DateField)updatedField).DefaultValue = ((InputDateField)inputField).DefaultValue;
+		//					if (((InputDateField)inputField).Format != null)
+		//						((DateField)updatedField).Format = ((InputDateField)inputField).Format;
+		//					if (((InputDateField)inputField).UseCurrentTimeAsDefaultValue != null)
+		//						((DateField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateField)inputField).UseCurrentTimeAsDefaultValue;
+		//				}
+		//				else if (updatedField is DateTimeField)
+		//				{
+		//					if (((InputDateTimeField)inputField).DefaultValue != null)
+		//						((DateTimeField)updatedField).DefaultValue = ((InputDateTimeField)inputField).DefaultValue;
+		//					if (((InputDateTimeField)inputField).Format != null)
+		//						((DateTimeField)updatedField).Format = ((InputDateTimeField)inputField).Format;
+		//					if (((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue != null)
+		//						((DateTimeField)updatedField).UseCurrentTimeAsDefaultValue = ((InputDateTimeField)inputField).UseCurrentTimeAsDefaultValue;
+		//				}
+		//				else if (updatedField is EmailField)
+		//				{
+		//					if (((InputEmailField)inputField).DefaultValue != null)
+		//						((EmailField)updatedField).DefaultValue = ((InputEmailField)inputField).DefaultValue;
+		//					if (((InputEmailField)inputField).MaxLength != null)
+		//						((EmailField)updatedField).MaxLength = ((InputEmailField)inputField).MaxLength;
+		//				}
+		//				else if (updatedField is FileField)
+		//				{
+		//					if (((InputFileField)inputField).DefaultValue != null)
+		//						((FileField)updatedField).DefaultValue = ((InputFileField)inputField).DefaultValue;
+		//				}
+		//				else if (updatedField is HtmlField)
+		//				{
+		//					if (((InputHtmlField)inputField).DefaultValue != null)
+		//						((HtmlField)updatedField).DefaultValue = ((InputHtmlField)inputField).DefaultValue;
+		//				}
+		//				else if (updatedField is ImageField)
+		//				{
+		//					if (((InputImageField)inputField).DefaultValue != null)
+		//						((ImageField)updatedField).DefaultValue = ((InputImageField)inputField).DefaultValue;
+		//				}
+		//				else if (updatedField is MultiLineTextField)
+		//				{
+		//					if (((InputMultiLineTextField)inputField).DefaultValue != null)
+		//						((MultiLineTextField)updatedField).DefaultValue = ((InputMultiLineTextField)inputField).DefaultValue;
+		//					if (((InputMultiLineTextField)inputField).MaxLength != null)
+		//						((MultiLineTextField)updatedField).MaxLength = ((InputMultiLineTextField)inputField).MaxLength;
+		//					if (((InputMultiLineTextField)inputField).VisibleLineNumber != null)
+		//						((MultiLineTextField)updatedField).VisibleLineNumber = ((InputMultiLineTextField)inputField).VisibleLineNumber;
+		//				}
+		//				else if (updatedField is MultiSelectField)
+		//				{
+		//					if (((InputMultiSelectField)inputField).DefaultValue != null)
+		//						((MultiSelectField)updatedField).DefaultValue = ((InputMultiSelectField)inputField).DefaultValue;
+		//					if (((InputMultiSelectField)inputField).Options != null)
+		//						((MultiSelectField)updatedField).Options = ((InputMultiSelectField)inputField).Options;
+		//				}
+		//				else if (updatedField is NumberField)
+		//				{
+		//					if (((InputNumberField)inputField).DefaultValue != null)
+		//						((NumberField)updatedField).DefaultValue = ((InputNumberField)inputField).DefaultValue;
+		//					if (((InputNumberField)inputField).MinValue != null)
+		//						((NumberField)updatedField).MinValue = ((InputNumberField)inputField).MinValue;
+		//					if (((InputNumberField)inputField).MaxValue != null)
+		//						((NumberField)updatedField).MaxValue = ((InputNumberField)inputField).MaxValue;
+		//					if (((InputNumberField)inputField).DecimalPlaces != null)
+		//						((NumberField)updatedField).DecimalPlaces = ((InputNumberField)inputField).DecimalPlaces;
+		//				}
+		//				else if (updatedField is PasswordField)
+		//				{
+		//					if (((InputPasswordField)inputField).MaxLength != null)
+		//						((PasswordField)updatedField).MaxLength = ((InputPasswordField)inputField).MaxLength;
+		//					if (((InputPasswordField)inputField).MinLength != null)
+		//						((PasswordField)updatedField).MinLength = ((InputPasswordField)inputField).MinLength;
+		//					if (((InputPasswordField)inputField).Encrypted != null)
+		//						((PasswordField)updatedField).Encrypted = ((InputPasswordField)inputField).Encrypted;
+		//				}
+		//				else if (updatedField is PercentField)
+		//				{
+		//					if (((InputPercentField)inputField).DefaultValue != null)
+		//						((PercentField)updatedField).DefaultValue = ((InputPercentField)inputField).DefaultValue;
+		//					if (((InputPercentField)inputField).MinValue != null)
+		//						((PercentField)updatedField).MinValue = ((InputPercentField)inputField).MinValue;
+		//					if (((InputPercentField)inputField).MaxValue != null)
+		//						((PercentField)updatedField).MaxValue = ((InputPercentField)inputField).MaxValue;
+		//					if (((InputPercentField)inputField).DecimalPlaces != null)
+		//						((PercentField)updatedField).DecimalPlaces = ((InputPercentField)inputField).DecimalPlaces;
+		//				}
+		//				else if (updatedField is PhoneField)
+		//				{
+		//					if (((InputPhoneField)inputField).DefaultValue != null)
+		//						((PhoneField)updatedField).DefaultValue = ((InputPhoneField)inputField).DefaultValue;
+		//					if (((InputPhoneField)inputField).Format != null)
+		//						((PhoneField)updatedField).Format = ((InputPhoneField)inputField).Format;
+		//					if (((InputPhoneField)inputField).MaxLength != null)
+		//						((PhoneField)updatedField).MaxLength = ((InputPhoneField)inputField).MaxLength;
+		//				}
+		//				else if (updatedField is GuidField)
+		//				{
+		//					if (((InputGuidField)inputField).DefaultValue != null)
+		//						((GuidField)updatedField).DefaultValue = ((InputGuidField)inputField).DefaultValue;
+		//					if (((InputGuidField)inputField).GenerateNewId != null)
+		//						((GuidField)updatedField).GenerateNewId = ((InputGuidField)inputField).GenerateNewId;
+		//				}
+		//				else if (updatedField is SelectField)
+		//				{
+		//					if (((InputSelectField)inputField).DefaultValue != null)
+		//						((SelectField)updatedField).DefaultValue = ((InputSelectField)inputField).DefaultValue;
+		//					if (((InputSelectField)inputField).Options != null)
+		//						((SelectField)updatedField).Options = ((InputSelectField)inputField).Options;
+		//				}
+		//				else if (updatedField is TextField)
+		//				{
+		//					if (((InputTextField)inputField).DefaultValue != null)
+		//						((TextField)updatedField).DefaultValue = ((InputTextField)inputField).DefaultValue;
+		//					if (((InputTextField)inputField).MaxLength != null)
+		//						((TextField)updatedField).MaxLength = ((InputTextField)inputField).MaxLength;
+		//				}
+		//				else if (updatedField is UrlField)
+		//				{
+		//					if (((InputUrlField)inputField).DefaultValue != null)
+		//						((UrlField)updatedField).DefaultValue = ((InputUrlField)inputField).DefaultValue;
+		//					if (((InputUrlField)inputField).MaxLength != null)
+		//						((UrlField)updatedField).MaxLength = ((InputUrlField)inputField).MaxLength;
+		//					if (((InputUrlField)inputField).OpenTargetInNewWindow != null)
+		//						((UrlField)updatedField).OpenTargetInNewWindow = ((InputUrlField)inputField).OpenTargetInNewWindow;
+		//				}
 
-				if (inputField.Label != null)
-					updatedField.Label = inputField.Label;
-				else if (inputField.PlaceholderText != null)
-					updatedField.PlaceholderText = inputField.PlaceholderText;
-				else if (inputField.Description != null)
-					updatedField.Description = inputField.Description;
-				else if (inputField.HelpText != null)
-					updatedField.HelpText = inputField.HelpText;
-				else if (inputField.Required != null)
-					updatedField.Required = inputField.Required.Value;
-				else if (inputField.Unique != null)
-					updatedField.Unique = inputField.Unique.Value;
-				else if (inputField.Searchable != null)
-					updatedField.Searchable = inputField.Searchable.Value;
-				else if (inputField.Auditable != null)
-					updatedField.Auditable = inputField.Auditable.Value;
-				else if (inputField.System != null)
-					updatedField.System = inputField.System.Value;
+		//				if (inputField.Label != null)
+		//					updatedField.Label = inputField.Label;
+		//				else if (inputField.PlaceholderText != null)
+		//					updatedField.PlaceholderText = inputField.PlaceholderText;
+		//				else if (inputField.Description != null)
+		//					updatedField.Description = inputField.Description;
+		//				else if (inputField.HelpText != null)
+		//					updatedField.HelpText = inputField.HelpText;
+		//				else if (inputField.Required != null)
+		//					updatedField.Required = inputField.Required.Value;
+		//				else if (inputField.Unique != null)
+		//					updatedField.Unique = inputField.Unique.Value;
+		//				else if (inputField.Searchable != null)
+		//					updatedField.Searchable = inputField.Searchable.Value;
+		//				else if (inputField.Auditable != null)
+		//					updatedField.Auditable = inputField.Auditable.Value;
+		//				else if (inputField.System != null)
+		//					updatedField.System = inputField.System.Value;
 
-				response.Object = updatedField;
-				response.Errors = ValidateField(entity, updatedField.MapTo<InputField>(), true);
+		//				response.Object = updatedField;
+		//				response.Errors = ValidateField(entity, updatedField.MapTo<InputField>(), true);
 
-				if (response.Errors.Count > 0)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The field was not updated. Validation error occurred!";
-					return response;
-				}
+		//				if (response.Errors.Count > 0)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The field was not updated. Validation error occurred!";
+		//					return response;
+		//				}
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
-				if (!result)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The field was not updated! An internal error occurred!";
-					return response;
-				}
+		//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+		//				bool result = EntityRepository.Update(updatedEntity);
+		//				if (!result)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The field was not updated! An internal error occurred!";
+		//					return response;
+		//				}
 
-			}
-			catch (Exception e)
-			{
-				response.Success = false;
-				response.Object = updatedField;
-				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The field was not updated. An internal error occurred!";
-#endif
-				return response;
-			}
+		//			}
+		//			catch (Exception e)
+		//			{
+		//				response.Success = false;
+		//				response.Object = updatedField;
+		//				response.Timestamp = DateTime.UtcNow;
+		//#if DEBUG
+		//				response.Message = e.Message + e.StackTrace;
+		//#else
+		//                response.Message = "The field was not updated. An internal error occurred!";
+		//#endif
+		//				return response;
+		//			}
 
-			response.Object = updatedField;
-			response.Timestamp = DateTime.UtcNow;
+		//			response.Object = updatedField;
+		//			response.Timestamp = DateTime.UtcNow;
 
-			return response;
-		}
+		//			return response;
+		//		}
 
 		public FieldResponse DeleteField(Guid entityId, Guid id)
 		{
@@ -2453,75 +2460,75 @@ namespace WebVella.ERP.Api
 		//}
 
 		//private RecordListResponse PartialUpdateRecordList(Entity entity, RecordList updatedList, InputRecordList inputRecordList)
-//		{
-//			RecordListResponse response = new RecordListResponse
-//			{
-//				Success = true,
-//				Message = "The list was successfully updated!",
-//			};
+		//		{
+		//			RecordListResponse response = new RecordListResponse
+		//			{
+		//				Success = true,
+		//				Message = "The list was successfully updated!",
+		//			};
 
-//			try
-//			{
-//				if (inputRecordList.Label != null)
-//					updatedList.Label = inputRecordList.Label;
-//				if (inputRecordList.Default.HasValue)
-//					updatedList.Default = inputRecordList.Default;
-//				if (inputRecordList.System.HasValue)
-//					updatedList.System = inputRecordList.System;
-//				if (inputRecordList.Weight.HasValue)
-//					updatedList.Weight = inputRecordList.Weight;
-//				if (inputRecordList.CssClass != null)
-//					updatedList.CssClass = inputRecordList.CssClass;
-//				if (inputRecordList.Type != null)
-//					updatedList.Type = inputRecordList.Type;
-//				if (inputRecordList.RecordsLimit.HasValue)
-//					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
-//				if (inputRecordList.PageSize.HasValue)
-//					updatedList.PageSize = inputRecordList.PageSize.Value;
-//				if (inputRecordList.Columns != null)
-//					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
-//				if (inputRecordList.Query != null)
-//					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
-//				if (inputRecordList.Sorts != null)
-//					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
+		//			try
+		//			{
+		//				if (inputRecordList.Label != null)
+		//					updatedList.Label = inputRecordList.Label;
+		//				if (inputRecordList.Default.HasValue)
+		//					updatedList.Default = inputRecordList.Default;
+		//				if (inputRecordList.System.HasValue)
+		//					updatedList.System = inputRecordList.System;
+		//				if (inputRecordList.Weight.HasValue)
+		//					updatedList.Weight = inputRecordList.Weight;
+		//				if (inputRecordList.CssClass != null)
+		//					updatedList.CssClass = inputRecordList.CssClass;
+		//				if (inputRecordList.Type != null)
+		//					updatedList.Type = inputRecordList.Type;
+		//				if (inputRecordList.RecordsLimit.HasValue)
+		//					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
+		//				if (inputRecordList.PageSize.HasValue)
+		//					updatedList.PageSize = inputRecordList.PageSize.Value;
+		//				if (inputRecordList.Columns != null)
+		//					updatedList.Columns = inputRecordList.Columns.MapTo<RecordListItemBase>();
+		//				if (inputRecordList.Query != null)
+		//					updatedList.Query = inputRecordList.Query.MapTo<RecordListQuery>();
+		//				if (inputRecordList.Sorts != null)
+		//					updatedList.Sorts = inputRecordList.Sorts.MapTo<RecordListSort>();
 
-//				response.Object = inputRecordList.MapTo<RecordList>();
-//				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
+		//				response.Object = inputRecordList.MapTo<RecordList>();
+		//				response.Errors = ValidateRecordList(entity, updatedList.MapTo<InputRecordList>(), true);
 
-//				if (response.Errors.Count > 0)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "The list was not updated. Validation error occurred!";
-//					return response;
-//				}
+		//				if (response.Errors.Count > 0)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The list was not updated. Validation error occurred!";
+		//					return response;
+		//				}
 
-//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-//				bool result = EntityRepository.Update(updatedEntity);
-//				if (!result)
-//				{
-//					response.Timestamp = DateTime.UtcNow;
-//					response.Success = false;
-//					response.Message = "The list was not updated! An internal error occurred!";
-//					return response;
-//				}
+		//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+		//				bool result = EntityRepository.Update(updatedEntity);
+		//				if (!result)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The list was not updated! An internal error occurred!";
+		//					return response;
+		//				}
 
-//			}
-//			catch (Exception e)
-//			{
-//				response.Success = false;
-//				response.Object = inputRecordList.MapTo<RecordList>();
-//				response.Timestamp = DateTime.UtcNow;
-//#if DEBUG
-//				response.Message = e.Message + e.StackTrace;
-//#else
-//                response.Message = "The list was not updated. An internal error occurred!";
-//#endif
-//				return response;
-//			}
+		//			}
+		//			catch (Exception e)
+		//			{
+		//				response.Success = false;
+		//				response.Object = inputRecordList.MapTo<RecordList>();
+		//				response.Timestamp = DateTime.UtcNow;
+		//#if DEBUG
+		//				response.Message = e.Message + e.StackTrace;
+		//#else
+		//                response.Message = "The list was not updated. An internal error occurred!";
+		//#endif
+		//				return response;
+		//			}
 
-//			return ReadRecordList(entity.Id, updatedList.Id);
-//		}
+		//			return ReadRecordList(entity.Id, updatedList.Id);
+		//		}
 
 		public RecordListResponse DeleteRecordList(Guid entityId, Guid id)
 		{
@@ -2953,7 +2960,7 @@ namespace WebVella.ERP.Api
 					response.Message = "The record view was not created! An internal error occurred!";
 					return response;
 				}
-            }
+			}
 			catch (Exception e)
 			{
 				response.Success = false;
@@ -3010,7 +3017,7 @@ namespace WebVella.ERP.Api
 			return UpdateRecordView(entity, inputRecordView);
 		}
 
-		private RecordViewResponse UpdateRecordView(Entity entity, InputRecordView inputRecordView)
+		public RecordViewResponse UpdateRecordView(Entity entity, InputRecordView inputRecordView)
 		{
 			RecordViewResponse response = new RecordViewResponse
 			{
@@ -3068,130 +3075,130 @@ namespace WebVella.ERP.Api
 			return ReadRecordView(entity.Id, recordView.Id);
 		}
 
-		public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
-		{
-			RecordViewResponse response = new RecordViewResponse();
+		//public RecordViewResponse PartialUpdateRecordView(Guid entityId, Guid id, InputRecordView inputRecordView)
+		//{
+		//	RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+		//	IStorageEntity storageEntity = EntityRepository.Read(entityId);
 
-			if (storageEntity == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "Entity with such Id does not exist!";
-				return response;
-			}
+		//	if (storageEntity == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "Entity with such Id does not exist!";
+		//		return response;
+		//	}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+		//	Entity entity = storageEntity.MapTo<Entity>();
 
-			RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
+		//	RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Id == id);
 
-			if (updatedView == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "View with such Id does not exist!";
-				return response;
-			}
+		//	if (updatedView == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "View with such Id does not exist!";
+		//		return response;
+		//	}
 
-			return PartialUpdateRecordView(entity, updatedView, inputRecordView);
-		}
+		//	return PartialUpdateRecordView(entity, updatedView, inputRecordView);
+		//}
 
-		public RecordViewResponse PartialUpdateRecordView(string entityName, string name, InputRecordView inputRecordView)
-		{
-			RecordViewResponse response = new RecordViewResponse();
+		//public RecordViewResponse PartialUpdateRecordView(string entityName, string name, InputRecordView inputRecordView)
+		//{
+		//	RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+		//	IStorageEntity storageEntity = EntityRepository.Read(entityName);
 
-			if (storageEntity == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "Entity with such Name does not exist!";
-				return response;
-			}
+		//	if (storageEntity == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "Entity with such Name does not exist!";
+		//		return response;
+		//	}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+		//	Entity entity = storageEntity.MapTo<Entity>();
 
-			RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Name == name);
+		//	RecordView updatedView = entity.RecordViews.FirstOrDefault(v => v.Name == name);
 
-			if (updatedView == null)
-			{
-				response.Timestamp = DateTime.UtcNow;
-				response.Success = false;
-				response.Message = "View with such Name does not exist!";
-				return response;
-			}
+		//	if (updatedView == null)
+		//	{
+		//		response.Timestamp = DateTime.UtcNow;
+		//		response.Success = false;
+		//		response.Message = "View with such Name does not exist!";
+		//		return response;
+		//	}
 
-			return PartialUpdateRecordView(entity, updatedView, inputRecordView);
-		}
+		//	return PartialUpdateRecordView(entity, updatedView, inputRecordView);
+		//}
 
-		private RecordViewResponse PartialUpdateRecordView(Entity entity, RecordView updatedView, InputRecordView inputRecordView)
-		{
-			RecordViewResponse response = new RecordViewResponse
-			{
-				Success = true,
-				Message = "The record view was successfully updated!",
-			};
+		//private RecordViewResponse PartialUpdateRecordView(Entity entity, RecordView updatedView, InputRecordView inputRecordView)
+		//		{
+		//			RecordViewResponse response = new RecordViewResponse
+		//			{
+		//				Success = true,
+		//				Message = "The record view was successfully updated!",
+		//			};
 
-			RecordView recordView = inputRecordView.MapTo<RecordView>();
+		//			RecordView recordView = inputRecordView.MapTo<RecordView>();
 
-			try
-			{
-				if (inputRecordView.Label != null)
-					updatedView.Label = inputRecordView.Label;
-				if (inputRecordView.Default.HasValue)
-					updatedView.Default = inputRecordView.Default;
-				if (inputRecordView.System.HasValue)
-					updatedView.System = inputRecordView.System;
-				if (inputRecordView.Weight.HasValue)
-					updatedView.Weight = inputRecordView.Weight;
-				if (inputRecordView.CssClass != null)
-					updatedView.CssClass = inputRecordView.CssClass;
-				if (!string.IsNullOrEmpty(inputRecordView.Type))
-					updatedView.Type = inputRecordView.Type;
-				if (inputRecordView.Regions != null)
-					updatedView.Regions = inputRecordView.Regions.MapTo<RecordViewRegion>();
-				if (inputRecordView.Sidebar != null)
-					updatedView.Sidebar = inputRecordView.Sidebar.MapTo<RecordViewSidebar>();
+		//			try
+		//			{
+		//				if (inputRecordView.Label != null)
+		//					updatedView.Label = inputRecordView.Label;
+		//				if (inputRecordView.Default.HasValue)
+		//					updatedView.Default = inputRecordView.Default;
+		//				if (inputRecordView.System.HasValue)
+		//					updatedView.System = inputRecordView.System;
+		//				if (inputRecordView.Weight.HasValue)
+		//					updatedView.Weight = inputRecordView.Weight;
+		//				if (inputRecordView.CssClass != null)
+		//					updatedView.CssClass = inputRecordView.CssClass;
+		//				if (!string.IsNullOrEmpty(inputRecordView.Type))
+		//					updatedView.Type = inputRecordView.Type;
+		//				if (inputRecordView.Regions != null)
+		//					updatedView.Regions = inputRecordView.Regions.MapTo<RecordViewRegion>();
+		//				if (inputRecordView.Sidebar != null)
+		//					updatedView.Sidebar = inputRecordView.Sidebar.MapTo<RecordViewSidebar>();
 
-				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, updatedView.MapTo<InputRecordView>(), true);
+		//				response.Object = recordView;
+		//				response.Errors = ValidateRecordView(entity, updatedView.MapTo<InputRecordView>(), true);
 
-				if (response.Errors.Count > 0)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The record view was not updated. Validation error occurred!";
-					return response;
-				}
+		//				if (response.Errors.Count > 0)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The record view was not updated. Validation error occurred!";
+		//					return response;
+		//				}
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
-				if (!result)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = "The record view was not updated! An internal error occurred!";
-					return response;
-				}
+		//				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
+		//				bool result = EntityRepository.Update(updatedEntity);
+		//				if (!result)
+		//				{
+		//					response.Timestamp = DateTime.UtcNow;
+		//					response.Success = false;
+		//					response.Message = "The record view was not updated! An internal error occurred!";
+		//					return response;
+		//				}
 
-			}
-			catch (Exception e)
-			{
-				response.Success = false;
-				response.Object = recordView;
-				response.Timestamp = DateTime.UtcNow;
-#if DEBUG
-				response.Message = e.Message + e.StackTrace;
-#else
-                response.Message = "The record view was not updated. An internal error occurred!";
-#endif
-				return response;
-			}
+		//			}
+		//			catch (Exception e)
+		//			{
+		//				response.Success = false;
+		//				response.Object = recordView;
+		//				response.Timestamp = DateTime.UtcNow;
+		//#if DEBUG
+		//				response.Message = e.Message + e.StackTrace;
+		//#else
+		//                response.Message = "The record view was not updated. An internal error occurred!";
+		//#endif
+		//				return response;
+		//			}
 
-			return ReadRecordView(entity.Id, recordView.Id);
-		}
+		//			return ReadRecordView(entity.Id, recordView.Id);
+		//		}
 
 		public RecordViewResponse DeleteRecordView(Guid entityId, Guid id)
 		{
