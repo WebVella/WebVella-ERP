@@ -576,6 +576,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "entityLabel")]
         public string EntityLabel { get; set; }
 
+        [JsonProperty(PropertyName = "entityLabelPlural")]
+        public string EntityLabelPlural { get; set; }
+
         [JsonProperty(PropertyName = "listId")]
         public Guid ListId { get; set; }
 
@@ -584,6 +587,8 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "listLabel")]
         public string ListLabel { get; set; }
+
+        
     }
 
     public class RecordViewHtmlItem : RecordViewItemBase

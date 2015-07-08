@@ -1241,7 +1241,8 @@ namespace WebVella.ERP.Api
 														((RecordViewViewItem)item).EntityLabel = viewEntity.Label;
 													}
 												}
-												if (item is RecordViewRelationFieldItem)
+
+                                                if (item is RecordViewRelationFieldItem)
 												{
 													Entity relEntity = GetEntityByFieldId(((RecordViewRelationFieldItem)item).FieldId, entities);
 													if (relEntity != null)
@@ -1259,7 +1260,47 @@ namespace WebVella.ERP.Api
 														((RecordViewRelationFieldItem)item).FieldTypeId = field.GetFieldType();
 													}
 												}
-											}
+
+                                                if (item is RecordViewRelationViewItem)
+                                                {
+                                                    Entity relEntity = GetEntityByViewId(((RecordViewRelationViewItem)item).ViewId, entities);
+                                                    if (relEntity != null)
+                                                    {
+                                                        ((RecordViewRelationViewItem)item).EntityId = relEntity.Id;
+                                                        ((RecordViewRelationViewItem)item).EntityName = relEntity.Name;
+                                                        ((RecordViewRelationViewItem)item).EntityLabel = relEntity.Label;
+
+                                                        RecordView view = relEntity.RecordViews.FirstOrDefault(f => f.Id == ((RecordViewRelationViewItem)item).ViewId);
+                                                        if (view != null)
+                                                        {
+                                                            ((RecordViewRelationViewItem)item).ViewId = view.Id;
+                                                            ((RecordViewRelationViewItem)item).ViewName = view.Name;
+                                                            ((RecordViewRelationViewItem)item).ViewLabel = view.Label;
+                                                        }
+                                                    }
+                                                }
+
+                                                if (item is RecordViewRelationListItem)
+                                                {
+                                                    Entity relEntity = GetEntityByListId(((RecordViewRelationListItem)item).ListId, entities);
+                                                    if (relEntity != null)
+                                                    {
+                                                        ((RecordViewRelationListItem)item).EntityId = relEntity.Id;
+                                                        ((RecordViewRelationListItem)item).EntityName = relEntity.Name;
+                                                        ((RecordViewRelationListItem)item).EntityLabel = relEntity.Label;
+                                                        ((RecordViewRelationListItem)item).EntityLabelPlural = relEntity.LabelPlural;
+
+                                                        RecordList list = relEntity.RecordLists.FirstOrDefault(f => f.Id == ((RecordViewRelationListItem)item).ListId);
+                                                        if (list != null)
+                                                        {
+                                                            ((RecordViewRelationListItem)item).ListId = list.Id;
+                                                            ((RecordViewRelationListItem)item).ListName = list.Name;
+                                                            ((RecordViewRelationListItem)item).ListLabel = list.Label;
+                                                        }
+                                                    }
+                                                }
+
+                                            }
 										}
 									}
 								}
