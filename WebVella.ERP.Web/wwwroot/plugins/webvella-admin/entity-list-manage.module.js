@@ -208,6 +208,25 @@
         	postObj[fieldName] = data;
         	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
         }
+
+        contentData.updateColumns = function () {
+        	var postObj = {};
+        	postObj.columns = contentData.list.columns;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
+        contentData.updateQuery = function () {
+        	var postObj = {};
+        	postObj.query = contentData.list.query;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
+        contentData.updateSorts = function () {
+        	var postObj = {};
+        	postObj.sorts = contentData.list.sorts;
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        }
+
         //#endregion
 
         //#region << Initialize the library >>
@@ -304,9 +323,7 @@
         	contentData.list.columns.push(item);
             //Remove from library
         	contentData.fieldsLibrary.items.splice(index, 1);
-        	var postObj = {};
-        	postObj.columns = contentData.list.columns;
-        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        	contentData.updateColumns();
         }
         contentData.moveToLibrary = function (item, index) {
             //Add Item at the end of the columns list
@@ -319,11 +336,31 @@
             	if (a.type > b.type) return 1;
             	return 0;
             });
-            var postObj = {};
-            postObj.columns = contentData.list.columns;
-            webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+            contentData.updateColumns();
         }
 
+        contentData.dragControlListeners = {
+        	accept: function (sourceItemHandleScope, destSortableScope) {
+        		//for (var i = 0; i < destSortableScope.modelValue.length; i++) {
+        		//    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
+        		//        return false;
+        		//        break;
+        		//    }
+        		//}
+
+        		return true
+        	},
+        	itemMoved: function (eventObj) {
+        		//Item is moved from one column to another
+        		//executeDragViewChange(eventObj);
+        		contentData.updateColumns();
+        	},
+        	orderChanged: function (eventObj) {
+        		//Item is moved within the same column
+        		//executeDragViewChange(eventObj);
+        		contentData.updateColumns();
+        	}
+        };
   
     	//#endregion
 
@@ -380,11 +417,12 @@
         contentData.AddRule = function (query) {
         	var subquery = {
         		"queryType": "EQ",
-        		"fieldName": "",
+        		"fieldName": "id",
         		"fieldValue": "",
         		"subQueries": []
         	};
         	query.subQueries.push(subquery);
+        	contentData.updateQuery();
         }
         contentData.AddSection = function (query) {
         	var subquery = {
@@ -394,7 +432,7 @@
         		"subQueries": [
 					{
 						"queryType": "EQ",
-						"fieldName": "",
+						"fieldName": "id",
 						"fieldValue": "",
 						"subQueries": []
 					}
@@ -406,6 +444,7 @@
         	else {
         		contentData.list.query = subquery;
         	}
+        	contentData.updateQuery();
         }
         contentData.DeleteItem = function (parent, index) {
         	if (parent != null) {
@@ -415,22 +454,25 @@
         		contentData.list.query = {};
         		contentData.list.query = null;
         	}
+        	contentData.updateQuery();
         }
         contentData.DeleteSortRule = function (index) {
         	contentData.list.sorts.splice(index, 1);
         	if(contentData.list.sorts.length == 0) {
         		contentData.list.sorts = null;
         	}
+        	contentData.updateSorts();
         }
         contentData.AddSortRule = function () {
         	if (contentData.list.sorts == null) {
         		contentData.list.sorts = [];
         	}
         	var subrule = {
-        		"fieldName": "",
-        		"sortType": "Ascending"
+        		"fieldName": "id",
+        		"sortType": "ascending"
         	};
         	contentData.list.sorts.push(subrule);
+        	contentData.updateSorts();
         }
 		//#endregion
 

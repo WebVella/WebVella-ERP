@@ -24,7 +24,7 @@
 		</div>
 		<div class="entity-box">
 			<h4>{{contentData.currentEntity.label}}</h4>
-			<a href=""><i class="fa fa-gear"></i> Settings</a>
+			<a href="javascript:void(0)" ui-sref="webvella-admin-entity-view-manage-info({entityName:contentData.currentEntity.name,viewName:contentData.recordView.name})"><i class="fa fa-gear"></i> Settings</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -42,7 +42,7 @@
 							<span class="input-group-addon" id="basic-addon1">
 								<i class="fa fa-search"></i>
 							</span>
-							<input ng-model="class" type="text" class="form-control ng-pristine ng-untouched ng-valid" id="exampleInputName2" placeholder="list label">
+							<input ng-model="viewFilter" type="text" class="form-control" placeholder="view label">
 						</div>
 					</div>
 					<div class="form-group hidden-xs hidden-sm">
@@ -61,8 +61,8 @@
 				</form>
 				<hr class="divider" />
 				<ul class="list-inline">
-					<li class="col-sm-3" ng-repeat="view in contentData.currentEntity.recordViews">
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name})'>
+					<li  style="padding-right:30px;" ng-repeat="view in contentData.currentEntity.recordViews | filter: {label:viewFilter}" ui-sref-active="active">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.currentEntity.name,recordId:contentData.viewData.id,viewName:view.name})'>
 							<i class="fa fa-fw fa-file-text-o"></i> {{view.label}}
 						</a>
 					</li>
@@ -240,7 +240,7 @@
 									</a>
 									<!-- If type 13 - password -->
 									<a ng-switch-when="13" href="javascript:void(0)"
-									   editable-text="contentData.viewData['{{item.fieldName}}']"
+									   editable-text="contentData.dummyPasswordModels['{{item.fieldName}}']"
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
 										<span class="go-gray" style="font-style:italic">encrypted text</span>
 									</a>

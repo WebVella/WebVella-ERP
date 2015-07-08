@@ -473,6 +473,8 @@
 			}
 		}
 
+		//Password
+		contentData.dummyPasswordModels = {};//as the password value is of know use being encrypted, we will assign dummy models
 		//Dropdown
 		contentData.getDropdownString = function (fieldData, array) {
 			var selected = $filter('filter')(array, { key: fieldData });
