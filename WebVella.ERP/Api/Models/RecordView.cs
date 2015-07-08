@@ -204,7 +204,25 @@ namespace WebVella.ERP.Api.Models
 		public Guid? FieldId { get; set; }
 	}
 
-	public class InputRecordViewHtmlItem : InputRecordViewItemBase
+    public class InputRecordViewRelationViewItem : InputRecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid? RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "viewId")]
+        public Guid? ViewId { get; set; }
+    }
+
+    public class InputRecordViewRelationListItem : InputRecordViewItemBase
+    {
+        [JsonProperty(PropertyName = "relationId")]
+        public Guid? RelationId { get; set; }
+
+        [JsonProperty(PropertyName = "listId")]
+        public Guid? ListId { get; set; }
+    }
+
+    public class InputRecordViewHtmlItem : InputRecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "tag")]
 		public string Tag { get; set; }
@@ -556,7 +574,11 @@ namespace WebVella.ERP.Api.Models
 				return new InputRecordViewViewItem();
 			if (type == "fieldfromrelation")
 				return new InputRecordViewRelationFieldItem();
-			if (type == "html")
+            if (type == "viewfromrelation")
+                return new InputRecordViewRelationViewItem();
+            if (type == "listfromrelation")
+                return new InputRecordViewRelationListItem();
+            if (type == "html")
 				return new InputRecordViewHtmlItem();
 
 			return new InputRecordViewFieldItem();

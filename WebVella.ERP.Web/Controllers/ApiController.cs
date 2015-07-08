@@ -482,6 +482,36 @@ namespace WebVella.ERP.Web.Controllers
                         fieldTypeId = field.GetFieldType()
                     });
                 }
+
+                foreach (var view in relatedEntity.RecordViews )
+                {
+                    itemList.Add(new
+                    {
+                        type = "viewFromRelation",
+                        relationId = relation.Id,
+                        entityId = relatedEntity.Id,
+                        entityName = relatedEntity.Name,
+                        entityLabel = relatedEntity.Label,
+                        viewId = view.Id,
+                        viewName = view.Name,
+                        viewLabel = view.Label
+                    });
+                }
+
+                foreach (var list in relatedEntity.RecordLists)
+                {
+                    itemList.Add(new
+                    {
+                        type = "listFromRelation",
+                        relationId = relation.Id,
+                        entityId = relatedEntity.Id,
+                        entityName = relatedEntity.Name,
+                        entityLabel = relatedEntity.Label,
+                        listId = list.Id,
+                        listName = list.Name,
+                        listLabel = list.Label
+                    });
+                }
             }
 
             result.Object = itemList;
