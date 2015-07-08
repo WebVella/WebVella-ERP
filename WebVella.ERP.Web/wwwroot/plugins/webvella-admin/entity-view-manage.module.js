@@ -41,8 +41,7 @@
             },
             resolve: {
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedViewLibrary: resolveViewLibrary,
-                resolvedCurrentView: resolveCurrentView // TODO this should be removed once the views are implemented in the entity Meta
+                resolvedViewLibrary: resolveViewLibrary
             },
             data: {
 
@@ -89,43 +88,6 @@
         return defer.promise;
     }
 
-    resolveCurrentView.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-    /* @ngInject */
-    function resolveCurrentView($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        function errorCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        webvellaAdminService.getEntityView($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
-        return defer.promise;
-    }
-
     resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
@@ -141,7 +103,17 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+            	//Remove the current view from the list to avoid loop
+            	var libraryWithoutTheCurrentView = [];
+            	for (var i = 0; i < response.object.length; i++) {
+            		if (response.object[i].type != "view") {
+            			libraryWithoutTheCurrentView.push(response.object[i]);
+            		}
+            		else if (response.object[i].viewName != $stateParams.viewName) {
+            			libraryWithoutTheCurrentView.push(response.object[i]);
+            		}
+            	}
+            	defer.resolve(libraryWithoutTheCurrentView);
             }
         }
 
@@ -166,17 +138,17 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal',
-                            'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state','$stateParams', 'pageTitle', '$modal',
+                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, $modal,
-                        resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast, resolvedViewLibrary) {
+    function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
+                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
 
         /* jshint validthis:true */
         var contentData = this;
         //#region << Initialize Current Entity >>
-        contentData.entity = resolvedCurrentEntityMeta;
+        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & Hide side menu>>
@@ -191,8 +163,13 @@
         });
         //#endregion
 
-        //#region << Initialize View and Content Region >>
-        contentData.view = angular.copy(resolvedCurrentView);
+    	//#region << Initialize View and Content Region >>
+        contentData.view = {};
+        for (var i = 0; i < contentData.entity.recordViews.length; i++) {
+        	if (contentData.entity.recordViews[i].name == $stateParams.viewName) {
+        		contentData.view = angular.copy(contentData.entity.recordViews[i]);
+        	}
+        }
         contentData.viewContentRegion = {};
         for (var i = 0; i < contentData.view.regions.length; i++) {
         	if (contentData.view.regions[i].name === "content") {

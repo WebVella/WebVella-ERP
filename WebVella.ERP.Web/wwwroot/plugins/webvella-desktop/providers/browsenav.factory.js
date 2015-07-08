@@ -41,10 +41,16 @@
 
             if (area.entities.length > 0) {
             	area.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+            	var defaultListName = "";
+            	for (var i = 0; i < area.entities[0].recordLists.length; i++) {
+            		if (area.entities[0].recordLists[i].default) {
+            			defaultListName = area.entities[0].recordLists[i].name;
+            		}
+            	}
             	menuItem.stateParams = {
             		"areaName": area.name,
             		"entityName": area.entities[0].name,
-            		"listName": "boz", //TODO we should find the default list and put its name here
+            		"listName": defaultListName,
 					"filter":"all",
             		"page": 1
             	};

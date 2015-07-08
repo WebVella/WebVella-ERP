@@ -116,9 +116,11 @@
         }
         contentData.currentPage = parseInt($stateParams.page);
     	//Select the current list view details
-		//TODO needs to be implemented
-        contentData.currentListView = {
-        	"pageSize": 25
+        contentData.currentListView = {};
+        for (var i = 0; i < contentData.entity.recordLists.length; i++) {
+        	if (contentData.entity.recordLists[i].name == $stateParams.listName) {
+        		contentData.currentListView = contentData.entity.recordLists[i];
+        	}
         }
 
         //#endregion
