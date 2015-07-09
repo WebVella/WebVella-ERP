@@ -429,15 +429,15 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabel(recordlist.Label));
 
-			if (recordlist.Default.HasValue)
+			if (!recordlist.Default.HasValue)
 				recordlist.Default = false;
-			if (recordlist.System.HasValue)
+			if (!recordlist.System.HasValue)
 				recordlist.System = false;
-			if (recordlist.Weight.HasValue)
+			if (!recordlist.Weight.HasValue)
 				recordlist.Weight = 1;
-			if (recordlist.RecordsLimit.HasValue)
+			if (!recordlist.RecordsLimit.HasValue)
 				recordlist.RecordsLimit = 1;
-			if (recordlist.PageSize.HasValue)
+			if (!recordlist.PageSize.HasValue)
 				recordlist.PageSize = 10;
 			if (recordlist.CssClass != null)
 				recordlist.CssClass = recordlist.CssClass.Trim();
