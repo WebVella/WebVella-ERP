@@ -16,7 +16,7 @@ namespace WebVella.ERP.Storage.Mongo
             System = false;
             Weight = 1;
             CssClass = "";
-            Type = RecordViewType.Details;
+            Type = RecordViewType.General;
             Regions = new List<IStorageRecordViewRegion>();
             Sidebar = new MongoRecordViewSidebar();
         }

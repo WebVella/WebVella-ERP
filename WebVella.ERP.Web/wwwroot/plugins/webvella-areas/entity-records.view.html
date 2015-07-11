@@ -114,7 +114,7 @@
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td>
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name})' class="btn btn-default">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name,sectionName:"$"})' class="btn btn-default">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
@@ -129,6 +129,7 @@
 						<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,fieldMeta)"></span>
 						<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,fieldMeta)"></span>
 						<pre ng-switch-when="10" ng-bind="record[fieldMeta.name]"></pre>
+						<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,fieldMeta)"></span>
 						<span ng-switch-when="12" ng-bind="record[fieldMeta.name]"></span>
 						<span ng-switch-when="13">******</span>
 						<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,fieldMeta)"></span>

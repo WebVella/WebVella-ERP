@@ -54,7 +54,7 @@
                 <span class="input-group-addon" id="basic-addon1">
                     <i class="fa fa-search"></i>
                 </span>
-                <input ng-model="class" type="text" class="form-control" placeholder="Search list names">
+                <input ng-model="searchFilter" type="text" class="form-control" placeholder="Search list names">
             </div>
         </div>
     </form>
@@ -67,7 +67,7 @@
                     <th class="name">Name</th>
             </thead>
             <tbody>
-                <tr ng-repeat="list in contentData.lists">
+                <tr ng-repeat="list in contentData.lists | filter: {label: searchFilter}">
                     <td class="actions">
                         <a class="btn btn-default" ui-sref="webvella-admin-entity-list-manage({entityName:'{{contentData.entity.name}}',listName:'{{list.name}}'})">
                             <i class="fa fa-eye"></i>

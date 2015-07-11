@@ -154,7 +154,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 		private RecordViewType GetViewTypeId(string name)
 		{
-			RecordViewType type = RecordViewType.Details;
+			RecordViewType type = RecordViewType.General;
 
 			Enum.TryParse(name, out type);
 
