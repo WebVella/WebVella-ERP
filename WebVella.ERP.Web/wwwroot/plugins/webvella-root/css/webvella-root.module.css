@@ -5,6 +5,10 @@ body {
 	background-image: url(/plugins/webvella-root/assets/black_scales/black_scales.png);
 }
 
+.page-header {
+	margin-top:20px;
+}
+
 span.divider {
 	color: #bdbdbd;
 	margin: 0 1em;
@@ -382,6 +386,12 @@ ngToast
 	display: none;
 }
 
+
+#sidebar .nav a {
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /*#endregion */
 
@@ -2273,6 +2283,15 @@ table .btn-xs.btn-link {
 	top: -14px;
 }
 
+#sidebar .tabbable.spilled {
+	left:-28px;
+	top: 95px;
+}
+
+	#sidebar .tabbable.spilled .back {
+		right:0;
+	}
+
 	.tabbable.spilled ul {
 		width: 179px;
 		background: #555;
@@ -2314,6 +2333,10 @@ table .btn-xs.btn-link {
 	top: 14px;
 }
 
+.mini-sidebar #sidebar .tabbable.spilled {
+	left:0;
+	top:120px;
+}
 	.mini-sidebar .tabbable.spilled ul {
 		width: 50px;
 		border: none !important;

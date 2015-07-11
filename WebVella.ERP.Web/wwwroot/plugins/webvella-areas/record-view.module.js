@@ -19,7 +19,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:recordId/:viewName', // /areas/areaName/sectionName/entityName after the parent state is prepended
+			url: '/:areaName/:entityName/:recordId/view/:viewName/section/:sectionName', 
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -38,7 +38,8 @@
 				}
 			},
 			resolve: {
-				resolvedExtendedViewData: resolveExtendedViewData
+				resolvedExtendedViewData: resolveExtendedViewData,
+				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
 			},
 			data: {
 
@@ -89,6 +90,30 @@
 				}
 			}
 			extendedView.data = record.data;
+			//TODO - remove when implemented properly
+			extendedView.sidebar.items = [
+			{
+				entityId: "0b94a563-fc77-4ce6-aa9e-79ecf891132b",
+				entityLabel: "Account",
+				entityLabelPlural: "Accounts",
+				entityName: "account",
+				listId: "73bf06c9-80f3-4980-9f55-09c1fa2e0c9f",
+				listLabel: "SomeListName",
+				listName: "list",
+				relationId: "c3892403-6ce6-4b23-8e50-14462c4b6783",
+				type: "listFromRelation"
+		},
+	{
+		entityId: "0b94a563-fc77-4ce6-aa9e-79ecf891132b",
+		entityLabel: "Account",
+		entityName: "account",
+		relationId: "c3892403-6ce6-4b23-8e50-14462c4b6783",
+		type: "viewFromRelation",
+		viewId: "52b4abc8-5ff1-443d-94e6-42eedf481525",
+		viewLabel: "SomeViewName",
+		viewName: "view"		
+		}
+			];
 			defer.resolve(extendedView);
 		}
 
@@ -109,20 +134,57 @@
 		return defer.promise;
 	}
 
+	// Resolve Function /////////////////////////
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-details> END state.resolved');
+		return defer.promise;
+	}
+
 	//#endregion
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
+	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
         'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
 
 	/* @ngInject */
-	function controller($filter, $log, $rootScope, $state, $scope, pageTitle, webvellaRootService, webvellaAdminService,
+	function controller($filter, $log, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
         resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
-
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -159,6 +221,26 @@
 			}
 		}
 		//#endregion
+
+		//#region << View Seciton >>
+		contentData.viewSection = {};
+		contentData.viewSection.label = "General";
+		if ($stateParams.sectionName != "$") {
+			for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
+				if (contentData.recordView.sidebar.items[i].type == "view" || contentData.recordView.sidebar.items[i].type == "viewFromRelation") {
+					if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].viewName) {
+						contentData.viewSection.label = contentData.recordView.sidebar.items[i].viewLabel;
+					}
+				}
+				else if (contentData.recordView.sidebar.items[i].type == "list" || contentData.recordView.sidebar.items[i].type == "listFromRelation") {
+					if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].listName) {
+						contentData.viewSection.label = contentData.recordView.sidebar.items[i].listLabel;
+					}
+				}
+			}
+		}
+		//#endregion
+
 
 		//#region << Logic >>
 

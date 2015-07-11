@@ -112,6 +112,7 @@
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
         	if (contentData.entity.recordViews[i].default) {
         		contentData.defaultView = contentData.entity.recordViews[i];
+        		break;
         	}
         }
         contentData.currentPage = parseInt($stateParams.page);
@@ -249,6 +250,23 @@
         	else {
         		return "";
         	}
+        }
+    	//11.Multiselect
+        contentData.getMultiselectString = function (record, fieldMeta) {
+        	var fieldValueArray = record[fieldMeta.name];
+        	var generatedStringArray = [];
+        	if (fieldValueArray.length == 0) {
+        		return "";
+        	}
+        	else {
+        		for (var i = 0; i < fieldValueArray.length; i++) {
+        			var selected = $filter('filter')(fieldMeta.options, { key: fieldValueArray[i] });
+        			generatedStringArray.push((fieldValueArray[i] && selected.length) ? selected[0].value : 'empty');
+        		}
+        		return generatedStringArray.join(', ');
+
+        	}
+
         }
     	//14.Percent
         contentData.getPercentString = function (record, fieldMeta) {
