@@ -36,21 +36,40 @@ namespace WebVella.ERP.Storage
 
         string CssClass { get; set; }
 
-        List<IStorageRecordViewSidebarList> Lists { get; set; }
+        List<IStorageRecordViewSidebarItemBase> Items { get; set; }
     }
 
-    ////////////////////////
-    public interface IStorageRecordViewSidebarList
-    {
-        Guid EntityId { get; set; }
+	////////////////////////
+	public interface IStorageRecordViewSidebarItemBase
+	{
+	}
 
-        Guid ListId { get; set; }
+	public interface IStorageRecordViewSidebarListItem : IStorageRecordViewSidebarItemBase
+	{
+		Guid ListId { get; set; }
+	}
 
-        Guid RelationId { get; set; }
-    }
+	public interface IStorageRecordViewSidebarViewItem : IStorageRecordViewSidebarItemBase
+	{
+		Guid ViewId { get; set; }
+	}
 
-    ////////////////////////
-    public interface IStorageRecordViewRegion
+	public interface IStorageRecordViewSidebarRelationViewItem : IStorageRecordViewSidebarItemBase
+	{
+		Guid RelationId { get; set; }
+
+		Guid ViewId { get; set; }
+	}
+
+	public interface IStorageRecordViewSidebarRelationListItem : IStorageRecordViewSidebarItemBase
+	{
+		Guid RelationId { get; set; }
+
+		Guid ListId { get; set; }
+	}
+
+	////////////////////////
+	public interface IStorageRecordViewRegion
     {
         string Name { get; set; }
 

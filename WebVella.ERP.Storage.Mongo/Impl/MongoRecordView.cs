@@ -60,7 +60,7 @@ namespace WebVella.ERP.Storage.Mongo
         {
             Render = false;
             CssClass = "";
-            Lists = new List<IStorageRecordViewSidebarList>();
+            Items = new List<IStorageRecordViewSidebarItemBase>();
         }
 
         [BsonElement("render")]
@@ -70,24 +70,48 @@ namespace WebVella.ERP.Storage.Mongo
         public string CssClass { get; set; }
 
         [BsonElement("lists")]
-        public List<IStorageRecordViewSidebarList> Lists { get; set; }
+        public List<IStorageRecordViewSidebarItemBase> Items { get; set; }
     }
 
-    ////////////////////////
-    public class MongoRecordViewSidebarList : IStorageRecordViewSidebarList
-    {
-        [BsonElement("entityId")]
-        public Guid EntityId { get; set; }
+	////////////////////////
+	public abstract class MongoRecordViewSidebarItemBase : IStorageRecordViewSidebarItemBase
+	{
+		[BsonElement("entityId")]
+		public Guid EntityId { get; set; }
+	}
 
-        [BsonElement("listId")]
-        public Guid ListId { get; set; }
+	public class MongoRecordViewSidebarListItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarListItem
+	{
+		[BsonElement("listId")]
+		public Guid ListId { get; set; }
+	}
 
-        [BsonElement("relationId")]
-        public Guid RelationId { get; set; }
-    }
+	public class MongoRecordViewSidebarViewItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarViewItem
+	{
+		[BsonElement("viewId")]
+		public Guid ViewId { get; set; }
+	}
 
-    ////////////////////////
-    public class MongoRecordViewRegion : IStorageRecordViewRegion
+	public class MongoRecordViewSidebarRelationViewItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarRelationViewItem
+	{
+		[BsonElement("viewId")]
+		public Guid ViewId { get; set; }
+
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+	}
+
+	public class MongoRecordViewSidebarRelationListItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarRelationListItem
+	{
+		[BsonElement("listId")]
+		public Guid ListId { get; set; }
+
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+	}
+
+	////////////////////////
+	public class MongoRecordViewRegion : IStorageRecordViewRegion
     {
         public MongoRecordViewRegion()
         {
@@ -196,7 +220,9 @@ namespace WebVella.ERP.Storage.Mongo
     ////////////////////////
     public abstract class MongoRecordViewItemBase : IStorageRecordViewItemBase
     {
-    }
+		[BsonElement("entityId")]
+		public Guid EntityId { get; set; }
+	}
 
     public class MongoRecordViewFieldItem : MongoRecordViewItemBase, IStorageRecordViewFieldItem
     {
