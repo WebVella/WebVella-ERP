@@ -22,9 +22,18 @@ namespace WebVella.ERP.Storage
 		IStorageRecordListItemBase CreateEmptyRecordListItemBaseObject();
 		IStorageRecordListFieldItem CreateEmptyRecordListFieldItemObject();
 		IStorageRecordListRelationFieldItem CreateEmptyRecordListRelationFieldItemObject();
+		IStorageRecordListViewItem CreateEmptyRecordListViewItemObject();
+		IStorageRecordListRelationViewItem CreateEmptyRecordListRelationViewItemObject();
+		IStorageRecordListListItem CreateEmptyRecordListListItemObject();
+		IStorageRecordListRelationListItem CreateEmptyRecordListRelationListItemObject();
 
 		IStorageRecordViewSidebar CreateEmptyRecordViewSidebarObject();
-        IStorageRecordViewSidebarList CreateEmptyRecordViewSidebarListObject();
+		IStorageRecordViewSidebarItemBase CreateEmptyRecordViewSidebarItemBaseObject();
+		IStorageRecordViewSidebarListItem CreateEmptyRecordViewSidebarListItemObject();
+		IStorageRecordViewSidebarViewItem CreateEmptyRecordViewSidebarViewItemObject();
+		IStorageRecordViewSidebarRelationListItem CreateEmptyRecordViewSidebarRelationListItemObject();
+		IStorageRecordViewSidebarRelationViewItem CreateEmptyRecordViewSidebarRelationViewItemObject();
+
 		IStorageRecordViewRegion CreateEmptyRecordViewRegionObject();
 		IStorageRecordViewSection CreateEmptyRecordViewSectionObject();
 		IStorageRecordViewRow CreateEmptyRecordViewRowObject();

@@ -15,21 +15,21 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 		protected override void Configure()
 		{
-            Mapper.CreateMap<RecordViewRelationListItem, IStorageRecordViewRelationListItem>().ConstructUsing(x => CreateEmptyRecordViewRelationListItemObject(x));
-            Mapper.CreateMap<IStorageRecordViewRelationListItem, RecordViewRelationListItem>();
-            Mapper.CreateMap<RecordViewRelationListItem, InputRecordViewRelationListItem>();
-            Mapper.CreateMap<InputRecordViewRelationListItem, RecordViewRelationListItem>()
-                 .ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty))
-                .ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty)); 
+			Mapper.CreateMap<RecordViewRelationListItem, IStorageRecordViewRelationListItem>().ConstructUsing(x => CreateEmptyRecordViewRelationListItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewRelationListItem, RecordViewRelationListItem>();
+			Mapper.CreateMap<RecordViewRelationListItem, InputRecordViewRelationListItem>();
+			Mapper.CreateMap<InputRecordViewRelationListItem, RecordViewRelationListItem>()
+				 .ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty))
+				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
 
-            Mapper.CreateMap<RecordViewRelationViewItem, IStorageRecordViewRelationViewItem>().ConstructUsing(x => CreateEmptyRecordViewRelationViewItemObject(x));
-            Mapper.CreateMap<IStorageRecordViewRelationViewItem, RecordViewRelationViewItem>();
-            Mapper.CreateMap<RecordViewRelationViewItem, InputRecordViewRelationViewItem>();
-            Mapper.CreateMap<InputRecordViewRelationViewItem, RecordViewRelationViewItem>()
-                .ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty))
-                .ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
+			Mapper.CreateMap<RecordViewRelationViewItem, IStorageRecordViewRelationViewItem>().ConstructUsing(x => CreateEmptyRecordViewRelationViewItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewRelationViewItem, RecordViewRelationViewItem>();
+			Mapper.CreateMap<RecordViewRelationViewItem, InputRecordViewRelationViewItem>();
+			Mapper.CreateMap<InputRecordViewRelationViewItem, RecordViewRelationViewItem>()
+				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty))
+				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
 
-            Mapper.CreateMap<RecordViewHtmlItem, IStorageRecordViewHtmlItem>().ConstructUsing(x => CreateEmptyRecordViewHtmlItemObject(x));
+			Mapper.CreateMap<RecordViewHtmlItem, IStorageRecordViewHtmlItem>().ConstructUsing(x => CreateEmptyRecordViewHtmlItemObject(x));
 			Mapper.CreateMap<IStorageRecordViewHtmlItem, RecordViewHtmlItem>();
 			Mapper.CreateMap<RecordViewHtmlItem, InputRecordViewHtmlItem>();
 			Mapper.CreateMap<InputRecordViewHtmlItem, RecordViewHtmlItem>();
@@ -68,34 +68,34 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<RecordViewListItem, IStorageRecordViewListItem>()
 				.Include<RecordViewViewItem, IStorageRecordViewViewItem>()
 				.Include<RecordViewRelationFieldItem, IStorageRecordViewRelationFieldItem>()
-                .Include<RecordViewRelationViewItem, IStorageRecordViewRelationViewItem>()
-                .Include<RecordViewRelationListItem, IStorageRecordViewRelationListItem>()
-                .Include<RecordViewHtmlItem, IStorageRecordViewHtmlItem>();
+				.Include<RecordViewRelationViewItem, IStorageRecordViewRelationViewItem>()
+				.Include<RecordViewRelationListItem, IStorageRecordViewRelationListItem>()
+				.Include<RecordViewHtmlItem, IStorageRecordViewHtmlItem>();
 			Mapper.CreateMap<IStorageRecordViewItemBase, RecordViewItemBase>()
 				.Include<IStorageRecordViewFieldItem, RecordViewFieldItem>()
 				.Include<IStorageRecordViewListItem, RecordViewListItem>()
 				.Include<IStorageRecordViewViewItem, RecordViewViewItem>()
-                .Include<IStorageRecordViewRelationFieldItem, RecordViewRelationFieldItem>()
-                .Include<IStorageRecordViewRelationViewItem, RecordViewRelationViewItem>()
-                .Include<IStorageRecordViewRelationListItem, RecordViewRelationListItem>()
+				.Include<IStorageRecordViewRelationFieldItem, RecordViewRelationFieldItem>()
+				.Include<IStorageRecordViewRelationViewItem, RecordViewRelationViewItem>()
+				.Include<IStorageRecordViewRelationListItem, RecordViewRelationListItem>()
 				.Include<IStorageRecordViewHtmlItem, RecordViewHtmlItem>();
 			Mapper.CreateMap<RecordViewItemBase, InputRecordViewItemBase>()
 				.Include<RecordViewFieldItem, InputRecordViewFieldItem>()
 				.Include<RecordViewListItem, InputRecordViewListItem>()
 				.Include<RecordViewViewItem, InputRecordViewViewItem>()
 				.Include<RecordViewRelationFieldItem, InputRecordViewRelationFieldItem>()
-                .Include<RecordViewRelationViewItem, InputRecordViewRelationViewItem>()
-                .Include<RecordViewRelationListItem, InputRecordViewRelationListItem>()
-                .Include<RecordViewHtmlItem, InputRecordViewHtmlItem>();
+				.Include<RecordViewRelationViewItem, InputRecordViewRelationViewItem>()
+				.Include<RecordViewRelationListItem, InputRecordViewRelationListItem>()
+				.Include<RecordViewHtmlItem, InputRecordViewHtmlItem>();
 			Mapper.CreateMap<InputRecordViewItemBase, RecordViewItemBase>()
 				.Include<InputRecordViewFieldItem, RecordViewFieldItem>()
 				.Include<InputRecordViewListItem, RecordViewListItem>()
 				.Include<InputRecordViewViewItem, RecordViewViewItem>()
 				.Include<InputRecordViewRelationFieldItem, RecordViewRelationFieldItem>()
-                .Include<InputRecordViewRelationViewItem, RecordViewRelationViewItem>()
-                .Include<InputRecordViewRelationListItem, RecordViewRelationListItem>()
-                .Include<InputRecordViewHtmlItem, RecordViewHtmlItem>();
-
+				.Include<InputRecordViewRelationViewItem, RecordViewRelationViewItem>()
+				.Include<InputRecordViewRelationListItem, RecordViewRelationListItem>()
+				.Include<InputRecordViewHtmlItem, RecordViewHtmlItem>()
+				.ForMember(x => x.EntityId, opt => opt.MapFrom(y => (y.EntityId.HasValue) ? y.EntityId.Value : Guid.Empty));
 
 			Mapper.CreateMap<RecordViewColumn, IStorageRecordViewColumn>().ConstructUsing(x => CreateEmptyRecordViewColumnObject(x));
 			Mapper.CreateMap<IStorageRecordViewColumn, RecordViewColumn>();
@@ -125,14 +125,53 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<InputRecordViewRegion, RecordViewRegion>()
 				.ForMember(x => x.Render, opt => opt.MapFrom(y => (y.Render.HasValue) ? y.Render.Value : false));
 
+			Mapper.CreateMap<RecordViewSidebarRelationViewItem, IStorageRecordViewSidebarRelationViewItem>().ConstructUsing(x => CreateEmptyRecordViewSidebarRelationViewItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<RecordViewSidebarRelationViewItem, InputRecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<InputRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>()
+				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty))
+				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
 
-			Mapper.CreateMap<RecordViewSidebarList, IStorageRecordViewSidebarList>().ConstructUsing(x => CreateEmptyRecordViewSidebarListObject(x));
-			Mapper.CreateMap<IStorageRecordViewSidebarList, RecordViewSidebarList>();
-			Mapper.CreateMap<RecordViewSidebarList, InputRecordViewSidebarList>();
-			Mapper.CreateMap<InputRecordViewSidebarList, RecordViewSidebarList>()
-				.ForMember(x => x.EntityId, opt => opt.MapFrom(y => (y.EntityId.HasValue) ? y.EntityId.Value : Guid.Empty))
+			Mapper.CreateMap<RecordViewSidebarRelationListItem, IStorageRecordViewSidebarRelationListItem>().ConstructUsing(x => CreateEmptyRecordViewSidebarRelationListItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>();
+			Mapper.CreateMap<RecordViewSidebarRelationListItem, InputRecordViewSidebarRelationListItem>();
+			Mapper.CreateMap<InputRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>()
 				.ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty))
 				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
+
+			Mapper.CreateMap<RecordViewSidebarViewItem, IStorageRecordViewSidebarViewItem>().ConstructUsing(x => CreateEmptyRecordViewSidebarViewItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewSidebarViewItem, RecordViewSidebarViewItem>();
+			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarViewItem>();
+			Mapper.CreateMap<InputRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
+				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty));
+
+			Mapper.CreateMap<RecordViewSidebarListItem, IStorageRecordViewSidebarListItem>().ConstructUsing(x => CreateEmptyRecordViewSidebarListItemObject(x));
+			Mapper.CreateMap<IStorageRecordViewSidebarListItem, RecordViewSidebarListItem>();
+			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarListItem>();
+			Mapper.CreateMap<InputRecordViewSidebarListItem, RecordViewSidebarListItem>()
+				.ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty));
+
+			Mapper.CreateMap<RecordViewSidebarItemBase, IStorageRecordViewSidebarItemBase>().ConstructUsing(x => CreateEmptyRecordViewSidebarItemBaseObject(x))
+				.Include<RecordViewSidebarListItem, IStorageRecordViewSidebarListItem>()
+				.Include<RecordViewSidebarViewItem, IStorageRecordViewSidebarViewItem>()
+				.Include<RecordViewSidebarRelationListItem, IStorageRecordViewSidebarRelationListItem>()
+				.Include<RecordViewSidebarRelationViewItem, IStorageRecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<IStorageRecordViewSidebarItemBase, RecordViewSidebarItemBase>()
+				.Include<IStorageRecordViewSidebarListItem, RecordViewSidebarListItem>()
+				.Include<IStorageRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
+				.Include<IStorageRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>()
+				.Include<IStorageRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<RecordViewSidebarItemBase, InputRecordViewSidebarItemBase>()
+				.Include<RecordViewSidebarListItem, InputRecordViewSidebarListItem>()
+				.Include<RecordViewSidebarViewItem, InputRecordViewSidebarViewItem>()
+				.Include<RecordViewSidebarRelationListItem, InputRecordViewSidebarRelationListItem>()
+				.Include<RecordViewSidebarRelationViewItem, InputRecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<InputRecordViewSidebarItemBase, RecordViewSidebarItemBase>()
+				.Include<InputRecordViewSidebarListItem, RecordViewSidebarListItem>()
+				.Include<InputRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
+				.Include<InputRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>()
+				.Include<InputRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>()
+				.ForMember(x => x.EntityId, opt => opt.MapFrom(y => (y.EntityId.HasValue) ? y.EntityId.Value : Guid.Empty));
 
 
 			Mapper.CreateMap<RecordViewSidebar, IStorageRecordViewSidebar>().ConstructUsing(x => CreateEmptyRecordViewSidebarObject(x));
@@ -159,7 +198,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Enum.TryParse(name, out type);
 
 			return type;
-        }
+		}
 
 		protected IStorageRecordView CreateEmptyRecordViewObject(RecordView view)
 		{
@@ -173,10 +212,34 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarObject();
 		}
 
-		protected IStorageRecordViewSidebarList CreateEmptyRecordViewSidebarListObject(RecordViewSidebarList sidebarList)
+		protected IStorageRecordViewSidebarItemBase CreateEmptyRecordViewSidebarItemBaseObject(RecordViewSidebarItemBase item)
 		{
 			var storageService = service.StorageService;
-			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarListObject();
+			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarItemBaseObject();
+		}
+
+		protected IStorageRecordViewSidebarListItem CreateEmptyRecordViewSidebarListItemObject(RecordViewSidebarListItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarListItemObject();
+		}
+
+		protected IStorageRecordViewSidebarViewItem CreateEmptyRecordViewSidebarViewItemObject(RecordViewSidebarViewItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarViewItemObject();
+		}
+
+		protected IStorageRecordViewSidebarRelationListItem CreateEmptyRecordViewSidebarRelationListItemObject(RecordViewSidebarRelationListItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarRelationListItemObject();
+		}
+
+		protected IStorageRecordViewSidebarRelationViewItem CreateEmptyRecordViewSidebarRelationViewItemObject(RecordViewSidebarRelationViewItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewSidebarRelationViewItemObject();
 		}
 
 		protected IStorageRecordViewRegion CreateEmptyRecordViewRegionObject(RecordViewRegion region)
@@ -239,16 +302,16 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			return storageService.GetObjectFactory().CreateEmptyRecordViewHtmlItemObject();
 		}
 
-        protected IStorageRecordViewRelationViewItem CreateEmptyRecordViewRelationViewItemObject(RecordViewRelationViewItem item)
-        {
-            var storageService = service.StorageService;
-            return storageService.GetObjectFactory().CreateEmptyRecordViewRelationViewItemObject();
-        }
+		protected IStorageRecordViewRelationViewItem CreateEmptyRecordViewRelationViewItemObject(RecordViewRelationViewItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewRelationViewItemObject();
+		}
 
-        protected IStorageRecordViewRelationListItem CreateEmptyRecordViewRelationListItemObject(RecordViewRelationListItem item)
-        {
-            var storageService = service.StorageService;
-            return storageService.GetObjectFactory().CreateEmptyRecordViewRelationListItemObject();
-        }
-    }
+		protected IStorageRecordViewRelationListItem CreateEmptyRecordViewRelationListItemObject(RecordViewRelationListItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordViewRelationListItemObject();
+		}
+	}
 }

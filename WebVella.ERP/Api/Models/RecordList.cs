@@ -15,7 +15,11 @@ namespace WebVella.ERP.Api.Models
 	public enum RecordListItemType
 	{
 		Field,
-		FieldFromRelation
+		FieldFromRelation,
+		View,
+		ViewFromRelation,
+		List,
+		ListFromRelation
 	}
 
 	#region << Input classes >>
@@ -97,12 +101,21 @@ namespace WebVella.ERP.Api.Models
 	{
 		[JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid? EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
 	}
 
 	public class InputRecordListFieldItem : InputRecordListItemBase
 	{
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid? FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
 	}
 
 	public class InputRecordListRelationFieldItem : InputRecordListItemBase
@@ -110,11 +123,62 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationId")]
 		public Guid? RelationId { get; set; }
 
-		[JsonProperty(PropertyName = "entityId")]
-		public Guid? EntityId { get; set; }
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
 
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid? FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+	}
+
+	public class InputRecordListViewItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid? ViewId { get; set; }
+
+		[JsonProperty(PropertyName = "viewName")]
+		public string ViewName { get; set; }
+	}
+
+	public class InputRecordListRelationViewItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid? ViewId { get; set; }
+
+		[JsonProperty(PropertyName = "viewName")]
+		public string ViewName { get; set; }
+	}
+
+	public class InputRecordListListItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "listId")]
+		public Guid? ListId { get; set; }
+
+		[JsonProperty(PropertyName = "listName")]
+		public string ListName { get; set; }
+	}
+
+	public class InputRecordListRelationListItem : InputRecordListItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "listId")]
+		public Guid? ListId { get; set; }
+
+		[JsonProperty(PropertyName = "listName")]
+		public string ListName { get; set; }
 	}
 
 	#endregion
@@ -176,6 +240,30 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "subQueries")]
 		public List<RecordListQuery> SubQueries { get; set; }
+
+		public static QueryObject ConvertQuery(RecordListQuery query)
+		{
+			QueryObject queryObj = new QueryObject();
+
+			QueryType type;
+			if (Enum.TryParse<QueryType>(query.QueryType, out type))
+			{
+				queryObj.FieldName = query.FieldName;
+				queryObj.FieldValue = query.FieldValue;
+				queryObj.QueryType = type;
+
+				if (query.SubQueries != null)
+				{
+					queryObj.SubQueries = new List<QueryObject>();
+					foreach (var subQuery in query.SubQueries)
+					{
+						QueryObject subQueryObj = ConvertQuery(subQuery);
+						queryObj.SubQueries.Add(subQueryObj);
+					}
+				}
+			}
+			return queryObj;
+		}
 	}
 
 	public class RecordListSort
@@ -189,30 +277,8 @@ namespace WebVella.ERP.Api.Models
 
 	public abstract class RecordListItemBase
 	{
-	}
-
-	public class RecordListFieldItem : RecordListItemBase
-	{
-		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.Field).ToLower(); } }
-
-		[JsonProperty(PropertyName = "fieldId")]
-		public Guid FieldId { get; set; }
-
-		[JsonProperty(PropertyName = "fieldName")]
-		public string FieldName { get; set; }
-
-		[JsonProperty(PropertyName = "fieldLabel")]
-		public string FieldLabel { get; set; }
-	}
-
-	public class RecordListRelationFieldItem : RecordListItemBase
-	{
-		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.FieldFromRelation).ToLower(); } }
-
-		[JsonProperty(PropertyName = "relationId")]
-		public Guid RelationId { get; set; }
+		[JsonProperty(PropertyName = "dataName")]
+		public string DataName { get; set; }
 
 		[JsonProperty(PropertyName = "entityId")]
 		public Guid EntityId { get; set; }
@@ -223,14 +289,125 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "entityLabel")]
 		public string EntityLabel { get; set; }
 
+		[JsonProperty(PropertyName = "entityLabelPlural")]
+		public string EntityLabelPlural { get; set; }
+	}
+
+	public class RecordListFieldItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.Field).ToLower(); } }
+
+		[JsonIgnore]
 		[JsonProperty(PropertyName = "fieldId")]
 		public Guid FieldId { get; set; }
 
 		[JsonProperty(PropertyName = "fieldName")]
 		public string FieldName { get; set; }
 
-		[JsonProperty(PropertyName = "fieldLabel")]
-		public string FieldLabel { get; set; }
+		[JsonProperty(PropertyName = "meta")]
+		public Field Meta { get; set; }
+	}
+
+	public class RecordListRelationFieldItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "fieldFromRelation" /*Enum.GetName(typeof(RecordListItemType), RecordListItemType.FieldFromRelation).ToLower()*/; } }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "fieldId")]
+		public Guid FieldId { get; set; }
+
+		[JsonProperty(PropertyName = "fieldName")]
+		public string FieldName { get; set; }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public Field Meta { get; set; }
+	}
+
+	public class RecordListViewItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.View).ToLower(); } }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid ViewId { get; set; }
+
+		[JsonProperty(PropertyName = "viewName")]
+		public string ViewName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordView Meta { get; set; }
+	}
+
+	public class RecordListRelationViewItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "viewFromRelation" /*Enum.GetName(typeof(RecordListItemType), RecordListItemType.ViewFromRelation).ToLower()*/; } }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "viewId")]
+		public Guid ViewId { get; set; }
+
+		[JsonProperty(PropertyName = "viewName")]
+		public string ViewName { get; set; }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordView Meta { get; set; }
+	}
+
+	public class RecordListListItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.List).ToLower(); } }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "listId")]
+		public Guid ListId { get; set; }
+
+		[JsonProperty(PropertyName = "listName")]
+		public string ListName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordList Meta { get; set; }
+	}
+
+	public class RecordListRelationListItem : RecordListItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "listFromRelation" /*Enum.GetName(typeof(RecordListItemType), RecordListItemType.ListFromRelation).ToLower()*/; } }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "listId")]
+		public Guid ListId { get; set; }
+
+		[JsonProperty(PropertyName = "listName")]
+		public string ListName { get; set; }
+
+		[JsonIgnore]
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordList Meta { get; set; }
 	}
 
 	#endregion
@@ -253,6 +430,21 @@ namespace WebVella.ERP.Api.Models
 		public RecordListCollection Object { get; set; }
 	}
 
+	public class RecordListRecordResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordListRecord Object { get; set; }
+	}
+
+	public class RecordListRecord
+	{
+		[JsonProperty(PropertyName = "data")]
+		public object Data { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordList Meta { get; set; }
+	}
+
 	public class RecordListItemConverter : JsonCreationConverter<InputRecordListItemBase>
 	{
 		protected override InputRecordListItemBase Create(Type objectType, JObject jObject)
@@ -260,8 +452,19 @@ namespace WebVella.ERP.Api.Models
 			string type = jObject["type"].ToString().ToLower();
 
 			if (type == "fieldfromrelation")
-				if (objectType == typeof(InputRecordListRelationFieldItem))
-					return new InputRecordListRelationFieldItem();
+				return new InputRecordListRelationFieldItem();
+
+			if (type == "view")
+				return new InputRecordListViewItem();
+
+			if (type == "viewfromrelation")
+				return new InputRecordListRelationViewItem();
+
+			if (type == "list")
+				return new InputRecordListListItem();
+
+			if (type == "listfromrelation")
+				return new InputRecordListRelationListItem();
 
 			return new InputRecordListFieldItem();
 		}

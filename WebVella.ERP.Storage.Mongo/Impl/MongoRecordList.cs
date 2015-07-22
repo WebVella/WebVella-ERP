@@ -75,6 +75,8 @@ namespace WebVella.ERP.Storage.Mongo
 
 	public abstract class MongoRecordListItemBase : IStorageRecordListItemBase
 	{
+		[BsonElement("entityId")]
+		public Guid EntityId { get; set; }
 	}
 
 	public class MongoRecordListFieldItem : MongoRecordListItemBase, IStorageRecordListFieldItem
@@ -88,10 +90,37 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("relationId")]
 		public Guid RelationId { get; set; }
 
-		[BsonElement("entityId")]
-		public Guid EntityId { get; set; }
-
 		[BsonElement("fieldId")]
 		public Guid FieldId { get; set; }
+	}
+
+	public class MongoRecordListViewItem : MongoRecordListItemBase, IStorageRecordListViewItem
+	{
+		[BsonElement("viewId")]
+		public Guid ViewId { get; set; }
+	}
+
+	public class MongoRecordListRelationViewItem : MongoRecordListItemBase, IStorageRecordListRelationViewItem
+	{
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+
+		[BsonElement("viewId")]
+		public Guid ViewId { get; set; }
+	}
+
+	public class MongoRecordListListItem : MongoRecordListItemBase, IStorageRecordListListItem
+	{
+		[BsonElement("listId")]
+		public Guid ListId { get; set; }
+	}
+
+	public class MongoRecordListRelationListItem : MongoRecordListItemBase, IStorageRecordListRelationListItem
+	{
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+
+		[BsonElement("listId")]
+		public Guid ListId { get; set; }
 	}
 }
