@@ -10,7 +10,9 @@ namespace WebVella.ERP.Api.Models
 {
 	public enum RecordViewType
 	{
-		Details
+		General = 0,
+		QuickView = 1,
+		QuickCreate = 2
 	}
 
 	public enum RecordViewItemType
@@ -323,7 +325,7 @@ namespace WebVella.ERP.Api.Models
 			System = false;
 			Weight = 1;
 			CssClass = "";
-			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.Details).ToLower();
+			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.General).ToLower();
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
 		}

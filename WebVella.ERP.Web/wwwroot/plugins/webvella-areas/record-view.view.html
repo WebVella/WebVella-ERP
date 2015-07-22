@@ -31,8 +31,15 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 title="Newest active offers">{{contentData.recordView.label}}</h4>
+			<h4 title="{{contentData.recordView.label}}">{{contentData.recordView.label}}</h4>
 			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
+		</div>
+		<div class="spacer-box"></div>
+		<div class="divider-box">
+			<i class="fa fa-caret-right"></i>
+		</div>
+		<div class="lists-box">
+			<h4 title="{{contentData.viewSection.label}}">{{contentData.viewSection.label}}</h4>
 		</div>
 		<accordion>
 			<accordion-group is-open="moreListsOpened">
@@ -63,7 +70,8 @@
 				<ul class="list-inline">
 					<li  style="padding-right:30px;" ng-repeat="view in contentData.currentEntity.recordViews | filter: {label:viewFilter}" ui-sref-active="active">
 						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.currentEntity.name,recordId:contentData.viewData.id,viewName:view.name})'>
-							<i class="fa fa-fw fa-file-text-o"></i> {{view.label}}
+							<i class="fa fa-fw fa-file-text-o"></i> {{view.label
+}}
 						</a>
 					</li>
 				</ul>

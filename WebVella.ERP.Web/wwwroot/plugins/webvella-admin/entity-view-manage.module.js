@@ -109,7 +109,7 @@
             		if (response.object[i].type != "view") {
             			libraryWithoutTheCurrentView.push(response.object[i]);
             		}
-            		else if (response.object[i].viewName != $stateParams.viewName) {
+            		else if (response.object[i].type == "view" && response.object[i].viewName != $stateParams.viewName) {
             			libraryWithoutTheCurrentView.push(response.object[i]);
             		}
             	}
@@ -443,7 +443,8 @@
                     moveSuccess();
                 }
                 else {
-                    errorCallback(response);
+                	errorCallback(response);
+                	moveFailure();
                 }
             }
 
