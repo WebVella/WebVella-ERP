@@ -459,7 +459,7 @@ function guid() {
                 "system": false,
                 "weight": 1,
                 "cssClass": "",
-                "type": "details",
+                "type": "general",
                 "regions": [
                     {
                     	"name": "content",

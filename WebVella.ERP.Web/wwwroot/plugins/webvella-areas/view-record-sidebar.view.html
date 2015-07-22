@@ -4,4 +4,13 @@
         <span class="username">Wolfgang Mozart</span>
     </div>
 </div>
-<a class="back clearfix"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+<div class="tabbable tabs-left spilled">
+	<a class="back clearfix" ui-sref="webvella-entity-records({areaName: sidebarData.stateParams.areaName,entityName:sidebarData.stateParams.entityName,listName:sidebarData.stateParams.listName,filter:'all',page:1})"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+	<ul class="nav nav-tabs">
+		<li role="presentation" ui-sref-active="active" ng-repeat="item in sidebarData.items">
+			<a ui-sref="webvella-areas-record-view({areaName: sidebarData.stateParams.areaName, entityName: sidebarData.stateParams.entityName, recordId: sidebarData.stateParams.recordId,viewName:sidebarData.stateParams.viewName, sectionName: item.name})">
+				<i class="fa fa-{{item.iconName}} fa-fw"></i><span class="text ng-binding">{{item.label}}</span>
+			</a>
+		</li>
+	</ul>
+</div>

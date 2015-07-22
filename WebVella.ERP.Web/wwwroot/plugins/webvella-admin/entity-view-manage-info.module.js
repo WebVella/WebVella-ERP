@@ -126,10 +126,10 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal',
+    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal',
                             'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, $modal,
+    function controller($filter,$scope, $log, $rootScope, $state, pageTitle, $modal,
                         resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast) {
         $log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec');
 
@@ -176,9 +176,7 @@
         	return false;
         }
 
-    	//Delete
-    	//Delete field
-    	//Create new field modal
+    	//Delete view
         contentData.deleteViewModal = function () {
         	var modalInstance = $modal.open({
         		animation: false,
@@ -191,6 +189,26 @@
         		}
         	});
         }
+
+        contentData.viewTypes = [
+		{
+			name: "general",
+			label: "General"
+		},
+		{
+			name: "quickview",
+			label: "Quick view"
+		},
+		{
+			name: "quickcreate",
+			label: "Quick create"
+		}
+        ];
+
+        contentData.showViewType = function () {
+        	var selected = $filter('filter')(contentData.viewTypes, { name: contentData.view.type });
+        	return (contentData.view.type && selected.length) ? selected[0].label : 'empty';
+        };
 
         $log.debug('webvellaAdmin>entity-view-manage-info> END controller.exec');
 

@@ -47,6 +47,10 @@
             			defaultListName = area.entities[0].recordLists[i].name;
             		}
             	}
+            	if (defaultListName == "") {
+            		$log.error(area.name + 'is not rendered, because there is no default list for the entity ' + area.entities[0].name);
+            		return null;
+            	}
             	menuItem.stateParams = {
             		"areaName": area.name,
             		"entityName": area.entities[0].name,
