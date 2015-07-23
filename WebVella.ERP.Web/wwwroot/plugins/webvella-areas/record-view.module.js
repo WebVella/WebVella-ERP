@@ -38,6 +38,7 @@
 				}
 			},
 			resolve: {
+				resolvedCurrentView: resolveCurrentView,
 				resolvedExtendedViewData: resolveExtendedViewData,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
 			},
@@ -60,6 +61,83 @@
 
 
 	//#region << Resolve Function >>
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+	function resolveCurrentView($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				var enableObjectConversion = true;
+				if (enableObjectConversion) {
+					//Convert old object to new object
+					var co = {};
+					co.meta = response.object;
+					var itemText = {};
+					itemText.type = "field";
+					itemText.dataName = "$field$text";
+					itemText.entityName = "test";
+					itemText.entityLabel = "Test";
+					itemText.entityLabelPlural = "Tests";
+					itemText.relationName = null;
+					itemText.meta = {
+						"auditable": false,
+						"defaultValue": null,
+						"description": "",
+						"fieldType": 18,
+						"helpText": "",
+						"id": "fc61bd8e-67bb-4eac-bb85-c285884f4c5f",
+						"label": "Text",
+						"maxLength": null,
+						"name": "text",
+						"placeholderText": "",
+						"required": false,
+						"searchable": false,
+						"system": false,
+						"unique": false
+					};
+					co.meta.regions[0].sections[0].rows[0].columns[0].items[0] = itemText;
+
+					co.data = [];
+					var dataRecord = {
+						"$field$text": "boz"
+					};
+					co.data.push(dataRecord);
+					defer.resolve(co);
+				}
+				else {
+					defer.resolve(response.object);
+				}
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		webvellaAdminService.getEntityView($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
+		return defer.promise;
+	}
+
+
 	resolveExtendedViewData.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
 	/* @ngInject */
 	function resolveExtendedViewData($q, $log, webvellaAreasService, $stateParams) {
@@ -177,14 +255,15 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'ngToast', 'wvAppConstants'];
+        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'resolvedCurrentView', 'ngToast', 'wvAppConstants'];
 
 	/* @ngInject */
 	function controller($filter, $log, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData, ngToast, wvAppConstants) {
+        resolvedSitemap, $timeout, resolvedExtendedViewData,resolvedCurrentView, ngToast, wvAppConstants) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
+		contentData.stateParams = $stateParams;
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -199,18 +278,15 @@
 		//#endregion
 
 		//#region << Initialize view and regions>>
-		contentData.recordView = angular.copy(resolvedExtendedViewData);
+		contentData.recordView = angular.copy(resolvedCurrentView.meta);
 		contentData.contentRegion = null;
-		contentData.sidebarRegion = null;
+		contentData.sidebarRegion = contentData.recordView.sidebar;
 		for (var i = 0; i < contentData.recordView.regions.length; i++) {
 			if (contentData.recordView.regions[i].name === "content") {
 				contentData.contentRegion = contentData.recordView.regions[i];
 			}
-			else if (contentData.recordView.regions[i].name === "sidebar") {
-				contentData.sidebarRegion = contentData.recordView.regions[i];
-			}
 		}
-		contentData.viewData = contentData.recordView.data[0];
+		contentData.viewData = angular.copy(resolvedCurrentView.data[0]);
 		//#endregion
 
 		//#region << Intialize current entity >>
@@ -249,7 +325,7 @@
 		}
 
 		contentData.htmlFieldUpdate = function (item) {
-			contentData.fieldUpdate(item, contentData.viewData[item.fieldName]);
+			contentData.fieldUpdate(item, contentData.viewData[item.dataName]);
 		}
 
 		contentData.fieldUpdate = function (item, data) {
@@ -355,9 +431,9 @@
 						break;
 				}
 			}
-			contentData.patchObject[item.fieldName] = data;
+			contentData.patchObject[item.meta.name] = data;
 			//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
-			webvellaAdminService.patchRecord(contentData.viewData.id, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+			webvellaAdminService.patchRecord($stateParams.recordId, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
 		}
 
 		function patchSuccessCallback(response) {
@@ -377,7 +453,7 @@
 
 		//Auto increment
 		contentData.getAutoIncrementString = function (item) {
-			var fieldValue = contentData.viewData[item.fieldName];
+			var fieldValue = contentData.viewData[item.dataName];
 			if (!fieldValue) {
 				return "empty";
 			}
@@ -390,7 +466,7 @@
 		}
 		//Checkbox
 		contentData.getCheckboxString = function (item) {
-			var fieldValue = contentData.viewData[item.fieldName];
+			var fieldValue = contentData.viewData[item.dataName];
 			if (fieldValue) {
 				return "true";
 			}
@@ -400,7 +476,7 @@
 		}
 		//Currency
 		contentData.getCurrencyString = function (item) {
-			var fieldValue = contentData.viewData[item.fieldName];
+			var fieldValue = contentData.viewData[item.dataName];
 			if (!fieldValue) {
 				return "empty";
 			}
@@ -418,7 +494,7 @@
 		}
 		//Date & DateTime 
 		contentData.getDateString = function (item) {
-			var fieldValue = contentData.viewData[item.fieldName];
+			var fieldValue = contentData.viewData[item.dataName];
 			if (!fieldValue) {
 				return "";
 			}
@@ -427,7 +503,7 @@
 			}
 		}
 		contentData.getTimeString = function (item) {
-			var fieldValue = contentData.viewData[item.fieldName];
+			var fieldValue = contentData.viewData[item.dataName];
 			if (!fieldValue) {
 				return "";
 			}
@@ -457,7 +533,7 @@
 						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 7
 							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 9) {
 							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
-							var FieldName = item.fieldName;
+							var FieldName = item.dataName;
 							contentData.progress[FieldName] = 0;
 						}
 					}
@@ -466,7 +542,7 @@
 		}
 
 		contentData.upload = function (files, item) {
-			var fieldName = item.fieldName;
+			var fieldName = item.dataName;
 			function moveSuccessCallback(response) {
 				contentData.viewData[fieldName] = response.object.url;
 				contentData.fieldUpdate(item, response.object.url);
@@ -483,13 +559,13 @@
 				alert(response.message);
 			}
 			function uploadProgressCallback(response) {
-				contentData.progress[fieldName] = parseInt(100.0 * response.loaded / response.total);
+				contentData.progress[dataName] = parseInt(100.0 * response.loaded / response.total);
 			}
-			webvellaAdminService.uploadFileToTemp(files, fieldName, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
+			webvellaAdminService.uploadFileToTemp(files, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
 		};
 
 		contentData.deleteFileUpload = function (item) {
-			var fieldName = item.fieldName;
+			var fieldName = item.dataName;
 			var filePath = contentData.viewData[fieldName];
 
 			function deleteSuccessCallback(response) {

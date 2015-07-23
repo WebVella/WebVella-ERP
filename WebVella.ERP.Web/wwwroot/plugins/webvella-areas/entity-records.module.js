@@ -10,7 +10,9 @@
     angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreaEntityRecordsontroller', controller);
+        .controller('WebVellaAreaEntityRecordsontroller', controller)
+		.controller('createRecordModalController', createRecordModalController);
+   
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -85,11 +87,11 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
+    controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords'];
 
     /* @ngInject */
-    function controller($filter,$log, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
+    function controller($filter,$log,$modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
@@ -124,26 +126,20 @@
         	}
         }
 
-        //#endregion
+    	//#endregion
 
-
-        contentData.createNewRecordModal = function () {
-            var record = {};
-            record.id = guid();
-            record["created_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
-            record["last_modified_by"] = "f5588278-c0a1-4865-ac94-41dfa09bf8ac";
-            record["created_on"] = moment().toISOString();
-            record["last_modified_on"] = moment().toISOString();
-            webvellaAreasService.createEntityRecord(record,"test",successCallback,errorCallback)
-        }
-
-        function successCallback(response) {
-        	alert("success");
-
-        }
-
-        function errorCallback(response) {
-            alert("error");
+    	//Create new record modal
+        contentData.createRecordModal = function () {
+        	var modalInstance = $modal.open({
+        		animation: false,
+        		templateUrl: 'createRecordModal.html',
+        		controller: 'createRecordModalController',
+        		controllerAs: "popupData",
+        		size: "",
+        		resolve: {
+        			parentData: function () { return contentData; }
+        		}
+        	});
         }
 
         contentData.goDesktopBrowse = function () {
@@ -312,5 +308,56 @@
         }
         $log.debug('webvellaAreas>entities> END controller.exec');
     }
+
+
+	//// Modal Controllers
+    createRecordModalController.$inject = ['$stateParams','parentData', '$modalInstance', '$log', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+
+	/* @ngInject */
+    function createRecordModalController($stateParams,parentData, $modalInstance, $log, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+    	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+    	/* jshint validthis:true */
+    	var popupData = this;
+    	popupData.parentData = parentData;
+    	popupData.entityMeta = parentData.entity;
+    	popupData.ok = function () {
+    		var response = {};
+    		response.message = "All fine";
+    		successCallback(response);
+    		//webvellaAreasService.createEntityRecord(popupData.record, popupData.parentData.entity.name, successCallback, errorCallback);
+    	};
+
+    	popupData.cancel = function () {
+    		$modalInstance.dismiss('cancel');
+    	};
+
+    	/// Aux
+    	function successCallback(response) {
+    		ngToast.create({
+    			className: 'success',
+    			content: '<span class="go-green">Success:</span> ' + response.message
+    		});
+    		$modalInstance.close('success');
+    		$timeout(function () {
+    			$state.go("webvella-entity-records", {
+    				areaName: $stateParams.areaName,
+    				entityName: $stateParams.entityName,
+    				listName: $stateParams.listName,
+    				filter: $stateParams.filter,
+    				page: $stateParams.page
+
+    			}, { reload: true });
+    		}, 0);
+    	}
+
+    	function errorCallback(response) {
+    		popupData.hasError = true;
+    		popupData.errorMessage = response.message;
+
+
+    	}
+    	$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+    };
+
 
 })();

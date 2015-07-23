@@ -107,7 +107,7 @@
 				<div class="row">
 					<label class="col-sm-2 control-label" for="type">Type</label>
 					<div class="col-sm-4 position-relative">
-						<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes">
+						<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes" onbeforesave="contentData.fieldUpdate('type', $data)">
 							{{ contentData.showViewType() }}
 						</a>
 					</div>
