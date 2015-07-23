@@ -938,6 +938,9 @@ namespace WebVella.ERP.Api
 																inputItem.FieldId = entity.Fields.FirstOrDefault(f => f.Name == inputItem.FieldName).Id;
 															}
 														}
+
+														inputItem.EntityId = entity.Id;
+														inputItem.EntityName = entity.Name;
 													}
 													else if (item is InputRecordViewListItem)
 													{
@@ -958,6 +961,9 @@ namespace WebVella.ERP.Api
 																inputItem.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName).Id;
 															}
 														}
+
+														inputItem.EntityId = entity.Id;
+														inputItem.EntityName = entity.Name;
 													}
 													else if (item is InputRecordViewViewItem)
 													{
@@ -978,6 +984,9 @@ namespace WebVella.ERP.Api
 																inputItem.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName).Id;
 															}
 														}
+
+														inputItem.EntityId = entity.Id;
+														inputItem.EntityName = entity.Name;
 													}
 													else if (item is InputRecordViewRelationFieldItem)
 													{
