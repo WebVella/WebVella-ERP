@@ -723,10 +723,13 @@ namespace WebVella.ERP.Web.Controllers
 				itemList.Add(new RecordViewFieldItem
 				{
 					FieldId = field.Id,
+					FieldName = field.Name,
 					Meta = field,
 					EntityId = entity.Id,
 					EntityName = entity.Name,
-					EntityLabel = entity.Label
+					EntityLabel = entity.Label,
+					EntityLabelPlural = entity.LabelPlural,
+                    DataName = field.Name
 				});
 
 			}
@@ -736,10 +739,13 @@ namespace WebVella.ERP.Web.Controllers
 				itemList.Add(new RecordViewViewItem
 				{
 					ViewId = view.Id,
+					ViewName = view.Name,
 					Meta = view,
 					EntityId = entity.Id,
 					EntityName = entity.Name,
-					EntityLabel = entity.Label
+					EntityLabel = entity.Label,
+                    EntityLabelPlural = entity.LabelPlural,
+                    DataName = string.Format("view{0}", view.Name)
 				});
 			}
 
@@ -748,11 +754,13 @@ namespace WebVella.ERP.Web.Controllers
 				itemList.Add(new RecordViewListItem
 				{
 					ListId = list.Id,
+					ListName = list.Name,
 					Meta = list,
 					EntityId = entity.Id,
 					EntityName = entity.Name,
 					EntityLabel = entity.Label,
-					EntityLabelPlural = entity.LabelPlural
+					EntityLabelPlural = entity.LabelPlural,
+					DataName = string.Format("$list${0}", list.Name)
 				});
 			}
 
@@ -773,11 +781,15 @@ namespace WebVella.ERP.Web.Controllers
 					itemList.Add(new RecordViewRelationFieldItem
 					{
 						RelationId = relation.Id,
+						RelationName = relation.Name,
 						EntityId = relatedEntity.Id,
 						EntityName = relatedEntity.Name,
 						EntityLabel = relatedEntity.Label,
+						EntityLabelPlural = relatedEntity.LabelPlural,
 						FieldId = field.Id,
-						Meta = field
+						FieldName = field.Name,
+						Meta = field,
+						DataName = string.Format("$field${0}${1}", relation.Name, field.Name)
 					});
 				}
 
@@ -789,8 +801,11 @@ namespace WebVella.ERP.Web.Controllers
 						EntityId = relatedEntity.Id,
 						EntityName = relatedEntity.Name,
 						EntityLabel = relatedEntity.Label,
+						EntityLabelPlural = relatedEntity.LabelPlural,
 						ViewId = view.Id,
-						Meta = view
+						ViewName = view.Name,
+						Meta = view,
+						DataName = string.Format("$view${0}${1}", relation.Name, view.Name)
 					});
 				}
 
@@ -804,7 +819,9 @@ namespace WebVella.ERP.Web.Controllers
 						EntityLabel = relatedEntity.Label,
 						EntityLabelPlural = relatedEntity.LabelPlural,
 						ListId = list.Id,
-						Meta = list
+						ListName = list.Name,
+						Meta = list,
+						DataName = string.Format("$list${0}${1}", relation.Name, list.Name)
 
 					});
 				}
