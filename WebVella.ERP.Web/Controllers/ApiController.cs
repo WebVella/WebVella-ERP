@@ -1447,7 +1447,7 @@ namespace WebVella.ERP.Web.Controllers
 					foreach (var prop in record.Properties)
 					{
 						//string propName = "$field" + (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
-						string propName = (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
+						string propName = prop.Key;
 						dataRecord[propName] = record[prop.Key];
 					}
 
@@ -1712,7 +1712,7 @@ namespace WebVella.ERP.Web.Controllers
 					foreach (var prop in record.Properties)
 					{
 						//string propName = "$field" + (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
-						string propName = (prop.Key.StartsWith("$") ? prop.Key : "$" + prop.Key);
+						string propName = prop.Key;
 						dataRecord[propName] = record[prop.Key];
 					}
 
