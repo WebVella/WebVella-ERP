@@ -39,7 +39,7 @@
             },
             resolve: {
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedCurrentView: resolveCurrentView // TODO this should be removed once the views are implemented in the entity Meta
+                resolvedCurrentView: resolveCurrentView
             },
             data: {
 
@@ -101,7 +101,46 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+            	var enableObjectConversion = true;
+            	if (enableObjectConversion) {
+            		//Convert old object to new object
+            		var co = {};
+            		co.meta = response.object;
+            		var itemText = {};
+            		itemText.type = "field";
+            		itemText.dataName = "$field$text";
+            		itemText.entityName = "test";
+            		itemText.entityLabel = "Test";
+            		itemText.entityLabelPlural = "Tests";
+            		itemText.relationName = null;
+            		itemText.meta = {
+            			"auditable": false,
+            			"defaultValue": null,
+            			"description": "",
+            			"fieldType": 18,
+            			"helpText": "",
+            			"id": "fc61bd8e-67bb-4eac-bb85-c285884f4c5f",
+            			"label": "Text",
+            			"maxLength": null,
+            			"name": "text",
+            			"placeholderText": "",
+            			"required": false,
+            			"searchable": false,
+            			"system": false,
+            			"unique": false
+            		};
+            		co.meta.regions[0].sections[0].rows[0].columns[0].items[0] = itemText;
+
+            		co.data = [];
+            		var dataRecord = {
+            			"$field$text": "boz"
+            		};
+            		co.data.push(dataRecord);
+            		defer.resolve(co);
+            	}
+            	else {
+            		defer.resolve(response.object);
+            	}
             }
         }
 
@@ -126,17 +165,17 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', 'pageTitle', '$modal',
+    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$modal',
                             'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast'];
     /* @ngInject */
-    function controller($filter,$scope, $log, $rootScope, $state, pageTitle, $modal,
+    function controller($filter,$scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
                         resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast) {
         $log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec');
 
         /* jshint validthis:true */
         var contentData = this;
         //#region << Initialize Current Entity >>
-        contentData.entity = resolvedCurrentEntityMeta;
+        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & Hide side menu>>
@@ -152,13 +191,13 @@
         //#endregion
 
         //#region << Initialize View and Content Region >>
-        contentData.view = angular.copy(resolvedCurrentView);
+        contentData.view = angular.copy(resolvedCurrentView.meta);
         //#endregion
 
         contentData.fieldUpdate = function (key, data) {
         	contentData.patchObject = {};
         	contentData.patchObject[key] = data;
-        	webvellaAdminService.patchEntityView(contentData.patchObject, contentData.view.name, contentData.entity.name, patchSuccessCallback, patchFailedCallback);
+        	webvellaAdminService.patchEntityView(contentData.patchObject, contentData.view.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
         }
 
         function patchSuccessCallback(response) {

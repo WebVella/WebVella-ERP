@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-            <a class="btn btn-success hidden-xs" ng-click="contentData.createNewRecordModal()"><i class="fa fa-plus"></i> Create New</a>
+            <a class="btn btn-success hidden-xs" ng-click="contentData.createRecordModal()"><i class="fa fa-plus"></i> Create New</a>
             <!--<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
             <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
             <span class="dropdown  hidden-xs  hidden-sm" dropdown>
@@ -153,6 +153,20 @@
 		</ul>
 	</div>
 </div>
+
+<script type="text/ng-template" id="createRecordModal.html">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title">Create new record</h4>
+	</div>
+	<div class="modal-body">
+		<!--<pre>{{popupData.entityMeta | json}}</pre>-->
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Create</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
 
 <script type="text/ng-template" id="setFiltersModalContent.html">
 	<div class="modal-header">
