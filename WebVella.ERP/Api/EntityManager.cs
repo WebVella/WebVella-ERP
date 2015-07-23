@@ -1614,7 +1614,8 @@ namespace WebVella.ERP.Api
 										Field field = fields.FirstOrDefault(f => f.Id == ((RecordListFieldItem)column).FieldId);
 										if (field != null)
 										{
-											((RecordListFieldItem)column).DataName = string.Format("$field${0}", field.Name);
+											//((RecordListFieldItem)column).DataName = string.Format("$field${0}", field.Name);
+											((RecordListFieldItem)column).DataName = field.Name;
 											((RecordListFieldItem)column).FieldName = field.Name;
 											((RecordListFieldItem)column).Meta = field;
 
@@ -1745,7 +1746,8 @@ namespace WebVella.ERP.Api
 													Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewFieldItem)item).FieldId);
 													if (field != null)
 													{
-														((RecordViewFieldItem)item).DataName = string.Format("$field${0}", field.Name);
+														//((RecordViewFieldItem)item).DataName = string.Format("$field${0}", field.Name);
+														((RecordViewFieldItem)item).DataName = field.Name;
 														((RecordViewFieldItem)item).FieldName = field.Name;
 														((RecordViewFieldItem)item).Meta = field;
 
