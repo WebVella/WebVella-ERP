@@ -802,32 +802,6 @@
         }
 
 
-        contentData.areaChange = function (areaId) {
-            //console.log(areaId);
-            //console.log(contentData.entity.id);
-            $timeout(function () {
-                //console.log(contentData.selectedAreasList);
-                if (contentData.selectedAreasList.indexOf(areaId) > -1) {
-                    //Added
-                    //console.log("added");
-                    webvellaAdminService.createAreaEntityRelation(areaId, contentData.entity.id,patchAreaSuccessCallback, patchFailedCallback);
-                }
-                else {
-                    //Removed
-                	//console.log("removed");
-                	webvellaAdminService.removeAreaEntityRelation(areaId, contentData.entity.id, patchAreaSuccessCallback, patchFailedCallback);
-                }
-            },0);
-        }
-
-        function patchAreaSuccessCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<span class="go-green">Success:</span> ' + 'Areas list saved'
-            });
-            return true;
-        }
-
         function patchSuccessCallback(response) {
             ngToast.create({
                 className: 'success',
