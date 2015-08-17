@@ -479,10 +479,33 @@
                     			for (var k = 0; k < cleanedRegion.sections[j].rows[g].columns.length; k++) {
                     				delete cleanedRegion.sections[j].rows[g].columns[k]["$$hashKey"];
                     				for (var m = 0; m < cleanedRegion.sections[j].rows[g].columns[k].items.length; m++) {
-                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["$$hashKey"];
-                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldLabel"];
-                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldName"];
-                    					delete cleanedRegion.sections[j].rows[g].columns[k].items[m]["fieldTypeId"];
+                    					var newFieldObject = {};
+                    					newFieldObject.type = cleanedRegion.sections[j].rows[g].columns[k].items[m].type;
+                    					switch (cleanedRegion.sections[j].rows[g].columns[k].items[m].type) {
+                    						case "field":
+                    							newFieldObject.fieldName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							break;
+                    						case "fieldFromRelation":
+                    							newFieldObject.fieldName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							newFieldObject.relationName = cleanedRegion.sections[j].rows[g].columns[k].items[m].relationName;
+                    							break;
+                    						case "view":
+                    							newFieldObject.viewName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							break;
+                    						case "viewFromRelation":
+                    							newFieldObject.viewName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							newFieldObject.relationName = cleanedRegion.sections[j].rows[g].columns[k].items[m].relationName;
+                    							break;
+                    						case "list":
+                    							newFieldObject.listName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							break;
+                    						case "listFromRelation":
+                    							newFieldObject.listName = cleanedRegion.sections[j].rows[g].columns[k].items[m].meta.name;
+                    							newFieldObject.relationName = cleanedRegion.sections[j].rows[g].columns[k].items[m].relationName;
+                    							break;
+                    					}
+                    					
+                    					cleanedRegion.sections[j].rows[g].columns[k].items[m] = newFieldObject;
                     				}
                     			}
                     		}

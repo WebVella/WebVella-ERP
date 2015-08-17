@@ -41,7 +41,8 @@
                 }
             },
             resolve: {
-                resolvedAreaRecordsList: resolveAreaRecordsList,
+            	resolvedAreaRecordsList: resolveAreaRecordsList,
+            	resolvedAreaEntityRelationRecords:resolveAreaEntityRelationRecords,
                 resolvedRolesList: resolveRolesList,
                 resolvedEntityMetaList: resolveEntityMetaList
             },
@@ -90,6 +91,45 @@
         // Return
         $log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved');
         return defer.promise;
+    }
+
+
+    resolveAreaEntityRelationRecords.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+    function resolveAreaEntityRelationRecords($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+    	$log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.resolve(response.object);
+    		}
+    	}
+
+    	function errorCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.resolve(response.object);
+    		}
+    	}
+
+    	webvellaAdminService.getRecordsByEntityName("null", "areas_entities", "null", "null", successCallback, errorCallback);
+
+
+    	// Return
+    	$log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved');
+    	return defer.promise;
     }
 
     // Resolve Roles list /////////////////////////
@@ -144,9 +184,11 @@
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
+							'resolvedAreaEntityRelationRecords', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,resolvedRolesList,resolvedEntityMetaList, $modal) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
+						resolvedAreaEntityRelationRecords, resolvedRolesList, resolvedEntityMetaList, $modal) {
         $log.debug('webvellaAdmin>areas-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -154,15 +196,22 @@
         //#region << Update page title >>
         contentData.pageTitle = "Areas List | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-        //#endregion
+    	//#endregion
 
-        contentData.areas = resolvedAreaRecordsList.data.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-        contentData.roles = resolvedRolesList.data.sort(function (a, b) {
+        contentData.areas = angular.copy(resolvedAreaRecordsList.data);
+        contentData.areas = contentData.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+        contentData.areaEntityRelations = angular.copy(resolvedAreaEntityRelationRecords.data);
+
+        contentData.roles = angular.copy(resolvedRolesList.data);
+        contentData.roles = contentData.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
             return 0;
         });
-        contentData.entities = resolvedEntityMetaList.entities.sort(function (a, b) {
+
+        contentData.entities = angular.copy(resolvedEntityMetaList.entities)
+        contentData.entities = contentData.entities.sort(function (a, b) {
         	if (a.label < b.label) return -1;
         	if (a.label > b.label) return 1;
         	return 0;
@@ -202,8 +251,11 @@
         var popupData = this;
         popupData.modalInstance = $modalInstance;
         popupData.area = angular.copy(contentData.currentArea);
+        popupData.areaEntityRelations = angular.copy(contentData.areaEntityRelations);
         popupData.roles = angular.copy(contentData.roles);
         popupData.entities = angular.copy(contentData.entities);
+        popupData.subscribedEntities = [];
+
         popupData.isUpdate = true;
         if (popupData.area == null) {
             popupData.area = {};
@@ -216,7 +268,67 @@
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
         }
         else {
-            popupData.area.roles = JSON.parse(popupData.area.roles);
+        	popupData.area.roles = JSON.parse(popupData.area.roles);
+			// Fill in the subscribed entities table
+        	for (var i = 0; i < popupData.areaEntityRelations.length; i++) {
+        		if (popupData.area.id == popupData.areaEntityRelations[i].area_id) {
+        			for (var j = 0; j < popupData.entities.length; j++) {
+        				if (popupData.areaEntityRelations[i].entity_id == popupData.entities[j].id) {
+        					popupData.entities[j].selectedList = {};
+        					for (var m = 0; m < popupData.entities[j].recordLists.length; m++) {
+        						if (popupData.entities[j].recordLists[m].id == popupData.areaEntityRelations[i].default_list_id) {
+        							popupData.entities[j].selectedList = popupData.entities[j].recordLists[m];
+        						}
+        					}
+        					popupData.entities[j].selectedView = {};
+        					for (var n = 0; n < popupData.entities[j].recordViews.length; n++) {
+        						if (popupData.entities[j].recordViews[n].id == popupData.areaEntityRelations[i].default_view_id) {
+        							popupData.entities[j].selectedView = popupData.entities[j].recordViews[n];
+        						}
+        					}
+        					popupData.subscribedEntities.push(popupData.entities[j]);
+        				}
+        			}
+        		}
+        	}
+        	popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+        	//Remove the already subscribed from the available for subscription list
+        	popupData.cleanEntities = [];
+        	for (var i = 0; i < popupData.entities.length; i++) {
+        		var isSubscribed = false;
+        		var hasDefaultView = false;
+        		var hasDefaultList = false;
+        		//check if subscribed
+        		for (var j = 0; j < popupData.subscribedEntities.length; j++) {
+        			if (popupData.entities[i].id === popupData.subscribedEntities[j].id) {
+        				isSubscribed = true;
+        			}
+        		}
+				//check if has default view
+        		for (var v = 0; v < popupData.entities[i].recordViews.length; v++) {
+        			if (popupData.entities[i].recordViews[v].default) {
+        				hasDefaultView = true;
+        			}
+        		}
+				//check if has default list
+        		for (var l = 0; l < popupData.entities[i].recordLists.length; l++) {
+        			if (popupData.entities[i].recordLists[l].default) {
+        				hasDefaultList = true;
+        			}
+        		}
+
+        		if (!isSubscribed && hasDefaultView && hasDefaultList) {
+        			popupData.cleanEntities.push(popupData.entities[i]);
+        		}
+        	}
+        	//Soft alphabetically
+        	popupData.cleanEntities = popupData.cleanEntities.sort(function (a, b) {
+        		if (a.label < b.label) return -1;
+        		if (a.label > b.label) return 1;
+        		return 0;
+        	});
+
             popupData.modalTitle = $sce.trustAsHtml('Edit area <span class="go-green">' + popupData.area.label + '</span>');
         }
 

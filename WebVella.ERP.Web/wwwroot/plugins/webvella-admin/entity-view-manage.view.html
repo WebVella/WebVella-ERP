@@ -87,22 +87,22 @@
 												<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
 													<div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
 														<div as-sortable-item-handle ng-if='item.type == "field"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.fieldLabel}}
+															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.fieldLabel}}
+															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "view"'>
-															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}
+															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
-															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}
+															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "list"'>
-															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}
+															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
-															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}
+															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}
 														</div>
 														<div as-sortable-item-handle ng-if='item.tag == "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
 														<div as-sortable-item-handle ng-if='item.tag != "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
@@ -133,12 +133,12 @@
 					<div class="drop-zone" id="library-items-list">
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.fieldLabel}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.fieldLabel}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.viewLabel}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.listLabel}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.listLabel}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
 							</div>
@@ -147,11 +147,8 @@
 				</div>
 			</div>
 		</div>
-
-
 	</div>
 </div>
-
 <script type="text/ng-template" id="manageSectionModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -224,7 +221,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
@@ -261,7 +257,6 @@
 				</div>
 			</div>
 		</form>
-
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Section</button>
@@ -269,7 +264,6 @@
 		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
-
 <script type="text/ng-template" id="manageRowModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -298,9 +292,7 @@
 					</div>
 				</div>
 			</div>
-
 		</form>
-
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
@@ -308,7 +300,6 @@
 		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
-
 <script type="text/ng-template" id="manageItemModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -322,7 +313,6 @@
 				<textarea ng-model="popupData.content" class="form-control"></textarea>
 			</div>
 		</form>
-
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>

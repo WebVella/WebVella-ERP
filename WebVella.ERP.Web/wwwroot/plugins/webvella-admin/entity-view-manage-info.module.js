@@ -38,8 +38,7 @@
                 }
             },
             resolve: {
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-                resolvedCurrentView: resolveCurrentView
+                resolvedCurrentEntityMeta: resolveCurrentEntityMeta
             },
             data: {
 
@@ -86,90 +85,14 @@
         return defer.promise;
     }
 
-    resolveCurrentView.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-    /* @ngInject */
-    function resolveCurrentView($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-
-        // Process
-        function successCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-            	var enableObjectConversion = true;
-            	if (enableObjectConversion) {
-            		//Convert old object to new object
-            		var co = {};
-            		co.meta = response.object;
-            		var itemText = {};
-            		itemText.type = "field";
-            		itemText.dataName = "$field$text";
-            		itemText.entityName = "test";
-            		itemText.entityLabel = "Test";
-            		itemText.entityLabelPlural = "Tests";
-            		itemText.relationName = null;
-            		itemText.meta = {
-            			"auditable": false,
-            			"defaultValue": null,
-            			"description": "",
-            			"fieldType": 18,
-            			"helpText": "",
-            			"id": "fc61bd8e-67bb-4eac-bb85-c285884f4c5f",
-            			"label": "Text",
-            			"maxLength": null,
-            			"name": "text",
-            			"placeholderText": "",
-            			"required": false,
-            			"searchable": false,
-            			"system": false,
-            			"unique": false
-            		};
-            		co.meta.regions[0].sections[0].rows[0].columns[0].items[0] = itemText;
-
-            		co.data = [];
-            		var dataRecord = {
-            			"$field$text": "boz"
-            		};
-            		co.data.push(dataRecord);
-            		defer.resolve(co);
-            	}
-            	else {
-            		defer.resolve(response.object);
-            	}
-            }
-        }
-
-        function errorCallback(response) {
-            if (response.object == null) {
-                $timeout(function () {
-                    $state.go("webvella-root-not-found");
-                }, 0);
-            }
-            else {
-                defer.resolve(response.object);
-            }
-        }
-
-        webvellaAdminService.getEntityView($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
-        return defer.promise;
-    }
-
     //#endregion
 
     //#region << Controller >> ////////////////////////////
     controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$modal',
-                            'resolvedCurrentEntityMeta', 'resolvedCurrentView', 'webvellaAdminService', 'ngToast'];
+                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast'];
     /* @ngInject */
     function controller($filter,$scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
-                        resolvedCurrentEntityMeta, resolvedCurrentView, webvellaAdminService, ngToast) {
+                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast) {
         $log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec');
 
         /* jshint validthis:true */
@@ -190,8 +113,13 @@
         });
         //#endregion
 
-        //#region << Initialize View and Content Region >>
-        contentData.view = angular.copy(resolvedCurrentView.meta);
+    	//#region << Initialize View and Content Region >>
+        contentData.view = {};
+        for (var i = 0; i < contentData.entity.recordViews.length; i++) {
+        	if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
+        		contentData.view = contentData.entity.recordViews[i];
+        	}
+        }
         //#endregion
 
         contentData.fieldUpdate = function (key, data) {

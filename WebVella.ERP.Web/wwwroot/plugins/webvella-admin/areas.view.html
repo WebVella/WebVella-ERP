@@ -202,35 +202,44 @@
 			<div class="col-sm-12">
 				<div class="form-group">
 					<label>Attached entities</label>
+					
 					<form class="form" style="margin:1em 0;">
 						<div class="row">
 							<div class="col-sm-10">
-								<div class="form-group">
-									<div class="input-group clean-addon">
+								<div class="form-group" style="margin-bottom:0;">
+									<div class="input-group clean-addon" ng-show="popupData.cleanEntities.length == 0" style="margin-bottom:0;">
+										<input type="text" class="form-control" placeholder="No more entities can be attached!">
+										<span class="input-group-addon"><i class="fa fa-warning go-red"></i></span>
+									</div>
+									<div class="input-group clean-addon" ng-show="popupData.cleanEntities.length > 0"  style="margin-bottom:0;">
 										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity Label"
-											   required typeahead="entity.label for entity in popupData.entities | filter: {label:$viewValue} | limitTo:3" typeahead-template-url="entityTypeaheadTemplate.html">
+											   required typeahead="entity.label for entity in popupData.cleanEntities | filter: {label:$viewValue} | limitTo:3" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 									</div>
+									<div class="go-gray form-description">only ones that have at least one default view and list are available</div>
 								</div>
 							</div>
 							<div class="col-sm-2 text-right">
-								<a href="" class="btn btn-success" style="display:block">Attach Entity</a>
+								<a href="" class="btn btn-success" style="display:block" ng-class="{'disabled':popupData.cleanEntities.length == 0}">Attach Entity</a>
 							</div>
 						</div>
 					</form>
 					<div>
-						<table class="table table-bordered x-editable">
+						<div class="alert alert-info" ng-show="popupData.subscribedEntities.length == 0">No entities are attached to this area</div>
+						<table class="table table-bordered x-editable" ng-show="popupData.subscribedEntities.length > 0">
 							<thead>
 								<tr>
-									<th>Entity</th>
-									<th>Default View</th>
-									<th>Default List</th>
+									<th width="60">weight</th>
+									<th>entity</th>
+									<th>list</th>
+									<th>view</th>
 									<th width="100">action</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Users</td>
+								<tr ng-repeat="entity in popupData.subscribedEntities">
+									<td>{{entity.weight}}</td>
+									<td>{{entity.label}} <br/><span class="go-green">{{entity.name}}</span></td>
 									<td>
 										<span editable-select="popupData.user" e-ng-options="s.value as s.text for s in popupData.statuses">{{popupData.showStatus()}}</span>
 									</td>

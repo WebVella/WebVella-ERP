@@ -435,7 +435,7 @@ function guid() {
                     {
                     	"render": false,
                     	"cssClass": "",
-                    	"lists": [
+                    	"items": [
 						  {
 				  			"entityId": "48818fa7-77b4-cedd-71e4-80e106038abf",
 				  			"listId": "48818fa7-77b4-cedd-71e4-80e106038abf",
@@ -471,7 +471,7 @@ function guid() {
                 "sidebar": {
                 	"render": false,
                 	"cssClass": "",
-					"list":[]
+					"items":[]
                 }
             };
             return view;
