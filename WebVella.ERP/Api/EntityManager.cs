@@ -398,16 +398,16 @@ namespace WebVella.ERP.Api
 			if (relationListResponse.Object != null)
 				relationList = relationListResponse.Object;
 
-			List<RecordList> recordLists = new List<RecordList>();
-			List<RecordView> recordViews = new List<RecordView>();
-			List<Field> fields = new List<Field>();
+			//List<RecordList> recordLists = new List<RecordList>();
+			//List<RecordView> recordViews = new List<RecordView>();
+			//List<Field> fields = new List<Field>();
 
-			foreach (var ent in entities)
-			{
-				recordLists.AddRange(ent.RecordLists);
-				recordViews.AddRange(ent.RecordViews);
-				fields.AddRange(ent.Fields);
-			}
+			//foreach (var ent in entities)
+			//{
+			//	recordLists.AddRange(ent.RecordLists);
+			//	recordViews.AddRange(ent.RecordViews);
+			//	fields.AddRange(ent.Fields);
+			//}
 
 			if (!recordlist.Id.HasValue || recordlist.Id.Value == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
@@ -471,7 +471,7 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.fieldName", null, "Wrong name. There is no field with such name!"));
 							else
 							{
-								inputColumn.FieldId = fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
+								inputColumn.FieldId = entity.Fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
 							}
 						}
 
@@ -494,7 +494,7 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.listName", null, "Wrong name. There is no list with such name!"));
 							else
 							{
-								inputColumn.ListId = fields.FirstOrDefault(f => f.Name == inputColumn.ListName).Id;
+								inputColumn.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputColumn.ListName).Id;
 							}
 						}
 
@@ -517,7 +517,7 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.viewName", null, "Wrong name. There is no view with such name!"));
 							else
 							{
-								inputColumn.ViewId = fields.FirstOrDefault(v => v.Name == inputColumn.ViewName).Id;
+								inputColumn.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputColumn.ViewName).Id;
 							}
 						}
 
@@ -551,33 +551,26 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 							else
 							{
-								inputColumn.FieldId = fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
+								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
 
-								Entity relEntity = GetEntityByFieldId(inputColumn.FieldId.Value, entities);
-								if (relEntity != null)
+								if (relation != null)
 								{
-									inputColumn.EntityId = entity.Id;
-									inputColumn.EntityName = entity.Name;
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+									if (relEntity != null)
+									{
+										inputColumn.EntityId = entity.Id;
+										inputColumn.EntityName = entity.Name;
+
+										Field relField = relEntity.Fields.FirstOrDefault(f => f.Name == inputColumn.FieldName);
+
+										if (relField != null)
+											inputColumn.FieldId = relField.Id;
+										else
+											errorList.Add(new ErrorModel("columns.fieldName", null, "Wrong name. There is no field with such name!"));
+									}
 								}
-							}
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
-
-							if (relation != null)
-							{
-								Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-								Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
-
-								bool isExistInOrigin = false;
-								if (originEntity != null && originEntity.Fields != null)
-									isExistInOrigin = originEntity.Fields.Any(f => f.Id == inputColumn.FieldId);
-
-								bool isExistInTarget = false;
-								if (targetEntity != null && targetEntity.Fields != null)
-									isExistInTarget = targetEntity.Fields.Any(f => f.Id == inputColumn.FieldId);
-
-								if (!isExistInOrigin && !isExistInTarget)
-									errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong Id. There is no field with such id!"));
 							}
 						}
 					}
@@ -609,33 +602,26 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.listName", null, "There is already an item with such list name!"));
 							else
 							{
-								inputColumn.ListId = fields.FirstOrDefault(f => f.Name == inputColumn.ListName).Id;
+								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
 
-								Entity relEntity = GetEntityByListId(inputColumn.ListId.Value, entities);
-								if (relEntity != null)
+								if (relation != null)
 								{
-									inputColumn.EntityId = entity.Id;
-									inputColumn.EntityName = entity.Name;
+
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+									if (relEntity != null)
+									{
+										inputColumn.EntityId = entity.Id;
+										inputColumn.EntityName = entity.Name;
+
+										RecordList relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputColumn.ListName);
+										if (relList != null)
+											inputColumn.ListId = relList.Id;
+										else
+											errorList.Add(new ErrorModel("columns.listId", null, "Wrong Id. There is no list with such id!"));
+									}
 								}
-							}
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
-
-							if (relation != null)
-							{
-								Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-								Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
-
-								bool isExistInOrigin = false;
-								if (originEntity != null && originEntity.Fields != null)
-									isExistInOrigin = originEntity.Fields.Any(l => l.Id == inputColumn.ListId);
-
-								bool isExistInTarget = false;
-								if (targetEntity != null && targetEntity.Fields != null)
-									isExistInTarget = targetEntity.Fields.Any(l => l.Id == inputColumn.ListId);
-
-								if (!isExistInOrigin && !isExistInTarget)
-									errorList.Add(new ErrorModel("columns.listId", null, "Wrong Id. There is no list with such id!"));
 							}
 						}
 					}
@@ -666,33 +652,25 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.viewName", null, "There is already an item with such view name!"));
 							else
 							{
-								inputColumn.ViewId = fields.FirstOrDefault(f => f.Name == inputColumn.ViewName).Id;
+								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
 
-								Entity relEntity = GetEntityByViewId(inputColumn.ViewId.Value, entities);
-								if (relEntity != null)
+								if (relation != null)
 								{
-									inputColumn.EntityId = entity.Id;
-									inputColumn.EntityName = entity.Name;
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+									if (relEntity != null)
+									{
+										inputColumn.EntityId = entity.Id;
+										inputColumn.EntityName = entity.Name;
+
+										RecordView relView = relEntity.RecordViews.FirstOrDefault(v => v.Name == inputColumn.ViewName);
+										if (relView != null)
+											inputColumn.ViewId = relView.Id;
+										else
+											errorList.Add(new ErrorModel("columns.viewName", null, "Wrong name. There is no view with such name!"));
+									}
 								}
-							}
-
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
-
-							if (relation != null)
-							{
-								Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-								Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
-
-								bool isExistInOrigin = false;
-								if (originEntity != null && originEntity.Fields != null)
-									isExistInOrigin = originEntity.Fields.Any(v => v.Id == inputColumn.ViewId);
-
-								bool isExistInTarget = false;
-								if (targetEntity != null && targetEntity.Fields != null)
-									isExistInTarget = targetEntity.Fields.Any(v => v.Id == inputColumn.ViewId);
-
-								if (!isExistInOrigin && !isExistInTarget)
-									errorList.Add(new ErrorModel("columns.viewId", null, "Wrong Id. There is no view with such id!"));
 							}
 						}
 					}
@@ -789,18 +767,6 @@ namespace WebVella.ERP.Api
 			List<EntityRelation> relationList = new List<EntityRelation>();
 			if (relationListResponse.Object != null)
 				relationList = relationListResponse.Object;
-
-			List<RecordList> recordLists = new List<RecordList>();
-			List<RecordView> recordViews = new List<RecordView>();
-			List<Field> fields = new List<Field>();
-
-			foreach (var ent in entities)
-			{
-				recordLists.AddRange(ent.RecordLists);
-				recordViews.AddRange(ent.RecordViews);
-				fields.AddRange(ent.Fields);
-			}
-
 
 			if (!recordView.Id.HasValue || recordView.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
@@ -954,7 +920,7 @@ namespace WebVella.ERP.Api
 															if (column.Items.Where(i => i is InputRecordViewListItem && ((InputRecordViewListItem)i).ListName == inputItem.ListName).Count() > 1)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name!"));
 
-															if (!recordLists.Any(l => l.Name == inputItem.ListName))
+															if (!entity.RecordLists.Any(l => l.Name == inputItem.ListName))
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Wrong name. There is no list with such name!"));
 															else
 															{
@@ -977,7 +943,7 @@ namespace WebVella.ERP.Api
 															if (column.Items.Where(i => i is InputRecordViewViewItem && ((InputRecordViewViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
 
-															if (!recordViews.Any(v => v.Name == inputItem.ViewName))
+															if (!entity.RecordViews.Any(v => v.Name == inputItem.ViewName))
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "Wrong name. There is no view with such name!"));
 															else
 															{
@@ -1014,32 +980,24 @@ namespace WebVella.ERP.Api
 															if (column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldName == inputItem.FieldName).Count() > 1)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "There is already an item with such field name!"));
 
-															inputItem.FieldId = fields.FirstOrDefault(f => f.Name == inputItem.FieldName).Id;
-
-															Entity relEntity = GetEntityByFieldId(inputItem.FieldId.Value, entities);
-															if (relEntity != null)
-															{
-																inputItem.EntityId = entity.Id;
-																inputItem.EntityName = entity.Name;
-															}
-
 															EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
 
 															if (relation != null)
 															{
-																Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-																Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+																Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+																Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-																bool isExistInOrigin = false;
-																if (originEntity != null && originEntity.Fields != null)
-																	isExistInOrigin = originEntity.Fields.Any(f => f.Id == inputItem.FieldId);
+																if (relEntity != null)
+																{
+																	inputItem.EntityId = entity.Id;
+																	inputItem.EntityName = entity.Name;
 
-																bool isExistInTarget = false;
-																if (targetEntity != null && targetEntity.Fields != null)
-																	isExistInTarget = targetEntity.Fields.Any(f => f.Id == inputItem.FieldId);
-
-																if (!isExistInOrigin && !isExistInTarget)
-																	errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldId", null, "Wrong Id. There is no field with such id!"));
+																	Field relField = relEntity.Fields.FirstOrDefault(f => f.Name == inputItem.FieldName);
+																	if (relField != null)
+																		inputItem.FieldId = relField.Id;
+																	else
+																		errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "Wrong name. There is no field with such name!"));
+																}
 															}
 														}
 
@@ -1070,32 +1028,24 @@ namespace WebVella.ERP.Api
 															if (column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name!"));
 
-															inputItem.ListId = recordLists.FirstOrDefault(l => l.Name == inputItem.ListName).Id;
-
-															Entity relEntity = GetEntityByListId(inputItem.ListId.Value, entities);
-															if (relEntity != null)
-															{
-																inputItem.EntityId = entity.Id;
-																inputItem.EntityName = entity.Name;
-															}
-
 															EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
 
 															if (relation != null)
 															{
-																Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-																Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+																Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+																Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-																bool isExistInOrigin = false;
-																if (originEntity != null && originEntity.Fields != null)
-																	isExistInOrigin = originEntity.Fields.Any(l => l.Id == inputItem.ListId);
+																if (relEntity != null)
+																{
+																	inputItem.EntityId = entity.Id;
+																	inputItem.EntityName = entity.Name;
 
-																bool isExistInTarget = false;
-																if (targetEntity != null && targetEntity.Fields != null)
-																	isExistInTarget = targetEntity.Fields.Any(l => l.Id == inputItem.ListId);
-
-																if (!isExistInOrigin && !isExistInTarget)
-																	errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listId", null, "Wrong Id. There is no list with such id!"));
+																	RecordList relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
+																	if (relList != null)
+																		inputItem.ListId = relList.Id;
+																	else
+																		errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Wrong Name. There is no list with such name!"));
+																}
 															}
 														}
 
@@ -1126,32 +1076,24 @@ namespace WebVella.ERP.Api
 															if (column.Items.Where(i => i is InputRecordViewRelationViewItem && ((InputRecordViewRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
 																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
 
-															inputItem.ViewId = recordLists.FirstOrDefault(l => l.Name == inputItem.ViewName).Id;
-
-															Entity relEntity = GetEntityByViewId(inputItem.ViewId.Value, entities);
-															if (relEntity != null)
-															{
-																inputItem.EntityId = entity.Id;
-																inputItem.EntityName = entity.Name;
-															}
-
 															EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
 
 															if (relation != null)
 															{
-																Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-																Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+																Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+																Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-																bool isExistInOrigin = false;
-																if (originEntity != null && originEntity.Fields != null)
-																	isExistInOrigin = originEntity.Fields.Any(l => l.Id == inputItem.ViewId);
+																if (relEntity != null)
+																{
+																	inputItem.EntityId = entity.Id;
+																	inputItem.EntityName = entity.Name;
 
-																bool isExistInTarget = false;
-																if (targetEntity != null && targetEntity.Fields != null)
-																	isExistInTarget = targetEntity.Fields.Any(l => l.Id == inputItem.ViewId);
-
-																if (!isExistInOrigin && !isExistInTarget)
-																	errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewId", null, "Wrong Id. There is no view with such id!"));
+																	RecordView relView = relEntity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName);
+																	if (relView != null)
+																		inputItem.ViewId = relView.Id;
+																	else
+																		errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "Wrong name. There is no view with such name!"));
+																}
 															}
 														}
 
@@ -1175,7 +1117,7 @@ namespace WebVella.ERP.Api
 
 			if (recordView.Sidebar != null)
 			{
-				if(recordView.Sidebar.Items != null && recordView.Sidebar.Items.Count > 0)
+				if (recordView.Sidebar.Items != null && recordView.Sidebar.Items.Count > 0)
 				{
 					foreach (var item in recordView.Sidebar.Items)
 					{
@@ -1191,7 +1133,7 @@ namespace WebVella.ERP.Api
 								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarListItem && ((InputRecordViewSidebarListItem)i).ListName == inputItem.ListName).Count() > 1)
 									errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
 
-								if (!recordLists.Any(l => l.Name == inputItem.ListName))
+								if (!entity.RecordLists.Any(l => l.Name == inputItem.ListName))
 									errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name!"));
 								else
 								{
@@ -1211,7 +1153,7 @@ namespace WebVella.ERP.Api
 								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarViewItem && ((InputRecordViewSidebarViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
 									errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
 
-								if (!recordViews.Any(v => v.Name == inputItem.ViewName))
+								if (!entity.RecordViews.Any(v => v.Name == inputItem.ViewName))
 									errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name!"));
 								else
 								{
@@ -1245,25 +1187,25 @@ namespace WebVella.ERP.Api
 								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationListItem && ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
 									errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
 
-								inputItem.ListId = recordLists.FirstOrDefault(l => l.Name == inputItem.ListName).Id;
 
 								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
 
 								if (relation != null)
 								{
-									Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-									Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									bool isExistInOrigin = false;
-									if (originEntity != null && originEntity.Fields != null)
-										isExistInOrigin = originEntity.Fields.Any(l => l.Id == inputItem.ListId);
+									inputItem.EntityId = relEntity.Id;
+									inputItem.EntityName = relEntity.Name;
 
-									bool isExistInTarget = false;
-									if (targetEntity != null && targetEntity.Fields != null)
-										isExistInTarget = targetEntity.Fields.Any(l => l.Id == inputItem.ListId);
-
-									if (!isExistInOrigin && !isExistInTarget)
-										errorList.Add(new ErrorModel("sidebar.items.listId", null, "Wrong Id. There is no list with such id!"));
+									if (relEntity != null)
+									{
+										RecordList relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
+										if (relList != null)
+											inputItem.ListId = relList.Id;
+										else
+											errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name!"));
+									}
 								}
 							}
 
@@ -1294,25 +1236,24 @@ namespace WebVella.ERP.Api
 								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationViewItem && ((InputRecordViewSidebarRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
 									errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
 
-								inputItem.ViewId = recordLists.FirstOrDefault(l => l.Name == inputItem.ViewName).Id;
-
 								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
 
 								if (relation != null)
 								{
-									Entity originEntity = entities.FirstOrDefault(e => e.Id == relation.OriginEntityId);
-									Entity targetEntity = entities.FirstOrDefault(e => e.Id == relation.TargetEntityId);
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 
-									bool isExistInOrigin = false;
-									if (originEntity != null && originEntity.Fields != null)
-										isExistInOrigin = originEntity.Fields.Any(l => l.Id == inputItem.ViewId);
+									if (relEntity != null)
+									{
+										inputItem.EntityId = relEntity.Id;
+										inputItem.EntityName = relEntity.Name;
 
-									bool isExistInTarget = false;
-									if (targetEntity != null && targetEntity.Fields != null)
-										isExistInTarget = targetEntity.Fields.Any(l => l.Id == inputItem.ViewId);
-
-									if (!isExistInOrigin && !isExistInTarget)
-										errorList.Add(new ErrorModel("sidebar.items.viewId", null, "Wrong Id. There is no view with such id!"));
+										RecordView relView = relEntity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName);
+										if (relView != null)
+											inputItem.ViewId = relView.Id;
+										else
+											errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name!"));
+									}
 								}
 							}
 
