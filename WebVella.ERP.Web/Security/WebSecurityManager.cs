@@ -117,14 +117,20 @@ namespace WebVella.ERP.Web.Security
 
         internal static void AddIdentityToCache(Guid userId, ErpIdentity identity)
         {
+            var options = new MemoryCacheEntryOptions();
+            options.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+
+
             cache.Set(
                 userId.ToString(),
                 identity,
-                context =>
-                {
-                    context.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
-                    return identity;
-                });
+                options);
+            // from bet4 to beta5 changed
+            //context =>
+            //{
+            //	context.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+            //	return identity;
+            //});
         }
 
         internal static ErpIdentity GetIdentityFromCache(Guid userId)

@@ -4,32 +4,35 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "EntityFramework.SqlServer": "7.0.0-beta4",
-    "EntityFramework.Commands": "7.0.0-beta4",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta4",
-    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta4",
-    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta4",
-    "Microsoft.AspNet.Authentication.Facebook": "1.0.0-beta4",
-    "Microsoft.AspNet.Authentication.Google": "1.0.0-beta4",
-    "Microsoft.AspNet.Authentication.MicrosoftAccount": "1.0.0-beta4",
-    "Microsoft.AspNet.Authentication.Twitter": "1.0.0-beta4",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta4",
-    "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta4",
-    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta4",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta4",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta4",
-    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta4",
-    "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta4",
-    "Microsoft.Framework.ConfigurationModel.UserSecrets": "1.0.0-beta4",
-    "Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta4",
-    "Microsoft.Framework.Logging": "1.0.0-beta4",
-    "Microsoft.Framework.Logging.Console": "1.0.0-beta4",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta4",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta5",
+    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Facebook": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Google": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.MicrosoftAccount": "1.0.0-beta5",
+    "Microsoft.AspNet.Authentication.Twitter": "1.0.0-beta5",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta5",
+    "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta5",
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta5",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
+    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta5",
+    "Microsoft.Framework.Logging": "1.0.0-beta5",
+    "Microsoft.Framework.Logging.Console": "1.0.0-beta5",
+    "Microsoft.Framework.CodeGenerators.Mvc": "1.0.0-beta5",
+    "Microsoft.Framework.Caching.Memory": "1.0.0-beta5",
+    "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta5",
+    "Microsoft.Framework.Configuration": "1.0.0-beta5",
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta5",
+
     "AutoMapper": "3.3.1",
-    "WebVella.ERP": "1.0.0-*",
+    "mongocsharpdriver": "1.9.2",
+    "System.Threading": "4.0.10-beta-23019",
+    "Microsoft.CSharp": "4.0.0-beta-23019",
+    "Newtonsoft.Json": "7.0.1",
     "WebVella.ERP.Storage.Mongo": "1.0.0-*",
-    "mongocsharpdriver": "1.9.2"
+    "WebVella.ERP": "1.0.0-*"
   },
 
   "commands": {
@@ -39,23 +42,27 @@
   },
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0"
+      }
+    }
   },
 
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "scripts": {
-    "postrestore": [ "npm install", "bower install" ],
-    "prepare": [ "gulp copy" ]
+    "exclude": [
+      "wwwroot",
+      "node_modules",
+      "bower_components"
+    ],
+    "publishExclude": [
+      "node_modules",
+      "bower_components",
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ],
+    "scripts": {
+      "postrestore": [ "npm install", "bower install" ],
+      "prepare": [ "gulp copy" ]
+    }
   }
-}

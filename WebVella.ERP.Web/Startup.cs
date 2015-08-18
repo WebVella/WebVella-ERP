@@ -2,15 +2,13 @@
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Routing;
-using Microsoft.Framework.Runtime.Infrastructure;
-using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
-using WebVella.ERP;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Storage.Mongo;
 using WebVella.ERP.Api.Models.AutoMapper;
 using System.Globalization;
+using Microsoft.Framework.Runtime;
 
 namespace WebVella.ERP.Web
 {
@@ -18,9 +16,15 @@ namespace WebVella.ERP.Web
     {
         public IConfiguration Configuration { get; set; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            Configuration = new Configuration().AddJsonFile("config.json");
+            var configurationBuilder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+               .AddJsonFile("config.json")
+               .AddEnvironmentVariables();
+            Configuration = configurationBuilder.Build();
+
+            //beta 4 configuration change
+            //Configuration = new Configuration().AddJsonFile("config.json");
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -53,7 +57,6 @@ namespace WebVella.ERP.Web
             // Add the following to the request pipeline only in development environment.
             if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
             {
-                app.UseBrowserLink();
                 app.UseErrorPage(ErrorPageOptions.ShowAll);
             }
             else
