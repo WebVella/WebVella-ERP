@@ -507,7 +507,7 @@ namespace WebVella.ERP.Api
 							if (recordlist.Columns.Where(i => i is InputRecordListListItem && ((InputRecordListListItem)i).ListName == inputColumn.ListName).Count() > 1)
 								errorList.Add(new ErrorModel("columns.listName", null, "There is already an item with such list name!"));
 
-							if (!entity.Fields.Any(f => f.Name == inputColumn.ListName))
+							if (!entity.RecordLists.Any(f => f.Name == inputColumn.ListName))
 								errorList.Add(new ErrorModel("columns.listName", null, "Wrong name. There is no list with such name!"));
 							else
 							{
@@ -530,7 +530,7 @@ namespace WebVella.ERP.Api
 							if (recordlist.Columns.Where(i => i is InputRecordListViewItem && ((InputRecordListViewItem)i).ViewName == inputColumn.ViewName).Count() > 1)
 								errorList.Add(new ErrorModel("columns.viewName", null, "There is already an item with such view name!"));
 
-							if (!entity.Fields.Any(f => f.Name == inputColumn.ViewName))
+							if (!entity.RecordViews.Any(f => f.Name == inputColumn.ViewName))
 								errorList.Add(new ErrorModel("columns.viewName", null, "Wrong name. There is no view with such name!"));
 							else
 							{
@@ -1632,7 +1632,11 @@ namespace WebVella.ERP.Api
 											((RecordListViewItem)column).DataName = string.Format("$view${0}", view.Name);
 											((RecordListViewItem)column).ViewName = view.Name;
 											((RecordListViewItem)column).Meta = view;
-										}
+
+                                            ((RecordListViewItem)column).EntityName = entity.Name;
+                                            ((RecordListViewItem)column).EntityLabel = entity.Label;
+                                            ((RecordListViewItem)column).EntityLabelPlural = entity.LabelPlural;
+                                        }
 									}
 									if (column is RecordListRelationViewItem)
 									{
@@ -1663,7 +1667,11 @@ namespace WebVella.ERP.Api
 											((RecordListListItem)column).DataName = string.Format("list${0}", list.Name);
 											((RecordListListItem)column).ListName = list.Name;
 											((RecordListListItem)column).Meta = list;
-										}
+
+                                            ((RecordListListItem)column).EntityName = entity.Name;
+                                            ((RecordListListItem)column).EntityLabel = entity.Label;
+                                            ((RecordListListItem)column).EntityLabelPlural = entity.LabelPlural;
+                                        }
 									}
 									if (column is RecordListRelationListItem)
 									{
