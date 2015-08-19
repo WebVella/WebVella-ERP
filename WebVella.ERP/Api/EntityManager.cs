@@ -458,21 +458,38 @@ namespace WebVella.ERP.Api
 					if (column is InputRecordListFieldItem)
 					{
 						InputRecordListFieldItem inputColumn = (InputRecordListFieldItem)column;
-						if (string.IsNullOrWhiteSpace(((InputRecordListFieldItem)column).FieldName))
+						if (string.IsNullOrWhiteSpace(((InputRecordListFieldItem)column).FieldName) && ((InputRecordListFieldItem)column).FieldId == null )
 						{
-							errorList.Add(new ErrorModel("columns.fieldName", null, "Filed name is required!"));
+                            errorList.Add(new ErrorModel("columns.fieldId", null, "Field id is required!"));
+                            errorList.Add(new ErrorModel("columns.fieldName", null, "Field name is required!"));
 						}
 						else
 						{
-							if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldName == inputColumn.FieldName).Count() > 1)
-								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
+                            if (((InputRecordListFieldItem)column).FieldId == null)
+                            {
+                                if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldName == inputColumn.FieldName).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 
-							if (!entity.Fields.Any(f => f.Name == inputColumn.FieldName))
-								errorList.Add(new ErrorModel("columns.fieldName", null, "Wrong name. There is no field with such name!"));
-							else
-							{
-								inputColumn.FieldId = entity.Fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
-							}
+                                if (!entity.Fields.Any(f => f.Name == inputColumn.FieldName))
+                                    errorList.Add(new ErrorModel("columns.fieldName", null, "Wrong name. There is no field with such name!"));
+                                else
+                                {
+                                    inputColumn.FieldId = entity.Fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
+                                }
+                            }
+                            else
+                            {
+
+                                if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldId == inputColumn.FieldId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.fieldId", null, "There is already an item with such field identifier!"));
+
+                                if (!entity.Fields.Any(f => f.Id == inputColumn.FieldId.Value))
+                                    errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong id. There is no field with such id!"));
+                                else
+                                {
+                                    inputColumn.FieldName = entity.Fields.FirstOrDefault(f => f.Id == inputColumn.FieldId).Name;
+                                }
+                            }
 						}
 
 						inputColumn.EntityId = entity.Id;
