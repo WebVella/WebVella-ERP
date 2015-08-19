@@ -155,22 +155,22 @@
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
 								<div  ng-if='item.type == "field" && item.fieldName == "id"' class="clearfix">
 									<i class="fa fa-fw fa-lock go-red pull-left"></i>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "field" && item.fieldName != "id"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.fieldLabel}}
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.viewLabel}}
+									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
@@ -194,15 +194,15 @@
                             <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.fieldsLibrary.items | filter: {search:contentData.search}">
 								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.fieldLabel}}
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.fieldLabel}}
+									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.viewLabel}}
+									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left:10px;"></i> {{item.entityLabel}} > {{item.meta.label}}
 								</div>
 								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
@@ -230,7 +230,7 @@
 			<table class="table table-noborder">
 				<tr>
 					<td>
-						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items">
+						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.label for item in contentData.onlyFieldsLibrary.items">
 						</select>
 					</td>
 					<td>
