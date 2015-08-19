@@ -172,7 +172,7 @@
         }
 
     	//Get fields already used in the view so they need to be removed from the library
-        var usedItemsArray = contentData.view.sidebar.lists;
+        var usedItemsArray = contentData.view.sidebar.items;
 
         contentData.tempLibrary = {};
         contentData.tempLibrary.items = angular.copy(resolvedViewLibrary);

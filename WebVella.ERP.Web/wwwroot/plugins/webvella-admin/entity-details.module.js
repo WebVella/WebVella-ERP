@@ -848,7 +848,7 @@
             $modalInstance.close('success');
             $timeout(function() {
                 $state.go("webvella-admin-entities");
-            }, 0);
+            }, 10);
         }
 
         function errorCallback(response) {
