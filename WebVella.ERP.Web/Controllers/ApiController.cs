@@ -798,7 +798,8 @@ namespace WebVella.ERP.Web.Controllers
 					itemList.Add(new RecordViewRelationViewItem
 					{
 						RelationId = relation.Id,
-						EntityId = relatedEntity.Id,
+                        RelationName = relation.Name,
+                        EntityId = relatedEntity.Id,
 						EntityName = relatedEntity.Name,
 						EntityLabel = relatedEntity.Label,
 						EntityLabelPlural = relatedEntity.LabelPlural,
@@ -814,7 +815,8 @@ namespace WebVella.ERP.Web.Controllers
 					itemList.Add(new RecordViewRelationListItem
 					{
 						RelationId = relation.Id,
-						EntityId = relatedEntity.Id,
+                        RelationName = relation.Name,
+                        EntityId = relatedEntity.Id,
 						EntityName = relatedEntity.Name,
 						EntityLabel = relatedEntity.Label,
 						EntityLabelPlural = relatedEntity.LabelPlural,
