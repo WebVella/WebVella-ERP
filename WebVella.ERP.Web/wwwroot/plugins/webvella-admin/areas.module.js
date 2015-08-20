@@ -255,6 +255,36 @@
         popupData.roles = angular.copy(contentData.roles);
         popupData.entities = angular.copy(contentData.entities);
         popupData.subscribedEntities = [];
+        popupData.cleanEntities = [];
+
+        //Add only entities that have default view and list
+        for (var i = 0; i < popupData.entities.length; i++) {
+            var hasDefaultView = false;
+            var hasDefaultList = false;
+            //check if has default view
+            for (var v = 0; v < popupData.entities[i].recordViews.length; v++) {
+                if (popupData.entities[i].recordViews[v].default) {
+                    hasDefaultView = true;
+                }
+            }
+            //check if has default list
+            for (var l = 0; l < popupData.entities[i].recordLists.length; l++) {
+                if (popupData.entities[i].recordLists[l].default) {
+                    hasDefaultList = true;
+                }
+            }
+
+            if (hasDefaultView && hasDefaultList) {
+                popupData.cleanEntities.push(popupData.entities[i]);
+            }
+        }
+        //Soft alphabetically
+        popupData.cleanEntities = popupData.cleanEntities.sort(function (a, b) {
+            if (a.label < b.label) return -1;
+            if (a.label > b.label) return 1;
+            return 0;
+        });
+
 
         popupData.isUpdate = true;
         if (popupData.area == null) {
@@ -293,39 +323,25 @@
         	}
         	popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-        	//Remove the already subscribed from the available for subscription list
-        	popupData.cleanEntities = [];
-        	for (var i = 0; i < popupData.entities.length; i++) {
+            //Remove the already subscribed from the available for subscription list
+        	popupData.tempEntitiesList = [];
+        	for (var i = 0; i < popupData.cleanEntities.length; i++) {
         		var isSubscribed = false;
-        		var hasDefaultView = false;
-        		var hasDefaultList = false;
         		//check if subscribed
         		for (var j = 0; j < popupData.subscribedEntities.length; j++) {
-        			if (popupData.entities[i].id === popupData.subscribedEntities[j].id) {
+        		    if (popupData.cleanEntities[i].id === popupData.subscribedEntities[j].id) {
         				isSubscribed = true;
         			}
         		}
-				//check if has default view
-        		for (var v = 0; v < popupData.entities[i].recordViews.length; v++) {
-        			if (popupData.entities[i].recordViews[v].default) {
-        				hasDefaultView = true;
-        			}
-        		}
-				//check if has default list
-        		for (var l = 0; l < popupData.entities[i].recordLists.length; l++) {
-        			if (popupData.entities[i].recordLists[l].default) {
-        				hasDefaultList = true;
-        			}
-        		}
 
-        		if (!isSubscribed && hasDefaultView && hasDefaultList) {
-        			popupData.cleanEntities.push(popupData.entities[i]);
+        		if (!isSubscribed) {
+        		    popupData.tempEntitiesList.push(popupData.cleanEntities[i]);
         		}
         	}
         	//Soft alphabetically
-        	popupData.cleanEntities = popupData.cleanEntities.sort(function (a, b) {
-        		if (a.label < b.label) return -1;
-        		if (a.label > b.label) return 1;
+        	popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
+        		if (a.name < b.name) return -1;
+        		if (a.na,e > b.name) return 1;
         		return 0;
         	});
 
@@ -867,10 +883,29 @@
 		  { value: 4, text: 'status4' }
         ];
 
-        popupData.showStatus = function () {
+        popupData.showStatus = function() {
         	var selected = $filter('filter')(popupData.statuses, { value: popupData.user });
         	return (popupData.user && selected.length) ? selected[0].text : 'Not set';
         };
+
+
+        //Attach entity
+        popupData.attachEntity = function(name) {
+            //Find the entity
+            var selectedEntity = {};
+            for (var i = 0; i < popupData.cleanEntities.length; i++) {
+                if (popupData.cleanEntities[i].name == name) {
+                    selectedEntity = popupData.cleanEntities[i];
+                }
+            }
+            //Add to subscribed 
+            popupData.subscribedEntities.push(selectedEntity);
+            popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+            popupData.pendingEntity = null;
+            //Remove from cleanEntities
+        }
+
+
 
         popupData.ok = function () {
             if (!popupData.isUpdate) {

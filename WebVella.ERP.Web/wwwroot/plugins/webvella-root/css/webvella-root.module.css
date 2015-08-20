@@ -288,9 +288,9 @@ ngToast
 	}
     
     .mini-sidebar #sidebar .nav > li a{
-        -ms-text-overflow: initial;
-        -o-text-overflow: initial;
-        text-overflow: initial;
+        -ms-text-overflow: clip;
+        -o-text-overflow: clip;
+        text-overflow: clip;
     }
 
 
@@ -2765,6 +2765,10 @@ span.not-editable {
 /*#endregion */
 
 /*#region << Typeahead >> */
+.fluid-dropdown .dropdown-menu {
+    width:100%;
+}
+
 .dropdown-menu > li > a.typeahead-icon-item {
 	line-height: 34px;
 	height: 34px;
@@ -3640,6 +3644,54 @@ a[href*="#"].link-icon:before,
 a.link-icon:not([href*='.']):before,
 a.link-icon.link[href]:before {
 	content: "\f0c1"; /*link*/
+}
+
+/*#endregion*/
+
+
+/*#region << label & badges overrides >>*/
+
+.badge.badge-default.badge-inverse,
+.label.label-default.label-inverse {
+    background-color:transparent;
+    color:#777;
+    border:1px solid #777;
+}
+
+.badge.badge-primary.badge-inverse,
+.label.label-primary.label-inverse {
+    background-color:transparent;
+    color:#337ab7;
+    border:1px solid #337ab7;
+}
+
+.badge.badge-success.badge-inverse,
+.label.label-success.label-inverse {
+    background-color:transparent;
+    color:#5cb85c;
+    border:1px solid #5cb85c;
+}
+
+.badge.badge-info.badge-inverse,
+.label.label-info.label-inverse {
+    background-color:transparent;
+    color:#5bc0de;
+    border:1px solid #5bc0de;
+}
+
+.badge.badge-warning.badge-inverse,
+.label.label-warning.label-inverse {
+    background-color:transparent;
+    color:#f0ad4e;
+    border:1px solid #f0ad4e;
+}
+
+.badge.badge-danger.badge-inverse,
+.label.label-danger.label-inverse {
+    background-color:transparent;
+    color:#d9534f;
+    border:1px solid #d9534f;
+
 }
 
 /*#endregion*/

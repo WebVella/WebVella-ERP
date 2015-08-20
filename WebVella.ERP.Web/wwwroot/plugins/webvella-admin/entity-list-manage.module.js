@@ -241,7 +241,7 @@
 
         for (var i = 0; i < resolvedViewLibrary.length; i++) {
         	if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view"
-			 || resolvedViewLibrary[i].type === "html") {
+			 ){ //|| resolvedViewLibrary[i].type === "html") {
         		contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
         		if (resolvedViewLibrary[i].type === "field") {
         			contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
@@ -427,8 +427,8 @@
         contentData.AddSection = function (query) {
         	var subquery = {
         		"queryType": "AND",
-        		"fieldName": "",
-        		"fieldValue": "",
+        		"fieldName": null,
+        		"fieldValue": null,
         		"subQueries": [
 					{
 						"queryType": "EQ",
