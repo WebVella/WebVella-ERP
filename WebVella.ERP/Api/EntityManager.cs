@@ -460,8 +460,7 @@ namespace WebVella.ERP.Api
 						InputRecordListFieldItem inputColumn = (InputRecordListFieldItem)column;
 						if (string.IsNullOrWhiteSpace(((InputRecordListFieldItem)column).FieldName) && ((InputRecordListFieldItem)column).FieldId == null )
 						{
-                            errorList.Add(new ErrorModel("columns.fieldId", null, "Field id is required!"));
-                            errorList.Add(new ErrorModel("columns.fieldName", null, "Field name is required!"));
+                            errorList.Add(new ErrorModel("columns.fieldName", null, "Field name or id is required!"));
 						}
 						else
 						{
@@ -473,24 +472,30 @@ namespace WebVella.ERP.Api
                                 if (!entity.Fields.Any(f => f.Name == inputColumn.FieldName))
                                     errorList.Add(new ErrorModel("columns.fieldName", null, "Wrong name. There is no field with such name!"));
                                 else
-                                {
                                     inputColumn.FieldId = entity.Fields.FirstOrDefault(f => f.Name == inputColumn.FieldName).Id;
-                                }
                             }
-                            else
+                            else if (string.IsNullOrWhiteSpace(((InputRecordListFieldItem)column).FieldName))
                             {
-
                                 if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldId == inputColumn.FieldId).Count() > 1)
                                     errorList.Add(new ErrorModel("columns.fieldId", null, "There is already an item with such field identifier!"));
 
                                 if (!entity.Fields.Any(f => f.Id == inputColumn.FieldId.Value))
                                     errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong id. There is no field with such id!"));
                                 else
-                                {
                                     inputColumn.FieldName = entity.Fields.FirstOrDefault(f => f.Id == inputColumn.FieldId).Name;
-                                }
                             }
-						}
+                            else
+                            {
+                                //TODO validate if id does not fit the name
+
+                                if (recordlist.Columns.Where(i => i is InputRecordListFieldItem && ((InputRecordListFieldItem)i).FieldId == inputColumn.FieldId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.fieldId", null, "There is already an item with such field identifier!"));
+
+                                if (!entity.Fields.Any(f => f.Id == inputColumn.FieldId.Value))
+                                    errorList.Add(new ErrorModel("columns.fieldId", null, "Wrong id. There is no field with such id!"));
+
+                            }
+                        }
 
 						inputColumn.EntityId = entity.Id;
 						inputColumn.EntityName = entity.Name;
@@ -498,45 +503,88 @@ namespace WebVella.ERP.Api
 					else if (column is InputRecordListListItem)
 					{
 						InputRecordListListItem inputColumn = (InputRecordListListItem)column;
-						if (string.IsNullOrWhiteSpace(inputColumn.ListName))
+						if (string.IsNullOrWhiteSpace(inputColumn.ListName) && inputColumn.ListId == null )
 						{
-							errorList.Add(new ErrorModel("columns.listName", null, "List name is required!"));
+							errorList.Add(new ErrorModel("columns.listName", null, "List name or id is required!"));
 						}
 						else
 						{
-							if (recordlist.Columns.Where(i => i is InputRecordListListItem && ((InputRecordListListItem)i).ListName == inputColumn.ListName).Count() > 1)
-								errorList.Add(new ErrorModel("columns.listName", null, "There is already an item with such list name!"));
+                            if (inputColumn.ListId == null)
+                            {
+                                if (recordlist.Columns.Where(i => i is InputRecordListListItem && ((InputRecordListListItem)i).ListName == inputColumn.ListName).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.listName", null, "There is already an item with such list name!"));
 
-							if (!entity.RecordLists.Any(f => f.Name == inputColumn.ListName))
-								errorList.Add(new ErrorModel("columns.listName", null, "Wrong name. There is no list with such name!"));
-							else
-							{
-								inputColumn.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputColumn.ListName).Id;
-							}
-						}
+                                if (!entity.RecordLists.Any(f => f.Name == inputColumn.ListName))
+                                    errorList.Add(new ErrorModel("columns.listName", null, "Wrong name. There is no list with such name!"));
+                                else
+                                    inputColumn.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputColumn.ListName).Id;
+                            }
+                            else if(string.IsNullOrWhiteSpace(inputColumn.ListName) )
+                            {
+                                if (recordlist.Columns.Where(i => i is InputRecordListListItem && ((InputRecordListListItem)i).ListId == inputColumn.ListId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.listId", null, "There is already an item with sane id!"));
 
-						inputColumn.EntityId = entity.Id;
+                                if (!entity.RecordLists.Any(f => f.Id == inputColumn.ListId))
+                                    errorList.Add(new ErrorModel("columns.listId", null, "Wrong list id. There is no list with such id!"));
+                                else
+                                    inputColumn.ListName = entity.RecordLists.FirstOrDefault(l => l.Id == inputColumn.ListId).Name;
+                            }
+                            else
+                            {
+                                //TODO validate if id does not fit the name
+
+                                if (recordlist.Columns.Where(i => i is InputRecordListListItem && ((InputRecordListListItem)i).ListId == inputColumn.ListId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.listId", null, "There is already an item with sane id!"));
+
+                                if (!entity.RecordLists.Any(f => f.Id == inputColumn.ListId))
+                                    errorList.Add(new ErrorModel("columns.listId", null, "Wrong list id. There is no list with such id!"));
+                            }
+
+                        }
+
+                        inputColumn.EntityId = entity.Id;
 						inputColumn.EntityName = entity.Name;
 					}
 					else if (column is InputRecordListViewItem)
 					{
 						InputRecordListViewItem inputColumn = (InputRecordListViewItem)column;
-						if (string.IsNullOrWhiteSpace(inputColumn.ViewName))
+						if (string.IsNullOrWhiteSpace(inputColumn.ViewName) && inputColumn.ViewId == null )
 						{
-							errorList.Add(new ErrorModel("columns.viewName", null, "View name is required!"));
+							errorList.Add(new ErrorModel("columns.viewName", null, "View name or id is required!"));
 						}
 						else
 						{
-							if (recordlist.Columns.Where(i => i is InputRecordListViewItem && ((InputRecordListViewItem)i).ViewName == inputColumn.ViewName).Count() > 1)
-								errorList.Add(new ErrorModel("columns.viewName", null, "There is already an item with such view name!"));
+                            if (inputColumn.ViewId == null)
+                            {
+                                if (recordlist.Columns.Where(i => i is InputRecordListViewItem && ((InputRecordListViewItem)i).ViewName == inputColumn.ViewName).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.viewName", null, "There is already an item with such view name!"));
 
-							if (!entity.RecordViews.Any(f => f.Name == inputColumn.ViewName))
-								errorList.Add(new ErrorModel("columns.viewName", null, "Wrong name. There is no view with such name!"));
-							else
-							{
-								inputColumn.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputColumn.ViewName).Id;
-							}
-						}
+                                if (!entity.RecordViews.Any(f => f.Name == inputColumn.ViewName))
+                                    errorList.Add(new ErrorModel("columns.viewName", null, "Wrong name. There is no view with such name!"));
+                                else
+                                    inputColumn.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputColumn.ViewName).Id;
+                            }
+                            else if(string.IsNullOrWhiteSpace(inputColumn.ViewName))
+                            {
+                                if (recordlist.Columns.Where(i => i is InputRecordListViewItem && ((InputRecordListViewItem)i).ViewId == inputColumn.ViewId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.viewId", null, "There is already an item with such view id!"));
+
+                                if (!entity.RecordViews.Any(f => f.Id == inputColumn.ViewId))
+                                    errorList.Add(new ErrorModel("columns.viewId", null, "Wrong id. There is no view with such id!"));
+                                else
+                                    inputColumn.ViewName = entity.RecordViews.FirstOrDefault(v => v.Id == inputColumn.ViewId).Name;
+                            }
+                            else
+                            {
+                                //TODO validate if id does not fit the name
+
+                                if (recordlist.Columns.Where(i => i is InputRecordListViewItem && ((InputRecordListViewItem)i).ViewId == inputColumn.ViewId).Count() > 1)
+                                    errorList.Add(new ErrorModel("columns.viewId", null, "There is already an item with such view id!"));
+
+                                if (!entity.RecordViews.Any(f => f.Id == inputColumn.ViewId))
+                                    errorList.Add(new ErrorModel("columns.viewId", null, "Wrong id. There is no view with such id!"));
+                            }
+                        }
 
 						inputColumn.EntityId = entity.Id;
 						inputColumn.EntityName = entity.Name;
