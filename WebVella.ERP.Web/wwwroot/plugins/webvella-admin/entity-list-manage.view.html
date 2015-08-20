@@ -7,7 +7,7 @@
             <i class="fa fa-database"></i>
         </div>-->
         <div class="entity-box">
-            <h4 class="no-link" title="Entities">Entities</h4>
+            <h4 class="no-link" title="Entities">entities</h4>
             <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
@@ -18,7 +18,7 @@
             <i class="fa fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
             <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
             <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
         </div>
@@ -27,7 +27,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 title="Records lists">Records lists</h4>
+            <h4 title="Records lists">records lists</h4>
             <a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-arrow-left"></i> Back to list</a>
         </div>
         <div class="spacer-box"></div>
@@ -35,7 +35,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 class="no-link" title="Manage a Record list">Manage</h4>
+            <h4 class="no-link" title="Manage a Record list">manage</h4>
         </div>
     </div>
     <!--<div id="page-messages">
@@ -311,7 +311,7 @@
                             </select>
                         </td>
                         <td>
-							<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.fieldLabel for item in contentData.onlyFieldsLibrary.items"></select>
+							<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.meta.label for item in contentData.onlyFieldsLibrary.items"></select>
 						</td>
 						<td style="width:60px;">
 							<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>

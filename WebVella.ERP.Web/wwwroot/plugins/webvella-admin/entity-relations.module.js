@@ -61,11 +61,11 @@
 
         // Process
         function successCallback(response) {
-             defer.resolve(response.object);
+            defer.resolve(response.object);
         }
 
         function errorCallback(response) {
-             defer.resolve(response.object);
+            defer.resolve(response.object);
         }
 
         webvellaAdminService.getRelationsList(successCallback, errorCallback);
@@ -223,7 +223,7 @@
                                 }
                             }
                         }
-                            return relationObject;
+                        return relationObject;
                     }
                 }
             });
@@ -253,6 +253,25 @@
         }
 
         popupData.currentEntity = contentData.entity;
+
+        //Relation type array
+        popupData.relationTypeDict = [
+            {
+                name: "One to One (1:1)",
+                key: 1
+
+            },
+            {
+                name: "One to Many (1:N)",
+                key: 2
+
+            },
+            {
+                name: "Many to Many (N:N)",
+                key: 3
+
+            }
+        ];
 
         popupData.selectedOriginEntity = {};
         popupData.selectedOriginEntity.fields = [{
@@ -330,24 +349,24 @@
 
         ///////
         popupData.changeOriginEntity = function (newEntityModel) {
-                popupData.selectedOriginField = newEntityModel.fields[0];
-                popupData.selectedOriginFieldEnabled = true;
-                if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
-                    popupData.fieldsDuplicatedError = true;
-                } else {
-                    popupData.fieldsDuplicatedError = false;
-                }
+            popupData.selectedOriginField = newEntityModel.fields[0];
+            popupData.selectedOriginFieldEnabled = true;
+            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+                popupData.fieldsDuplicatedError = true;
+            } else {
+                popupData.fieldsDuplicatedError = false;
+            }
         }
 
         //////
         popupData.changeTargetEntity = function (newEntityModel) {
-                popupData.selectedTargetField = newEntityModel.fields[0];
-                popupData.selectedTargetFieldEnabled = true;
-                if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
-                    popupData.fieldsDuplicatedError = true;
-                } else {
-                    popupData.fieldsDuplicatedError = false;
-                }
+            popupData.selectedTargetField = newEntityModel.fields[0];
+            popupData.selectedTargetFieldEnabled = true;
+            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+                popupData.fieldsDuplicatedError = true;
+            } else {
+                popupData.fieldsDuplicatedError = false;
+            }
         }
 
         //Validation for duplicated fields
@@ -470,7 +489,7 @@
             $modalInstance.dismiss('cancel');
         };
 
-         /// Aux
+        /// Aux
         function successCallback(response) {
             ngToast.create({
                 className: 'success',

@@ -7,7 +7,7 @@
             <i class="fa fa-database"></i>
         </div>-->
         <div class="entity-box">
-            <h4 class="no-link" title="Entities">Entities</h4>
+            <h4 class="no-link" title="Entities">entities</h4>
             <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
@@ -18,7 +18,7 @@
             <i class="fa fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
             <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
             <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
         </div>
@@ -27,7 +27,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 class="no-link" title="Relations">Relations</h4>
+            <h4 class="no-link" title="Relations">relations</h4>
         </div>
     </div>
     <!--<div id="page-messages">
@@ -76,14 +76,14 @@
                         </a>
                     </td>
                     <td class="name">
-                        {{relation.label}}
-                        <p class="go-gray">
-							<span class="go-green">{{relation.name}}</span>
-							<span class="go-red" ng-show="relation.system">[SYS] </span>
-                            <span ng-show="relation.relationType == 1">One to One</span>
+                        {{relation.name}}
+                            <span class="badge badge-danger badge-inverse" ng-show="relation.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+                            <span ng-show="relation.relationType == 1" class="badge badge-primary badge-inverse" title="One to One" style="margin-left:5px;">1 : 1</span>
+                            <span ng-show="relation.relationType == 2" class="badge badge-primary badge-inverse" title="One to Many" style="margin-left:5px;">1 : N</span>
+                            <span ng-show="relation.relationType == 3" class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>
+                            <!--<span ng-show="relation.relationType == 1">One to One</span>
                             <span ng-show="relation.relationType == 2">One to Many</span>
-                            <span ng-show="relation.relationType == 3">Many to Many</span>
-                        </p>
+                            <span ng-show="relation.relationType == 3">Many to Many</span>-->
                     </td>
                     <td>
                         <div><span class="go-gray">Entity: </span> {{relation.originEntityLabel}}</div>
@@ -114,10 +114,9 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="type">Relation type</label>
-                        <select class="form-control" ng-model="popupData.relation.relationType" name="relationType" ng-disabled="popupData.relation.id != null">
-                            <option value="1">One to One (1:1)</option>
-                            <option value="2">One to Many (1:N)</option>
-                            <option value="3">Many to Many (N:N)</option>
+                        <select class="form-control" ng-model="popupData.relation.relationType" name="relationType" ng-disabled="popupData.relation.id != null"
+                                ng-options="relation.key as relation.name for relation in popupData.relationTypeDict">
+                            
                         </select>
                     </div>
                 </div>
@@ -243,7 +242,6 @@
 
             </div>
         </form>
-
     </div>
     <div class="modal-footer">
         <button ng-show="!popupData.relation.system && popupData.relation.id != null" class="btn btn-link pull-left go-red" ng-click="popupData.deleteRelationModal()">[ Delete relation ]</button>

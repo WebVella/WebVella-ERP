@@ -7,7 +7,7 @@
             <i class="fa fa-database"></i>
         </div>-->
         <div class="entity-box">
-            <h4 class="no-link" title="Entities">Entities</h4>
+            <h4 class="no-link" title="Entities">entities</h4>
             <!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
         </div>
         <div class="spacer-box"></div>
@@ -18,7 +18,7 @@
             <i class="fa fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="{{contentData.entity.label}}">{{contentData.entity.label}}</h4>
+            <h4 title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
             <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
             <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
         </div>
@@ -27,7 +27,7 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="lists-box">
-            <h4 class="no-link" title="Records lists">Records lists</h4>
+            <h4 class="no-link" title="Records lists">records lists</h4>
         </div>
     </div>
     <!--<div id="page-messages">
@@ -75,6 +75,8 @@
                     </td>
                     <td class="name">
                         {{list.name}}
+                        <span class="badge badge-danger badge-inverse" ng-show="list.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+                        <span class="badge badge-primary badge-inverse" ng-show="list.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
                     </td>
 
                 </tr>

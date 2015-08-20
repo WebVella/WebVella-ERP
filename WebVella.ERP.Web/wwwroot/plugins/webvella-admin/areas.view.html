@@ -208,19 +208,19 @@
 							<div class="col-sm-10">
 								<div class="form-group" style="margin-bottom:0;">
 									<div class="input-group clean-addon" ng-show="popupData.cleanEntities.length == 0" style="margin-bottom:0;">
-										<input type="text" class="form-control" placeholder="No more entities can be attached!">
+										<input type="text" class="form-control" placeholder="No more entities can be attached!" disabled>
 										<span class="input-group-addon"><i class="fa fa-warning go-red"></i></span>
 									</div>
-									<div class="input-group clean-addon" ng-show="popupData.cleanEntities.length > 0"  style="margin-bottom:0;">
-										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity Label"
-											   required typeahead="entity.label for entity in popupData.cleanEntities | filter: {label:$viewValue} | limitTo:3" typeahead-template-url="entityTypeaheadTemplate.html">
+									<div class="input-group clean-addon fluid-dropdown" ng-show="popupData.cleanEntities.length > 0"  style="margin-bottom:0;">
+										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity name"
+											   required typeahead="entity.name for entity in popupData.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 									</div>
 									<div class="go-gray form-description">only ones that have at least one default view and list are available</div>
 								</div>
 							</div>
 							<div class="col-sm-2 text-right">
-								<a href="" class="btn btn-success" style="display:block" ng-class="{'disabled':popupData.cleanEntities.length == 0}">Attach Entity</a>
+								<a ng-click="popupData.attachEntity(popupData.pendingEntity)" class="btn btn-success" style="display:block" ng-class="{'disabled':popupData.cleanEntities.length == 0}">Attach Entity</a>
 							</div>
 						</div>
 					</form>
@@ -273,8 +273,8 @@
 
 <script type="text/ng-template" id="entityTypeaheadTemplate.html">
 	<a>
-		<div bind-html-unsafe="match.model.label | typeaheadHighlight:query"></div>
-		<div class="go-green" bind-html-unsafe="match.model.name"></div>
+		<div bind-html-unsafe="match.model.name | typeaheadHighlight:query"></div>
+		<div class="go-light-blue" bind-html-unsafe="match.model.label"></div>
 	</a>
 	<hr style="margin:0"/>
 </script>
