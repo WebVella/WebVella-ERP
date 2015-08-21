@@ -38,30 +38,29 @@
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
             menuItem.stateName = "webvella-entity-records";
+            var entitySubscriptions = JSON.parse(area.subscriptions);
 
-            if (area.entities.length > 0) {
-            	area.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-            	var defaultListName = "";
-            	for (var i = 0; i < area.entities[0].recordLists.length; i++) {
-            		if (area.entities[0].recordLists[i].default) {
-            			defaultListName = area.entities[0].recordLists[i].name;
-            		}
-            	}
-            	if (defaultListName == "") {
-            		$log.error(area.name + 'is not rendered, because there is no default list for the entity ' + area.entities[0].name);
-            		return null;
-            	}
-            	menuItem.stateParams = {
-            		"areaName": area.name,
-            		"entityName": area.entities[0].name,
-            		"listName": defaultListName,
-					"filter":"all",
-            		"page": 1
-            	};
+            //Safty check - if area has subscriptions. 
+            if (entitySubscriptions == []) {
+                $log.error("area has no subscribed entities");
+                return null;
             }
-            else {
-            	return null;
+
+            entitySubscriptions.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+            //Safty check - if first subscription has default list 
+            if (entitySubscriptions[0].list.name == null || entitySubscriptions[0].list.name == "") {
+                $log.error(area.name + 'is not rendered, because there is no default list for the entity ' + area.entities[0].name);
+                return null;
             }
+
+            menuItem.stateParams = {
+                "areaName": area.name,
+                "entityName": entitySubscriptions[0].name,
+                "listName": entitySubscriptions[0].list.name,
+                "filter": "all",
+                "page": 1
+            };
 
 
             return menuItem
