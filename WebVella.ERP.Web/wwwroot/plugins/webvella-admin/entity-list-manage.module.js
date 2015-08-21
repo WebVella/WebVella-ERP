@@ -10,7 +10,8 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityListManageController', controller);
+        .controller('WebVellaAdminEntityListManageController', controller)
+        .controller('DeleteListModalController', deleteListModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -477,22 +478,39 @@
 		//#endregion
 
 
+        //Delete list
+        contentData.deleteListModal = function () {
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: 'deleteListModal.html',
+                controller: 'DeleteListModalController',
+                controllerAs: "popupData",
+                size: "",
+                resolve: {
+                    parentData: function () { return contentData; }
+                }
+            });
+        }
+
+
         $log.debug('webvellaAdmin>entity-records-list> END controller.exec');
     }
     //#endregion
 
-    //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    //#region << Modal Controllers >>
+    deleteListModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+    function deleteListModalController(parentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+        $log.debug('webvellaAdmin>entities>deleteListModal> START controller.exec');
         /* jshint validthis:true */
         var popupData = this;
-        popupData.entity = parentData.entity;
+        popupData.parentData = parentData;
 
         popupData.ok = function () {
-            webvellaAdminService.deleteEntity(popupData.entity.id, successCallback, errorCallback)
+
+            webvellaAdminService.deleteEntityList(popupData.parentData.list.name, popupData.parentData.entity.name, successCallback, errorCallback);
+
         };
 
         popupData.cancel = function () {
@@ -507,8 +525,8 @@
             });
             $modalInstance.close('success');
             $timeout(function () {
-                $state.go("webvella-admin-entities");
-            }, 0)
+                $state.go("webvella-admin-entity-lists", { entityName: popupData.parentData.entity.name }, { reload: true });
+            }, 0);
         }
 
         function errorCallback(response) {
@@ -517,7 +535,8 @@
 
 
         }
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+        $log.debug('webvellaAdmin>entities>deleteListModal> END controller.exec');
     };
 
+    //#endregion
 })();

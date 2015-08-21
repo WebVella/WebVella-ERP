@@ -52,8 +52,8 @@
                     </a>
                 </td>
                 <td class="name">
-                    {{entity.name}}<br />
-                    <span class="go-red" ng-show="entity.system">[SYS]</span><span class="divider" ng-show="entity.system">|</span><span class="go-gray">{{entity.label}} / {{entity.labelPlural}}</span>
+                    {{entity.name}}
+                    <span class="badge badge-danger badge-inverse" ng-show="entity.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
                 </td>
                 <td class="icon"><i class="fa fa-{{entity.iconName}}"></i></td>
                 <td class="fields">{{entity.fields.length}}</td>

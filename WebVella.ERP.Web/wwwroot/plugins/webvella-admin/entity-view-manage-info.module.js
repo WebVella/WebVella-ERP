@@ -181,7 +181,8 @@
 
     }
     //#endregion
-	//// Modal Controllers
+
+	//#region << Modal Controllers >>
     deleteViewModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
@@ -222,5 +223,6 @@
     	$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
     };
 
+    //#endregion
 
 })();
