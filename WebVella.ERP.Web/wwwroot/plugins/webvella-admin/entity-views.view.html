@@ -18,9 +18,7 @@
             <i class="fa fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
-            <span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
-            <a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
+            <h4 class="no-link" title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">

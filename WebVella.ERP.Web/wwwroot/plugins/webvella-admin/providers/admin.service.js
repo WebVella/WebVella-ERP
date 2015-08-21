@@ -47,7 +47,6 @@ function guid() {
         serviceInstance.updateRelation = updateRelation;
         serviceInstance.deleteRelation = deleteRelation;
 		//View
-        serviceInstance.sampleView = sampleView;
         serviceInstance.initView = initView;
         serviceInstance.initViewSection = initViewSection;
         serviceInstance.initViewRow = initViewRow;
@@ -68,6 +67,7 @@ function guid() {
         serviceInstance.getEntityList = getEntityList;
         serviceInstance.createEntityList = createEntityList;
         serviceInstance.patchEntityList = patchEntityList;
+        serviceInstance.deleteEntityList = deleteEntityList;
         //Record
         serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
         serviceInstance.createRecord = createRecord;
@@ -368,86 +368,7 @@ function guid() {
         //#endregion
 
         //#region << Entity Views >>
-        ///////////////////////
-        function sampleView() {
-            $log.debug('webvellaAdmin>providers>admin.service>initView> function called');
-            var view = {
-            	"id": "7937a4a3-e074-4e2f-aca2-1467a29bb433",
-            	"name": "details",
-            	"label": "Details",
-            	"default": true,
-            	"system": true,
-            	"weight": 1,
-            	"cssClass": "",
-            	"type": "general",
-                "regions": [
-                    {
-                    	"name": "content",
-                    	"render": false,
-                    	"cssClass": "",
-                    	"sections": [
-							 {
- 								"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
- 								"name": "general",
- 								"label": "General",
- 								"cssClass": "",
- 								"showLabel": true,
- 								"collapsed": false,
- 								"weight": 1,
- 								"tabOrder": "left-right",
- 								"rows": [
-									{
-										"id": "48818fa7-77b4-cedd-71e4-80e106038abf",
-										"weight": 1,
-										"columns": [
-										{
-											"gridColCount":6,
-											"items": [
-											{
-                    							"_t": "RecordViewFieldItem",
-                    							"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
-                    							"type": "field",
-                    							"fieldName": "username",
-                    							"fieldLabel": "Username",
-												"fieldTypeId": 18
-											}
-											]
-										},
-										{
-											"gridColCount": 6,
-											"items": [
-											{
-												"_t": "RecordViewFieldItem",
-												"fieldId": "48818fa7-77b4-cedd-71e4-80e106038abf",
-												"type": "field",
-												"fieldName": "title",
-												"fieldLabel": "Title",
-												"fieldTypeId": 18
-											}
-											]
-										}
-										]
-									}
- 								]
-							 }
-						],
-                    },
-                    {
-                    	"render": false,
-                    	"cssClass": "",
-                    	"items": [
-						  {
-				  			"entityId": "48818fa7-77b4-cedd-71e4-80e106038abf",
-				  			"listId": "48818fa7-77b4-cedd-71e4-80e106038abf",
-				  			"relationId": "48818fa7-77b4-cedd-71e4-80e106038abf"
-						  }
-                    	]
-                    }
-                ],
 
-            };
-            return view;
-        }
         ///////////////////////
         function initView() {
             $log.debug('webvellaAdmin>providers>admin.service>initView> function called');
@@ -768,6 +689,13 @@ function guid() {
         	$log.debug('webvellaAdmin>providers>admin.service>patchEntityList> function called');
         	$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listName, data: submitObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
+        ///////////////////////
+        function deleteEntityList(listName, entityName, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>deleteEntityList> function called');
+            $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
         //#endregion
 
 

@@ -14,8 +14,10 @@
         .controller('ManageAreaModalController', manageAreaController)
         .controller('DeleteAreaModalController', DeleteAreaModalController);
    
+    ///////////////////////////////////////////////////////
+    /// Configuration
+    ///////////////////////////////////////////////////////
 
-    // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
     /* @ngInject */
@@ -255,6 +257,10 @@
         popupData.roles = angular.copy(contentData.roles);
         popupData.entities = angular.copy(contentData.entities);
         popupData.subscribedEntities = [];
+        if (popupData.area.subscriptions) {
+            popupData.subscribedEntities = JSON.parse(popupData.area.subscriptions);
+        }
+
         popupData.cleanEntities = [];
 
         //Add only entities that have default view and list
@@ -263,13 +269,13 @@
             var hasDefaultList = false;
             //check if has default view
             for (var v = 0; v < popupData.entities[i].recordViews.length; v++) {
-                if (popupData.entities[i].recordViews[v].default) {
+                if (popupData.entities[i].recordViews[v].default && popupData.entities[i].recordViews[v].type === "general") {
                     hasDefaultView = true;
                 }
             }
             //check if has default list
             for (var l = 0; l < popupData.entities[i].recordLists.length; l++) {
-                if (popupData.entities[i].recordLists[l].default) {
+                if (popupData.entities[i].recordLists[l].default && popupData.entities[i].recordLists[l].type === "general") {
                     hasDefaultList = true;
                 }
             }
@@ -299,29 +305,6 @@
         }
         else {
         	popupData.area.roles = JSON.parse(popupData.area.roles);
-			// Fill in the subscribed entities table
-        	for (var i = 0; i < popupData.areaEntityRelations.length; i++) {
-        		if (popupData.area.id == popupData.areaEntityRelations[i].area_id) {
-        			for (var j = 0; j < popupData.entities.length; j++) {
-        				if (popupData.areaEntityRelations[i].entity_id == popupData.entities[j].id) {
-        					popupData.entities[j].selectedList = {};
-        					for (var m = 0; m < popupData.entities[j].recordLists.length; m++) {
-        						if (popupData.entities[j].recordLists[m].id == popupData.areaEntityRelations[i].default_list_id) {
-        							popupData.entities[j].selectedList = popupData.entities[j].recordLists[m];
-        						}
-        					}
-        					popupData.entities[j].selectedView = {};
-        					for (var n = 0; n < popupData.entities[j].recordViews.length; n++) {
-        						if (popupData.entities[j].recordViews[n].id == popupData.areaEntityRelations[i].default_view_id) {
-        							popupData.entities[j].selectedView = popupData.entities[j].recordViews[n];
-        						}
-        					}
-        					popupData.subscribedEntities.push(popupData.entities[j]);
-        				}
-        			}
-        		}
-        	}
-        	popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
             //Remove the already subscribed from the available for subscription list
         	popupData.tempEntitiesList = [];
@@ -329,7 +312,7 @@
         		var isSubscribed = false;
         		//check if subscribed
         		for (var j = 0; j < popupData.subscribedEntities.length; j++) {
-        		    if (popupData.cleanEntities[i].id === popupData.subscribedEntities[j].id) {
+        		    if (popupData.cleanEntities[i].name === popupData.subscribedEntities[j].name) {
         				isSubscribed = true;
         			}
         		}
@@ -871,31 +854,94 @@
   "youtube-square"
         ];
 
-		//Select entity typeahead
+    	//Manage Inline edit
+        popupData.getViews = function (entityName) {
+            var views = [];
 
-    	//Manage View section
-        popupData.user = 2;
+            for (var i = 0; i < popupData.entities.length; i++) {
+                if (popupData.entities[i].name == entityName) {
+                    views = popupData.entities[i].recordViews;
+                    break;
+                }
+            }
+            return views;
+        }
+        popupData.updateSubscriptionView = function (subscription) {
+            for (var i = 0; i < popupData.entities.length; i++) {
+                if (popupData.entities[i].name == subscription.name) {
+                    for (var j = 0; j < popupData.entities[i].recordViews.length; j++) {
+                        if (popupData.entities[i].recordViews[j].name == subscription.view.name) {
+                            subscription.view.label = popupData.entities[i].recordViews[j].label;
+                            break;
+                        }
+                    }
 
-        popupData.statuses = [
-		  { value: 1, text: 'status1' },
-		  { value: 2, text: 'status2' },
-		  { value: 3, text: 'status3' },
-		  { value: 4, text: 'status4' }
-        ];
+                    break;
+                }
+            }
+        }
 
-        popupData.showStatus = function() {
-        	var selected = $filter('filter')(popupData.statuses, { value: popupData.user });
-        	return (popupData.user && selected.length) ? selected[0].text : 'Not set';
-        };
+        popupData.getLists = function (entityName) {
+            var lists = [];
+
+            for (var i = 0; i < popupData.entities.length; i++) {
+                if (popupData.entities[i].name == entityName) {
+                    lists = popupData.entities[i].recordLists;
+                    break;
+                }
+            }
+            return lists;
+        }
+        popupData.updateSubscriptionList = function (subscription) {
+            for (var i = 0; i < popupData.entities.length; i++) {
+                if (popupData.entities[i].name == subscription.name) {
+                    for (var j = 0; j < popupData.entities[i].recordLists.length; j++) {
+                        if (popupData.entities[i].recordLists[j].name == subscription.list.name) {
+                            subscription.list.label = popupData.entities[i].recordLists[j].label;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
 
         //Attach entity
         popupData.attachEntity = function(name) {
             //Find the entity
-            var selectedEntity = {};
+            var selectedEntity = {
+                name: null,
+                label: null,
+                weight: null
+            };
+            selectedEntity.view = {
+                name: null,
+                label: null
+            };
+
+            selectedEntity.list = {
+                name: null,
+                label: null
+            };
+
             for (var i = 0; i < popupData.cleanEntities.length; i++) {
                 if (popupData.cleanEntities[i].name == name) {
-                    selectedEntity = popupData.cleanEntities[i];
+                    selectedEntity.name = popupData.cleanEntities[i].name;
+                    selectedEntity.label = popupData.cleanEntities[i].label;
+                    selectedEntity.weight = popupData.cleanEntities[i].weight;
+                    for (var j = 0; j < popupData.cleanEntities[i].recordViews.length; j++) {
+                        if (popupData.cleanEntities[i].recordViews[j].default) {
+                            selectedEntity.view.name = popupData.cleanEntities[i].recordViews[j].name;
+                            selectedEntity.view.label = popupData.cleanEntities[i].recordViews[j].label;
+                        }
+                    }
+                    for (var m  = 0; m < popupData.cleanEntities[i].recordLists.length; m++) {
+                        if (popupData.cleanEntities[i].recordLists[m].default) {
+                            selectedEntity.list.name = popupData.cleanEntities[i].recordLists[m].name;
+                            selectedEntity.list.label = popupData.cleanEntities[i].recordLists[m].label;
+                        }
+                    }
                 }
             }
             //Add to subscribed 
@@ -903,18 +949,62 @@
             popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
             popupData.pendingEntity = null;
             //Remove from cleanEntities
+            var attachedItemIndex = -1;
+            for (var i = 0; i < popupData.cleanEntities.length; i++) {
+                if (popupData.cleanEntities[i].name == selectedEntity.name) {
+                    attachedItemIndex = i;
+                    break;
+                }
+            }
+            if (attachedItemIndex != -1) {
+                popupData.cleanEntities.splice(attachedItemIndex, 1);
+            }
         }
 
 
+        //Delete subscribed entity
+        popupData.deleteSubscription = function (subscription) {
+            var unsubscribedEntity = {};
+            for (var i = 0; i < popupData.entities.length; i++) {
+                if (popupData.entities[i].name == subscription.name) {
+                    unsubscribedEntity = popupData.entities[i];
+                    break;
+                }
+            }
+            popupData.cleanEntities.push(unsubscribedEntity);
+            //Soft alphabetically
+            popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.na, e > b.name) return 1;
+                return 0;
+            });
+            
+            //Remove subscription
+            var subscriptionIndex = -1;
+            for (var i = 0; i < popupData.subscribedEntities.length; i++) {
+                if (popupData.subscribedEntities[i].name == subscription.name) {
+                    subscriptionIndex = i;
+                    break;
+                }
+            }
+            if (subscriptionIndex != -1) {
+                popupData.subscribedEntities.splice(subscriptionIndex, 1);
+            }
 
+        }
+
+
+        /// EXIT functions
         popupData.ok = function () {
             if (!popupData.isUpdate) {
                 popupData.area.roles = JSON.stringify(popupData.area.roles);
+                popupData.area.subscriptions = JSON.stringify(popupData.subscribedEntities);
                 webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
             }
             else {
                 popupData.area.roles = JSON.stringify(popupData.area.roles);
-                webvellaAdminService.updateRecord(popupData.area.id,"area", popupData.area, successCallback, errorCallback);
+                popupData.area.subscriptions = JSON.stringify(popupData.subscribedEntities);
+                webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
             } 
         };
 

@@ -229,27 +229,29 @@
 						<table class="table table-bordered x-editable" ng-show="popupData.subscribedEntities.length > 0">
 							<thead>
 								<tr>
-									<th width="60">weight</th>
+									<th width="60">w.</th>
 									<th>entity</th>
-									<th>list</th>
-									<th>view</th>
+									<th width="25%">list</th>
+									<th width="25%">view</th>
 									<th width="100">action</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="entity in popupData.subscribedEntities">
-									<td>{{entity.weight}}</td>
-									<td>{{entity.label}} <br/><span class="go-green">{{entity.name}}</span></td>
+								<tr ng-repeat="subscription in popupData.subscribedEntities">
+									<td>{{subscription.weight}}</td>
+									<td>{{subscription.name}}</td>
 									<td>
-										<span editable-select="popupData.user" e-ng-options="s.value as s.text for s in popupData.statuses">{{popupData.showStatus()}}</span>
+										<span editable-select="subscription.view.name" e-ng-options="view.name as view.name for view in popupData.getViews(subscription.name)" onaftersave="popupData.updateSubscriptionView(subscription)">{{subscription.view.name}}</span>
 									</td>
 									<td>
-										<span editable-select="popupData.user" e-ng-options="s.value as s.text for s in popupData.statuses">{{popupData.showStatus()}}</span>
+										<span editable-select="subscription.list.name" e-ng-options="list.name as list.name for list in popupData.getLists(subscription.name)" onaftersave="popupData.updateSubscriptionList(subscription)">{{subscription.list.name}}</span>
 									</td>
-									<td><a href="" class="go-red"><i class="fa fa-fw fa-trash"></i> delete</a></td>
+									<td><a href="javascript:void(0)" ng-click="popupData.deleteSubscription(subscription)" class="go-red"><i class="fa fa-fw fa-trash"></i> delete</a></td>
 								</tr>
 							</tbody>
 						</table>
+
+
 
 					</div>
 				</div>
@@ -274,7 +276,7 @@
 <script type="text/ng-template" id="entityTypeaheadTemplate.html">
 	<a>
 		<div bind-html-unsafe="match.model.name | typeaheadHighlight:query"></div>
-		<div class="go-light-blue" bind-html-unsafe="match.model.label"></div>
+		<!--<div class="go-light-blue" bind-html-unsafe="match.model.label"></div>-->
 	</a>
 	<hr style="margin:0"/>
 </script>
