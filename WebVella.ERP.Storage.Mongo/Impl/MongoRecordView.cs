@@ -69,7 +69,7 @@ namespace WebVella.ERP.Storage.Mongo
         [BsonElement("cssClass")]
         public string CssClass { get; set; }
 
-        [BsonElement("lists")]
+        [BsonElement("items")]
         public List<IStorageRecordViewSidebarItemBase> Items { get; set; }
     }
 
