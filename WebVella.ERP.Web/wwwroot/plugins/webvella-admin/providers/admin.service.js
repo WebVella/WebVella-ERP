@@ -79,6 +79,7 @@ function guid() {
 
         //Area
         serviceInstance.initArea = initArea;
+        serviceInstance.getAreaByName = getAreaByName;
         serviceInstance.deleteArea = deleteArea;
         serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
         serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
@@ -797,11 +798,19 @@ function guid() {
             return area;
         }
 
+
+        ///////////////////////
+        function getAreaByName(areaName, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getAreaByName> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'area/' + areaName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
         ///////////////////////
         function deleteArea(recordId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called');
             $http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
+
         ///////////////////////
         function getAreaRelationByEntityId(entityId, successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getEntityRelatedAreas> function called');
