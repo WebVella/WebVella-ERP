@@ -265,7 +265,7 @@
         popupData.entities = angular.copy(contentData.entities);
         popupData.subscribedEntities = [];
         if (popupData.area.subscriptions != null && popupData.area.subscriptions.length > 0 ) {
-            popupData.subscribedEntities = JSON.parse(popupData.area.subscriptions);
+            popupData.subscribedEntities = angular.fromJson(popupData.area.subscriptions);
         }
 
         popupData.cleanEntities = [];
@@ -305,7 +305,7 @@
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
         }
         else {
-        	popupData.area.roles = JSON.parse(popupData.area.roles);
+            popupData.area.roles = angular.fromJson(popupData.area.roles);
 
             //Remove the already subscribed from the available for subscription list
         	popupData.tempEntitiesList = [];
@@ -998,13 +998,13 @@
         /// EXIT functions
         popupData.ok = function () {
             if (!popupData.isUpdate) {
-                popupData.area.roles = JSON.stringify(popupData.area.roles);
-                popupData.area.subscriptions = JSON.stringify(popupData.subscribedEntities);
+                popupData.area.roles = angular.toJson(popupData.area.roles);
+                popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
                 webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
             }
             else {
-                popupData.area.roles = JSON.stringify(popupData.area.roles);
-                popupData.area.subscriptions = JSON.stringify(popupData.subscribedEntities);
+                popupData.area.roles = angular.toJson(popupData.area.roles);
+                popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
                 webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
             } 
         };

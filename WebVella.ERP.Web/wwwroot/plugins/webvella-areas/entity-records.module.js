@@ -40,7 +40,9 @@
                 }
             },
             resolve: {
-            	resolvedListRecords: resolveListRecords
+                resolvedListRecords: resolveListRecords,
+                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+                resolvedCurrentArea: resolveCurrentArea
             },
             data: {
 
@@ -61,7 +63,6 @@
 
 	//#region << Resolve Function >>
     resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams'];
-
 	/* @ngInject */
     function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams) {
     	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
@@ -83,21 +84,69 @@
     	$log.debug('webvellaDesktop>browse> END state.resolved');
     	return defer.promise;
     }
+
+    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$stateParams'];
+    /* @ngInject */
+    function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $state, $stateParams) {
+        $log.debug('webvellaDesktop>resolveCurrentEntityMeta> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaDesktop>resolveCurrentEntityMeta> END state.resolved');
+        return defer.promise;
+    }
+
+
+    resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$stateParams'];
+    /* @ngInject */
+    function resolveCurrentArea($q, $log, webvellaAdminService, $state, $stateParams) {
+        $log.debug('webvellaDesktop>resolveCurrentEntityMeta> BEGIN state.resolved');
+        // Initialize
+        var defer = $q.defer();
+
+        // Process
+        function successCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        function errorCallback(response) {
+            defer.resolve(response.object);
+        }
+
+        webvellaAdminService.getAreaByName($stateParams.areaName, successCallback, errorCallback);
+
+        // Return
+        $log.debug('webvellaDesktop>resolveCurrentEntityMeta> END state.resolved');
+        return defer.promise;
+    }
+
 	//#endregion
 
 
     // Controller ///////////////////////////////
     controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords'];
+        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea'];
 
     /* @ngInject */
     function controller($filter,$log,$modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
-        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords) {
+        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta, resolvedCurrentArea) {
         $log.debug('webvellaAreas>entities> BEGIN controller.exec');
         /* jshint validthis:true */
         var contentData = this;
         contentData.records = angular.copy(resolvedListRecords.data);
-        contentData.recordsMeta = angular.copy(resolvedListRecords.fieldsMeta);
+        contentData.recordsMeta = angular.copy(resolvedListRecords.meta);
 
         //#region << Set Environment >>
         contentData.pageTitle = "Area Entities | " + pageTitle;
@@ -106,14 +155,24 @@
 
         webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 
-		//Get the current entity meta
-        contentData.entity = webvellaAreasService.getCurrentEntityFromArea($stateParams.entityName, contentData.currentArea);
+		//Get the current meta
+        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.area = angular.copy(resolvedCurrentArea.data[0]);
+        contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
+        contentData.areaEntitySubscription = {};
+        for (var i = 0; i < contentData.area.subscriptions.length; i++) {
+            if (contentData.area.subscriptions[i].name == contentData.entity.name) {
+                contentData.areaEntitySubscription = contentData.area.subscriptions[i];
+                break;
+            }
+        }
+
 
     	//Select default details view
-        contentData.defaultView = {};
+        contentData.selectedView = {};
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-        	if (contentData.entity.recordViews[i].default) {
-        		contentData.defaultView = contentData.entity.recordViews[i];
+            if (contentData.entity.recordViews[i].name == contentData.areaEntitySubscription.view.name) {
+                contentData.selectedView = contentData.entity.recordViews[i];
         		break;
         	}
         }

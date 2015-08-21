@@ -1753,13 +1753,29 @@ namespace WebVella.ERP.Web.Controllers
 			return resultDataList;
 		}
 
-		#endregion
+        #endregion
 
-		#region << Area Specific >>
+        #region << Area Specific >>
+        // Get area meta by name
+        // GET: api/v1/en_US/area/{name}
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/area/{name}")]
+        public IActionResult GetAreaByName(string name)
+        {
 
-		// Delete an area record
-		// DELETE: api/v1/en_US/area/{recordId}
-		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/area/{recordId}")]
+            QueryObject areaFilterObj = EntityQuery.QueryEQ("name", name);
+
+            EntityQuery query = new EntityQuery("area", "*", areaFilterObj, null, null, null);
+
+            QueryResponse result = recMan.Find(query);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+
+
+        // Delete an area record
+        // DELETE: api/v1/en_US/area/{recordId}
+        [AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/area/{recordId}")]
 		public IActionResult DeleteAreaRecord(Guid recordId)
 		{
 			QueryResponse response = new QueryResponse();

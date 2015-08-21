@@ -94,7 +94,7 @@
                         $log.info(progressPercentage + '%');
                     }).success(function (data, status, headers, config) {
                         $timeout(function () {
-                            //$scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                            //$scope.log = 'file: ' + config.file.name + ', Response: ' + angular.toJson(data) + '\n' + $scope.log;
                             //$log.info(data);
                             //$log.info(status);
                             //$log.info(headers);

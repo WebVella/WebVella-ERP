@@ -38,7 +38,7 @@
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
             menuItem.stateName = "webvella-entity-records";
-            var entitySubscriptions = JSON.parse(area.subscriptions);
+            var entitySubscriptions = angular.fromJson(area.subscriptions);
 
             //Safty check - if area has subscriptions. 
             if (entitySubscriptions == []) {

@@ -39,7 +39,11 @@
         			currentArea = sitemap[i];
         		}
         	}
-        	currentArea.entities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+            //Serialize the JSON subscriptions object
+        	currentArea.subscriptions = angular.fromJson(currentArea.subscriptions);
+
+        	currentArea.subscriptions.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
         	return currentArea;
         }
 
@@ -47,9 +51,9 @@
         function getCurrentEntityFromArea(entityName, area) {
         	var currentEntity = {};
 
-        	for (var i = 0; i < area.entities.length; i++) {
-        		if (area.entities[i].name == entityName) {
-        			currentEntity = area.entities[i];
+        	for (var i = 0; i < area.subscriptions.length; i++) {
+        	    if (area.subscriptions[i].name == entityName) {
+        	        currentEntity = area.subscriptions[i];
         		}
         	}
 

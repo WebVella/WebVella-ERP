@@ -20,10 +20,10 @@
             </span>-->
         </div>
         <div class="icon-box">
-            <i class="fa fa-fw fa-{{contentData.entity.icon_name}}"></i>
+            <i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 title="Offers">{{contentData.entity.label_plural}}</h4>
+            <h4 title="Offers">{{contentData.entity.labelPlural}}</h4>
             <a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
         </div>
         <div class="spacer-box"></div>
@@ -108,36 +108,36 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}">{{fieldMeta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td>
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.defaultView.name,sectionName:"$"})' class="btn btn-default">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,sectionName:"$"})' class="btn btn-default">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{fieldMeta.name}}" ng-repeat="fieldMeta in contentData.recordsMeta | filter: {name:'!id'}" ng-switch="fieldMeta.fieldType">
-						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,fieldMeta)}}</span>
-						<span ng-switch-when="2">{{contentData.getCheckboxString(record,fieldMeta)}}</span>
-						<span ng-switch-when="3">{{contentData.getCurrencyString(record,fieldMeta)}}</span>
-						<span ng-switch-when="4">{{contentData.getDateString(record,fieldMeta)}}</span>
-						<span ng-switch-when="5">{{contentData.getDateTimeString(record,fieldMeta)}}</span>
-						<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,fieldMeta)"></span>
-						<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,fieldMeta)"></span>
-						<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,fieldMeta)"></span>
-						<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,fieldMeta)"></span>
-						<pre ng-switch-when="10" ng-bind="record[fieldMeta.name]"></pre>
-						<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,fieldMeta)"></span>
-						<span ng-switch-when="12" ng-bind="record[fieldMeta.name]"></span>
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
+						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column.meta)}}</span>
+						<span ng-switch-when="2">{{contentData.getCheckboxString(record,column.meta)}}</span>
+						<span ng-switch-when="3">{{contentData.getCurrencyString(record,column.meta)}}</span>
+						<span ng-switch-when="4">{{contentData.getDateString(record,column.meta)}}</span>
+						<span ng-switch-when="5">{{contentData.getDateTimeString(record,column.meta)}}</span>
+						<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column.meta)"></span>
+						<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column.meta)"></span>
+						<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column.meta)"></span>
+						<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column.meta)"></span>
+						<pre ng-switch-when="10" ng-bind="record[column.meta.name]"></pre>
+						<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column.meta)"></span>
+						<span ng-switch-when="12" ng-bind="record[column.meta.name]"></span>
 						<span ng-switch-when="13">******</span>
-						<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,fieldMeta)"></span>
-						<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,fieldMeta)"></span>
-						<span ng-switch-when="16">{{record[fieldMeta.name]}}</span>
-						<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,fieldMeta)"></span>
-						<span ng-switch-when="18">{{record[fieldMeta.name]}}</span>
-						<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,fieldMeta)"></span>
+						<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column.meta)"></span>
+						<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column.meta)"></span>
+						<span ng-switch-when="16">{{record[column.meta.name]}}</span>
+						<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column.meta)"></span>
+						<span ng-switch-when="18">{{record[column.meta.name]}}</span>
+						<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column.meta)"></span>
 					</td>
 				</tr>
 			</tbody>
