@@ -188,8 +188,8 @@
             <div class="col-xs-6">
                 <div class="list-field-selection-box">
                     <div class="drop-zone">
-                        <div as-sortable="contentData.dragControlListeners" ng-model="contentData.fieldsLibrary.items">
-                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.fieldsLibrary.items | filter: {search:contentData.search}">
+                        <div as-sortable="contentData.dragControlListeners" ng-model="contentData.listLibrary.items">
+                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.listLibrary.items | filter: {search:contentData.search}">
 								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
