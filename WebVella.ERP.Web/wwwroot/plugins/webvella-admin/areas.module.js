@@ -264,7 +264,7 @@
         popupData.roles = angular.copy(contentData.roles);
         popupData.entities = angular.copy(contentData.entities);
         popupData.subscribedEntities = [];
-        if (popupData.area.subscriptions) {
+        if (popupData.area.subscriptions != null && popupData.area.subscriptions.length > 0 ) {
             popupData.subscribedEntities = JSON.parse(popupData.area.subscriptions);
         }
 
@@ -300,13 +300,7 @@
 
 
         popupData.isUpdate = true;
-        if (popupData.area == null) {
-            popupData.area = {};
-            popupData.area.id = null;
-            popupData.area.color = "red";
-            popupData.area.icon_name = "database";
-            popupData.area.weight = 10;
-            popupData.area.roles = [];
+        if (popupData.area.id == null) {
             popupData.isUpdate = false;
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
         }

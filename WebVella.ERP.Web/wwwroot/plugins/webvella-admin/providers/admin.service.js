@@ -785,17 +785,13 @@ function guid() {
         function initArea() {
             var area = {
                 "id": null,
-                "created_by": null,
-                "last_modified_by": null,
-                "created_on": null,
-                "last_modified_on": null,
                 "color": "blue",
                 "label": null,
                 "icon_name": "th-large",
-                "weight": 1,
+                "weight": 10,
                 "name": null,
-                "roles": null,
-                "subscriptions": null
+                "roles": [],
+                "subscriptions": []
             };
             
             return area;

@@ -1860,7 +1860,7 @@ namespace WebVella.ERP.Web.Controllers
 
 				foreach (EntityRecord area in areas)
 				{
-                    if (area["subscriptions"] != null)
+                    if ((string)area["subscriptions"] != "[]")
                     {
                         responseAreas.Add(area);
                     }
