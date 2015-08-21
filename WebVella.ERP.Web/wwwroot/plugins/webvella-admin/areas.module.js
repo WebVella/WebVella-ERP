@@ -187,10 +187,12 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
-							'resolvedAreaEntityRelationRecords', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal'];
+							'resolvedAreaEntityRelationRecords', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal',
+                            'webvellaAdminService'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
-						resolvedAreaEntityRelationRecords, resolvedRolesList, resolvedEntityMetaList, $modal) {
+						resolvedAreaEntityRelationRecords, resolvedRolesList, resolvedEntityMetaList, $modal,
+                        webvellaAdminService) {
         $log.debug('webvellaAdmin>areas-list> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -221,7 +223,12 @@
 
         //Create new entity modal
         contentData.openManageAreaModal = function (currentArea) {
-            contentData.currentArea = currentArea;
+            if (currentArea != null) {
+                contentData.currentArea = currentArea;
+            }
+            else {
+                contentData.currentArea = webvellaAdminService.initArea();
+            }
             var modalInstance = $modal.open({
                 animation: false,
                 templateUrl: 'manageAreaModal.html',

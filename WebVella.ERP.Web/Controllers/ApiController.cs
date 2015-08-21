@@ -1846,7 +1846,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetSitemap()
 		{
 			var columnsNeeded = "id,name,label,color,icon_name,weight,roles,"
-				+ "$areas_area_relation.entity_id";
+				+ "subscriptions";
 			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
 			QueryResponse resultAreas = recMan.Find(queryAreas);
 			if (!resultAreas.Success)
@@ -1860,33 +1860,10 @@ namespace WebVella.ERP.Web.Controllers
 
 				foreach (EntityRecord area in areas)
 				{
-					List<EntityRecord> areaEntities = new List<EntityRecord>();
-					//area["entities"] = null;
-					if (area["$areas_area_relation"] != null && ((List<EntityRecord>)area["$areas_area_relation"]).Any()) // Just in case
-					{
-						List<EntityRecord> areaEntityIds = (List<EntityRecord>)area["$areas_area_relation"];
-						var entityColumnsNeeded = "id,name,label,icon_name,weight,recordLists,recordViews";
-						foreach (var entityId in areaEntityIds)
-						{
-							EntityResponse entityResult = entityManager.ReadEntity((Guid)entityId["entity_id"]);
-							if (!entityResult.Success)
-								throw new Exception(entityResult.Message);
-
-							EntityRecord entityObj = new EntityRecord();
-							entityObj["id"] = entityResult.Object.Id;
-							entityObj["name"] = entityResult.Object.Name;
-							entityObj["label"] = entityResult.Object.Label;
-							entityObj["label_plural"] = entityResult.Object.LabelPlural;
-							entityObj["icon_name"] = entityResult.Object.IconName;
-							entityObj["weight"] = entityResult.Object.Weight;
-							entityObj["recordLists"] = entityResult.Object.RecordLists;
-							entityObj["recordViews"] = entityResult.Object.RecordViews;
-							areaEntities.Add(entityObj);
-						}
-						area["entities"] = areaEntities;
-						responseAreas.Add(area);
-					}
-
+                    if (area["subscriptions"] != null)
+                    {
+                        responseAreas.Add(area);
+                    }
 				}
 			}
 
