@@ -297,7 +297,7 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "listId")]
 		public Guid? ListId { get; set; }
 
-		[JsonProperty(PropertyName = "relationName")]
+		[JsonProperty(PropertyName = "listName")]
 		public string ListName { get; set; }
 	}
 
