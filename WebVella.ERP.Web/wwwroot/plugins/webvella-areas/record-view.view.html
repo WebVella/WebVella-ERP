@@ -274,7 +274,7 @@
 									</div>
 									<!-- If type 18 - textbox -->
 									<a ng-switch-when="18" href="javascript:void(0)" 
-									   editable-text="contentData.viewData[item.dataName]" 
+									   editable-text="contentData.viewData[item.dataName]" class="textbox"
 									   ng-bind="contentData.viewData[item.dataName] || 'empty' "
 									   onbeforesave="contentData.fieldUpdate(item, $data)"></a>
 									<!-- If type 19 - url -->
