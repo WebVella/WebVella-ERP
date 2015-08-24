@@ -2,7 +2,8 @@
 
 body {
 	background: #212121;
-	background-image: url(/plugins/webvella-root/assets/black_scales/black_scales.png);
+	/*background-image: url(/plugins/webvella-root/assets/black_scales/black_scales.png);*/
+    background:#000;
 }
 
 .page-header {
@@ -174,6 +175,7 @@ ngToast
 			#sidebar .nav.nav-pills > li > a:focus {
 				background: #424242;
 				background: rgba(255,255,255,0.13);
+                background: rgba(255,255,255,0.1);
 			}
 
 			#sidebar .nav.nav-pills > li > a > .fa {
