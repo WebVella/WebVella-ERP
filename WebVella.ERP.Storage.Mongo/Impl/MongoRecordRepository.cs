@@ -212,16 +212,26 @@ namespace WebVella.ERP.Storage.Mongo
                 case QueryType.AND:
                     {
                         List<IMongoQuery> queries = new List<IMongoQuery>();
-                        foreach (var q in query.SubQueries)
-                            queries.Add(ConvertQuery(q));
-                        return Query.And(queries);
+                        if (query.SubQueries.Count == 1)
+                            return ConvertQuery(query.SubQueries[0]);
+                        else
+                        {
+                            foreach (var q in query.SubQueries)
+                                queries.Add(ConvertQuery(q));
+                            return Query.And(queries);
+                        }
                     }
                 case QueryType.OR:
                     {
                         List<IMongoQuery> queries = new List<IMongoQuery>();
-                        foreach (var q in query.SubQueries)
-                            queries.Add(ConvertQuery(q));
-                        return Query.Or(queries);
+                        if (query.SubQueries.Count == 1)
+                            return ConvertQuery(query.SubQueries[0]);
+                        else
+                        {
+                            foreach (var q in query.SubQueries)
+                                queries.Add(ConvertQuery(q));
+                            return Query.Or(queries);
+                        }
                     }
                 default:
                     throw new Exception("Not supported query type");
