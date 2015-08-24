@@ -2634,6 +2634,8 @@ span.editable {
 		top: 0;
 		line-height: 20px;
 		width: 32px;
+        min-height:32px;
+        height:100%;
 		padding: 6px 0;
 		text-align: center;
 		color: #BDBDBD;

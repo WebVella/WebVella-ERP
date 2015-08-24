@@ -19,7 +19,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:recordId/view/:viewName/section/:sectionName', 
+			url: '/:areaName/:entityName/:recordId/view/:viewName/section/:sectionName/:filter/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -149,6 +149,8 @@
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
+		contentData.isView = false;
+		contentData.isList = false;
 		contentData.stateParams = $stateParams;
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
@@ -180,36 +182,26 @@
 
 		//#endregion
 
-        //#region << Initialize sidebar nav >>
+	    //#region << View Seciton >>
+		contentData.viewSection = {};
+	    //<< Initialize section label >>
+		contentData.viewSection.label = "General";
 		for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
-		    if (contentData.recordView.sidebar.items[i].type == "view" || contentData.recordView.sidebar.items[i].type == "viewFromRelation") {
-		        if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].viewName) {
-		            contentData.viewSection.label = contentData.recordView.sidebar.items[i].viewLabel;
-		        }
-		    }
-		    else if (contentData.recordView.sidebar.items[i].type == "list" || contentData.recordView.sidebar.items[i].type == "listFromRelation") {
-		        if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].listName) {
-		            contentData.viewSection.label = contentData.recordView.sidebar.items[i].listLabel;
-		        }
+		    if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].meta.name) {
+		        contentData.viewSection.label = contentData.recordView.sidebar.items[i].meta.label;
 		    }
 		}
 
-        //#endregion
-
-		//#region << View Seciton >>
-		contentData.viewSection = {};
-		contentData.viewSection.label = "General";
 
 		if ($stateParams.sectionName == "$") {
 		    //The default view is active
+		    contentData.isView = true;
 		}
 		else {
-            //One of the sidebar view or lists is active
+		    //One of the sidebar view or lists is active
 		}
 
-
-
-		//#endregion
+	    //#endregion
 
 
 		//#region << Logic >>
