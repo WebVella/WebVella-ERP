@@ -1517,14 +1517,14 @@ namespace WebVella.ERP.Web.Controllers
 
 		private List<EntityRecord> GetViewRecords(List<Entity> entities, Entity entity, string viewName, string queryFieldName, object queryFieldValue)
 		{
-			QueryObject queryObj = new QueryObject();
-			queryObj.QueryType = QueryType.AND;
-			queryObj.SubQueries = new List<QueryObject>();
-			queryObj.SubQueries.Add(new QueryObject { FieldName = queryFieldName, FieldValue = queryFieldValue, QueryType = QueryType.EQ });
+            //QueryObject queryObj = new QueryObject();
+            //queryObj.QueryType = QueryType.AND;
+            //queryObj.SubQueries = new List<QueryObject>();
+            //queryObj.SubQueries.Add(new QueryObject { FieldName = queryFieldName, FieldValue = queryFieldValue, QueryType = QueryType.EQ });
+            //EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj);
+            EntityQuery resultQuery = new EntityQuery(entity.Name, "*", EntityQuery.QueryEQ(queryFieldName, queryFieldValue));
 
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj);
-
-			EntityRelationManager relManager = new EntityRelationManager(Storage);
+            EntityRelationManager relManager = new EntityRelationManager(Storage);
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
 			if (relListResponse.Object != null)
