@@ -1536,7 +1536,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
 
-			string queryFields = null;
+			string queryFields = string.Empty;
 
 			List<RecordViewItemBase> items = new List<RecordViewItemBase>();
 
