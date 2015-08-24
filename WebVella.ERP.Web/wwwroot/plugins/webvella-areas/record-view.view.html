@@ -82,7 +82,7 @@
 	</div>-->
 </div>
 
-<div class="record-details">
+<div class="record-details" ng-if="contentData.isView">
 	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.contentRegion.sections">
 		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
 			<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
@@ -301,4 +301,7 @@
 		</div>
 	</div>
 
+</div>
+<div class="record-list" ng-if="contentData.isList">
+    test
 </div>

@@ -62,6 +62,7 @@
                 <tr>
                     <th class="actions"></th>
                     <th class="name">Name</th>
+                    <th class="type">Type</th>
             </thead>
             <tbody>
                 <tr ng-repeat="view in contentData.views | filter: {label: searchFilter}">
@@ -74,6 +75,9 @@
                         {{view.name}} 
                         <span class="badge badge-danger badge-inverse" ng-show="view.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
                         <span class="badge badge-primary badge-inverse" ng-show="view.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
+                    </td>
+                    <td class="type">
+                        {{view.type}}
                     </td>
                 </tr>
             </tbody>
