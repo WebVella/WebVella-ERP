@@ -60,9 +60,9 @@
 
 
 	//#region << Resolve Function >>
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
-	function resolveCurrentView($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
 		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
 		// Initialize
 		var defer = $q.defer();
@@ -75,46 +75,7 @@
 				}, 0);
 			}
 			else {
-				var enableObjectConversion = true;
-				if (enableObjectConversion) {
-					//Convert old object to new object
-					var co = {};
-					co.meta = response.object;
-					var itemText = {};
-					itemText.type = "field";
-					itemText.dataName = "$field$text";
-					itemText.entityName = "test";
-					itemText.entityLabel = "Test";
-					itemText.entityLabelPlural = "Tests";
-					itemText.relationName = null;
-					itemText.meta = {
-						"auditable": false,
-						"defaultValue": null,
-						"description": "",
-						"fieldType": 18,
-						"helpText": "",
-						"id": "fc61bd8e-67bb-4eac-bb85-c285884f4c5f",
-						"label": "Text",
-						"maxLength": null,
-						"name": "text",
-						"placeholderText": "",
-						"required": false,
-						"searchable": false,
-						"system": false,
-						"unique": false
-					};
-					co.meta.regions[0].sections[0].rows[0].columns[0].items[0] = itemText;
-
-					co.data = [];
-					var dataRecord = {
-						"$field$text": "boz"
-					};
-					co.data.push(dataRecord);
-					defer.resolve(co);
-				}
-				else {
 					defer.resolve(response.object);
-				}
 			}
 		}
 
@@ -129,7 +90,7 @@
 			}
 		}
 
-		webvellaAdminService.getEntityView($stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
 
 		// Return
 		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
