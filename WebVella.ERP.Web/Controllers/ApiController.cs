@@ -1482,7 +1482,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
-		public IActionResult GetViewRecords(string entityName, string viewName, string id)
+		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
