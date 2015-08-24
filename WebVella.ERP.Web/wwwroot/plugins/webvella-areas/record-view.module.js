@@ -39,7 +39,6 @@
 			},
 			resolve: {
 				resolvedCurrentView: resolveCurrentView,
-				resolvedExtendedViewData: resolveExtendedViewData,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
 			},
 			data: {
@@ -138,80 +137,6 @@
 	}
 
 
-	resolveExtendedViewData.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams'];
-	/* @ngInject */
-	function resolveExtendedViewData($q, $log, webvellaAreasService, $stateParams) {
-		$log.debug('webvellaAreas>entities> BEGIN state.resolved');
-		// Initialize
-		var defer = $q.defer();
-		var record = {};
-		var extendedView = {};
-		//// Process
-		function getRecordSuccessCallback(response) {
-			record = response.object;
-			//Cycle through the view, find all fields and attach their data and meta info
-			for (var regionIndex = 0; regionIndex < extendedView.regions.length; regionIndex++) {
-				if (extendedView.regions[regionIndex].name == "content") {
-					for (var sectionIndex = 0; sectionIndex < extendedView.regions[regionIndex].sections.length; sectionIndex++) {
-						for (var rowIndex = 0; rowIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-							for (var columnIndex = 0; columnIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-								for (var itemIndex = 0; itemIndex < extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-									for (var metaIndex = 0; metaIndex < record.fieldsMeta.length; metaIndex++) {
-										if (record.fieldsMeta[metaIndex].id === extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldId) {
-											extendedView.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta = record.fieldsMeta[metaIndex];
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			extendedView.data = record.data;
-			//TODO - remove when implemented properly
-			extendedView.sidebar.items = [
-			{
-				entityId: "0b94a563-fc77-4ce6-aa9e-79ecf891132b",
-				entityLabel: "Account",
-				entityLabelPlural: "Accounts",
-				entityName: "account",
-				listId: "73bf06c9-80f3-4980-9f55-09c1fa2e0c9f",
-				listLabel: "SomeListName",
-				listName: "list",
-				relationId: "c3892403-6ce6-4b23-8e50-14462c4b6783",
-				type: "listFromRelation"
-		},
-	{
-		entityId: "0b94a563-fc77-4ce6-aa9e-79ecf891132b",
-		entityLabel: "Account",
-		entityName: "account",
-		relationId: "c3892403-6ce6-4b23-8e50-14462c4b6783",
-		type: "viewFromRelation",
-		viewId: "52b4abc8-5ff1-443d-94e6-42eedf481525",
-		viewLabel: "SomeViewName",
-		viewName: "view"		
-		}
-			];
-			defer.resolve(extendedView);
-		}
-
-		//// Process
-		function getViewSuccessCallback(response) {
-			extendedView = response.object;
-			webvellaAreasService.getEntityRecord($stateParams.recordId, $stateParams.entityName, getRecordSuccessCallback, errorCallback);
-		}
-
-		function errorCallback(response) {
-			alert("Error getting the view");
-		}
-
-		webvellaAreasService.getViewByName($stateParams.viewName, $stateParams.entityName, getViewSuccessCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAreas>entities> END state.resolved');
-		return defer.promise;
-	}
-
 	// Resolve Function /////////////////////////
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
@@ -255,11 +180,11 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'resolvedExtendedViewData', 'resolvedCurrentView', 'ngToast', 'wvAppConstants'];
+        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
 
 	/* @ngInject */
 	function controller($filter, $log, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
-        resolvedSitemap, $timeout, resolvedExtendedViewData,resolvedCurrentView, ngToast, wvAppConstants) {
+        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
@@ -290,31 +215,39 @@
 		//#endregion
 
 		//#region << Intialize current entity >>
-		contentData.currentEntity = null;
-		for (var i = 0; i < contentData.currentArea.entities.length; i++) {
-			if (contentData.currentArea.entities[i].name === $state.params.entityName) {
-				contentData.currentEntity = contentData.currentArea.entities[i];
-			}
-		}
+		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
+
 		//#endregion
+
+        //#region << Initialize sidebar nav >>
+		for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
+		    if (contentData.recordView.sidebar.items[i].type == "view" || contentData.recordView.sidebar.items[i].type == "viewFromRelation") {
+		        if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].viewName) {
+		            contentData.viewSection.label = contentData.recordView.sidebar.items[i].viewLabel;
+		        }
+		    }
+		    else if (contentData.recordView.sidebar.items[i].type == "list" || contentData.recordView.sidebar.items[i].type == "listFromRelation") {
+		        if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].listName) {
+		            contentData.viewSection.label = contentData.recordView.sidebar.items[i].listLabel;
+		        }
+		    }
+		}
+
+        //#endregion
 
 		//#region << View Seciton >>
 		contentData.viewSection = {};
 		contentData.viewSection.label = "General";
-		if ($stateParams.sectionName != "$") {
-			for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
-				if (contentData.recordView.sidebar.items[i].type == "view" || contentData.recordView.sidebar.items[i].type == "viewFromRelation") {
-					if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].viewName) {
-						contentData.viewSection.label = contentData.recordView.sidebar.items[i].viewLabel;
-					}
-				}
-				else if (contentData.recordView.sidebar.items[i].type == "list" || contentData.recordView.sidebar.items[i].type == "listFromRelation") {
-					if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].listName) {
-						contentData.viewSection.label = contentData.recordView.sidebar.items[i].listLabel;
-					}
-				}
-			}
+
+		if ($stateParams.sectionName == "$") {
+		    //The default view is active
 		}
+		else {
+            //One of the sidebar view or lists is active
+		}
+
+
+
 		//#endregion
 
 

@@ -231,19 +231,34 @@
         //#endregion
 
         //#region << Initialize the library >>
-        contentData.fieldsLibrary = {};
-        contentData.fieldsLibrary.items = [];
+        //Items list eligable to be selected as columns
+        contentData.listLibrary = {};
+        contentData.listLibrary.items = [];
 
+        //Fields list eligable to be options in the sort and query dropdowns
         contentData.onlyFieldsLibrary = {};
         contentData.onlyFieldsLibrary.items = [];
 
+        //Temporary working set
         contentData.tempFieldsLibrary = {};
         contentData.tempFieldsLibrary.items = [];
 
         for (var i = 0; i < resolvedViewLibrary.length; i++) {
-        	if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view"
-			 ){ //|| resolvedViewLibrary[i].type === "html") {
-        		contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
+            if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view" || resolvedViewLibrary[i].type === "viewFromRelation"
+			 ) { //|| resolvedViewLibrary[i].type === "html") {
+
+                //Filter the items that are already used
+                var alreadyUsedItemInList = false;
+                for (var j = 0; j < contentData.list.columns.length; j++) {
+                    if (resolvedViewLibrary[i].fieldName == contentData.list.columns[j].fieldName) {
+                        alreadyUsedItemInList = true;
+                    }
+                }
+
+                if (!alreadyUsedItemInList) {
+                    contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
+                }
+
         		if (resolvedViewLibrary[i].type === "field") {
         			contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
         		}
@@ -313,7 +328,7 @@
         		search += item.entityLabelPlural + " ";
         	}
         	item.search = search;
-        	contentData.fieldsLibrary.items.push(item);
+        	contentData.listLibrary.items.push(item);
 		}
         });
         //#endregion
@@ -323,16 +338,16 @@
             //Add Item at the end of the columns list
         	contentData.list.columns.push(item);
             //Remove from library
-        	contentData.fieldsLibrary.items.splice(index, 1);
+        	contentData.listLibrary.items.splice(index, 1);
         	contentData.updateColumns();
         }
         contentData.moveToLibrary = function (item, index) {
             //Add Item at the end of the columns list
-            contentData.fieldsLibrary.items.push(item);
+            contentData.listLibrary.items.push(item);
             //Remove from library
             contentData.list.columns.splice(index, 1);
 
-            contentData.fieldsLibrary.items = contentData.fieldsLibrary.items.sort(function (a, b) {
+            contentData.listLibrary.items = contentData.listLibrary.items.sort(function (a, b) {
             	if (a.type < b.type) return -1;
             	if (a.type > b.type) return 1;
             	return 0;
