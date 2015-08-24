@@ -930,6 +930,8 @@
                 if (popupData.cleanEntities[i].name == name) {
                     selectedEntity.name = popupData.cleanEntities[i].name;
                     selectedEntity.label = popupData.cleanEntities[i].label;
+                    selectedEntity.labelPlural = popupData.cleanEntities[i].labelPlural;
+                    selectedEntity.iconName = popupData.cleanEntities[i].iconName;
                     selectedEntity.weight = popupData.cleanEntities[i].weight;
                     for (var j = 0; j < popupData.cleanEntities[i].recordViews.length; j++) {
                         if (popupData.cleanEntities[i].recordViews[j].default) {

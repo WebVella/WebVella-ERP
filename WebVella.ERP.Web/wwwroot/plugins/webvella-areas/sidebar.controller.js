@@ -21,6 +21,7 @@
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
+        sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
         $log.debug('webvellaAreas>sidebar> END controller.exec');
     }
 

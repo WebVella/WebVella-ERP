@@ -13,14 +13,14 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedExtendedViewData', 'resolvedCurrentEntityMeta', 'webvellaAreasService'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'webvellaAreasService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedExtendedViewData,resolvedCurrentEntityMeta, webvellaAreasService) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, webvellaAreasService) {
         $log.debug('webvellaAreas>sidebar> BEGIN controller.exec');
         /* jshint validthis:true */
         var sidebarData = this;
-        sidebarData.view = resolvedExtendedViewData;
+        sidebarData.view = resolvedCurrentView.meta;
         sidebarData.stateParams = $stateParams;
         sidebarData.entity = resolvedCurrentEntityMeta;
     	//Select default list
@@ -44,14 +44,12 @@
 
         for (var i = 0; i < sidebarData.view.sidebar.items.length; i++) {
         	var item = {};
+        	item.name = sidebarData.view.sidebar.items[i].meta.name;
+        	item.label = sidebarData.view.sidebar.items[i].meta.label;
         	if (sidebarData.view.sidebar.items[i].type == "view" || sidebarData.view.sidebar.items[i].type == "viewFromRelation") {
-        		item.name = sidebarData.view.sidebar.items[i].viewName;
-        		item.label = sidebarData.view.sidebar.items[i].viewLabel;
         		item.iconName = "file-text-o";
         	}
         	else if (sidebarData.view.sidebar.items[i].type == "list" || sidebarData.view.sidebar.items[i].type == "listFromRelation") {
-        		item.name = sidebarData.view.sidebar.items[i].listName;
-        		item.label = sidebarData.view.sidebar.items[i].listLabel;
         		item.iconName = "list";
         	}
         	sidebarData.items.push(item);
