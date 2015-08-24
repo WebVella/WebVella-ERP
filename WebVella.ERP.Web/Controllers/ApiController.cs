@@ -1570,7 +1570,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					if (item is RecordViewFieldItem)
 					{
-						queryFields += ((RecordViewFieldItem)item).Meta.Name + ", ";
+						queryFields += ((RecordViewFieldItem)item).Meta.Name;
 					}
 					else if (item is RecordViewRelationFieldItem)
 					{
@@ -1582,7 +1582,7 @@ namespace WebVella.ERP.Web.Controllers
 					else if (item is RecordViewListItem || item is RecordViewViewItem)
 					{
 						if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
-							queryFields += "id, ";
+							queryFields += "id";
 					}
 					else if (item is RecordViewRelationListItem)
 					{
@@ -1618,10 +1618,12 @@ namespace WebVella.ERP.Web.Controllers
 						if (!queryFields.Contains(qFieldName))
 							queryFields += qFieldName;
 					}
-				}
+                    queryFields += ",";
+                }
 
-				if (queryFields.EndsWith(", "))
-					queryFields = queryFields.Remove(queryFields.Length - 2);
+                queryFields = queryFields.Trim();
+                if (queryFields.EndsWith(","))
+					queryFields = queryFields.Remove(queryFields.Length - 1);
 
 				resultQuery.Fields = queryFields;
 			}
