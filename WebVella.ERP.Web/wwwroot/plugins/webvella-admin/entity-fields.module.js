@@ -1385,6 +1385,9 @@
             {
             	popupData.field.options = [];
             }
+            else if (typeId == 4 || typeId == 5) {// If date or datetime
+                popupData.field.format = "yyyy-MMM-dd";
+            }
         }
         popupData.setActiveStep = function (stepIndex) {
             if (popupData.wizard.steps[stepIndex].completed) {

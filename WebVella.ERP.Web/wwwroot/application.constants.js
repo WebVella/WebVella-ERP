@@ -25,7 +25,7 @@ function checkInt(data) {
 		response.message = "Empty value is OK";
 		return response;
 	}
-	if (!isNaN(parseFloat(data)) && !isFinite(data)) {
+	if (!isNumeric(data)) {
 		response.success = false;
 		response.message = "Only integer is accepted";
 		return response;
@@ -63,13 +63,18 @@ function checkDecimal(data) {
 		response.message = "Comma is not allowed. Use '.' for decimal separator";
 		return response;
 	}
-	if (isNaN(parseFloat(data)) && !isFinite(data)) {
-		response.success = false;
-		response.message = "Only decimal is accepted";
-		return response;
-	}
+
+	if (!isNumeric(data)) {
+    	response.success = false;
+    	response.message = "Only decimal is accepted";
+    	return response;
+    }
 
 	return response;
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 function decimalPlaces(num) {
@@ -82,6 +87,20 @@ function decimalPlaces(num) {
 		 // Adjust for scientific notation.
 		 - (match[2] ? +match[2] : 0));
 }
+
+//Only insite a scope
+
+//$scope.Math = window.Math;
+//function multiplyDecimals(val1, val2, decimalPlaces) {
+//    var helpNumber = 100;
+//    for (var i = 0; i < decimalPlaces; i++) {
+//        helpNumber = helpNumber * 10;
+//    }
+//    var temp1 = $scope.Math.round(val1 * helpNumber);
+//    var temp2 = $scope.Math.round(val2 * helpNumber);
+//    return (temp1 * temp2) / (helpNumber*helpNumber);
+//}
+
 
 function checkPercent(data) {
 	var response = {
@@ -97,7 +116,7 @@ function checkPercent(data) {
 		response.message = "Comma is not allowed. Use '.' for decimal separator";
 		return response;
 	}
-	if (isNaN(parseFloat(data)) && !isFinite(data)) {
+	if (!isNumeric(data)) {
 		response.success = false;
 		response.message = "Only decimal is accepted";
 		return response;
