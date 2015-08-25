@@ -11,7 +11,7 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
-	    .controller('ManageTextboxModalController', ManageTextboxModalController);
+	    .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -558,22 +558,32 @@
 
 		}
 
+	    //Test
+
+		contentData.getItem = function (item) {
+		    var i = 0;
+		}
+
+
 		//#endregion
 
 	    //#region << Modals >>
 
-	    //Textbox
-		contentData.openManageTextboxModal = function (name) {
+	    //Relation field
+		contentData.openManageRelationFieldModal = function (item) {
 		    var modalInstance = $modal.open({
 		        animation: false,
-		        templateUrl: 'manageTextboxModal.html',
-		        controller: 'ManageTextboxModalController',
+		        templateUrl: 'manageRelationFieldModal.html',
+		        controller: 'ManageRelationFieldModalController',
 		        controllerAs: "popupData",
 		        windowClass: 'center-modal textbox',
-		        //size: "lg",
+		        size: "lg",
 		        resolve: {
 		            contentData: function () {
 		                return contentData;
+		            },
+		            selectedItem: function () {
+		                return item;
 		            }
 		        }
 		    });
@@ -592,18 +602,23 @@
 
 
     //#region < Modal Controllers >
-	ManageTextboxModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log','selectedItem', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-	function ManageTextboxModalController(contentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageRelationFieldModalController(contentData, $modalInstance, $log, selectedItem, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
 	    /* jshint validthis:true */
 	    var popupData = this;
-	    popupData.parentData = contentData;
+	    popupData.parentData = angular.copy(contentData);
+	    popupData.selectedItem = angular.copy(selectedItem);
+	    //Get the default lookup list for the entity
+	    //Get view records for this list with page 1 and all as filter initially
+        //Put in popupData.listData and popupData.listMeta
 
-	    popupData.ok = function () {
 
-	        webvellaAdminService.deleteArea(popupData.parentData.area.id, successCallback, errorCallback);
+	    popupData.select = function (record) {
+
+	        
 
 	    };
 
@@ -619,7 +634,7 @@
 	        });
 	        $modalInstance.close('success');
 	        popupData.parentData.modalInstance.close('success');
-	        webvellaRootService.GoToState($state, $state.current.name, {});
+	        //webvellaRootService.GoToState($state, $state.current.name, {});
 	    }
 
 	    function errorCallback(response) {

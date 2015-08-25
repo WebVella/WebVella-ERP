@@ -188,6 +188,23 @@
         });
         //#endregion
 
+        //#region << List types >>
+        contentData.listTypeOptions = [
+            {
+                key: "general",
+                value: "general"
+            },
+            {
+                key: "lookup",
+                value: "lookup"
+            },
+            {
+                key: "create",
+                value: "create"
+            }
+        ];
+        //#endregion
+
         //#region << Initialize the list >>
         contentData.list = angular.copy(resolvedCurrentEntityList);
 
