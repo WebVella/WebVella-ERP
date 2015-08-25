@@ -10,7 +10,8 @@
 	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreasRecordViewController', controller);
+        .controller('WebVellaAreasRecordViewController', controller)
+	    .controller('ManageTextboxModalController', ManageTextboxModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -140,11 +141,11 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
+	controller.$inject = ['$filter', '$modal', '$log', '$q','$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
         'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
 
 	/* @ngInject */
-	function controller($filter, $log, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
+	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
         resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
@@ -203,7 +204,6 @@
 
 	    //#endregion
 
-
 		//#region << Logic >>
 
 		contentData.toggleSectionCollapse = function (section) {
@@ -215,6 +215,7 @@
 		}
 
 		contentData.fieldUpdate = function (item, data) {
+		    var defer = $q.defer();
 			contentData.patchObject = {};
 			var validation = {
 				success: true,
@@ -222,7 +223,7 @@
 			};
 			if (data != null) {
 				data = data.toString().trim();
-				switch (item.fieldTypeId) {
+				switch (item.meta.fieldType) {
 
 					//Auto increment number
 					case 1:
@@ -318,24 +319,28 @@
 				}
 			}
 			contentData.patchObject[item.meta.name] = data;
-			//patchRecord(recordId, entityName, patchObject, successCallback, errorCallback)
+
+			function patchSuccessCallback(response) {
+			    ngToast.create({
+			        className: 'success',
+			        content: '<span class="go-green">Success:</span> ' + response.message
+			    });
+			    contentData.viewData = angular.copy(response.object.data[0]);
+			    defer.resolve();
+			}
+			function patchFailedCallback(response) {
+			    ngToast.create({
+			        className: 'error',
+			        content: '<span class="go-red">Error:</span> ' + response.message
+			    });
+			    defer.resolve("validation error");
+			}
+
 			webvellaAdminService.patchRecord($stateParams.recordId, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+
+			return defer.promise;
 		}
 
-		function patchSuccessCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			return true;
-		}
-		function patchFailedCallback(response) {
-			ngToast.create({
-				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message
-			});
-			return false;
-		}
 
 		//Auto increment
 		contentData.getAutoIncrementString = function (item) {
@@ -354,10 +359,10 @@
 		contentData.getCheckboxString = function (item) {
 			var fieldValue = contentData.viewData[item.dataName];
 			if (fieldValue) {
-				return "true";
+			    return "<i class='fa fa-fw fa-check go-green'></i> true";
 			}
 			else {
-				return "false";
+			    return "<i class='fa fa-fw fa-close go-red'></i> false";
 			}
 		}
 		//Currency
@@ -416,8 +421,8 @@
 			for (var rowIndex = 0; rowIndex < contentData.contentRegion.sections[sectionIndex].rows.length; rowIndex++) {
 				for (var columnIndex = 0; columnIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
 					for (var itemIndex = 0; itemIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 7
-							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].fieldTypeId === 9) {
+						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
+							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
 							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
 							var FieldName = item.dataName;
 							contentData.progress[FieldName] = 0;
@@ -467,7 +472,7 @@
 					className: 'error',
 					content: '<span class="go-red">Error:</span> ' + response.message
 				});
-				return false;
+				return "validation error";
 			}
 
 			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
@@ -525,9 +530,110 @@
 			return (fieldData && selected.length) ? selected[0].value : 'empty';
 		}
 
+	    //Percent
+		$scope.Math = window.Math;
+		function multiplyDecimals(val1, val2, decimalPlaces) {
+		    var helpNumber = 100;
+		    for (var i = 0; i < decimalPlaces; i++) {
+		        helpNumber = helpNumber * 10;
+		    }
+		    var temp1 = $scope.Math.round(val1 * helpNumber);
+		    var temp2 = $scope.Math.round(val2 * helpNumber);
+		    return (temp1 * temp2) / (helpNumber * helpNumber);
+		}
+
+		contentData.getPercentString = function (item) {
+		    var fieldValue = contentData.viewData[item.dataName];
+
+		    if (!fieldValue) {
+		        return "empty";
+		    }
+		    else {
+		        //JavaScript has a bug when multiplying decimals
+		        //The way to correct this is to multiply the decimals before multiple their values,
+		        var resultPercentage = 0.00;
+		        resultPercentage = multiplyDecimals(fieldValue,100,3);
+		        return resultPercentage + "%";
+		        }
+
+		}
+
 		//#endregion
+
+	    //#region << Modals >>
+
+	    //Textbox
+		contentData.openManageTextboxModal = function (name) {
+		    var modalInstance = $modal.open({
+		        animation: false,
+		        templateUrl: 'manageTextboxModal.html',
+		        controller: 'ManageTextboxModalController',
+		        controllerAs: "popupData",
+		        windowClass: 'center-modal textbox',
+		        //size: "lg",
+		        resolve: {
+		            contentData: function () {
+		                return contentData;
+		            }
+		        }
+		    });
+
+		}
+
+
+
+        //#endregion
+
+
+
 
 		$log.debug('webvellaAreas>entities> END controller.exec');
 	}
 
+
+    //#region < Modal Controllers >
+	ManageTextboxModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+
+    /* @ngInject */
+	function ManageTextboxModalController(contentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+	    /* jshint validthis:true */
+	    var popupData = this;
+	    popupData.parentData = contentData;
+
+	    popupData.ok = function () {
+
+	        webvellaAdminService.deleteArea(popupData.parentData.area.id, successCallback, errorCallback);
+
+	    };
+
+	    popupData.cancel = function () {
+	        $modalInstance.dismiss('cancel');
+	    };
+
+	    /// Aux
+	    function successCallback(response) {
+	        ngToast.create({
+	            className: 'success',
+	            content: '<span class="go-green">Success:</span> ' + response.message
+	        });
+	        $modalInstance.close('success');
+	        popupData.parentData.modalInstance.close('success');
+	        webvellaRootService.GoToState($state, $state.current.name, {});
+	    }
+
+	    function errorCallback(response) {
+	        popupData.hasError = true;
+	        popupData.errorMessage = response.message;
+
+
+	    }
+	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+	};
+
+    //#endregion
+
+
 })();
+
+

@@ -443,9 +443,9 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
-                                <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
+                                <label class="control-label" ng-class="{'required':true}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                       ng-required="true" placeholder="e.g. yyyy-MM-dd" />
                                 <div class="error" ng-show="createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -500,9 +500,9 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
-                                <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
+                                <label class="control-label" ng-class="{'required':true}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                       ng-required="true" placeholder="e.g. yyyy-MM-dd" />
                                 <div class="error" ng-show="createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -1518,7 +1518,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupData.formatError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                             <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                   ng-required="true" placeholder="e.g. yyyy-MM-dd" />
                             <div class="error" ng-show="manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupData.formatError">
                                 <small class="error" ng-show="manageFieldForm.format.$error.required && !popupData.formatError">
                                     required field
@@ -1575,7 +1575,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupData.formatError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                             <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                   ng-required="true" placeholder="e.g. yyyy-MM-dd" />
                             <div class="error" ng-show="manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupData.formatError">
                                 <small class="error" ng-show="manageFieldForm.format.$error.required && !popupData.formatError">
                                     required field

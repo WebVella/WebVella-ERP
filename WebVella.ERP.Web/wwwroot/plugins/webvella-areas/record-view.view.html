@@ -107,8 +107,9 @@
 									<a ng-switch-when="2" href="javascript:void(0)"
 									   editable-checkbox="contentData.viewData[item.dataName]"
 									   e-title="set as TRUE"
-									   onbeforesave="contentData.fieldUpdate(item, $data)">
-										{{contentData.getCheckboxString(item)}}
+									   onbeforesave="contentData.fieldUpdate(item, $data)"
+                                       ng-bind-html="contentData.getCheckboxString(item)"
+                                       >
 									</a>
 									<!-- If type 3 - currency -->
 									<a ng-switch-when="3" href="javascript:void(0)"
@@ -228,8 +229,7 @@
 									<!-- If type 10 - textarea -->
 									<a ng-switch-when="10" href="javascript:void(0)"
 									   editable-textarea="contentData.viewData[item.dataName]"
-									   e-rows="7" e-cols="40"
-									   onbeforesave="contentData.fieldUpdate(item, $data)">
+									   onbeforesave="contentData.fieldUpdate(item, $data)" class="editable-textarea">
 										<pre>{{ contentData.viewData[item.dataName] || 'empty' }}</pre>
 									</a>
 									<!-- If type 11 - multichoice -->
@@ -255,7 +255,8 @@
 									<a ng-switch-when="14" href="javascript:void(0)"
 									   editable-text="contentData.viewData[item.dataName]"
 									   onbeforesave="contentData.fieldUpdate(item, $data)">
-										{{ contentData.viewData[item.dataName] || 'empty' }}
+										<!--{{ contentData.viewData[item.dataName] || 'empty' }}-->
+                                        {{contentData.getPercentString(item)}}
 									</a>
 									<!-- If type 15 - phone -->
 									<a ng-switch-when="15" href="javascript:void(0)"
@@ -286,10 +287,10 @@
 								</div>
 							</div>
 							<!--If item is field WITH relation-->
-							<div class="row editable-field" ng-if="item.type === 'fieldFromRelation'">
-								<label class="col-sm-3 control-label">{{item.fieldLabel}}</label>
+							<div class="row editable-field field" ng-if="item.type === 'fieldFromRelation'">
+								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
 								<div class="col-sm-9 position-relative">
-									<p class="form-control-static"><a href="#" onclick="alert('show lookup modal')" ng-bind="contentData.viewData['{{item.fieldName}}']['name'] || 'empty' "></a></p>
+									<p class="form-control-static"><a href="javascript:void(0)" ng-click="contentData.openManageTextboxModal('boz')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || 'empty' "></a></p>
 								</div>
 							</div>
 
@@ -305,3 +306,26 @@
 <div class="record-list" ng-if="contentData.isList">
     test
 </div>
+
+
+<script type="text/ng-template" id="manageTextboxModal.html">
+    <div class="modal-header" id="modal-top">
+        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title">Manage details</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+        <div ng-hide="popupData.hasError">
+            <div class="form">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete Area</button>
+        <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+    </div>
+</script>
