@@ -67,7 +67,10 @@
                             </div>
                             <label class="col-sm-2 control-label" for="name">Type</label>
                             <div class="col-sm-4">
-                                <span class="not-editable">{{contentData.list.type}}</span>
+                                <a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
+                                   onbeforesave="contentData.fieldUpdate('type', $data)">
+                                    {{contentData.list.type}}
+                                </a>
                             </div>
                         </div>
                     </div>
