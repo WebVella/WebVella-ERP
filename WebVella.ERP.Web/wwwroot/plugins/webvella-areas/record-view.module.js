@@ -141,11 +141,11 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$modal', '$log', '$q','$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
+	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
         'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
 
 	/* @ngInject */
-	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,
+	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
         resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
@@ -571,12 +571,47 @@
 
 	    //Relation field
 		contentData.openManageRelationFieldModal = function (item) {
+		    var resolveRelationLookupList = function (item) {
+		        // Initialize
+		        var defer = $q.defer();
+
+		        // Process
+		        function errorCallback(response) {
+		            defer.resolve(response.object);
+		        }
+		        function getListRecordsSuccessCallback(response) {
+		            defer.resolve(response.object);
+		        }
+
+		        function getEntityMetaSuccessCallback(response) {
+		            var entityMeta = response.object;
+		            var defaultLookupList = null;
+                    //Find the default lookup field if none return null.
+		            for (var i = 0; i < entityMeta.recordLists.length; i++) {
+		                if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
+		                    defaultLookupList = entityMeta.recordLists[i];
+		                    break;
+		                }
+		            }
+
+		            if (defaultLookupList == null) {
+		                defer.resolve(null);
+		            }
+		            else {
+		                webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all",1, getListRecordsSuccessCallback, errorCallback);
+		            }
+		        }
+
+		        webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+
+		        return defer.promise;
+		    }
+
 		    var modalInstance = $modal.open({
 		        animation: false,
 		        templateUrl: 'manageRelationFieldModal.html',
 		        controller: 'ManageRelationFieldModalController',
 		        controllerAs: "popupData",
-		        windowClass: 'center-modal textbox',
 		        size: "lg",
 		        resolve: {
 		            contentData: function () {
@@ -584,6 +619,9 @@
 		            },
 		            selectedItem: function () {
 		                return item;
+		            },
+		            resolvedRelationLookupList: function () {
+		                return resolveRelationLookupList(item);
 		            }
 		        }
 		    });
@@ -602,18 +640,193 @@
 
 
     //#region < Modal Controllers >
-	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log','selectedItem', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedRelationLookupList', 'selectedItem', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-	function ManageRelationFieldModalController(contentData, $modalInstance, $log, selectedItem, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, resolvedRelationLookupList, selectedItem, webvellaAdminService,webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
 	    /* jshint validthis:true */
 	    var popupData = this;
+	    popupData.currentPage = 1;
 	    popupData.parentData = angular.copy(contentData);
 	    popupData.selectedItem = angular.copy(selectedItem);
 	    //Get the default lookup list for the entity
-	    //Get view records for this list with page 1 and all as filter initially
-        //Put in popupData.listData and popupData.listMeta
+	    popupData.relationLookupList = angular.copy(resolvedRelationLookupList);
+
+	    //#region << Paging >>
+	    popupData.selectPage = function (page) {
+	        // Process
+	        function successCallback(response) {
+	            popupData.relationLookupList = angular.copy(response.object);
+	            popupData.currentPage = page;
+	        }
+
+	        function errorCallback(response) {
+
+	        }
+
+	        webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, successCallback, errorCallback);
+	    }
+
+        //#endregion
+        
+
+	    //#region << Logic >>
+
+	    //1.Auto increment
+	    popupData.getAutoIncrementString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (!fieldValue) {
+	            return "";
+	        }
+	        else if (fieldMeta.displayFormat) {
+	            return fieldMeta.displayFormat.replace("{0}", fieldValue);
+	        }
+	        else {
+	            return fieldValue;
+	        }
+	    }
+	    //2.Checkbox
+	    popupData.getCheckboxString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return "true";
+	        }
+	        else {
+	            return "false";
+	        }
+	    }
+	    //3.Currency
+	    popupData.getCurrencyString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (!fieldValue) {
+	            return "";
+	        }
+	        else if (fieldMeta.currency != null && fieldMeta.currency != {} && fieldMeta.currency.symbol) {
+	            if (fieldMeta.currency.symbolPlacement == 1) {
+	                return fieldMeta.currency.symbol + " " + fieldValue
+	            }
+	            else {
+	                return fieldValue + " " + fieldMeta.currency.symbol
+	            }
+	        }
+	        else {
+	            return fieldValue;
+	        }
+	    }
+	    //4.Date
+	    popupData.getDateString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        return moment(fieldValue).format('DD MMMM YYYY');
+	    }
+	    //5.Datetime
+	    popupData.getDateTimeString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        return moment(fieldValue).format('DD MMMM YYYY HH:mm');
+	    }
+	    //6.Email
+	    popupData.getEmailString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return "<a href='mailto:" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
+	        }
+	        else {
+	            return "";
+	        }
+	    }
+	    //7.File
+	    popupData.getFileString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return "<a href='" + fieldValue + "' taget='_blank' class='link-icon'>view file</a>";
+	        }
+	        else {
+	            return "";
+	        }
+	    }
+	    //8.Html
+	    popupData.getHtmlString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return fieldValue;
+	        }
+	        else {
+	            return "";
+	        }
+	    }
+	    //9.Image
+	    popupData.getImageString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return "<img src='" + fieldValue + "' class='table-image'/>";
+	        }
+	        else {
+	            return "";
+	        }
+	    }
+	    //11.Multiselect
+	    popupData.getMultiselectString = function (record, fieldMeta) {
+	        var fieldValueArray = record[fieldMeta.name];
+	        var generatedStringArray = [];
+	        if (fieldValueArray.length == 0) {
+	            return "";
+	        }
+	        else {
+	            for (var i = 0; i < fieldValueArray.length; i++) {
+	                var selected = $filter('filter')(fieldMeta.options, { key: fieldValueArray[i] });
+	                generatedStringArray.push((fieldValueArray[i] && selected.length) ? selected[0].value : 'empty');
+	            }
+	            return generatedStringArray.join(', ');
+
+	        }
+
+	    }
+	    //14.Percent
+	    popupData.getPercentString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (!fieldValue) {
+	            return "";
+	        }
+	        else {
+	            return fieldValue * 100 + "%";
+	        }
+	    }
+	    //15.Phone
+	    popupData.getPhoneString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (!fieldValue) {
+	            return "";
+	        }
+	        else {
+	            return phoneUtils.formatInternational(fieldValue);
+	        }
+	    }
+	    //17.Dropdown
+	    popupData.getDropdownString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (!fieldValue) {
+	            return "";
+	        }
+	        else {
+	            var selected = $filter('filter')(fieldMeta.options, { key: fieldValue });
+	            return (fieldValue && selected.length) ? selected[0].value : 'empty';
+	        }
+
+	    }
+	    //18.Url
+	    popupData.getUrlString = function (record, fieldMeta) {
+	        var fieldValue = record[fieldMeta.name];
+	        if (fieldValue) {
+	            return "<a href='" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
+	        }
+	        else {
+	            return "";
+	        }
+	    }
+
+        //#endregion 
+
+
 
 
 	    popupData.select = function (record) {
@@ -643,6 +856,11 @@
 
 
 	    }
+
+
+
+
+
 	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
 	};
 

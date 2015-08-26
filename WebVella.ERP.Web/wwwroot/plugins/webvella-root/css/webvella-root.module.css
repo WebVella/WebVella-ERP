@@ -105,20 +105,6 @@ ngToast
             }
 
 /*
-    Vertically centered modal
-*/
-.center-modal {
-    position: fixed;
-    top: 30%;
-    left: 18.5%;
-    z-index: 1050;
-    width: 80%;
-    height: 80%;
-    margin-left: -10%;
-}
-
-
-/*
   Badge colors
 */
 .badge.badge-danger {
@@ -2781,6 +2767,10 @@ span.editable {
         border-radius: 0 3px 3px 0;
     }
 
+    a.editable.lookup::after, span.editable.lookup::after {
+        content: "\f0c9";
+    }
+
     a.editable:hover:after,
     span.editable:hover:after {
         display: inline-block;
@@ -3815,7 +3805,6 @@ a.link-icon.link[href]:before {
 }
 
 /*#endregion*/
-
 
 /*#region << label & badges overrides >>*/
 
