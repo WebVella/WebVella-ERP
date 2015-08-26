@@ -1200,11 +1200,6 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
 		public IActionResult GetRecordsByEntityName(string entityName, string listName, string filter, int page)
 		{
-			if (page < 1)
-				page = 1;
-			int limit = 25;
-			int skip = (page - 1) * limit;
-
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
 
@@ -1225,7 +1220,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			response.Object.Data = GetListRecords(entities, entity, listName, skip, limit);
+			response.Object.Data = GetListRecords(entities, entity, listName, page );
 
 			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
 			if (list != null)
@@ -1236,9 +1231,9 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? skip = null, int? limit = null, QueryObject queryObj = null)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null)
 		{
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, skip, limit);
+			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
 
 			EntityRelationManager relManager = new EntityRelationManager(Storage);
 			EntityRelationListResponse relListResponse = relManager.Read();
@@ -1347,8 +1342,13 @@ namespace WebVella.ERP.Web.Controllers
 
 				}
 
-				if (list.RecordsLimit > 0)
-					resultQuery.Limit = list.RecordsLimit;
+                if (list.PageSize > 0)
+                {
+                    resultQuery.Limit = list.PageSize;
+                    if (page != null && page > 0)
+                        resultQuery.Skip = ( page -1 ) * resultQuery.Limit;
+                }
+                
 			}
 
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
