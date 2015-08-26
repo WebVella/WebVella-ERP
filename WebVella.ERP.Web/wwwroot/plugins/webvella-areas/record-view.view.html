@@ -229,7 +229,7 @@
                                     <a ng-switch-when="10" href="javascript:void(0)"
                                        editable-textarea="contentData.viewData[item.dataName]"
                                        onbeforesave="contentData.fieldUpdate(item, $data)" class="editable-textarea">
-                                        <pre>{{ contentData.viewData[item.dataName] || 'empty' }}</pre>
+                                        <pre>{{ contentData.viewData[item.dataName] || '' }}</pre>
                                     </a>
                                     <!-- If type 11 - multichoice -->
                                     <div ng-switch-when="11">
@@ -242,7 +242,7 @@
                                     <a ng-switch-when="12" href="javascript:void(0)"
                                        editable-text="contentData.viewData[item.dataName]"
                                        onbeforesave="contentData.fieldUpdate(item, $data)">
-                                        {{ contentData.viewData[item.dataName] || 'empty' }}
+                                        {{ contentData.viewData[item.dataName] || '' }}
                                     </a>
                                     <!-- If type 13 - password -->
                                     <a ng-switch-when="13" href="javascript:void(0)"
@@ -254,17 +254,17 @@
                                     <a ng-switch-when="14" href="javascript:void(0)"
                                        editable-text="contentData.viewData[item.dataName]"
                                        onbeforesave="contentData.fieldUpdate(item, $data)">
-                                        <!--{{ contentData.viewData[item.dataName] || 'empty' }}-->
+                                        <!--{{ contentData.viewData[item.dataName] || '' }}-->
                                         {{contentData.getPercentString(item)}}
                                     </a>
                                     <!-- If type 15 - phone -->
                                     <a ng-switch-when="15" href="javascript:void(0)"
                                        editable-text="contentData.viewData[item.dataName]"
-                                       ng-bind="contentData.viewData[item.dataName] || 'empty'"
+                                       ng-bind="contentData.viewData[item.dataName] || ''"
                                        onbeforesave="contentData.fieldUpdate(item, $data)">
                                     </a>
                                     <!-- If type 16 - unique identifier -->
-                                    <span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData[item.dataName] || 'empty'"></span>
+                                    <span ng-switch-when="16" class="not-editable" ng-bind="contentData.viewData[item.dataName] || ''"></span>
                                     <!-- If type 17 - dropdown -->
                                     <div ng-switch-when="17">
                                         <a href="javascript:void(0)" editable-select="contentData.viewData[item.dataName]" e-ng-options="s.key as s.value for s in item.meta.options"
@@ -275,12 +275,12 @@
                                     <!-- If type 18 - textbox -->
                                     <a ng-switch-when="18" href="javascript:void(0)"
                                        editable-text="contentData.viewData[item.dataName]" class="textbox"
-                                       ng-bind="contentData.viewData[item.dataName] || 'empty' "
+                                       ng-bind="contentData.viewData[item.dataName] || '' "
                                        onbeforesave="contentData.fieldUpdate(item, $data)"></a>
                                     <!-- If type 19 - url -->
                                     <a ng-switch-when="19" href="javascript:void(0)"
                                        editable-text="contentData.viewData[item.dataName]"
-                                       ng-bind="contentData.viewData[item.dataName] || 'empty' "
+                                       ng-bind="contentData.viewData[item.dataName] || '' "
                                        onbeforesave="contentData.fieldUpdate(item, $data)"></a>
 
                                 </div>
@@ -289,7 +289,7 @@
                             <div class="row editable-field field" ng-if="item.type === 'fieldFromRelation'">
                                 <label class="col-sm-3 control-label">{{item.entityLabel}}</label>
                                 <div class="col-sm-9 position-relative">
-                                    <p class="form-control-static"><a href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item)" ng-bind="contentData.viewData['{{item.dataName}}'][0] || 'empty' "></a></p>
+                                    <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item)" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
                                 </div>
                             </div>
 
@@ -315,20 +315,90 @@
     <div class="modal-body">
         <div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
         <div ng-hide="popupData.hasError">
-            <table class="table table-bordered table-condensed">
-                <thead>
-                    <tr>
-                        <td width="80px">action</td>
-                        <td>name</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a>select</a></td>
-                        <td>name</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div ng-if="popupData.relationLookupList == null">
+                <div class="alert alert-warning">The selected related entity, does not have a default lookup list. Please contact your administrator to create one.</div>
+            </div>
+            <div ng-if="popupData.relationLookupList != null">
+                <form id="filters" class="form-inline" style="margin-bottom:1em; opacity:.2">
+                    <div class="form-group" style="padding-right:10px;">
+                        <a class="btn btn-default hidden-xs" ng-click="openSetFiltersModal()">
+                            <i class="fa fa-filter"></i>
+                            <span>Filters</span>
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            <input ng-model="class" type="text" class="form-control" placeholder="Search">
+                        </div>
+                    </div>
+                    <div class="form-group hidden-xs hidden-sm">
+                        <div class="filter">
+                            <div class="field">Name</div>
+                            <ul class="criterias list-inline">
+                                <li>
+                                    Oracle
+                                    <a href="" ng-click="showToast()"><i class="fa fa-times-circle"></i></a>
+                                </li>
+                                <li>
+                                    Microsoft
+                                    <a href=""><i class="fa fa-times-circle"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+
+                <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
+                    <thead>
+                        <tr>
+                            <th class="actions"></th>
+                            <th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="record in popupData.relationLookupList.data">
+                            <td>
+                                <a ng-click=''>
+                                    select
+                                </a>
+                            </td>
+                            <td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
+                                <span ng-switch-when="1">{{popupData.getAutoIncrementString(record,column.meta)}}</span>
+                                <span ng-switch-when="2">{{popupData.getCheckboxString(record,column.meta)}}</span>
+                                <span ng-switch-when="3">{{popupData.getCurrencyString(record,column.meta)}}</span>
+                                <span ng-switch-when="4">{{popupData.getDateString(record,column.meta)}}</span>
+                                <span ng-switch-when="5">{{popupData.getDateTimeString(record,column.meta)}}</span>
+                                <span ng-switch-when="6" ng-bind-html="popupData.getEmailString(record,column.meta)"></span>
+                                <span ng-switch-when="7" ng-bind-html="popupData.getFileString(record,column.meta)"></span>
+                                <span ng-switch-when="8" ng-bind-html="popupData.getHtmlString(record,column.meta)"></span>
+                                <span ng-switch-when="9" ng-bind-html="popupData.getImageString(record,column.meta)"></span>
+                                <pre ng-switch-when="10" ng-bind="record[column.meta.name]"></pre>
+                                <span ng-switch-when="11" ng-bind-html="popupData.getMultiselectString(record,column.meta)"></span>
+                                <span ng-switch-when="12" ng-bind="record[column.meta.name]"></span>
+                                <span ng-switch-when="13">******</span>
+                                <span ng-switch-when="14" ng-bind-html="popupData.getPercentString(record,column.meta)"></span>
+                                <span ng-switch-when="15" ng-bind-html="popupData.getPhoneString(record,column.meta)"></span>
+                                <span ng-switch-when="16">{{record[column.meta.name]}}</span>
+                                <span ng-switch-when="17" ng-bind-html="popupData.getDropdownString(record,column.meta)"></span>
+                                <span ng-switch-when="18">{{record[column.meta.name]}}</span>
+                                <span ng-switch-when="19" ng-bind-html="popupData.getUrlString(record,column.meta)"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-info" ng-show="popupData.relationLookupList.data.length == 0">
+                    No records found
+                </div>
+                <ul class="pager">
+                    <li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+                    <li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+                    <li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+                    <li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
