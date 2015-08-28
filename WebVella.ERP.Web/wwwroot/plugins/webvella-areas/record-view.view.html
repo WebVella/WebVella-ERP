@@ -285,11 +285,72 @@
 
                                 </div>
                             </div>
+
                             <!--If item is field WITH relation-->
                             <div class="row editable-field field" ng-if="item.type === 'fieldFromRelation'">
                                 <label class="col-sm-3 control-label">{{item.entityLabel}}</label>
-                                <div class="col-sm-9 position-relative">
-                                    <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item)" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
+                                <div class="col-sm-9 position-relative" ng-switch="contentData.getRelation(item.relationName).relationType">
+                                    <div ng-switch-when="1" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+                                        <!-- Case 1 - Current Entity is Origin -->
+                                        <div ng-switch-when="1">
+                                            Origin
+                                            <!-- Case 1.1 - Manage -->
+                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'origin')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
+                                            <!-- Case 1.2 - Create -->
+                                        </div>
+                                        <!-- Case 2 - Current Entity is Target -->
+                                        <div ng-switch-when="2">
+                                            Target
+                                            <!-- Case 2.1 - Manage -->
+                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
+                                            <!-- Case 2.2 - Create -->
+                                        </div>
+
+                                        <!-- Case 3 - Current Entity is both Orgin and Target -->
+                                        <div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+                                        <!-- Case 0 - Error -->
+                                        <div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+                                    </div>
+                                    <div ng-switch-when="2" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+                                        <!-- Case 1 - Current Entity is Origin -->
+                                        <div ng-switch-when="1">
+                                            <table class="table table-bordered editable editable-click lookup"  ng-click="contentData.openManageRelationFieldModal(item,1,'target')">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                    <td>{{relationDataRecord}}</td>
+                                                </tr>
+                                            </table>
+                                            <!--<pre>{{contentData.viewData[item.dataName] | json}}</pre>-->
+                                            <!-- Case 1.1 - Manage -->
+                                            <!-- Case 1.2 - Create -->
+                                        </div>
+
+                                        <!-- Case 2 - Current Entity is Target -->
+                                        <div ng-switch-when="2">
+                                            Target
+                                            <!-- Case 2.1 - Manage -->
+                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,2,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
+                                            <!-- Case 2.2 - Create -->
+                                        </div>
+
+                                        <!-- Case 3 - Current Entity is both Orgin and Target -->
+                                        <div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+
+                                        <div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+                                    </div>
+                                    <div ng-switch-when="3" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+                                        <!-- Case 1 - Current Entity is Origin -->
+                                        <div ng-switch-when="1">Origin</div>
+                                        <!-- Case 1.1 - Manage -->
+                                        <!-- Case 1.2 - Create -->
+                                        <!-- Case 2 - Current Entity is Target -->
+                                        <div ng-switch-when="2">Target</div>
+                                        <!-- Case 2.1 - Manage -->
+                                        <!-- Case 2.2 - Create -->
+                                        <!-- Case 3 - Current Entity is both Orgin and Target -->
+                                        <div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+
+                                        <div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -307,7 +368,7 @@
 </div>
 
 
-<script type="text/ng-template" id="manageRelationFieldModal.html">
+<script type="text/ng-template" id="manageRelationFieldModalSingleSelection.html">
     <div class="modal-header" id="modal-top">
         <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Select one <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
@@ -361,7 +422,7 @@
                     <tbody>
                         <tr ng-repeat="record in popupData.relationLookupList.data">
                             <td>
-                                <a ng-click=''>
+                                <a ng-click='popupData.selectInstitutionCategory(record)' href="javascript:void(0)">
                                     select
                                 </a>
                             </td>
@@ -393,7 +454,7 @@
                     No records found
                 </div>
                 <ul class="pager">
-                    <li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+                    <!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
                     <li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
                     <li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
                     <li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
