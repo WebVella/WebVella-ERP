@@ -1144,12 +1144,161 @@ namespace WebVella.ERP.Web.Controllers
 
 		}
 
-		#endregion
+        #endregion
 
-		#region << Records >>
-		// Get an entity record list
-		// GET: api/v1/en_US/record/{entityName}/list
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+        #region << Records >>
+
+        // Update an entity record relation records
+        // POST: api/v1/en_US/record/relation
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation")]
+        public IActionResult UpdateEntityRelationRecord([FromBody]InputEntityRelationRecordUpdateModel model )
+        {
+            var recMan = new RecordManager(service);
+            var entMan = new EntityManager(service.StorageService);
+            BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors= new List<ErrorModel>() };
+
+            if (model == null)
+            { 
+                response.Errors.Add(new ErrorModel { Message = "Invalid model." });
+                response.Success = false;
+                return DoResponse(response);
+            }
+
+            if( string.IsNullOrWhiteSpace( model.Operation))
+            {
+                response.Errors.Add(new ErrorModel { Message = "Operation is not specified. It can be 'create' or 'remove'", Key = "operation" });
+                response.Success = false;
+                return DoResponse(response);
+            }
+            else
+            {
+                if(!( model.Operation.ToLowerInvariant() == "create" || model.Operation.ToLowerInvariant() == "remove" ))
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Operation can be only 'create' or 'remove'.", Key = "operation" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+            }
+
+            EntityRelation relation = null;
+            if (string.IsNullOrWhiteSpace(model.RelationName))
+            {
+                response.Errors.Add(new ErrorModel { Message = "Invalid relation name.", Key = "relationName" });
+                response.Success = false;
+                return DoResponse(response);
+            }
+            else
+            {
+                relation = new EntityRelationManager(service.StorageService).Read(model.RelationName).Object;
+                if( relation == null )
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Invalid relation name. No relation with that name.", Key = "relationName" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+            }
+
+            var originEntity = entMan.ReadEntity(relation.OriginEntityId).Object;
+            var targetEntity = entMan.ReadEntity(relation.TargetEntityId).Object;
+            var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
+            var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
+
+            if (model.Operation.ToLowerInvariant() == "remove" && targetField.Required )
+            {
+                response.Errors.Add(new ErrorModel { Message = "Cannot use 'remove' operation, when target field is required.", Key = "originFieldRecordId" });
+                response.Success = false;
+                return DoResponse(response);
+            }
+
+            EntityQuery query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);
+            QueryResponse result = recMan.Find(query);
+            if (result.Object.Data.Count == 0)
+            {
+                response.Errors.Add(new ErrorModel { Message = "Origin record was not found. Id=[" + model.OriginFieldRecordId + "]", Key = "originFieldRecordId" });
+                response.Success = false;
+                return DoResponse(response);
+            }
+
+            var originRecord = result.Object.Data[1];
+            object originValue = originRecord[originField.Name];
+
+            query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);
+            result = recMan.Find(query);
+            if (result.Object.Data.Count == 0) //when there are no targets, we return
+                return DoResponse(response);
+
+            var targetRecords = result.Object.Data;
+
+            var transaction = recMan.CreateTransaction();
+            try {
+
+                transaction.Begin();
+
+                switch (relation.RelationType)
+                {
+                    case EntityRelationType.OneToOne:
+                    case EntityRelationType.OneToMany:
+                        {
+                            foreach( var record in targetRecords )
+                            {
+                                if (model.Operation.ToLowerInvariant() == "create")
+                                    record[targetField.Name] = originValue;
+                                else //remove
+                                    record[targetField.Name] = null; 
+
+                                var updResult = recMan.UpdateRecord(targetEntity, record);
+                                if (!updResult.Success)
+                                {
+                                    response.Errors = updResult.Errors;
+                                    response.Message = "Target record id=[" + record["id"] + "] operation failed.";
+                                    response.Success = false;
+                                    return DoResponse(response);
+                                }
+                            }
+                        }
+                        break;
+                    case EntityRelationType.ManyToMany:
+                        {
+                            foreach (var record in targetRecords)
+                            {
+                                QueryResponse updResult;
+                                if (model.Operation.ToLowerInvariant() == "create")
+                                    updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+                                else //remove
+                                    updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+
+                                if (!updResult.Success)
+                                {
+                                    response.Errors = updResult.Errors;
+                                    response.Message = "Target record id=[" + record["id"] + "] operation failed.";
+                                    response.Success = false;
+                                    return DoResponse(response);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        throw new Exception("Not supported relation type");
+                }
+
+                transaction.Commit();
+            }
+            catch(Exception ex)
+            {
+                if (transaction != null)
+                    transaction.Rollback();
+
+                response.Success = false;
+                response.Message = ex.Message;
+                return DoResponse(response);
+            }
+
+            return DoResponse(response);
+        }
+
+        // Get an entity record list
+        // GET: api/v1/en_US/record/{entityName}/list
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult GetRecord(Guid recordId, string entityName)
 		{
 
