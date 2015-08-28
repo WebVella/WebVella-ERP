@@ -113,9 +113,7 @@
                     <div class="form-group">
                         <label for="type">Relation type</label>
                         <select class="form-control" ng-model="popupData.relation.relationType" name="relationType" ng-disabled="popupData.relation.id != null"
-                                ng-options="relation.key as relation.name for relation in popupData.relationTypeDict">
-                            
-                        </select>
+                                ng-options="relation.key as relation.name for relation in popupData.relationTypeDict"></select>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -127,7 +125,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : createRelation.name.$invalid && !createRelation.name.$pristine || popupData.nameError}">
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="popupData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
-                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50"  ng-disabled="popupData.relation.id != null">
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-disabled="popupData.relation.id != null">
                         <div class="error" ng-show="createRelation.name.$dirty && createRelation.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="createRelation.name.$error.required && !popupData.nameError">
                                 required field
@@ -149,7 +147,7 @@
                         <label for="systemStatus">System Status</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="popupData.relation.system" type="checkbox" id="systemStatus" value="true"  ng-disabled="popupData.relation.system">
+                                <input ng-model="popupData.relation.system" type="checkbox" id="systemStatus" value="true" ng-disabled="popupData.relation.system">
                                 this is a system relation <span class="go-grey">(deletion is locked)</span>
                             </label>
                         </div>
@@ -184,41 +182,14 @@
                     </div>
                 </div>
             </div>
-            <p class="alert alert-warning">only "Identifier GUID" fields that are marked as unique and required can be related. A field can be target to only one relation</p>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="required">Target Entity</label>
-                        <select class="form-control ng-hide" name="selectedTargetEntity" ng-model="popupData.selectedTargetEntity"
-                                ng-options="entity as entity.label for entity in popupData.eligibleTargetEntities | filter:{ enabled : true }"
-                                ng-change="popupData.changeTargetEntity(popupData.selectedTargetEntity)"   ng-show="popupData.relation.id == null"></select>
-                        <p class="form-control-static ng-hide"  ng-show="popupData.relation.id != null">{{popupData.selectedTargetEntityLabel}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : popupData.fieldsDuplicatedError}">
-                        <label class="required">Target Field</label>
-                        <select class="form-control ng-hide" name="selectedTargetField"
-                                ng-disabled="!popupData.selectedTargetFieldEnabled"
-                                ng-model="popupData.selectedTargetField"
-                                ng-options="field as field.label for field in popupData.selectedTargetEntity.fields"
-                                ng-change="popupData.changeField()"  ng-show="popupData.relation.id == null"></select>
-                        <small class="error" ng-show="popupData.fieldsDuplicatedError" >
-                              Target and Origin fields cannot match
-                        </small>
-                        <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedTargetFieldLabel}}</p>
-                    </div>
-                </div>
-
-            </div>
-
+            <p class="alert alert-warning">only "Identifier GUID" fields can be related. Origin fields should be unique and required also. A field can be target to only one relation.<br />The relations - "1:1" and "1:N", do not allow the "id" to be Target field for the relation</p>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="required">Origin Entity</label>
                         <select class="form-control ng-hide" name="selectedOriginEntity" ng-model="popupData.selectedOriginEntity"
-                                ng-options="entity as entity.label for entity in popupData.eligibleOriginEntities | filter:{ enabled : true }"
-                                ng-change="popupData.changeOriginEntity(popupData.selectedOriginEntity)"  ng-show="popupData.relation.id == null"></select>
+                                ng-options="entity as entity.name for entity in popupData.eligibleOriginEntities | filter:{ enabled : true }"
+                                ng-change="popupData.changeOriginEntity(popupData.selectedOriginEntity)" ng-show="popupData.relation.id == null"></select>
                         <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedOriginEntityLabel}}</p>
                     </div>
 
@@ -229,16 +200,46 @@
                         <select class="form-control ng-hide" name="selectedOriginField"
                                 ng-disabled="!popupData.selectedOriginFieldEnabled"
                                 ng-model="popupData.selectedOriginField"
-                                ng-options="field as field.label for field in popupData.selectedOriginEntity.fields"
+                                ng-options="field as field.name for field in popupData.selectedOriginEntity.fields"
                                 ng-change="popupData.changeField()" ng-show="popupData.relation.id == null"></select>
-                        <small class="error" ng-show="popupData.fieldsDuplicatedError" >
-                                Target and Origin fields cannot match
+                        <small class="error" ng-show="popupData.fieldsDuplicatedError">
+                            Target and Origin fields cannot match
                         </small>
                         <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedOriginFieldLabel}}</p>
                     </div>
                 </div>
 
             </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required">Target Entity</label>
+                        <select class="form-control ng-hide" name="selectedTargetEntity" ng-model="popupData.selectedTargetEntity"
+                                ng-options="entity as entity.name for entity in popupData.eligibleTargetEntities | filter:{ enabled : true }"
+                                ng-change="popupData.changeTargetEntity(popupData.selectedTargetEntity)" ng-show="popupData.relation.id == null"></select>
+                        <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedTargetEntityLabel}}</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-error' : popupData.fieldsDuplicatedError}">
+                        <label class="required">Target Field</label>
+                        <select class="form-control ng-hide" name="selectedTargetField"
+                                ng-disabled="!popupData.selectedTargetFieldEnabled"
+                                ng-model="popupData.selectedTargetField"
+                                ng-options="field as field.name for field in popupData.selectedTargetEntity.fields"
+                                ng-change="popupData.changeField()" ng-show="popupData.relation.id == null"></select>
+                        <small class="error" ng-show="popupData.fieldsDuplicatedError">
+                            Target and Origin fields cannot match
+                        </small>
+                        <small class="error" ng-show="(popupData.relation.relationType == 1 || popupData.relation.relationType == 2) && popupData.selectedTargetField.name ==  'id'">
+                            The Id cannot be a target field, when the relation type is "One to one" or "One to many"
+                        </small>
+                        <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedTargetFieldLabel}}</p>
+                    </div>
+                </div>
+
+            </div>
+
         </form>
     </div>
     <div class="modal-footer">
