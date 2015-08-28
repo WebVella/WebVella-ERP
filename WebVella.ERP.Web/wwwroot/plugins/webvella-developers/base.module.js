@@ -73,6 +73,7 @@
         var pluginData = this;
         pluginData.executeSampleQuery = executeSampleQuery;
         pluginData.createSampleQueryDataStructure = createSampleQueryDataStructure;
+        pluginData.executeSampleRelationRecordUpdate = executeSampleRelationRecordUpdate;
         pluginData.result = "";
 
         $log.debug('webvellaDevelopers>base> END controller.exec');
@@ -131,6 +132,24 @@
         };
 
         function activate() {
+        }
+
+
+        function executeSampleRelationRecordUpdate() {
+            $log.debug('webvellaDevelopers>base> BEGIN controller.executeSampleRelationRecordUpdate');
+            queryService.executeSampleRelationRecordUpdate({ relationName: "account_id_to_test_user_id", originFieldRecordId: '8e253615-d91c-4c60-91ca-c13d3c7c6053', targetFieldRecordIds: ['1af61222-986c-403c-a1e6-738c986312f0'] },
+				function (response) {
+				    $log.debug('webvellaDevelopers>base> END controller.executeSampleRelationRecordUpdate> SUCCESS');
+				    $log.debug(response);
+				    pluginData.result = response;
+				},
+				function (response) {
+				    $log.debug('webvellaDevelopers>base> END controller.executeSampleRelationRecordUpdate> ERROR');
+				    $log.debug(response);
+				    pluginData.result = response;
+				}
+			);
+
         }
 
         function executeSampleQuery() {
