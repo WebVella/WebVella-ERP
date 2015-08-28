@@ -191,15 +191,15 @@
         //#region << List types >>
         contentData.listTypeOptions = [
             {
-                key: "general",
+                key: 0,
                 value: "general"
             },
             {
-                key: "lookup",
+                key: 1,
                 value: "lookup"
             },
             {
-                key: "create",
+                key: 2,
                 value: "create"
             }
         ];

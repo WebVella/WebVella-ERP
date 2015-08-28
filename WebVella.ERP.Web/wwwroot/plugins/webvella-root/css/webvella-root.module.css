@@ -2739,16 +2739,29 @@ span.editable {
     line-height: 20px;
     padding: 6px 12px;
     background-color: #fafafa;
-    border: 1px solid #ccc;
     padding-right: 40px;
     border: 1px solid #ddd;
+    min-height:34px;
     border-radius: 3px;
     position: relative;
 }
 
+table.editable {
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    overflow:scroll !important;
+    padding:0;
+    min-height: 34px;
+}
+
+    table.editable tr td:last-child {
+        padding-right:40px;
+    }
+
 
     a.editable:after,
-    span.editable:after {
+    span.editable:after,
+    table.editable:after {
         font-family: 'FontAwesome';
         content: "\f040";
         position: absolute;
@@ -2767,12 +2780,19 @@ span.editable {
         border-radius: 0 3px 3px 0;
     }
 
-    a.editable.lookup::after, span.editable.lookup::after {
+    table.editable:after {
+        border: 1px solid #ccc;
+        border-left:none;
+        right:15px;
+    }
+
+    a.editable.lookup::after, span.editable.lookup::after, table.editable.lookup::after {
         content: "\f0c9";
     }
 
     a.editable:hover:after,
-    span.editable:hover:after {
+    span.editable:hover:after,
+    table.editable:hover:after {
         display: inline-block;
         border: 1px solid #FFCC80;
         color: #fff;
@@ -2786,6 +2806,29 @@ span.editable {
         cursor: pointer;
         color: #333;
         z-index: 2;
+    }
+
+table.editable:hover {
+        background: #FFF3E0;
+        border: 1px solid #FFCC80;
+        cursor: pointer;
+}
+
+    table.editable:hover tr:first-child td {
+        border-top: 1px solid #FFCC80;
+    }
+
+    table.editable:hover tr td:first-child {
+        border-left: 1px solid #FFCC80;
+    }
+
+    table.editable:hover tr td:last-child {
+        border-right: 1px solid #FFCC80;
+    }
+
+    table.editable tr:last-child td,
+    table.editable:hover tr:last-child td {
+        border-bottom: none;
     }
 
 /*Html*/
