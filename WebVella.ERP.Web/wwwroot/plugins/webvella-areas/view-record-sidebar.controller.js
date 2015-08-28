@@ -26,7 +26,7 @@
     	//Select default list
         sidebarData.defaultList = {};
         for (var i = 0; i < sidebarData.entity.recordLists.length; i++) {
-        	if (sidebarData.entity.recordLists[i].default) {
+            if (sidebarData.entity.recordLists[i].default && sidebarData.entity.recordLists[i].type == "general") { 
         		sidebarData.defaultList = sidebarData.entity.recordLists[i];
         		break;
         	}

@@ -42,6 +42,7 @@ function guid() {
         serviceInstance.updateField = updateField;
         serviceInstance.deleteField = deleteField;
         serviceInstance.initRelation = initRelation;
+        serviceInstance.getRelationByName = getRelationByName;
         serviceInstance.getRelationsList = getRelationsList;
         serviceInstance.createRelation = createRelation;
         serviceInstance.updateRelation = updateRelation;
@@ -343,6 +344,13 @@ function guid() {
             return relation;
         }
 
+
+        ///////////////////////
+        function getRelationByName(name, successCallback, errorCallback) {
+            $log.debug('webvellaAdmin>providers>admin.service>getRelationByName> function called');
+            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/relation/' + name }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
         ///////////////////////
         function getRelationsList(successCallback, errorCallback) {
             $log.debug('webvellaAdmin>providers>admin.service>getRelationsList> function called');
@@ -405,7 +413,7 @@ function guid() {
 				"id":guid(),
             	"name": "section",
             	"label": "Section",
-            	"cssClass": "",
+            	"cssClass": "go-vertical",
                 "showLabel": true,
                 "collapsed": false,
                 "weight": 1,
@@ -586,7 +594,6 @@ function guid() {
 					"weight": 1,
 					"type": "general",
 					"cssClass": "",
-					"recordsLimit": 10,
 					"pageSize": 10,
 					"columns": [],
 					"query": null,
@@ -607,7 +614,6 @@ function guid() {
 				"weight": 1,
 				"type": "general",
 				"cssClass": "",
-				"recordsLimit": 100,
 				"pageSize": 10,
 				"columns": [
 			{

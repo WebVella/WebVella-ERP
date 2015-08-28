@@ -11,7 +11,7 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
-	    .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
+	    .controller('ManageRelationFieldModalSingleSelectionController', ManageRelationFieldModalSingleSelectionController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -40,7 +40,8 @@
 			},
 			resolve: {
 				resolvedCurrentView: resolveCurrentView,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
+				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityRelationsList: resolveEntityRelationsList,
 			},
 			data: {
 
@@ -49,18 +50,17 @@
 	};
 
 
-	// Run //////////////////////////////////////
+	//#region << Run >> //////////////////////////////////////
 	run.$inject = ['$log'];
-
 	/* @ngInject */
 	function run($log) {
 		$log.debug('webvellaAreas>entities> BEGIN module.run');
 
 		$log.debug('webvellaAreas>entities> END module.run');
 	};
+    //#endregion
 
-
-	//#region << Resolve Function >>
+	//#region << Resolve Function >> /////////////////////////
 	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
@@ -98,8 +98,6 @@
 		return defer.promise;
 	}
 
-
-	// Resolve Function /////////////////////////
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
@@ -137,22 +135,61 @@
 		return defer.promise;
 	}
 
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    /* @ngInject */
+	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+	    $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+	    // Initialize
+	    var defer = $q.defer();
+
+	    // Process
+	    function successCallback(response) {
+	        if (response.object == null) {
+	            $timeout(function () {
+	                $state.go("webvella-root-not-found");
+	            }, 0);
+	        }
+	        else {
+	            defer.resolve(response.object);
+	        }
+	    }
+
+	    function errorCallback(response) {
+	        if (response.object == null) {
+	            $timeout(function () {
+	                $state.go("webvella-root-not-found");
+	            }, 0);
+	        }
+	        else {
+	            defer.resolve(response.object);
+	        }
+	    }
+
+	    webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+	    // Return
+	    $log.debug('webvellaAdmin>entity-details> END state.resolved');
+	    return defer.promise;
+	}
+
+
 	//#endregion
 
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
+        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
 
 	/* @ngInject */
 	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
-        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta) {
+        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.isView = false;
 		contentData.isList = false;
 		contentData.stateParams = $stateParams;
+
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -181,7 +218,32 @@
 		//#region << Intialize current entity >>
 		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
 
-		//#endregion
+	    //#endregion
+
+	    //#region << Entity relations functions >>
+		contentData.relationsList = angular.copy(resolvedEntityRelationsList);
+		contentData.getRelation = function (relationName) {
+		    for (var i = 0; i < contentData.relationsList.length; i++) {
+		        if (contentData.relationsList[i].name == relationName) {
+		            //set current entity role
+		            if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 3; //both origin and target
+		            }
+		            else if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 2; //target
+		            }
+		            else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 1; //origin
+		            }
+		            else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 0; //possible problem
+		            }
+		            return contentData.relationsList[i];
+		        }
+		    }
+		    return null;
+		}
+	    //#endregion
 
 	    //#region << View Seciton >>
 		contentData.viewSection = {};
@@ -569,70 +631,153 @@
 
 	    //#region << Modals >>
 
-	    //Relation field
-		contentData.openManageRelationFieldModal = function (item) {
-		    var resolveRelationLookupList = function (item) {
-		        // Initialize
-		        var defer = $q.defer();
+	    ////Relation field
 
-		        // Process
-		        function errorCallback(response) {
-		            defer.resolve(response.object);
-		        }
-		        function getListRecordsSuccessCallback(response) {
-		            defer.resolve(response.object);
-		        }
+        ////////////////////
+		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
+		    //relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
+		    //dataKind - target, origin, origin-target
 
-		        function getEntityMetaSuccessCallback(response) {
-		            var entityMeta = response.object;
-		            var defaultLookupList = null;
-                    //Find the default lookup field if none return null.
-		            for (var i = 0; i < entityMeta.recordLists.length; i++) {
-		                if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
-		                    defaultLookupList = entityMeta.recordLists[i];
-		                    break;
+            //Select ONE item modal
+		    if (relationType == 1 || (relationType == 2 && dataKind == "target")) {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModalSingleSelection.html',
+		            controller: 'ManageRelationFieldModalSingleSelectionController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                resolvedLookupRecords: function () {
+		                    var i = 0;
+		                    return resolveLookupRecords(item);
+		                }
+		            }
+		        });
+
+
+                //On modal exit
+		        modalInstance.result.then(function (selectedRecordId) {
+
+		            //Get relation from the relations list
+                    //Get the origin record data.
+
+
+
+		            function patchRecordSuccessCallback(response) {
+		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+		            }
+
+		            function patchRecordErrorCallback(response) {
+
+		            }
+
+		            function getRelationSuccessCallback(response) {
+		                var currentRelation = response.object;
+
+		                //#region < Relation type 1 - 1:1 > ///////////////////////////////////////
+		                if (currentRelation.relationType == 1) {
+
+		                    if (dataKind == "origin") {
+                                //CURRENT entity == Origin entity
+		                        //1. Look in the ORIGIN entity for the field ID in the relation and get its name
+
+		                        //2. Get the value of the field by its name from the ORIGIN entity
+
+		                        //3. Get the TARGET entity and find the target field name by its ID in the relation
+
+		                        //4. Patch the TARGET entity field with the origin field value
+		                    }
+		                    else if (dataKind == "target") {
+		                        //CURRENT entity == Target entity
+
+		                    }
+		                    else if (dataKind == "origin-target") {
+
+		                    }
+
+		                }
+                        //#endregion
+
+		                //Case 2 - 1:N or N:1
+		                else if (currentRelation.relationType == 2) {
+		                    //Find which is the needed field - target or origin
+
+		                    //Check the relation meta for the targetFieldId and than find the field name from the entityMeta
+		                    var targetRelationFieldId = currentRelation.targetFieldId;
+		                    var targetFieldName = null;
+		                    for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+		                        if (contentData.currentEntity.fields[i].id == targetRelationFieldId) {
+		                            targetFieldName = contentData.currentEntity.fields[i].name;
+		                            break;
+		                        }
+		                    }
+		                    //Update the record with the new Id, get the returned object and substitute the presented one.
+		                    var patchObject = {};
+		                    patchObject[targetFieldName] = selectedRecordId;
+		                    webvellaAdminService.patchRecord(contentData.stateParams.recordId, contentData.currentEntity.name, patchObject, patchRecordSuccessCallback, patchRecordErrorCallback);
+		                }
+		                    //Case 3 - Many to many relation
+		                else if (currentRelation.relationType == 3) {
+		                    //What is the current entity in the relation - target or origin
+
+		                    //Find the relation record
 		                }
 		            }
 
-		            if (defaultLookupList == null) {
-		                defer.resolve(null);
-		            }
-		            else {
-		                webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all",1, getListRecordsSuccessCallback, errorCallback);
-		            }
-		        }
+		            function getRelationErrorCallback(response) {
 
-		        webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+		            }
 
-		        return defer.promise;
+		            //find from the relation name which property of the current entity should set with the new Id
+		            webvellaAdminService.getRelationByName(item.relationName, getRelationSuccessCallback, getRelationErrorCallback);
+		        });
 		    }
-
-		    var modalInstance = $modal.open({
-		        animation: false,
-		        templateUrl: 'manageRelationFieldModal.html',
-		        controller: 'ManageRelationFieldModalController',
-		        controllerAs: "popupData",
-		        size: "lg",
-		        resolve: {
-		            contentData: function () {
-		                return contentData;
-		            },
-		            selectedItem: function () {
-		                return item;
-		            },
-		            resolvedRelationLookupList: function () {
-		                return resolveRelationLookupList(item);
-		            }
-		        }
-		    });
-
 		}
 
+	    //Resolve function lookup records
+		var resolveLookupRecords = function (item) {
+		    // Initialize
+		    var defer = $q.defer();
 
+		    // Process
+		    function errorCallback(response) {
+		        defer.resolve(response.object);
+		    }
+		    function getListRecordsSuccessCallback(response) {
+		        defer.resolve(response.object);
+		    }
+
+		    function getEntityMetaSuccessCallback(response) {
+		        var entityMeta = response.object;
+		        var defaultLookupList = null;
+		        //Find the default lookup field if none return null.
+		        for (var i = 0; i < entityMeta.recordLists.length; i++) {
+		            if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
+		                defaultLookupList = entityMeta.recordLists[i];
+		                break;
+		            }
+		        }
+
+		        if (defaultLookupList == null) {
+		            defer.resolve({});
+		        }
+		        else {
+		            webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		        }
+		    }
+
+		    webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+
+		    return defer.promise;
+		}
 
         //#endregion
-
-
 
 
 		$log.debug('webvellaAreas>entities> END controller.exec');
@@ -640,10 +785,13 @@
 
 
     //#region < Modal Controllers >
-	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedRelationLookupList', 'selectedItem', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+
+
+    ////////////////////////
+	ManageRelationFieldModalSingleSelectionController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedLookupRecords', 'selectedItem', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, resolvedRelationLookupList, selectedItem, webvellaAdminService,webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageRelationFieldModalSingleSelectionController(contentData, $modalInstance, $log, $q, resolvedLookupRecords, selectedItem, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
 	    /* jshint validthis:true */
 	    var popupData = this;
@@ -651,7 +799,7 @@
 	    popupData.parentData = angular.copy(contentData);
 	    popupData.selectedItem = angular.copy(selectedItem);
 	    //Get the default lookup list for the entity
-	    popupData.relationLookupList = angular.copy(resolvedRelationLookupList);
+	    popupData.relationLookupList = angular.copy(resolvedLookupRecords);
 
 	    //#region << Paging >>
 	    popupData.selectPage = function (page) {
@@ -826,13 +974,9 @@
 
         //#endregion 
 
-
-
-
-	    popupData.select = function (record) {
-
-	        
-
+	    popupData.selectInstitutionCategory = function (record) {
+	        $modalInstance.close(record.id);
+            //category_id
 	    };
 
 	    popupData.cancel = function () {
