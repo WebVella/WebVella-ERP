@@ -19,8 +19,18 @@
 
         serviceInstance.executeSampleQuery = executeSampleQuery;
         serviceInstance.createSampleQueryDataStructure = createSampleQueryDataStructure;
+        serviceInstance.executeSampleRelationRecordUpdate = executeSampleRelationRecordUpdate;
         serviceInstance.moveFile = moveFile;
         serviceInstance.deleteFile = deleteFile;
+
+        
+
+        /////////////////////////
+        function executeSampleRelationRecordUpdate(postObject, successCallback, errorCallback) {
+            $log.info('webvellaDevelopers>providers>query.service>execute executeSampleRelationRecordUpdate> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
 
         /////////////////////////
         function executeSampleQuery(postObject,successCallback, errorCallback) {
