@@ -1222,12 +1222,29 @@ namespace WebVella.ERP.Web.Controllers
             var originRecord = result.Object.Data[1];
             object originValue = originRecord[originField.Name];
 
-            query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);
-            result = recMan.Find(query);
-            if (result.Object.Data.Count == 0) //when there are no targets, we return
-                return DoResponse(response);
+            List<EntityRecord> targetRecords = new List<EntityRecord>();
 
-            var targetRecords = result.Object.Data;
+            foreach (var targetId in model.TargetFieldRecordIds)
+            {
+                query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", targetId ), null, null, null);
+                result = recMan.Find(query);
+                if (result.Object.Data.Count == 0) //when there are no targets, we return
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Target record was not found. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+                if(targetRecords.Any( x=> (Guid)x["id"] == targetId ))
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Target id was duplicated. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+                targetRecords.Add(result.Object.Data[0]);
+
+            }
+
+            targetRecords = result.Object.Data;
 
             var transaction = recMan.CreateTransaction();
             try {
