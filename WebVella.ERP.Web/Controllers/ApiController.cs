@@ -1849,9 +1849,13 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						else if (item is RecordViewRelationFieldItem)
 						{
-							string propName = string.Format("${0}", ((RecordViewRelationFieldItem)item).RelationName);
+                          
 
-							List<EntityRecord> relFieldRecords = (List<EntityRecord>)record[propName];
+							string propName = string.Format("${0}", ((RecordViewRelationFieldItem)item).RelationName);
+                          
+                           
+
+                            List <EntityRecord> relFieldRecords = (List<EntityRecord>)record[propName];
 							List<object> resultFieldRecord = new List<object>();
 							if (relFieldRecords != null)
 							{
@@ -1861,7 +1865,19 @@ namespace WebVella.ERP.Web.Controllers
 								}
 							}
 							dataRecord[item.DataName] = resultFieldRecord;
-						}
+
+                            string idDataName = "$field" + propName + "$id";
+                            if (!dataRecord.Properties.ContainsKey(idDataName))
+                            {
+                                List<object> idFieldRecord = new List<object>();
+                                if (relFieldRecords != null)
+                                {
+                                    foreach (var relFieldRecord in relFieldRecords)
+                                        idFieldRecord.Add(relFieldRecord["id"]);
+                                }
+                                dataRecord[idDataName] = idFieldRecord;
+                            }
+                        }
 						else if (item is RecordViewRelationListItem)
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationListItem)item).RelationId);
