@@ -1465,14 +1465,15 @@ namespace WebVella.ERP.Web.Controllers
 					resultQuery.Query = queryObj;
 				}
 
-				string queryFields = null;
+				string queryFields = "id,";
 				if (list.Columns != null)
 				{
 					foreach (var column in list.Columns)
 					{
 						if (column is RecordListFieldItem)
 						{
-							queryFields += ((RecordListFieldItem)column).Meta.Name + ", ";
+                            if(((RecordListFieldItem)column).Meta.Name != "id" )
+							    queryFields += ((RecordListFieldItem)column).Meta.Name + ", ";
 						}
 						else if (column is RecordListRelationFieldItem)
 						{
@@ -1556,7 +1557,10 @@ namespace WebVella.ERP.Web.Controllers
 						if (column is RecordListFieldItem)
 						{
 							dataRecord[column.DataName] = record[((RecordListFieldItem)column).FieldName];
-						}
+
+                            if (!dataRecord.Properties.ContainsKey("id"))
+                                dataRecord["id"] = record["id"];
+                        }
 						else if (column is RecordListRelationFieldItem)
 						{
 							string propName = string.Format("${0}", ((RecordListRelationFieldItem)column).RelationName);
@@ -1737,7 +1741,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
 
-			string queryFields = string.Empty;
+			string queryFields = "id,";
 
 			List<RecordViewItemBase> items = new List<RecordViewItemBase>();
 
@@ -1771,7 +1775,8 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					if (item is RecordViewFieldItem)
 					{
-						queryFields += ((RecordViewFieldItem)item).Meta.Name;
+                        if(((RecordViewFieldItem)item).Meta.Name != "id")
+						    queryFields += ((RecordViewFieldItem)item).Meta.Name;
 					}
 					else if (item is RecordViewRelationFieldItem)
 					{
