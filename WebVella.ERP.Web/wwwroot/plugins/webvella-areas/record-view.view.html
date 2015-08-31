@@ -376,10 +376,10 @@
     <div class="modal-body">
         <div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
         <div ng-hide="popupData.hasError">
-            <div ng-if="popupData.relationLookupList == null">
-                <div class="alert alert-warning">The selected related entity, does not have a default lookup list. Please contact your administrator to create one.</div>
+            <div ng-if="popupData.hasWarning">
+                <div class="alert alert-warning">{{popupData.warningMessage}}</div>
             </div>
-            <div ng-if="popupData.relationLookupList != null">
+            <div ng-if="!popupData.hasWarning">
                 <form id="filters" class="form-inline" style="margin-bottom:1em; opacity:.2">
                     <div class="form-group" style="padding-right:10px;">
                         <a class="btn btn-default hidden-xs" ng-click="openSetFiltersModal()">
@@ -422,7 +422,7 @@
                     <tbody>
                         <tr ng-repeat="record in popupData.relationLookupList.data">
                             <td>
-                                <a ng-click='popupData.selectInstitutionCategory(record)' href="javascript:void(0)">
+                                <a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)">
                                     select
                                 </a>
                             </td>
