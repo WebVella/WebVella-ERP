@@ -1164,22 +1164,6 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            if( string.IsNullOrWhiteSpace( model.Operation))
-            {
-                response.Errors.Add(new ErrorModel { Message = "Operation is not specified. It can be 'create' or 'remove'", Key = "operation" });
-                response.Success = false;
-                return DoResponse(response);
-            }
-            else
-            {
-                if(!( model.Operation.ToLowerInvariant() == "create" || model.Operation.ToLowerInvariant() == "remove" ))
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Operation can be only 'create' or 'remove'.", Key = "operation" });
-                    response.Success = false;
-                    return DoResponse(response);
-                }
-            }
-
             EntityRelation relation = null;
             if (string.IsNullOrWhiteSpace(model.RelationName))
             {
@@ -1203,9 +1187,9 @@ namespace WebVella.ERP.Web.Controllers
             var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
             var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
 
-            if (model.Operation.ToLowerInvariant() == "remove" && targetField.Required )
+            if (model.DetachTargetFieldRecordIds != null && model.DetachTargetFieldRecordIds.Any() && targetField.Required )
             {
-                response.Errors.Add(new ErrorModel { Message = "Cannot use 'remove' operation, when target field is required.", Key = "originFieldRecordId" });
+                response.Errors.Add(new ErrorModel { Message = "Cannot detach records, when target field is required.", Key = "originFieldRecordId" });
                 response.Success = false;
                 return DoResponse(response);
             }
@@ -1222,29 +1206,46 @@ namespace WebVella.ERP.Web.Controllers
             var originRecord = result.Object.Data[0];
             object originValue = originRecord[originField.Name];
 
-            List<EntityRecord> targetRecords = new List<EntityRecord>();
+            List<EntityRecord> attachTargetRecords = new List<EntityRecord>();
+            List<EntityRecord> detachTargetRecords = new List<EntityRecord>();
 
-            foreach (var targetId in model.TargetFieldRecordIds)
+            foreach (var targetId in model.AttachTargetFieldRecordIds )
             {
-                query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", targetId ), null, null, null);
+                query = new EntityQuery(targetEntity.Name, "*", EntityQuery.QueryEQ("id", targetId ), null, null, null);
                 result = recMan.Find(query);
-                if (result.Object.Data.Count == 0) //when there are no targets, we return
+                if (result.Object.Data.Count == 0)
                 {
-                    response.Errors.Add(new ErrorModel { Message = "Target record was not found. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Errors.Add(new ErrorModel { Message = "Attach target record was not found. Id=[" + targetEntity + "]", Key = "targetRecordId" });
                     response.Success = false;
                     return DoResponse(response);
                 }
-                if(targetRecords.Any( x=> (Guid)x["id"] == targetId ))
+                else  if(attachTargetRecords.Any( x=> (Guid)x["id"] == targetId ))
                 {
-                    response.Errors.Add(new ErrorModel { Message = "Target id was duplicated. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Errors.Add(new ErrorModel { Message = "Attach target id was duplicated. Id=[" + targetEntity + "]", Key = "targetRecordId" });
                     response.Success = false;
                     return DoResponse(response);
                 }
-                targetRecords.Add(result.Object.Data[0]);
-
+                attachTargetRecords.Add(result.Object.Data[0]);
             }
 
-            targetRecords = result.Object.Data;
+            foreach (var targetId in model.DetachTargetFieldRecordIds)
+            {
+                query = new EntityQuery(targetEntity.Name, "*", EntityQuery.QueryEQ("id", targetId), null, null, null);
+                result = recMan.Find(query);
+                if (result.Object.Data.Count == 0)
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Detach target record was not found. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+                else if (attachTargetRecords.Any(x => (Guid)x["id"] == targetId))
+                {
+                    response.Errors.Add(new ErrorModel { Message = "Detach target id was duplicated. Id=[" + targetEntity + "]", Key = "targetRecordId" });
+                    response.Success = false;
+                    return DoResponse(response);
+                }
+                detachTargetRecords.Add(result.Object.Data[0]);
+            }
 
             var transaction = recMan.CreateTransaction();
             try {
@@ -1256,18 +1257,29 @@ namespace WebVella.ERP.Web.Controllers
                     case EntityRelationType.OneToOne:
                     case EntityRelationType.OneToMany:
                         {
-                            foreach( var record in targetRecords )
+                            foreach (var record in detachTargetRecords )
                             {
-                                if (model.Operation.ToLowerInvariant() == "create")
-                                    record[targetField.Name] = originValue;
-                                else //remove
-                                    record[targetField.Name] = null; 
+                                record[targetField.Name] = null;
 
                                 var updResult = recMan.UpdateRecord(targetEntity, record);
                                 if (!updResult.Success)
                                 {
                                     response.Errors = updResult.Errors;
-                                    response.Message = "Target record id=[" + record["id"] + "] operation failed.";
+                                    response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
+                                    response.Success = false;
+                                    return DoResponse(response);
+                                }
+                            }
+
+                            foreach ( var record in attachTargetRecords )
+                            {
+                                record[targetField.Name] = originValue;
+
+                                var updResult = recMan.UpdateRecord(targetEntity, record);
+                                if (!updResult.Success)
+                                {
+                                    response.Errors = updResult.Errors;
+                                    response.Message = "Target record id=[" + record["id"] + "] attach operation failed.";
                                     response.Success = false;
                                     return DoResponse(response);
                                 }
@@ -1276,18 +1288,27 @@ namespace WebVella.ERP.Web.Controllers
                         break;
                     case EntityRelationType.ManyToMany:
                         {
-                            foreach (var record in targetRecords)
+                            foreach (var record in detachTargetRecords )
                             {
-                                QueryResponse updResult;
-                                if (model.Operation.ToLowerInvariant() == "create")
-                                    updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
-                                else //remove
-                                    updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+                                QueryResponse updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
 
                                 if (!updResult.Success)
                                 {
                                     response.Errors = updResult.Errors;
-                                    response.Message = "Target record id=[" + record["id"] + "] operation failed.";
+                                    response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
+                                    response.Success = false;
+                                    return DoResponse(response);
+                                }
+                            }
+
+                            foreach (var record in attachTargetRecords )
+                            {
+                                QueryResponse updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+
+                                if (!updResult.Success)
+                                {
+                                    response.Errors = updResult.Errors;
+                                    response.Message = "Target record id=[" + record["id"] + "] attach  operation failed.";
                                     response.Success = false;
                                     return DoResponse(response);
                                 }
