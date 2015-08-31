@@ -1219,7 +1219,7 @@ namespace WebVella.ERP.Web.Controllers
                 return DoResponse(response);
             }
 
-            var originRecord = result.Object.Data[1];
+            var originRecord = result.Object.Data[0];
             object originValue = originRecord[originField.Name];
 
             query = new EntityQuery(originEntity.Name, "*", EntityQuery.QueryEQ("id", model.OriginFieldRecordId), null, null, null);

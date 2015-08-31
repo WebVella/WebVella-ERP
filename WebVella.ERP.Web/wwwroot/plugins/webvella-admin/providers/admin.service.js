@@ -77,7 +77,7 @@ function guid() {
         serviceInstance.uploadFileToTemp = uploadFileToTemp;
         serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
         serviceInstance.deleteFileFromFS = deleteFileFromFS;
-
+        serviceInstance.manageRecordsRelation = manageRecordsRelation;
         //Area
         serviceInstance.initArea = initArea;
         serviceInstance.getAreaByName = getAreaByName;
@@ -783,6 +783,21 @@ function guid() {
         	$http({ method: 'DELETE', url: filepath }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
         
+
+        /////////////////////////
+        function manageRecordsRelation(relationName, originFieldRecordId, targetFieldRecordIds, successCallback, errorCallback) {
+            var postObject = {
+                relationName: relationName,//string
+                originFieldRecordId: originFieldRecordId, //guid
+                targetFieldRecordIds: targetFieldRecordIds,//guid array
+                operation: "create"
+            }
+
+
+            $log.info('webvellaAdmin>providers>query.service>execute manageRecordsRelation> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
         
         //#endregion
 
