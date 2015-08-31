@@ -1762,9 +1762,11 @@ namespace WebVella.ERP.Web.Controllers
 					else if (item is RecordViewRelationFieldItem)
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
+                        queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
 
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
-						queryFields += string.Format("{0}{1}, ", relName, ((RecordViewRelationFieldItem)item).Meta.Name);
+                        //add ID field automatically if not added
+                        if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
+                            queryFields += string.Format("${0}.id,", relation.Name );
 					}
 					else if (item is RecordViewListItem || item is RecordViewViewItem)
 					{
