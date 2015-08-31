@@ -653,109 +653,80 @@
 		                selectedItem: function () {
 		                    return item;
 		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
 		                resolvedLookupRecords: function () {
-		                    var i = 0;
-		                    return resolveLookupRecords(item);
+		                    return resolveLookupRecords(item,relationType, dataKind);
 		                }
 		            }
 		        });
 
 
                 //On modal exit
-		        modalInstance.result.then(function (selectedRecordId) {
+		        modalInstance.result.then(function (returnObject) {
 
-		            //Get relation from the relations list
-                    //Get the origin record data.
+		            // Initialize
+		            var displayedRecordId = $stateParams.recordId;
 
 
-
-		            function patchRecordSuccessCallback(response) {
+		            function successCallback(response) {
 		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
 		            }
 
-		            function patchRecordErrorCallback(response) {
+		            function errorCallback(response) {
 
 		            }
-
-		            function getRelationSuccessCallback(response) {
-		                var currentRelation = response.object;
-
-		                //#region < Relation type 1 - 1:1 > ///////////////////////////////////////
-		                if (currentRelation.relationType == 1) {
-
-		                    if (dataKind == "origin") {
-                                //CURRENT entity == Origin entity
-		                        //1. Look in the ORIGIN entity for the field ID in the relation and get its name
-
-		                        //2. Get the value of the field by its name from the ORIGIN entity
-
-		                        //3. Get the TARGET entity and find the target field name by its ID in the relation
-
-		                        //4. Patch the TARGET entity field with the origin field value
-		                    }
-		                    else if (dataKind == "target") {
-		                        //CURRENT entity == Target entity
-
-		                    }
-		                    else if (dataKind == "origin-target") {
-
-		                    }
-
-		                }
-                        //#endregion
-
-		                //Case 2 - 1:N or N:1
-		                else if (currentRelation.relationType == 2) {
-		                    //Find which is the needed field - target or origin
-
-		                    //Check the relation meta for the targetFieldId and than find the field name from the entityMeta
-		                    var targetRelationFieldId = currentRelation.targetFieldId;
-		                    var targetFieldName = null;
-		                    for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
-		                        if (contentData.currentEntity.fields[i].id == targetRelationFieldId) {
-		                            targetFieldName = contentData.currentEntity.fields[i].name;
-		                            break;
-		                        }
-		                    }
-		                    //Update the record with the new Id, get the returned object and substitute the presented one.
-		                    var patchObject = {};
-		                    patchObject[targetFieldName] = selectedRecordId;
-		                    webvellaAdminService.patchRecord(contentData.stateParams.recordId, contentData.currentEntity.name, patchObject, patchRecordSuccessCallback, patchRecordErrorCallback);
-		                }
-		                    //Case 3 - Many to many relation
-		                else if (currentRelation.relationType == 3) {
-		                    //What is the current entity in the relation - target or origin
-
-		                    //Find the relation record
-		                }
+		            //relationName: popupData.selectedItem.relationName,
+		            //dataKind: selectedDataKind,
+		            //selectedRecordId: record.id
+		            
+		            // ** Post relation change between the two records
+		            var targetRecordsForPostObject = [];
+		            if (returnObject.dataKind == "origin") {
+		                targetRecordsForPostObject.push(returnObject.selectedRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, targetRecordsForPostObject, successCallback, errorCallback);
 		            }
-
-		            function getRelationErrorCallback(response) {
-
+		            else if (returnObject.dataKind == "target") {
+		                targetRecordsForPostObject.push(displayedRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, targetRecordsForPostObject, successCallback, errorCallback);
 		            }
-
-		            //find from the relation name which property of the current entity should set with the new Id
-		            webvellaAdminService.getRelationByName(item.relationName, getRelationSuccessCallback, getRelationErrorCallback);
+		            else {
+		                alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+		            }
 		        });
 		    }
 		}
+		contentData.modalSelectedItem = {};
+		contentData.modalRelationType = -1;
+		contentData.modalDataKind = "";
 
 	    //Resolve function lookup records
-		var resolveLookupRecords = function (item) {
+		var resolveLookupRecords = function (item, relationType, dataKind) {
 		    // Initialize
 		    var defer = $q.defer();
-
+		    contentData.modalSelectedItem = item;
+		    contentData.modalRelationType = relationType;
+		    contentData.modalDataKind = dataKind;
 		    // Process
 		    function errorCallback(response) {
-		        defer.resolve(response.object);
+		        ngToast.create({
+		            className: 'error',
+		            content: '<span class="go-red">Error:</span> ' + response.message
+		        });
+		        defer.reject();
 		    }
 		    function getListRecordsSuccessCallback(response) {
-		        defer.resolve(response.object);
+		        defer.resolve(response); //Submitting the whole response to manage the error states
 		    }
 
 		    function getEntityMetaSuccessCallback(response) {
 		        var entityMeta = response.object;
 		        var defaultLookupList = null;
+
 		        //Find the default lookup field if none return null.
 		        for (var i = 0; i < entityMeta.recordLists.length; i++) {
 		            if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
@@ -765,10 +736,43 @@
 		        }
 
 		        if (defaultLookupList == null) {
-		            defer.resolve({});
+		            response.message = "This entity does not have a default lookup list";
+		            response.success = false;
+		            errorCallback(response);
 		        }
 		        else {
-		            webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		            var gg = contentData.modalSelectedItem;
+		            //contentData.modalRelationType;
+		            //contentData.modalDataKind;
+
+                    //Current record is Origin
+		            if (contentData.modalDataKind == "origin") {
+		                //Find if the target field is required
+		                var targetRequiredField = false;
+		                var modalCurrrentRelation = contentData.getRelation(contentData.modalSelectedItem.relationName);
+		                for (var m = 0; m < entityMeta.fields.length; m++) {
+		                    if (entityMeta.fields[m].id == modalCurrrentRelation.targetFieldId) {
+		                        targetRequiredField = entityMeta.fields[m].required;
+		                    }
+		                }
+		                if (targetRequiredField && contentData.modalRelationType == 1) {
+		                    //Case 1 - Solves the problem when the target field is required, but we are currently looking on the origin field holding record. 
+		                    //In this case we cannot allow this relation to be managed from this origin record as the change will leave the old target record with null for its required field
+		                    var lockedChangeResponse = {
+		                        success: false,
+		                        message: "This is a relation field, that cannot be managed from this record. Try managing it from the related <<" + entityMeta.label + ">> entity record",
+                                object:null
+		                    }
+		                    getListRecordsSuccessCallback(lockedChangeResponse);
+		                }
+		                else {
+		                    webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		                }
+		            }
+		            else if (contentData.modalDataKind == "target") {
+                    //Current records is Target
+		                webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		            }
 		        }
 		    }
 
@@ -788,18 +792,30 @@
 
 
     ////////////////////////
-	ManageRelationFieldModalSingleSelectionController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedLookupRecords', 'selectedItem', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageRelationFieldModalSingleSelectionController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedLookupRecords',
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-	function ManageRelationFieldModalSingleSelectionController(contentData, $modalInstance, $log, $q, resolvedLookupRecords, selectedItem, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageRelationFieldModalSingleSelectionController(contentData, $modalInstance, $log, $q, resolvedLookupRecords,
+        selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
 	    /* jshint validthis:true */
 	    var popupData = this;
 	    popupData.currentPage = 1;
 	    popupData.parentData = angular.copy(contentData);
 	    popupData.selectedItem = angular.copy(selectedItem);
+	    popupData.hasWarning = false;
+	    popupData.warningMessage = "";
+
 	    //Get the default lookup list for the entity
-	    popupData.relationLookupList = angular.copy(resolvedLookupRecords);
+	    if (resolvedLookupRecords.success) {
+	        popupData.relationLookupList = angular.copy(resolvedLookupRecords.object);
+	    }
+	    else {
+	        popupData.hasWarning = true;
+	        popupData.warningMessage = resolvedLookupRecords.message;
+	    }
 
 	    //#region << Paging >>
 	    popupData.selectPage = function (page) {
@@ -817,7 +833,6 @@
 	    }
 
         //#endregion
-        
 
 	    //#region << Logic >>
 
@@ -974,8 +989,13 @@
 
         //#endregion 
 
-	    popupData.selectInstitutionCategory = function (record) {
-	        $modalInstance.close(record.id);
+	    popupData.selectSingleRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id
+	        };
+	        $modalInstance.close(returnObject);
             //category_id
 	    };
 
@@ -1001,9 +1021,11 @@
 
 	    }
 
+	    //#region << Check specific cases >> ///////////////////
+	    var targetFieldIsRequired = false;
 
 
-
+        //#endregion
 
 	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
 	};
