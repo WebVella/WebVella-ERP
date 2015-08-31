@@ -81,11 +81,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "originFieldRecordId")]
         public Guid OriginFieldRecordId { get; set; }
 
-        [JsonProperty(PropertyName = "targetFieldRecordIds")]
-        public List<Guid> TargetFieldRecordIds { get; set; }
+        [JsonProperty(PropertyName = "attachTargetFieldRecordIds")]
+        public List<Guid> AttachTargetFieldRecordIds { get; set; }
 
-        //can be "create" or "remove"
-        [JsonProperty(PropertyName = "operation")]
-        public string Operation { get; set; }
+        [JsonProperty(PropertyName = "detachTargetFieldRecordIds")]
+        public List<Guid> DetachTargetFieldRecordIds { get; set; }
     }
 }
