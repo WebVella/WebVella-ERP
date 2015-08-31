@@ -1477,10 +1477,12 @@ namespace WebVella.ERP.Web.Controllers
 						else if (column is RecordListRelationFieldItem)
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
+							queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordListRelationFieldItem)column).Meta.Name);
 
-							string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
-							queryFields += string.Format("{0}{1}, ", relName, ((RecordListRelationFieldItem)column).Meta.Name);
-						}
+                            //add ID field automatically if not added
+                            if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
+                                queryFields += string.Format("${0}.id,", relation.Name);
+                        }
 						else if (column is RecordListListItem || column is RecordListViewItem)
 						{
 							if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
@@ -1569,7 +1571,19 @@ namespace WebVella.ERP.Web.Controllers
 								}
 							}
 							dataRecord[column.DataName] = resultFieldRecord;
-						}
+
+                            string idDataName = "$field" + propName + "$id";
+                            if (!dataRecord.Properties.ContainsKey(idDataName))
+                            {
+                                List<object> idFieldRecord = new List<object>();
+                                if (relFieldRecords != null)
+                                {
+                                    foreach (var relFieldRecord in relFieldRecords)
+                                        idFieldRecord.Add(relFieldRecord["id"]);
+                                }
+                                dataRecord[idDataName] = idFieldRecord;
+                            }
+                        }
 						else if (column is RecordListListItem)
 						{
 							QueryObject subListQueryObj = new QueryObject();
