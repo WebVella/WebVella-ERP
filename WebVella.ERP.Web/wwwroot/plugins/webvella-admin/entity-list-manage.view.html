@@ -126,7 +126,7 @@
         <h3 class="page-header">List Columns</h3>
         <div class="row">
 			<div class="col-xs-6">
-				<h5>Selected columns</h5>
+				<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data</small></h5>
 			</div>
             <div class="col-xs-6">
                 <h5>Library</h5>
@@ -146,11 +146,7 @@
 					<div class="drop-zone">
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
-								<div  ng-if='item.type == "field" && item.fieldName == "id"' class="clearfix">
-									<i class="fa fa-fw fa-lock go-red pull-left"></i>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "field" && item.fieldName != "id"' class="clearfix">
+								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.label}}
@@ -223,7 +219,7 @@
 			<table class="table table-noborder">
 				<tr>
 					<td>
-						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.label for item in contentData.onlyFieldsLibrary.items">
+						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items">
 						</select>
 					</td>
 					<td>

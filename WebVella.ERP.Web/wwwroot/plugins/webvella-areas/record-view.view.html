@@ -293,17 +293,11 @@
                                     <div ng-switch-when="1" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
-                                            Origin
-                                            <!-- Case 1.1 - Manage -->
-                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'origin')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
-                                            <!-- Case 1.2 - Create -->
+                                            <a class="editable editable-click origin lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'origin')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
                                         </div>
                                         <!-- Case 2 - Current Entity is Target -->
                                         <div ng-switch-when="2">
-                                            Target
-                                            <!-- Case 2.1 - Manage -->
-                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
-                                            <!-- Case 2.2 - Create -->
+                                            <a class="editable editable-click target lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
                                         </div>
 
                                         <!-- Case 3 - Current Entity is both Orgin and Target -->
@@ -314,22 +308,16 @@
                                     <div ng-switch-when="2" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
-                                            <table class="table table-bordered editable editable-click lookup"  ng-click="contentData.openManageRelationFieldModal(item,1,'target')">
+                                            <table class="table table-bordered editable editable-click origin lookup"  ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
                                                 <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
                                             </table>
-                                            <!--<pre>{{contentData.viewData[item.dataName] | json}}</pre>-->
-                                            <!-- Case 1.1 - Manage -->
-                                            <!-- Case 1.2 - Create -->
                                         </div>
 
                                         <!-- Case 2 - Current Entity is Target -->
                                         <div ng-switch-when="2">
-                                            Target
-                                            <!-- Case 2.1 - Manage -->
-                                            <a class="editable editable-click lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,2,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
-                                            <!-- Case 2.2 - Create -->
+                                            <a class="editable editable-click target lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,2,'target')" ng-bind="contentData.viewData['{{item.dataName}}'][0] || '' "></a>
                                         </div>
 
                                         <!-- Case 3 - Current Entity is both Orgin and Target -->
@@ -339,13 +327,24 @@
                                     </div>
                                     <div ng-switch-when="3" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
                                         <!-- Case 1 - Current Entity is Origin -->
-                                        <div ng-switch-when="1">Origin</div>
-                                        <!-- Case 1.1 - Manage -->
-                                        <!-- Case 1.2 - Create -->
+                                        <div ng-switch-when="1">
+                                            <table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                    <td>{{relationDataRecord}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
                                         <!-- Case 2 - Current Entity is Target -->
-                                        <div ng-switch-when="2">Target</div>
-                                        <!-- Case 2.1 - Manage -->
-                                        <!-- Case 2.2 - Create -->
+                                        <div ng-switch-when="2">
+                                            <table class="table table-bordered editable editable-click target lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'target')">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                    <td>{{relationDataRecord}}</td>
+                                                </tr>
+                                            </table>
+
+                                        </div>
+
                                         <!-- Case 3 - Current Entity is both Orgin and Target -->
                                         <div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
 
@@ -368,7 +367,7 @@
 </div>
 
 
-<script type="text/ng-template" id="manageRelationFieldModalSingleSelection.html">
+<script type="text/ng-template" id="manageRelationFieldModal.html">
     <div class="modal-header" id="modal-top">
         <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Select one <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
@@ -415,15 +414,36 @@
                 <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
                     <thead>
                         <tr>
-                            <th class="actions"></th>
+                            <th class="actions" style="width:80px;" ng-if="popupData.modalMode != 'single-trigger-selection'"></th>
+                            <th class="actions" style="width:110px;" ng-if="popupData.modalMode == 'single-trigger-selection'"></th>
                             <th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="record in popupData.relationLookupList.data">
-                            <td>
-                                <a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)">
+                        <tr ng-repeat="record in popupData.relationLookupList.data" ng-class="{'warning': popupData.isSelectedRecord(record.id)}">
+                            <td ng-if="popupData.modalMode == 'single-selection'">
+                                <a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
                                     select
+                                </a>
+                                <span class="go-red" ng-if="popupData.isSelectedRecord(record.id)">
+                                    selected
+                                </span>
+                            </td>
+                            <td ng-if="popupData.modalMode == 'multi-selection'">
+                                <a ng-click='popupData.attachRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+                                    select
+                                </a>
+                                <a ng-click='popupData.detachRecord(record)' href="javascript:void(0)" ng-if="popupData.isSelectedRecord(record.id)">
+                                    deselect
+                                </a>
+                            </td>
+                            <td ng-if="popupData.modalMode == 'single-trigger-selection'">
+                                <span class="go-gray" ng-show="popupData.processingRecordId == record.id">processing...</span>
+                                <a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupData.isSelectedRecord(record.id) && popupData.processingRecordId != record.id">
+                                    select now
+                                </a>
+                                <a ng-click='popupData.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupData.isSelectedRecord(record.id)  && popupData.processingRecordId != record.id">
+                                    deselect now
                                 </a>
                             </td>
                             <td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
@@ -463,7 +483,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete Area</button>-->
+        <button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError"  ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
         <button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
     </div>
 </script>
+

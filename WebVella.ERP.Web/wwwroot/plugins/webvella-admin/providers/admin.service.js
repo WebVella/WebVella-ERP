@@ -785,12 +785,12 @@ function guid() {
         
 
         /////////////////////////
-        function manageRecordsRelation(relationName, originFieldRecordId, targetFieldRecordIds, successCallback, errorCallback) {
+        function manageRecordsRelation(relationName, originFieldRecordId, attachTargetFieldRecordIds, detachTargetFieldRecordIds, successCallback, errorCallback) {
             var postObject = {
                 relationName: relationName,//string
                 originFieldRecordId: originFieldRecordId, //guid
-                targetFieldRecordIds: targetFieldRecordIds,//guid array
-                operation: "create"
+                attachTargetFieldRecordIds: attachTargetFieldRecordIds, //guid array - list of recordIds that needs to be attached to the new origin
+                detachTargetFieldRecordIds: detachTargetFieldRecordIds  //guid array - list of recordIds that needs to be dettached to the new origin - should be empty array when the target field is required
             }
 
 

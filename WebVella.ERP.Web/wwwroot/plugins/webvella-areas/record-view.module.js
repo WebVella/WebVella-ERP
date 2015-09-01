@@ -11,7 +11,7 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
-	    .controller('ManageRelationFieldModalSingleSelectionController', ManageRelationFieldModalSingleSelectionController);
+        .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -247,7 +247,7 @@
 
 	    //#region << View Seciton >>
 		contentData.viewSection = {};
-	    //<< Initialize section label >>
+	    //<< Initialize section label for the nav >>
 		contentData.viewSection.label = "General";
 		for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
 		    if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].meta.name) {
@@ -266,7 +266,7 @@
 
 	    //#endregion
 
-		//#region << Logic >>
+		//#region << Rendering Logic >>
 
 		contentData.toggleSectionCollapse = function (section) {
 			section.collapsed = !section.collapsed;
@@ -633,7 +633,8 @@
 
 	    ////Relation field
 
-        ////////////////////
+	    ////////////////////
+        // Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
 		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
 		    //relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
 		    //dataKind - target, origin, origin-target
@@ -642,8 +643,8 @@
 		    if (relationType == 1 || (relationType == 2 && dataKind == "target")) {
 		        var modalInstance = $modal.open({
 		            animation: false,
-		            templateUrl: 'manageRelationFieldModalSingleSelection.html',
-		            controller: 'ManageRelationFieldModalSingleSelectionController',
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
 		            controllerAs: "popupData",
 		            size: "lg",
 		            resolve: {
@@ -661,43 +662,155 @@
 		                },
 		                resolvedLookupRecords: function () {
 		                    return resolveLookupRecords(item,relationType, dataKind);
-		                }
+		                },
+		                modalMode: function () {
+		                    return "single-selection";
+		                },
 		            }
 		        });
-
-
                 //On modal exit
 		        modalInstance.result.then(function (returnObject) {
 
 		            // Initialize
 		            var displayedRecordId = $stateParams.recordId;
-
-
+		            var oldRelationRecordId = contentData.viewData["$field$" + returnObject.relationName + "$id"][0];
+                    
 		            function successCallback(response) {
+		                ngToast.create({
+		                    className: 'success',
+		                    content: '<span class="go-green">Success:</span> Change applied'
+		                });
 		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
 		            }
 
 		            function errorCallback(response) {
-
+		                var messageHtml = response.message;
+		                if (response.errors.length > 0) { //Validation errors
+		                    messageHtml = "<ul>";
+		                    for (var i = 0; i < response.errors.length; i++) {
+		                        messageHtml += "<li>" + response.errors[i].message + "</li>";
+		                    }
+		                    messageHtml += "</ul>";
+		                }
+		                ngToast.create({
+		                    className: 'error',
+		                    content: '<span class="go-red">Error:</span> ' + messageHtml
+		                });
 		            }
-		            //relationName: popupData.selectedItem.relationName,
-		            //dataKind: selectedDataKind,
-		            //selectedRecordId: record.id
 		            
 		            // ** Post relation change between the two records
-		            var targetRecordsForPostObject = [];
+		            var recordsToBeAttached = [];
+		            var recordsToBeDettached = [];
 		            if (returnObject.dataKind == "origin") {
-		                targetRecordsForPostObject.push(returnObject.selectedRecordId);
-		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, targetRecordsForPostObject, successCallback, errorCallback);
+		                recordsToBeAttached.push(returnObject.selectedRecordId);
+		                recordsToBeDettached.push(oldRelationRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached,recordsToBeDettached, successCallback, errorCallback);
 		            }
 		            else if (returnObject.dataKind == "target") {
-		                targetRecordsForPostObject.push(displayedRecordId);
-		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, targetRecordsForPostObject, successCallback, errorCallback);
+		                recordsToBeAttached.push(displayedRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached,recordsToBeDettached, successCallback, errorCallback);
 		            }
 		            else {
 		                alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
 		            }
 		        });
+		    }
+		    //Select MULTIPLE item modal
+		    else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
+		                resolvedLookupRecords: function () {
+		                    return resolveLookupRecords(item, relationType, dataKind);
+		                },
+		                modalMode: function () {
+		                    return "multi-selection";
+		                },
+		            }
+		        });
+		        //On modal exit
+		        modalInstance.result.then(function (returnObject) {
+
+		            // Initialize
+		            var displayedRecordId = $stateParams.recordId;
+
+		            function successCallback(response) {
+		                ngToast.create({
+		                    className: 'success',
+		                    content: '<span class="go-green">Success:</span> Change applied'
+		                });
+		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+		            }
+
+		            function errorCallback(response) {
+		                var messageHtml = response.message;
+		                if (response.errors.length > 0) { //Validation errors
+		                    messageHtml = "<ul>";
+		                    for (var i = 0; i < response.errors.length; i++) {
+		                        messageHtml += "<li>" + response.errors[i].message + "</li>";
+		                    }
+		                    messageHtml += "</ul>";
+		                }
+		                ngToast.create({
+		                    className: 'error',
+		                    content: '<span class="go-red">Error:</span> ' + messageHtml
+		                });
+		            }
+
+		            // There are currently cases just for origin, error on else
+		            if (returnObject.dataKind == "origin") {
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, returnObject.attachDelta, returnObject.detachDelta, successCallback, errorCallback);
+		            }
+		            else {
+		                alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+		            }
+		        });
+		    }
+		    else if (relationType == 3 && dataKind == "target") {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
+		                resolvedLookupRecords: function () {
+		                    return resolveLookupRecords(item, relationType, dataKind);
+		                },
+		                modalMode: function () {
+		                    return "single-trigger-selection";
+		                },
+		            }
+		        });
+
 		    }
 		}
 		contentData.modalSelectedItem = {};
@@ -789,14 +902,11 @@
 
 
     //#region < Modal Controllers >
-
-
-    ////////////////////////
-	ManageRelationFieldModalSingleSelectionController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedLookupRecords',
+    //Test to unify all modals - Single select, multiple select, click to select
+	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q','$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
-
     /* @ngInject */
-	function ManageRelationFieldModalSingleSelectionController(contentData, $modalInstance, $log, $q, resolvedLookupRecords,
+	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
@@ -805,8 +915,16 @@
 	    popupData.currentPage = 1;
 	    popupData.parentData = angular.copy(contentData);
 	    popupData.selectedItem = angular.copy(selectedItem);
+	    popupData.modalMode = angular.copy(modalMode);
 	    popupData.hasWarning = false;
 	    popupData.warningMessage = "";
+
+        //Init
+	    popupData.currentlyAttachedIds = angular.copy(popupData.parentData.viewData["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
+	    popupData.dbAttachedIds = angular.copy(popupData.currentlyAttachedIds);
+	    popupData.attachedRecordIdsDelta = [];
+	    popupData.detachedRecordIdsDelta = [];
+
 
 	    //Get the default lookup list for the entity
 	    if (resolvedLookupRecords.success) {
@@ -832,9 +950,9 @@
 	        webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, successCallback, errorCallback);
 	    }
 
-        //#endregion
+	    //#endregion
 
-	    //#region << Logic >>
+	    //#region << Render Logic >>
 
 	    //1.Auto increment
 	    popupData.getAutoIncrementString = function (record, fieldMeta) {
@@ -987,8 +1105,13 @@
 	        }
 	    }
 
-        //#endregion 
+	    //#endregion 
 
+	    popupData.isSelectedRecord = function (recordId) {
+	        return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+	    }
+
+        //Single record before save
 	    popupData.selectSingleRecord = function (record) {
 	        var returnObject = {
 	            relationName: popupData.selectedItem.relationName,
@@ -996,8 +1119,159 @@
 	            selectedRecordId: record.id
 	        };
 	        $modalInstance.close(returnObject);
-            //category_id
 	    };
+
+        // Multiple records before save
+	    popupData.attachRecord = function (record) {
+	        //Add record to delta  if it is NOT part of the original list
+	        if (popupData.dbAttachedIds.indexOf(record.id) == -1) {
+	            popupData.attachedRecordIdsDelta.push(record.id);
+	        }
+
+	        //Check and remove from the detachDelta if it is there
+	        var elementIndex = popupData.detachedRecordIdsDelta.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            popupData.detachedRecordIdsDelta.splice(elementIndex, 1);
+	        }
+	        //Update the currentlyAttachedIds for highlight
+	        elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+	        if (elementIndex == -1) {
+	            //this is the normal case
+	            popupData.currentlyAttachedIds.push(record.id);
+	        }
+	        else {
+	            //if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+	        }
+
+	        //$log.debug("currently Highlighted >>");
+	        //$log.debug(popupData.currentlyAttachedIds);
+	        //$log.debug("current attach Delta >>");
+	        //$log.debug(popupData.attachedRecordIdsDelta);
+	        //$log.debug("current detach Delta >>");
+	        //$log.debug(popupData.detachedRecordIdsDelta);
+	    }
+	    popupData.detachRecord = function (record) {
+	        //Add record to detachDelta if it is part of the original list
+	        if (popupData.dbAttachedIds.indexOf(record.id) > -1) {
+	            popupData.detachedRecordIdsDelta.push(record.id);
+	        }
+	        //Check and remove from attachDelta if it is there
+	        var elementIndex = popupData.attachedRecordIdsDelta.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            popupData.attachedRecordIdsDelta.splice(elementIndex, 1);
+	        }
+	        //Update the currentlyAttachedIds for highlight
+	        elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            //this is the normal case
+	            popupData.currentlyAttachedIds.splice(elementIndex, 1);
+	        }
+	        else {
+	            //if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+	        }
+	        //$log.debug("currently Highlighted >>");
+	        //$log.debug(popupData.currentlyAttachedIds);
+	        //$log.debug("current attach Delta >>");
+	        //$log.debug(popupData.attachedRecordIdsDelta);
+	        //$log.debug("current detach Delta >>");
+	        //$log.debug(popupData.detachedRecordIdsDelta);
+	    }
+	    popupData.saveRelationChanges = function () {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            attachDelta: popupData.attachedRecordIdsDelta,
+	            detachDelta: popupData.detachedRecordIdsDelta
+	        };
+	        $modalInstance.close(returnObject);
+	        //category_id
+	    };
+
+	    //Instant save on selection, keep popup open
+	    popupData.processingRecordId = "";
+	    popupData.processOperation = "";
+	    popupData.processInstantSelection = function (returnObject) {
+
+	        // Initialize
+	        popupData.processingRecordId = returnObject.selectedRecordId;
+	        popupData.processOperation = returnObject.operation;
+	        var displayedRecordId = $stateParams.recordId;
+	        var recordsToBeAttached = [];
+	        var recordsToBeDettached = [];
+	        if (returnObject.operation == "attach") {
+	            recordsToBeAttached.push(displayedRecordId);
+	        }
+	        else if (returnObject.operation == "detach") {
+	            recordsToBeDettached.push(displayedRecordId);
+	        }
+
+	        function successCallback(response) {
+	            var currentRecordId = angular.copy(popupData.processingRecordId);
+	            var elementIndex = popupData.currentlyAttachedIds.indexOf(currentRecordId);
+	            if (popupData.processOperation == "attach" && elementIndex == -1) {
+	                popupData.currentlyAttachedIds.push(currentRecordId);
+	                popupData.processingRecordId = "";
+	            }
+	            else if (popupData.processOperation == "detach" && elementIndex > -1) {
+	                popupData.currentlyAttachedIds.splice(elementIndex, 1);
+	                popupData.processingRecordId = "";
+	            }
+
+	            ngToast.create({
+	                className: 'success',
+	                content: '<span class="go-green">Success:</span> Change applied'
+	            });
+	        }
+
+	        function errorCallback(response) {
+	            popupData.processingRecordId = "";
+	            var messageHtml = response.message;
+	            if (response.errors.length > 0) { //Validation errors
+	                messageHtml = "<ul>";
+	                for (var i = 0; i < response.errors.length; i++) {
+	                    messageHtml += "<li>" + response.errors[i].message + "</li>";
+	                }
+	                messageHtml += "</ul>";
+	            }
+	            ngToast.create({
+	                className: 'error',
+	                content: '<span class="go-red">Error:</span> ' + messageHtml
+	            });
+	            
+	        }
+
+	        // ** Post relation change between the two records
+	        if (returnObject.dataKind == "target") {
+	            webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+	        }
+	        else {
+	            alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+	        }
+	    }
+	    popupData.instantAttachRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id,
+                operation: "attach"
+	        };
+	        if (!popupData.processingRecordId) {
+	            popupData.processInstantSelection(returnObject);
+	        }
+	    };
+	    popupData.instantDetachRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id,
+	            operation: "detach"
+
+	        };
+	        if (!popupData.processingRecordId) {
+	            popupData.processInstantSelection(returnObject);
+	        }
+	    };
+
 
 	    popupData.cancel = function () {
 	        $modalInstance.dismiss('cancel');
@@ -1021,14 +1295,13 @@
 
 	    }
 
-	    //#region << Check specific cases >> ///////////////////
-	    var targetFieldIsRequired = false;
 
-
-        //#endregion
+	    //#endregion
 
 	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
 	};
+
+
 
     //#endregion
 
