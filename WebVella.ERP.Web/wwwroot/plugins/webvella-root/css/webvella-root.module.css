@@ -104,6 +104,10 @@ ngToast
                 color: #FDD835;
             }
 
+    .ng-toast .ng-toast__message ul {
+        text-align:left;
+    }
+
 /*
   Badge colors
 */
@@ -2754,6 +2758,10 @@ table.editable {
     min-height: 34px;
 }
 
+    table.editable tbody > tr > td {
+        padding:6px;
+    }
+
     table.editable tr td:last-child {
         padding-right:40px;
     }
@@ -2788,6 +2796,14 @@ table.editable {
 
     a.editable.lookup::after, span.editable.lookup::after, table.editable.lookup::after {
         content: "\f0c9";
+    }
+
+    a.editable.lookup.origin::after, span.editable.lookup.origin::after, table.editable.lookup.origin::after {
+        content: "\f03b";
+    }
+
+    a.editable.lookup.target::after, span.editable.lookup.target::after, table.editable.lookup.target::after {
+        content: "\f03c";
     }
 
     a.editable:hover:after,
