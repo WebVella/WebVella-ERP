@@ -1187,7 +1187,7 @@ namespace WebVella.ERP.Web.Controllers
             var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
             var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
 
-            if (model.DetachTargetFieldRecordIds != null && model.DetachTargetFieldRecordIds.Any() && targetField.Required )
+            if (model.DetachTargetFieldRecordIds != null && model.DetachTargetFieldRecordIds.Any() && targetField.Required && relation.RelationType != EntityRelationType.ManyToMany )
             {
                 response.Errors.Add(new ErrorModel { Message = "Cannot detach records, when target field is required.", Key = "originFieldRecordId" });
                 response.Success = false;
