@@ -109,7 +109,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 		{
 			RecordListType type = RecordListType.General;
 
-			Enum.TryParse(name, out type);
+			Enum.TryParse(name, true, out type);
 
 			return type;
 		}
