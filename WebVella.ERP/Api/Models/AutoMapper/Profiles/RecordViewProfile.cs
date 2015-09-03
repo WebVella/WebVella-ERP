@@ -195,7 +195,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 		{
 			RecordViewType type = RecordViewType.General;
 
-			Enum.TryParse(name, out type);
+			Enum.TryParse(name, true, out type);
 
 			return type;
 		}
