@@ -494,27 +494,33 @@
 			}
 		}
 
-		contentData.upload = function (files, item) {
-			var fieldName = item.dataName;
-			function moveSuccessCallback(response) {
-				contentData.viewData[fieldName] = response.object.url;
-				contentData.fieldUpdate(item, response.object.url);
-			}
+		contentData.upload = function (file, item) {
+			if (file != null) {
+				var fieldName = item.dataName;
+				function moveSuccessCallback(response) {
+					$timeout(function () {
+						contentData.viewData[fieldName] = response.object.url;
+						contentData.fieldUpdate(item, response.object.url);
+					}, 1);
+				}
 
-			function uploadSuccessCallback(response) {
-				var tempPath = response.object.url;
-				var fileName = response.object.filename;
-				var targetPath = "/fs/" + item.fieldId + "/" + fileName;
-				var overwrite = false;
-				webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+				function uploadSuccessCallback(response) {
+					var tempPath = response.object.url;
+					var fileName = response.object.filename;
+					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+					var overwrite = false;
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+				}
+				function uploadErrorCallback(response) {
+					alert(response.message);
+				}
+				function uploadProgressCallback(response) {
+					$timeout(function () {
+						contentData.progress[fieldName] = parseInt(100.0 * response.loaded / response.total);
+					}, 1);
+				}
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
 			}
-			function uploadErrorCallback(response) {
-				alert(response.message);
-			}
-			function uploadProgressCallback(response) {
-				contentData.progress[dataName] = parseInt(100.0 * response.loaded / response.total);
-			}
-			webvellaAdminService.uploadFileToTemp(files, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
 		};
 
 		contentData.deleteFileUpload = function (item) {

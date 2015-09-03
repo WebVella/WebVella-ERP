@@ -194,7 +194,7 @@
                                     </a>
                                     <!-- If type 7 - fileupload -->
                                     <div ng-switch-when="7">
-                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.dataName],item)" ngf-select ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
+                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
                                         <div class="progress" ng-show="!contentData.viewData[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
                                             <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
                                                 <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
@@ -213,7 +213,7 @@
                                     </div>
                                     <!-- If type 9 - image -->
                                     <div ng-switch-when="9">
-                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.dataName],item)" ngf-select ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB"  ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
                                         <div class="progress" ng-show="!contentData.viewData[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
                                             <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
                                                 <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
