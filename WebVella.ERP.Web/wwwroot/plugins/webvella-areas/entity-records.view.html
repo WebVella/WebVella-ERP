@@ -108,7 +108,7 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,7 +118,7 @@
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns" ng-switch="column.meta.fieldType">
 						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column.meta)}}</span>
 						<span ng-switch-when="2">{{contentData.getCheckboxString(record,column.meta)}}</span>
 						<span ng-switch-when="3">{{contentData.getCurrencyString(record,column.meta)}}</span>
