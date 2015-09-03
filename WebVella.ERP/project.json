@@ -12,7 +12,7 @@
      "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
     "Microsoft.CSharp": "4.0.0-beta-23019",
     "AutoMapper": "3.3.1",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-*",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
     "Newtonsoft.Json": "6.0.6",
     "Microsoft.Framework.Configuration": "1.0.0-beta6"
   },
