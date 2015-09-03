@@ -1087,15 +1087,15 @@ namespace WebVella.ERP.Api
                 var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
                 if (field == null)
                     throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
-                if (field is NumberField)
+                if (field is NumberField || field is AutoNumberField)
                 {
                     if (obj.FieldValue != null)
                         obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
                 }
-                else if (field is AutoNumberField)
+                else if (field is GuidField)
                 {
-                    if (obj.FieldValue != null)
-                        obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+                    if (obj.FieldValue != null && obj.FieldValue is string )
+                        obj.FieldValue = new Guid(obj.FieldValue as string);
                 }
                 else if (field is PasswordField && obj.FieldValue != null)
                     obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
