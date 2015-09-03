@@ -1439,15 +1439,10 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					foreach (var sort in list.Sorts)
 					{
-						QuerySortType sortType;
-						if (Enum.TryParse<QuerySortType>(sort.SortType, out sortType))
-						{
-							QuerySortObject sortObj = new QuerySortObject(sort.FieldName, sortType);
-
-							sortList.Add(sortObj);
-						}
-					}
-
+                        QuerySortType sortType;
+                        if (Enum.TryParse<QuerySortType>(sort.SortType, true, out sortType))
+                            sortList.Add(new QuerySortObject(sort.FieldName, sortType));
+                    }
 					resultQuery.Sort = sortList.ToArray();
 				}
 
