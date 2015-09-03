@@ -78,7 +78,7 @@
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="popupData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
-                        <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || popupData.nameError">
+                        <div class="error" ng-show="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="createEntity.name.$error.required && !popupData.nameError">
                                 required field
                             </small>
@@ -112,7 +112,7 @@
                         <label class="required" for="label">Label</label>
                         <input ng-model="popupData.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
                                required>
-                        <div class="error" ng-show="createEntity.label.$dirty && createEntity.label.$invalid || popupData.labelError">
+                        <div class="error" ng-show="createEntity.label.$touched && createEntity.label.$dirty && createEntity.label.$invalid || popupData.labelError">
                             <small class="error" ng-show="createEntity.label.$error.required && !popupData.labelError">
                                 Entity label is required.
                             </small>
@@ -127,7 +127,7 @@
                         <label class="required" for="labelPlural">Label Plural</label>
                         <input ng-model="popupData.entity.labelPlural" type="text" class="form-control" id="labelPlural" name="labelPlural" placeholder="e.g. Customers"
                                required>
-                        <div class="error" ng-show="createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupData.labelPluralError">
+                        <div class="error" ng-show="createEntity.labelPlural.$touched && createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupData.labelPluralError">
                             <small class="error" ng-show="createEntity.labelPlural.$error.required && !popupData.labelPluralError">
                                 Entity plural label is required.
                             </small>
@@ -148,7 +148,7 @@
                                    required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html">
                             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
                         </div>
-                        <div class="error" ng-show="createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupData.iconNameError">
+                        <div class="error" ng-show="createEntity.iconName.$touched && createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupData.iconNameError">
                             <small class="error" ng-show="createEntity.iconName.$error.required && !popupData.iconNameError">
                                 Icon name is required.
                             </small>
@@ -163,7 +163,7 @@
                         <label class="required" for="weight">Sort Weight</label>
                         <input ng-model="popupData.entity.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
                                required pattern="^[0-9]+(\.[0-9][0-9]?)?$">
-                        <div class="error" ng-show="createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
+                        <div class="error" ng-show="createEntity.weight.$touched && createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
                             <small class="error" ng-show="createEntity.weight.$error.required && !popupData.weightError">
                                 Entity weight is required
                             </small>
