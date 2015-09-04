@@ -1,9 +1,7 @@
 Offline
 ======
 
-**Note to users pre-0.6.0:  Offline previously used a cloudfront hosted file as one of it's methods of detecting the connection status.  This method is now deprecated.  Please upgrade to Offline 0.7.0+.**
-
-**Note that the cloudfront file will be removed at the end of March, please upgrade before then.**
+**Note to users pre-0.6.0:  Offline previously used a cloudfront hosted file as one of it's methods of detecting the connection status.  This method is now deprecated and the image has been removed.  Please upgrade to Offline 0.7.0+.**
 
 Improve the experience of your app when your users lose connection.
 
@@ -14,11 +12,24 @@ Improve the experience of your app when your users lose connection.
 - Simple UI with beautiful themes
 - 3kb minified and compressed
 
-Installing
-----------
+Install with Eager
+------------------
 
-Include [the javascript](https://raw.github.com/HubSpot/offline/v0.7.11/offline.min.js), one of [the themes](http://github.hubspot.com/offline/docs/welcome/), and one of [the
+The easiest way to add Offline to your site is with [Eager](http://eager.io).
+Click Install to see a live preview of Offline on your website.
+
+<a href="https://eager.io/app/NnkeiqegQ2K4/install?source=button">
+  <img src="https://install.eager.io/install-button.png" border="0" width="126">
+</a>
+
+
+Manual Installation
+-------------------
+
+Include [the javascript](https://raw.github.com/HubSpot/offline/v0.7.14/offline.min.js), one of [the themes](http://github.hubspot.com/offline/docs/welcome/), and one of [the
 languages](https://github.com/HubSpot/offline/tree/master/themes) on your site.  You're done!
+
+To use only the JavaScript API without a UI indicator, simply leave out the CSS file.
 
 If you'd like to get a peek at how it looks on your site, disconnect your internet, or try out the [simulator](http://craigshoemaker.github.io/offlinejs-simulate-ui/).
 
@@ -125,6 +136,8 @@ The requests module holds any failed AJAX requests and, after deduping them, rem
 is restored.
 
 You can disable it by setting the `requests` setting to false.
+
+You can also set deDupBody to be true if you want deduping to also take into account the content of the request.
 
 Dependencies
 ------------

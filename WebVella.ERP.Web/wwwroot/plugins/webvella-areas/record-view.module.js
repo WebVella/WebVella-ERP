@@ -20,7 +20,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:recordId/view/:viewName/section/:sectionName/:filter/:page',
+			url: '/:areaName/:entityName/:recordId/:viewName/:viewOrListName/:filter/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -42,6 +42,7 @@
 				resolvedCurrentView: resolveCurrentView,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedEntityRelationsList: resolveEntityRelationsList,
+				resolvedSecondaryViewOrList: resolveSecondaryViewOrList
 			},
 			data: {
 
@@ -77,6 +78,43 @@
 			}
 			else {
 					defer.resolve(response.object);
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
+		return defer.promise;
+	}
+
+	resolveSecondaryViewOrList.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+	function resolveSecondaryViewOrList($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
 			}
 		}
 
@@ -188,6 +226,12 @@
 		var contentData = this;
 		contentData.isView = false;
 		contentData.isList = false;
+		contentData.selectedSidebarPage = {};
+		contentData.selectedSidebarPage.label = "";
+		contentData.selectedSidebarPage.name = "$";
+		contentData.selectedSidebarPage.isView = true;
+		contentData.selectedSidebarPage.meta = null;
+		contentData.selectedSidebarPage.data = null;
 		contentData.stateParams = $stateParams;
 
 		//#region <<Set pageTitle>>
@@ -204,15 +248,58 @@
 		//#endregion
 
 		//#region << Initialize view and regions>>
-		contentData.recordView = angular.copy(resolvedCurrentView.meta);
-		contentData.contentRegion = null;
-		contentData.sidebarRegion = contentData.recordView.sidebar;
-		for (var i = 0; i < contentData.recordView.regions.length; i++) {
-			if (contentData.recordView.regions[i].name === "content") {
-				contentData.contentRegion = contentData.recordView.regions[i];
+
+		//1. Get the current view
+		contentData.defaultRecordView = angular.copy(resolvedCurrentView.meta);
+
+		//2. Load the sidebar
+		contentData.sidebarRegion = contentData.defaultRecordView.sidebar;
+
+		//3. Find and load the selected page meta and data
+		function getViewOrListMeta(name) {
+			if (name == "") {
+				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
+					if (contentData.defaultRecordView.regions[i].name === "content") {
+						return angular.copy(contentData.defaultRecordView.regions[i]);
+					}
+				}
+				contentData.selectedSidebarPage.isView = true;
+			}
+			else {
+				var selectedSidebarItemMeta = null;
+				for (var i = 0; i < contentData.defaultRecordView.items.length; i++) {
+					//TODO: the names of different views and lists for different entities could be the same and this will fail to select the right one. We should possibly use the dataName?
+					if (contentData.defaultRecordView.items[i].meta.name == name) {
+						selectedSidebarItemMeta = contentData.defaultRecordView.items[i].meta;
+						break;
+					}
+				}
+				contentData.selectedSidebarPage.isView = true;
+				if (selectedSidebarItemMeta.type == "listFromRelation") {
+					contentData.selectedSidebarPage.isView = false;
+				}
+
 			}
 		}
-		contentData.viewData = angular.copy(resolvedCurrentView.data[0]);
+
+		function getViewOrListData(name) {
+			if (name == "") {
+				return angular.copy(resolvedCurrentView.data[0]);
+			}
+			else { }
+		}
+
+		if ($stateParams.viewOrListName == "$") {
+			//The default view meta is active
+			contentData.selectedSidebarPage.meta = getViewOrListMeta("");
+			contentData.selectedSidebarPage.data = getViewOrListData("");
+		}
+		else {
+			//One of the sidebar view or lists is active
+			//Load the data
+			
+		}
+
 		//#endregion
 
 		//#region << Intialize current entity >>
@@ -245,27 +332,6 @@
 		}
 	    //#endregion
 
-	    //#region << View Seciton >>
-		contentData.viewSection = {};
-	    //<< Initialize section label for the nav >>
-		contentData.viewSection.label = "General";
-		for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
-		    if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].meta.name) {
-		        contentData.viewSection.label = contentData.recordView.sidebar.items[i].meta.label;
-		    }
-		}
-
-
-		if ($stateParams.sectionName == "$") {
-		    //The default view is active
-		    contentData.isView = true;
-		}
-		else {
-		    //One of the sidebar view or lists is active
-		}
-
-	    //#endregion
-
 		//#region << Rendering Logic >>
 
 		contentData.toggleSectionCollapse = function (section) {
@@ -273,7 +339,7 @@
 		}
 
 		contentData.htmlFieldUpdate = function (item) {
-			contentData.fieldUpdate(item, contentData.viewData[item.dataName]);
+			contentData.fieldUpdate(item, contentData.selectedSidebarPage.data[item.dataName]);
 		}
 
 		contentData.fieldUpdate = function (item, data) {
@@ -387,7 +453,7 @@
 			        className: 'success',
 			        content: '<span class="go-green">Success:</span> ' + response.message
 			    });
-			    contentData.viewData = angular.copy(response.object.data[0]);
+			    contentData.selectedSidebarPage.data = angular.copy(response.object.data[0]);
 			    defer.resolve();
 			}
 			function patchFailedCallback(response) {
@@ -403,10 +469,9 @@
 			return defer.promise;
 		}
 
-
 		//Auto increment
 		contentData.getAutoIncrementString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 			if (!fieldValue) {
 				return "empty";
 			}
@@ -419,7 +484,7 @@
 		}
 		//Checkbox
 		contentData.getCheckboxString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 			if (fieldValue) {
 			    return "<i class='fa fa-fw fa-check go-green'></i> true";
 			}
@@ -429,7 +494,7 @@
 		}
 		//Currency
 		contentData.getCurrencyString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 			if (!fieldValue) {
 				return "empty";
 			}
@@ -447,7 +512,7 @@
 		}
 		//Date & DateTime 
 		contentData.getDateString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 			if (!fieldValue) {
 				return "";
 			}
@@ -456,7 +521,7 @@
 			}
 		}
 		contentData.getTimeString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 			if (!fieldValue) {
 				return "";
 			}
@@ -479,13 +544,13 @@
 		contentData.progress = {}; //data wrapper for the progress percentage for each upload
 
 		/////////Register variables
-		for (var sectionIndex = 0; sectionIndex < contentData.contentRegion.sections.length; sectionIndex++) {
-			for (var rowIndex = 0; rowIndex < contentData.contentRegion.sections[sectionIndex].rows.length; rowIndex++) {
-				for (var columnIndex = 0; columnIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-					for (var itemIndex = 0; itemIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
-							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
-							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
+		for (var sectionIndex = 0; sectionIndex < contentData.selectedSidebarPage.meta.sections.length; sectionIndex++) {
+			for (var rowIndex = 0; rowIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows.length; rowIndex++) {
+				for (var columnIndex = 0; columnIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+					for (var itemIndex = 0; itemIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+						if (contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
+							|| contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
+							var item = contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
 							var FieldName = item.dataName;
 							contentData.progress[FieldName] = 0;
 						}
@@ -499,7 +564,7 @@
 				var fieldName = item.dataName;
 				function moveSuccessCallback(response) {
 					$timeout(function () {
-						contentData.viewData[fieldName] = response.object.url;
+						contentData.selectedSidebarPage.data[fieldName] = response.object.url;
 						contentData.fieldUpdate(item, response.object.url);
 					}, 1);
 				}
@@ -525,11 +590,11 @@
 
 		contentData.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = contentData.viewData[fieldName];
+			var filePath = contentData.selectedSidebarPage.data[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					contentData.viewData[fieldName] = null;
+					contentData.selectedSidebarPage.data[fieldName] = null;
 					contentData.progress[fieldName] = 0;
 					contentData.fieldUpdate(item,null);
 				}, 0);
@@ -611,7 +676,7 @@
 		}
 
 		contentData.getPercentString = function (item) {
-		    var fieldValue = contentData.viewData[item.dataName];
+		    var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 
 		    if (!fieldValue) {
 		        return "empty";
@@ -679,7 +744,7 @@
 
 		            // Initialize
 		            var displayedRecordId = $stateParams.recordId;
-		            var oldRelationRecordId = contentData.viewData["$field$" + returnObject.relationName + "$id"][0];
+		            var oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
                     
 		            function successCallback(response) {
 		                ngToast.create({

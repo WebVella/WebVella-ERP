@@ -27,7 +27,7 @@
 
 (function () {
   'use strict';
-  angular.module('ui.sortable', [])
+  angular.module('as.sortable', [])
     .constant('sortableConfig', {
       itemClass: 'as-sortable-item',
       handleClass: 'as-sortable-item-handle',
@@ -44,7 +44,7 @@
 (function () {
   'use strict';
 
-  var mainModule = angular.module('ui.sortable');
+  var mainModule = angular.module('as.sortable');
 
   /**
    * Helper factory for sortable.
@@ -291,8 +291,22 @@
               };
             },
             apply: function () {
-              this.sourceInfo.sortableScope.removeItem(this.sourceInfo.index); // Remove from source.
-              this.parent.insertItem(this.index, this.source.modelValue); // Insert in to destination.
+
+              // If clone is not set, set it to false
+              if (typeof (this.sourceInfo.sortableScope.options.clone) === 'undefined') {
+                this.sourceInfo.sortableScope.options.clone = false;
+              }
+
+              // If clone is not set to true, remove the item from the source model.
+              if (this.sourceInfo.sortableScope.options.clone === false) {
+                this.sourceInfo.sortableScope.removeItem(this.sourceInfo.index);
+              }
+
+              // If the dragged item is not already there, insert the item. This avoids ng-repeat dupes error
+              if(this.parent.modelValue.indexOf(this.source.modelValue) < 0) {
+                this.parent.insertItem(this.index, this.source.modelValue);
+              }
+
             }
           };
         },
@@ -305,6 +319,21 @@
          */
         noDrag: function (element) {
           return element.attr('no-drag') !== undefined || element.attr('data-no-drag') !== undefined;
+        },
+
+        /**
+         * Helper function to find the first ancestor with a given selector
+         * @param el - angular element to start looking at
+         * @param selector - selector to find the parent
+         * @returns {Object} - Angular element of the ancestor or body if not found
+         * @private
+         */
+        findAncestor: function (el, selector) {
+          el = el[0];
+          var matches = Element.matches || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector || Element.prototype.oMatchesSelector || Element.prototype.webkitMatchesSelector;
+          while ((el = el.parentElement) && !matches.call(el, selector)) {
+          }
+          return el ? angular.element(el) : angular.element(document.body);
         }
       };
     }
@@ -317,13 +346,13 @@
 (function () {
 
   'use strict';
-  var mainModule = angular.module('ui.sortable');
+  var mainModule = angular.module('as.sortable');
 
   /**
    * Controller for Sortable.
    * @param $scope - the sortable scope.
    */
-  mainModule.controller('ui.sortable.sortableController', ['$scope', function ($scope) {
+  mainModule.controller('as.sortable.sortableController', ['$scope', function ($scope) {
 
     this.scope = $scope;
 
@@ -391,7 +420,7 @@
         require: 'ngModel', // get a hold of NgModelController
         restrict: 'A',
         scope: true,
-        controller: 'ui.sortable.sortableController',
+        controller: 'as.sortable.sortableController',
         link: function (scope, element, attrs, ngModelController) {
 
           var ngModel, callbacks;
@@ -404,10 +433,6 @@
 
           // Set the model value in to scope.
           ngModel.$render = function () {
-            //set an empty array, in case if none is provided.
-            if (!ngModel.$modelValue || !angular.isArray(ngModel.$modelValue)) {
-              ngModel.$setViewValue([]);
-            }
             scope.modelValue = ngModel.$modelValue;
           };
           //set the element in scope to be accessed by its sub scope.
@@ -453,11 +478,13 @@
           };
 
           /**
-           * Invoked when the drag started successfully.
+           * Invoked when the drag move.
            *
-           * @param event - the event object.
+           * @param itemPosition - the item position.
+           * @param containment - the containment element.
+           * @param eventObj - the event object.
           */
-          callbacks.dragMove = function (event) {
+          callbacks.dragMove = function (itemPosition, containment, eventObj) {
           };
 
           /**
@@ -510,14 +537,14 @@
 (function () {
 
   'use strict';
-  var mainModule = angular.module('ui.sortable');
+  var mainModule = angular.module('as.sortable');
 
   /**
    * Controller for sortableItemHandle
    *
    * @param $scope - item handle scope.
    */
-  mainModule.controller('ui.sortable.sortableItemHandleController', ['$scope', function ($scope) {
+  mainModule.controller('as.sortable.sortableItemHandleController', ['$scope', function ($scope) {
 
     this.scope = $scope;
 
@@ -534,7 +561,7 @@
         require: '^asSortableItem',
         scope: true,
         restrict: 'A',
-        controller: 'ui.sortable.sortableItemHandleController',
+        controller: 'as.sortable.sortableItemHandleController',
         link: function (scope, element, attrs, itemController) {
 
           var dragElement, //drag item element.
@@ -558,8 +585,10 @@
             unBindEvents,//unbind the drag events.
             hasTouch,// has touch support.
             dragHandled, //drag handled.
-            createPlaceholder,
-            isDisabled = false; // drag enabled
+            createPlaceholder,//create place holder.
+            isPlaceHolderPresent,//is placeholder present.
+            isDisabled = false, // drag enabled
+            escapeListen; // escape listen event
 
           hasTouch = $window.hasOwnProperty('ontouchstart');
 
@@ -579,6 +608,10 @@
                 bindDrag();
               }
             }
+          });
+          
+          scope.$on('$destroy', function () {
+            angular.element($document[0].body).unbind('keydown', escapeListen);
           });
 
           createPlaceholder = function (itemScope) {
@@ -657,8 +690,7 @@
             scrollableContainer = angular.element($document[0].querySelector(scope.sortableScope.options.scrollableContainer)).length > 0 ?
               $document[0].querySelector(scope.sortableScope.options.scrollableContainer) : $document[0].documentElement;
 
-            containment = angular.element($document[0].querySelector(scope.sortableScope.options.containment)).length > 0 ?
-              angular.element($document[0].querySelector(scope.sortableScope.options.containment)) : angular.element($document[0].body);
+            containment = (scope.sortableScope.options.containment)? $helper.findAncestor(element, scope.sortableScope.options.containment):angular.element($document[0].body);
             //capture mouse move on containment.
             containment.css('cursor', 'move');
             containment.addClass('as-sortable-un-selectable');
@@ -679,6 +711,12 @@
             placeHolder.css('width', $helper.width(scope.itemScope.element) + 'px');
             placeHolder.css('height', $helper.height(scope.itemScope.element) + 'px');
 
+            // If clone option is true, hide the placeholder element in the source list. Note this will only be hidden
+            // while in the source list.
+            if (scope.itemScope.sortableScope.options.clone) {
+              placeHolder.css('display', 'none');
+            }
+
             placeElement = angular.element($document[0].createElement(tagName));
             if (sortableConfig.hiddenClass) {
               placeElement.addClass(sortableConfig.hiddenClass);
@@ -689,7 +727,15 @@
             scope.itemScope.element.after(placeHolder);
             //hidden place element in original position.
             scope.itemScope.element.after(placeElement);
-            dragElement.append(scope.itemScope.element);
+
+            if (scope.itemScope.sortableScope.options.clone) {
+              // clone option is true, so clone the element.
+              dragElement.append(scope.itemScope.element.clone());
+            }
+            else {
+              // Not cloning, so use the original element.
+              dragElement.append(scope.itemScope.element);
+            }
 
             containment.append(dragElement);
             $helper.movePosition(eventObj, dragElement, itemPosition, containment, containerPositioning, scrollableContainer);
@@ -734,6 +780,9 @@
            * @param targetScope the target scope
            */
           function insertBefore(targetElement, targetScope) {
+            // Ensure the placeholder is visible in the target.
+            placeHolder.css('display', 'block');
+
             targetElement[0].parentNode.insertBefore(placeHolder[0], targetElement[0]);
             dragItemInfo.moveTo(targetScope.sortableScope, targetScope.index());
           }
@@ -745,6 +794,9 @@
            * @param targetScope the target scope
            */
           function insertAfter(targetElement, targetScope) {
+            // Ensure the placeholder is visible in the target.
+            placeHolder.css('display', 'block');
+
             targetElement.after(placeHolder);
             dragItemInfo.moveTo(targetScope.sortableScope, targetScope.index() + 1);
           }
@@ -771,7 +823,7 @@
 
               eventObj = $helper.eventObj(event);
               scope.sortableScope.$apply(function () {
-                scope.callbacks.dragMove(itemPosition, containment);
+                scope.callbacks.dragMove(itemPosition, containment, eventObj);
               });
               $helper.movePosition(eventObj, dragElement, itemPosition, containment, containerPositioning, scrollableContainer);
 
@@ -818,8 +870,11 @@
               if (targetScope.type === 'sortable') {//sortable scope.
                 if (targetScope.accept(scope, targetScope) &&
                   targetElement[0].parentNode !== targetScope.element[0]) {
-                  targetElement[0].appendChild(placeHolder[0]);
-                  dragItemInfo.moveTo(targetScope, targetScope.modelValue.length);
+                  //moving over sortable bucket. not over item.
+                  if (!isPlaceHolderPresent(targetElement)) {
+                    targetElement[0].appendChild(placeHolder[0]);
+                    dragItemInfo.moveTo(targetScope, targetScope.modelValue.length);
+                  }
                 }
               }
             }
@@ -850,7 +905,11 @@
            */
           placeHolderIndex = function (targetElement) {
             var itemElements, i;
-
+            // targetElement is placeHolder itself, return index 0
+            if (targetElement.hasClass(sortableConfig.placeHolderClass)){
+              return 0;
+            }
+            // find index in target children
             itemElements = targetElement.children();
             for (i = 0; i < itemElements.length; i += 1) {
               //TODO may not be accurate when elements contain other siblings than item elements
@@ -860,6 +919,16 @@
               }
             }
             return -1;
+          };
+
+
+          /**
+           * Check there is no place holder placed by itemScope.
+           * @param targetElement the target element to check with.
+           * @returns {*} true if place holder present.
+           */
+          isPlaceHolderPresent = function (targetElement) {
+            return placeHolderIndex(targetElement) >= 0;
           };
 
           /**
@@ -952,11 +1021,12 @@
           bindDrag();
 
           //Cancel drag on escape press.
-          angular.element($document[0].body).bind('keydown', function (event) {
+          escapeListen = function (event) {
             if (event.keyCode === 27) {
               dragCancel(event);
             }
-          });
+          };
+          angular.element($document[0].body).bind('keydown', escapeListen);
 
           /**
            * Binds the events based on the actions.
@@ -990,14 +1060,14 @@
 (function () {
 
   'use strict';
-  var mainModule = angular.module('ui.sortable');
+  var mainModule = angular.module('as.sortable');
 
   /**
    * Controller for sortable item.
    *
    * @param $scope - drag item scope
    */
-  mainModule.controller('ui.sortable.sortableItemController', ['$scope', function ($scope) {
+  mainModule.controller('as.sortable.sortableItemController', ['$scope', function ($scope) {
 
     this.scope = $scope;
 
@@ -1033,7 +1103,7 @@
       return {
         require: ['^asSortable', '?ngModel'],
         restrict: 'A',
-        controller: 'ui.sortable.sortableItemController',
+        controller: 'as.sortable.sortableItemController',
         link: function (scope, element, attrs, ctrl) {
           var sortableController = ctrl[0];
           var ngModelController = ctrl[1];

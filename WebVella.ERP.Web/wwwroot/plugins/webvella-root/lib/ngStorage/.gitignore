@@ -1,7 +1,0 @@
-# http://git-scm.com/docs/gitignore
-
-node_modules
-components
-*.log
-.tmp
-.DS_Store

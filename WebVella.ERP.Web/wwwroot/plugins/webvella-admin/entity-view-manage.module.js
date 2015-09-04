@@ -177,16 +177,7 @@
         	}
         }
     	//Get fields already used in the view so they need to be removed from the library
-        var usedItemsArray = [];
-        for (var j = 0; j < contentData.viewContentRegion.sections.length; j++) {
-        	for (var k = 0; k < contentData.viewContentRegion.sections[j].rows.length; k++) {
-        		for (var l = 0; l < contentData.viewContentRegion.sections[j].rows[k].columns.length; l++) {
-        			for (var m = 0; m < contentData.viewContentRegion.sections[j].rows[k].columns[l].items.length; m++) {
-        				usedItemsArray.push(contentData.viewContentRegion.sections[j].rows[k].columns[l].items[m]);
-        			}
-        		}
-        	}
-        }
+        var usedItemsArray = webvellaAdminService.getItemsFromRegion(contentData.viewContentRegion);
 
         contentData.tempLibrary = {};
         contentData.tempLibrary.items = angular.copy(resolvedViewLibrary);

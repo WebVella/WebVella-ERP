@@ -85,6 +85,8 @@ function guid() {
 		serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
 		serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
 		serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
+		//Function
+		serviceInstance.getItemsFromRegion = getItemsFromRegion;
 
 		//#endregion
 
@@ -847,6 +849,22 @@ function guid() {
 
 		//#endregion
 
+		//#region << Functions >>
+		///////////////////////
+		function getItemsFromRegion(region) {
+			var usedItemsArray = [];
+			for (var j = 0; j < region.sections.length; j++) {
+				for (var k = 0; k < region.sections[j].rows.length; k++) {
+					for (var l = 0; l < region.sections[j].rows[k].columns.length; l++) {
+						for (var m = 0; m < region.sections[j].rows[k].columns[l].items.length; m++) {
+							usedItemsArray.push(region.sections[j].rows[k].columns[l].items[m]);
+						}
+					}
+				}
+			}
 
+			return usedItemsArray;
+		}
+		//#endregion
 	}
 })();
