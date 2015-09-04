@@ -162,7 +162,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : createEntity.weight.$invalid && !createEntity.weight.$pristine || popupData.weightError }">
                         <label class="required" for="weight">Sort Weight</label>
                         <input ng-model="popupData.entity.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
-                               required pattern="^[0-9]+(\.[0-9][0-9]?)?$">
+                               required pattern="^\d+(\.\d{1,5})?$">
                         <div class="error" ng-show="createEntity.weight.$touched && createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
                             <small class="error" ng-show="createEntity.weight.$error.required && !popupData.weightError">
                                 Entity weight is required

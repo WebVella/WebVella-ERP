@@ -1,5 +1,5 @@
 /*!
- * ngToast v1.5.4 (http://tameraydin.github.io/ngToast)
+ * ngToast v1.5.5 (http://tameraydin.github.io/ngToast)
  * Copyright 2015 Tamer Aydin (http://tamerayd.in)
  * Licensed under MIT (http://tameraydin.mit-license.org/)
  */
@@ -212,9 +212,11 @@
             };
 
             scope.startTimeout = function() {
-              dismissTimeout = $timeout(function() {
-                ngToast.dismiss(scope.message.id);
-              }, scope.message.timeout);
+              if (scope.message.dismissOnTimeout) {
+                dismissTimeout = $timeout(function() {
+                  ngToast.dismiss(scope.message.id);
+                }, scope.message.timeout);
+              }
             };
 
             scope.onMouseEnter = function() {
@@ -242,9 +244,7 @@
               }, 0);
             }
 
-            if (scope.message.dismissOnTimeout) {
-              scope.startTimeout();
-            }
+            scope.startTimeout();
 
             if (scope.message.dismissOnClick) {
               element.bind('click', function() {

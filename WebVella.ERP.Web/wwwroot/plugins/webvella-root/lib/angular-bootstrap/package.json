@@ -1,6 +1,6 @@
 {
   "name": "angular-ui-bootstrap",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "Bootstrap widgets for Angular",
   "main": "index.js",
   "homepage": "http://angular-ui.github.io/bootstrap/",

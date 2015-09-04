@@ -357,7 +357,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -380,7 +380,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -395,7 +395,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -800,7 +800,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -815,7 +815,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -925,7 +925,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -940,7 +940,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                       pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -1430,7 +1430,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1453,7 +1453,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -1468,7 +1468,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal
@@ -1873,7 +1873,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -1888,7 +1888,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal
@@ -1998,7 +1998,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -2013,7 +2013,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
-                                   pattern="^[0-9]+(\.[0-9][0-9]?)?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal

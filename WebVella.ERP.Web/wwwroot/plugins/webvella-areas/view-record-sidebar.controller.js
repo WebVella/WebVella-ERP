@@ -37,7 +37,7 @@
         sidebarData.items = [];
         var generalItem = {
         	name: "$",
-        	label: "General",
+        	label: "Default",
         	iconName: "info-circle"
         };
         sidebarData.items.push(generalItem);

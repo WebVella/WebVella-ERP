@@ -2,7 +2,7 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 			<div class="btn-group" role="group" aria-label="page toolbar">
-				<a class="btn btn-default hidden-xs" ng-click="contentData.createRecordModal()" tooltip-placement="bottom" tooltip="Create new record" tooltip-append-to-body="true"><i class="fa fa-pencil"></i> create</a>
+				<a class="btn btn-default hidden-xs" ng-click="contentData.createRecordModal()" tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000"><i class="fa fa-pencil"></i> create</a>
 				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark the page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
 			</div>
 		</div>
@@ -67,7 +67,7 @@
 		</div>
 		<div class="form-group">
 			<div class="input-group">
-				<span class="input-group-addon" id="basic-addon1">
+				<span class="input-group-addon">
 					<i class="fa fa-search"></i>
 				</span>
 				<input ng-model="class" type="text" class="form-control" id="exampleInputName2" placeholder="Search accounts">
@@ -101,7 +101,7 @@
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td>
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,sectionName:"$",filter:"$",page:"$"})' class="btn btn-default">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,viewOrListName:"$",filter:"$",page:"$"})' class="btn btn-default">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
@@ -144,14 +144,90 @@
 <script type="text/ng-template" id="createRecordModal.html">
 	<div class="modal-header">
 		<button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h4 class="modal-title">Create new record</h4>
+		<h4 class="modal-title">Create new <span class="go-green">{{popupData.parentData.entity.label}}</span></h4>
 	</div>
 	<div class="modal-body">
-		<!--<pre>{{popupData.entityMeta | json}}</pre>-->
+		<div class="alert alert-warning" ng-if="popupData.createViewRegion == null">There is no default "quick create" view defined for this entity. Please contact your system integrator!</div>
+		<form name="createRecord">
+			<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in popupData.createViewRegion.sections" ng-if="popupData.createViewRegion != null">
+				<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
+					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+					{{section.label}}
+				</div>
+				<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+					<div class="form-horizontal">
+
+						<div class="row" ng-repeat="row in section.rows">
+							<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }">
+									<!--If item is field WITH NO relation-->
+									<div class="row field" ng-if="item.type === 'field'">
+										<label class="col-sm-3 control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
+										<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
+											<pre>{{item | json}}</pre>
+
+											<!-- 1. Autoincrement -->
+											<div ng-switch-when="1">
+												<div class="form-control-static">{{item.meta.displayFormat}}</div>
+											</div>
+
+											<!-- 2. Checkbox -->
+											<div class="checkbox" ng-switch-when="2">
+												<label><input type="checkbox" ng-model="popupData.entityData[item.dataName]"> selected</label>
+											</div>
+
+											<!-- 3. Currency -->
+											<div ng-switch-when="3">
+												<div class="input-group">
+													<div class="input-group-addon">{{item.meta.currency.code}}</div>
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}"  pattern="^\d+(\.\d{1,5})?$" ng-minlength="{{item.meta.minValue}}" ng-maxlength="{{item.meta.maxValue}}">
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Decimal, no comma allowed.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.minlength && !popupData[item.meta.name + 'Error']">
+														Should be > = {{item.meta.minValue}}.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Should be < = {{item.meta.maxValue}}.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<!--<pre>{{popupData.entityData | json}}</pre>-->
+					</div>
+				</div>
+			</div>
+		</form>
+
+
+
+
+
+
+
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()">Create</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">"pCancelbu</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 
