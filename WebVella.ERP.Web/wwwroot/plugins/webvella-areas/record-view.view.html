@@ -1,24 +1,10 @@
 <div id="page-title">
     <div id="page-meta">
-        <!--<div class="aux-actions">
-            <a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
-            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
-            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
-            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
-                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                </ul>
-            </span>
-        </div>-->
+		<div class="aux-actions">
+			<div class="btn-group" role="group" aria-label="page toolbar">
+				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark this page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
+			</div>
+		</div>
         <div class="icon-box">
             <i class="fa fa-users"></i>
         </div>
@@ -309,9 +295,12 @@
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
                                             <table class="table table-bordered editable editable-click origin lookup"  ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index" ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
                                         </div>
 
@@ -329,18 +318,24 @@
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
                                             <table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index"  ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
                                         </div>
 
                                         <!-- Case 2 - Current Entity is Target -->
                                         <div ng-switch-when="2">
                                             <table class="table table-bordered editable editable-click target lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'target')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index"  ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
 
                                         </div>
