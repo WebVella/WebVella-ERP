@@ -84,7 +84,7 @@
 						<label class="required" for="areaName">Name</label>
 						<input ng-model="popupData.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. sales"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
+						<div class="error" ng-show="manageArea.name.$touched && manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
 							<small class="error" ng-show="manageArea.name.$error.required && !popupData.nameError">
 								required field
 							</small>
@@ -105,7 +105,7 @@
 						<label class="required" for="label">Label</label>
 						<input ng-model="popupData.area.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Sales"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
+						<div class="error" ng-show="manageArea.label.$touched manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
 							<small class="error" ng-show="manageArea.label.$error.required && !popupData.labelError">
 								Area label is required.
 							</small>
@@ -157,7 +157,7 @@
 								   ng-model-options="{allowInvalid:true}">
 							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 						</div>
-						<div class="error" ng-show="manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
+						<div class="error" ng-show="manageArea.icon_name.$touched && manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
 							<small class="error" ng-show="createEntity.icon_name.$error.required && !popupData.icon_nameError">
 								Icon name is required.
 							</small>
@@ -172,7 +172,7 @@
 						<label class="required" for="weight">Sort Weight</label>
 						<input ng-model="popupData.area.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
 							   required pattern="^[0-9]+(\.[0-9][0-9]?)?$" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
+						<div class="error" ng-show="manageArea.weight.$touched && manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
 							<small class="error" ng-show="manageArea.weight.$error.required && !popupData.weightError">
 								Entity weight is required
 							</small>
@@ -232,8 +232,8 @@
 								<tr>
 									<th width="60">w.</th>
 									<th>entity</th>
-									<th width="25%">list</th>
 									<th width="25%">view</th>
+									<th width="25%">list</th>
 									<th width="100">action</th>
 								</tr>
 							</thead>

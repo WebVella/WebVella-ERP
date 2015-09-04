@@ -10,8 +10,7 @@ namespace WebVella.ERP.Api.Models
 	public enum RecordListType
 	{
 		General,
-        Lookup,
-        Create
+        Lookup
 	}
 
 	public enum RecordListItemType
