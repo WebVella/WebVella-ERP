@@ -197,10 +197,6 @@
             {
             	key: "lookup",
                 value: "lookup"
-            },
-            {
-            	key: "create",
-                value: "create"
             }
         ];
         //#endregion

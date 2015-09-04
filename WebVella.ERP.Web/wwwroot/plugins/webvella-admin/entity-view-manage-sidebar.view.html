@@ -125,7 +125,7 @@
 						<label class="required" for="sectionName">Name</label>
 						<input ng-model="popupData.section.name" name="name" type="text" class="form-control" id="sectionName" placeholder="e.g. details"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}" autofocus ng-disabled="popupData.isUpdate">
-						<div class="error" ng-show="manageSection.name.$dirty && manageSection.name.$invalid">
+						<div class="error" ng-show="manageSection.name.$touched && manageSection.name.$dirty && manageSection.name.$invalid">
 							<small class="error" ng-show="manageSection.name.$error.required">
 								required field
 							</small>
@@ -146,7 +146,7 @@
 						<label class="required" for="title">Label</label>
 						<input ng-model="popupData.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
 							   required maxlength="50">
-						<div class="error" ng-show="manageSection.label.$dirty && manageSection.label.$invalid">
+						<div class="error" ng-show="manageSection.label.$touched && manageSection.label.$dirty && manageSection.label.$invalid">
 							<small class="error" ng-show="manageSection.label.$error.required">
 								required field
 							</small>
@@ -163,7 +163,7 @@
 						<label for="cssClass">CSS Class</label>
 						<input ng-model="popupData.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
 							   maxlength="50">
-						<div class="error" ng-show="manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
+						<div class="error" ng-show="manageSection.cssClass.$touched && manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
 							<small class="error" ng-show="manageSection.cssClass.$error.maxlength">
 								must be less than 50 chars
 							</small>
@@ -175,7 +175,7 @@
 						<label for="place">Weight</label>
 						<input ng-model="popupData.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$">
-						<div class="error" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">
+						<div class="error" ng-show="manageSection.weight.$touched && manageSection.weight.$dirty && manageSection.weight.$invalid">
 							<small class="error" ng-show="manageSection.weight.$error.pattern">
 								should be a valid number
 							</small>
@@ -249,7 +249,7 @@
 						<label for="place">Weight</label>
 						<input ng-model="popupData.row.weight" name="weight" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$">
-						<div class="error" ng-show="manageRow.weight.$dirty && manageRow.weight.$invalid">
+						<div class="error" ng-show="manageRow.weight.$touched && manageRow.weight.$dirty && manageRow.weight.$invalid">
 							<small class="error" ng-show="manageRow.weight.$error.pattern">
 								should be a valid number
 							</small>
