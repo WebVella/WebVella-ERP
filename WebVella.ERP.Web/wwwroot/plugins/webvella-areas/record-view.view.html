@@ -1,24 +1,10 @@
 <div id="page-title">
     <div id="page-meta">
-        <!--<div class="aux-actions">
-            <a class="btn btn-link hidden-xs"><i class="fa fa-plus"></i> Create New</a>
-            <a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
-            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
-            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
-                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                </ul>
-            </span>
-        </div>-->
+		<div class="aux-actions">
+			<div class="btn-group" role="group" aria-label="page toolbar">
+				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark this page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
+			</div>
+		</div>
         <div class="icon-box">
             <i class="fa fa-users"></i>
         </div>
@@ -194,7 +180,7 @@
                                     </a>
                                     <!-- If type 7 - fileupload -->
                                     <div ng-switch-when="7">
-                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.dataName],item)" ngf-select ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
+                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
                                         <div class="progress" ng-show="!contentData.viewData[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
                                             <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
                                                 <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
@@ -213,7 +199,7 @@
                                     </div>
                                     <!-- If type 9 - image -->
                                     <div ng-switch-when="9">
-                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-change="contentData.upload(contentData.files[item.dataName],item)" ngf-select ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+                                        <a ng-show='!contentData.viewData[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB"  ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
                                         <div class="progress" ng-show="!contentData.viewData[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
                                             <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
                                                 <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
@@ -309,9 +295,12 @@
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
                                             <table class="table table-bordered editable editable-click origin lookup"  ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index" ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
                                         </div>
 
@@ -329,18 +318,24 @@
                                         <!-- Case 1 - Current Entity is Origin -->
                                         <div ng-switch-when="1">
                                             <table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index"  ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
                                         </div>
 
                                         <!-- Case 2 - Current Entity is Target -->
                                         <div ng-switch-when="2">
                                             <table class="table table-bordered editable editable-click target lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'target')">
-                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index">
+                                                <tr ng-repeat="relationDataRecord in contentData.viewData[item.dataName] track by $index"  ng-if="contentData.viewData[item.dataName].length > 0">
                                                     <td>{{relationDataRecord}}</td>
                                                 </tr>
+												<tr ng-if="contentData.viewData[item.dataName].length == 0">
+													<td style="padding:16px"></td>
+												</tr>
                                             </table>
 
                                         </div>

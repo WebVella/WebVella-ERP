@@ -1,39 +1,26 @@
 <div id="page-title">
-    <div id="page-meta">
-        <div class="aux-actions">
-            <a class="btn btn-success hidden-xs" ng-click="contentData.createRecordModal()"><i class="fa fa-plus"></i> Create New</a>
-            <!--<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
-            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
-            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
-                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                </ul>
-            </span>-->
-        </div>
-        <div class="icon-box">
-            <i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i>
-        </div>
-        <div class="entity-box">
-            <h4 title="Offers">{{contentData.entity.labelPlural}}</h4>
-            <a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
-        </div>
-        <div class="spacer-box"></div>
-        <div class="divider-box">
-            <i class="fa fa-caret-right"></i>
-        </div>
-        <div class="lists-box">
-            <h4 title="Newest active offers">{{contentData.currentListView.label}}</h4>
-            <a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
-        </div>
+	<div id="page-meta">
+		<div class="aux-actions">
+			<div class="btn-group" role="group" aria-label="page toolbar">
+				<a class="btn btn-default hidden-xs" ng-click="contentData.createRecordModal()" tooltip-placement="bottom" tooltip="Create new record" tooltip-append-to-body="true"><i class="fa fa-pencil"></i> create</a>
+				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark the page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
+			</div>
+		</div>
+		<div class="icon-box">
+			<i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i>
+		</div>
+		<div class="entity-box">
+			<h4 title="Offers">{{contentData.entity.labelPlural}}</h4>
+			<a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
+		</div>
+		<div class="spacer-box"></div>
+		<div class="divider-box">
+			<i class="fa fa-caret-right"></i>
+		</div>
+		<div class="lists-box">
+			<h4 title="Newest active offers">{{contentData.currentListView.label}}</h4>
+			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
+		</div>
 		<accordion>
 			<accordion-group is-open="moreListsOpened">
 				<form class="form-inline">
@@ -58,17 +45,17 @@
 							</ul>
 						</div>
 					</div>
-				</form>	
-				<hr class="divider"/>
+				</form>
+				<hr class="divider" />
 				<ul class="list-inline">
 					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="webvella-entity-records({areaName:contentData.currentArea.name,entityName:contentData.entity.name,listName:list.name,filter:'all',page:1})"><i class="fa fa-fw fa-bars"></i> {{list.label}}</a></li>
-				</ul>		
+				</ul>
 			</accordion-group>
 		</accordion>
-</div>
-    <div id="page-messages" class="hide">
-        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-    </div>
+	</div>
+	<div id="page-messages" class="hide">
+		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+	</div>
 </div>
 <div id="text">
 	<form id="filters" class="form-inline" style="opacity:.2">
@@ -108,7 +95,7 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,7 +105,7 @@
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns" ng-switch="column.meta.fieldType">
 						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column.meta)}}</span>
 						<span ng-switch-when="2">{{contentData.getCheckboxString(record,column.meta)}}</span>
 						<span ng-switch-when="3">{{contentData.getCurrencyString(record,column.meta)}}</span>
@@ -164,7 +151,7 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()">Create</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">"pCancelbu</button>
 	</div>
 </script>
 
