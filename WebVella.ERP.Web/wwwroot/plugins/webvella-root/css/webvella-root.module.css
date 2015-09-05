@@ -2861,12 +2861,12 @@ table.editable:hover {
 	}
 
 /*Html*/
-.cke_editable {
+.cke_editable_inline {
 	overflow-y: scroll;
 	height: 200px !important;
 }
 
-	.cke_editable:not(.cke_focus):hover {
+	.cke_editable_inline:not(.cke_focus):hover {
 		background: #FFF3E0;
 		border: 1px solid #FFCC80;
 		cursor: pointer;

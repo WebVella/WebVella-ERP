@@ -180,7 +180,8 @@
 												<div class="input-group">
 													<div class="input-group-addon">{{item.meta.currency.code}}</div>
 													<input type="number" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}"  pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}">
+														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+														   ng-model-options="{allowInvalid:true}">
 												</div>
 												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
@@ -203,13 +204,13 @@
 													</small>
 												</div>
 											</div>
-											
-											<!-- 3. Date -->
+
+											<!-- 4. Date -->
 											<div ng-switch-when="4">
 												<div class="input-group">
-													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}" 
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars[item.meta.name]"
-														   enable-date="true" enable-time="false">
+														   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
 													<span class="input-group-btn">
 														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
 													</span>
@@ -225,9 +226,131 @@
 														{{popupData[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
-												<pre>{{item | json}}</pre>
-											</div>											
+											</div>
 
+											<!-- 5. DateTime -->
+											<div ng-switch-when="5">
+												<div class="input-group">
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars[item.meta.name]"
+														   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+													</span>
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 6. Email -->
+											<div ng-switch-when="6">
+												<input class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" type="text"
+													   ng-required="{{item.meta.required}}" placeholder="{{item.meta.placeholderText}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+													   ng-maxlength="{{item.meta.maxLength}}" ng-model-options="{allowInvalid:true}"/>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Invalid email.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+
+											</div>
+
+											<!-- 7. File -->
+											<div ng-switch-when="7">
+												<a ng-show='!popupData.entityData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false'>Browse</a>
+												<div class="progress" ng-show="!popupData.entityData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
+														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
+														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+													</div>
+												</div>
+												<div class="input-group file-upload" ng-show='popupData.entityData[item.dataName]'>
+													<a class="form-control link-icon" href="{{popupData.entityData[item.dataName]}}" target="_blank">view file</a>
+													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												</div>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 8. Html -->
+											<div ng-switch-when="8">
+												<textarea class="form-control" ng-model="popupData.entityData[item.dataName]" ckeditor="editorOptions" ng-change="popupData.validate(item)"></textarea>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 9. Image -->
+											<div ng-switch-when="9">
+												<a ng-show='!popupData.entityData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' 
+												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+												<div class="progress" ng-show="!popupData.entityData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" 
+														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
+														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
+														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+													</div>
+												</div>
+												<div class="image-upload" ng-show='popupData.entityData[item.dataName]'>
+													<img class="img-thumbnail" ng-src="{{popupData.entityData[item.dataName]}}" />
+													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												</div>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+											
+											<!-- 10. Textarea -->
+											<div ng-switch-when="10">
+												<textarea style="height:200px;" class="form-control" ng-model="popupData.entityData[item.dataName]"></textarea>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
 										</div>
 									</div>
 

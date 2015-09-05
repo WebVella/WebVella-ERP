@@ -139,7 +139,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.name.$invalid && !createFieldStep2.name.$pristine || popupData.nameError}">
                             <label class="control-label required">Name</label>
-                            <input class="form-control" ng-model="popupData.field.name" name="name" type="text"
+                            <input class="form-control" ng-model="popupData.field.name" name="name" type="text" ng-model-options="{allowInvalid:true}"
                                    required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="e.g. field_name or fieldName" />
                             <div class="error" ng-show="createFieldStep2.name.$touched && createFieldStep2.name.$dirty && createFieldStep2.name.$invalid || popupData.nameError">
                                 <small class="error" ng-show="createFieldStep2.name.$error.required && !popupData.nameError">
@@ -161,7 +161,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.label.$invalid && !createFieldStep2.label.$pristine || popupData.labelError}">
                             <label class="control-label required">Label</label>
                             <input class="form-control" ng-model="popupData.field.label" name="label" type="text"
-                                   required placeholder="e.g. Field Name" />
+                                   required placeholder="e.g. Field Name" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="createFieldStep2.label.$touched && createFieldStep2.label.$dirty && createFieldStep2.label.$invalid || popupData.labelError">
                                 <small class="error" ng-show="createFieldStep2.label.$error.required && !popupData.labelError">
                                     required field
@@ -177,7 +177,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.placeholderText.$invalid && !createFieldStep2.placeholderText.$pristine || popupData.placeholderTextError}">
                             <label class="control-label">Placeholder text</label>
-                            <input class="form-control" ng-model="popupData.field.placeholderText" name="placeholderText" type="text" />
+                            <input class="form-control" ng-model="popupData.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="createFieldStep2.placeholderText.$touched && createFieldStep2.placeholderText.$dirty && createFieldStep2.placeholderText.$invalid || popupData.placeholderTextError">
                                 <small class="error" ng-show="popupData.placeholderTextError">
                                     {{popupData.placeholderTextMessage}}
@@ -201,7 +201,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.description.$invalid && !createFieldStep2.description.$pristine || popupData.descriptionError}">
                             <label class="control-label">Description</label>
-                            <input class="form-control" ng-model="popupData.field.description" name="description" type="text" />
+                            <input class="form-control" ng-model="popupData.field.description" name="description" type="text" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="createFieldStep2.description.$touched && createFieldStep2.description.$dirty && createFieldStep2.description.$invalid || popupData.descriptionError">
                                 <small class="error" ng-show="popupData.descriptionError">
                                     {{popupData.descriptionTextMessage}}
@@ -225,7 +225,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.helpText.$invalid && !createFieldStep2.helpText.$pristine || popupData.helpTextError}">
                             <label class="control-label">Help text</label>
-                            <input class="form-control" ng-model="popupData.field.helpText" name="helpText" type="text" />
+                            <input class="form-control" ng-model="popupData.field.helpText" name="helpText" type="text" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="createFieldStep2.helpText.$touched && createFieldStep2.helpText.$dirty && createFieldStep2.helpText.$invalid || popupData.helpTextError">
                                 <small class="error" ng-show="popupData.helpTextError">
                                     {{popupData.helpTextMessage}}
@@ -281,7 +281,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]*$" placeholder="e.g. 1" />
+                                       ng-required="popupData.field.required" pattern="^[0-9]*$" placeholder="e.g. 1" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -299,7 +299,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.startingNumber.$invalid && !createFieldStep2.startingNumber.$pristine || popupData.startingNumberError}">
                                 <label class="control-label required">Starting number</label>
                                 <input class="form-control" ng-model="popupData.field.startingNumber" name="startingNumber" type="text"
-                                       pattern="^[0-9]*$" required placeholder="increment starting point" />
+                                       pattern="^[0-9]*$" required placeholder="increment starting point" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.startingNumber.$touched && createFieldStep2.startingNumber.$dirty && createFieldStep2.startingNumber.$invalid || popupData.startingNumberError">
                                     <small class="error" ng-show="createFieldStep2.startingNumber.$error.pattern && !popupData.startingNumberError">
                                         only numbers
@@ -318,7 +318,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.displayFormat.$invalid && !createFieldStep2.displayFormat.$pristine || popupData.displayFormatError}">
                                 <label class="control-label">Display format</label>
-                                <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" placeholder="e.g. Order-{0}" />
+                                <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" placeholder="e.g. Order-{0}" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.displayFormat.$touched && createFieldStep2.displayFormat.$dirty && createFieldStep2.displayFormat.$invalid || popupData.displayFormatError">
                                     <small class="error" ng-show="popupData.displayFormatError">
                                         {{popupData.displayFormatMessage}}
@@ -357,7 +357,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="number"
-                                       ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
+                                       ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -380,7 +380,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -395,7 +395,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -426,9 +426,10 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
 								<div class="input-group">
-									<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+									<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 										   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
-										   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="false" />
+										   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" 
+										   enable-time="false"  ng-click="popupData.openCalendar($event, 'defaultValue')"/>
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
 									</span>
@@ -451,7 +452,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
                                 <label class="control-label" ng-class="{'required':true}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="true" placeholder="e.g. yyyy-MM-dd" />
+                                       ng-required="true" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -490,9 +491,9 @@
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
 								<div class="input-group">
 									<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-										   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
+										   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date ng-model-options="{allowInvalid:true}"
 										   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="true" 
-										   timepicker-options="{showMeridian:false}"/>
+										   timepicker-options="{showMeridian:false}"  ng-click="popupData.openCalendar($event, 'defaultValue')"/>
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
 									</span>
@@ -515,7 +516,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
                                 <label class="control-label" ng-class="{'required':true}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="true" placeholder="e.g. yyyy-MM-dd HH:mm" />
+                                       ng-required="true" placeholder="e.g. yyyy-MM-dd HH:mm" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -552,7 +553,7 @@
 
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.field.required" placeholder="e.g. email@domain.com" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
@@ -572,7 +573,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                                 <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
                                         required field
@@ -595,8 +596,8 @@
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
+                                       ng-required="popupData.field.required" placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -620,7 +621,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                       ng-required="popupData.field.required" placeholder="e.g. some html" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -644,7 +645,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                       ng-required="popupData.field.required" placeholder="e.g. /assets/image.png" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -668,7 +669,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                       ng-required="popupData.field.required" placeholder="e.g. some text" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -684,7 +685,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                                 <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
                                         required field
@@ -724,7 +725,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                       ng-required="popupData.field.required" placeholder="" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -778,7 +779,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -796,7 +797,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.decimalPlaces.$invalid && !createFieldStep2.decimalPlaces.$pristine || popupData.decimalPlacesError}">
                                 <label class="control-label">Decimal Places</label>
                                 <input class="form-control" ng-model="popupData.field.decimalPlaces" name="decimalPlaces" type="text"
-                                       pattern="^[0-9]*$" />
+                                       pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.decimalPlaces.$touched && createFieldStep2.decimalPlaces.$dirty && createFieldStep2.decimalPlaces.$invalid || popupData.decimalPlacesError">
                                     <small class="error" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupData.decimalPlacesError">
                                         should be a valid decimal
@@ -813,7 +814,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -828,7 +829,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -849,7 +850,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                                 <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
                                         required field
@@ -903,7 +904,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -921,7 +922,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.decimalPlaces.$invalid && !createFieldStep2.decimalPlaces.$pristine || popupData.decimalPlacesError}">
                                 <label class="control-label">Decimal Places</label>
                                 <input class="form-control" ng-model="popupData.field.decimalPlaces" name="decimalPlaces" type="text"
-                                       pattern="^[0-9]*$" />
+                                       pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.decimalPlaces.$touched && createFieldStep2.decimalPlaces.$dirty && createFieldStep2.decimalPlaces.$invalid || popupData.decimalPlacesError">
                                     <small class="error" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupData.decimalPlacesError">
                                         should be a valid decimal
@@ -938,7 +939,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
                                 <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
                                         should be a valid decimal
@@ -953,7 +954,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
                                 <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                       pattern="^\d+(\.\d{1,5})?$" />
+                                       pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
                                         should be a valid decimal
@@ -975,7 +976,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" />
+                                       ng-required="popupData.field.required" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -994,7 +995,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                       ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -1011,7 +1012,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                                 <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                       ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
                                         required field
@@ -1037,7 +1038,7 @@
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError)  && popupData.defaultValueTextboxEnabled}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}"
                                        ng-disabled="!popupData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
                                 <div class="error" ng-show="(createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError) && popupData.defaultValueTextboxEnabled">
@@ -1076,7 +1077,7 @@
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1131,7 +1132,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" />
+                                       ng-required="popupData.field.required" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -1146,7 +1147,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                                <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                                <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
@@ -1170,7 +1171,7 @@
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.field.required" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1186,7 +1187,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupData.maxLengthError}">
                                 <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                                <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                                <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                        ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                                 <div class="error" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupData.maxLengthError">
                                     <small class="error" ng-show="createFieldStep2.maxLength.$error.required && !popupData.maxLengthError">
@@ -1259,7 +1260,7 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.label.$invalid && !manageFieldForm.label.$pristine || popupData.labelError}">
                         <label class="control-label required">Label</label>
-                        <input class="form-control" ng-model="popupData.field.label" name="label" type="text"
+                        <input class="form-control" ng-model="popupData.field.label" name="label" type="text" ng-model-options="{allowInvalid:true}"
                                required />
                         <div class="error" ng-show="manageFieldForm.label.$touched && manageFieldForm.label.$dirty && manageFieldForm.label.$invalid || popupData.labelError">
                             <small class="error" ng-show="manageFieldForm.label.$error.required && !popupData.labelError">
@@ -1276,7 +1277,7 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.placeholderText.$invalid && !manageFieldForm.placeholderText.$pristine || popupData.placeholderTextError}">
                         <label class="control-label">Placeholder text</label>
-                        <input class="form-control" ng-model="popupData.field.placeholderText" name="placeholderText" type="text" />
+                        <input class="form-control" ng-model="popupData.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}"/>
                         <div class="error" ng-show="manageFieldForm.placeholderText.$touched && manageFieldForm.placeholderText.$dirty && manageFieldForm.placeholderText.$invalid || popupData.placeholderTextError">
                             <small class="error" ng-show="popupData.placeholderTextError">
                                 {{popupData.placeholderTextMessage}}
@@ -1300,7 +1301,7 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.description.$invalid && !manageFieldForm.description.$pristine || popupData.descriptionError}">
                         <label class="control-label">Description</label>
-                        <input class="form-control" ng-model="popupData.field.description" name="description" type="text" />
+                        <input class="form-control" ng-model="popupData.field.description" name="description" type="text" ng-model-options="{allowInvalid:true}"/>
                         <div class="error" ng-show="manageFieldForm.description.$touched && manageFieldForm.description.$dirty && manageFieldForm.description.$invalid || popupData.descriptionError">
                             <small class="error" ng-show="popupData.descriptionError">
                                 {{popupData.descriptionTextMessage}}
@@ -1325,7 +1326,7 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.helpText.$invalid && !manageFieldForm.helpText.$pristine || popupData.helpTextError}">
                         <label class="control-label">Help text</label>
-                        <input class="form-control" ng-model="popupData.field.helpText" name="helpText" type="text" />
+                        <input class="form-control" ng-model="popupData.field.helpText" name="helpText" type="text" ng-model-options="{allowInvalid:true}"/>
                         <div class="error" ng-show="manageFieldForm.helpText.$touched && manageFieldForm.helpText.$dirty && manageFieldForm.helpText.$invalid || popupData.helpTextError">
                             <small class="error" ng-show="popupData.helpTextError">
                                 {{popupData.helpTextMessage}}
@@ -1379,7 +1380,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" pattern="^[0-9]*$" />
+                                   ng-required="popupData.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1394,7 +1395,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.startingNumber.$invalid && !manageFieldForm.startingNumber.$pristine || popupData.startingNumberError}">
+                        <div class="form-group">
                             <label class="control-label">Starting number</label>
                             <input class="form-control disabled" value="{{popupData.field.startingNumber}}" disabled/>
                         </div>
@@ -1404,7 +1405,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.displayFormat.$invalid && !manageFieldForm.displayFormat.$pristine || popupData.displayFormatError}">
                             <label class="control-label">Display format</label>
-                            <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" />
+                            <input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.displayFormat.$touched && manageFieldForm.displayFormat.$dirty && manageFieldForm.displayFormat.$invalid || popupData.displayFormatError">
                                 <small class="error" ng-show="popupData.displayFormatError">
                                     {{popupData.displayFormatMessage}}
@@ -1443,7 +1444,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="number"
-                                   ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
+                                   ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1466,7 +1467,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -1481,7 +1482,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal
@@ -1513,8 +1514,9 @@
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
 							<div class="input-group">
 								<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
-									   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="false" />
+									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date ng-model-options="{allowInvalid:true}"
+									   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true"
+									    enable-time="false"  ng-click="popupData.openCalendar($event, 'defaultValue')"/>
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
 								</span>
@@ -1536,7 +1538,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupData.formatError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
-                            <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
+                            <input class="form-control" ng-model="popupData.field.format" name="format" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="true" placeholder="e.g. yyyy-MM-dd" />
                             <div class="error" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupData.formatError">
                                 <small class="error" ng-show="manageFieldForm.format.$error.required && !popupData.formatError">
@@ -1576,9 +1578,9 @@
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
 							<div class="input-group">
 								<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 23:01" valid-date
+									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 23:01" valid-date ng-model-options="{allowInvalid:true}"
 									   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="true" 
-									   timepicker-options="{showMeridian:false}"/>
+									   timepicker-options="{showMeridian:false}"  ng-click="popupData.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
 								</span>
@@ -1601,7 +1603,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupData.formatError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                             <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                   ng-required="true" placeholder="e.g. yyyy-MM-dd" />
+                                   ng-required="true" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupData.formatError">
                                 <small class="error" ng-show="manageFieldForm.format.$error.required && !popupData.formatError">
                                     required field
@@ -1638,7 +1640,7 @@
 
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" placeholder="e.g. email@domain.com" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1657,7 +1659,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">
@@ -1681,8 +1683,8 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
+                                   ng-required="popupData.field.required"  placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1705,8 +1707,8 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
+                                   ng-required="popupData.field.required" placeholder="e.g. some html" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1729,7 +1731,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1753,8 +1755,8 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
+                                   ng-required="popupData.field.required" placeholder="e.g. some text" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1769,7 +1771,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">
@@ -1809,7 +1811,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1863,7 +1865,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" pattern="^[0-9]*$" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1882,7 +1884,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.decimalPlaces.$invalid && !manageFieldForm.decimalPlaces.$pristine || popupData.decimalPlacesError}">
                             <label class="control-label">Decimal Places</label>
                             <input class="form-control" ng-model="popupData.field.decimalPlaces" name="decimalPlaces" type="text"
-                                   pattern="^[0-9]*$" />
+                                   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.decimalPlaces.$touched && manageFieldForm.decimalPlaces.$dirty && manageFieldForm.decimalPlaces.$invalid || popupData.decimalPlacesError">
                                 <small class="error" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupData.decimalPlacesError">
                                     should be a valid decimal
@@ -1899,7 +1901,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -1914,7 +1916,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal
@@ -1935,7 +1937,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                             <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                   ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                   ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">
                                     required field
@@ -1989,7 +1991,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" pattern="^[0-9]*$" />
+                                   ng-required="popupData.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -2007,7 +2009,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.decimalPlaces.$invalid && !manageFieldForm.decimalPlaces.$pristine || popupData.decimalPlacesError}">
                             <label class="control-label">Decimal Places</label>
                             <input class="form-control" ng-model="popupData.field.decimalPlaces" name="decimalPlaces" type="text"
-                                   pattern="^[0-9]*$" />
+                                   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.decimalPlaces.$touched && manageFieldForm.decimalPlaces.$dirty && manageFieldForm.decimalPlaces.$invalid || popupData.decimalPlacesError">
                                 <small class="error" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupData.decimalPlacesError">
                                     should be a valid decimal
@@ -2024,7 +2026,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
                             <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
                                     should be a valid decimal
@@ -2039,7 +2041,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
                             <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
-                                   pattern="^\d+(\.\d{1,5})?$" />
+                                   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
                                     should be a valid decimal
@@ -2061,7 +2063,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" />
+                                   ng-required="popupData.field.required" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -2080,7 +2082,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupData.formatError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                             <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" />
+                                   ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupData.formatError">
                                 <small class="error" ng-show="manageFieldForm.format.$error.required && !popupData.formatError">
                                     required field
@@ -2097,7 +2099,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
                             <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
-                                   ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
+                                   ng-required="popupData.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">
                                     required field
@@ -2124,7 +2126,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError)  && popupData.defaultValueTextboxEnabled}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}"
+                                   ng-required="popupData.field.required" placeholder="{{popupData.defaultValueTextboxPlaceholder}}" ng-model-options="{allowInvalid:true}"
                                    ng-disabled="!popupData.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
                             <div class="error" ng-show="(createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError) && popupData.defaultValueTextboxEnabled">
                                 <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
@@ -2162,7 +2164,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -2215,7 +2217,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -2231,7 +2233,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">
@@ -2255,7 +2257,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.field.required" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -2271,7 +2273,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupData.maxLengthError}">
                             <label class="control-label" ng-class="{'required':popupData.maxLength.required}">Maximum Length</label>
-                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
                                    ng-required="popupData.maxLength.required" pattern="^[0-9]*$" />
                             <div class="error" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupData.maxLengthError">
                                 <small class="error" ng-show="manageFieldForm.maxLength.$error.required && !popupData.maxLengthError">

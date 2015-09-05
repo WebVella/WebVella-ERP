@@ -10,7 +10,7 @@
 	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreaEntityRecordsontroller', controller)
+        .controller('WebVellaAreaEntityRecordsController', controller)
 		.controller('createRecordModalController', createRecordModalController);
 
 
@@ -34,7 +34,7 @@
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
-					controller: 'WebVellaAreaEntityRecordsontroller',
+					controller: 'WebVellaAreaEntityRecordsController',
 					templateUrl: '/plugins/webvella-areas/entity-records.view.html',
 					controllerAs: 'contentData'
 				}
@@ -381,10 +381,10 @@
 
 
 	//// Modal Controllers
-	createRecordModalController.$inject = ["$stateParams", "parentData", "$modalInstance", "$log", "webvellaAdminService", "webvellaAreasService", "webvellaRootService", "ngToast", "$timeout", "$state"];
+	createRecordModalController.$inject = ["$scope","$stateParams", "parentData", "$modalInstance", "$log", "webvellaAdminService", "webvellaAreasService", "webvellaRootService", "ngToast", "$timeout", "$state"];
 
 	/* @ngInject */
-	function createRecordModalController($stateParams, parentData, $modalInstance, $log, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+	function createRecordModalController($scope, $stateParams, parentData, $modalInstance, $log, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 		$log.debug("webvellaAdmin>entities>deleteFieldModal> START controller.exec");
 		/* jshint validthis:true */
 		var popupData = this;
@@ -404,6 +404,8 @@
 			}
 		}
 		popupData.entityData = {};
+		popupData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
+		popupData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
 		if (popupData.createViewRegion != null) {
 			availableViewFields = webvellaAdminService.getItemsFromRegion(popupData.createViewRegion);
@@ -430,12 +432,69 @@
 								}
 							}
 							break;
+						case 5: //Date
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
+									popupData.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+								}
+								else if (availableViewFields[j].meta.defaultValue) {
+									popupData.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+								}
+							}
+							break;
+						case 6: //Email
+							break;
+						case 7: //File
+							popupData.progress[availableViewFields[j].meta.name] = 0;
+							if (availableViewFields[j].meta.required) {
+								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+							}
+							break;
+						case 8: //HTML
+							if (availableViewFields[j].meta.required) {
+								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+							}
+							break;
+						case 9: //Image
+							popupData.progress[availableViewFields[j].meta.name] = 0;
+							if (availableViewFields[j].meta.required) {
+								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+							}
+							break;
 					}
 
 
 				}
 			}
 		}
+
+		//Html
+		//Should use scope as it is not working with popupData
+		$scope.editorOptions = {
+			language: 'en',
+			'skin': 'moono',
+			height: '160',
+			//'extraPlugins': "imagebrowser",//"imagebrowser,mediaembed",
+			//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
+			//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
+			//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
+			//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+			toolbarLocation: 'top',
+			toolbar: 'full',
+			toolbar_full: [
+				{
+					name: 'basicstyles',
+					items: ['Bold', 'Italic', 'Strike', 'Underline']
+				},
+				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
+				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+				{ name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
+				{ name: 'clipboard', items: ['Undo', 'Redo'] },
+				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
+				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
+			]
+		};
 
 		//#endregion
 
@@ -445,17 +504,97 @@
 			popupData.calendars[name] = true;
 		}
 
+		popupData.getWidth = function(dataName) {
+			console.log(popupData.progress[dataName] + "%;");
+			return popupData.progress[dataName] + "%;";
+
+		}
+
+		popupData.validate = function(item) {
+			//validate required
+			if (item.meta.required && !popupData.entityData[item.dataName]) {
+				popupData[item.meta.name + 'Error'] = true;
+				popupData[item.meta.name + 'ErrorMessage'] = "Required.";
+			}
+		}
+
+		popupData.uploadedFieldName = "";
+		popupData.upload = function (file, item) {
+			if (file != null) {
+				popupData.uploadedFieldName = item.dataName;
+				function moveSuccessCallback(response) {
+					$timeout(function () {
+						popupData.entityData[popupData.uploadedFieldName] = response.object.url;
+					}, 1);
+				}
+
+				function uploadSuccessCallback(response) {
+					var tempPath = response.object.url;
+					var fileName = response.object.filename;
+					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+					var overwrite = true;
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+				}
+				function uploadErrorCallback(response) {
+					alert(response.message);
+				}
+				function uploadProgressCallback(response) {
+					$timeout(function () {
+						popupData.progress[popupData.uploadedFieldName] = parseInt(100.0 * response.loaded / response.total);
+					}, 1);
+				}
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
+			}
+		};
+
+		popupData.deleteFileUpload = function (item) {
+			var fieldName = item.dataName;
+			var filePath = popupData.entityData[fieldName];
+
+			function deleteSuccessCallback(response) {
+				$timeout(function () {
+					popupData.entityData[fieldName] = null;
+					popupData.progress[fieldName] = 0;
+				}, 0);
+				return true;
+			}
+			function deleteFailedCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message
+				});
+				return "validation error";
+			}
+
+			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+
+		}
+
 
 		//#endregion
 
 
 		popupData.ok = function () {
-			var response = {};
-			//response.message = "All fine";
+			//Alter some data before save
+			for (var k = 0; k < availableViewFields.length; k++) {
+				if (availableViewFields[k].type === "field") {
+					switch (availableViewFields[k].meta.fieldType) {
+						case 4: //Date
+							popupData.entityData[availableViewFields[k].meta.name] = moment(popupData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
+							break;
+						case 5: //Date & Time
+							popupData.entityData[availableViewFields[k].meta.name] = moment(popupData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
+							break;
+					}
+				}
+			}
+
+
+
+
 			//successCallback(response);
 			//webvellaAreasService.createEntityRecord(popupData.record, popupData.parentData.entity.name, successCallback, errorCallback);
-			popupData["currencyErrorMessage"] = "Bad new message";
-			popupData["currencyError"] = true;
+
 		};
 
 		popupData.cancel = function () {
@@ -484,7 +623,8 @@
 		function errorCallback(response) {
 			popupData.hasError = true;
 			popupData.errorMessage = response.message;
-
+			popupData["currencyErrorMessage"] = "Bad new message";
+			popupData["currencyError"] = true;
 
 		}
 		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
