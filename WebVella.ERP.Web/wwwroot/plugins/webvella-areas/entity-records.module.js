@@ -403,10 +403,16 @@
 
 			}
 		}
+		//Initialize entityRecordData
 		popupData.entityData = {};
+		for (var l = 0; l < popupData.parentData.entity.fields.length; l++) {
+			popupData.entityData[popupData.parentData.entity.fields[l].name] = null;
+		}
+
 		popupData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		popupData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
+		//Init default values of fields
 		if (popupData.createViewRegion != null) {
 			availableViewFields = webvellaAdminService.getItemsFromRegion(popupData.createViewRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
@@ -414,12 +420,12 @@
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
-							popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+							popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
 							break;
 
 						case 3: //Currency
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 4: //Date
@@ -447,18 +453,76 @@
 						case 7: //File
 							popupData.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
-								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 9: //Image
 							popupData.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 10: //TextArea
+							if (availableViewFields[j].meta.required) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 11: //Multiselect
+							if (availableViewFields[j].meta.required) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 12: //Number
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 13: //Password
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								//Does not have default value
+								//popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 14: //Percent
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								//Need to convert the default value to percent x 100
+								//TODO: apply this after the defaultValue, maxValue and minValue properties are stored as decimals - Ref. Issue #18
+
+								//JavaScript has bugs when multiplying decimals
+								//The way to correct this is to multiply the decimals before multiple their values,
+								//var resultPercentage = 0.00;
+								//resultPercentage = multiplyDecimals(availableViewFields[j].meta.defaultValue, 100, 3);
+								//popupData.entityData[availableViewFields[j].meta.name] = resultPercentage;
+							}
+							break;
+						case 15: //Phone
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 16: //Guid
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 17: //Dropdown
+							if (availableViewFields[j].meta.required && availableViewFields[j].meta.defaultValue) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 18: //Text
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							}
+							break;
+						case 19: //URL
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 					}
@@ -585,15 +649,19 @@
 						case 5: //Date & Time
 							popupData.entityData[availableViewFields[k].meta.name] = moment(popupData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
 							break;
+						case 14: //Persent
+							//need to convert to decimal 0 <= val <= 100 Divide by 100
+							//Hack for proper javascript devision
+							$scope.Math = window.Math;
+							var helpNumber = 10000000;
+							var multipliedValue = $scope.Math.round(popupData.entityData[availableViewFields[k].meta.name] * helpNumber);
+							popupData.entityData[availableViewFields[k].meta.name] = multipliedValue / (100 * helpNumber);
+							break;
 					}
 				}
 			}
-
-
-
-
-			//successCallback(response);
-			//webvellaAreasService.createEntityRecord(popupData.record, popupData.parentData.entity.name, successCallback, errorCallback);
+			popupData.entityData.createdOn = moment().utc().toISOString();
+			webvellaAdminService.createRecord(popupData.parentData.entity.name, popupData.entityData, successCallback, errorCallback);
 
 		};
 
