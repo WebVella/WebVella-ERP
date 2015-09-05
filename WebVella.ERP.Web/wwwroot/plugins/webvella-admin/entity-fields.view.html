@@ -356,7 +356,7 @@
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="number"
                                        ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
@@ -379,7 +379,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
-                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
@@ -394,7 +394,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
-                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
@@ -425,8 +425,14 @@
 
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date />
+								<div class="input-group">
+									<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+										   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
+										   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="false" />
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
+									</span>
+								</div>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -482,8 +488,15 @@
 
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                                <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 2:23 PM" valid-date />
+								<div class="input-group">
+									<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+										   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
+										   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="true" 
+										   timepicker-options="{showMeridian:false}"/>
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
+									</span>
+								</div>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -502,7 +515,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
                                 <label class="control-label" ng-class="{'required':true}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="true" placeholder="e.g. yyyy-MM-dd" />
+                                       ng-required="true" placeholder="e.g. yyyy-MM-dd HH:mm" />
                                 <div class="error" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -799,7 +812,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
-                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
@@ -814,7 +827,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
-                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
@@ -924,7 +937,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupData.minValueError}">
                                 <label class="control-label">Minimum value</label>
-                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupData.minValueError">
                                     <small class="error" ng-show="createFieldStep2.minValue.$error.pattern && !popupData.minValueError">
@@ -939,7 +952,7 @@
                         <div class="col-sm-6">
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupData.maxValueError}">
                                 <label class="control-label">Maximum value</label>
-                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                                <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                        pattern="^\d+(\.\d{1,5})?$" />
                                 <div class="error" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupData.maxValueError">
                                     <small class="error" ng-show="createFieldStep2.maxValue.$error.pattern && !popupData.maxValueError">
@@ -962,7 +975,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 2:23 PM" valid-date />
+                                       ng-required="popupData.field.required" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -1429,7 +1442,7 @@
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="number"
                                    ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
@@ -1452,7 +1465,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
-                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
@@ -1467,7 +1480,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
-                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
@@ -1498,8 +1511,14 @@
 
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date />
+							<div class="input-group">
+								<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01" valid-date
+									   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="false" />
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
+								</span>
+							</div>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1555,8 +1574,15 @@
 
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
-                            <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 2:23 PM" valid-date />
+							<div class="input-group">
+								<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
+									   ng-required="popupData.field.required" placeholder="e.g. 2014-11-01 23:01" valid-date
+									   datetime-picker="{{popupData.field.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars['defaultValue']" enable-date="true" enable-time="true" 
+									   timepicker-options="{showMeridian:false}"/>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, 'defaultValue')"><i class="fa fa-calendar"></i></button>
+								</span>
+							</div>
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1872,7 +1898,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
-                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
@@ -1887,7 +1913,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
-                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
@@ -1997,7 +2023,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupData.minValueError}">
                             <label class="control-label">Minimum value</label>
-                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.minValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupData.minValueError">
                                 <small class="error" ng-show="manageFieldForm.minValue.$error.pattern && !popupData.minValueError">
@@ -2012,7 +2038,7 @@
                     <div class="col-sm-6">
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupData.maxValueError}">
                             <label class="control-label">Maximum value</label>
-                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="text"
+                            <input class="form-control" ng-model="popupData.field.maxValue" name="minValue" type="number"
                                    pattern="^\d+(\.\d{1,5})?$" />
                             <div class="error" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupData.maxValueError">
                                 <small class="error" ng-show="manageFieldForm.maxValue.$error.pattern && !popupData.maxValueError">
@@ -2035,7 +2061,7 @@
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
                             <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                   ng-required="popupData.field.required" placeholder="e.g. 233-262-500" valid-date />
+                                   ng-required="popupData.field.required" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field

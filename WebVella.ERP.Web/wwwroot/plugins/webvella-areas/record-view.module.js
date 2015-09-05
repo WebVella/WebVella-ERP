@@ -378,13 +378,13 @@
 						if (!data && item.meta.required) {
 							return "This is a required field";
 						}
-						data = moment(data).toISOString();
+						data = moment(data).startOf('day').utc().toISOString();
 						break;
 					case 5: //Datetime
 						if (!data && item.meta.required) {
 							return "This is a required field";
 						}
-						data = moment(data).toISOString();
+						data = moment(data).startOf('minute').utc().toISOString();
 						break;
 					case 6: //Email
 						if (!data && item.meta.required) {

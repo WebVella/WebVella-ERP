@@ -1398,12 +1398,16 @@
             }
         }
 
-        //////
+        // Logic
         popupData.completeStep2 = function () {
             popupData.wizard.steps[2].active = false;
             popupData.wizard.steps[2].completed = true;
         }
 
+        popupData.calendars = {};
+        popupData.openCalendar = function (event, name) {
+        	popupData.calendars[name] = true;
+        }
 
     	//Currency
         popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
@@ -1447,7 +1451,7 @@
         	switch (popupData.field.fieldType) {
         		case 3:
         			for (var i = 0; i < contentData.currencyMetas.length; i++) {
-        				if (contentData.currencyMetas[i].code == popupData.selectedCurrencyMeta) {
+        				if (contentData.currencyMetas[i].code === popupData.selectedCurrencyMeta) {
         					popupData.field.currency.symbol = contentData.currencyMetas[i].symbol;
         					popupData.field.currency.symbolNative = contentData.currencyMetas[i].symbol_native;
         					popupData.field.currency.name = contentData.currencyMetas[i].name;
@@ -1458,6 +1462,12 @@
         					popupData.field.currency.symbolPlacement = 1;
         				}
         			}
+        			break;
+        		case 4: //Date
+        			popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+        			break;
+        		case 5: //Date & Time
+        			popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
         			break;
         	}
             webvellaAdminService.createField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
@@ -1568,12 +1578,17 @@
 
 
 
-        /////
+    	/////
+        popupData.calendars = {};
+        popupData.openCalendar = function (event, name) {
+        	popupData.calendars[name] = true;
+        }
+
         popupData.ok = function () {
         	switch (popupData.field.fieldType) {
         		case 3:
         			for (var i = 0; i < contentData.currencyMetas.length; i++) {
-        				if (contentData.currencyMetas[i].code == popupData.selectedCurrencyMeta) {
+        				if (contentData.currencyMetas[i].code === popupData.selectedCurrencyMeta) {
         					popupData.field.currency.symbol = contentData.currencyMetas[i].symbol;
         					popupData.field.currency.symbolNative = contentData.currencyMetas[i].symbol_native;
         					popupData.field.currency.name = contentData.currencyMetas[i].name;
@@ -1584,6 +1599,12 @@
         					popupData.field.currency.symbolPlacement = 1;
         				}
         			}
+        			break;
+        		case 4: //Date
+        			popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+        			break;
+        		case 5: //Date & Time
+        			popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
         			break;
         	}
             webvellaAdminService.updateField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
