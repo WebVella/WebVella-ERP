@@ -170,7 +170,7 @@
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageArea.weight.$invalid && !manageArea.weight.$pristine || popupData.weightError }">
 						<label class="required" for="weight">Sort Weight</label>
-						<input ng-model="popupData.area.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+						<input ng-model="popupData.area.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
 							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="manageArea.weight.$touched && manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
 							<small class="error" ng-show="manageArea.weight.$error.required && !popupData.weightError">

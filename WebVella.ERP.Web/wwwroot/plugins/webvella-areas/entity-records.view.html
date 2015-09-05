@@ -165,8 +165,6 @@
 									<div class="row field" ng-if="item.type === 'field'">
 										<label class="col-sm-3 control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
 										<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
-											<pre>{{item | json}}</pre>
-
 											<!-- 1. Autoincrement -->
 											<div ng-switch-when="1">
 												<div class="form-control-static">{{item.meta.displayFormat}}</div>
@@ -181,8 +179,8 @@
 											<div ng-switch-when="3">
 												<div class="input-group">
 													<div class="input-group-addon">{{item.meta.currency.code}}</div>
-													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}"  pattern="^\d+(\.\d{1,5})?$" ng-minlength="{{item.meta.minValue}}" ng-maxlength="{{item.meta.maxValue}}">
+													<input type="number" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}"  pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}">
 												</div>
 												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
@@ -194,10 +192,10 @@
 													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
 														Decimal, no comma allowed.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.minlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
 														Should be > = {{item.meta.minValue}}.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
 														Should be < = {{item.meta.maxValue}}.
 													</small>
 													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
@@ -205,6 +203,30 @@
 													</small>
 												</div>
 											</div>
+											
+											<!-- 3. Date -->
+											<div ng-switch-when="4">
+												<div class="input-group">
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}" 
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars[item.meta.name]"
+														   enable-date="true" enable-time="false">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+													</span>
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+												<pre>{{item | json}}</pre>
+											</div>											
 
 										</div>
 									</div>
@@ -212,7 +234,7 @@
 								</div>
 							</div>
 						</div>
-						<!--<pre>{{popupData.entityData | json}}</pre>-->
+						<pre>{{popupData.entityData | json}}</pre>
 					</div>
 				</div>
 			</div>

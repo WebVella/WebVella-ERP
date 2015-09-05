@@ -5,15 +5,15 @@
 */
 
 (function () {
-    'use strict';
-    angular
-        .module('wvApp')
-        .constant('wvAppConstants', {
-            "debugEnabled": false,
-            "apiBaseUrl": "/api/v1/en_US/",
-            "apiSandboxBaseUrl": "/sandbox/api",
-            "locale": "en_US"
-        });
+	'use strict';
+	angular
+		.module('wvApp')
+		.constant('wvAppConstants', {
+			"debugEnabled": false,
+			"apiBaseUrl": "/api/v1/en_US/",
+			"apiSandboxBaseUrl": "/sandbox/api",
+			"locale": "en_US"
+		});
 })();
 
 function checkInt(data) {
@@ -65,16 +65,16 @@ function checkDecimal(data) {
 	}
 
 	if (!isNumeric(data)) {
-    	response.success = false;
-    	response.message = "Only decimal is accepted";
-    	return response;
-    }
+		response.success = false;
+		response.message = "Only decimal is accepted";
+		return response;
+	}
 
 	return response;
 }
 
 function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 function decimalPlaces(num) {
@@ -137,7 +137,7 @@ function checkPhone(data) {
 		message: "It is decimal"
 	}
 	if (!phoneUtils.isValidNumber(data)) {
-		response.success= false,
+		response.success = false,
 		response.message = "Not a valid phone. Should start with + followed by the country code digits";
 		return response;
 	}

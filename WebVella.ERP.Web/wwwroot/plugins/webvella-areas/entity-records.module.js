@@ -170,9 +170,9 @@
 
 		//Select default details view
 		contentData.selectedView = {};
-		for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-			if (contentData.entity.recordViews[i].name === contentData.areaEntitySubscription.view.name) {
-				contentData.selectedView = contentData.entity.recordViews[i];
+		for (var j = 0; j < contentData.entity.recordViews.length; j++) {
+			if (contentData.entity.recordViews[j].name === contentData.areaEntitySubscription.view.name) {
+				contentData.selectedView = contentData.entity.recordViews[j];
 				break;
 			}
 		}
@@ -416,15 +416,35 @@
 							break;
 
 						case 3: //Currency
-						if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-							popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
-						}
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								popupData.entityData[availableViewFields[j].meta.name] = availableViewFields[j].meta.defaultValue;
+							}
+							break;
+						case 4: //Date
+							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
+								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
+									popupData.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+								}
+								else if (availableViewFields[j].meta.defaultValue) {
+									popupData.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+								}
+							}
+							break;
 					}
 
-					
+
 				}
 			}
 		}
+
+		//#endregion
+
+		//#region << Logic >>
+		popupData.calendars = {};
+		popupData.openCalendar = function(event, name) {
+			popupData.calendars[name] = true;
+		}
+
 
 		//#endregion
 
