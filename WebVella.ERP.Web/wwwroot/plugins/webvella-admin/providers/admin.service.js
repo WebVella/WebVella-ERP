@@ -750,7 +750,7 @@ function guid() {
 		function uploadFileToTemp(file, fieldName, progressCallback, successCallback, errorCallback) {
 			//"/fs/upload/" file
 			$log.debug('webvellaAdmin>providers>admin.service>uploadFileToTemp> function called');
-			$log.info(file);
+			//$log.info(file);
 			Upload.upload({
 				url: '/fs/upload/',
 				fields: {},

@@ -125,7 +125,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : createRelation.name.$invalid && !createRelation.name.$pristine || popupData.nameError}">
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="popupData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
-                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-disabled="popupData.relation.id != null">
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-disabled="popupData.relation.id != null" ng-model-options="{allowInvalid:true}">
                         <div class="error" ng-show="createRelation.name.$touched && createRelation.name.$dirty && createRelation.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="createRelation.name.$error.required && !popupData.nameError">
                                 required field
@@ -159,7 +159,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : createRelation.label.$invalid && !createRelation.label.$pristine || popupData.labelError }">
                         <label class="required" for="label">Label</label>
                         <input ng-model="popupData.relation.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
-                               required>
+                               required ng-model-options="{allowInvalid:true}">
                         <div class="error" ng-show="createRelation.label.$touched && createRelation.label.$dirty && createRelation.label.$invalid || popupData.labelError">
                             <small class="error" ng-show="createRelation.label.$error.required && !popupData.labelError">
                                 Entity label is required.
@@ -173,7 +173,7 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : popupData.descriptionError }">
                         <label for="description">Description</label>
-                        <input ng-model="popupData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins" />
+                        <input ng-model="popupData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins" ng-model-options="{allowInvalid:true}"/>
                         <div class="error" ng-show="createRelation.description.$touched && createRelation.description.$dirty && createRelation.description.$invalid || popupData.descriptionError">
                             <small class="error" ng-show="popupData.descriptionError">
                                 {{popupData.descriptionMessage}}

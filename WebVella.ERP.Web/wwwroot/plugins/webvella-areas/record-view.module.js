@@ -559,12 +559,17 @@
 			}
 		}
 
+		contentData.getProgressStyle = function(name) {
+			return "width: " + contentData.progress[name] + "%;";
+		}
+
+		contentData.uploadedFileName = "";
 		contentData.upload = function (file, item) {
 			if (file != null) {
-				var fieldName = item.dataName;
+				contentData.uploadedFileName = item.dataName;
 				function moveSuccessCallback(response) {
 					$timeout(function () {
-						contentData.selectedSidebarPage.data[fieldName] = response.object.url;
+						contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
 						contentData.fieldUpdate(item, response.object.url);
 					}, 1);
 				}
@@ -573,7 +578,7 @@
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
 					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
-					var overwrite = false;
+					var overwrite = true;
 					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
 				}
 				function uploadErrorCallback(response) {
@@ -581,7 +586,7 @@
 				}
 				function uploadProgressCallback(response) {
 					$timeout(function () {
-						contentData.progress[fieldName] = parseInt(100.0 * response.loaded / response.total);
+						contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
 				webvellaAdminService.uploadFileToTemp(file, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);

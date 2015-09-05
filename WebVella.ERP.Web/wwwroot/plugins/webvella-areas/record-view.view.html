@@ -178,15 +178,16 @@
                                        ng-bind="contentData.selectedSidebarPage.data[item.dataName] || 'empty'"
                                        onbeforesave="contentData.fieldUpdate(item, $data)">
                                     </a>
-                                    <!-- If type 7 - fileupload -->
+	                                <!-- If type 7 - fileupload -->
+
                                     <div ng-switch-when="7">
                                         <a ng-show='!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
-                                        <div class="progress" ng-show="!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
-                                            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
-                                                <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
-                                                <span ng-show="contentData.progress[item.dataName] == 100">almost done...</span>
-                                            </div>
-                                        </div>
+	                                    <div class="progress" ng-show="!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
+		                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': contentData.progress[item.dataName]+'%'}">
+			                                    <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
+			                                    <span ng-show="contentData.progress[item.dataName] == 100">almost done...</span>
+		                                    </div>
+	                                    </div>
                                         <div class="input-group file-upload" ng-show='contentData.selectedSidebarPage.data[item.dataName]'>
                                             <a class="form-control link-icon" href="{{contentData.selectedSidebarPage.data[item.dataName]}}" target="_blank">view file</a>
                                             <a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
@@ -201,7 +202,7 @@
                                     <div ng-switch-when="9">
                                         <a ng-show='!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB"  ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
                                         <div class="progress" ng-show="!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
-                                            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" style="width: {{contentData.progress[item.dataName] || '0'}}%;">
+                                            <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': contentData.progress[item.dataName]+'%'}">
                                                 <span ng-show="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
                                                 <span ng-show="contentData.progress[item.dataName] == 100">almost done...</span>
                                             </div>
