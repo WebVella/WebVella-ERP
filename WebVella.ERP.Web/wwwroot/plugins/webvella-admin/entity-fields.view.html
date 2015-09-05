@@ -723,9 +723,9 @@
                         <div class="col-sm-6">
                             <input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
-                                <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
+                                <label class="control-label" ng-class="{'required':popupData.field.required}">Default values</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" placeholder="" ng-model-options="{allowInvalid:true}"/>
+                                       ng-required="popupData.field.required"  placeholder="e.g. 1,2,3" ng-model-options="{allowInvalid:true}" />
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -757,13 +757,15 @@
 									<tr>
 										<th>value</th>
 										<th>label</th>
-										<th style="width:60px;"></th>
+										<th style="width:60px;">default</th>
+										<th style="width:60px;">remove</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr ng-repeat="option in popupData.field.options">
 										<td><input class="form-control" ng-model="option.key" /></td>
 										<td><input class="form-control" ng-model="option.value" /></td>
+										<td><a ng-click="popupData.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-sm" ng-class="popupData.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 										<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 									</tr>
 								</tbody>
@@ -904,7 +906,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
                                 <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
-                                       ng-required="popupData.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}"/>
+                                       ng-required="popupData.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupData.defaultValueError">
                                     <small class="error" ng-show="createFieldStep2.defaultValue.$error.required && !popupData.defaultValueError">
                                         required field
@@ -995,7 +997,7 @@
                             <div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupData.formatError}">
                                 <label class="control-label" ng-class="{'required':popupData.field.required}">Presentation Format</label>
                                 <input class="form-control" ng-model="popupData.field.format" name="format" type="text"
-                                       ng-required="popupData.field.required" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}"/>
+                                       ng-required="popupData.field.required" placeholder="" ng-model-options="{allowInvalid:true}"/>
                                 <div class="error" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupData.formatError">
                                     <small class="error" ng-show="createFieldStep2.format.$error.required && !popupData.formatError">
                                         required field
@@ -1806,13 +1808,13 @@
             </div>
             <!--Multiple select 11 -->
             <div ng-if="popupData.fieldType.id == 11">
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-sm-6">
                         <input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
                         <div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
-                            <label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
+                            <label class="control-label" ng-class="{'required':popupData.field.required}">Default values</label>
                             <input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-                                   ng-required="popupData.field.required" placeholder="e.g. email@domain.com" />
+                                   ng-required="popupData.field.required" placeholder="e.g. 1,2,3" />
                             <div class="error" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupData.defaultValueError">
                                 <small class="error" ng-show="manageFieldForm.defaultValue.$error.required && !popupData.defaultValueError">
                                     required field
@@ -1824,7 +1826,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div>-->
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
@@ -1844,19 +1846,22 @@
 								<tr>
 									<th>value</th>
 									<th>label</th>
-									<th style="width:60px;"></th>
+									<th style="width:60px;">default</th>
+									<th style="width:60px;">remove</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr ng-repeat="option in popupData.field.options">
 									<td><input class="form-control" ng-model="option.key" /></td>
 									<td><input class="form-control" ng-model="option.value" /></td>
+									<td><a ng-click="popupData.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-sm" ng-class="popupData.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>
 									<td><a ng-click="popupData.deleteDropdownValue($index)" href="javascript:void(0)" class="btn btn-sm btn-default go-red"><i class="fa fa-fw fa-close"></i></a></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
+				<pre>{{popupData.field | json}}</pre>
             </div>
             <!--Number 12 -->
             <div ng-if="popupData.fieldType.id == 12">
