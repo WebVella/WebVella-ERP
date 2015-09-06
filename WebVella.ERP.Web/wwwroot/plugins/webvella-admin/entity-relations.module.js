@@ -305,6 +305,8 @@
                     field.id = popupData.entities[i].fields[j].id;
                     field.name = popupData.entities[i].fields[j].name;
                     field.label = popupData.entities[i].fields[j].label;
+                    field.required = popupData.entities[i].fields[j].required;
+                    field.unique = popupData.entities[i].fields[j].unique;
                     entity.fields.push(field);
                 }
             }
@@ -339,10 +341,12 @@
                 if (popupData.entities[i].fields[j].fieldType === 16) {
                     var field = {};
                     //Add the field only if it is not already a target for a relation
-                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) == -1) {
+                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) === -1) {
                         field.id = popupData.entities[i].fields[j].id;
                         field.name = popupData.entities[i].fields[j].name;
                         field.label = popupData.entities[i].fields[j].label;
+                        field.required = popupData.entities[i].fields[j].required;
+                        field.unique = popupData.entities[i].fields[j].unique;
                         entity.fields.push(field);
                     }
                 }
@@ -376,7 +380,8 @@
             });
             popupData.selectedOriginField = newEntityModel.fields[0];
             popupData.selectedOriginFieldEnabled = true;
-            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+
+            if (popupData.selectedOriginField && popupData.selectedOriginField.id === popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;
             } else {
                 popupData.fieldsDuplicatedError = false;

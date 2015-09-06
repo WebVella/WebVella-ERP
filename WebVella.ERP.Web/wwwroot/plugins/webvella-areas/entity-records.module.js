@@ -586,28 +586,28 @@
 		popupData.upload = function (file, item) {
 			if (file != null) {
 				popupData.uploadedFieldName = item.dataName;
-				function moveSuccessCallback(response) {
+				popupData.moveSuccessCallback = function(response) {
 					$timeout(function () {
 						popupData.entityData[popupData.uploadedFieldName] = response.object.url;
 					}, 1);
 				}
 
-				function uploadSuccessCallback(response) {
+				popupData.uploadSuccessCallback = function(response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
 					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
 					var overwrite = true;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupData.moveSuccessCallback, popupData.uploadErrorCallback);
 				}
-				function uploadErrorCallback(response) {
+				popupData.uploadErrorCallback = function(response) {
 					alert(response.message);
 				}
-				function uploadProgressCallback(response) {
+				popupData.uploadProgressCallback = function(response) {
 					$timeout(function () {
 						popupData.progress[popupData.uploadedFieldName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
 			}
 		};
 

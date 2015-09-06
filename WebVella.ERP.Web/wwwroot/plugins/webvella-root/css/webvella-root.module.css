@@ -15,10 +15,26 @@ span.divider {
 	margin: 0 1em;
 }
 
-.panel {
+.panel,.panel-heading {
 	border-radius: 0;
 }
 
+.panel .panel {
+	margin: 0 5px 5px 5px;
+
+}
+
+	.panel .panel .panel-body{
+		padding: 5px 10px 10px 10px;
+	}
+
+	.panel .panel .form-group {
+		margin-bottom: 0;
+	}
+
+.panel .alert {
+	margin: 5px;
+}
 .position-relative {
 	position: relative !important;
 }
