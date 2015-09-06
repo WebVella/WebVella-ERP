@@ -257,7 +257,7 @@
 
 		//3. Find and load the selected page meta and data
 		function getViewOrListMeta(name) {
-			if (name == "") {
+			if (name === "") {
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						return angular.copy(contentData.defaultRecordView.regions[i]);
@@ -267,15 +267,15 @@
 			}
 			else {
 				var selectedSidebarItemMeta = null;
-				for (var i = 0; i < contentData.defaultRecordView.items.length; i++) {
+				for (var i = 0; i < contentData.defaultRecordView.sidebar.items.length; i++) {
 					//TODO: the names of different views and lists for different entities could be the same and this will fail to select the right one. We should possibly use the dataName?
-					if (contentData.defaultRecordView.items[i].meta.name == name) {
-						selectedSidebarItemMeta = contentData.defaultRecordView.items[i].meta;
+					if (contentData.defaultRecordView.items[i].sidebar.meta.name === name) {
+						selectedSidebarItemMeta = contentData.defaultRecordView.sidebar.items[i].meta;
 						break;
 					}
 				}
 				contentData.selectedSidebarPage.isView = true;
-				if (selectedSidebarItemMeta.type == "listFromRelation") {
+				if (selectedSidebarItemMeta != null && selectedSidebarItemMeta.type === "listFromRelation") {
 					contentData.selectedSidebarPage.isView = false;
 				}
 
@@ -283,13 +283,13 @@
 		}
 
 		function getViewOrListData(name) {
-			if (name == "") {
+			if (name === "") {
 				return angular.copy(resolvedCurrentView.data[0]);
 			}
 			else { }
 		}
 
-		if ($stateParams.viewOrListName == "$") {
+		if ($stateParams.viewOrListName === "$") {
 			//The default view meta is active
 			contentData.selectedSidebarPage.meta = getViewOrListMeta("");
 			contentData.selectedSidebarPage.data = getViewOrListData("");
@@ -332,7 +332,7 @@
 		}
 	    //#endregion
 
-		//#region << Rendering Logic >>
+		//#region << Rendering Logic fields>>
 
 		contentData.toggleSectionCollapse = function (section) {
 			section.collapsed = !section.collapsed;
@@ -498,12 +498,12 @@
 			if (!fieldValue) {
 				return "empty";
 			}
-			else if (item.meta.currency != null && item.meta.currency != {} && item.meta.currency.symbol) {
-				if (item.meta.currency.symbolPlacement == 1) {
-					return item.meta.currency.symbol + " " + fieldValue
+			else if (item.meta.currency != null && item.meta.currency !== {} && item.meta.currency.symbol) {
+				if (item.meta.currency.symbolPlacement === 1) {
+					return item.meta.currency.symbol + " " + fieldValue;
 				}
 				else {
-					return fieldValue + " " + item.meta.currency.symbol
+					return fieldValue + " " + item.meta.currency.symbol;
 				}
 			}
 			else {
@@ -567,29 +567,29 @@
 		contentData.upload = function (file, item) {
 			if (file != null) {
 				contentData.uploadedFileName = item.dataName;
-				function moveSuccessCallback(response) {
+				contentData.moveSuccessCallback = function(response) {
 					$timeout(function () {
 						contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
 						contentData.fieldUpdate(item, response.object.url);
 					}, 1);
 				}
 
-				function uploadSuccessCallback(response) {
+				contentData.uploadSuccessCallback = function(response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
 					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
 					var overwrite = true;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 				}
-				function uploadErrorCallback(response) {
+				contentData.uploadErrorCallback = function(response) {
 					alert(response.message);
 				}
-				function uploadProgressCallback(response) {
+				contentData.uploadProgressCallback = function(response) {
 					$timeout(function () {
 						contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, contentData.uploadProgressCallback, contentData.uploadSuccessCallback, contentData.uploadErrorCallback);
 			}
 		};
 
@@ -996,7 +996,7 @@
 	    popupData.warningMessage = "";
 
         //Init
-	    popupData.currentlyAttachedIds = angular.copy(popupData.parentData.viewData["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
+	    popupData.currentlyAttachedIds = angular.copy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
 	    popupData.dbAttachedIds = angular.copy(popupData.currentlyAttachedIds);
 	    popupData.attachedRecordIdsDelta = [];
 	    popupData.detachedRecordIdsDelta = [];

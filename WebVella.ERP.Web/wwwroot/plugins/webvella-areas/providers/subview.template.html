@@ -1,0 +1,135 @@
+﻿<div ng-show="recordsData.length == 0" class="alert alert-info">No items</div>
+<div ng-repeat="recordData in recordsData">
+	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in selectedRegion.sections">
+		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="toggleSectionCollapse(section.id,recordData.id)">
+			<span class="ng-hide" ng-show="!sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-down"></i></span>
+			<span class="ng-hide" ng-show="sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-right"></i></span>
+			{{section.label}}
+		</div>
+		<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
+			<div class="form-horizontal" style="background: transparent">
+				<div class="row" ng-repeat="row in section.rows">
+					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+						<div class="form-group" ng-repeat="item in column.items">
+							<!--If item is field WITH NO relation-->
+							<div class="row field" ng-if="item.type === 'field'">
+								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
+								<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
+									<!-- If type 1 - autoincrement -->
+									<div ng-switch-when="1">
+										{{getAutoIncrementString(item,recordData)}}
+									</div>
+									<!-- If type 2 - checkbox -->
+									<div ng-switch-when="2" ng-bind-html="getCheckboxString(item,recordData)"></div>
+									<!-- If type 3 - currency -->
+									<div ng-switch-when="3">
+										{{getCurrencyString(item,recordData)}}
+									</div>
+									<!-- If type 4 - date -->
+									<div ng-switch-when="4">
+										{{getDateString(item,recordData)}}
+									</div>
+									<!-- If type 5 - datetime -->
+									<div ng-switch-when="5">
+										{{getDateString(item,recordData)}}
+									</div>
+									<!-- If type 6 - email -->
+									<div ng-switch-when="6">
+										{{recordData[item.dataName]}}
+									</div>
+									<!-- If type 7 - file -->
+									<div ng-switch-when="7" ng-bind-html="getFileString(item,recordData)"></div>
+
+									<!-- If type 8 - html -->
+									<div ng-switch-when="8">
+										{{recordData[item.dataName]}}
+									</div>
+
+									<!-- If type 9 - image -->
+									<div ng-switch-when="9" ng-bind-html="getImageString(item,recordData)"></div>
+
+									<!-- If type 10 - textarea -->
+									<div ng-switch-when="10">
+										{{recordData[item.dataName]}}
+									</div>
+
+									<!-- If type 11 - multiselect -->
+									<div ng-switch-when="11">
+										{{getCheckboxlistString(item,recordData)}}
+									</div>
+									<!-- If type 12 - number -->
+									<div ng-switch-when="12">
+										{{recordData[item.dataName]}}
+									</div>
+									<!-- If type 13 - password -->
+									<div ng-switch-when="13">
+										********
+									</div>
+									<!-- If type 14 - percent -->
+									<div ng-switch-when="14">
+										{{getPercentString(item,recordData)}}
+									</div>
+									<!-- If type 15 - phone -->
+									<div ng-switch-when="15">
+										{{recordData[item.dataName]}}
+									</div>
+									<!-- If type 16 - guid -->
+									<div ng-switch-when="16">
+										{{recordData[item.dataName]}}
+									</div>
+									<!-- If type 17 - dropdown -->
+									<div ng-switch-when="17">
+										{{getDropdownString(item,recordData)}}
+									</div>
+									<!-- If type 18 - textbox -->
+									<div ng-switch-when="18">
+										{{recordData[item.dataName]}}
+									</div>
+									<!-- If type 19 - url -->
+									<div ng-switch-when="19" ng-bind-html="getUrlString(item,recordData)"></div>
+								</div>
+							</div>
+
+							<!-- If item is field WITH relation -->
+							<div class="row field" ng-if="item.type === 'fieldFromRelation'">
+								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
+								<div class="col-sm-9 position-relative"  ng-switch="getRelation(item.relationName).relationType">
+									<div ng-switch-when="1" ng-switch="getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>
+										<!-- Case 3 - Current Entity is both Orgin and Target -->
+										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+										<!-- Case 0 - Error -->
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+									<div ng-switch-when="2" ng-switch="getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1"  ng-bind-html="getRelatedFieldMultiHtml(item, recordData)">
+											<!--<table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
+												<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName] track by $index" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+													<td>{{relationDataRecord}}</td>
+												</tr>
+												<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+													<td style="padding: 16px"></td>
+												</tr>
+											</table>-->
+										</div>
+
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>
+										<!-- Case 3 - Current Entity is both Orgin and Target -->
+										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr class="divider" style="border-color: #ccc;" ng-hide="$last" />
+</div>
