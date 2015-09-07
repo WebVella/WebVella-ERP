@@ -192,23 +192,23 @@
         	var notUsed = true;
         	for (var k = 0; k < usedItemsArray.length; k++) {
         		if (item.type === "field" && usedItemsArray[k].type === "field"
-						&& item.fieldId == usedItemsArray[k].fieldId) {
+						&& item.fieldId === usedItemsArray[k].fieldId) {
         			notUsed = false;
         		}
         		else if (item.type === "fieldFromRelation" && usedItemsArray[k].type === "fieldFromRelation"
-						&& item.fieldId == usedItemsArray[k].fieldId && item.relationId == usedItemsArray[k].relationId) {
+						&& item.fieldId === usedItemsArray[k].fieldId && item.relationId === usedItemsArray[k].relationId) {
         			notUsed = false;
         		}
-        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
+        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId === usedItemsArray[k].viewId) {
         			notUsed = false;
         		}
-        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId == usedItemsArray[k].viewId) {
+        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId === usedItemsArray[k].viewId) {
         			notUsed = false;
         		}
-        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId == usedItemsArray[k].listId) {
+        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId === usedItemsArray[k].listId) {
         			notUsed = false;
         		}
-        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId == usedItemsArray[k].listId) {
+        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId === usedItemsArray[k].listId) {
         			notUsed = false;
         		}
         	}

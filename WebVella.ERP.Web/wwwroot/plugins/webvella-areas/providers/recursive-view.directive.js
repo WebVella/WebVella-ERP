@@ -27,8 +27,8 @@
 			templateUrl: '/plugins/webvella-areas/providers/recursive-view.template.html',
 			restrict: 'E',
 			scope: {
-				recordsData: '&',
-				itemMeta: '&',
+				viewData: '&',
+				viewMeta: '&',
 				relationsList: '&'
 			},
 			compile: function (element) {
@@ -49,19 +49,19 @@
 		function DirectiveController($filter, $log, $scope) {
 			//#region << Init >>
 			//var directiveData = this;
-			$scope.itemEntityId = $scope.itemMeta().entityId;
-			$scope.itemMeta = $scope.itemMeta().meta;
+			$scope.itemEntityId = $scope.viewMeta().entityId;
+			$scope.viewMeta = $scope.viewMeta().meta;
 			$scope.relationsList = $scope.relationsList();
 			$scope.selectedRegion = null;
-			for (var i = 0; i < $scope.itemMeta.regions.length; i++) {
-				if ($scope.itemMeta.regions[i].name === "content") {
-					$scope.selectedRegion = $scope.itemMeta.regions[i];
+			for (var i = 0; i < $scope.viewMeta.regions.length; i++) {
+				if ($scope.viewMeta.regions[i].name === "content") {
+					$scope.selectedRegion = $scope.viewMeta.regions[i];
 				}
 			}
 			if ($scope.selectedRegion == null) {
-				$log.error("the subview: " + $scope.itemMeta.name + " does not have a content region");
+				$log.error("the subview: " + $scope.viewMeta.name + " does not have a content region");
 			}
-			$scope.recordsData = $scope.recordsData();
+			$scope.viewData = $scope.viewData();
 
 			//SubViews sections collapsed state - depends on sectionId and recordId as there could be multiple records presented with the same view (section id)
 			$scope.sectionCollapsedData = [];
@@ -69,8 +69,8 @@
 
 			//Find the records for this view
 			var recordIdArray = [];
-			for (var l = 0; l < $scope.recordsData.length; l++) {
-				recordIdArray.push($scope.recordsData.id);
+			for (var l = 0; l < $scope.viewData.length; l++) {
+				recordIdArray.push($scope.viewData.id);
 			}
 			for (var m = 0; m < $scope.selectedRegion.sections.length; m++) {
 				$scope.sectionCollapsedData[$scope.selectedRegion.sections[m].id] = {};
