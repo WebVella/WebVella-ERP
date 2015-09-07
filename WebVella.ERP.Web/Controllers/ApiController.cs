@@ -1953,36 +1953,6 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				transaction.Begin();
-				//Delete all relations in the areas_entities collection/entity
-				List<EntityRecord> areasEntititesRelations = new List<EntityRecord>();
-				QueryObject areasEntititesRelationsFilterObj = EntityQuery.QueryEQ("area_id", recordId);
-				var areasEntititesRelationsQuery = new EntityQuery("areas_entities", "*", areasEntititesRelationsFilterObj, null, null, null);
-				var areasEntititesRelationsResult = recMan.Find(areasEntititesRelationsQuery);
-				if (!areasEntititesRelationsResult.Success)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = areasEntititesRelationsResult.Message;
-					transaction.Rollback();
-					return Json(response);
-				}
-				if (areasEntititesRelationsResult.Object.Data != null && areasEntititesRelationsResult.Object.Data.Any())
-				{
-					areasEntititesRelations = areasEntititesRelationsResult.Object.Data;
-				}
-				foreach (var relation in areasEntititesRelations)
-				{
-					var relationDeleteResult = recMan.DeleteRecord("areas_entities", (Guid)relation["id"]);
-					if (!relationDeleteResult.Success)
-					{
-						response.Timestamp = DateTime.UtcNow;
-						response.Success = false;
-						response.Message = relationDeleteResult.Message;
-						transaction.Rollback();
-						return Json(response);
-					}
-				}
-
 				//Delete the area
 				var areaDeleteResult = recMan.DeleteRecord("area", recordId);
 				if (!areaDeleteResult.Success)
@@ -2006,22 +1976,6 @@ namespace WebVella.ERP.Web.Controllers
 			response.Success = true;
 			response.Message = "Area successfully deleted";
 			return DoResponse(response);
-		}
-
-		// Get all relations between area and entity by entity name
-		// GET: api/v1/en_US/area/relations/entity/{entityName}
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/area/relations/entity/{entityId}")]
-		public IActionResult GetAreaRelationsByEntityId(Guid entityId)
-		{
-
-			QueryObject areasRelationsFilterObj = EntityQuery.QueryEQ("entity_id", entityId);
-
-			EntityQuery query = new EntityQuery("areas_entities", "*", areasRelationsFilterObj, null, null, null);
-
-			QueryResponse result = recMan.Find(query);
-			if (!result.Success)
-				return DoResponse(result);
-			return Json(result);
 		}
 
 		// Get all entities that has relation to an area
@@ -2065,56 +2019,6 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(response);
 		}
 
-
-		// Create an area entity relation
-		// POST: api/v1/en_US/area/{areaId}/entity/{entityId}/relation
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/area/{areaId}/entity/{entityId}/relation")]
-		public IActionResult CreateAreaEntityRelation(Guid areaId, Guid entityId)
-		{
-			EntityRecord record = new EntityRecord();
-			record["id"] = Guid.NewGuid();
-			record["area_id"] = areaId;
-			record["entity_id"] = entityId;
-			//TODO - created and modified by when we have the functionality
-			QueryResponse result = recMan.CreateRecord("areas_entities", record);
-			if (!result.Success)
-				return DoResponse(result);
-			return Json(result);
-		}
-
-		// Delete an area entity relation
-		// DELETE: api/v1/en_US/area/{areaId}/entity/{entityId}/relation
-		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/area/{areaId}/entity/{entityId}/relation")]
-		public IActionResult DeleteAreaEntityRelation(Guid areaId, Guid entityId)
-		{
-
-			QueryObject filter = EntityQuery.QueryAND(EntityQuery.QueryEQ("area_id", areaId), EntityQuery.QueryEQ("entity_id", entityId));
-			EntityQuery queryRelations = new EntityQuery("areas_entities", "*", filter, null, null, null);
-			QueryResponse resultRelations = recMan.Find(queryRelations);
-			if (!resultRelations.Success)
-				return DoResponse(resultRelations);
-			if (resultRelations.Object.Data != null && resultRelations.Object.Data.Any())
-			{
-				EntityRecord recordForDeletion = resultRelations.Object.Data.First();
-				QueryResponse result = recMan.DeleteRecord("areas_entities", (Guid)recordForDeletion["id"]);
-				if (!result.Success)
-				{
-					return DoResponse(result);
-				}
-				else
-				{
-					return Json(result);
-				}
-
-			}
-			else
-			{
-				QueryResponse responseNotFound = new QueryResponse();
-				responseNotFound.Success = false;
-				responseNotFound.Message = "No relation was found between areaId: " + areaId + " and entity Id: " + entityId;
-				return Json(responseNotFound);
-			}
-		}
 
 		#endregion
 

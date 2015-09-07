@@ -11,10 +11,10 @@
         .module('webvellaDevelopers')
         .service('webvellaDevelopersQueryService', service);
 
-    service.$inject = ['$log','$http', 'wvAppConstants'];
+    service.$inject = ['$log','$http', 'wvAppConstants','ngToast'];
 
     /* @ngInject */
-    function service($log, $http, wvAppConstants) {
+    function service($log, $http, wvAppConstants,ngToast) {
         var serviceInstance = this;
 
         serviceInstance.executeSampleQuery = executeSampleQuery;
@@ -79,6 +79,18 @@
         			}
         			
         			data.success = false;
+        			var messageString = '<div><span class="go-red">Error:</span> ' + data.message + '</div>';
+        			if (data.errors.length > 0) {
+        				messageString += '<ul>';
+        				for (var i = 0; i < data.errors.length; i++) {
+        					messageString += '<li>' + data.errors[i].message + '</li>';
+        				}
+        				messageString += '</ul>';
+        			}
+        			ngToast.create({
+        				className: 'error',
+        				content: messageString
+        			});
         			errorCallback(data);
         			break;
         		default:

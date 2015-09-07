@@ -105,7 +105,7 @@
 						<label class="required" for="label">Label</label>
 						<input ng-model="popupData.area.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Sales"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.label.$touched manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
+						<div class="error" ng-show="manageArea.label.$touched && manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
 							<small class="error" ng-show="manageArea.label.$error.required && !popupData.labelError">
 								Area label is required.
 							</small>

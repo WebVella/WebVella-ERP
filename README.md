@@ -41,7 +41,24 @@ $ git clone https://github.com/WebVella/WebVella-ERP.git
 * Version Pre-production
 
 ## How-to use this code
-* see [INSTRUCTIONS](https://github.com/WebVella/WebVella-ERP/blob/master/INSTRUCTIONS.md) file
+1. Download or Clone the source
+2. Install or Get a connection string to a TokuMX database. You can get the database from [HERE](https://www.percona.com/downloads/percona-tokumx-community-edition). Currently tested on version 1.4.0, so feedback if there are problems with the newest version.
+3. Set the /WebVella.ERP.Web/Config.json with the proper connection string settings. There is example configuration there. The EncriptionKey is optional and if not provided will use a default hardcoded one. For test purposes you can leave it as it is.
+4. Set up the site 
+5. Browse :)
+
+You will get a barebone installation. A test set is going to be available until the end of 2015. Before that you can test by doing the following:
+1. Create a test entity from "administration -> entities"
+2. Create a "general" view for this entity from "administration -> entities -> views" and set it as a default one.
+3. Create a "general" list for this entity from "administration -> entities -> lists" and set it as a default one
+4. Create a sample area to hold the test entity records from "administration -> areas".
+5. Subscribe the test entity to the sample area by managing the area. You should be able to get the entity from the dropdown, if you have correctly set the list and view, and didn't forget to mark them as default.
+6. Go back to the desktop by clicking on the red button on the top of the screen with the tree icon on it.
+7. You should be able to see your new area there. 
+8. Click the area. You should be redirected to the test entity records, which are non existent to this moment.
+9. Create some records.
+10. Do not forget to play with the API too. There are a lot nice methods already present in the APIController.
+
 
 ## Contact
 #### Developer/Company

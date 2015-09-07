@@ -22,12 +22,12 @@ function guid() {
         .module('webvellaAdmin')
         .service('webvellaAdminService', service);
 
-	service.$inject = ['$log', '$http', 'wvAppConstants', 'Upload'];
+	service.$inject = ['$log', '$http', 'wvAppConstants', 'Upload','ngToast'];
 
 
 
 	/* @ngInject */
-	function service($log, $http, wvAppConstants, Upload) {
+	function service($log, $http, wvAppConstants, Upload, ngToast) {
 		var serviceInstance = this;
 
 		//#region << Include functions >>
@@ -102,6 +102,18 @@ function guid() {
 						return;
 					}
 					data.success = false;
+					var messageString = '<div><span class="go-red">Error:</span> ' + data.message + '</div>';
+					if (data.errors.length > 0) {
+						messageString += '<ul>';
+						for (var i = 0; i < data.errors.length; i++) {
+							messageString += '<li>' + data.errors[i].message + '</li>';
+						}
+						messageString += '</ul>';
+					}
+					ngToast.create({
+						className: 'error',
+						content: messageString
+					});
 					errorCallback(data);
 					break;
 				default:
