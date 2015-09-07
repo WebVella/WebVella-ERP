@@ -1480,6 +1480,11 @@ namespace WebVella.ERP.Web.Controllers
                             //add ID field automatically if not added
                             if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
                                 queryFields += string.Format("${0}.id,", relation.Name);
+
+                            //always add origin field in query, its value may be required for relative view and list
+                            Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                            Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+                            queryFields += field.Name + ", ";
                         }
 						else if (column is RecordListListItem || column is RecordListViewItem)
 						{
@@ -1502,7 +1507,12 @@ namespace WebVella.ERP.Web.Controllers
 
 							if (!queryFields.Contains(queryFieldName))
 								queryFields += queryFieldName;
-						}
+
+                            //always add origin field in query, its value may be required for relative view and list
+                            Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                            Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+                            queryFields += field.Name + ", ";
+                        }
 						else if (column is RecordListRelationViewItem)
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
@@ -1519,7 +1529,12 @@ namespace WebVella.ERP.Web.Controllers
 
 							if (!queryFields.Contains(queryFieldName))
 								queryFields += queryFieldName;
-						}
+
+                            //always add origin field in query, its value may be required for relative view and list
+                            Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                            Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+                            queryFields += field.Name + ", ";
+                        }
 					}
 
 					if (queryFields.EndsWith(", "))
@@ -1754,13 +1769,19 @@ namespace WebVella.ERP.Web.Controllers
 					else if (item is RecordViewRelationFieldItem)
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
-                        queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
-
+                                              
                         //add ID field automatically if not added
                         if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
                             queryFields += string.Format("${0}.id,", relation.Name );
-					}
-					else if (item is RecordViewListItem || item is RecordViewViewItem)
+                        
+                        Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                        Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+
+                        queryFields += field.Name + ", ";
+                        queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
+
+                    }
+                    else if (item is RecordViewListItem || item is RecordViewViewItem)
 					{
 						if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
 							queryFields += "id";
@@ -1777,11 +1798,17 @@ namespace WebVella.ERP.Web.Controllers
 						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
-						string qFieldName = string.Format("{0}{1}", relName, relField.Name);
+                        string qFieldName = string.Format("{0}{1}", relName, relField.Name);
 
 						if (!queryFields.Contains(qFieldName))
 							queryFields += qFieldName;
-					}
+
+                        //always add origin field in query, its value may be required for relative view and list
+                        Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                        Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+                        queryFields += field.Name + ", ";
+
+                    }
 					else if (item is RecordViewRelationViewItem)
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationViewItem)item).RelationId);
@@ -1798,7 +1825,12 @@ namespace WebVella.ERP.Web.Controllers
 
 						if (!queryFields.Contains(qFieldName))
 							queryFields += qFieldName;
-					}
+
+                        //always add origin field in query, its value may be required for relative view and list
+                        Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+                        Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+                        queryFields += field.Name + ", ";
+                    }
                     queryFields += ",";
                 }
 
