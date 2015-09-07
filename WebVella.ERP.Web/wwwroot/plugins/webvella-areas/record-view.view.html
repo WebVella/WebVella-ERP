@@ -349,13 +349,13 @@
 							</div>
 
 							<!--If item is view WITH relation-->
-						<div class="row editable-field field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
-							<recursive-view view-meta="item" view-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-view>
-						</div>
+							<div class="field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
+								<recursive-view view-meta="item" view-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-view>
+							</div>
 
 							<!--If item is list WITH relation-->
-							<div class="row editable-field field" ng-if="item.type === 'listFromRelation'">
-
+							<div class="field" ng-if="item.type === 'list' || item.type === 'listFromRelation'">
+								<recursive-list list-meta="item" list-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-list>
 							</div>
 
 						</div>
