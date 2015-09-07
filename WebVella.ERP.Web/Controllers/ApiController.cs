@@ -1823,7 +1823,10 @@ namespace WebVella.ERP.Web.Controllers
 						if (item is RecordViewFieldItem)
 						{
 							dataRecord[item.DataName] = record[((RecordViewFieldItem)item).FieldName];
-						}
+
+                            if (!dataRecord.Properties.ContainsKey("id"))
+                                dataRecord["id"] = record["id"];
+                        }
 						else if (item is RecordViewListItem)
 						{
                             var query = EntityQuery.QueryEQ("id", record["id"]);
