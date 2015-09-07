@@ -1932,6 +1932,18 @@ form .error {
 	.table thead td {
 		background: #eee;
 	}
+	.table .table {
+		background-color: transparent;
+	}
+
+	.table .table thead th,
+	.table .table thead td {
+		background: transparent;
+	}
+
+	.table.hide-header > thead {
+		display: none;
+	}
 
 .table-vertical-align-middle tbody th,
 .table-vertical-align-middle tbody td {
