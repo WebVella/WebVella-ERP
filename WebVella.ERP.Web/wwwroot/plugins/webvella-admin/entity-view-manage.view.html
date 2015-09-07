@@ -85,7 +85,7 @@
 												<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
 													<div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
 														<div as-sortable-item-handle ng-if='item.type == "field"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}
+															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i>
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'>
 															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
@@ -131,7 +131,7 @@
 					<div class="drop-zone" id="library-items-list">
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i></div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>

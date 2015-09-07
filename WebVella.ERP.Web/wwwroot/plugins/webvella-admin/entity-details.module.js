@@ -41,8 +41,7 @@
             resolve: {
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedRolesList: resolveRolesList,
-                resolvedAreasList: resolveAreasList,
-                resolvedRelatedAreasList: resolveRelatedAreasList
+                resolvedAreasList: resolveAreasList
             },
             data: {
 
@@ -137,47 +136,13 @@
         return defer.promise;
     }
 
-
-    // Entity Related Areas list /////////////////////////
-    resolveRelatedAreasList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams'];
-
-    /* @ngInject */
-    function resolveRelatedAreasList($q, $log, webvellaAdminService, $stateParams) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
-        var entity = {};
-        // Process Area
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
-
-        // Process Entity
-        function successEntityCallback(response) {
-            webvellaAdminService.getAreaRelationByEntityId(response.object.id, successCallback, errorCallback);
-        }
-
-
-        webvellaAdminService.getEntityMeta($stateParams.entityName, successEntityCallback, errorCallback);
-
-
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
-        return defer.promise;
-    }
-
-
     // Controller ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$modal',
-        'resolvedRolesList', 'webvellaAdminService', 'resolvedAreasList', 'resolvedRelatedAreasList', '$timeout'];
+        'resolvedRolesList', 'webvellaAdminService', 'resolvedAreasList', '$timeout'];
 
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $modal,
-        resolvedRolesList, webvellaAdminService, resolvedAreasList, resolvedRelatedAreasList, $timeout) {
+        resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout) {
         $log.debug('webvellaAdmin>entity-details> START controller.exec');
         /* jshint validthis:true */
         var contentData = this;
@@ -218,11 +183,6 @@
             if (a.label > b.label) return 1;
             return 0;
         });
-        contentData.selectedAreasObjectsList = angular.copy(resolvedRelatedAreasList.data);
-        contentData.selectedAreasList = [];
-        for (var i = 0; i < contentData.selectedAreasObjectsList.length; i++) {
-            contentData.selectedAreasList.push(contentData.selectedAreasObjectsList[i].area_id)
-        }
 
         //Generate roles and checkboxes
         contentData.entity.roles = [];
