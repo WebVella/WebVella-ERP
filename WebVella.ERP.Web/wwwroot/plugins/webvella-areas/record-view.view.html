@@ -349,9 +349,12 @@
 							</div>
 
 							<!--If item is view WITH relation-->
-							<div class="row editable-field field" ng-if="item.type === 'viewFromRelation'">
-								<sub-view item-meta="item" records-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></sub-view>
+						<div class="row editable-field field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
+							<pre>{{contentData.selectedSidebarPage | json}}</pre>
+							<div ng-repeat="recordInstance in contentData.selectedSidebarPage.data[item.dataName]">
+								<sub-view item-meta="item" records-data="recordInstance" relations-list="contentData.relationsList"></sub-view>
 							</div>
+						</div>
 
 							<!--If item is list WITH relation-->
 							<div class="row editable-field field" ng-if="item.type === 'listFromRelation'">

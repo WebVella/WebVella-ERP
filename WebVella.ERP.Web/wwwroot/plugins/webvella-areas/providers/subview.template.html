@@ -93,7 +93,7 @@
 							<!-- If item is field WITH relation -->
 							<div class="row field" ng-if="item.type === 'fieldFromRelation'">
 								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
-								<div class="col-sm-9 position-relative"  ng-switch="getRelation(item.relationName).relationType">
+								<div class="col-sm-9 position-relative" ng-switch="getRelation(item.relationName).relationType">
 									<div ng-switch-when="1" ng-switch="getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>
@@ -106,16 +106,7 @@
 									</div>
 									<div ng-switch-when="2" ng-switch="getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
-										<div ng-switch-when="1"  ng-bind-html="getRelatedFieldMultiHtml(item, recordData)">
-											<!--<table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
-												<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName] track by $index" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
-													<td>{{relationDataRecord}}</td>
-												</tr>
-												<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
-													<td style="padding: 16px"></td>
-												</tr>
-											</table>-->
-										</div>
+										<div ng-switch-when="1" ng-bind-html="getRelatedFieldMultiHtml(item, recordData)"></div>
 
 										<!-- Case 2 - Current Entity is Target -->
 										<div ng-switch-when="2" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>
@@ -123,8 +114,29 @@
 										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
 										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 									</div>
+									<div ng-switch-when="3" ng-switch="getRelation(item.relationName).currentEntityRole">
+										<!-- Case 1 - Current Entity is Origin -->
+										<div ng-switch-when="1" ng-bind-html="getRelatedFieldMultiHtml(item, recordData)"></div>
+
+										<!-- Case 2 - Current Entity is Target -->
+										<div ng-switch-when="2" ng-bind-html="getRelatedFieldMultiHtml(item, recordData)"></div>
+
+										<!-- Case 3 - Current Entity is both Orgin and Target -->
+										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+
+										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+									</div>
 								</div>
 							</div>
+
+							<!-- If item is view -->
+							<div class="field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
+								<!--<div ng-repeat="recordInstance in recordData[item.dataName]">-->
+								<pre>{{recordData[item.dataName] | json}}</pre>
+									<sub-view item-meta="item" records-data="recordData[item.dataName]" relations-list="relationsList"></sub-view>
+								<!--</div>-->
+							</div>
+
 						</div>
 					</div>
 				</div>
