@@ -117,7 +117,7 @@
 
         // Global functions for result handling for all methods of this service
         function handleErrorResult(data, status, errorCallback) {
-            switch (status) {
+        	switch (status) {
                 case 400:
                     if (errorCallback === undefined || typeof (errorCallback) != "function") {
                         $log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing ');
@@ -125,11 +125,26 @@
                         return;
                     }
                     data.success = false;
+                    var messageString = '<div><span class="go-red">Error:</span> ' + data.message + '</div>';
+	                if (data.errors.length > 0) {
+	                	messageString += '<ul>';
+	                	for (var i = 0; i < data.errors.length; i++) {
+			                messageString += '<li>' + data.errors[i].message + '</li>';
+	                	}
+	                	messageString += '</ul>';
+	                }
+	                ngToast.create({
+                    	className: 'error',
+                    	content: messageString
+                    });
                     errorCallback(data);
                     break;
                 default:
                     $log.debug('webvellaRoot>providers>root.service> result failure: API finished with error: ' + status);
-                    alert("An API call finished with error: " + status);
+                    ngToast.create({
+                    	className: 'error',
+                    	content: '<span class="go-red">Error:</span> ' + 'An API call finished with error: ' + status
+                    });
                     break;
             }
         }
