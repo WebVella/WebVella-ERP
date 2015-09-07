@@ -15,6 +15,10 @@ span.divider {
 	margin: 0 1em;
 }
 
+.text-small {
+	font-size: 0.8em;
+}
+
 .panel,.panel-heading {
 	border-radius: 0;
 }

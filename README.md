@@ -22,14 +22,15 @@ We will greatly appriciate your support of the project by:
 You will get a barebone installation. A test set is going to be available until the end of 2015. Before that you can test by doing the following:
 1. Create a test entity from "administration -> entities"
 2. Create a "general" view for this entity from "administration -> entities -> views" and set it as a default one.
-3. Create a "general" list for this entity from "administration -> entities -> lists" and set it as a default one
-4. Create a sample area to hold the test entity records from "administration -> areas".
-5. Subscribe the test entity to the sample area by managing the area. You should be able to get the entity from the dropdown, if you have correctly set the list and view, and didn't forget to mark them as default.
-6. Go back to the desktop by clicking on the red button on the top of the screen with the tree icon on it.
-7. You should be able to see your new area there. 
-8. Click the area. You should be redirected to the test entity records, which are non existent to this moment.
-9. Create some records.
-10. Do not forget to play with the API too. There are a lot nice methods already present in the APIController.
+3. Create a "quickcreate" view for this entity from "administration -> entities -> views" and set it as a default one.
+4. Create a "general" list for this entity from "administration -> entities -> lists" and set it as a default one
+5. Create a sample area to hold the test entity records from "administration -> areas".
+6. Subscribe the test entity to the sample area by managing the area. You should be able to get the entity from the dropdown, if you have correctly set the list and view, and didn't forget to mark them as default.
+7. Go back to the desktop by clicking on the red button on the top of the screen with the tree icon on it.
+8. You should be able to see your new area there. 
+9. Click the area. You should be redirected to the test entity records, which are non existent to this moment.
+10. Create some records.
+11. Do not forget to play with the API too. There are a lot nice methods already present in the APIController.
 
 ## Contributors
 
