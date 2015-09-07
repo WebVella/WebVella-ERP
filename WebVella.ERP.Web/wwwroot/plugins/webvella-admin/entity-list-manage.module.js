@@ -258,23 +258,21 @@
 
         for (var i = 0; i < resolvedViewLibrary.length; i++) {
             if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view" || resolvedViewLibrary[i].type === "viewFromRelation"
-			 ) { //|| resolvedViewLibrary[i].type === "html") {
+			 || resolvedViewLibrary[i].type === "list" || resolvedViewLibrary[i].type === "listFromRelation") { //|| resolvedViewLibrary[i].type === "html") {
 
                 //Filter the items that are already used
                 var alreadyUsedItemInList = false;
                 for (var j = 0; j < contentData.list.columns.length; j++) {
-                    if (resolvedViewLibrary[i].fieldName == contentData.list.columns[j].fieldName) {
-                        alreadyUsedItemInList = true;
-                    }
+                	if (contentData.list.columns[j].meta) {
+                		if (resolvedViewLibrary[i].meta.id === contentData.list.columns[j].meta.id) {
+                			alreadyUsedItemInList = true;
+                		}
+	                }
                 }
 
                 if (!alreadyUsedItemInList) {
                     contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
                 }
-
-        		if (resolvedViewLibrary[i].type === "field") {
-        			contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
-        		}
             }
         }
 

@@ -1,5 +1,5 @@
-﻿<div ng-show="recordsData.length == 0" class="alert alert-info">No items</div>
-<div ng-repeat="recordData in recordsData">
+﻿<div ng-if="viewData.length == 0" class="alert alert-info">No items</div>
+<div ng-repeat="recordData in viewData" ng-if="viewData.length > 0">
 	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in selectedRegion.sections">
 		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="toggleSectionCollapse(section.id,recordData.id)">
 			<span class="ng-hide" ng-show="!sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-down"></i></span>
@@ -131,10 +131,7 @@
 
 							<!-- If item is view -->
 							<div class="field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
-								<!--<div ng-repeat="recordInstance in recordData[item.dataName]">-->
-								<pre>{{recordData[item.dataName] | json}}</pre>
-									<recursive-view item-meta="item" records-data="recordData[item.dataName]" relations-list="relationsList"></recursive-view>
-								<!--</div>-->
+								<recursive-view view-meta="item" view-data="recordData[item.dataName]" relations-list="relationsList"></recursive-view>
 							</div>
 
 						</div>
