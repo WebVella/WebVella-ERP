@@ -20,12 +20,21 @@ span.divider {
 }
 
 .panel .panel {
-	margin: 0 5px 5px 5px;
+	margin: 0 0 5px 0;
+	border: none;
+}
 
+.panel-body {
+	padding: 5px;
+}
+
+.panel-body > .form,
+.panel-body > .form-horizontal {
+	padding:10px;
 }
 
 	.panel .panel .panel-body{
-		padding: 5px 10px 10px 10px;
+		padding: 5px;
 	}
 
 	.panel .panel .form-group {
@@ -39,6 +48,12 @@ span.divider {
 .panel .alert {
 	margin: 5px;
 }
+
+.panel hr.divider {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 .position-relative {
 	position: relative !important;
 }
@@ -1813,7 +1828,7 @@ body #loading-bar-spinner {
 
 .panel-body .form,
 .panel-body .form-horizontal {
-	margin: -15px;
+	margin: -5px;
 	border: none;
 }
 
@@ -1830,6 +1845,11 @@ div.form-control {
 	margin-right: 0;
 }
 
+.form .form-group:last-child,
+.form-horizontal .form-group:last-child {
+	margin-bottom: 0;
+}
+
 .form .table,
 .form-horizontal .table {
 	margin-bottom: 0;
@@ -1842,6 +1862,7 @@ div.form-control {
 		font-weight: bold !important;
 		background-color: #eee;
 	}
+
 
 
 label.required:after {
