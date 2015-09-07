@@ -1595,7 +1595,7 @@ namespace WebVella.ERP.Web.Controllers
 							subListQueryObj.SubQueries.Add(new QueryObject { FieldName = "id", FieldValue = record["id"], QueryType = QueryType.EQ });
 
 							List<EntityRecord> subListResult = GetListRecords(entities, entity, ((RecordListListItem)column).ListName, queryObj: subListQueryObj);
-							dataRecord[column.DataName] = new { data = subListResult };
+							dataRecord[column.DataName] = subListResult;
 						}
 						else if (column is RecordListRelationListItem)
 						{
@@ -1617,7 +1617,7 @@ namespace WebVella.ERP.Web.Controllers
 						else if (column is RecordListViewItem)
 						{
 							List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
-							dataRecord[column.DataName] = new { data = subViewResult };
+							dataRecord[column.DataName] = subViewResult;
 						}
 						else if (column is RecordListRelationViewItem)
 						{
@@ -1828,12 +1828,12 @@ namespace WebVella.ERP.Web.Controllers
 						{
                             var query = EntityQuery.QueryEQ("id", record["id"]);
                             List<EntityRecord> subListResult = GetListRecords(entities, entity, ((RecordViewListItem)item).ListName, queryObj: query );
-							dataRecord[item.DataName] = new { data = subListResult };
+							dataRecord[item.DataName] = subListResult;
 						}
 						else if (item is RecordViewViewItem)
 						{
 							List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordViewViewItem)item).ViewName, "id", record["id"]);
-							dataRecord[item.DataName] = new { data = subViewResult };
+							dataRecord[item.DataName] =subViewResult;
 						}
 						else if (item is RecordViewRelationFieldItem)
 						{
