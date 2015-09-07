@@ -1,8 +1,11 @@
-/* some-name.directive.js */
+/* recursive-view.directive.js */
 
 /**
-* @desc record view - subview template
-* @example <sub-view></sub-view>
+* @desc recursive record view
+* @example <recursive-view item-meta="viewMeta" records-data="recordInstance" relations-list="contentData.relationsList"></recursive-view>
+ * @item-meta => object, the view meta data
+ * @records-data => Array, data of the records that need presentation
+ * @relations-list => Array all relations list Meta
 */
 
 (function () {
@@ -10,7 +13,7 @@
 
 	angular
         .module('webvellaAreas')
-        .directive('subView', directive);
+        .directive('recursiveView', directive);
 
 	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
 
@@ -21,7 +24,7 @@
 		//Two-way Binding (Prefix: =)
 		var directive = {
 			controller: DirectiveController,
-			templateUrl: '/plugins/webvella-areas/providers/subview.template.html',
+			templateUrl: '/plugins/webvella-areas/providers/recursive-view.template.html',
 			restrict: 'E',
 			scope: {
 				recordsData: '&',

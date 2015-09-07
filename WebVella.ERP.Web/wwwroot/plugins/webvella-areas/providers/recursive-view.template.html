@@ -133,7 +133,7 @@
 							<div class="field" ng-if="item.type === 'view' || item.type === 'viewFromRelation'">
 								<!--<div ng-repeat="recordInstance in recordData[item.dataName]">-->
 								<pre>{{recordData[item.dataName] | json}}</pre>
-									<sub-view item-meta="item" records-data="recordData[item.dataName]" relations-list="relationsList"></sub-view>
+									<recursive-view item-meta="item" records-data="recordData[item.dataName]" relations-list="relationsList"></recursive-view>
 								<!--</div>-->
 							</div>
 

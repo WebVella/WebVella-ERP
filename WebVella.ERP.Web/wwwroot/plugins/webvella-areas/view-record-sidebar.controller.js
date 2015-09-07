@@ -13,25 +13,34 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'webvellaAreasService'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, webvellaAreasService) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta,resolvedSitemap) {
         $log.debug('webvellaAreas>sidebar> BEGIN controller.exec');
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.view = resolvedCurrentView.meta;
         sidebarData.stateParams = $stateParams;
         sidebarData.entity = resolvedCurrentEntityMeta;
-    	//Select default list
-        sidebarData.defaultList = {};
-        for (var i = 0; i < sidebarData.entity.recordLists.length; i++) {
-            if (sidebarData.entity.recordLists[i].default && sidebarData.entity.recordLists[i].type == "general") { 
-        		sidebarData.defaultList = sidebarData.entity.recordLists[i];
-        		break;
-        	}
-        }
-        sidebarData.stateParams.listName = sidebarData.defaultList.name;
+    	//#region << Select default list >>
+        sidebarData.defaultEntityAreaListName = "";
+    	//get the current area meta
+	    for (var j = 0; j < resolvedSitemap.data.length; j++) {
+	    	if (resolvedSitemap.data[j].name === $stateParams.areaName) {
+	    		var areaSubscriptions = angular.fromJson(resolvedSitemap.data[j].subscriptions);
+	    		for (var k = 0; k < areaSubscriptions.length; k++) {
+				    if (areaSubscriptions[k].name === $stateParams.entityName) {
+					    sidebarData.defaultEntityAreaListName = areaSubscriptions[k].list.name;
+				    }
+			    }
+		    }
+	    }
+    	//convert stringified subscriptions to object and cycle and find the current entity
+
+		//get the selected list name
+
+    	//#endregion
 
     	//Generate menu items list
         sidebarData.items = [];
@@ -46,10 +55,10 @@
         	var item = {};
         	item.name = sidebarData.view.sidebar.items[i].meta.name;
         	item.label = sidebarData.view.sidebar.items[i].meta.label;
-        	if (sidebarData.view.sidebar.items[i].type == "view" || sidebarData.view.sidebar.items[i].type == "viewFromRelation") {
+        	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
         		item.iconName = "file-text-o";
         	}
-        	else if (sidebarData.view.sidebar.items[i].type == "list" || sidebarData.view.sidebar.items[i].type == "listFromRelation") {
+        	else if (sidebarData.view.sidebar.items[i].type === "list" || sidebarData.view.sidebar.items[i].type === "listFromRelation") {
         		item.iconName = "list";
         	}
         	sidebarData.items.push(item);
