@@ -32,6 +32,10 @@ span.divider {
 		margin-bottom: 0;
 	}
 
+	.panel .panel .form-group ul {
+		padding-left: 15px;
+	}
+
 .panel .alert {
 	margin: 5px;
 }

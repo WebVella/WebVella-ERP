@@ -12,36 +12,38 @@
         .module('webvellaAreas')
         .directive('subView', directive);
 
-	directive.$inject = ['webvellaAdminService'];
+	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
 
 	/* @ngInject */
-	function directive(webvellaAdminService) {
+	function directive($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
 		//Text Binding (Prefix: @)
 		//One-way Binding (Prefix: &)
 		//Two-way Binding (Prefix: =)
 		var directive = {
 			controller: DirectiveController,
 			templateUrl: '/plugins/webvella-areas/providers/subview.template.html',
-			link: link,
 			restrict: 'E',
 			scope: {
 				recordsData: '&',
 				itemMeta: '&',
 				relationsList: '&'
+			},
+			compile: function (element) {
+				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
+					// Define your normal link function here.
+					// Alternative: instead of passing a function,
+					// you can also pass an object with 
+					// a 'pre'- and 'post'-link function.
+				});
 			}
 		};
 		return directive;
 
 
 
-		function link(scope, element, attrs, controller) {
-			//Your code here
-			
-		}
-
-		DirectiveController.$inject = ['$filter','$log','$scope'];
+		DirectiveController.$inject = ['$filter', '$log', '$scope'];
 		/* @ngInject */
-		function DirectiveController($filter,$log, $scope) {
+		function DirectiveController($filter, $log, $scope) {
 			//#region << Init >>
 			//var directiveData = this;
 			$scope.itemEntityId = $scope.itemMeta().entityId;
@@ -83,7 +85,7 @@
 
 			//#region << Field Render logic >>
 			//1. Auto increment
-			$scope.getAutoIncrementString = function (item,record) {
+			$scope.getAutoIncrementString = function (item, record) {
 				var fieldValue = record[item.dataName];
 				if (!fieldValue) {
 					return "empty";
@@ -97,7 +99,7 @@
 			}
 
 			//2. Checkbox
-			$scope.getCheckboxString = function (item,record) {
+			$scope.getCheckboxString = function (item, record) {
 				var fieldValue = record[item.dataName];
 				if (fieldValue) {
 					return "<i class='fa fa-fw fa-check go-green'></i> true";
@@ -151,7 +153,7 @@
 					return "";
 				}
 				else {
-					return '<a class="link-icon" href="'+ fieldValue +'" target="_blank">view file</a>';
+					return '<a class="link-icon" href="' + fieldValue + '" target="_blank">view file</a>';
 				}
 			}
 
@@ -163,7 +165,7 @@
 				}
 				else {
 					return '<img class="img-thumbnail" src="' + fieldValue + '"  />';
-					
+
 				}
 			}
 
@@ -198,7 +200,7 @@
 			}
 
 
-			$scope.getPercentString = function (item,record) {
+			$scope.getPercentString = function (item, record) {
 				var fieldValue = record[item.dataName];
 
 				if (!fieldValue) {
@@ -215,7 +217,7 @@
 			}
 
 			//17. Dropdown
-			$scope.getDropdownString = function (item,record) {
+			$scope.getDropdownString = function (item, record) {
 				var selected = $filter('filter')(item.meta.options, { key: record[item.dataName] });
 				return (record[item.dataName] && selected.length) ? selected[0].value : 'empty';
 			}
@@ -257,7 +259,7 @@
 				return null;
 			}
 
-			$scope.getRelatedFieldSingleHtml = function(item, record) {
+			$scope.getRelatedFieldSingleHtml = function (item, record) {
 				var htmlString = "&nbsp;";
 				switch (item.meta.fieldType) {
 					case 1:
@@ -294,9 +296,7 @@
 						htmlString = $scope.getUrlString(item, record);
 						break;
 					default:
-						if (record[item.dataName].length > 0) {
-							htmlString = record[item.dataName][0];
-						}
+						htmlString = record[item.dataName];
 						break;
 				}
 
@@ -305,12 +305,47 @@
 
 			$scope.getRelatedFieldMultiHtml = function (item, record) {
 				var htmlString = "<ul>";
-				switch (item.meta.fieldType) {
-					default:
-						for (var j = 0; j < record[item.dataName].length; j++) {
-							htmlString += "<li>" + $scope.getRelatedFieldSingleHtml(item,record[item.dataName][j]) + "</li>";
-						}
-						break;
+				for (var j = 0; j < record[item.dataName].length; j++) {
+					var tempRecord = {};
+					tempRecord[item.dataName] = record[item.dataName][j];
+					switch (item.meta.fieldType) {
+						case 1:
+							htmlString += "<li>" + $scope.getAutoIncrementString(item, tempRecord) + "</li>";
+							break;
+						case 2:
+							htmlString += "<li>" + $scope.getCheckboxString(item, tempRecord) + "</li>";
+							break;
+						case 3:
+							htmlString += "<li>" + $scope.getCurrencyString(item, tempRecord) + "</li>";
+							break;
+						case 4:
+							htmlString += "<li>" + $scope.getDateString(item, tempRecord) + "</li>";
+							break;
+						case 5:
+							htmlString += "<li>" + $scope.getDateString(item, tempRecord) + "</li>";
+							break;
+						case 7:
+							htmlString += "<li>" + $scope.getFileString(item, tempRecord) + "</li>";
+							break;
+						case 9:
+							htmlString += "<li>" + $scope.getImageString(item, tempRecord) + "</li>";
+							break;
+						case 11:
+							htmlString += "<li>" + $scope.getCheckboxlistString(item, tempRecord) + "</li>";
+							break;
+						case 14:
+							htmlString += "<li>" + $scope.getPercentString(item, tempRecord) + "</li>";
+							break;
+						case 17:
+							htmlString += "<li>" + $scope.getDropdownString(item, tempRecord) + "</li>";
+							break;
+						case 19:
+							htmlString += "<li>" + $scope.getUrlString(item, tempRecord) + "</li>";
+							break;
+						default:
+							htmlString += "<li>" + $scope.getRelatedFieldSingleHtml(item, tempRecord) + "</li>";
+							break;
+					}
 				}
 				htmlString += "</ul>";
 				return htmlString;

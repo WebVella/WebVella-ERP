@@ -41,7 +41,9 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
 		public IActionResult GetEntityMetaList()
 		{
-			return DoResponse(entityManager.ReadEntities());
+			var bo = entityManager.ReadEntities();
+		
+			return DoResponse(bo);
 		}
 
 		// Get entity meta
