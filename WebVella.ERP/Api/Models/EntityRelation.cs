@@ -72,4 +72,19 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "object")]
         public List<EntityRelation> Object { get; set; }
     }
+
+    public class InputEntityRelationRecordUpdateModel
+    {
+        [JsonProperty(PropertyName = "relationName")]
+        public string RelationName { get; set; }
+
+        [JsonProperty(PropertyName = "originFieldRecordId")]
+        public Guid OriginFieldRecordId { get; set; }
+
+        [JsonProperty(PropertyName = "attachTargetFieldRecordIds")]
+        public List<Guid> AttachTargetFieldRecordIds { get; set; }
+
+        [JsonProperty(PropertyName = "detachTargetFieldRecordIds")]
+        public List<Guid> DetachTargetFieldRecordIds { get; set; }
+    }
 }

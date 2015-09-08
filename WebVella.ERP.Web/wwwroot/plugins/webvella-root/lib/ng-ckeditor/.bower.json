@@ -1,0 +1,24 @@
+{
+  "name": "ng-ckeditor",
+  "version": "0.2.1",
+  "main": "ng-ckeditor.js",
+  "dependencies": {
+    "angular": "~1.2.9"
+  },
+  "devDependencies": {
+    "jquery": "~2.0.3",
+    "angular-mocks": "~1.2.9",
+    "jquery.simulate": "~1.2.0"
+  },
+  "homepage": "https://github.com/esvit/ng-ckeditor",
+  "_release": "0.2.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.1",
+    "commit": "8b9ece340f7d90bb3167604cc9d317c8041058c3"
+  },
+  "_source": "git://github.com/esvit/ng-ckeditor.git",
+  "_target": "~0.2.1",
+  "_originalSource": "ng-ckeditor",
+  "_direct": true
+}

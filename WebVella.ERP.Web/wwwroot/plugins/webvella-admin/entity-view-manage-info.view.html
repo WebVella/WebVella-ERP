@@ -67,9 +67,23 @@
 					<div class="col-sm-4">
 						<span class="not-editable">{{contentData.view.name}}</span>
 					</div>
+					<label class="col-sm-2 control-label" for="type">Type</label>
+					<div class="col-sm-4 position-relative">
+						<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes" onbeforesave="contentData.fieldUpdate('type', $data)">
+							{{ contentData.showViewType() }}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
 					<label class="col-sm-2 control-label" for="label">Label</label>
 					<div class="col-sm-4 position-relative">
 						<a href="javascript:void(0)" editable-text="contentData.view.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.view.label || "not set" }}</a>
+					</div>
+					<label class="col-sm-2 control-label" for="weight">Weight</label>
+					<div class="col-sm-4 position-relative">
+						<a href="javascript:void(0)" editable-text="contentData.view.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.view.weight || "not set" }}</a>
 					</div>
 				</div>
 			</div>
@@ -87,6 +101,7 @@
 						<span ng-show="contentData.view.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
 						<span ng-show="!contentData.view.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
 					</div>
+
 				</div>
 			</div>
 			<div class="form-group">
@@ -95,20 +110,7 @@
 					<div class="col-sm-4 position-relative">
 						<a href="javascript:void(0)" editable-text="contentData.view.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.view.cssClass || "not set" }}</a>
 					</div>
-					<label class="col-sm-2 control-label" for="weight">Weight</label>
-					<div class="col-sm-4 position-relative">
-						<a href="javascript:void(0)" editable-text="contentData.view.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.view.weight || "not set" }}</a>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="row">
-					<label class="col-sm-2 control-label" for="type">Type</label>
-					<div class="col-sm-4 position-relative">
-						<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes" onbeforesave="contentData.fieldUpdate('type', $data)">
-							{{ contentData.showViewType() }}
-						</a>
-					</div>
+
 				</div>
 			</div>
 		</div>

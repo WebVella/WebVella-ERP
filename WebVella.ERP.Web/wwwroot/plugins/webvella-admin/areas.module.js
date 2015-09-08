@@ -44,7 +44,6 @@
             },
             resolve: {
             	resolvedAreaRecordsList: resolveAreaRecordsList,
-            	resolvedAreaEntityRelationRecords:resolveAreaEntityRelationRecords,
                 resolvedRolesList: resolveRolesList,
                 resolvedEntityMetaList: resolveEntityMetaList
             },
@@ -93,45 +92,6 @@
         // Return
         $log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved');
         return defer.promise;
-    }
-
-
-    resolveAreaEntityRelationRecords.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-    function resolveAreaEntityRelationRecords($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-    	$log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList BEGIN state.resolved');
-    	// Initialize
-    	var defer = $q.defer();
-
-    	// Process
-    	function successCallback(response) {
-    		if (response.object == null) {
-    			$timeout(function () {
-    				$state.go("webvella-root-not-found");
-    			}, 0);
-    		}
-    		else {
-    			defer.resolve(response.object);
-    		}
-    	}
-
-    	function errorCallback(response) {
-    		if (response.object == null) {
-    			$timeout(function () {
-    				$state.go("webvella-root-not-found");
-    			}, 0);
-    		}
-    		else {
-    			defer.resolve(response.object);
-    		}
-    	}
-
-    	webvellaAdminService.getRecordsByEntityName("null", "areas_entities", "null", "null", successCallback, errorCallback);
-
-
-    	// Return
-    	$log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved');
-    	return defer.promise;
     }
 
     // Resolve Roles list /////////////////////////
@@ -187,11 +147,11 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
-							'resolvedAreaEntityRelationRecords', 'resolvedRolesList', 'resolvedEntityMetaList', '$modal',
+							'resolvedRolesList', 'resolvedEntityMetaList', '$modal',
                             'webvellaAdminService'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
-						resolvedAreaEntityRelationRecords, resolvedRolesList, resolvedEntityMetaList, $modal,
+						resolvedRolesList, resolvedEntityMetaList, $modal,
                         webvellaAdminService) {
         $log.debug('webvellaAdmin>areas-list> START controller.exec');
         /* jshint validthis:true */
@@ -205,8 +165,6 @@
         contentData.areas = angular.copy(resolvedAreaRecordsList.data);
         contentData.areas = contentData.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-        contentData.areaEntityRelations = angular.copy(resolvedAreaEntityRelationRecords.data);
-
         contentData.roles = angular.copy(resolvedRolesList.data);
         contentData.roles = contentData.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
@@ -214,7 +172,7 @@
             return 0;
         });
 
-        contentData.entities = angular.copy(resolvedEntityMetaList.entities)
+	    contentData.entities = angular.copy(resolvedEntityMetaList.entities);
         contentData.entities = contentData.entities.sort(function (a, b) {
         	if (a.label < b.label) return -1;
         	if (a.label > b.label) return 1;

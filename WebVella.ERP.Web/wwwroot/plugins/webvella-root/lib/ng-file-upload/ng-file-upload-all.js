@@ -2,7 +2,7 @@
  * AngularJS file upload/drop directive and service with progress and abort
  * FileAPI Flash shim for old browsers not supporting FormData
  * @author  Danial  <danial.farid@gmail.com>
- * @version 5.0.9
+ * @version 7.0.17
  */
 
 (function () {
@@ -97,6 +97,10 @@
             jsonp: false, //removes the callback form param
             cache: true, //removes the ?fileapiXXX in the url
             complete: function (err, fileApiXHR) {
+              if (err && angular.isString(err) && err.indexOf('#2174') !== -1) {
+                // this error seems to be fine the file is being uploaded properly.
+                err = null;
+              }
               xhr.__completed = true;
               if (!err && xhr.__listeners.load)
                 xhr.__listeners.load({
@@ -290,36 +294,24 @@
       FileAPI.hasFlash = hasFlash();
     }
 
-    FileAPI.ngfFixIE = function (elem, createFileElemFn, bindAttr, changeFn) {
+    FileAPI.ngfFixIE = function (elem, fileElem, changeFn) {
       if (!hasFlash()) {
         throw 'Adode Flash Player need to be installed. To check ahead use "FileAPI.hasFlash"';
       }
-      var makeFlashInput = function () {
+      var fixInputStyle = function () {
         if (elem.attr('disabled')) {
-          elem.$$ngfRefElem.removeClass('js-fileapi-wrapper');
+          if (fileElem) fileElem.removeClass('js-fileapi-wrapper');
         } else {
-          var fileElem = elem.$$ngfRefElem;
-          if (!fileElem) {
-            fileElem = elem.$$ngfRefElem = createFileElemFn();
-            fileElem.addClass('js-fileapi-wrapper');
-            if (!isInputTypeFile(elem)) {
-//						if (fileElem.parent().css('position') === '' || fileElem.parent().css('position') === 'static') {
-//							fileElem.parent().css('position', 'relative');
-//						}
-//						elem.parent()[0].insertBefore(fileElem[0], elem[0]);
-//						elem.css('overflow', 'hidden');
-            }
-            setTimeout(function () {
-              fileElem.bind('mouseenter', makeFlashInput);
-            }, 10);
+          if (!fileElem.attr('__ngf_flash_')) {
+            fileElem.unbind('change');
+            fileElem.unbind('click');
             fileElem.bind('change', function (evt) {
               fileApiChangeFn.apply(this, [evt]);
               changeFn.apply(this, [evt]);
-//						alert('change' +  evt);
             });
-          } else {
-            bindAttr(elem.$$ngfRefElem);
+            fileElem.attr('__ngf_flash_', 'true');
           }
+          fileElem.addClass('js-fileapi-wrapper');
           if (!isInputTypeFile(elem)) {
             fileElem.css('position', 'absolute')
               .css('top', getOffset(elem[0]).top + 'px').css('left', getOffset(elem[0]).left + 'px')
@@ -331,7 +323,7 @@
         }
       };
 
-      elem.bind('mouseenter', makeFlashInput);
+      elem.bind('mouseenter', fixInputStyle);
 
       var fileApiChangeFn = function (evt) {
         var files = FileAPI.getFiles(evt);
@@ -430,7 +422,7 @@ if (!window.FileReader) {
 /**!
  * AngularJS file upload/drop directive and service with progress and abort
  * @author  Danial  <danial.farid@gmail.com>
- * @version 5.0.9
+ * @version 7.0.17
  */
 
 if (window.XMLHttpRequest && !(window.FileAPI && FileAPI.shouldLoad)) {
@@ -451,8 +443,9 @@ if (window.XMLHttpRequest && !(window.FileAPI && FileAPI.shouldLoad)) {
 
 var ngFileUpload = angular.module('ngFileUpload', []);
 
-ngFileUpload.version = '5.0.9';
-ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
+ngFileUpload.version = '7.0.17';
+
+ngFileUpload.service('UploadBase', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
   function sendHttp(config) {
     config.method = config.method || 'POST';
     config.headers = config.headers || {};
@@ -560,7 +553,7 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
             formData.append(key, val);
           }
         } else {
-          val = angular.isString(val) ? val : JSON.stringify(val);
+          val = angular.isString(val) ? val : angular.toJson(val);
           if (config.sendFieldsAs === 'json-blob') {
             formData.append(key, new Blob([val], {type: 'application/json'}));
           } else {
@@ -620,288 +613,921 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
         if ((window.ArrayBuffer && data instanceof window.ArrayBuffer) || data instanceof Blob) {
           return data;
         }
-        return $http.defaults.transformRequest[0](arguments);
+        return $http.defaults.transformRequest[0].apply(this, arguments);
       };
     return sendHttp(config);
   };
+
+  this.setDefaults = function(defaults) {
+    this.defaults = defaults || {};
+  };
+
+  this.defaults = {};
+  this.version = ngFileUpload.version;
 }
 
 ]);
 
 (function () {
-    ngFileUpload.directive('ngfSelect', ['$parse', '$timeout', '$compile',
-        function ($parse, $timeout, $compile) {
-            return {
-                restrict: 'AEC',
-                require: '?ngModel',
-                link: function (scope, elem, attr, ngModel) {
-                    linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile);
-                }
-            };
-        }]);
 
-    function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile) {
-        /** @namespace attr.ngfSelect */
-        /** @namespace attr.ngfChange */
-        /** @namespace attr.ngModel */
-        /** @namespace attr.ngModelRejected */
-        /** @namespace attr.ngfMultiple */
-        /** @namespace attr.ngfCapture */
-        /** @namespace attr.ngfAccept */
-        /** @namespace attr.ngfMaxSize */
-        /** @namespace attr.ngfMinSize */
-        /** @namespace attr.ngfResetOnClick */
-        /** @namespace attr.ngfResetModelOnClick */
-        /** @namespace attr.ngfKeep */
-        /** @namespace attr.ngfKeepDistinct */
+  ngFileUpload.service('Upload', ['$parse', '$timeout', '$compile', 'UploadValidate',
+    function ($parse, $timeout, $compile, UploadValidate) {
+      var upload = UploadValidate;
+      upload.getAttrWithDefaults = function (attr, name) {
+        return attr[name] != null ? attr[name] :
+          (upload.defaults[name] == null ?
+            upload.defaults[name] : upload.defaults[name].toString());
+      };
 
-        if (elem.attr('__ngf_gen__')) {
-            return;
-        }
-
-        scope.$on('$destroy', function () {
-            if (elem.$$ngfRefElem) elem.$$ngfRefElem.remove();
-        });
-
-        var disabled = false;
-        if (attr.ngfSelect.search(/\W+$files\W+/) === -1) {
-            scope.$watch(attr.ngfSelect, function (val) {
-                disabled = val === false;
-            });
-        }
-        function isInputTypeFile() {
-            return elem[0].tagName.toLowerCase() === 'input' && attr.type && attr.type.toLowerCase() === 'file';
-        }
-
-        var isUpdating = false;
-
-        function changeFn(evt) {
-            if (!isUpdating) {
-                isUpdating = true;
-                try {
-                    var fileList = evt.__files_ || (evt.target && evt.target.files);
-                    var files = [], rejFiles = [];
-
-                    for (var i = 0; i < fileList.length; i++) {
-                        var file = fileList.item(i);
-                        if (validate(scope, $parse, attr, file, evt)) {
-                            files.push(file);
-                        } else {
-                            rejFiles.push(file);
-                        }
-                    }
-                    updateModel($parse, $timeout, scope, ngModel, attr, attr.ngfChange || attr.ngfSelect, files, rejFiles, evt);
-                    if (files.length === 0) evt.target.value = files;
-//                if (evt.target && evt.target.getAttribute('__ngf_gen__')) {
-//                    angular.element(evt.target).remove();
-//                }
-                } finally {
-                    isUpdating = false;
-                }
-            }
-        }
-
-        function bindAttrToFileInput(fileElem) {
-            if (attr.ngfMultiple) fileElem.attr('multiple', $parse(attr.ngfMultiple)(scope));
-            if (attr.ngfCapture) fileElem.attr('capture', $parse(attr.ngfCapture)(scope));
-            if (attr.accept) fileElem.attr('accept', attr.accept);
-            for (var i = 0; i < elem[0].attributes.length; i++) {
-                var attribute = elem[0].attributes[i];
-                if ((isInputTypeFile() && attribute.name !== 'type') ||
-                    (attribute.name !== 'type' && attribute.name !== 'class' &&
-                    attribute.name !== 'id' && attribute.name !== 'style')) {
-                    fileElem.attr(attribute.name, attribute.value);
-                }
-            }
-        }
-
-        function createFileInput(evt, resetOnClick) {
-            if (!resetOnClick && (evt || isInputTypeFile())) return elem.$$ngfRefElem || elem;
-
-            var fileElem = angular.element('<input type="file">');
-            bindAttrToFileInput(fileElem);
-
-            if (isInputTypeFile()) {
-                elem.replaceWith(fileElem);
-                elem = fileElem;
-                fileElem.attr('__ngf_gen__', true);
-                $compile(elem)(scope);
+      upload.attrGetter = function (name, attr, scope, params) {
+        if (scope) {
+          try {
+            if (params) {
+              return $parse(this.getAttrWithDefaults(attr, name))(scope, params);
             } else {
-                fileElem.css('visibility', 'hidden').css('position', 'absolute').css('overflow', 'hidden')
-                    .css('width', '0px').css('height', '0px').css('z-index', '-100000').css('border', 'none')
-                    .css('margin', '0px').css('padding', '0px').attr('tabindex', '-1');
-                if (elem.$$ngfRefElem) {
-                    elem.$$ngfRefElem.remove();
-                }
-                elem.$$ngfRefElem = fileElem;
-                document.body.appendChild(fileElem[0]);
+              return $parse(this.getAttrWithDefaults(attr, name))(scope);
             }
-
-            return fileElem;
-        }
-
-        function resetModel(evt) {
-            updateModel($parse, $timeout, scope, ngModel, attr, attr.ngfChange || attr.ngfSelect, [], [], evt, true);
-        }
-
-        function clickHandler(evt) {
-            if (elem.attr('disabled') || disabled) return false;
-            if (evt != null) {
-                evt.preventDefault();
-                evt.stopPropagation();
+          } catch (e) {
+            // hangle string value without single qoute
+            if (name.search(/min|max|pattern/i)) {
+              return this.getAttrWithDefaults(attr, name);
+            } else {
+              throw e;
             }
-            var resetOnClick = $parse(attr.ngfResetOnClick)(scope) !== false;
-            var fileElem = createFileInput(evt, resetOnClick);
-
-            function clickAndAssign(evt) {
-                if (evt) {
-                    fileElem[0].click();
-                }
-                if (isInputTypeFile() || !evt) {
-                    elem.bind('click touchend', clickHandler);
-                }
-            }
-
-            if (fileElem) {
-                if (!evt || resetOnClick) fileElem.bind('change', changeFn);
-                if (evt && resetOnClick && $parse(attr.ngfResetModelOnClick)(scope) !== false) resetModel(evt);
-
-                // fix for android native browser < 4.4
-                if (shouldClickLater(navigator.userAgent)) {
-                    setTimeout(function () {
-                        clickAndAssign(evt);
-                    }, 0);
-                } else {
-                    clickAndAssign(evt);
-                }
-            }
-            return false;
-        }
-
-        if (window.FileAPI && window.FileAPI.ngfFixIE) {
-            window.FileAPI.ngfFixIE(elem, createFileInput, bindAttrToFileInput, changeFn);
+          }
         } else {
-            clickHandler();
-            //if (!isInputTypeFile()) {
-            //  elem.bind('click touchend', clickHandler);
-            //}
+          return this.getAttrWithDefaults(attr, name);
         }
+      };
+
+      upload.updateModel = function (ngModel, attr, scope, fileChange, files, evt, noDelay) {
+        function update() {
+          var file = files && files.length ? files[0] : null;
+          if (ngModel) {
+            var singleModel = !upload.attrGetter('ngfMultiple', attr, scope) && !upload.attrGetter('multiple', attr) && !keep;
+            $parse(upload.attrGetter('ngModel', attr)).assign(scope, singleModel ? file : files);
+          }
+          var ngfModel = upload.attrGetter('ngfModel', attr);
+          if (ngfModel) {
+            $parse(ngfModel).assign(scope, files);
+          }
+
+          if (fileChange) {
+            $parse(fileChange)(scope, {
+              $files: files,
+              $file: file,
+              $event: evt
+            });
+          }
+          // scope apply changes
+          $timeout(function(){});
+        }
+
+        var keep = upload.attrGetter('ngfKeep', attr, scope);
+        if (keep === true) {
+          if (!files || !files.length) {
+            return;
+          } else {
+            var prevFiles = ((ngModel && ngModel.$modelValue) || attr.$$ngfPrevFiles || []).slice(0),
+              hasNew = false;
+            if (upload.attrGetter('ngfKeepDistinct', attr, scope) === true) {
+              var len = prevFiles.length;
+              for (var i = 0; i < files.length; i++) {
+                for (var j = 0; j < len; j++) {
+                  if (files[i].name === prevFiles[j].name) break;
+                }
+                if (j === len) {
+                  prevFiles.push(files[i]);
+                  hasNew = true;
+                }
+              }
+              if (!hasNew) return;
+              files = prevFiles;
+            } else {
+              files = prevFiles.concat(files);
+            }
+          }
+        }
+
+        attr.$$ngfPrevFiles = files;
+
+        if (noDelay) {
+          update();
+        } else if (upload.validate(files, ngModel, attr, scope, upload.attrGetter('ngfValidateLater', attr), function () {
+            $timeout(function () {
+              update();
+            });
+          }));
+      };
+
+      return upload;
+    }]);
+})();
+
+(function () {
+  var generatedElems = [];
+
+  ngFileUpload.directive('ngfSelect', ['$parse', '$timeout', '$compile', 'Upload',
+    function ($parse, $timeout, $compile, Upload) {
+      return {
+        restrict: 'AEC',
+        require: '?ngModel',
+        link: function (scope, elem, attr, ngModel) {
+          linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, Upload);
+        }
+      };
+    }]);
+
+  function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, upload) {
+    /** @namespace attr.ngfSelect */
+    /** @namespace attr.ngfChange */
+    /** @namespace attr.ngModel */
+    /** @namespace attr.ngfModel */
+    /** @namespace attr.ngfMultiple */
+    /** @namespace attr.ngfCapture */
+    /** @namespace attr.ngfValidate */
+    /** @namespace attr.ngfKeep */
+    /** @namespace attr.ngfKeepDistinct */
+    var attrGetter = function (name, scope) {
+      return upload.attrGetter(name, attr, scope);
+    };
+
+    function isInputTypeFile() {
+      return elem[0].tagName.toLowerCase() === 'input' && attr.type && attr.type.toLowerCase() === 'file';
+    }
+
+    function fileChangeAttr() {
+      return attrGetter('ngfChange') || attrGetter('ngfSelect');
+    }
+
+    function changeFn(evt) {
+      var fileList = evt.__files_ || (evt.target && evt.target.files), files = [];
+      for (var i = 0; i < fileList.length; i++) {
+        files.push(fileList[i]);
+      }
+      upload.updateModel(ngModel, attr, scope, fileChangeAttr(), files.length ? files : null, evt);
+    }
+
+    var unwatches = [];
+    unwatches.push(scope.$watch(attrGetter('ngfMultiple'), function() {
+      fileElem.attr('multiple', attrGetter('ngfMultiple', scope));
+    }));
+    unwatches.push(scope.$watch(attrGetter('ngfCapture'), function() {
+      fileElem.attr('capture', attrGetter('ngfCapture', scope));
+    }));
+    attr.$observe('accept', function() {
+      fileElem.attr('accept', attrGetter('accept'));
+    });
+    unwatches.push(function () {
+      if (attr.$$observers) delete attr.$$observers.accept;
+    });
+    function bindAttrToFileInput(fileElem) {
+      if (elem !== fileElem) {
+        for (var i = 0; i < elem[0].attributes.length; i++) {
+          var attribute = elem[0].attributes[i];
+          if (attribute.name !== 'type' && attribute.name !== 'class' &&
+            attribute.name !== 'id' && attribute.name !== 'style') {
+            if (attribute.value == null || attribute.value === '') {
+              if (attribute.name === 'required') attribute.value = 'required';
+              if (attribute.name === 'multiple') attribute.value = 'multiple';
+            }
+            fileElem.attr(attribute.name, attribute.value);
+          }
+        }
+      }
+    }
+
+    function createFileInput() {
+      if (isInputTypeFile()) {
+        return elem;
+      }
+
+      var fileElem = angular.element('<input type="file">');
+      bindAttrToFileInput(fileElem);
+
+      fileElem.css('visibility', 'hidden').css('position', 'absolute').css('overflow', 'hidden')
+        .css('width', '0px').css('height', '0px').css('border', 'none')
+        .css('margin', '0px').css('padding', '0px').attr('tabindex', '-1');
+      generatedElems.push({el: elem, ref: fileElem});
+      document.body.appendChild(fileElem[0]);
+
+      return fileElem;
+    }
+
+    var initialTouchStartY = 0;
+
+    function clickHandler(evt) {
+      if (elem.attr('disabled') || attrGetter('ngfSelectDisabled', scope)) return false;
+
+      var r = handleTouch(evt);
+      if (r != null) return r;
+
+      resetModel(evt);
+
+      // fix for android native browser < 4.4
+      if (shouldClickLater(navigator.userAgent)) {
+        setTimeout(function () {
+          fileElem[0].click();
+        }, 0);
+      } else {
+        fileElem[0].click();
+      }
+
+      return false;
+    }
+
+    function handleTouch(evt) {
+      var touches = evt.changedTouches || (evt.originalEvent && evt.originalEvent.changedTouches);
+      if (evt.type === 'touchstart') {
+        initialTouchStartY = touches ? touches[0].clientY : 0;
+        return true; // don't block event default
+      } else {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        // prevent scroll from triggering event
+        if (evt.type === 'touchend') {
+          var currentLocation = touches ? touches[0].clientY : 0;
+          if (Math.abs(currentLocation - initialTouchStartY) > 20) return false;
+        }
+      }
     }
 
     function shouldClickLater(ua) {
-        // android below 4.4
-        var m = ua.match(/Android[^\d]*(\d+)\.(\d+)/);
-        if (m && m.length > 2) {
-            return parseInt(m[1]) < 4 || (parseInt(m[1]) === 4 && parseInt(m[2]) < 4);
-        }
+      // android below 4.4
+      var m = ua.match(/Android[^\d]*(\d+)\.(\d+)/);
+      if (m && m.length > 2) {
+        var v = upload.defaults.androidFixMinorVersion || 4;
+        return parseInt(m[1]) < 4 || (parseInt(m[1]) === v && parseInt(m[2]) < v);
+      }
 
-        // safari on windows
-        return /.*Windows.*Safari.*/.test(ua);
+      // safari on windows
+      return ua.indexOf('Chrome') === -1 && /.*Windows.*Safari.*/.test(ua);
     }
 
-    ngFileUpload.validate = function (scope, $parse, attr, file, evt) {
-        function globStringToRegex(str) {
-            if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
-                return str.substring(1, str.length - 1);
-            }
-            var split = str.split(','), result = '';
-            if (split.length > 1) {
-                for (var i = 0; i < split.length; i++) {
-                    result += '(' + globStringToRegex(split[i]) + ')';
-                    if (i < split.length - 1) {
-                        result += '|';
-                    }
-                }
-            } else {
-                if (str.indexOf('.') === 0) {
-                    str = '*' + str;
-                }
-                result = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + '-]', 'g'), '\\$&') + '$';
-                result = result.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
-            }
-            return result;
-        }
+    var fileElem = elem;
 
-        var accept = $parse(attr.ngfAccept)(scope, {$file: file, $event: evt});
-        var fileSizeMax = $parse(attr.ngfMaxSize)(scope, {$file: file, $event: evt}) || 9007199254740991;
-        var fileSizeMin = $parse(attr.ngfMinSize)(scope, {$file: file, $event: evt}) || -1;
-        if (accept != null && angular.isString(accept)) {
-            var regexp = new RegExp(globStringToRegex(accept), 'gi');
-            accept = (file.type != null && regexp.test(file.type.toLowerCase())) ||
-                (file.name != null && regexp.test(file.name.toLowerCase()));
-        }
-        return (accept == null || accept) && (file.size == null || (file.size < fileSizeMax && file.size > fileSizeMin));
-    };
+    function resetModel(evt) {
+      if (fileElem.val()) {
+        fileElem.val(null);
+        upload.updateModel(ngModel, attr, scope, fileChangeAttr(), null, evt, true);
+      }
+    }
 
-    ngFileUpload.updateModel = function ($parse, $timeout, scope, ngModel, attr, fileChange,
-                                         files, rejFiles, evt, noDelay) {
-        function update() {
-            if ($parse(attr.ngfKeep)(scope) === true) {
-                var prevFiles = (ngModel.$modelValue || []).slice(0);
-                if (!files || !files.length) {
-                    files = prevFiles;
-                } else if ($parse(attr.ngfKeepDistinct)(scope) === true) {
-                    var len = prevFiles.length;
-                    for (var i = 0; i < files.length; i++) {
-                        for (var j = 0; j < len; j++) {
-                            if (files[i].name === prevFiles[j].name) break;
-                        }
-                        if (j === len) {
-                            prevFiles.push(files[i]);
-                        }
-                    }
-                    files = prevFiles;
-                } else {
-                    files = prevFiles.concat(files);
-                }
-            }
-            if (ngModel) {
-                $parse(attr.ngModel).assign(scope, files);
-                $timeout(function () {
-                    if (ngModel) {
-                        ngModel.$setViewValue(files != null && files.length === 0 ? null : files);
-                    }
-                });
-            }
-            if (attr.ngModelRejected) {
-                $parse(attr.ngModelRejected).assign(scope, rejFiles);
-            }
-            if (fileChange) {
-                $parse(fileChange)(scope, {
-                    $files: files,
-                    $rejectedFiles: rejFiles,
-                    $event: evt
-                });
-            }
-        }
+    if (!isInputTypeFile()) {
+      fileElem = createFileInput();
+    }
+    fileElem.bind('change', changeFn);
 
-        if (noDelay) {
-            update();
-        } else {
+    if (!isInputTypeFile()) {
+      elem.bind('click touchstart touchend', clickHandler);
+    } else {
+      elem.bind('click', resetModel);
+    }
+
+    upload.registerValidators(ngModel, fileElem, attr, scope);
+
+    function ie10SameFileSelectFix(evt) {
+      if (fileElem && !fileElem.attr('__ngf_ie10_Fix_')) {
+        if (!fileElem[0].parentNode) {
+          fileElem = null;
+          return;
+        }
+        evt.preventDefault();
+        evt.stopPropagation();
+        fileElem.unbind('click');
+        var clone = fileElem.clone();
+        fileElem.replaceWith(clone);
+        fileElem = clone;
+        fileElem.attr('__ngf_ie10_Fix_', 'true');
+        fileElem.bind('change', changeFn);
+        fileElem.bind('click', ie10SameFileSelectFix);
+        fileElem[0].click();
+        return false;
+      } else {
+        fileElem.removeAttr('__ngf_ie10_Fix_');
+      }
+    }
+
+    if (navigator.appVersion.indexOf('MSIE 10') !== -1) {
+      fileElem.bind('click', ie10SameFileSelectFix);
+    }
+
+    scope.$on('$destroy', function () {
+      if (!isInputTypeFile()) fileElem.remove();
+      angular.forEach(unwatches, function(unwatch) {
+        unwatch();
+      });
+    });
+
+    $timeout(function() {
+      for (var i = 0; i < generatedElems.length; i++) {
+        var g = generatedElems[i];
+        if (!document.body.contains(g.el[0])) {
+          generatedElems.splice(i, 1);
+          g.ref.remove();
+        }
+      }
+    });
+
+    if (window.FileAPI && window.FileAPI.ngfFixIE) {
+      window.FileAPI.ngfFixIE(elem, fileElem, changeFn);
+    }
+  }
+})();
+
+(function () {
+
+  ngFileUpload.service('UploadDataUrl', ['UploadBase', '$timeout', '$q', function (UploadBase, $timeout, $q) {
+    var upload = UploadBase;
+    upload.dataUrl = function (file, disallowObjectUrl) {
+      if ((disallowObjectUrl && file.dataUrl != null) || (!disallowObjectUrl && file.blobUrl != null)) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve(disallowObjectUrl ? file.dataUrl : file.blobUrl);
+        });
+        return d.promise;
+      }
+      var p = disallowObjectUrl ? file.$ngfDataUrlPromise : file.$ngfBlobUrlPromise;
+      if (p) return p;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (window.FileReader && file &&
+          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 8') === -1 || file.size < 20000) &&
+          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 9') === -1 || file.size < 4000000)) {
+          //prefer URL.createObjectURL for handling refrences to files of all sizes
+          //since it doesn´t build a large string in memory
+          var URL = window.URL || window.webkitURL;
+          if (URL && URL.createObjectURL && !disallowObjectUrl) {
+            var url;
+            try {
+              url = URL.createObjectURL(file);
+            } catch (e) {
+              $timeout(function () {
+                file.blobUrl = '';
+                deferred.reject();
+              });
+              return;
+            }
             $timeout(function () {
-                update();
+              file.blobUrl = url;
+              if (url) deferred.resolve(url);
             });
+          } else {
+            var fileReader = new FileReader();
+            fileReader.onload = function (e) {
+              $timeout(function () {
+                file.dataUrl = e.target.result;
+                deferred.resolve(e.target.result);
+              });
+            };
+            fileReader.onerror = function () {
+              $timeout(function () {
+                file.dataUrl = '';
+                deferred.reject();
+              });
+            };
+            fileReader.readAsDataURL(file);
+          }
+        } else {
+          $timeout(function () {
+            file[disallowObjectUrl ? 'dataUrl' : 'blobUrl'] = '';
+            deferred.reject();
+          });
         }
-    };
+      });
 
-    var validate = ngFileUpload.validate;
-    var updateModel = ngFileUpload.updateModel;
+      if (disallowObjectUrl) {
+        p = file.$ngfDataUrlPromise = deferred.promise;
+      } else {
+        p = file.$ngfBlobUrlPromise = deferred.promise;
+      }
+      p['finally'](function () {
+        delete file[disallowObjectUrl ? '$ngfDataUrlPromise' : '$ngfBlobUrlPromise'];
+      });
+      return p;
+    };
+    return upload;
+  }]);
+
+  function getTagType(el) {
+    if (el.tagName.toLowerCase() === 'img') return 'image';
+    if (el.tagName.toLowerCase() === 'audio') return 'audio';
+    if (el.tagName.toLowerCase() === 'video') return 'video';
+    return /\./;
+  }
+
+  var style = angular.element('<style>.ngf-hide{display:none !important}</style>');
+  document.getElementsByTagName('head')[0].appendChild(style[0]);
+
+  /** @namespace attr.ngfSrc */
+  /** @namespace attr.ngfNoObjectUrl */
+  ngFileUpload.directive('ngfSrc', ['$compile', '$timeout', 'Upload', function ($compile, $timeout, Upload) {
+    return {
+      restrict: 'AE',
+      link: function (scope, elem, attr) {
+        $timeout(function () {
+          var unwatch = scope.$watch(attr.ngfSrc, function (file) {
+            if (angular.isString(file)) {
+              elem.removeClass('ngf-hide');
+              return elem.attr('src', file);
+            }
+            if (file && file.type && file.type.indexOf(getTagType(elem[0])) === 0) {
+              var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
+              Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
+                $timeout(function () {
+                  if ((disallowObjectUrl && file.dataUrl) || (!disallowObjectUrl && file.blobUrl)) {
+                    elem.removeClass('ngf-hide');
+                    elem.attr('src', disallowObjectUrl ? file.dataUrl : file.blobUrl);
+                  } else {
+                    elem.addClass('ngf-hide');
+                  }
+                });
+              });
+            } else {
+              elem.addClass('ngf-hide');
+            }
+          });
+
+          scope.$on('$destroy', function () {
+            unwatch();
+          });
+        });
+      }
+    };
+  }]);
+
+  /** @namespace attr.ngfBackground */
+  /** @namespace attr.ngfNoObjectUrl */
+  ngFileUpload.directive('ngfBackground', ['Upload', '$compile', '$timeout', function (Upload, $compile, $timeout) {
+    return {
+      restrict: 'AE',
+      link: function (scope, elem, attr) {
+        $timeout(function () {
+          var unwatch = scope.$watch(attr.ngfBackground, function (file) {
+            if (angular.isString(file)) return elem.css('background-image', 'url(\'' + file + '\')');
+            if (file && file.type && file.type.indexOf('image') === 0) {
+              var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
+              Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
+                $timeout(function () {
+                  if ((disallowObjectUrl && file.dataUrl) || (!disallowObjectUrl && file.blobUrl)) {
+                    elem.css('background-image', 'url(\'' + (disallowObjectUrl ? file.dataUrl : file.blobUrl) + '\')');
+                  } else {
+                    elem.css('background-image', '');
+                  }
+                });
+              });
+            } else {
+              elem.css('background-image', '');
+            }
+          });
+          scope.$on('$destroy', function () {
+            unwatch();
+          });
+        });
+      }
+    };
+  }]);
+
+  ngFileUpload.config(['$compileProvider', function ($compileProvider) {
+    if ($compileProvider.imgSrcSanitizationWhitelist) $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|local|file|data|blob):/);
+    if ($compileProvider.aHrefSanitizationWhitelist) $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|local|file|data|blob):/);
+  }]);
+
+  ngFileUpload.filter('ngfDataUrl', ['UploadDataUrl', '$sce', function (UploadDataUrl, $sce) {
+    return function (file, disallowObjectUrl) {
+      if (angular.isString(file)) {
+        return $sce.trustAsResourceUrl(file);
+      }
+      if (file && !file.dataUrl) {
+        if (file.dataUrl === undefined && angular.isObject(file)) {
+          file.dataUrl = null;
+          UploadDataUrl.dataUrl(file, disallowObjectUrl);
+        }
+        return '';
+      }
+      return (file && file.dataUrl ? $sce.trustAsResourceUrl(file.dataUrl) : file) || '';
+    };
+  }]);
 
 })();
 
 (function () {
-  var validate = ngFileUpload.validate;
-  var updateModel = ngFileUpload.updateModel;
+  function globStringToRegex(str) {
+    if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
+      return str.substring(1, str.length - 1);
+    }
+    var split = str.split(','), result = '';
+    if (split.length > 1) {
+      for (var i = 0; i < split.length; i++) {
+        result += '(' + globStringToRegex(split[i]) + ')';
+        if (i < split.length - 1) {
+          result += '|';
+        }
+      }
+    } else {
+      if (str.indexOf('.') === 0) {
+        str = '*' + str;
+      }
+      result = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + '-]', 'g'), '\\$&') + '$';
+      result = result.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
+    }
+    return result;
+  }
 
-  ngFileUpload.directive('ngfDrop', ['$parse', '$timeout', '$location', function ($parse, $timeout, $location) {
-    return {
-      restrict: 'AEC',
-      require: '?ngModel',
-      link: function (scope, elem, attr, ngModel) {
-        linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location);
+  function translateScalars(str) {
+    if (angular.isString(str)) {
+      if (str.search(/kb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000);
+      } else if (str.search(/mb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000000);
+      } else if (str.search(/gb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1000000000);
+      } else if (str.search(/b/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/s/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/m/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 60);
+      } else if (str.search(/h/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 3600);
+      }
+    }
+    return str;
+  }
+
+  ngFileUpload.service('UploadValidate', ['UploadDataUrl', '$q', '$timeout', function (UploadDataUrl, $q, $timeout) {
+    var upload = UploadDataUrl;
+
+    upload.registerValidators = function (ngModel, elem, attr, scope) {
+      if (!ngModel) return;
+
+      ngModel.$ngfValidations = [];
+      function setValidities(ngModel) {
+        angular.forEach(ngModel.$ngfValidations, function (validation) {
+          ngModel.$setValidity(validation.name, validation.valid);
+        });
+      }
+
+      ngModel.$formatters.push(function (val) {
+        if (upload.attrGetter('ngfValidateLater', attr, scope) || !ngModel.$$ngfValidated) {
+          upload.validate(val, ngModel, attr, scope, false, function () {
+            setValidities(ngModel);
+            ngModel.$$ngfValidated = false;
+          });
+          if (val && val.length === 0) {
+            val = null;
+          }
+          if (elem && (val == null || val.length === 0)) {
+            if (elem.val()) {
+              elem.val(null);
+            }
+          }
+        } else {
+          setValidities(ngModel);
+          ngModel.$$ngfValidated = false;
+        }
+        return val;
+      });
+    };
+
+    upload.validatePattern = function (file, val) {
+      if (!val) {
+        return true;
+      }
+      var regexp = new RegExp(globStringToRegex(val), 'gi');
+      return (file.type != null && regexp.test(file.type.toLowerCase())) ||
+        (file.name != null && regexp.test(file.name.toLowerCase()));
+    };
+
+    upload.validate = function (files, ngModel, attr, scope, later, callback) {
+      ngModel = ngModel || {};
+      ngModel.$ngfValidations = ngModel.$ngfValidations || [];
+
+      angular.forEach(ngModel.$ngfValidations, function (v) {
+        v.valid = true;
+      });
+
+      var attrGetter = function (name, params) {
+        return upload.attrGetter(name, attr, scope, params);
+      };
+
+      if (later) {
+        callback.call(ngModel);
+        return;
+      }
+      ngModel.$$ngfValidated = true;
+
+      if (files == null || files.length === 0) {
+        callback.call(ngModel);
+        return;
+      }
+
+      files = files.length === undefined ? [files] : files.slice(0);
+
+      function validateSync(name, validatorVal, fn) {
+        if (files) {
+          var dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
+          var i = files.length, valid = null;
+
+          while (i--) {
+            var file = files[i];
+            var val = attrGetter(dName, {'$file': file});
+            if (val == null) {
+              val = validatorVal(attrGetter('ngfValidate') || {});
+              valid = valid == null ? true : valid;
+            }
+            if (val != null) {
+              if (!fn(file, val)) {
+                file.$error = name;
+                file.$errorParam = val;
+                files.splice(i, 1);
+                valid = false;
+              }
+            }
+          }
+          if (valid !== null) {
+            ngModel.$ngfValidations.push({name: name, valid: valid});
+          }
+        }
+      }
+
+      validateSync('pattern', function (cons) {
+        return cons.pattern;
+      }, upload.validatePattern);
+      validateSync('minSize', function (cons) {
+        return cons.size && cons.size.min;
+      }, function (file, val) {
+        return file.size >= translateScalars(val);
+      });
+      validateSync('maxSize', function (cons) {
+        return cons.size && cons.size.max;
+      }, function (file, val) {
+        return file.size <= translateScalars(val);
+      });
+
+      validateSync('validateFn', function () {
+        return null;
+      }, function (file, r) {
+        return r === true || r === null || r === '';
+      });
+
+      if (!files.length) {
+        callback.call(ngModel, ngModel.$ngfValidations);
+        return;
+      }
+
+      var pendings = 0;
+
+      function validateAsync(name, validatorVal, type, asyncFn, fn) {
+        if (files) {
+          var thisPendings = 0, hasError = false, dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
+          files = files.length === undefined ? [files] : files;
+          angular.forEach(files, function (file) {
+            if (file.type.search(type) !== 0) {
+              return true;
+            }
+            var val = attrGetter(dName, {'$file': file}) || validatorVal(attrGetter('ngfValidate', {'$file': file}) || {});
+            if (val) {
+              pendings++;
+              thisPendings++;
+              asyncFn(file, val).then(function (d) {
+                if (!fn(d, val)) {
+                  file.$error = name;
+                  file.$errorParam = val;
+                  hasError = true;
+                }
+              }, function () {
+                if (attrGetter('ngfValidateForce', {'$file': file})) {
+                  file.$error = name;
+                  file.$errorParam = val;
+                  hasError = true;
+                }
+              })['finally'](function () {
+                pendings--;
+                thisPendings--;
+                if (!thisPendings) {
+                  ngModel.$ngfValidations.push({name: name, valid: !hasError});
+                }
+                if (!pendings) {
+                  callback.call(ngModel, ngModel.$ngfValidations);
+                }
+              });
+            }
+          });
+        }
+      }
+
+      validateAsync('maxHeight', function (cons) {
+        return cons.height && cons.height.max;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.height <= val;
+      });
+      validateAsync('minHeight', function (cons) {
+        return cons.height && cons.height.min;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.height >= val;
+      });
+      validateAsync('maxWidth', function (cons) {
+        return cons.width && cons.width.max;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.width <= val;
+      });
+      validateAsync('minWidth', function (cons) {
+        return cons.width && cons.width.min;
+      }, /image/, this.imageDimensions, function (d, val) {
+        return d.width >= val;
+      });
+      validateAsync('ratio', function (cons) {
+        return cons.ratio;
+      }, /image/, this.imageDimensions, function (d, val) {
+        var split = val.toString().split(','), valid = false;
+
+        for (var i = 0; i < split.length; i++) {
+          var r = split[i], xIndex = r.search(/x/i);
+          if (xIndex > -1) {
+            r = parseFloat(r.substring(0, xIndex)) / parseFloat(r.substring(xIndex + 1));
+          } else {
+            r = parseFloat(r);
+          }
+          if (Math.abs((d.width / d.height) - r) < 0.0001) {
+            valid = true;
+          }
+        }
+        return valid;
+      });
+      validateAsync('maxDuration', function (cons) {
+        return cons.duration && cons.duration.max;
+      }, /audio|video/, this.mediaDuration, function (d, val) {
+        return d <= translateScalars(val);
+      });
+      validateAsync('minDuration', function (cons) {
+        return cons.duration && cons.duration.min;
+      }, /audio|video/, this.mediaDuration, function (d, val) {
+        return d >= translateScalars(val);
+      });
+
+      validateAsync('validateAsyncFn', function () {
+        return null;
+      }, /./, function (file, val) {
+        return val;
+      }, function (r) {
+        return r === true || r === null || r === '';
+      });
+
+      if (!pendings) {
+        callback.call(ngModel, ngModel.$ngfValidations);
       }
     };
-  }]);
+
+    upload.imageDimensions = function (file) {
+      if (file.width && file.height) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve({width: file.width, height: file.height});
+        });
+        return d.promise;
+      }
+      if (file.$ngfDimensionPromise) return file.$ngfDimensionPromise;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (file.type.indexOf('image') !== 0) {
+          deferred.reject('not image');
+          return;
+        }
+        upload.dataUrl(file).then(function (dataUrl) {
+          var img = angular.element('<img>').attr('src', dataUrl).css('visibility', 'hidden').css('position', 'fixed');
+
+          function success() {
+            var width = img[0].clientWidth;
+            var height = img[0].clientHeight;
+            img.remove();
+            file.width = width;
+            file.height = height;
+            deferred.resolve({width: width, height: height});
+          }
+
+          function error() {
+            img.remove();
+            deferred.reject('load error');
+          }
+
+          img.on('load', success);
+          img.on('error', error);
+          var count = 0;
+
+          function checkLoadError() {
+            $timeout(function () {
+              if (img[0].parentNode) {
+                if (img[0].clientWidth) {
+                  success();
+                } else if (count > 10) {
+                  error();
+                } else {
+                  checkLoadError();
+                }
+              }
+            }, 1000);
+          }
+
+          checkLoadError();
+
+          angular.element(document.getElementsByTagName('body')[0]).append(img);
+        }, function () {
+          deferred.reject('load error');
+        });
+      });
+
+      file.$ngfDimensionPromise = deferred.promise;
+      file.$ngfDimensionPromise['finally'](function () {
+        delete file.$ngfDimensionPromise;
+      });
+      return file.$ngfDimensionPromise;
+    };
+
+    upload.mediaDuration = function (file) {
+      if (file.duration) {
+        var d = $q.defer();
+        $timeout(function () {
+          d.resolve(file.duration);
+        });
+        return d.promise;
+      }
+      if (file.$ngfDurationPromise) return file.$ngfDurationPromise;
+
+      var deferred = $q.defer();
+      $timeout(function () {
+        if (file.type.indexOf('audio') !== 0 && file.type.indexOf('video') !== 0) {
+          deferred.reject('not media');
+          return;
+        }
+        upload.dataUrl(file).then(function (dataUrl) {
+          var el = angular.element(file.type.indexOf('audio') === 0 ? '<audio>' : '<video>')
+            .attr('src', dataUrl).css('visibility', 'none').css('position', 'fixed');
+
+          function success() {
+            var duration = el[0].duration;
+            file.duration = duration;
+            el.remove();
+            deferred.resolve(duration);
+          }
+
+          function error() {
+            el.remove();
+            deferred.reject('load error');
+          }
+
+          el.on('loadedmetadata', success);
+          el.on('error', error);
+          var count = 0;
+
+          function checkLoadError() {
+            $timeout(function () {
+              if (el[0].parentNode) {
+                if (el[0].duration) {
+                  success();
+                } else if (count > 10) {
+                  error();
+                } else {
+                  checkLoadError();
+                }
+              }
+            }, 1000);
+          }
+
+          checkLoadError();
+
+          angular.element(document.body).append(el);
+        }, function () {
+          deferred.reject('load error');
+        });
+      });
+
+      file.$ngfDurationPromise = deferred.promise;
+      file.$ngfDurationPromise['finally'](function () {
+        delete file.$ngfDurationPromise;
+      });
+      return file.$ngfDurationPromise;
+    };
+    return upload;
+  }
+  ]);
+
+})();
+
+(function () {
+  ngFileUpload.directive('ngfDrop', ['$parse', '$timeout', '$location', 'Upload',
+    function ($parse, $timeout, $location, Upload) {
+      return {
+        restrict: 'AEC',
+        require: '?ngModel',
+        link: function (scope, elem, attr, ngModel) {
+          linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location, Upload);
+        }
+      };
+    }]);
 
   ngFileUpload.directive('ngfNoFileDrop', function () {
     return function (scope, elem) {
@@ -909,52 +1535,56 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
     };
   });
 
-  ngFileUpload.directive('ngfDropAvailable', ['$parse', '$timeout', function ($parse, $timeout) {
+  ngFileUpload.directive('ngfDropAvailable', ['$parse', '$timeout', 'Upload', function ($parse, $timeout, Upload) {
     return function (scope, elem, attr) {
       if (dropAvailable()) {
-        var fn = $parse(attr.ngfDropAvailable);
+        var model = $parse(Upload.attrGetter('ngfDropAvailable', attr));
         $timeout(function () {
-          fn(scope);
-          if (fn.assign) {
-            fn.assign(scope, true);
+          model(scope);
+          if (model.assign) {
+            model.assign(scope, true);
           }
         });
       }
     };
   }]);
 
-  function linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location) {
+  function linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $location, upload) {
     var available = dropAvailable();
-    if (attr.dropAvailable) {
+
+    var attrGetter = function (name, scope, params) {
+      return upload.attrGetter(name, attr, scope, params);
+    };
+
+    if (attrGetter('dropAvailable')) {
       $timeout(function () {
-        if (scope[attr.dropAvailable]) {
-          scope[attr.dropAvailable].value = available;
+        if (scope[attrGetter('dropAvailable')]) {
+          scope[attrGetter('dropAvailable')].value = available;
         } else {
-          scope[attr.dropAvailable] = available;
+          scope[attrGetter('dropAvailable')] = available;
         }
       });
     }
     if (!available) {
-      if ($parse(attr.ngfHideOnDropNotAvailable)(scope) === true) {
+      if (attrGetter('ngfHideOnDropNotAvailable', scope) === true) {
         elem.css('display', 'none');
       }
       return;
     }
 
-    var disabled = false;
-    if (attr.ngfDrop.search(/\W+$files\W+/) === -1) {
-      scope.$watch(attr.ngfDrop, function(val) {
-        disabled = val === false;
-      });
+    function isDisabled() {
+      return elem.attr('disabled') || attrGetter('ngfDropDisabled', scope);
     }
 
+    upload.registerValidators(ngModel, null, attr, scope);
+
     var leaveTimeout = null;
-    var stopPropagation = $parse(attr.ngfStopPropagation);
+    var stopPropagation = $parse(attrGetter('ngfStopPropagation'));
     var dragOverDelay = 1;
     var actualDragOverClass;
 
     elem[0].addEventListener('dragover', function (evt) {
-      if (elem.attr('disabled') || disabled) return;
+      if (isDisabled()) return;
       evt.preventDefault();
       if (stopPropagation(scope)) evt.stopPropagation();
       // handling dragover events from the Chrome download bar
@@ -963,69 +1593,88 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
         evt.dataTransfer.dropEffect = ('move' === b || 'linkMove' === b) ? 'move' : 'copy';
       }
       $timeout.cancel(leaveTimeout);
-      if (!scope.actualDragOverClass) {
-        actualDragOverClass = calculateDragOverClass(scope, attr, evt);
+      if (!actualDragOverClass) {
+        actualDragOverClass = 'C';
+        calculateDragOverClass(scope, attr, evt, function (clazz) {
+          actualDragOverClass = clazz;
+          elem.addClass(actualDragOverClass);
+        });
       }
-      elem.addClass(actualDragOverClass);
     }, false);
     elem[0].addEventListener('dragenter', function (evt) {
-      if (elem.attr('disabled') || disabled) return;
+      if (isDisabled()) return;
       evt.preventDefault();
       if (stopPropagation(scope)) evt.stopPropagation();
     }, false);
     elem[0].addEventListener('dragleave', function () {
-      if (elem.attr('disabled') || disabled) return;
+      if (isDisabled()) return;
       leaveTimeout = $timeout(function () {
         elem.removeClass(actualDragOverClass);
         actualDragOverClass = null;
       }, dragOverDelay || 1);
     }, false);
     elem[0].addEventListener('drop', function (evt) {
-      if (elem.attr('disabled') || disabled) return;
+      if (isDisabled()) return;
       evt.preventDefault();
       if (stopPropagation(scope)) evt.stopPropagation();
       elem.removeClass(actualDragOverClass);
       actualDragOverClass = null;
-      extractFiles(evt, function (files, rejFiles) {
-        updateModel($parse, $timeout, scope, ngModel, attr,
-          attr.ngfChange || attr.ngfDrop, files, rejFiles, evt);
-      }, $parse(attr.ngfAllowDir)(scope) !== false, attr.multiple || $parse(attr.ngfMultiple)(scope));
+      extractFiles(evt, function (files) {
+          upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
+        }, attrGetter('ngfAllowDir', scope) !== false,
+        attrGetter('multiple') || attrGetter('ngfMultiple', scope));
+    }, false);
+    elem[0].addEventListener('paste', function (evt) {
+      if (isDisabled()) return;
+      var files = [];
+      var clipboard = evt.clipboardData || evt.originalEvent.clipboardData;
+      if (clipboard && clipboard.items) {
+        for (var k = 0; k < clipboard.items.length; k++) {
+          if (clipboard.items[k].type.indexOf('image') !== -1) {
+            files.push(clipboard.items[k].getAsFile());
+          }
+        }
+        upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
+      }
     }, false);
 
-    function calculateDragOverClass(scope, attr, evt) {
-      var accepted = true;
-      var items = evt.dataTransfer.items;
-      if (items != null) {
-        for (var i = 0; i < items.length && accepted; i++) {
-          accepted = accepted &&
-            (items[i].kind === 'file' || items[i].kind === '') &&
-            validate(scope, $parse, attr, items[i], evt);
-        }
+    function calculateDragOverClass(scope, attr, evt, callback) {
+      var clazz = attrGetter('ngfDragOverClass', scope, {$event: evt}),
+        dClass = attrGetter('ngfDragOverClass') || 'dragover';
+      if (angular.isString(clazz)) {
+        callback(clazz);
+        return;
       }
-      var clazz = $parse(attr.ngfDragOverClass)(scope, {$event: evt});
       if (clazz) {
         if (clazz.delay) dragOverDelay = clazz.delay;
-        if (clazz.accept) clazz = accepted ? clazz.accept : clazz.reject;
+        if (clazz.accept || clazz.reject) {
+          var items = evt.dataTransfer.items;
+          if (items != null) {
+            var pattern = attrGetter('ngfPattern', scope, {$event: evt});
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].kind === 'file' || items[i].kind === '') {
+                if (!upload.validatePattern(items[i], pattern)) {
+                  dClass = clazz.reject;
+                  break;
+                } else {
+                  dClass = clazz.accept;
+                }
+              }
+            }
+          }
+        }
       }
-      return clazz || attr.ngfDragOverClass || 'dragover';
+      callback(dClass);
     }
 
     function extractFiles(evt, callback, allowDir, multiple) {
-      var files = [], rejFiles = [], items = evt.dataTransfer.items, processing = 0;
-
-      function addFile(file) {
-        if (validate(scope, $parse, attr, file, evt)) {
-          files.push(file);
-        } else {
-          rejFiles.push(file);
-        }
-      }
+      var files = [], processing = 0;
 
       function traverseFileTree(files, entry, path) {
         if (entry != null) {
           if (entry.isDirectory) {
             var filePath = (path || '') + entry.name;
-            addFile({name: entry.name, type: 'directory', path: filePath});
+            files.push({name: entry.name, type: 'directory', path: filePath});
             var dirReader = entry.createReader();
             var entries = [];
             processing++;
@@ -1056,7 +1705,7 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
               try {
                 processing--;
                 file.path = (path ? path : '') + file.name;
-                addFile(file);
+                files.push(file);
               } catch (e) {
                 processing--;
                 console.error(e);
@@ -1067,6 +1716,8 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
           }
         }
       }
+
+      var items = evt.dataTransfer.items;
 
       if (items && items.length > 0 && $location.protocol() !== 'file') {
         for (var i = 0; i < items.length; i++) {
@@ -1080,7 +1731,7 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
             }
           } else {
             var f = items[i].getAsFile();
-            if (f != null) addFile(f);
+            if (f != null) files.push(f);
           }
           if (!multiple && files.length > 0) break;
         }
@@ -1088,7 +1739,7 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
         var fileList = evt.dataTransfer.files;
         if (fileList != null) {
           for (var j = 0; j < fileList.length; j++) {
-            addFile(fileList.item(j));
+            files.push(fileList.item(j));
             if (!multiple && files.length > 0) {
               break;
             }
@@ -1104,7 +1755,7 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
               while (files[i].type === 'directory') i++;
               files = [files[i]];
             }
-            callback(files, rejFiles);
+            callback(files);
           } else {
             if (delays++ * 10 < 20 * 1000) {
               waitForProcess(10);
@@ -1115,44 +1766,9 @@ ngFileUpload.service('Upload', ['$http', '$q', '$timeout', function ($http, $q, 
     }
   }
 
-  ngFileUpload.directive('ngfSrc', ['$parse', '$timeout', function ($parse, $timeout) {
-    return {
-      restrict: 'AE',
-      link: function (scope, elem, attr) {
-        if (window.FileReader) {
-          scope.$watch(attr.ngfSrc, function (file) {
-            if (file &&
-              validate(scope, $parse, attr, file, null) &&
-              (!window.FileAPI || navigator.userAgent.indexOf('MSIE 8') === -1 || file.size < 20000) &&
-              (!window.FileAPI || navigator.userAgent.indexOf('MSIE 9') === -1 || file.size < 4000000)) {
-              $timeout(function () {
-                //prefer URL.createObjectURL for handling refrences to files of all sizes
-                //since it doesn´t build a large string in memory
-                var URL = window.URL || window.webkitURL;
-                if (URL && URL.createObjectURL) {
-                  elem.attr('src', URL.createObjectURL(file));
-                } else {
-                  var fileReader = new FileReader();
-                  fileReader.readAsDataURL(file);
-                  fileReader.onload = function (e) {
-                    $timeout(function () {
-                      elem.attr('src', e.target.result);
-                    });
-                  };
-                }
-              });
-            } else {
-              elem.attr('src', attr.ngfDefaultSrc || '');
-            }
-          });
-        }
-      }
-    };
-  }]);
-
   function dropAvailable() {
     var div = document.createElement('div');
-    return ('draggable' in div) && ('ondrop' in div);
+    return ('draggable' in div) && ('ondrop' in div) && !/Edge\/12./i.test(navigator.userAgent);
   }
 
 })();

@@ -160,15 +160,15 @@
         contentData.viewTypes = [
 		{
 			name: "general",
-			label: "General"
+			label: "general"
 		},
 		{
 			name: "quickview",
-			label: "Quick view"
+			label: "quick view"
 		},
 		{
 			name: "quickcreate",
-			label: "Quick create"
+			label: "quick create"
 		}
         ];
 

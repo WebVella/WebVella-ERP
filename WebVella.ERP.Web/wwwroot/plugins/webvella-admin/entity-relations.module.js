@@ -276,7 +276,7 @@
         popupData.selectedOriginEntity = {};
         popupData.selectedOriginEntity.fields = [{
             id: 1,
-            name: "name",
+            name: "Select Origin Entity first",
             label:"Select Origin Entity first"
         }];
         popupData.selectedOriginFieldEnabled = false;
@@ -284,7 +284,7 @@
         popupData.selectedTargetEntity = {};
         popupData.selectedTargetEntity.fields = [{
             id: 1,
-            name: "name",
+            name: "Select Target Entity first",
             label: "Select Target Entity first"
         }];
         popupData.selectedTargetFieldEnabled = false;
@@ -305,6 +305,8 @@
                     field.id = popupData.entities[i].fields[j].id;
                     field.name = popupData.entities[i].fields[j].name;
                     field.label = popupData.entities[i].fields[j].label;
+                    field.required = popupData.entities[i].fields[j].required;
+                    field.unique = popupData.entities[i].fields[j].unique;
                     entity.fields.push(field);
                 }
             }
@@ -313,6 +315,12 @@
                 popupData.eligibleOriginEntities.push(entity);
             }
         }
+        popupData.eligibleOriginEntities = popupData.eligibleOriginEntities.sort(function (a, b) {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        });
+
 
         //Generate the eligible Target entities list. Enforced limitation for the eligible field to have only one relation as Target;
         //Generate an array of field Ids that are targets in relations
@@ -330,13 +338,15 @@
             entity.enabled = true;
             entity.fields = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
-                if (popupData.entities[i].fields[j].fieldType === 16 && popupData.entities[i].fields[j].required && popupData.entities[i].fields[j].unique) {
+                if (popupData.entities[i].fields[j].fieldType === 16) {
                     var field = {};
                     //Add the field only if it is not already a target for a relation
-                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) == -1) {
+                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) === -1) {
                         field.id = popupData.entities[i].fields[j].id;
                         field.name = popupData.entities[i].fields[j].name;
                         field.label = popupData.entities[i].fields[j].label;
+                        field.required = popupData.entities[i].fields[j].required;
+                        field.unique = popupData.entities[i].fields[j].unique;
                         entity.fields.push(field);
                     }
                 }
@@ -347,11 +357,31 @@
             }
         }
 
+        popupData.eligibleTargetEntities = popupData.eligibleTargetEntities.sort(function (a, b) {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        });
+
         ///////
         popupData.changeOriginEntity = function (newEntityModel) {
+            //get only fields that are required
+            var requiredFields = [];
+            for (var i = 0; i < newEntityModel.fields.length; i++) {
+                if (newEntityModel.fields[i].required && newEntityModel.fields[i].unique) {
+                    requiredFields.push(newEntityModel.fields[i]);
+                }
+            }
+            newEntityModel.fields = requiredFields;
+            newEntityModel.fields = newEntityModel.fields.sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
             popupData.selectedOriginField = newEntityModel.fields[0];
             popupData.selectedOriginFieldEnabled = true;
-            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+
+            if (popupData.selectedOriginField && popupData.selectedOriginField.id === popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;
             } else {
                 popupData.fieldsDuplicatedError = false;
@@ -360,7 +390,22 @@
 
         //////
         popupData.changeTargetEntity = function (newEntityModel) {
+            newEntityModel.fields = newEntityModel.fields.sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+
             popupData.selectedTargetField = newEntityModel.fields[0];
+            if (newEntityModel.fields[0].name == "id" && (popupData.relation.relationType == 1 || popupData.relation.relationType == 2)) {
+                if (newEntityModel.fields.length > 1) { // if there are more fields than just the id
+                    popupData.selectedTargetField = newEntityModel.fields[1];
+                }
+                else {
+                    popupData.selectedTargetField = null;
+                }
+            }
+
             popupData.selectedTargetFieldEnabled = true;
             if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;

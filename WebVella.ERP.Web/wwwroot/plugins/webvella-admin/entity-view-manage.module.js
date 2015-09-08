@@ -177,16 +177,7 @@
         	}
         }
     	//Get fields already used in the view so they need to be removed from the library
-        var usedItemsArray = [];
-        for (var j = 0; j < contentData.viewContentRegion.sections.length; j++) {
-        	for (var k = 0; k < contentData.viewContentRegion.sections[j].rows.length; k++) {
-        		for (var l = 0; l < contentData.viewContentRegion.sections[j].rows[k].columns.length; l++) {
-        			for (var m = 0; m < contentData.viewContentRegion.sections[j].rows[k].columns[l].items.length; m++) {
-        				usedItemsArray.push(contentData.viewContentRegion.sections[j].rows[k].columns[l].items[m]);
-        			}
-        		}
-        	}
-        }
+        var usedItemsArray = webvellaAdminService.getItemsFromRegion(contentData.viewContentRegion);
 
         contentData.tempLibrary = {};
         contentData.tempLibrary.items = angular.copy(resolvedViewLibrary);
@@ -201,23 +192,23 @@
         	var notUsed = true;
         	for (var k = 0; k < usedItemsArray.length; k++) {
         		if (item.type === "field" && usedItemsArray[k].type === "field"
-						&& item.fieldId == usedItemsArray[k].fieldId) {
+						&& item.fieldId === usedItemsArray[k].fieldId) {
         			notUsed = false;
         		}
         		else if (item.type === "fieldFromRelation" && usedItemsArray[k].type === "fieldFromRelation"
-						&& item.fieldId == usedItemsArray[k].fieldId && item.relationId == usedItemsArray[k].relationId) {
+						&& item.fieldId === usedItemsArray[k].fieldId && item.relationId === usedItemsArray[k].relationId) {
         			notUsed = false;
         		}
-        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
+        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId === usedItemsArray[k].viewId) {
         			notUsed = false;
         		}
-        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId == usedItemsArray[k].viewId) {
+        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId === usedItemsArray[k].viewId) {
         			notUsed = false;
         		}
-        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId == usedItemsArray[k].listId) {
+        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId === usedItemsArray[k].listId) {
         			notUsed = false;
         		}
-        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId == usedItemsArray[k].listId) {
+        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId === usedItemsArray[k].listId) {
         			notUsed = false;
         		}
         	}

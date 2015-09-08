@@ -13,8 +13,8 @@ namespace WebVella.ERP
 
         public static void Initialize(IConfiguration configuration)
         {
-            ConnectionString = configuration.Get("Settings:ConnectionString");
-            EncriptionKey = configuration.Get("Settings:EncriptionKey");
+            ConnectionString = configuration["Settings:ConnectionString"];
+            EncriptionKey = configuration["Settings:EncriptionKey"];
         }
     }
 }

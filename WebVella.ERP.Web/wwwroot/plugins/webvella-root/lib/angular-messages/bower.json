@@ -1,9 +1,9 @@
 {
   "name": "angular-messages",
-  "version": "1.4.1",
+  "version": "1.4.5",
   "main": "./angular-messages.js",
   "ignore": [],
   "dependencies": {
-    "angular": "1.4.1"
+    "angular": "1.4.5"
   }
 }

@@ -123,9 +123,9 @@
           "Microsoft.CSharp"
         ]
       },
-      "Microsoft.Framework.Configuration/1.0.0-beta6": {
+      "Microsoft.Framework.Configuration/1.0.0-beta7": {
         "dependencies": {
-          "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta6"
+          "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta7"
         },
         "frameworkAssemblies": [
           "mscorlib",
@@ -140,7 +140,7 @@
           "lib/dnx451/Microsoft.Framework.Configuration.dll": {}
         }
       },
-      "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta6": {
+      "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta7": {
         "frameworkAssemblies": [
           "mscorlib",
           "System",
@@ -218,7 +218,7 @@
           "lib/dnx451/Microsoft.Framework.OptionsModel.dll": {}
         }
       },
-      "Microsoft.Framework.Runtime.Abstractions/1.0.0-beta5": {
+      "Microsoft.Framework.Runtime.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
           "mscorlib",
           "System",
@@ -444,49 +444,49 @@
     "Microsoft.CSharp/4.0.0-beta-23019": {
       "sha512": "TsYR8ylpBw89cxCTzA9eD8wqLR5u4TnNvUCLU7Qt9TlbxmNM0jPaz80L4N+W81kEoOpchlckGGCTA4JVemmEVA==",
       "files": [
-        "Microsoft.CSharp.4.0.0-beta-23019.nupkg",
-        "Microsoft.CSharp.4.0.0-beta-23019.nupkg.sha512",
-        "Microsoft.CSharp.nuspec",
         "lib/dotnet/Microsoft.CSharp.dll",
         "lib/net45/_._",
         "lib/netcore50/Microsoft.CSharp.dll",
         "lib/win8/_._",
+        "Microsoft.CSharp.4.0.0-beta-23019.nupkg",
+        "Microsoft.CSharp.4.0.0-beta-23019.nupkg.sha512",
+        "Microsoft.CSharp.nuspec",
         "ref/dotnet/Microsoft.CSharp.dll",
         "ref/net45/_._",
         "ref/netcore50/Microsoft.CSharp.dll",
         "ref/win8/_._"
       ]
     },
-    "Microsoft.Framework.Configuration/1.0.0-beta6": {
+    "Microsoft.Framework.Configuration/1.0.0-beta7": {
       "serviceable": true,
-      "sha512": "ZwjPHPgayAxW0Yq4tDa8DoAAEy/nj3hlVV02oO4iOGufIdFTzMW9Frfwa97eJQhDFtsdXxfBecXr9GjaEBsI8g==",
+      "sha512": "l2kMGvDGmLrpWwQz90pKHxuCPA4C5Ds3zWT/bNmt6M/PCM5wxEns/orKHH2m9Cx5H08WZy0FVyQMNQmED126cA==",
       "files": [
-        "Microsoft.Framework.Configuration.1.0.0-beta6.nupkg",
-        "Microsoft.Framework.Configuration.1.0.0-beta6.nupkg.sha512",
-        "Microsoft.Framework.Configuration.nuspec",
-        "repo.json",
         "lib/dnx451/Microsoft.Framework.Configuration.dll",
         "lib/dnx451/Microsoft.Framework.Configuration.xml",
         "lib/dotnet/Microsoft.Framework.Configuration.dll",
         "lib/dotnet/Microsoft.Framework.Configuration.xml",
         "lib/net45/Microsoft.Framework.Configuration.dll",
-        "lib/net45/Microsoft.Framework.Configuration.xml"
+        "lib/net45/Microsoft.Framework.Configuration.xml",
+        "Microsoft.Framework.Configuration.1.0.0-beta7.nupkg",
+        "Microsoft.Framework.Configuration.1.0.0-beta7.nupkg.sha512",
+        "Microsoft.Framework.Configuration.nuspec",
+        "repo.json"
       ]
     },
-    "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta6": {
+    "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta7": {
       "serviceable": true,
-      "sha512": "7Cq77d6Ni3pnMyN4oTfRvf3RHQr8onjUBQ42P8/waazWU5gG9PtjvPTUP2jVc4AdC2LvZNz9D9A8D1/qASYuyw==",
+      "sha512": "bLVb0cfwlpIhFmJ2jJzMaOjoG3BGcyP6dtMU1NNzfs3mo1lr2Om5FKWFlYVou3uClM0yNdMtGzu5rQDb2UGxZA==",
       "files": [
-        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta6.nupkg",
-        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta6.nupkg.sha512",
-        "Microsoft.Framework.Configuration.Abstractions.nuspec",
-        "repo.json",
         "lib/dnx451/Microsoft.Framework.Configuration.Abstractions.dll",
         "lib/dnx451/Microsoft.Framework.Configuration.Abstractions.xml",
         "lib/dotnet/Microsoft.Framework.Configuration.Abstractions.dll",
         "lib/dotnet/Microsoft.Framework.Configuration.Abstractions.xml",
         "lib/net45/Microsoft.Framework.Configuration.Abstractions.dll",
-        "lib/net45/Microsoft.Framework.Configuration.Abstractions.xml"
+        "lib/net45/Microsoft.Framework.Configuration.Abstractions.xml",
+        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta7.nupkg",
+        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta7.nupkg.sha512",
+        "Microsoft.Framework.Configuration.Abstractions.nuspec",
+        "repo.json"
       ]
     },
     "Microsoft.Framework.Configuration.Binder/1.0.0-beta6": {
@@ -553,12 +553,12 @@
         "lib/net45/Microsoft.Framework.OptionsModel.xml"
       ]
     },
-    "Microsoft.Framework.Runtime.Abstractions/1.0.0-beta5": {
+    "Microsoft.Framework.Runtime.Abstractions/1.0.0-beta6": {
       "serviceable": true,
-      "sha512": "w8FtN1i6dcKxCEF3fX2CYNA9LfkQ+vpGqmGAzRJn1Xg3N+73rywlIl7ijZLgCHS8MH0XO8KqpUCVR05UtVvJPg==",
+      "sha512": "w4Cwg6jgPd3XFGOgBGU3GVGVAwUcMglSDTlI23M8uI7yhDRSDbxZ2HPbjTEBMoj+IYdkfunZWFdA67tdk8L8Tg==",
       "files": [
-        "Microsoft.Framework.Runtime.Abstractions.1.0.0-beta5.nupkg",
-        "Microsoft.Framework.Runtime.Abstractions.1.0.0-beta5.nupkg.sha512",
+        "Microsoft.Framework.Runtime.Abstractions.1.0.0-beta6.nupkg",
+        "Microsoft.Framework.Runtime.Abstractions.1.0.0-beta6.nupkg.sha512",
         "Microsoft.Framework.Runtime.Abstractions.nuspec",
         "lib/dnx451/Microsoft.Framework.Runtime.Abstractions.dll",
         "lib/dnx451/Microsoft.Framework.Runtime.Abstractions.xml",
@@ -601,22 +601,19 @@
     "mongocsharpdriver/1.9.2": {
       "sha512": "ieZXgcVDvgoTgzLumgkv274NuKxwSbXRLl5Oc1l5z3Bt2NW0D4aDOH2/RE1xyRcE2QBl1jdCqnG11/ej2SiB8w==",
       "files": [
-        "License.rtf",
-        "mongocsharpdriver.1.9.2.nupkg",
-        "mongocsharpdriver.1.9.2.nupkg.sha512",
-        "mongocsharpdriver.nuspec",
         "lib/net35/MongoDB.Bson.dll",
         "lib/net35/MongoDB.Bson.XML",
         "lib/net35/MongoDB.Driver.dll",
-        "lib/net35/MongoDB.Driver.XML"
+        "lib/net35/MongoDB.Driver.XML",
+        "License.rtf",
+        "mongocsharpdriver.1.9.2.nupkg",
+        "mongocsharpdriver.1.9.2.nupkg.sha512",
+        "mongocsharpdriver.nuspec"
       ]
     },
     "Newtonsoft.Json/6.0.6": {
       "sha512": "w26uZNyCG5VeoKiEOJ4+9/o8koSofLKwHl7WLreIcp0U6r57L7WiRXmjp8MTKFw6dYNZ9AE0lw69WYbIhUsU9Q==",
       "files": [
-        "Newtonsoft.Json.6.0.6.nupkg",
-        "Newtonsoft.Json.6.0.6.nupkg.sha512",
-        "Newtonsoft.Json.nuspec",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
         "lib/net35/Newtonsoft.Json.dll",
@@ -631,15 +628,15 @@
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
+        "Newtonsoft.Json.6.0.6.nupkg",
+        "Newtonsoft.Json.6.0.6.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
     },
     "System.Linq/4.0.0-beta-23019": {
       "sha512": "kw6QeVsZWOKdonnArSWFerSyXCsr2LmGqT9Z2W7HFf7yN09o6O8YLfIALlFnhD4CXgJZYC8ebgMPC6uK9IZfOQ==",
       "files": [
-        "System.Linq.4.0.0-beta-23019.nupkg",
-        "System.Linq.4.0.0-beta-23019.nupkg.sha512",
-        "System.Linq.nuspec",
         "lib/dotnet/System.Linq.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Linq.dll",
@@ -647,51 +644,54 @@
         "ref/dotnet/System.Linq.dll",
         "ref/net45/_._",
         "ref/netcore50/System.Linq.dll",
-        "ref/win8/_._"
+        "ref/win8/_._",
+        "System.Linq.4.0.0-beta-23019.nupkg",
+        "System.Linq.4.0.0-beta-23019.nupkg.sha512",
+        "System.Linq.nuspec"
       ]
     },
     "System.Runtime/4.0.0-beta-23019": {
       "sha512": "BUB/5CSzjDRQlifthFztT1eWmnnb2QCK2WKd0kxAt8ytB+2oXiVqpSvcbtzRsidp8wGdG51fyolfiznodSIX9A==",
       "files": [
-        "License.rtf",
-        "System.Runtime.4.0.0-beta-23019.nupkg",
-        "System.Runtime.4.0.0-beta-23019.nupkg.sha512",
-        "System.Runtime.nuspec",
         "lib/net45/_._",
         "lib/win8/_._",
+        "License.rtf",
         "ref/dotnet/System.Runtime.dll",
         "ref/net45/_._",
         "ref/netcore50/System.Runtime.dll",
-        "ref/win8/_._"
+        "ref/win8/_._",
+        "System.Runtime.4.0.0-beta-23019.nupkg",
+        "System.Runtime.4.0.0-beta-23019.nupkg.sha512",
+        "System.Runtime.nuspec"
       ]
     },
     "System.Threading/4.0.10-beta-23019": {
       "sha512": "xJYu7J22Fc4G7pfUlPBYuRj4Rla0VkaqU77SW2DyT/oMq1KQmmR7oQnQ7yq/yig0St17I7rYZYBbSrNbe1l5+g==",
       "files": [
-        "System.Threading.4.0.10-beta-23019.nupkg",
-        "System.Threading.4.0.10-beta-23019.nupkg.sha512",
-        "System.Threading.nuspec",
         "lib/DNXCore50/System.Threading.dll",
         "lib/net46/_._",
         "lib/netcore50/System.Threading.dll",
         "ref/dotnet/System.Threading.dll",
         "ref/net46/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Threading.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Threading.dll",
+        "System.Threading.4.0.10-beta-23019.nupkg",
+        "System.Threading.4.0.10-beta-23019.nupkg.sha512",
+        "System.Threading.nuspec"
       ]
     },
     "System.Threading.Tasks/4.0.0-beta-23019": {
       "sha512": "frcOMzzaVN9AHhlJRLKOqm9WHws2byLa+CDFUZIQzUWqrpubH0CDtNj1je5lJpD1QDwJBmnXepKUXCwt/wt9Ew==",
       "files": [
-        "License.rtf",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg.sha512",
-        "System.Threading.Tasks.nuspec",
         "lib/net45/_._",
         "lib/win8/_._",
+        "License.rtf",
         "ref/dotnet/System.Threading.Tasks.dll",
         "ref/net45/_._",
         "ref/netcore50/System.Threading.Tasks.dll",
-        "ref/win8/_._"
+        "ref/win8/_._",
+        "System.Threading.Tasks.4.0.0-beta-23019.nupkg",
+        "System.Threading.Tasks.4.0.0-beta-23019.nupkg.sha512",
+        "System.Threading.Tasks.nuspec"
       ]
     }
   },

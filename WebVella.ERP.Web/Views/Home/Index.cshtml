@@ -28,48 +28,51 @@
 
 </head>
 <body class="theme-{{appData.bodyColor}}" ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar, 'not-visible-side-menu': !appData.sideMenuIsVisible}">
-    <toast></toast>
+	<toast></toast>
 
-    <!-- here is injected the webvella-root state, which should be inherited by all plugins -->
-    <div ui-view="rootView"></div>
+	<!-- here is injected the webvella-root state, which should be inherited by all plugins -->
+	<div ui-view="rootView"></div>
 
-    <!-- plugin:webvella-root -->
+	<!-- plugin:webvella-root -->
 	<script src="~/plugins/webvella-root/lib/ckeditor/ckeditor.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
 	<script src="~/plugins/webvella-root/lib/angular-i18n/angular-locale_en-us.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
-    <script src="~/plugins/webvella-root/lib/angular-xeditable/dist/js/xeditable.js"></script>
-    <script src="~/plugins/webvella-root/lib/moment/moment-with-locales.js"></script>
-    <script src="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.js"></script>
-    <script src="~/plugins/webvella-root/lib/checklist-model/checklist-model.js"></script>
-    <script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload-all.js"></script>
-    <script src="~/plugins/webvella-root/lib/offline/offline.min.js"></script>
-    <script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-xeditable/dist/js/xeditable.js"></script>
+	<script src="~/plugins/webvella-root/lib/moment/min/moment-with-locales.js"></script>
+	<script src="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.js"></script>
+	<script src="~/plugins/webvella-root/lib/checklist-model/checklist-model.js"></script>
+	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload-shim.js"></script>
+	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload.js"></script>
+	<script src="~/plugins/webvella-root/lib/offline/offline.min.js"></script>
+	<script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
 	<script src="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.js"></script>
-	<script src="~/plugins/webvella-root/lib/libphonenumber/libphonenumber.js"></script>    
+	<script src="~/plugins/webvella-root/lib/libphonenumber/libphonenumber.js"></script>
 	<script src="~/plugins/webvella-root/lib/ngstorage/ngstorage.js"></script>
-   
-    @* Core Application module definition *@
-    <script>
+	<script src="~/plugins/webvella-root/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js"></script>
+
+	@* Core Application module definition *@
+	<script>
         @*In order to dynamically add plug-in modules, the appCore definition should be with server side aspect*@
-        (function () {
-            'use strict';
-            angular
+		(function () {
+			'use strict';
+			angular
                 .module('wvApp', [
                     // Angular modules
                     'ngAnimate', 'ngTouch', 'ngCookies', 'ngSanitize',
                      // 3rd Party Modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ngToast', 'xeditable', 'ui.bootstrap', 'ui.sortable', 'checklist-model',
-					'ngCkeditor', 'ngFileUpload', 'ngStorage',
+                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model',
+					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper',
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 
@@ -79,100 +82,104 @@
                 .config(config)
                 .run(run);
 
-            // Configuration ///////////////////////////////////
-            config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
-            function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
-                $urlRouterProvider.otherwise('/desktop/browse');
-                $logProvider.debugEnabled(wvAppConstants.debugEnabled);
-                moment.locale('en');
-                ngToastProvider.configure({
-                	animation: 'fade',
-                	horizontalPosition: 'center',
-                	timeout: 4000,
-                	maxNumber:1
-                });
-            };
+			// Configuration ///////////////////////////////////
+			config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
+			function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
+				$urlRouterProvider.otherwise('/desktop/browse');
+				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
+				moment.locale('en');
+				ngToastProvider.configure({
+					animation: 'fade',
+					horizontalPosition: 'center',
+					timeout: 4000,
+					maxNumber: 1
+				});
+			};
 
-            // Run //////////////////////////////////////
-            run.$inject = ['editableOptions', 'editableThemes'];
-            function run(editableOptions, editableThemes) { editableOptions.theme = 'bs3'; editableThemes.bs3.buttonsClass = 'btn-sm'; };
-        })();
-    </script>
-    <script src="~/application.controller.js"></script>
-    <script src="~/application.constants.js"></script>
-    <!-- Server generated global variables -->
-    <script>
-        @ViewBag.GlobalVariablesJs
-    </script>
+			// Run //////////////////////////////////////
+			run.$inject = ['editableOptions', 'editableThemes'];
+			function run(editableOptions, editableThemes) { editableOptions.theme = 'bs3'; editableThemes.bs3.buttonsClass = 'btn-sm'; };
+		})();
+	</script>
+	<script src="~/application.controller.js"></script>
+	<script src="~/application.constants.js"></script>
+	<!-- Server generated global variables -->
+	<script>
+		@ViewBag.GlobalVariablesJs
+	</script>
 
-    <!-- plugin:webvella-root -->
-    <script src="~/plugins/webvella-root/base.module.js"></script>
-    <script src="~/plugins/webvella-root/login.module.js"></script>
-    <script src="~/plugins/webvella-root/error.module.js"></script>
-    <script src="~/plugins/webvella-root/providers/root.service.js"></script>
-    <script src="~/plugins/webvella-root/providers/validdate.directive.js"></script>
+	<!-- plugin:webvella-root -->
+	<script src="~/plugins/webvella-root/base.module.js"></script>
+	<script src="~/plugins/webvella-root/login.module.js"></script>
+	<script src="~/plugins/webvella-root/error.module.js"></script>
+	<script src="~/plugins/webvella-root/providers/root.service.js"></script>
+	<script src="~/plugins/webvella-root/providers/validdate.directive.js"></script>
 	<script src="~/plugins/webvella-root/providers/confirmclick.directive.js"></script>
-    <!-- plugin:webvella-desktop -->
-    <script src="~/plugins/webvella-desktop/base.module.js"></script>
-    <script src="~/plugins/webvella-desktop/browse.module.js"></script>
-    <script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
-    <script src="~/plugins/webvella-desktop/providers/browsenav.factory.js"></script>
+	<!-- plugin:webvella-desktop -->
+	<script src="~/plugins/webvella-desktop/base.module.js"></script>
+	<script src="~/plugins/webvella-desktop/browse.module.js"></script>
+	<script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
+	<script src="~/plugins/webvella-desktop/providers/browsenav.factory.js"></script>
 
-    <!-- plugin:webvella-admin -->
-    <script src="~/plugins/webvella-admin/base.module.js"></script>
-    <script src="~/plugins/webvella-admin/entities.module.js"></script>
-    <script src="~/plugins/webvella-admin/topnav.controller.js"></script>
-    <script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
-    <script src="~/plugins/webvella-admin/entity-details.module.js"></script>
-    <script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
-    <script src="~/plugins/webvella-admin/providers/sidebar.factory.js"></script>
-    <script src="~/plugins/webvella-admin/entity-relations.module.js"></script>
-    <script src="~/plugins/webvella-admin/entity-view-manage.module.js"></script>
+	<!-- plugin:webvella-admin -->
+	<script src="~/plugins/webvella-admin/base.module.js"></script>
+	<script src="~/plugins/webvella-admin/entities.module.js"></script>
+	<script src="~/plugins/webvella-admin/topnav.controller.js"></script>
+	<script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
+	<script src="~/plugins/webvella-admin/entity-details.module.js"></script>
+	<script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
+	<script src="~/plugins/webvella-admin/providers/sidebar.factory.js"></script>
+	<script src="~/plugins/webvella-admin/entity-relations.module.js"></script>
+	<script src="~/plugins/webvella-admin/entity-view-manage.module.js"></script>
 	<script src="~/plugins/webvella-admin/entity-view-manage-info.module.js"></script>
 	<script src="~/plugins/webvella-admin/entity-view-manage-sidebar.module.js"></script>
-    <script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js"></script>
-    <script src="~/plugins/webvella-admin/entity-fields.module.js"></script>
-    <script src="~/plugins/webvella-admin/entity-views.module.js"></script>
-    <script src="~/plugins/webvella-admin/entity-lists.module.js"></script>
-    <script src="~/plugins/webvella-admin/entity-list-manage.module.js"></script>
-    <script src="~/plugins/webvella-admin/areas.module.js"></script>
+	<script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js"></script>
+	<script src="~/plugins/webvella-admin/entity-fields.module.js"></script>
+	<script src="~/plugins/webvella-admin/entity-views.module.js"></script>
+	<script src="~/plugins/webvella-admin/entity-lists.module.js"></script>
+	<script src="~/plugins/webvella-admin/entity-list-manage.module.js"></script>
+	<script src="~/plugins/webvella-admin/areas.module.js"></script>
 
-    <!-- plugin:webvella-areas -->
-    <script src="~/plugins/webvella-areas/base.module.js"></script>
-    <script src="~/plugins/webvella-areas/entity-records.module.js"></script>
-    <script src="~/plugins/webvella-areas/topnav.controller.js"></script>
-    <script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
-    <script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
-    <script src="~/plugins/webvella-areas/record-view.module.js"></script>
+	<!-- plugin:webvella-areas -->
+	<script src="~/plugins/webvella-areas/base.module.js"></script>
+	<script src="~/plugins/webvella-areas/entity-records.module.js"></script>
+	<script src="~/plugins/webvella-areas/topnav.controller.js"></script>
+	<script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
+	<script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
+	<script src="~/plugins/webvella-areas/record-view.module.js"></script>
 	<script src="~/plugins/webvella-areas/view-record-sidebar.controller.js"></script>
+	<script src="~/plugins/webvella-areas/providers/recursive-view.directive.js"></script>
+	<script src="~/plugins/webvella-areas/providers/recursive-list.directive.js"></script>
 
-    <!-- plugin:webvella-developers -->
-    <script src="~/plugins/webvella-developers/base.module.js"></script>
-    <script src="~/plugins/webvella-developers/providers/query.service.js"></script>
+	<!-- plugin:webvella-developers -->
+	<script src="~/plugins/webvella-developers/base.module.js"></script>
+	<script src="~/plugins/webvella-developers/providers/query.service.js"></script>
 
-    @ViewBag.PluginModulesJsFileStringArray
-
-
+	@ViewBag.PluginModulesJsFileStringArray
 
 
-    <!-- Core Application -->
-    <!--<script src="~/core/app-core.module.js"></script>
-    <script src="~/core/app-core.controller.js"></script>
-    <script src="~/core/app-core.constants.js"></script>
-    <script src="~/core/providers/resolve-site-meta.function.js"></script>
-    <script src="~/core/providers/site-meta.service.js"></script>
-    <script src="~/core/providers/area.service.js"></script>-->
-    <!-- Core Shared Modules -->
-    <!--<script src="~/core/modules/sidebar/sidebar.controller.js"></script>
-    <script src="~/core/modules/topnav/topnav.controller.js"></script>
-    <script src="~/core/modules/topnav/topnav.service.js"></script>
-    <script src="~/core/modules/page-title/page-title.controller.js"></script>-->
-    <!-- Core Page Modules -->
-    <!--<script src="~/core/modules/home/home.controller.js"></script>
-    <script src="~/core/modules/entity-list/entity-list.controller.js"></script>-->
+
+
+	<!-- Core Application -->
+	<!--<script src="~/core/app-core.module.js"></script>
+	<script src="~/core/app-core.controller.js"></script>
+	<script src="~/core/app-core.constants.js"></script>
+	<script src="~/core/providers/resolve-site-meta.function.js"></script>
+	<script src="~/core/providers/site-meta.service.js"></script>
+	<script src="~/core/providers/area.service.js"></script>-->
+	<!-- Core Shared Modules -->
+	<!--<script src="~/core/modules/sidebar/sidebar.controller.js"></script>
+	<script src="~/core/modules/topnav/topnav.controller.js"></script>
+	<script src="~/core/modules/topnav/topnav.service.js"></script>
+	<script src="~/core/modules/page-title/page-title.controller.js"></script>-->
+	<!-- Core Page Modules -->
+	<!--<script src="~/core/modules/home/home.controller.js"></script>
+	<script src="~/core/modules/entity-list/entity-list.controller.js"></script>-->
 
 
 
 </body>
+
+
 
 </html>

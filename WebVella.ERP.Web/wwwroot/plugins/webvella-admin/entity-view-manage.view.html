@@ -85,7 +85,7 @@
 												<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
 													<div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
 														<div as-sortable-item-handle ng-if='item.type == "field"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}
+															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i>
 														</div>
 														<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'>
 															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
@@ -131,7 +131,7 @@
 					<div class="drop-zone" id="library-items-list">
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.label}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i></div>
 								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
 								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
@@ -181,7 +181,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.label.$invalid && !manageSection.label.$pristine}">
 						<label class="required" for="title">Label</label>
 						<input ng-model="popupData.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
-							   required maxlength="50" >
+							   required maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="manageSection.label.$dirty && manageSection.label.$invalid">
 							<small class="error" ng-show="manageSection.label.$error.required">
 								required field
@@ -198,7 +198,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.cssClass.$invalid && !manageSection.cssClass.$pristine}">
 						<label for="cssClass">CSS Class</label>
 						<input ng-model="popupData.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
-							   maxlength="50">
+							   maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
 							<small class="error" ng-show="manageSection.cssClass.$error.maxlength">
 								must be less than 50 chars
@@ -210,7 +210,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
 						<label for="place">Weight</label>
 						<input ng-model="popupData.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
-							   pattern="^[0-9]*$">
+							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">
 							<small class="error" ng-show="manageSection.weight.$error.pattern">
 								should be a valid number
@@ -281,7 +281,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageRow.row.$invalid && !manageRow.row.$pristine}">
 						<label for="place">Weight</label>
 						<input ng-model="popupData.row.weight" name="weight" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
-							   pattern="^[0-9]*$">
+							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="manageRow.weight.$dirty && manageRow.weight.$invalid">
 							<small class="error" ng-show="manageRow.weight.$error.pattern">
 								should be a valid number

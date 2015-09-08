@@ -40,16 +40,22 @@
         "description": "The language of the message displayed to the user when connectivity is lost or regained.",
         "type": "string",
         "enum": [
+          "dutch",
           "english",
-          "spanish",
           "french",
-          "portuguese-brazil"
+          "german",
+          "portuguese-brazil",
+          "spanish",
+          "turkish"
         ],
         "enumNames": {
+          "dutch": "Dutch",
           "english": "English",
-          "spanish": "Spanish",
           "french": "French",
-          "portuguese-brazil": "Brazilian Portuguese"
+          "german": "German",
+          "portuguese-brazil": "Brazilian Portuguese",
+          "spanish": "Spanish",
+          "turkish": "Turkish"
         },
         "default": "english"
       },

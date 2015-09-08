@@ -10,8 +10,7 @@ namespace WebVella.ERP.Api.Models
 	public enum RecordListType
 	{
 		General,
-        Lookup,
-        Create
+        Lookup
 	}
 
 	public enum RecordListItemType
@@ -248,7 +247,7 @@ namespace WebVella.ERP.Api.Models
 			QueryObject queryObj = new QueryObject();
 
 			QueryType type;
-			if (Enum.TryParse<QueryType>(query.QueryType, out type))
+			if (Enum.TryParse<QueryType>(query.QueryType, true, out type))
 			{
 				queryObj.FieldName = query.FieldName;
 				queryObj.FieldValue = query.FieldValue;
