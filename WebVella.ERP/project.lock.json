@@ -1,6 +1,6 @@
 {
   "locked": false,
-  "version": 1,
+  "version": -9996,
   "targets": {
     "DNX,Version=v4.5.1": {
       "AutoMapper/3.3.1": {
@@ -18,16 +18,16 @@
           "Microsoft.AspNet.Diagnostics.Abstractions": "1.0.0-beta6",
           "Microsoft.AspNet.Http.Extensions": "1.0.0-beta6",
           "Microsoft.AspNet.WebUtilities": "1.0.0-beta6",
-          "Microsoft.Framework.Logging.Abstractions": "1.0.0-beta6",
           "Microsoft.Framework.OptionsModel": "1.0.0-beta6",
+          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta6",
           "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
-          "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta6"
+          "Microsoft.Framework.Logging.Abstractions": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.Diagnostics.dll": {}
@@ -38,10 +38,10 @@
       },
       "Microsoft.AspNet.Diagnostics.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.Diagnostics.Abstractions.dll": {}
@@ -56,10 +56,10 @@
           "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.Http.Abstractions.dll": {}
@@ -75,10 +75,10 @@
           "Microsoft.Net.Http.Headers": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.Http.Extensions.dll": {}
@@ -89,10 +89,10 @@
       },
       "Microsoft.AspNet.Http.Features/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.Http.Features.dll": {}
@@ -106,10 +106,10 @@
           "Microsoft.Framework.WebEncoders.Core": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.AspNet.WebUtilities.dll": {}
@@ -121,23 +121,17 @@
       "Microsoft.CSharp/4.0.0-beta-23019": {
         "frameworkAssemblies": [
           "Microsoft.CSharp"
-        ],
-        "compile": {
-          "ref/net45/_._": {}
-        },
-        "runtime": {
-          "lib/net45/_._": {}
-        }
+        ]
       },
       "Microsoft.Framework.Configuration/1.0.0-beta6": {
         "dependencies": {
           "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.Configuration.dll": {}
@@ -148,10 +142,10 @@
       },
       "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.Configuration.Abstractions.dll": {}
@@ -165,10 +159,10 @@
           "Microsoft.Framework.Configuration": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.Configuration.Binder.dll": {}
@@ -179,10 +173,10 @@
       },
       "Microsoft.Framework.DependencyInjection.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.DependencyInjection.Abstractions.dll": {}
@@ -193,10 +187,10 @@
       },
       "Microsoft.Framework.Logging.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.Logging.Abstractions.dll": {}
@@ -212,10 +206,10 @@
           "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta6"
         },
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.OptionsModel.dll": {}
@@ -226,10 +220,10 @@
       },
       "Microsoft.Framework.Runtime.Abstractions/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.Runtime.Abstractions.dll": {}
@@ -240,10 +234,10 @@
       },
       "Microsoft.Framework.WebEncoders.Core/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Framework.WebEncoders.Core.dll": {}
@@ -254,10 +248,10 @@
       },
       "Microsoft.Net.Http.Headers/1.0.0-beta6": {
         "frameworkAssemblies": [
-          "Microsoft.CSharp",
           "mscorlib",
           "System",
-          "System.Core"
+          "System.Core",
+          "Microsoft.CSharp"
         ],
         "compile": {
           "lib/dnx451/Microsoft.Net.Http.Headers.dll": {}
@@ -274,22 +268,8 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "System.Linq/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
-        },
-        "runtime": {
-          "lib/net45/_._": {}
-        }
-      },
-      "System.Runtime/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
-        },
-        "runtime": {
-          "lib/net45/_._": {}
-        }
-      },
+      "System.Linq/4.0.0-beta-23019": {},
+      "System.Runtime/4.0.0-beta-23019": {},
       "System.Threading/4.0.10-beta-23019": {
         "dependencies": {
           "System.Runtime": "4.0.0-beta-23019",
@@ -299,14 +279,7 @@
           "ref/dotnet/System.Threading.dll": {}
         }
       },
-      "System.Threading.Tasks/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
-        },
-        "runtime": {
-          "lib/net45/_._": {}
-        }
-      }
+      "System.Threading.Tasks/4.0.0-beta-23019": {}
     }
   },
   "libraries": {
