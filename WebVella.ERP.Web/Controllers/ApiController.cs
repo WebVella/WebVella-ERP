@@ -1565,14 +1565,14 @@ namespace WebVella.ERP.Web.Controllers
 				foreach (var record in result.Object.Data)
 				{
 					EntityRecord dataRecord = new EntityRecord();
-					foreach (var column in list.Columns)
+                    //always add id value
+                    dataRecord["id"] = record["id"];
+
+                    foreach (var column in list.Columns)
 					{
 						if (column is RecordListFieldItem)
 						{
 							dataRecord[column.DataName] = record[((RecordListFieldItem)column).FieldName];
-
-                            if (!dataRecord.Properties.ContainsKey("id"))
-                                dataRecord["id"] = record["id"];
                         }
 						else if (column is RecordListRelationFieldItem)
 						{
@@ -1908,14 +1908,14 @@ namespace WebVella.ERP.Web.Controllers
 				foreach (var record in result.Object.Data)
 				{
 					EntityRecord dataRecord = new EntityRecord();
-					foreach (var item in items)
+                    //always add id value
+                    dataRecord["id"] = record["id"];
+
+                    foreach (var item in items)
 					{
 						if (item is RecordViewFieldItem)
 						{
                             dataRecord[((RecordViewFieldItem)item).DataName] = record[((RecordViewFieldItem)item).FieldName];
-
-                            if (!dataRecord.Properties.ContainsKey("id"))
-                                dataRecord["id"] = record["id"];
                         }
 						else if (item is RecordViewListItem)
 						{
@@ -1990,17 +1990,6 @@ namespace WebVella.ERP.Web.Controllers
                         else if (item is RecordViewSidebarViewItem)
                         {
                             List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordViewSidebarViewItem)item).ViewName, "id", record["id"]);
-                            if (subViewResult.Any())
-                            {
-                                //the GetViewRecords always returns no more than 1 record
-                                var rec = subViewResult[0];
-                                EntityRecord newRec = new EntityRecord();
-                                foreach (var prop in rec.Properties)
-                                {
-                                    newRec.Properties.Add(prop.Key.Split('$').Last(), rec[prop.Key]);
-                                }
-                                subViewResult[0] = newRec;
-                            }
                             dataRecord[((RecordViewSidebarViewItem)item).DataName] = subViewResult;
                         }
                         else if (item is RecordViewSidebarListItem)
