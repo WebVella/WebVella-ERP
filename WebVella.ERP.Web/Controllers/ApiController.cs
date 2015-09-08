@@ -1996,7 +1996,7 @@ namespace WebVella.ERP.Web.Controllers
                                 //the GetViewRecords always returns no more than 1 record
                                 foreach ( var prop in subViewResult[0].Properties )
                                 {
-                                    dataRecord[prop.Key] = prop.Value;
+                                    dataRecord[prop.Key] = subViewResult[0][prop.Key];
                                 }
                             }
                         }
