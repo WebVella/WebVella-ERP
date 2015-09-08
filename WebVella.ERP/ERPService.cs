@@ -266,6 +266,153 @@ namespace WebVella.ERP
 
                 #endregion
 
+                #region << create area entity >>
+                {
+                    //create entity
+                    InputEntity areaEntity = new InputEntity();
+                    areaEntity.Id = SystemIds.AreaEntityId;
+                    areaEntity.Name = "area";
+                    areaEntity.Label = "Area";
+                    areaEntity.LabelPlural = "Areas";
+                    areaEntity.System = false;
+                    areaEntity.IconName = "folder";
+                    areaEntity.RecordPermissions = new RecordPermissions();
+                    areaEntity.RecordPermissions.CanRead = allowedRoles;
+                    areaEntity.RecordPermissions.CanCreate = allowedRoles;
+                    areaEntity.RecordPermissions.CanUpdate = allowedRoles;
+                    areaEntity.RecordPermissions.CanDelete = allowedRoles;
+
+                    response = entityManager.CreateEntity(areaEntity);
+
+                    InputTextField color = new InputTextField();
+                    color.Id = new Guid("D9AC4A2B-343C-444C-B3A3-8AFF1520CFF6");
+                    color.Name = "color";
+                    color.Label = "Color";
+                    color.PlaceholderText = "";
+                    color.Description = "";
+                    color.HelpText = "";
+                    color.Required = true;
+                    color.Unique = false;
+                    color.Searchable = false;
+                    color.Auditable = false;
+                    color.System = true;
+                    color.DefaultValue = "teal";
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, color);
+
+                    InputTextField label = new InputTextField();
+                    label.Id = new Guid("A1E750F0-B7AF-4643-B57B-1F12B2BD5AE5");
+                    label.Name = "label";
+                    label.Label = "Label";
+                    label.PlaceholderText = "";
+                    label.Description = "";
+                    label.HelpText = "";
+                    label.Required = true;
+                    label.Unique = false;
+                    label.Searchable = false;
+                    label.Auditable = false;
+                    label.System = true;
+                    label.DefaultValue = "Area Name";
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, label);
+
+                    InputTextField iconName = new InputTextField();
+                    iconName.Id = new Guid("72C8A05E-19D2-944D-9EFA-C5DA978D316B");
+                    iconName.Name = "icon_name";
+                    iconName.Label = "Icon Name";
+                    iconName.PlaceholderText = "";
+                    iconName.Description = "";
+                    iconName.HelpText = "";
+                    iconName.Required = true;
+                    iconName.Unique = false;
+                    iconName.Searchable = false;
+                    iconName.Auditable = false;
+                    iconName.System = true;
+                    iconName.DefaultValue = "database";
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, iconName);
+
+                    InputNumberField weight = new InputNumberField();
+                    weight.Id = new Guid("3194169B-316C-4141-80EB-5844B8333E63");
+                    weight.Name = "weight";
+                    weight.Label = "Weight";
+                    weight.PlaceholderText = "";
+                    weight.Description = "";
+                    weight.HelpText = "";
+                    weight.Required = true;
+                    weight.Unique = false;
+                    weight.Searchable = false;
+                    weight.Auditable = false;
+                    weight.System = true;
+                    weight.DefaultValue = 1;
+                    weight.MinValue = 0;
+                    weight.DecimalPlaces = 2;
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, weight);
+
+                    InputGuidField entityIds = new InputGuidField();
+                    entityIds.Id = new Guid("B94DFCDE-A818-1943-AD3C-1584A380084D");
+                    entityIds.Name = "entity_ids";
+                    entityIds.Label = "Entity Ids";
+                    entityIds.PlaceholderText = "";
+                    entityIds.Description = "";
+                    entityIds.HelpText = "";
+                    entityIds.Required = true;
+                    entityIds.Unique = true;
+                    entityIds.Searchable = false;
+                    entityIds.Auditable = false;
+                    entityIds.System = true;
+                    entityIds.GenerateNewId = true;
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, entityIds);
+
+                    InputTextField subscriptions = new InputTextField();
+                    subscriptions.Id = new Guid("57A68E28-2CC1-C14A-B701-81D6F9F39363");
+                    subscriptions.Name = "subscriptions";
+                    subscriptions.Label = "Subscriptions JSON object";
+                    subscriptions.PlaceholderText = "";
+                    subscriptions.Description = "This is a stringified JSON object of the area subscriptions";
+                    subscriptions.HelpText = "";
+                    subscriptions.Required = false;
+                    subscriptions.Unique = false;
+                    subscriptions.Searchable = false;
+                    subscriptions.Auditable = false;
+                    subscriptions.System = true;
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, subscriptions);
+
+                    InputTextField name = new InputTextField();
+                    name.Id = new Guid("7B5797F2-3E07-184D-81F3-675C1AFB466D");
+                    name.Name = "name";
+                    name.Label = "Name";
+                    name.PlaceholderText = "";
+                    name.Description = "";
+                    name.HelpText = "";
+                    name.Required = false;
+                    name.Unique = true;
+                    name.Searchable = false;
+                    name.Auditable = false;
+                    name.System = true;
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, name);
+
+                    InputTextField roles = new InputTextField();
+                    roles.Id = new Guid("766F488E-C1D0-0E4D-8617-9EF868BF1C55");
+                    roles.Name = "roles";
+                    roles.Label = "Roles";
+                    roles.PlaceholderText = "";
+                    roles.Description = "";
+                    roles.HelpText = "";
+                    roles.Required = false;
+                    roles.Unique = false;
+                    roles.Searchable = false;
+                    roles.Auditable = false;
+                    roles.System = true;
+
+                    fieldResponse = entityManager.CreateField(areaEntity.Id.Value, roles);
+                }
+                #endregion
+
                 #region << create user - role relation >>
                 {
                     var userEntity = em.ReadEntity(SystemIds.UserEntityId).Object;
