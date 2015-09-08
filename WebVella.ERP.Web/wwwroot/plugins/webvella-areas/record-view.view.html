@@ -68,7 +68,7 @@
 	</div>-->
 </div>
 
-<div class="record-details" ng-if="contentData.selectedSidebarPage.isView">
+<div class="record-details" ng-if="contentData.selectedSidebarPage.isEdit">
 	<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections">
 		<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
 			<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
@@ -366,8 +366,13 @@
 		</div>
 	</div>
 </div>
-<div class="record-list" ng-if="!contentData.selectedSidebarPage.isView">
-	test
+<div ng-if="!contentData.selectedSidebarPage.isEdit">
+	<div id="text" class="records-details" ng-if="contentData.selectedSidebarPage.isView">
+		<recursive-view view-meta="contentData.selectedSidebarPage" view-data="contentData.selectedSidebarPage.data" relations-list="contentData.relationsList"></recursive-view>
+	</div>
+	<div id="text" class="records-list" ng-if="!contentData.selectedSidebarPage.isView">
+		<recursive-list list-meta="contentData.selectedSidebarPage" list-data="contentData.selectedSidebarPage.data" relations-list="contentData.relationsList"></recursive-list>
+	</div>
 </div>
 
 

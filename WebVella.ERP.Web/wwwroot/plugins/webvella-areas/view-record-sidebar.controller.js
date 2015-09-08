@@ -45,7 +45,7 @@
     	//Generate menu items list
         sidebarData.items = [];
         var generalItem = {
-        	name: "$",
+        	name: "*",
         	label: "Default",
         	iconName: "info-circle"
         };
