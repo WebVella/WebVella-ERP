@@ -1990,7 +1990,15 @@ namespace WebVella.ERP.Web.Controllers
                         else if (item is RecordViewSidebarViewItem)
                         {
                             List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordViewSidebarViewItem)item).ViewName, "id", record["id"]);
-                            dataRecord[((RecordViewSidebarViewItem)item).DataName] = subViewResult;
+                            //dataRecord[((RecordViewSidebarViewItem)item).DataName] = subViewResult;
+                            if( subViewResult.Any())
+                            {
+                                //the GetViewRecords always returns no more than 1 record
+                                foreach ( var prop in subViewResult[0].Properties )
+                                {
+                                    dataRecord[prop.Key] = prop.Value;
+                                }
+                            }
                         }
                         else if (item is RecordViewSidebarListItem)
                         {
