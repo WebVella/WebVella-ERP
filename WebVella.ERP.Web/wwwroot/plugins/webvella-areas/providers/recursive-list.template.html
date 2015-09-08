@@ -1,0 +1,41 @@
+﻿	<div ng-if="listData.length == 0">No items</div>
+	<table class="table table-vertical-align-middle {{listMeta.cssClass}}" ng-if="listData.length > 0">
+		<thead>
+		<tr>
+			<th class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns">{{column.meta.label}}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="record in listData">
+			<td class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns">
+				<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
+					<span ng-switch-when="1">{{getAutoIncrementString(column,record)}}</span>
+					<span ng-switch-when="2" ng-bind-html="getCheckboxString(column,record)"></span>
+					<span ng-switch-when="3">{{getCurrencyString(column,record)}}</span>
+					<span ng-switch-when="4">{{getDateString(column,record)}}</span>
+					<span ng-switch-when="5">{{getDateString(column,record)}}</span>
+					<span ng-switch-when="6" ng-bind-html="getEmailString(column,record)"></span>
+					<span ng-switch-when="7" ng-bind-html="getFileString(column,record)"></span>
+					<span ng-switch-when="8">{{record[column.dataName]}}</span>
+					<span ng-switch-when="9" ng-bind-html="getImageString(column,record)"></span>
+					<pre ng-switch-when="10" ng-bind="record[column.dataName]"></pre>
+					<span ng-switch-when="11" ng-bind-html="getCheckboxlistString(column,record)"></span>
+					<span ng-switch-when="12" ng-bind="record[column.dataName]"></span>
+					<span ng-switch-when="13">******</span>
+					<span ng-switch-when="14" ng-bind-html="getPercentString(column,record)"></span>
+					<span ng-switch-when="15">{{record[column.dataName]}}</span>
+					<span ng-switch-when="16">{{record[column.dataName]}}</span>
+					<span ng-switch-when="17" ng-bind-html="getDropdownString(column,record)"></span>
+					<span ng-switch-when="18">{{record[column.dataName]}}</span>
+					<span ng-switch-when="19" ng-bind-html="getUrlString(column,record)"></span>
+				</div>
+				<div ng-if="column.type=='view' || column.type == 'viewFromRelation'">
+					<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="relationsList"></recursive-view>
+				</div>
+				<div ng-if="column.type=='list' || column.type == 'listFromRelation'">
+					<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="relationsList"></recursive-list>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>

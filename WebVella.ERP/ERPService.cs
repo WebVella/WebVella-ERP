@@ -85,7 +85,7 @@ namespace WebVella.ERP
                     nameRoleField.HelpText = "";
                     nameRoleField.Required = true;
                     nameRoleField.Unique = false;
-                    nameRoleField.Searchable = true;
+					nameRoleField.Searchable = false;
                     nameRoleField.Auditable = false;
                     nameRoleField.System = true;
                     nameRoleField.DefaultValue = "";
@@ -104,7 +104,7 @@ namespace WebVella.ERP
                     descriptionRoleField.HelpText = "";
                     descriptionRoleField.Required = true;
                     descriptionRoleField.Unique = false;
-                    descriptionRoleField.Searchable = true;
+					descriptionRoleField.Searchable = false;
                     descriptionRoleField.Auditable = false;
                     descriptionRoleField.System = true;
                     descriptionRoleField.DefaultValue = "";
@@ -143,7 +143,7 @@ namespace WebVella.ERP
                     firstName.HelpText = "";
                     firstName.Required = true;
                     firstName.Unique = false;
-                    firstName.Searchable = true;
+					firstName.Searchable = false;
                     firstName.Auditable = false;
                     firstName.System = true;
                     firstName.DefaultValue = "";
@@ -162,7 +162,7 @@ namespace WebVella.ERP
                     lastName.HelpText = "";
                     lastName.Required = true;
                     lastName.Unique = false;
-                    lastName.Searchable = true;
+					lastName.Searchable = false;
                     lastName.Auditable = false;
                     lastName.System = true;
                     lastName.DefaultValue = "";
@@ -181,7 +181,7 @@ namespace WebVella.ERP
                     email.HelpText = "";
                     email.Required = true;
                     email.Unique = true;
-                    email.Searchable = true;
+					email.Searchable = false;
                     email.Auditable = false;
                     email.System = true;
                     email.DefaultValue = "";
@@ -200,7 +200,7 @@ namespace WebVella.ERP
                     password.HelpText = "";
                     password.Required = true;
                     password.Unique = true;
-                    password.Searchable = true;
+					password.Searchable = false;
                     password.Auditable = false;
                     password.System = true;
                     password.MinLength = 6;
@@ -219,7 +219,7 @@ namespace WebVella.ERP
                     lastLoggedIn.HelpText = "";
                     lastLoggedIn.Required = false;
                     lastLoggedIn.Unique = true;
-                    lastLoggedIn.Searchable = true;
+					lastLoggedIn.Searchable = false;
                     lastLoggedIn.Auditable = true;
                     lastLoggedIn.System = true;
                     lastLoggedIn.DefaultValue = null;
@@ -239,7 +239,7 @@ namespace WebVella.ERP
                     enabledField.HelpText = "";
                     enabledField.Required = true;
                     enabledField.Unique = false;
-                    enabledField.Searchable = true;
+					enabledField.Searchable = false;
                     enabledField.Auditable = false;
                     enabledField.System = true;
                     enabledField.DefaultValue = false;
@@ -256,7 +256,7 @@ namespace WebVella.ERP
                     verifiedUserField.HelpText = "";
                     verifiedUserField.Required = true;
                     verifiedUserField.Unique = false;
-                    verifiedUserField.Searchable = true;
+					verifiedUserField.Searchable = false;
                     verifiedUserField.Auditable = false;
                     verifiedUserField.System = true;
                     verifiedUserField.DefaultValue = false;
@@ -511,6 +511,172 @@ namespace WebVella.ERP
                 }
 
                 #endregion
+
+				//#region << create Area entity >>
+				{
+					InputEntity areaEntity = new InputEntity();
+					areaEntity.Id = SystemIds.AreaEntityId;
+					areaEntity.Name = "area";
+					areaEntity.Label = "Area";
+					areaEntity.LabelPlural = "areas";
+					areaEntity.System = true;
+					areaEntity.IconName = "folder";
+					areaEntity.Weight = 10;
+					areaEntity.RecordPermissions = new RecordPermissions();
+					areaEntity.RecordPermissions.CanRead = allowedRoles;
+					areaEntity.RecordPermissions.CanCreate = allowedRoles;
+					areaEntity.RecordPermissions.CanUpdate = allowedRoles;
+					areaEntity.RecordPermissions.CanDelete = allowedRoles;
+					{
+						var createResponse = entityManager.CreateEntity(areaEntity);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10330. Message:" + createResponse.Message);
+					}
+
+					InputTextField color = new InputTextField();
+					color.Id = new Guid("2B4AACD9-3C34-4C44-B3A3-8AFF1520CFF6");
+					color.Name = "color";
+					color.Label = "Color";
+					color.PlaceholderText = "";
+					color.Description = "";
+					color.HelpText = "";
+					color.Required = true;
+					color.Unique = false;
+					color.Searchable = false;
+					color.Auditable = false;
+					color.System = true;
+					color.DefaultValue = "teal";
+					color.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, color);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+					
+
+					InputTextField label = new InputTextField();
+					label.Id = new Guid("F050E7A1-AFB7-4346-B57B-1F12B2BD5AE5");
+					label.Name = "label";
+					label.Label = "Label";
+					label.PlaceholderText = "";
+					label.Description = "";
+					label.HelpText = "";
+					label.Required = true;
+					label.Unique = false;
+					label.Searchable = false;
+					label.Auditable = false;
+					label.System = true;
+					label.DefaultValue = "Default";
+					label.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, label);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+					InputTextField iconName = new InputTextField();
+					iconName.Id = new Guid("5EA0C872-D219-4D94-9EFA-C5DA978D316B");
+					iconName.Name = "icon_name";
+					iconName.Label = "Icon Name";
+					iconName.PlaceholderText = "";
+					iconName.Description = "";
+					iconName.HelpText = "";
+					iconName.Required = true;
+					iconName.Unique = false;
+					iconName.Searchable = false;
+					iconName.Auditable = false;
+					iconName.System = true;
+					iconName.DefaultValue = "database";
+					iconName.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, iconName);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+					InputNumberField weight = new InputNumberField();
+					weight.Id = new Guid("9B169431-6C31-4141-80EB-5844B8333E63");
+					weight.Name = "weight";
+					weight.Label = "Weight";
+					weight.PlaceholderText = "";
+					weight.Description = "";
+					weight.HelpText = "";
+					weight.Required = true;
+					weight.Unique = false;
+					weight.Searchable = false;
+					weight.Auditable = false;
+					weight.System = true;
+					weight.DefaultValue = 10;
+                    weight.MinValue = 0;
+                    weight.DecimalPlaces = 2;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, weight);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+					InputTextField subscriptions = new InputTextField();
+					subscriptions.Id = new Guid("288EA657-C12C-4AC1-B701-81D6F9F39363");
+					subscriptions.Name = "subscriptions";
+					subscriptions.Label = "Subscriptions JSON String";
+					subscriptions.PlaceholderText = "";
+					subscriptions.Description = "Stringified Array of subscription objects";
+					subscriptions.HelpText = "";
+					subscriptions.Required = false;
+					subscriptions.Unique = false;
+					subscriptions.Searchable = false;
+					subscriptions.Auditable = false;
+					subscriptions.System = true;
+					subscriptions.DefaultValue = null;
+					subscriptions.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, subscriptions);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+					InputTextField name = new InputTextField();
+					name.Id = new Guid("F297577B-073E-4D18-81F3-675C1AFB466D");
+					name.Name = "name";
+					name.Label = "Name";
+					name.PlaceholderText = "";
+					name.Description = "";
+					name.HelpText = "";
+					name.Required = true;
+					name.Unique = false;
+					name.Searchable = false;
+					name.Auditable = false;
+					name.System = true;
+					name.DefaultValue = "default";
+					name.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, name);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+					InputTextField roles = new InputTextField();
+					roles.Id = new Guid("8E486F76-D0C1-4D0E-8617-9EF868BF1C55");
+					roles.Name = "roles";
+					roles.Label = "Subscriptions JSON String";
+					roles.PlaceholderText = "";
+					roles.Description = "Stringified Array of roles that have access to this area";
+					roles.HelpText = "";
+					roles.Required = false;
+					roles.Unique = false;
+					roles.Searchable = false;
+					roles.Auditable = false;
+					roles.System = true;
+					roles.DefaultValue = null;
+					roles.MaxLength = null;
+                    {
+                        var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, roles);
+                        if (!createResponse.Success)
+                            throw new Exception("System error 10340. Message:" + createResponse.Message);
+                    }
+
+				}
+				//#endregion
             }
 
             storeSystemSettings = systemSettingsRepository.Convert(systemSettings);

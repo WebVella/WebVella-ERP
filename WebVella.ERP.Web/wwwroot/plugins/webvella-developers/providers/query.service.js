@@ -11,16 +11,26 @@
         .module('webvellaDevelopers')
         .service('webvellaDevelopersQueryService', service);
 
-    service.$inject = ['$log','$http', 'wvAppConstants'];
+    service.$inject = ['$log','$http', 'wvAppConstants','ngToast'];
 
     /* @ngInject */
-    function service($log, $http, wvAppConstants) {
+    function service($log, $http, wvAppConstants,ngToast) {
         var serviceInstance = this;
 
         serviceInstance.executeSampleQuery = executeSampleQuery;
         serviceInstance.createSampleQueryDataStructure = createSampleQueryDataStructure;
+        serviceInstance.executeSampleRelationRecordUpdate = executeSampleRelationRecordUpdate;
         serviceInstance.moveFile = moveFile;
         serviceInstance.deleteFile = deleteFile;
+
+        
+
+        /////////////////////////
+        function executeSampleRelationRecordUpdate(postObject, successCallback, errorCallback) {
+            $log.info('webvellaDevelopers>providers>query.service>execute executeSampleRelationRecordUpdate> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
 
         /////////////////////////
         function executeSampleQuery(postObject,successCallback, errorCallback) {
@@ -69,6 +79,18 @@
         			}
         			
         			data.success = false;
+        			var messageString = '<div><span class="go-red">Error:</span> ' + data.message + '</div>';
+        			if (data.errors.length > 0) {
+        				messageString += '<ul>';
+        				for (var i = 0; i < data.errors.length; i++) {
+        					messageString += '<li>' + data.errors[i].message + '</li>';
+        				}
+        				messageString += '</ul>';
+        			}
+        			ngToast.create({
+        				className: 'error',
+        				content: messageString
+        			});
         			errorCallback(data);
         			break;
         		default:

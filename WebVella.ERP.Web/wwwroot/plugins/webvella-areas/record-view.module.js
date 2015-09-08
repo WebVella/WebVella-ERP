@@ -11,7 +11,7 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
-	    .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
+        .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -20,7 +20,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:recordId/view/:viewName/section/:sectionName/:filter/:page',
+			url: '/:areaName/:entityName/:recordId/:viewName/:auxPageName/:filter/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -40,7 +40,9 @@
 			},
 			resolve: {
 				resolvedCurrentView: resolveCurrentView,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
+				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityRelationsList: resolveEntityRelationsList,
+				resolvedSecondaryViewOrList: resolveSecondaryViewOrList
 			},
 			data: {
 
@@ -49,18 +51,17 @@
 	};
 
 
-	// Run //////////////////////////////////////
+	//#region << Run >> //////////////////////////////////////
 	run.$inject = ['$log'];
-
 	/* @ngInject */
 	function run($log) {
 		$log.debug('webvellaAreas>entities> BEGIN module.run');
 
 		$log.debug('webvellaAreas>entities> END module.run');
 	};
+    //#endregion
 
-
-	//#region << Resolve Function >>
+	//#region << Resolve Function >> /////////////////////////
 	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
@@ -98,8 +99,43 @@
 		return defer.promise;
 	}
 
+	resolveSecondaryViewOrList.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+	function resolveSecondaryViewOrList($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
 
-	// Resolve Function /////////////////////////
+		// Process
+		function successCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
+		return defer.promise;
+	}
+
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
@@ -137,22 +173,66 @@
 		return defer.promise;
 	}
 
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+    /* @ngInject */
+	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+	    $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+	    // Initialize
+	    var defer = $q.defer();
+
+	    // Process
+	    function successCallback(response) {
+	        if (response.object == null) {
+	            $timeout(function () {
+	                $state.go("webvella-root-not-found");
+	            }, 0);
+	        }
+	        else {
+	            defer.resolve(response.object);
+	        }
+	    }
+
+	    function errorCallback(response) {
+	        if (response.object == null) {
+	            $timeout(function () {
+	                $state.go("webvella-root-not-found");
+	            }, 0);
+	        }
+	        else {
+	            defer.resolve(response.object);
+	        }
+	    }
+
+	    webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+	    // Return
+	    $log.debug('webvellaAdmin>entity-details> END state.resolved');
+	    return defer.promise;
+	}
+
+
 	//#endregion
 
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
+        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
 
 	/* @ngInject */
 	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
-        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta) {
+        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
-		contentData.isView = false;
-		contentData.isList = false;
+		contentData.selectedSidebarPage = {};
+		contentData.selectedSidebarPage.label = "";
+		contentData.selectedSidebarPage.name = "*";
+		contentData.selectedSidebarPage.isView = true;
+		contentData.selectedSidebarPage.isEdit = true;
+		contentData.selectedSidebarPage.meta = null;
+		contentData.selectedSidebarPage.data = null;
 		contentData.stateParams = $stateParams;
+
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -167,73 +247,141 @@
 		//#endregion
 
 		//#region << Initialize view and regions>>
-		contentData.recordView = angular.copy(resolvedCurrentView.meta);
-		contentData.contentRegion = null;
-		contentData.sidebarRegion = contentData.recordView.sidebar;
-		for (var i = 0; i < contentData.recordView.regions.length; i++) {
-			if (contentData.recordView.regions[i].name === "content") {
-				contentData.contentRegion = contentData.recordView.regions[i];
+
+		//1. Get the current view
+		contentData.defaultRecordView = angular.copy(resolvedCurrentView.meta);
+
+		//2. Load the sidebar
+		contentData.sidebarRegion = contentData.defaultRecordView.sidebar;
+
+		//3. Find and load the selected page meta and data
+		function getViewOrListMetaAndData(name) {
+			var returnObject = {
+				data: null,
+				meta:null
+			};
+
+			if (name === "") {
+				returnObject.data = angular.copy(resolvedCurrentView.data[0]);
+				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
+					if (contentData.defaultRecordView.regions[i].name === "content") {
+						returnObject.meta = angular.copy(contentData.defaultRecordView.regions[i]);
+					}
+				}
+				contentData.selectedSidebarPage.isView = true;
+				contentData.selectedSidebarPage.isEdit = true;
+			} else {
+				var selectedDataName = "";
+				contentData.selectedSidebarPage.isEdit = false;
+				for (var i = 0; i < contentData.defaultRecordView.sidebar.items.length; i++) {
+					//TODO: the names of different views and lists for different entities could be the same and this will fail to select the right one. We should possibly use the dataName?
+					if (contentData.defaultRecordView.sidebar.items[i].meta.name === name) {
+						// If in edit mode (view from the current entity) the data should be different -> we need the content region meta, not the view meta as in recursive-view directive
+						if (contentData.defaultRecordView.sidebar.items[i].type === "view") { 
+							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
+								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
+									returnObject.meta = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
+								}
+							}
+						} else {
+							returnObject.meta = contentData.defaultRecordView.sidebar.items[i].meta;
+						}
+
+						selectedDataName = contentData.defaultRecordView.sidebar.items[i].dataName;
+						contentData.selectedSidebarPage.isView = true;
+						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
+							contentData.selectedSidebarPage.isEdit = true;
+						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list"
+							|| contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
+							contentData.selectedSidebarPage.isView = false;
+						}
+					}
+				}
+				returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName]);
 			}
+
+			return returnObject;
+		};
+
+		var returnedObject = {};
+		if ($stateParams.auxPageName === "*") {
+			//The default view meta is active
+			returnedObject = getViewOrListMetaAndData("");
+			contentData.selectedSidebarPage.meta = returnedObject.meta;
+			contentData.selectedSidebarPage.data = returnedObject.data;
 		}
-		contentData.viewData = angular.copy(resolvedCurrentView.data[0]);
+		else {
+			//One of the sidebar view or lists is active
+			//Load the data
+			returnedObject = getViewOrListMetaAndData($stateParams.auxPageName);
+			contentData.selectedSidebarPage.meta = returnedObject.meta;
+			contentData.selectedSidebarPage.data = returnedObject.data;
+		}
+
 		//#endregion
 
 		//#region << Intialize current entity >>
 		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
 
-		//#endregion
-
-	    //#region << View Seciton >>
-		contentData.viewSection = {};
-	    //<< Initialize section label >>
-		contentData.viewSection.label = "General";
-		for (var i = 0; i < contentData.recordView.sidebar.items.length; i++) {
-		    if ($stateParams.sectionName == contentData.recordView.sidebar.items[i].meta.name) {
-		        contentData.viewSection.label = contentData.recordView.sidebar.items[i].meta.label;
-		    }
-		}
-
-
-		if ($stateParams.sectionName == "$") {
-		    //The default view is active
-		    contentData.isView = true;
-		}
-		else {
-		    //One of the sidebar view or lists is active
-		}
-
 	    //#endregion
 
-		//#region << Logic >>
-
-		contentData.toggleSectionCollapse = function (section) {
-			section.collapsed = !section.collapsed;
+	    //#region << Entity relations functions >>
+		contentData.relationsList = angular.copy(resolvedEntityRelationsList);
+		contentData.getRelation = function (relationName) {
+		    for (var i = 0; i < contentData.relationsList.length; i++) {
+		        if (contentData.relationsList[i].name == relationName) {
+		            //set current entity role
+		            if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 3; //both origin and target
+		            }
+		            else if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 2; //target
+		            }
+		            else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 1; //origin
+		            }
+		            else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+		                contentData.relationsList[i].currentEntityRole = 0; //possible problem
+		            }
+		            return contentData.relationsList[i];
+		        }
+		    }
+		    return null;
 		}
+	    //#endregion
 
-		contentData.htmlFieldUpdate = function (item) {
-			contentData.fieldUpdate(item, contentData.viewData[item.dataName]);
-		}
+		if (contentData.selectedSidebarPage.isEdit) {
 
-		contentData.fieldUpdate = function (item, data) {
-		    var defer = $q.defer();
-			contentData.patchObject = {};
-			var validation = {
-				success: true,
-				message: "successful validation"
-			};
-			if (data != null) {
-				data = data.toString().trim();
-				switch (item.meta.fieldType) {
+			//#region << Edit View Rendering Logic fields>>
 
-					//Auto increment number
+			contentData.toggleSectionCollapse = function(section) {
+				section.collapsed = !section.collapsed;
+			}
+
+			contentData.htmlFieldUpdate = function(item) {
+				contentData.fieldUpdate(item, contentData.selectedSidebarPage.data[item.dataName]);
+			}
+
+			contentData.fieldUpdate = function(item, data) {
+				var defer = $q.defer();
+				contentData.patchObject = {};
+				var validation = {
+					success: true,
+					message: "successful validation"
+				};
+				if (data != null) {
+					data = data.toString().trim();
+					switch (item.meta.fieldType) {
+
+						//Auto increment number
 					case 1:
 						//Readonly
 						break;
-						//Checkbox
+					//Checkbox
 					case 2:
 						data = (data === "true"); // convert string to boolean
 						break;
-						//Auto increment number
+					//Auto increment number
 					case 3: //Currency
 						if (!data && item.meta.required) {
 							return "This is a required field";
@@ -250,13 +398,13 @@
 						if (!data && item.meta.required) {
 							return "This is a required field";
 						}
-						data = moment(data).toISOString();
+						data = moment(data).startOf('day').utc().toISOString();
 						break;
 					case 5: //Datetime
 						if (!data && item.meta.required) {
 							return "This is a required field";
 						}
-						data = moment(data).toISOString();
+						data = moment(data).startOf('minute').utc().toISOString();
 						break;
 					case 6: //Email
 						if (!data && item.meta.required) {
@@ -316,323 +464,529 @@
 							return "This is a required field";
 						}
 						break;
+					}
+				}
+				contentData.patchObject[item.meta.name] = data;
+
+				function patchSuccessCallback(response) {
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> ' + response.message
+					});
+					contentData.selectedSidebarPage.data = angular.copy(response.object.data[0]);
+					defer.resolve();
+				}
+
+				function patchFailedCallback(response) {
+					ngToast.create({
+						className: 'error',
+						content: '<span class="go-red">Error:</span> ' + response.message
+					});
+					defer.resolve("validation error");
+				}
+
+				webvellaAdminService.patchRecord($stateParams.recordId, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+
+				return defer.promise;
+			}
+
+			//Auto increment
+			contentData.getAutoIncrementString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "empty";
+				} else if (item.meta.displayFormat) {
+					return item.meta.displayFormat.replace("{0}", fieldValue);
+				} else {
+					return fieldValue;
 				}
 			}
-			contentData.patchObject[item.meta.name] = data;
-
-			function patchSuccessCallback(response) {
-			    ngToast.create({
-			        className: 'success',
-			        content: '<span class="go-green">Success:</span> ' + response.message
-			    });
-			    contentData.viewData = angular.copy(response.object.data[0]);
-			    defer.resolve();
-			}
-			function patchFailedCallback(response) {
-			    ngToast.create({
-			        className: 'error',
-			        content: '<span class="go-red">Error:</span> ' + response.message
-			    });
-			    defer.resolve("validation error");
-			}
-
-			webvellaAdminService.patchRecord($stateParams.recordId, contentData.currentEntity.name, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
-
-			return defer.promise;
-		}
-
-
-		//Auto increment
-		contentData.getAutoIncrementString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
-			if (!fieldValue) {
-				return "empty";
-			}
-			else if (item.meta.displayFormat) {
-				return item.meta.displayFormat.replace("{0}", fieldValue);
-			}
-			else {
-				return fieldValue;
-			}
-		}
-		//Checkbox
-		contentData.getCheckboxString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
-			if (fieldValue) {
-			    return "<i class='fa fa-fw fa-check go-green'></i> true";
-			}
-			else {
-			    return "<i class='fa fa-fw fa-close go-red'></i> false";
-			}
-		}
-		//Currency
-		contentData.getCurrencyString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
-			if (!fieldValue) {
-				return "empty";
-			}
-			else if (item.meta.currency != null && item.meta.currency != {} && item.meta.currency.symbol) {
-				if (item.meta.currency.symbolPlacement == 1) {
-					return item.meta.currency.symbol + " " + fieldValue
-				}
-				else {
-					return fieldValue + " " + item.meta.currency.symbol
+			//Checkbox
+			contentData.getCheckboxString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (fieldValue) {
+					return "<i class='fa fa-fw fa-check go-green'></i> true";
+				} else {
+					return "<i class='fa fa-fw fa-close go-red'></i> false";
 				}
 			}
-			else {
-				return fieldValue;
+			//Currency
+			contentData.getCurrencyString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "empty";
+				} else if (item.meta.currency != null && item.meta.currency !== {} && item.meta.currency.symbol) {
+					if (item.meta.currency.symbolPlacement === 1) {
+						return item.meta.currency.symbol + " " + fieldValue;
+					} else {
+						return fieldValue + " " + item.meta.currency.symbol;
+					}
+				} else {
+					return fieldValue;
+				}
 			}
-		}
-		//Date & DateTime 
-		contentData.getDateString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
-			if (!fieldValue) {
-				return "";
+			//Date & DateTime 
+			contentData.getDateString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "";
+				} else {
+					return $filter('date')(fieldValue, "dd MMM yyyy");
+				}
 			}
-			else {
-				return $filter('date')(fieldValue, "dd MMM yyyy");
+			contentData.getTimeString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "";
+				} else {
+					return $filter('date')(fieldValue, "HH:mm");
+				}
 			}
-		}
-		contentData.getTimeString = function (item) {
-			var fieldValue = contentData.viewData[item.dataName];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return $filter('date')(fieldValue, "HH:mm");
-			}
-		}
-		$scope.picker = { opened: false };
-		$scope.openPicker = function () {
-			$timeout(function () {
-				$scope.picker.opened = true;
-			});
-		};
-		$scope.closePicker = function () {
-			$scope.picker.opened = false;
-		};
+			$scope.picker = { opened: false };
+			$scope.openPicker = function() {
+				$timeout(function() {
+					$scope.picker.opened = true;
+				});
+			};
+			$scope.closePicker = function() {
+				$scope.picker.opened = false;
+			};
 
-		//File upload
-		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
-		contentData.progress = {}; //data wrapper for the progress percentage for each upload
+			//File upload
+			contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
+			contentData.progress = {}; //data wrapper for the progress percentage for each upload
 
-		/////////Register variables
-		for (var sectionIndex = 0; sectionIndex < contentData.contentRegion.sections.length; sectionIndex++) {
-			for (var rowIndex = 0; rowIndex < contentData.contentRegion.sections[sectionIndex].rows.length; rowIndex++) {
-				for (var columnIndex = 0; columnIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-					for (var itemIndex = 0; itemIndex < contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-						if (contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
-							|| contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
-							var item = contentData.contentRegion.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
-							var FieldName = item.dataName;
-							contentData.progress[FieldName] = 0;
+			/////////Register variables
+			for (var sectionIndex = 0; sectionIndex < contentData.selectedSidebarPage.meta.sections.length; sectionIndex++) {
+				for (var rowIndex = 0; rowIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows.length; rowIndex++) {
+					for (var columnIndex = 0; columnIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+						for (var itemIndex = 0; itemIndex < contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+							if (contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
+								|| contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
+								var item = contentData.selectedSidebarPage.meta.sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
+								var FieldName = item.dataName;
+								contentData.progress[FieldName] = 0;
+							}
 						}
 					}
 				}
 			}
-		}
 
-		contentData.upload = function (files, item) {
-			var fieldName = item.dataName;
-			function moveSuccessCallback(response) {
-				contentData.viewData[fieldName] = response.object.url;
-				contentData.fieldUpdate(item, response.object.url);
+			contentData.getProgressStyle = function(name) {
+				return "width: " + contentData.progress[name] + "%;";
 			}
 
-			function uploadSuccessCallback(response) {
-				var tempPath = response.object.url;
-				var fileName = response.object.filename;
-				var targetPath = "/fs/" + item.fieldId + "/" + fileName;
-				var overwrite = false;
-				webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, moveSuccessCallback, uploadErrorCallback);
-			}
-			function uploadErrorCallback(response) {
-				alert(response.message);
-			}
-			function uploadProgressCallback(response) {
-				contentData.progress[dataName] = parseInt(100.0 * response.loaded / response.total);
-			}
-			webvellaAdminService.uploadFileToTemp(files, item.meta.name, uploadProgressCallback, uploadSuccessCallback, uploadErrorCallback);
-		};
-
-		contentData.deleteFileUpload = function (item) {
-			var fieldName = item.dataName;
-			var filePath = contentData.viewData[fieldName];
-
-			function deleteSuccessCallback(response) {
-				$timeout(function () {
-					contentData.viewData[fieldName] = null;
-					contentData.progress[fieldName] = 0;
-					contentData.fieldUpdate(item,null);
-				}, 0);
-				return true;
-			}
-			function deleteFailedCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message
-				});
-				return "validation error";
-			}
-
-			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
-
-		}
-
-		//Html
-		$scope.editorOptions = {
-			language: 'en',
-			'skin': 'moono',
-			height: '160',
-			//'extraPlugins': "imagebrowser",//"imagebrowser,mediaembed",
-			//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
-			//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
-			//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
-			//filebrowserUploadUrl: '/api/v1/ckeditor/files',
-			toolbarLocation: 'top',
-			toolbar: 'full',
-			toolbar_full: [
-				{
-					name: 'basicstyles',
-					items: ['Bold', 'Italic', 'Strike', 'Underline']
-				},
-				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
-				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-				{ name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
-				{ name: 'clipboard', items: ['Undo', 'Redo'] },
-				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
-			]
-		};
-
-		//Checkbox list
-		contentData.getCheckboxlistString = function (fieldData, array) {
-			if (fieldData) {
-				var selected = [];
-				angular.forEach(array, function (s) {
-					if (fieldData.indexOf(s.key) >= 0) {
-						selected.push(s.value);
+			contentData.uploadedFileName = "";
+			contentData.upload = function(file, item) {
+				if (file != null) {
+					contentData.uploadedFileName = item.dataName;
+					contentData.moveSuccessCallback = function(response) {
+						$timeout(function() {
+							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
+							contentData.fieldUpdate(item, response.object.url);
+						}, 1);
 					}
-				});
-				return selected.length ? selected.join(', ') : 'empty';
+
+					contentData.uploadSuccessCallback = function(response) {
+						var tempPath = response.object.url;
+						var fileName = response.object.filename;
+						var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+						var overwrite = true;
+						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
+					}
+					contentData.uploadErrorCallback = function(response) {
+						alert(response.message);
+					}
+					contentData.uploadProgressCallback = function(response) {
+						$timeout(function() {
+							contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
+						}, 1);
+					}
+					webvellaAdminService.uploadFileToTemp(file, item.meta.name, contentData.uploadProgressCallback, contentData.uploadSuccessCallback, contentData.uploadErrorCallback);
+				}
+			};
+
+			contentData.deleteFileUpload = function(item) {
+				var fieldName = item.dataName;
+				var filePath = contentData.selectedSidebarPage.data[fieldName];
+
+				function deleteSuccessCallback(response) {
+					$timeout(function() {
+						contentData.selectedSidebarPage.data[fieldName] = null;
+						contentData.progress[fieldName] = 0;
+						contentData.fieldUpdate(item, null);
+					}, 0);
+					return true;
+				}
+
+				function deleteFailedCallback(response) {
+					ngToast.create({
+						className: 'error',
+						content: '<span class="go-red">Error:</span> ' + response.message
+					});
+					return "validation error";
+				}
+
+				webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+
 			}
-			else {
-				return 'empty';
+
+			//Html
+			$scope.editorOptions = {
+				language: 'en',
+				'skin': 'moono',
+				height: '160',
+				//'extraPlugins': "imagebrowser",//"imagebrowser,mediaembed",
+				//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
+				//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
+				//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
+				//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+				toolbarLocation: 'top',
+				toolbar: 'full',
+				toolbar_full: [
+					{
+						name: 'basicstyles',
+						items: ['Bold', 'Italic', 'Strike', 'Underline']
+					},
+					{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
+					{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+					{ name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+					{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
+					{ name: 'clipboard', items: ['Undo', 'Redo'] },
+					{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
+					{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
+				]
+			};
+
+			//Checkbox list
+			contentData.getCheckboxlistString = function(fieldData, array) {
+				if (fieldData) {
+					var selected = [];
+					angular.forEach(array, function(s) {
+						if (fieldData.indexOf(s.key) >= 0) {
+							selected.push(s.value);
+						}
+					});
+					return selected.length ? selected.join(', ') : 'empty';
+				} else {
+					return 'empty';
+				}
 			}
+
+			//Password
+			contentData.dummyPasswordModels = {}; //as the password value is of know use being encrypted, we will assign dummy models
+			//Dropdown
+			contentData.getDropdownString = function(fieldData, array) {
+				var selected = $filter('filter')(array, { key: fieldData });
+				return (fieldData && selected.length) ? selected[0].value : 'empty';
+			}
+
+			//Percent
+			$scope.Math = window.Math;
+
+			function multiplyDecimals(val1, val2, decimalPlaces) {
+				var helpNumber = 100;
+				for (var i = 0; i < decimalPlaces; i++) {
+					helpNumber = helpNumber * 10;
+				}
+				var temp1 = $scope.Math.round(val1 * helpNumber);
+				var temp2 = $scope.Math.round(val2 * helpNumber);
+				return (temp1 * temp2) / (helpNumber * helpNumber);
+			}
+
+			contentData.getPercentString = function(item) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+
+				if (!fieldValue) {
+					return "empty";
+				} else {
+					//JavaScript has a bug when multiplying decimals
+					//The way to correct this is to multiply the decimals before multiple their values,
+					var resultPercentage = 0.00;
+					resultPercentage = multiplyDecimals(fieldValue, 100, 3);
+					return resultPercentage + "%";
+				}
+
+			}
+
+			//Test
+
+			contentData.getItem = function(item) {
+				var i = 0;
+			}
+
+
+			//#endregion
+
 		}
 
-		//Password
-		contentData.dummyPasswordModels = {};//as the password value is of know use being encrypted, we will assign dummy models
-		//Dropdown
-		contentData.getDropdownString = function (fieldData, array) {
-			var selected = $filter('filter')(array, { key: fieldData });
-			return (fieldData && selected.length) ? selected[0].value : 'empty';
-		}
 
-	    //Percent
-		$scope.Math = window.Math;
-		function multiplyDecimals(val1, val2, decimalPlaces) {
-		    var helpNumber = 100;
-		    for (var i = 0; i < decimalPlaces; i++) {
-		        helpNumber = helpNumber * 10;
-		    }
-		    var temp1 = $scope.Math.round(val1 * helpNumber);
-		    var temp2 = $scope.Math.round(val2 * helpNumber);
-		    return (temp1 * temp2) / (helpNumber * helpNumber);
-		}
+		//#region << Modals >>
 
-		contentData.getPercentString = function (item) {
-		    var fieldValue = contentData.viewData[item.dataName];
+	    ////Relation field
 
-		    if (!fieldValue) {
-		        return "empty";
-		    }
-		    else {
-		        //JavaScript has a bug when multiplying decimals
-		        //The way to correct this is to multiply the decimals before multiple their values,
-		        var resultPercentage = 0.00;
-		        resultPercentage = multiplyDecimals(fieldValue,100,3);
-		        return resultPercentage + "%";
-		        }
+	    ////////////////////
+        // Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
+		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
+		    //relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
+		    //dataKind - target, origin, origin-target
 
-		}
+            //Select ONE item modal
+		    if (relationType == 1 || (relationType == 2 && dataKind == "target")) {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
+		                resolvedLookupRecords: function () {
+		                    return resolveLookupRecords(item,relationType, dataKind);
+		                },
+		                modalMode: function () {
+		                    return "single-selection";
+		                },
+		            }
+		        });
+                //On modal exit
+		        modalInstance.result.then(function (returnObject) {
 
-	    //Test
-
-		contentData.getItem = function (item) {
-		    var i = 0;
-		}
-
-
-		//#endregion
-
-	    //#region << Modals >>
-
-	    //Relation field
-		contentData.openManageRelationFieldModal = function (item) {
-		    var resolveRelationLookupList = function (item) {
-		        // Initialize
-		        var defer = $q.defer();
-
-		        // Process
-		        function errorCallback(response) {
-		            defer.resolve(response.object);
-		        }
-		        function getListRecordsSuccessCallback(response) {
-		            defer.resolve(response.object);
-		        }
-
-		        function getEntityMetaSuccessCallback(response) {
-		            var entityMeta = response.object;
-		            var defaultLookupList = null;
-                    //Find the default lookup field if none return null.
-		            for (var i = 0; i < entityMeta.recordLists.length; i++) {
-		                if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
-		                    defaultLookupList = entityMeta.recordLists[i];
-		                    break;
-		                }
+		            // Initialize
+		            var displayedRecordId = $stateParams.recordId;
+		            var oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
+                    
+		            function successCallback(response) {
+		                ngToast.create({
+		                    className: 'success',
+		                    content: '<span class="go-green">Success:</span> Change applied'
+		                });
+		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
 		            }
 
-		            if (defaultLookupList == null) {
-		                defer.resolve(null);
+		            function errorCallback(response) {
+		                var messageHtml = response.message;
+		                if (response.errors.length > 0) { //Validation errors
+		                    messageHtml = "<ul>";
+		                    for (var i = 0; i < response.errors.length; i++) {
+		                        messageHtml += "<li>" + response.errors[i].message + "</li>";
+		                    }
+		                    messageHtml += "</ul>";
+		                }
+		                ngToast.create({
+		                    className: 'error',
+		                    content: '<span class="go-red">Error:</span> ' + messageHtml
+		                });
+		            }
+		            
+		            // ** Post relation change between the two records
+		            var recordsToBeAttached = [];
+		            var recordsToBeDettached = [];
+		            if (returnObject.dataKind == "origin") {
+		                recordsToBeAttached.push(returnObject.selectedRecordId);
+		                recordsToBeDettached.push(oldRelationRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached,recordsToBeDettached, successCallback, errorCallback);
+		            }
+		            else if (returnObject.dataKind == "target") {
+		                recordsToBeAttached.push(displayedRecordId);
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached,recordsToBeDettached, successCallback, errorCallback);
 		            }
 		            else {
-		                webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all",1, getListRecordsSuccessCallback, errorCallback);
+		                alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
 		            }
-		        }
+		        });
+		    }
+		    //Select MULTIPLE item modal
+		    else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
+		                resolvedLookupRecords: function () {
+		                    return resolveLookupRecords(item, relationType, dataKind);
+		                },
+		                modalMode: function () {
+		                    return "multi-selection";
+		                },
+		            }
+		        });
+		        //On modal exit
+		        modalInstance.result.then(function (returnObject) {
 
-		        webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+		            // Initialize
+		            var displayedRecordId = $stateParams.recordId;
 
-		        return defer.promise;
+		            function successCallback(response) {
+		                ngToast.create({
+		                    className: 'success',
+		                    content: '<span class="go-green">Success:</span> Change applied'
+		                });
+		                webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+		            }
+
+		            function errorCallback(response) {
+		                var messageHtml = response.message;
+		                if (response.errors.length > 0) { //Validation errors
+		                    messageHtml = "<ul>";
+		                    for (var i = 0; i < response.errors.length; i++) {
+		                        messageHtml += "<li>" + response.errors[i].message + "</li>";
+		                    }
+		                    messageHtml += "</ul>";
+		                }
+		                ngToast.create({
+		                    className: 'error',
+		                    content: '<span class="go-red">Error:</span> ' + messageHtml
+		                });
+		            }
+
+		            // There are currently cases just for origin, error on else
+		            if (returnObject.dataKind == "origin") {
+		                webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, returnObject.attachDelta, returnObject.detachDelta, successCallback, errorCallback);
+		            }
+		            else {
+		                alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+		            }
+		        });
+		    }
+		    else if (relationType == 3 && dataKind == "target") {
+		        var modalInstance = $modal.open({
+		            animation: false,
+		            templateUrl: 'manageRelationFieldModal.html',
+		            controller: 'ManageRelationFieldModalController',
+		            controllerAs: "popupData",
+		            size: "lg",
+		            resolve: {
+		                contentData: function () {
+		                    return contentData;
+		                },
+		                selectedItem: function () {
+		                    return item;
+		                },
+		                selectedRelationType: function () {
+		                    return relationType;
+		                },
+		                selectedDataKind: function () {
+		                    return dataKind;
+		                },
+		                resolvedLookupRecords: function () {
+		                    return resolveLookupRecords(item, relationType, dataKind);
+		                },
+		                modalMode: function () {
+		                    return "single-trigger-selection";
+		                },
+		            }
+		        });
+
+		    }
+		}
+		contentData.modalSelectedItem = {};
+		contentData.modalRelationType = -1;
+		contentData.modalDataKind = "";
+
+	    //Resolve function lookup records
+		var resolveLookupRecords = function (item, relationType, dataKind) {
+		    // Initialize
+		    var defer = $q.defer();
+		    contentData.modalSelectedItem = item;
+		    contentData.modalRelationType = relationType;
+		    contentData.modalDataKind = dataKind;
+		    // Process
+		    function errorCallback(response) {
+		        ngToast.create({
+		            className: 'error',
+		            content: '<span class="go-red">Error:</span> ' + response.message
+		        });
+		        defer.reject();
+		    }
+		    function getListRecordsSuccessCallback(response) {
+		        defer.resolve(response); //Submitting the whole response to manage the error states
 		    }
 
-		    var modalInstance = $modal.open({
-		        animation: false,
-		        templateUrl: 'manageRelationFieldModal.html',
-		        controller: 'ManageRelationFieldModalController',
-		        controllerAs: "popupData",
-		        size: "lg",
-		        resolve: {
-		            contentData: function () {
-		                return contentData;
-		            },
-		            selectedItem: function () {
-		                return item;
-		            },
-		            resolvedRelationLookupList: function () {
-		                return resolveRelationLookupList(item);
+		    function getEntityMetaSuccessCallback(response) {
+		        var entityMeta = response.object;
+		        var defaultLookupList = null;
+
+		        //Find the default lookup field if none return null.
+		        for (var i = 0; i < entityMeta.recordLists.length; i++) {
+		            if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
+		                defaultLookupList = entityMeta.recordLists[i];
+		                break;
 		            }
 		        }
-		    });
 
+		        if (defaultLookupList == null) {
+		            response.message = "This entity does not have a default lookup list";
+		            response.success = false;
+		            errorCallback(response);
+		        }
+		        else {
+		            var gg = contentData.modalSelectedItem;
+		            //contentData.modalRelationType;
+		            //contentData.modalDataKind;
+
+                    //Current record is Origin
+		            if (contentData.modalDataKind == "origin") {
+		                //Find if the target field is required
+		                var targetRequiredField = false;
+		                var modalCurrrentRelation = contentData.getRelation(contentData.modalSelectedItem.relationName);
+		                for (var m = 0; m < entityMeta.fields.length; m++) {
+		                    if (entityMeta.fields[m].id == modalCurrrentRelation.targetFieldId) {
+		                        targetRequiredField = entityMeta.fields[m].required;
+		                    }
+		                }
+		                if (targetRequiredField && contentData.modalRelationType == 1) {
+		                    //Case 1 - Solves the problem when the target field is required, but we are currently looking on the origin field holding record. 
+		                    //In this case we cannot allow this relation to be managed from this origin record as the change will leave the old target record with null for its required field
+		                    var lockedChangeResponse = {
+		                        success: false,
+		                        message: "This is a relation field, that cannot be managed from this record. Try managing it from the related <<" + entityMeta.label + ">> entity record",
+                                object:null
+		                    }
+		                    getListRecordsSuccessCallback(lockedChangeResponse);
+		                }
+		                else {
+		                    webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		                }
+		            }
+		            else if (contentData.modalDataKind == "target") {
+                    //Current records is Target
+		                webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+		            }
+		        }
+		    }
+
+		    webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+
+		    return defer.promise;
 		}
 
-
-
         //#endregion
-
-
 
 
 		$log.debug('webvellaAreas>entities> END controller.exec');
@@ -640,18 +994,38 @@
 
 
     //#region < Modal Controllers >
-	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', 'resolvedRelationLookupList', 'selectedItem', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
-
+    //Test to unify all modals - Single select, multiple select, click to select
+	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q','$stateParams', 'modalMode', 'resolvedLookupRecords',
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
     /* @ngInject */
-	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, resolvedRelationLookupList, selectedItem, webvellaAdminService,webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+        selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+
 	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
 	    /* jshint validthis:true */
 	    var popupData = this;
 	    popupData.currentPage = 1;
 	    popupData.parentData = angular.copy(contentData);
 	    popupData.selectedItem = angular.copy(selectedItem);
+	    popupData.modalMode = angular.copy(modalMode);
+	    popupData.hasWarning = false;
+	    popupData.warningMessage = "";
+
+        //Init
+	    popupData.currentlyAttachedIds = angular.copy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
+	    popupData.dbAttachedIds = angular.copy(popupData.currentlyAttachedIds);
+	    popupData.attachedRecordIdsDelta = [];
+	    popupData.detachedRecordIdsDelta = [];
+
+
 	    //Get the default lookup list for the entity
-	    popupData.relationLookupList = angular.copy(resolvedRelationLookupList);
+	    if (resolvedLookupRecords.success) {
+	        popupData.relationLookupList = angular.copy(resolvedLookupRecords.object);
+	    }
+	    else {
+	        popupData.hasWarning = true;
+	        popupData.warningMessage = resolvedLookupRecords.message;
+	    }
 
 	    //#region << Paging >>
 	    popupData.selectPage = function (page) {
@@ -668,10 +1042,9 @@
 	        webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, successCallback, errorCallback);
 	    }
 
-        //#endregion
-        
+	    //#endregion
 
-	    //#region << Logic >>
+	    //#region << Render Logic >>
 
 	    //1.Auto increment
 	    popupData.getAutoIncrementString = function (record, fieldMeta) {
@@ -824,16 +1197,173 @@
 	        }
 	    }
 
-        //#endregion 
+	    //#endregion 
 
+	    popupData.isSelectedRecord = function (recordId) {
+	        return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+	    }
 
-
-
-	    popupData.select = function (record) {
-
-	        
-
+        //Single record before save
+	    popupData.selectSingleRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id
+	        };
+	        $modalInstance.close(returnObject);
 	    };
+
+        // Multiple records before save
+	    popupData.attachRecord = function (record) {
+	        //Add record to delta  if it is NOT part of the original list
+	        if (popupData.dbAttachedIds.indexOf(record.id) == -1) {
+	            popupData.attachedRecordIdsDelta.push(record.id);
+	        }
+
+	        //Check and remove from the detachDelta if it is there
+	        var elementIndex = popupData.detachedRecordIdsDelta.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            popupData.detachedRecordIdsDelta.splice(elementIndex, 1);
+	        }
+	        //Update the currentlyAttachedIds for highlight
+	        elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+	        if (elementIndex == -1) {
+	            //this is the normal case
+	            popupData.currentlyAttachedIds.push(record.id);
+	        }
+	        else {
+	            //if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+	        }
+
+	        //$log.debug("currently Highlighted >>");
+	        //$log.debug(popupData.currentlyAttachedIds);
+	        //$log.debug("current attach Delta >>");
+	        //$log.debug(popupData.attachedRecordIdsDelta);
+	        //$log.debug("current detach Delta >>");
+	        //$log.debug(popupData.detachedRecordIdsDelta);
+	    }
+	    popupData.detachRecord = function (record) {
+	        //Add record to detachDelta if it is part of the original list
+	        if (popupData.dbAttachedIds.indexOf(record.id) > -1) {
+	            popupData.detachedRecordIdsDelta.push(record.id);
+	        }
+	        //Check and remove from attachDelta if it is there
+	        var elementIndex = popupData.attachedRecordIdsDelta.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            popupData.attachedRecordIdsDelta.splice(elementIndex, 1);
+	        }
+	        //Update the currentlyAttachedIds for highlight
+	        elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+	        if (elementIndex > -1) {
+	            //this is the normal case
+	            popupData.currentlyAttachedIds.splice(elementIndex, 1);
+	        }
+	        else {
+	            //if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+	        }
+	        //$log.debug("currently Highlighted >>");
+	        //$log.debug(popupData.currentlyAttachedIds);
+	        //$log.debug("current attach Delta >>");
+	        //$log.debug(popupData.attachedRecordIdsDelta);
+	        //$log.debug("current detach Delta >>");
+	        //$log.debug(popupData.detachedRecordIdsDelta);
+	    }
+	    popupData.saveRelationChanges = function () {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            attachDelta: popupData.attachedRecordIdsDelta,
+	            detachDelta: popupData.detachedRecordIdsDelta
+	        };
+	        $modalInstance.close(returnObject);
+	        //category_id
+	    };
+
+	    //Instant save on selection, keep popup open
+	    popupData.processingRecordId = "";
+	    popupData.processOperation = "";
+	    popupData.processInstantSelection = function (returnObject) {
+
+	        // Initialize
+	        popupData.processingRecordId = returnObject.selectedRecordId;
+	        popupData.processOperation = returnObject.operation;
+	        var displayedRecordId = $stateParams.recordId;
+	        var recordsToBeAttached = [];
+	        var recordsToBeDettached = [];
+	        if (returnObject.operation == "attach") {
+	            recordsToBeAttached.push(displayedRecordId);
+	        }
+	        else if (returnObject.operation == "detach") {
+	            recordsToBeDettached.push(displayedRecordId);
+	        }
+
+	        function successCallback(response) {
+	            var currentRecordId = angular.copy(popupData.processingRecordId);
+	            var elementIndex = popupData.currentlyAttachedIds.indexOf(currentRecordId);
+	            if (popupData.processOperation == "attach" && elementIndex == -1) {
+	                popupData.currentlyAttachedIds.push(currentRecordId);
+	                popupData.processingRecordId = "";
+	            }
+	            else if (popupData.processOperation == "detach" && elementIndex > -1) {
+	                popupData.currentlyAttachedIds.splice(elementIndex, 1);
+	                popupData.processingRecordId = "";
+	            }
+
+	            ngToast.create({
+	                className: 'success',
+	                content: '<span class="go-green">Success:</span> Change applied'
+	            });
+	        }
+
+	        function errorCallback(response) {
+	            popupData.processingRecordId = "";
+	            var messageHtml = response.message;
+	            if (response.errors.length > 0) { //Validation errors
+	                messageHtml = "<ul>";
+	                for (var i = 0; i < response.errors.length; i++) {
+	                    messageHtml += "<li>" + response.errors[i].message + "</li>";
+	                }
+	                messageHtml += "</ul>";
+	            }
+	            ngToast.create({
+	                className: 'error',
+	                content: '<span class="go-red">Error:</span> ' + messageHtml
+	            });
+	            
+	        }
+
+	        // ** Post relation change between the two records
+	        if (returnObject.dataKind == "target") {
+	            webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+	        }
+	        else {
+	            alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+	        }
+	    }
+	    popupData.instantAttachRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id,
+                operation: "attach"
+	        };
+	        if (!popupData.processingRecordId) {
+	            popupData.processInstantSelection(returnObject);
+	        }
+	    };
+	    popupData.instantDetachRecord = function (record) {
+	        var returnObject = {
+	            relationName: popupData.selectedItem.relationName,
+	            dataKind: selectedDataKind,
+	            selectedRecordId: record.id,
+	            operation: "detach"
+
+	        };
+	        if (!popupData.processingRecordId) {
+	            popupData.processInstantSelection(returnObject);
+	        }
+	    };
+
 
 	    popupData.cancel = function () {
 	        $modalInstance.dismiss('cancel');
@@ -858,15 +1388,17 @@
 	    }
 
 
-
-
+	    //#endregion
 
 	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
 	};
+
+
 
     //#endregion
 
 
 })();
+
 
 

@@ -190,11 +190,7 @@
     			idFieldGuid = popupData.contentData.entity.fields[j].id;
     		}
     	}
-    	var column = {};
-    	column.fieldId = idFieldGuid;
-    	column.fieldName = "id";
-    	column.type = "field";
-    	popupData.list.columns.unshift(column);
+        //The Record Id data is automatically injected by the server. If you want the field to be visible to users you need to add it in the view
 
     	popupData.ok = function () {
     		webvellaAdminService.createEntityList(popupData.list, popupData.contentData.entity.name, successCallback, errorCallback);

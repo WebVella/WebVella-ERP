@@ -103,7 +103,7 @@
 						<label class="required" for="name">Name</label>
 						<input ng-model="popupData.list.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="createListForm.name.$dirty && createListForm.name.$invalid || popupData.nameError">
+						<div class="error" ng-show="createListForm.name.$touched && createListForm.name.$dirty && createListForm.name.$invalid || popupData.nameError">
 							<small class="error" ng-show="createListForm.name.$error.required && !popupData.nameError">
 								required field
 							</small>
@@ -124,7 +124,7 @@
 						<label class="required" for="label">Label</label>
 						<input ng-model="popupData.list.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="createListForm.label.$dirty && createListForm.label.$invalid || popupData.labelError">
+						<div class="error" ng-show="createListForm.label.$touched && createListForm.label.$dirty && createListForm.label.$invalid || popupData.labelError">
 							<small class="error" ng-show="createListForm.label.$error.required && !popupData.labelError">
 								Area label is required.
 							</small>

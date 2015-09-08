@@ -1,39 +1,26 @@
 <div id="page-title">
-    <div id="page-meta">
-        <div class="aux-actions">
-            <a class="btn btn-success hidden-xs" ng-click="contentData.createRecordModal()"><i class="fa fa-plus"></i> Create New</a>
-            <!--<a class="btn btn-link hidden-xs"><i class="fa fa-star-o"></i> UnBookmark</a>
-            <a class="btn btn-link hidden-xs hidden-sm"><i class="fa fa-pencil-square-o"></i> Edit Inline</a>
-            <span class="dropdown  hidden-xs  hidden-sm" dropdown>
-                <a class="btn btn-link dropdown-toggle" dropdown-toggle>More <i class="fa fa-caret-down"></i> </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                    <li>
-                        <a href>Account settings</a>
-                    </li>
-                </ul>
-            </span>-->
-        </div>
-        <div class="icon-box">
-            <i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i>
-        </div>
-        <div class="entity-box">
-            <h4 title="Offers">{{contentData.entity.labelPlural}}</h4>
-            <a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
-        </div>
-        <div class="spacer-box"></div>
-        <div class="divider-box">
-            <i class="fa fa-caret-right"></i>
-        </div>
-        <div class="lists-box">
-            <h4 title="Newest active offers">{{contentData.currentListView.label}}</h4>
-            <a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
-        </div>
+	<div id="page-meta">
+		<div class="aux-actions">
+			<div class="btn-group" role="group" aria-label="page toolbar">
+				<a class="btn btn-default hidden-xs" ng-click="contentData.createRecordModal()" tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000"><i class="fa fa-pencil"></i> create</a>
+				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark the page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
+			</div>
+		</div>
+		<div class="icon-box">
+			<i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i>
+		</div>
+		<div class="entity-box">
+			<h4 title="Offers">{{contentData.entity.labelPlural}}</h4>
+			<a target="_blank" ui-sref='webvella-admin-entity-details({entityName: "{{contentData.entity.name}}"})'><i class="fa fa-gear"></i> Settings</a>
+		</div>
+		<div class="spacer-box"></div>
+		<div class="divider-box">
+			<i class="fa fa-caret-right"></i>
+		</div>
+		<div class="lists-box">
+			<h4 title="Newest active offers">{{contentData.currentListView.label}}</h4>
+			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
+		</div>
 		<accordion>
 			<accordion-group is-open="moreListsOpened">
 				<form class="form-inline">
@@ -58,17 +45,17 @@
 							</ul>
 						</div>
 					</div>
-				</form>	
-				<hr class="divider"/>
+				</form>
+				<hr class="divider" />
 				<ul class="list-inline">
 					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="webvella-entity-records({areaName:contentData.currentArea.name,entityName:contentData.entity.name,listName:list.name,filter:'all',page:1})"><i class="fa fa-fw fa-bars"></i> {{list.label}}</a></li>
-				</ul>		
+				</ul>
 			</accordion-group>
 		</accordion>
-</div>
-    <div id="page-messages" class="hide">
-        <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-    </div>
+	</div>
+	<div id="page-messages" class="hide">
+		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+	</div>
 </div>
 <div id="text">
 	<form id="filters" class="form-inline" style="opacity:.2">
@@ -80,7 +67,7 @@
 		</div>
 		<div class="form-group">
 			<div class="input-group">
-				<span class="input-group-addon" id="basic-addon1">
+				<span class="input-group-addon">
 					<i class="fa fa-search"></i>
 				</span>
 				<input ng-model="class" type="text" class="form-control" id="exampleInputName2" placeholder="Search accounts">
@@ -102,42 +89,49 @@
 			</div>
 		</div>
 	</form>
-
 	<div id="list">
-		<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.records.length == 0">
+		<table class="table table-bordered table-hover table-vertical-align-middle {{contentData.recordsMeta.cssClass}}" ng-hide="contentData.records.length == 0">
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
-					<td>
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,sectionName:"$",filter:"$",page:"$"})' class="btn btn-default">
+					<td class="actions">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
-						<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column.meta)}}</span>
-						<span ng-switch-when="2">{{contentData.getCheckboxString(record,column.meta)}}</span>
-						<span ng-switch-when="3">{{contentData.getCurrencyString(record,column.meta)}}</span>
-						<span ng-switch-when="4">{{contentData.getDateString(record,column.meta)}}</span>
-						<span ng-switch-when="5">{{contentData.getDateTimeString(record,column.meta)}}</span>
-						<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column.meta)"></span>
-						<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column.meta)"></span>
-						<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column.meta)"></span>
-						<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column.meta)"></span>
-						<pre ng-switch-when="10" ng-bind="record[column.meta.name]"></pre>
-						<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column.meta)"></span>
-						<span ng-switch-when="12" ng-bind="record[column.meta.name]"></span>
-						<span ng-switch-when="13">******</span>
-						<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column.meta)"></span>
-						<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column.meta)"></span>
-						<span ng-switch-when="16">{{record[column.meta.name]}}</span>
-						<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column.meta)"></span>
-						<span ng-switch-when="18">{{record[column.meta.name]}}</span>
-						<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column.meta)"></span>
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">
+						<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
+							<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
+							<span ng-switch-when="2">{{contentData.getCheckboxString(record,column)}}</span>
+							<span ng-switch-when="3">{{contentData.getCurrencyString(record,column)}}</span>
+							<span ng-switch-when="4">{{contentData.getDateString(record,column)}}</span>
+							<span ng-switch-when="5">{{contentData.getDateTimeString(record,column)}}</span>
+							<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column)"></span>
+							<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column)"></span>
+							<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column)"></span>
+							<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column)"></span>
+							<pre ng-switch-when="10" ng-bind="record[column.dataName]"></pre>
+							<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column)"></span>
+							<span ng-switch-when="12" ng-bind="record[column.dataName]"></span>
+							<span ng-switch-when="13">******</span>
+							<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column)"></span>
+							<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column)"></span>
+							<span ng-switch-when="16">{{record[column.dataName]}}</span>
+							<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column)"></span>
+							<span ng-switch-when="18">{{record[column.dataName]}}</span>
+							<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column)"></span>
+						</div>
+						<div ng-if="column.type=='view' || column.type == 'viewFromRelation'">
+							<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
+						</div>
+						<div ng-if="column.type=='list' || column.type == 'listFromRelation'">
+							<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-list>
+						</div>
 					</td>
 				</tr>
 			</tbody>
@@ -153,14 +147,424 @@
 		</ul>
 	</div>
 </div>
-
 <script type="text/ng-template" id="createRecordModal.html">
 	<div class="modal-header">
 		<button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h4 class="modal-title">Create new record</h4>
+		<h4 class="modal-title">Create new <span class="go-green">{{popupData.parentData.entity.label}}</span></h4>
 	</div>
 	<div class="modal-body">
-		<!--<pre>{{popupData.entityMeta | json}}</pre>-->
+		<div class="alert alert-warning" ng-if="popupData.createViewRegion == null">There is no default "quick create" view defined for this entity. Please contact your system integrator!</div>
+		<form name="createRecord">
+			<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in popupData.createViewRegion.sections" ng-if="popupData.createViewRegion != null">
+				<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
+					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+					{{section.label}}
+				</div>
+				<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+					<div class="form-horizontal">
+
+						<div class="row" ng-repeat="row in section.rows">
+							<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }">
+									<!--If item is field WITH NO relation-->
+									<div class="row field" ng-if="item.type === 'field'">
+										<label class="col-sm-3 control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
+										<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
+											<!-- 1. Autoincrement -->
+											<div ng-switch-when="1">
+												<div class="form-control-static">{{item.meta.displayFormat}}</div>
+											</div>
+
+											<!-- 2. Checkbox -->
+											<div class="checkbox" ng-switch-when="2">
+												<label><input type="checkbox" ng-model="popupData.entityData[item.dataName]"> selected</label>
+											</div>
+
+											<!-- 3. Currency -->
+											<div ng-switch-when="3">
+												<div class="input-group">
+													<div class="input-group-addon">{{item.meta.currency.code}}</div>
+													<input type="number" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+														   ng-model-options="{allowInvalid:true}">
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Decimal, no comma allowed.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+														Should be > = {{item.meta.minValue}}.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+														Should be < = {{item.meta.maxValue}}.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 4. Date -->
+											<div ng-switch-when="4">
+												<div class="input-group">
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'yyyy-MM-dd'}}" is-open="popupData.calendars[item.meta.name]"
+														   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+													</span>
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 5. DateTime -->
+											<div ng-switch-when="5">
+												<div class="input-group">
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'yyyy-MM-dd HH:mm'}}" is-open="popupData.calendars[item.meta.name]"
+														   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+													</span>
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 6. Email -->
+											<div ng-switch-when="6">
+												<input class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" type="text"
+													   ng-required="{{item.meta.required}}" placeholder="{{item.meta.placeholderText}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+													   ng-maxlength="{{item.meta.maxLength}}" ng-model-options="{allowInvalid:true}" />
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Invalid email.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+
+											</div>
+
+											<!-- 7. File -->
+											<div ng-switch-when="7">
+												<a ng-show='!popupData.entityData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false'>Browse</a>
+												<div class="progress" ng-show="!popupData.entityData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
+														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
+														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+													</div>
+												</div>
+												<div class="input-group file-upload" ng-show='popupData.entityData[item.dataName]'>
+													<a class="form-control link-icon" href="{{popupData.entityData[item.dataName]}}" target="_blank">view file</a>
+													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												</div>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 8. Html -->
+											<div ng-switch-when="8">
+												<textarea class="form-control" ng-model="popupData.entityData[item.dataName]" ckeditor="editorOptions" ng-change="popupData.validate(item)"></textarea>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 9. Image -->
+											<div ng-switch-when="9">
+												<a ng-show='!popupData.entityData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+												<div class="progress" ng-show="!popupData.entityData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
+														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
+														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+													</div>
+												</div>
+												<div class="image-upload" ng-show='popupData.entityData[item.dataName]'>
+													<img class="img-thumbnail" ng-src="{{popupData.entityData[item.dataName]}}" />
+													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												</div>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 10. Textarea -->
+											<div ng-switch-when="10">
+												<textarea style="height:200px;" class="form-control" ng-model="popupData.entityData[item.dataName]"></textarea>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 11. Multichoice -->
+											<div ng-switch-when="11">
+												<label ng-repeat="option in item.meta.options" class="checkbox-inline">
+													<input type="checkbox" checklist-model="popupData.entityData[item.dataName]" checklist-value="option.key"> {{option.value}}
+												</label>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 12. Number -->
+											<div ng-switch-when="12">
+												<input type="number" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+													   ng-model-options="{allowInvalid:true}">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Decimal, no comma allowed.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+														Should be > = {{item.meta.minValue}}.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+														Should be < = {{item.meta.maxValue}}.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+
+												</div>
+											</div>
+											<!-- 13. Password -->
+											<div ng-switch-when="13">
+												<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+													   ng-model-options="{allowInvalid:true}">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+
+												</div>
+											</div>
+
+											<!-- 14. Percent -->
+											<div ng-switch-when="14">
+												<div class="input-group">
+													<input type="number" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
+														   ng-model-options="{allowInvalid:true}">
+													<div class="input-group-addon">%</div>
+												</div>
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														Decimal, no comma allowed.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+														Should be > = {{item.meta.minValue}}.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+														Should be < = {{item.meta.maxValue}}.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 15. Phone -->
+											<div ng-switch-when="15">
+												<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+													   ng-model-options="{allowInvalid:true}">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+
+												</div>
+											</div>
+
+											<!-- 16. Guid -->
+											<div ng-switch-when="16">
+												<div ng-if="!item.meta.generateNewId">
+													<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" ng-model-options="{allowInvalid:true}"
+														   pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$">
+													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+														{{item.meta.helpText}}
+													</div>
+													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+															Required.
+														</small>
+														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+															Invalid GUID.
+														</small>
+														<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+															{{popupData[item.meta.name+'ErrorMessage']}}
+														</small>
+													</div>
+												</div>
+												<div ng-if="item.meta.generateNewId" class="input-group">
+													<input type="text" class="form-control" disabled value="autogenerated" />
+													<div class="input-group-addon"><i class="fa fa-lock"></i></div>
+												</div>
+											</div>
+											<!-- 17. Dropdown -->
+											<div ng-switch-when="17">
+												<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="popupData.entityData[item.dataName]"></select>
+												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 18. Text -->
+											<div ng-switch-when="18">
+												<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+													   ng-model-options="{allowInvalid:true}">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+											<!-- 19. Url -->
+											<div ng-switch-when="19">
+												<input type="text" class="form-control" ng-model="popupData.entityData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
+													   ng-model-options="{allowInvalid:true}">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													{{item.meta.helpText}}
+												</div>
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+														Required.
+													</small>
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+														Too long: must be < = {{item.meta.maxLength}} chars.
+													</small>
+													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
+														{{popupData[item.meta.name+'ErrorMessage']}}
+													</small>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()">Create</button>

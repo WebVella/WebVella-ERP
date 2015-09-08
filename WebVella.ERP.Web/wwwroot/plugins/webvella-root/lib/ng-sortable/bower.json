@@ -1,6 +1,6 @@
 {
   "name": "ng-sortable",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "homepage": "https://github.com/a5hik/ng-sortable",
   "author": "Muhammed Ashik <https://github.com/a5hik>",
   "description": "Angular Library for Drag and Drop, supports Sortable and Draggable.",
@@ -19,13 +19,13 @@
     "directive"
   ],
   "dependencies": {
-    "angular": "1.3.x"
+    "angular": ">=1.3.0"
   },
   "devDependencies": {
-    "angular": "1.3.x",
-    "bootstrap-css-only": "~3.2.0",
-    "angular-bootstrap": "~0.11.2",
-    "angular-route": "1.3.x"
+    "angular": ">=1.3.0",
+    "bootstrap-css-only": ">=3.2.0",
+    "angular-bootstrap": ">=0.13.1",
+    "angular-route": ">=1.3.0"
   },
   "ignore": [
     "node_modules", "bower_components",

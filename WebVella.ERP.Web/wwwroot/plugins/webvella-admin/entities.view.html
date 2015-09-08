@@ -77,8 +77,8 @@
                     <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || popupData.nameError}">
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="popupData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
-                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50">
-                        <div class="error" ng-show="createEntity.name.$dirty && createEntity.name.$invalid || popupData.nameError">
+                               required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+                        <div class="error" ng-show="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="createEntity.name.$error.required && !popupData.nameError">
                                 required field
                             </small>
@@ -111,8 +111,8 @@
                     <div class="form-group" ng-class="{ 'has-error' : createEntity.label.$invalid && !createEntity.label.$pristine || popupData.labelError }">
                         <label class="required" for="label">Label</label>
                         <input ng-model="popupData.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
-                               required>
-                        <div class="error" ng-show="createEntity.label.$dirty && createEntity.label.$invalid || popupData.labelError">
+                               required ng-model-options="{allowInvalid:true}">
+                        <div class="error" ng-show="createEntity.label.$touched && createEntity.label.$dirty && createEntity.label.$invalid || popupData.labelError">
                             <small class="error" ng-show="createEntity.label.$error.required && !popupData.labelError">
                                 Entity label is required.
                             </small>
@@ -126,8 +126,8 @@
                     <div class="form-group" ng-class="{ 'has-error' : createEntity.labelPlural.$invalid && !createEntity.labelPlural.$pristine || popupData.labelPluralError }">
                         <label class="required" for="labelPlural">Label Plural</label>
                         <input ng-model="popupData.entity.labelPlural" type="text" class="form-control" id="labelPlural" name="labelPlural" placeholder="e.g. Customers"
-                               required>
-                        <div class="error" ng-show="createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupData.labelPluralError">
+                               required ng-model-options="{allowInvalid:true}">
+                        <div class="error" ng-show="createEntity.labelPlural.$touched && createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupData.labelPluralError">
                             <small class="error" ng-show="createEntity.labelPlural.$error.required && !popupData.labelPluralError">
                                 Entity plural label is required.
                             </small>
@@ -145,10 +145,10 @@
                         <div class="input-group clean-addon">
                             <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.entity.iconName}}"></i></span>
                             <input ng-model="popupData.entity.iconName" type="text" class="form-control" id="iconName" name="iconName" placeholder="e.g. database"
-                                   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html">
+                                   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html" ng-model-options="{allowInvalid:true}">
                             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
                         </div>
-                        <div class="error" ng-show="createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupData.iconNameError">
+                        <div class="error" ng-show="createEntity.iconName.$touched && createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupData.iconNameError">
                             <small class="error" ng-show="createEntity.iconName.$error.required && !popupData.iconNameError">
                                 Icon name is required.
                             </small>
@@ -161,9 +161,9 @@
                 <div class="col-sm-6">
                     <div class="form-group" ng-class="{ 'has-error' : createEntity.weight.$invalid && !createEntity.weight.$pristine || popupData.weightError }">
                         <label class="required" for="weight">Sort Weight</label>
-                        <input ng-model="popupData.entity.weight" type="text" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
-                               required pattern="^[0-9]+(\.[0-9][0-9]?)?$">
-                        <div class="error" ng-show="createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
+                        <input ng-model="popupData.entity.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+                               required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+                        <div class="error" ng-show="createEntity.weight.$touched && createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
                             <small class="error" ng-show="createEntity.weight.$error.required && !popupData.weightError">
                                 Entity weight is required
                             </small>
