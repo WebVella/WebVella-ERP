@@ -23,8 +23,6 @@ namespace WebVella.ERP.Storage
 
 		RecordListType Type { get; set; }
 
-		int RecordsLimit { get; set; }
-
 		int PageSize { get; set; }
 
 		List<IStorageRecordListItemBase> Columns { get; set; }

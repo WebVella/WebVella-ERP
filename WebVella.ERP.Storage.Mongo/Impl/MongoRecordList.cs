@@ -7,7 +7,8 @@ using WebVella.ERP.Api.Models;
 
 namespace WebVella.ERP.Storage.Mongo
 {
-	public class MongoRecordList : IStorageRecordList
+    [BsonIgnoreExtraElements]
+    public class MongoRecordList : IStorageRecordList
 	{
 		[BsonElement("id")]
 		public Guid Id { get; set; }
@@ -33,10 +34,7 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("type")]
 		public RecordListType Type { get; set; }
 
-		[BsonElement("recordsLimit")]
-		public int RecordsLimit { get; set; }
-
-		[BsonElement("pageSize")]
+        [BsonElement("pageSize")]
 		public int PageSize { get; set; }
 
 		[BsonElement("columns")]

@@ -51,8 +51,8 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
-		[JsonProperty(PropertyName = "recordsLimit")]
-		public int? RecordsLimit { get; set; }
+		//[JsonProperty(PropertyName = "recordsLimit")]
+		//public int? RecordsLimit { get; set; }
 
 		[JsonProperty(PropertyName = "pageSize")]
 		public int? PageSize { get; set; }
@@ -211,9 +211,6 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
-
-		[JsonProperty(PropertyName = "recordsLimit")]
-		public int RecordsLimit { get; set; }
 
 		[JsonProperty(PropertyName = "pageSize")]
 		public int PageSize { get; set; }
