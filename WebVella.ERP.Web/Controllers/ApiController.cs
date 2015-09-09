@@ -653,8 +653,6 @@ namespace WebVella.ERP.Web.Controllers
 						list.CssClass = inputList.CssClass;
 					if (prop.Name.ToLower() == "type")
 						list.Type = inputList.Type;
-					if (prop.Name.ToLower() == "recordslimit")
-						list.RecordsLimit = inputList.RecordsLimit;
 					if (prop.Name.ToLower() == "pagesize")
 						list.PageSize = inputList.PageSize;
 					if (prop.Name.ToLower() == "columns")
