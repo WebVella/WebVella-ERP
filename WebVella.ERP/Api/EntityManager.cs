@@ -435,8 +435,6 @@ namespace WebVella.ERP.Api
                 recordlist.System = false;
             if (!recordlist.Weight.HasValue)
                 recordlist.Weight = 1;
-            if (!recordlist.RecordsLimit.HasValue)
-                recordlist.RecordsLimit = 1;
             if (!recordlist.PageSize.HasValue)
                 recordlist.PageSize = 10;
             if (recordlist.CssClass != null)
@@ -3325,8 +3323,6 @@ namespace WebVella.ERP.Api
         //					updatedList.CssClass = inputRecordList.CssClass;
         //				if (inputRecordList.Type != null)
         //					updatedList.Type = inputRecordList.Type;
-        //				if (inputRecordList.RecordsLimit.HasValue)
-        //					updatedList.RecordsLimit = inputRecordList.RecordsLimit.Value;
         //				if (inputRecordList.PageSize.HasValue)
         //					updatedList.PageSize = inputRecordList.PageSize.Value;
         //				if (inputRecordList.Columns != null)
