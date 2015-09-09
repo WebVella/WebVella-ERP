@@ -141,7 +141,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 			Mapper.CreateMap<RecordViewSidebarViewItem, IStorageRecordViewSidebarViewItem>().ConstructUsing(x => CreateEmptyRecordViewSidebarViewItemObject(x));
 			Mapper.CreateMap<IStorageRecordViewSidebarViewItem, RecordViewSidebarViewItem>();
-			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarViewItem>();
+			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarListItem>();
 			Mapper.CreateMap<InputRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
 				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty));
 
