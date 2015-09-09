@@ -989,7 +989,7 @@ namespace WebVella.ERP.Api
                                                             errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "List name and id are missing!"));
                                                         else
                                                         {
-                                                            if ( inputItem.ListId == null)
+                                                            if (inputItem.ListId == null)
                                                             {
                                                                 if (column.Items.Where(i => i is InputRecordViewListItem && ((InputRecordViewListItem)i).ListName == inputItem.ListName).Count() > 1)
                                                                     errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name!"));
@@ -999,7 +999,7 @@ namespace WebVella.ERP.Api
                                                                 else
                                                                     inputItem.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName).Id;
                                                             }
-                                                            else if (string.IsNullOrWhiteSpace(inputItem.ListName) )
+                                                            else if (string.IsNullOrWhiteSpace(inputItem.ListName))
                                                             {
                                                                 if (column.Items.Where(i => i is InputRecordViewListItem && ((InputRecordViewListItem)i).ListId == inputItem.ListId).Count() > 1)
                                                                     errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list id!"));
@@ -1018,21 +1018,21 @@ namespace WebVella.ERP.Api
                                                     else if (item is InputRecordViewViewItem)
                                                     {
                                                         InputRecordViewViewItem inputItem = (InputRecordViewViewItem)item;
-                                                        if (string.IsNullOrWhiteSpace(inputItem.ViewName) && inputItem.ViewId == null )
+                                                        if (string.IsNullOrWhiteSpace(inputItem.ViewName) && inputItem.ViewId == null)
                                                             errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "View name and id are missing!"));
                                                         else
                                                         {
-                                                            if ( inputItem.ViewId == null)
-                                                            { 
+                                                            if (inputItem.ViewId == null)
+                                                            {
                                                                 if (column.Items.Where(i => i is InputRecordViewViewItem && ((InputRecordViewViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
+                                                                    errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
 
-                                                            if (!entity.RecordViews.Any(v => v.Name == inputItem.ViewName))
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "Wrong name. There is no view with such name!"));
-                                                            else
-                                                                inputItem.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName).Id;
+                                                                if (!entity.RecordViews.Any(v => v.Name == inputItem.ViewName))
+                                                                    errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "Wrong name. There is no view with such name!"));
+                                                                else
+                                                                    inputItem.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName).Id;
                                                             }
-                                                            else if (string.IsNullOrWhiteSpace(inputItem.ViewName) )
+                                                            else if (string.IsNullOrWhiteSpace(inputItem.ViewName))
                                                             {
                                                                 if (column.Items.Where(i => i is InputRecordViewViewItem && ((InputRecordViewViewItem)i).ViewId == inputItem.ViewId).Count() > 1)
                                                                     errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view id!"));
@@ -1049,31 +1049,45 @@ namespace WebVella.ERP.Api
                                                     }
                                                     else if (item is InputRecordViewRelationFieldItem)
                                                     {
+                                                        EntityRelation relation = null;
+
                                                         InputRecordViewRelationFieldItem inputItem = (InputRecordViewRelationFieldItem)item;
-                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
                                                         {
-                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name is required!"));
+                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name or id is required!"));
                                                         }
                                                         else
                                                         {
-                                                            if (!relationList.Any(r => r.Name == inputItem.RelationName))
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name. There is no relation with such name!"));
+                                                            if (inputItem.RelationId != null)
+                                                                relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId);
+                                                            else
+                                                                relation = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName);
+
+                                                            if (relation == null)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name or id. There is no relation with such name or id!"));
                                                             else
                                                             {
-                                                                inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
+                                                                inputItem.RelationId = relation.Id;
+                                                                inputItem.RelationName = relation.Name;
                                                             }
                                                         }
 
-                                                        if (string.IsNullOrWhiteSpace(inputItem.FieldName))
+                                                        if (string.IsNullOrWhiteSpace(inputItem.FieldName) && inputItem.FieldId == null)
                                                         {
-                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "Field name is required!"));
+                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "Field name or id is required!"));
                                                         }
                                                         else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                                                         {
-                                                            if (column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldName == inputItem.FieldName).Count() > 1)
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "There is already an item with such field name!"));
 
-                                                            EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
+                                                            bool foundMoreThanOneTime = false;
+                                                            if (inputItem.FieldId == null)
+                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldName == inputItem.FieldName).Count() > 1;
+                                                            else
+                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldId == inputItem.FieldId).Count() > 1;
+
+                                                            if (foundMoreThanOneTime)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "There is already an item with such field name or id!"));
+
 
                                                             if (relation != null)
                                                             {
@@ -1085,11 +1099,20 @@ namespace WebVella.ERP.Api
                                                                     inputItem.EntityId = entity.Id;
                                                                     inputItem.EntityName = entity.Name;
 
-                                                                    Field relField = relEntity.Fields.FirstOrDefault(f => f.Name == inputItem.FieldName);
-                                                                    if (relField != null)
-                                                                        inputItem.FieldId = relField.Id;
+
+                                                                    Field relField = null;
+                                                                    if( !string.IsNullOrWhiteSpace(inputItem.FieldName))
+                                                                        relField = relEntity.Fields.FirstOrDefault(f => f.Name == inputItem.FieldName);
                                                                     else
+                                                                        relField = relEntity.Fields.FirstOrDefault(f => f.Id == inputItem.FieldId);
+
+                                                                    if (relField == null)
                                                                         errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "Wrong name. There is no field with such name!"));
+                                                                    else
+                                                                    {
+                                                                        inputItem.FieldId = relField.Id;
+                                                                        inputItem.FieldName = relField.Name;
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -1097,31 +1120,42 @@ namespace WebVella.ERP.Api
                                                     }
                                                     else if (item is InputRecordViewRelationListItem)
                                                     {
+                                                        EntityRelation relation = null;
                                                         InputRecordViewRelationListItem inputItem = (InputRecordViewRelationListItem)item;
-                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null )
                                                         {
-                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name is required!"));
+                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name or id is required!"));
                                                         }
                                                         else
                                                         {
-                                                            if (!relationList.Any(r => r.Name == inputItem.RelationName))
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name. There is no relation with such name!"));
+                                                            if(string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                                                relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId);
+                                                            else
+                                                                relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+                                                            if (relation == null)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name or id. There is no relation with such name or id!"));
                                                             else
                                                             {
-                                                                inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
+                                                                inputItem.RelationId = relation.Id;
+                                                                inputItem.RelationName = relation.Name;
                                                             }
                                                         }
 
-                                                        if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                                                        if (string.IsNullOrWhiteSpace(inputItem.ListName) && inputItem.ListId == null )
                                                         {
-                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "List name is required!"));
+                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "List name or id is required!"));
                                                         }
                                                         else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                                                         {
-                                                            if (column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name!"));
+                                                            InputRecordViewRelationListItem listItm = null;
+                                                            if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                                                                listItm = (InputRecordViewRelationListItem)column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListId == inputItem.ListId);
+                                                            else
+                                                                listItm = (InputRecordViewRelationListItem)column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListName == inputItem.ListName);
 
-                                                            EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
+                                                            if (listItm != null)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name or id!"));
 
                                                             if (relation != null)
                                                             {
@@ -1133,11 +1167,19 @@ namespace WebVella.ERP.Api
                                                                     inputItem.EntityId = entity.Id;
                                                                     inputItem.EntityName = entity.Name;
 
-                                                                    RecordList relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
-                                                                    if (relList != null)
-                                                                        inputItem.ListId = relList.Id;
+                                                                    RecordList relList = null;
+                                                                    if( string.IsNullOrWhiteSpace(inputItem.ListName) )
+                                                                        relList = relEntity.RecordLists.FirstOrDefault(l => l.Id == inputItem.ListId);
                                                                     else
-                                                                        errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Wrong Name. There is no list with such name!"));
+                                                                        relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
+
+                                                                    if (relList != null)
+                                                                    {
+                                                                        inputItem.ListId = relList.Id;
+                                                                        inputItem.ListName = relList.Name;
+                                                                    }
+                                                                    else
+                                                                        errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Wrong Name. There is no list with such name or id!"));
                                                                 }
                                                             }
                                                         }
@@ -1145,19 +1187,23 @@ namespace WebVella.ERP.Api
                                                     }
                                                     else if (item is InputRecordViewRelationViewItem)
                                                     {
+                                                        EntityRelation relation = null;
                                                         InputRecordViewRelationViewItem inputItem = (InputRecordViewRelationViewItem)item;
-                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                                        if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null )
                                                         {
-                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name is required!"));
+                                                            errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name or id is required!"));
                                                         }
                                                         else
                                                         {
-                                                            if (!relationList.Any(r => r.Name == inputItem.RelationName))
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name. There is no relation with such name!"));
+                                                            if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                                                relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId);
                                                             else
-                                                            {
+                                                                relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+                                                            if (relation == null)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name or. There is no relation with such name or id!"));
+                                                            else
                                                                 inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
-                                                            }
                                                         }
 
                                                         if (string.IsNullOrWhiteSpace(inputItem.ViewName))
@@ -1166,11 +1212,6 @@ namespace WebVella.ERP.Api
                                                         }
                                                         else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                                                         {
-                                                            if (column.Items.Where(i => i is InputRecordViewRelationViewItem && ((InputRecordViewRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
-
-                                                            EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
-
                                                             if (relation != null)
                                                             {
                                                                 Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
@@ -1181,13 +1222,25 @@ namespace WebVella.ERP.Api
                                                                     inputItem.EntityId = entity.Id;
                                                                     inputItem.EntityName = entity.Name;
 
-                                                                    RecordView relView = relEntity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName);
+
+                                                                    RecordView relView = null;
+                                                                    if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+                                                                        relView = relEntity.RecordViews.FirstOrDefault(l => l.Id == inputItem.ViewId);
+                                                                    else
+                                                                        relView = relEntity.RecordViews.FirstOrDefault(l => l.Name == inputItem.ViewName);
+
                                                                     if (relView != null)
+                                                                    {
                                                                         inputItem.ViewId = relView.Id;
+                                                                        inputItem.ViewName = relView.Name;
+                                                                    }
                                                                     else
                                                                         errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "Wrong name. There is no view with such name!"));
                                                                 }
                                                             }
+
+                                                            if (column.Items.Where(i => i is InputRecordViewRelationViewItem && ((InputRecordViewRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
+                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.viewName", null, "There is already an item with such view name!"));
                                                         }
 
                                                     }
@@ -1217,72 +1270,89 @@ namespace WebVella.ERP.Api
                         if (item is InputRecordViewSidebarListItem)
                         {
                             InputRecordViewSidebarListItem inputItem = (InputRecordViewSidebarListItem)item;
-                            if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                            if (string.IsNullOrWhiteSpace(inputItem.ListName) && inputItem.ListId == null )
                             {
-                                errorList.Add(new ErrorModel("sidebar.items.listName", null, "List name is required!"));
+                                errorList.Add(new ErrorModel("sidebar.items.listName", null, "List name or id is required!"));
                             }
                             else
                             {
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarListItem && ((InputRecordViewSidebarListItem)i).ListName == inputItem.ListName).Count() > 1)
-                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
+                                RecordList list = null;
+                                if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                                    list = entity.RecordLists.SingleOrDefault(l => l.Id == inputItem.ListId);
+                                else
+                                    list = entity.RecordLists.SingleOrDefault(l => l.Name == inputItem.ListName);
 
-                                if (!entity.RecordLists.Any(l => l.Name == inputItem.ListName))
-                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name!"));
+
+                                if (list == null )
+                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name or id!"));
                                 else
                                 {
-                                    inputItem.ListId = entity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName).Id;
+                                    inputItem.ListId = list.Id;
+                                    inputItem.ListName = list.Name;
                                 }
+
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarListItem && ((InputRecordViewSidebarListItem)i).ListName == inputItem.ListName).Count() > 1)
+                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name or id!"));
                             }
                         }
                         else if (item is InputRecordViewSidebarViewItem)
                         {
                             InputRecordViewSidebarViewItem inputItem = (InputRecordViewSidebarViewItem)item;
-                            if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+                            if (string.IsNullOrWhiteSpace(inputItem.ViewName) && inputItem.ViewId == null )
                             {
-                                errorList.Add(new ErrorModel("sidebar.items.viewName", null, "View name is required!"));
+                                errorList.Add(new ErrorModel("sidebar.items.viewName", null, "View name or id is required!"));
                             }
                             else
                             {
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarViewItem && ((InputRecordViewSidebarViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
-                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
 
-                                if (!entity.RecordViews.Any(v => v.Name == inputItem.ViewName))
-                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name!"));
+                                RecordView view = null;
+                                if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+                                    view = entity.RecordViews.SingleOrDefault(l => l.Id == inputItem.ViewId);
+                                else
+                                    view = entity.RecordViews.SingleOrDefault(l => l.Name == inputItem.ViewName);
+
+                                if (view == null)
+                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name or id!"));
                                 else
                                 {
                                     inputItem.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName).Id;
                                 }
+
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarViewItem && ((InputRecordViewSidebarViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
+                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name or id!"));
+
                             }
                         }
                         else if (item is InputRecordViewSidebarRelationListItem)
                         {
+                            EntityRelation relation = null;
                             InputRecordViewSidebarRelationListItem inputItem = (InputRecordViewSidebarRelationListItem)item;
-                            if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                            if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null )
                             {
-                                errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Relation name is required!"));
+                                errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Relation name or id is required!"));
                             }
                             else
                             {
-                                if (!relationList.Any(r => r.Name == inputItem.RelationName))
-                                    errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Wrong name. There is no relation with such name!"));
+                                if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                    relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId.Value);
+                                else
+                                    relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+                                if (relation == null)
+                                    errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Wrong name. There is no relation with such name or id!"));
                                 else
                                 {
-                                    inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
+                                    inputItem.RelationId = relation.Id;
+                                    inputItem.RelationName = relation.Name;
                                 }
                             }
 
-                            if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                            if (string.IsNullOrWhiteSpace(inputItem.ListName) && inputItem.ListId == null )
                             {
-                                errorList.Add(new ErrorModel("sidebar.items.listName", null, "List name is required!"));
+                                errorList.Add(new ErrorModel("sidebar.items.listName", null, "List name or id is required!"));
                             }
                             else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                             {
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationListItem && ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
-                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
-
-
-                                EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
-
                                 if (relation != null)
                                 {
                                     Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
@@ -1293,44 +1363,58 @@ namespace WebVella.ERP.Api
 
                                     if (relEntity != null)
                                     {
-                                        RecordList relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
-                                        if (relList != null)
-                                            inputItem.ListId = relList.Id;
+                                        RecordList relList = null;
+                                        if (string.IsNullOrWhiteSpace(inputItem.ListName))
+                                            relList = relEntity.RecordLists.FirstOrDefault(l => l.Id == inputItem.ListId);
                                         else
-                                            errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name!"));
+                                            relList = relEntity.RecordLists.FirstOrDefault(l => l.Name == inputItem.ListName);
+
+                                        if (relList != null)
+                                        {
+                                            inputItem.ListId = relList.Id;
+                                            inputItem.ListName = relList.Name;
+                                        }
+                                        else
+                                            errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no list with such name or id!"));
                                     }
                                 }
+
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationListItem && ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
+                                    errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
+
                             }
 
                         }
                         else if (item is InputRecordViewSidebarRelationViewItem)
                         {
+                            EntityRelation relation = null;
                             InputRecordViewSidebarRelationViewItem inputItem = (InputRecordViewSidebarRelationViewItem)item;
-                            if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                            if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null )
                             {
-                                errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Relation name is required!"));
+                                errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Relation name or id is required!"));
                             }
                             else
                             {
-                                if (!relationList.Any(r => r.Name == inputItem.RelationName))
-                                    errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Wrong name. There is no relation with such name!"));
+                                if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+                                    relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId.Value);
+                                else
+                                    relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+                                if (relation == null)
+                                    errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Wrong name. There is no relation with such name or id!"));
                                 else
                                 {
-                                    inputItem.RelationId = relationList.FirstOrDefault(r => r.Name == inputItem.RelationName).Id;
+                                    inputItem.RelationId = relation.Id;
+                                    inputItem.RelationName = relation.Name;
                                 }
                             }
 
-                            if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+                            if (string.IsNullOrWhiteSpace(inputItem.ViewName) && inputItem.ViewId == null)
                             {
                                 errorList.Add(new ErrorModel("sidebar.items.viewName", null, "View name is required!"));
                             }
                             else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                             {
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationViewItem && ((InputRecordViewSidebarRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
-                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
-
-                                EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputItem.RelationId.Value);
-
                                 if (relation != null)
                                 {
                                     Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
@@ -1341,13 +1425,25 @@ namespace WebVella.ERP.Api
                                         inputItem.EntityId = relEntity.Id;
                                         inputItem.EntityName = relEntity.Name;
 
-                                        RecordView relView = relEntity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName);
-                                        if (relView != null)
-                                            inputItem.ViewId = relView.Id;
+                                        RecordView relView = null;
+                                        if (string.IsNullOrWhiteSpace(inputItem.ViewName))
+                                            relView = relEntity.RecordViews.FirstOrDefault(l => l.Id == inputItem.ViewId);
                                         else
-                                            errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name!"));
+                                            relView = relEntity.RecordViews.FirstOrDefault(l => l.Name == inputItem.ViewName);
+
+                                        if (relView != null)
+                                        {
+                                            inputItem.ViewId = relView.Id;
+                                            inputItem.ViewName = relView.Name;
+                                        }
+                                        else
+                                            errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name or id!"));
                                     }
                                 }
+
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationViewItem && ((InputRecordViewSidebarRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
+                                    errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
+
                             }
 
                         }
@@ -2112,7 +2208,7 @@ namespace WebVella.ERP.Api
 
         #region << Field methods >>
 
-        public FieldResponse CreateField(Guid entityId, InputField inputField)
+        public FieldResponse CreateField(Guid entityId, InputField inputField, bool transactional = true)
         {
             FieldResponse response = new FieldResponse
             {
@@ -2160,8 +2256,8 @@ namespace WebVella.ERP.Api
                 var transaction = recRep.CreateTransaction();
                 try
                 {
-
-                    transaction.Begin();
+                    if (transactional)
+                        transaction.Begin();
 
                     recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
 
@@ -2174,11 +2270,14 @@ namespace WebVella.ERP.Api
                         response.Message = "The field was not created! An internal error occurred!";
                         return response;
                     }
-                    transaction.Commit();
+
+                    if (transactional)
+                        transaction.Commit();
                 }
                 catch
                 {
-                    transaction.Rollback();
+                    if (transactional)
+                        transaction.Rollback();
                     throw;
                 }
 
@@ -2731,7 +2830,7 @@ namespace WebVella.ERP.Api
         //			return response;
         //		}
 
-        public FieldResponse DeleteField(Guid entityId, Guid id)
+        public FieldResponse DeleteField(Guid entityId, Guid id, bool transactional = true)
         {
             FieldResponse response = new FieldResponse
             {
@@ -2770,7 +2869,8 @@ namespace WebVella.ERP.Api
                 var transaction = recRep.CreateTransaction();
                 try
                 {
-                    transaction.Begin();
+                    if (transactional)
+                        transaction.Begin();
 
                     recRep.RemoveRecordField(entity.Name, field.Name);
 
@@ -2783,11 +2883,13 @@ namespace WebVella.ERP.Api
                         response.Message = "The field was not updated! An internal error occurred!";
                         return response;
                     }
-                    transaction.Commit();
+                    if (transactional)
+                        transaction.Commit();
                 }
                 catch
                 {
-                    transaction.Rollback();
+                    if (transactional)
+                        transaction.Rollback();
                     throw;
                 }
             }
