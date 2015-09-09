@@ -1,4 +1,4 @@
-﻿/* area.service.js */
+﻿/* admin.service.js */
 
 /**
 * @desc all actions with site area
@@ -22,13 +22,16 @@ function guid() {
         .module('webvellaAdmin')
         .service('webvellaAdminService', service);
 
-	service.$inject = ['$log', '$http', 'wvAppConstants', 'Upload','ngToast'];
+	service.$inject = ['$log', '$http', '$rootScope', 'wvAppConstants', 'Upload', 'ngToast'];
 
 
 
 	/* @ngInject */
-	function service($log, $http, wvAppConstants, Upload, ngToast) {
+	function service($log, $http, $rootScope, wvAppConstants, Upload, ngToast) {
 		var serviceInstance = this;
+
+		//create a plug point in the rootScope
+		$rootScope.webvellaAdmin = {};
 
 		//#region << Include functions >>
 		serviceInstance.getMetaEntityList = getMetaEntityList;
@@ -74,6 +77,7 @@ function guid() {
 		serviceInstance.createRecord = createRecord;
 		serviceInstance.updateRecord = updateRecord;
 		serviceInstance.patchRecord = patchRecord;
+		serviceInstance.patchRecordDefault = patchRecordDefault;
 		serviceInstance.uploadFileToTemp = uploadFileToTemp;
 		serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
 		serviceInstance.deleteFileFromFS = deleteFileFromFS;
@@ -753,9 +757,23 @@ function guid() {
 		}
 
 		///////////////////////
+
+		function patchRecordDefault(recordId, entityName, patchObject, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called');
+			//Make the service method pluggable
+			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
 		function patchRecord(recordId, entityName, patchObject, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called');
-			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			//Make the service method pluggable
+			if ($rootScope.webvellaAdmin.patchRecord && typeof ($rootScope.webvellaAdmin.patchRecord) == "function") {
+				$rootScope.webvellaAdmin.patchRecord(recordId, entityName, patchObject, successCallback, errorCallback);
+			}
+			else {
+				patchRecordDefault(recordId, entityName, patchObject, successCallback, errorCallback);
+			}
+
 		}
 
 		///////////////////////

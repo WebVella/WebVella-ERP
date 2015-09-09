@@ -75,6 +75,8 @@
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper',
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
+					//External plugins
+					//'shopBase',
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -154,6 +156,9 @@
 	<!-- plugin:webvella-developers -->
 	<script src="~/plugins/webvella-developers/base.module.js"></script>
 	<script src="~/plugins/webvella-developers/providers/query.service.js"></script>
+
+	<!-- external-plugin:shop -->
+	@*<script src="http://localhost:2301/plugins/shop-base/base.module.js"></script>*@
 
 	@ViewBag.PluginModulesJsFileStringArray
 
