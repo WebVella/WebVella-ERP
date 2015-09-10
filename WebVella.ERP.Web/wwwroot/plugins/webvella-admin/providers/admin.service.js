@@ -246,12 +246,12 @@ function guid() {
 					break;
 				case 4:
 					field.defaultValue = null;
-					field.format = null;
+					field.format = "dd MMM yyyy";
 					field.useCurrentTimeAsDefaultValue = false;
 					break;
 				case 5:
 					field.defaultValue = null;
-					field.format = null;
+					field.format = "dd MMM yyyy HH:mm";
 					field.useCurrentTimeAsDefaultValue = false;
 					break;
 				case 6:
