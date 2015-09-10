@@ -151,23 +151,25 @@ namespace WebVella.ERP.Api
             }
             else if (validationType == ValidationType.Create)
             {
-                //validate if target and origin field is same field for following relations
                 if (relation.RelationType == EntityRelationType.OneToMany || relation.RelationType == EntityRelationType.OneToOne )
                 {
+                    //validate if target and origin field is same field for following relations
                     if (relation.OriginEntityId == relation.TargetEntityId && relation.OriginFieldId == relation.TargetFieldId)
                         errors.Add(new ErrorModel("", "", "The origin and target fields cannot be the same."));
-                }
 
-
-                //validate there is no other already existing relation with same parameters
-                foreach (var rel in relationRepository.Read())
-                {
-                    if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
-                        rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
+                    //validate there is no other already existing relation with same parameters
+                    foreach (var rel in relationRepository.Read())
                     {
-                        errors.Add(new ErrorModel("", "", "There is already existing relation with same parameters."));
+                        if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
+                            rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
+                        {
+                            errors.Add(new ErrorModel("", "", "There is already existing relation with same parameters."));
+                        }
                     }
+
                 }
+
+
 
                 if (relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.ManyToMany)
                 {
