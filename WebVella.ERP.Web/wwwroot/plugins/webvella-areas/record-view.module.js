@@ -808,7 +808,7 @@
 		        });
 		    }
 		    //Select MULTIPLE item modal
-		    else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
+		else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
 		        var modalInstance = $modal.open({
 		            animation: false,
 		            templateUrl: 'manageRelationFieldModal.html',
@@ -874,7 +874,7 @@
 		            }
 		        });
 		    }
-		    else if (relationType == 3 && dataKind == "target") {
+		    else if ((relationType == 3 && dataKind == "target")) {
 		        var modalInstance = $modal.open({
 		            animation: false,
 		            templateUrl: 'manageRelationFieldModal.html',

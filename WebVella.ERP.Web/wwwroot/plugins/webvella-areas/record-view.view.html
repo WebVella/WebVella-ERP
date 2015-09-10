@@ -287,7 +287,9 @@
 										</div>
 
 										<!-- Case 3 - Current Entity is both Orgin and Target -->
-										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+										<div ng-switch-when="3">
+											<span class="go-red">Not implemented. We need a test case. Please submit an issue in github's project page</span>
+										</div>
 										<!-- Case 0 - Error -->
 										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 									</div>
@@ -310,7 +312,9 @@
 										</div>
 
 										<!-- Case 3 - Current Entity is both Orgin and Target -->
-										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+										<div ng-switch-when="3">
+											<span class="go-red">Not implemented. We need a test case. Please submit an issue in github's project page</span>
+										</div>
 
 										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 									</div>
@@ -341,7 +345,16 @@
 										</div>
 
 										<!-- Case 3 - Current Entity is both Orgin and Target -->
-										<div ng-switch-when="3"><span class="go-red">Not implemented. Need test case</span></div>
+										<div ng-switch-when="3">
+											<table class="table table-bordered editable editable-click target lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')">
+												<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName] track by $index" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+													<td>{{relationDataRecord}}</td>
+												</tr>
+												<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+													<td style="padding: 16px"></td>
+												</tr>
+											</table>
+										</div>
 
 										<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 									</div>
