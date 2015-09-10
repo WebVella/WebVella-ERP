@@ -87,6 +87,10 @@ span.divider {
 	transition: none;
 }
 
+.table-image {
+	max-height:3em;
+}
+
 /*
 ngToast
 */
