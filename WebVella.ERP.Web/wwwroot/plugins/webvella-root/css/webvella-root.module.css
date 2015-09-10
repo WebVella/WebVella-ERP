@@ -3584,6 +3584,13 @@ span.not-editable {
 	top: 5px;
 }
 
+.as-sortable-item .go-gray {
+	color:#aaa !important;
+}
+
+.as-sortable-item .divider {
+	margin:0 .7em 0 .3em;
+}
 
 .dropped-item {
 	margin: 5px;

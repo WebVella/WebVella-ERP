@@ -66,17 +66,17 @@
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items">
 								<div as-sortable-item-handle ng-if='item.type == "view"'>
-									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
-								</div>
+									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+</div>
 								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
-									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}
-								</div>
+									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+</div>
 								<div as-sortable-item-handle ng-if='item.type == "list"'>
-									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}
-								</div>
+									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+</div>
 								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
-									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}
-								</div>
+									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+</div>
 							</div>
 						</div>
 					</div>
@@ -96,10 +96,10 @@
 					<div class="drop-zone" id="library-items-list">
 						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
 							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabelPlural}} > {{item.meta.label}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.entityLabel}} > {{item.meta.label}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
 							</div>
 						</div>
 					</div>
