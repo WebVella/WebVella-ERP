@@ -98,7 +98,7 @@ namespace WebVella.ERP
 
                         nameRoleField.MaxLength = 200;
 
-                        fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField);
+                        fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField,false);
 
                         InputTextField descriptionRoleField = new InputTextField();
 
@@ -117,7 +117,7 @@ namespace WebVella.ERP
 
                         descriptionRoleField.MaxLength = 200;
 
-                        fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField);
+                        fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField,false);
                     }
 
                     #endregion
@@ -156,7 +156,7 @@ namespace WebVella.ERP
 
                         firstName.MaxLength = 200;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, firstName,false);
 
                         InputTextField lastName = new InputTextField();
 
@@ -175,7 +175,7 @@ namespace WebVella.ERP
 
                         lastName.MaxLength = 200;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName,false);
 
                         InputEmailField email = new InputEmailField();
 
@@ -194,7 +194,7 @@ namespace WebVella.ERP
 
                         email.MaxLength = 255;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, email);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, email,false);
 
                         InputPasswordField password = new InputPasswordField();
 
@@ -213,7 +213,7 @@ namespace WebVella.ERP
                         password.MaxLength = 24;
                         password.Encrypted = true;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, password);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, password, false);
 
                         InputDateTimeField lastLoggedIn = new InputDateTimeField();
 
@@ -233,7 +233,7 @@ namespace WebVella.ERP
                         lastLoggedIn.Format = "MM/dd/YYYY";
                         lastLoggedIn.UseCurrentTimeAsDefaultValue = true;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn, false);
 
                         InputCheckboxField enabledField = new InputCheckboxField();
 
@@ -250,7 +250,7 @@ namespace WebVella.ERP
                         enabledField.System = true;
                         enabledField.DefaultValue = false;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, enabledField);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, enabledField,false);
 
                         InputCheckboxField verifiedUserField = new InputCheckboxField();
 
@@ -267,7 +267,7 @@ namespace WebVella.ERP
                         verifiedUserField.System = true;
                         verifiedUserField.DefaultValue = false;
 
-                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField);
+                        fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField, false);
                     }
 
                     #endregion
@@ -407,7 +407,7 @@ namespace WebVella.ERP
                         color.DefaultValue = "teal";
                         color.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, color);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, color, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -428,7 +428,7 @@ namespace WebVella.ERP
                         label.DefaultValue = "Default";
                         label.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, label);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, label, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -448,7 +448,7 @@ namespace WebVella.ERP
                         iconName.DefaultValue = "database";
                         iconName.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, iconName);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, iconName, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -469,7 +469,7 @@ namespace WebVella.ERP
                         weight.MinValue = 0;
                         weight.DecimalPlaces = 2;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, weight);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, weight, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -489,7 +489,7 @@ namespace WebVella.ERP
                         subscriptions.DefaultValue = null;
                         subscriptions.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, subscriptions);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, subscriptions, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -509,7 +509,7 @@ namespace WebVella.ERP
                         name.DefaultValue = "default";
                         name.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, name);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, name, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -529,7 +529,7 @@ namespace WebVella.ERP
                         roles.DefaultValue = null;
                         roles.MaxLength = null;
                         {
-                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, roles);
+                            var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, roles, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }
@@ -605,7 +605,7 @@ namespace WebVella.ERP
 
                 field.MaxLength = 200;
 
-                FieldResponse fieldResponse = entityManager.CreateField(entity.Id, field);
+                FieldResponse fieldResponse = entityManager.CreateField(entity.Id, field, false);
 
 				//inputEntity.Label = "GoroTest_edited";
 				//inputEntity.PluralLabel = "Goro Tests - edited";

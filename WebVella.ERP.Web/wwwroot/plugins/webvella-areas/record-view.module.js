@@ -215,6 +215,17 @@
 
 
 	// Controller ///////////////////////////////
+	function multiplyDecimals(val1, val2, decimalPlaces) {
+		var helpNumber = 100;
+		for (var i = 0; i < decimalPlaces; i++) {
+			helpNumber = helpNumber * 10;
+		}
+		var temp1 = $scope.Math.round(val1 * helpNumber);
+		var temp2 = $scope.Math.round(val2 * helpNumber);
+		return (temp1 * temp2) / (helpNumber * helpNumber);
+	}
+
+
 	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
         'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
 
@@ -683,16 +694,6 @@
 
 			//Percent
 			$scope.Math = window.Math;
-
-			function multiplyDecimals(val1, val2, decimalPlaces) {
-				var helpNumber = 100;
-				for (var i = 0; i < decimalPlaces; i++) {
-					helpNumber = helpNumber * 10;
-				}
-				var temp1 = $scope.Math.round(val1 * helpNumber);
-				var temp2 = $scope.Math.round(val2 * helpNumber);
-				return (temp1 * temp2) / (helpNumber * helpNumber);
-			}
 
 			contentData.getPercentString = function(item) {
 				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
