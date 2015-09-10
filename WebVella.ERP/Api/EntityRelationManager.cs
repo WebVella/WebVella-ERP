@@ -151,9 +151,12 @@ namespace WebVella.ERP.Api
             }
             else if (validationType == ValidationType.Create)
             {
-                //validate if target and origin field is same field
-                if (relation.OriginEntityId == relation.TargetEntityId && relation.OriginFieldId == relation.TargetFieldId)
-                    errors.Add(new ErrorModel("", "", "The origin and target fields cannot be the same."));
+                //validate if target and origin field is same field for following relations
+                if (relation.RelationType == EntityRelationType.OneToMany || relation.RelationType == EntityRelationType.OneToOne )
+                {
+                    if (relation.OriginEntityId == relation.TargetEntityId && relation.OriginFieldId == relation.TargetFieldId)
+                        errors.Add(new ErrorModel("", "", "The origin and target fields cannot be the same."));
+                }
 
 
                 //validate there is no other already existing relation with same parameters
