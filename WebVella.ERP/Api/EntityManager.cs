@@ -184,6 +184,9 @@ namespace WebVella.ERP.Api
             {
                 //TODO:parse format and check if it is valid
 
+                if (string.IsNullOrWhiteSpace( ((InputDateField)field).Format) )
+                    errorList.Add(new ErrorModel("format", null, "Date format is required!"));
+
                 if (!((InputDateField)field).UseCurrentTimeAsDefaultValue.HasValue)
                     ((InputDateField)field).UseCurrentTimeAsDefaultValue = false;
                 //errorList.Add(new ErrorModel("useCurrentTimeAsDefaultValue", null, "Use current Time is required!"));
@@ -191,6 +194,9 @@ namespace WebVella.ERP.Api
             else if (field is InputDateTimeField)
             {
                 //TODO:parse format and check if it is valid
+
+                if (string.IsNullOrWhiteSpace(((InputDateTimeField)field).Format))
+                    errorList.Add(new ErrorModel("format", null, "Datetime format is required!"));
 
                 if (!((InputDateTimeField)field).UseCurrentTimeAsDefaultValue.HasValue)
                     ((InputDateTimeField)field).UseCurrentTimeAsDefaultValue = false;
