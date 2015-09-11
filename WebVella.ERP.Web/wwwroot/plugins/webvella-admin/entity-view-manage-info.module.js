@@ -164,11 +164,11 @@
 		},
 		{
 			name: "quickview",
-			label: "quick view"
+			label: "quick-view"
 		},
 		{
-			name: "quickcreate",
-			label: "quick create"
+			name: "create",
+			label: "create"
 		}
         ];
 

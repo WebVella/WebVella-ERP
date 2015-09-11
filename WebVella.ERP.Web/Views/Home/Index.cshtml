@@ -73,10 +73,12 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages', 'angular-loading-bar', 'ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper',
+
+					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
+					//'shopBase',
+
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
-					//External plugins
-					//'shopBase',
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -148,6 +150,7 @@
 	<script src="~/plugins/webvella-areas/topnav.controller.js"></script>
 	<script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
 	<script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
+	<script src="~/plugins/webvella-areas/record-create.module.js"></script>
 	<script src="~/plugins/webvella-areas/record-view.module.js"></script>
 	<script src="~/plugins/webvella-areas/view-record-sidebar.controller.js"></script>
 	<script src="~/plugins/webvella-areas/providers/recursive-view.directive.js"></script>
@@ -159,6 +162,7 @@
 
 	<!-- external-plugin:shop -->
 	@*<script src="http://localhost:2201/plugins/shop-base/base.module.js"></script>*@
+	@*<script src="http://localhost:2201/plugins/shop-base/override.module.js"></script>*@
 
 	@ViewBag.PluginModulesJsFileStringArray
 
