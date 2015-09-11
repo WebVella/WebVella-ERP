@@ -101,7 +101,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : createView.name.$invalid && !createView.name.$pristine || popupData.nameError}">
 						<label class="required" for="name">Name</label>
 						<input ng-model="popupData.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
-							   required pattern="^[a-z\s\$](?!.*__)[a-z0-9_\s\$]*[a-z0-9\s\$]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupData.nameError">
 							<small class="error" ng-show="createView.name.$error.required && !popupData.nameError">
 								required field

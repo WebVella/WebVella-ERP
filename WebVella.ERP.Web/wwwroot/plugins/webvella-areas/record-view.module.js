@@ -39,8 +39,8 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentView: resolveCurrentView,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedCurrentView: resolveCurrentView,
 				resolvedEntityRelationsList: resolveEntityRelationsList
 			},
 			data: {
@@ -98,22 +98,78 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', '$rootScope', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
-	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, $rootScope, webvellaAdminService, $stateParams, $state, $timeout) {
 		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
 		// Initialize
 		var defer = $q.defer();
-
+		var entityResponse = null;
+		var dynamicViewsSorted = [];
 		// Process
-		function successCallback(response) {
+		function successRecordCallback(response) {
 			if (response.object == null) {
 				$timeout(function () {
 					$state.go("webvella-root-not-found");
 				}, 0);
 			}
 			else {
-				defer.resolve(response.object);
+				var recordData = response.object.data[0];
+				//Find the first matching dynamic view
+				for (var k = 0; k < dynamicViewsSorted.length; k++) {
+					var splitArray = dynamicViewsSorted[k].name.split("~");
+					var areaName = splitArray[0];
+					var fieldName = splitArray[1];
+					var fieldValue = splitArray[2];
+					if (recordData[fieldName].toString() == fieldValue && dynamicViewsSorted[k].name != $stateParams.viewName) {
+						var stateParams = {
+							areaName:$stateParams.areaName,
+							entityName:$stateParams.entityName,
+							recordId:$stateParams.recordId,
+							viewName: dynamicViewsSorted[k].name,
+							auxPageName:$stateParams.auxPageName,
+							filter:$stateParams.filter,
+							page:$stateParams.page
+						}
+						$rootScope.$emit("state-change-needed", "webvella-areas-record-view", stateParams);
+						//defer.reject();
+						break;
+					}
+				}
+				//Return the normal response as there were no matching dynamic views found
+				defer.resolve(entityResponse.object);
+			}
+		}
+
+		// Process
+		function successCallback(response) {
+			entityResponse = response;
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				//Process dynamic views
+				for (var i = 0; i < response.object.recordViews.length; i++) {
+					//Check if there are dynamic views defined in this entity.
+					if (response.object.recordViews[i].type == 'dynamic') {
+						//Check if the designated view area is the current area
+						var splitArray = response.object.recordViews[i].name.split("~");
+						if (splitArray[0] == $stateParams.areaName) {
+							dynamicViewsSorted.push(response.object.recordViews[i]);
+						}
+					}
+				}
+				if (dynamicViewsSorted.length > 0) {
+					dynamicViewsSorted.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+					//Get the record
+					webvellaAdminService.getRecord($stateParams.recordId,$stateParams.entityName, successRecordCallback, errorCallback);
+				}
+				else {
+					//No dynamic views continue to the default one
+					defer.resolve(response.object);
+				}
 			}
 		}
 

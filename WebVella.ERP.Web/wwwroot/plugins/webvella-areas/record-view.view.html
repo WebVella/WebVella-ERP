@@ -17,8 +17,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 title="{{contentData.defaultRecordView.label}}">{{contentData.defaultRecordView.label}}</h4>
-			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Record Views</a>
+			<h4 class="no-link" title="{{contentData.defaultRecordView.label}}">{{contentData.defaultRecordView.label}}</h4>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -27,41 +26,6 @@
 		<div class="lists-box">
 			<h4 class="no-link" title="{{contentData.viewSection.label}}">{{contentData.viewSection.label}}</h4>
 		</div>
-		<accordion>
-			<accordion-group is-open="moreListsOpened">
-				<form class="form-inline">
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon" id="basic-addon1">
-								<i class="fa fa-search"></i>
-							</span>
-							<input ng-model="viewFilter" type="text" class="form-control" placeholder="view label">
-						</div>
-					</div>
-					<div class="form-group hidden-xs hidden-sm">
-						<div class="filter">
-							<div class="field">Actions</div>
-							<ul class="criterias list-inline">
-								<li>
-									<a href=""><i class="fa fa-plus"></i> Create new list</a>
-								</li>
-								<li>
-									<a href=""><i class="fa fa-thumb-tack"></i> Set as default</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</form>
-				<hr class="divider" />
-				<ul class="list-inline">
-					<li style="padding-right:30px;" ng-repeat="view in contentData.currentEntity.recordViews | filter: {label:viewFilter}" ui-sref-active="active">
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.stateParams.areaName,entityName:contentData.stateParams.entityName,recordId:contentData.stateParams.recordId,viewName:view.name})'>
-							<i class="fa fa-fw fa-file-text-o"></i> {{view.label}}
-						</a>
-					</li>
-				</ul>
-			</accordion-group>
-		</accordion>
 	</div>
 	<!--<div id="page-messages">
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
