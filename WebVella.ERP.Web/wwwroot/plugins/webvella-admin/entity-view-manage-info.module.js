@@ -88,10 +88,10 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$modal',
+    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$modal','$timeout',
                             'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast'];
     /* @ngInject */
-    function controller($filter,$scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
+    function controller($filter,$scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,$timeout,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast) {
         $log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec');
 
@@ -115,17 +115,25 @@
 
     	//#region << Initialize View and Content Region >>
         contentData.view = {};
+        contentData.originalView = {};
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
         	if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
-        		contentData.view = contentData.entity.recordViews[i];
+        		contentData.view = angular.copy(contentData.entity.recordViews[i]);
+        		contentData.originalView = angular.copy(contentData.entity.recordViews[i]);
         	}
         }
         //#endregion
-
+        contentData.nameIsChanged = false;
         contentData.fieldUpdate = function (key, data) {
+        	contentData.nameIsChanged = false;
         	contentData.patchObject = {};
         	contentData.patchObject[key] = data;
-        	webvellaAdminService.patchEntityView(contentData.patchObject, contentData.view.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
+        	if (key == 'name') {
+        		contentData.nameIsChanged = true;
+
+        	}
+        	webvellaAdminService.patchEntityView(contentData.patchObject, contentData.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
+
         }
 
         function patchSuccessCallback(response) {
@@ -133,6 +141,11 @@
         		className: 'success',
         		content: '<span class="go-green">Success:</span> ' + response.message
         	});
+        	if (contentData.nameIsChanged) {
+        		$timeout(function () {
+        			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:contentData.view.name }, { reload: true });
+        		}, 0);
+        	}
         	return true;
         }
         function patchFailedCallback(response) {
@@ -169,6 +182,10 @@
 		{
 			name: "create",
 			label: "create"
+		},
+		{
+			name: "dynamic",
+			label: "dynamic"
 		}
         ];
 

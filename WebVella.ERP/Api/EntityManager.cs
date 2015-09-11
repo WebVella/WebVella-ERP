@@ -853,7 +853,7 @@ namespace WebVella.ERP.Api
                     errorList.Add(new ErrorModel("name", null, "There is already a view with such Name!"));
             }
 
-            errorList.AddRange(ValidationUtility.ValidateName(recordView.Name));
+            errorList.AddRange(ValidationUtility.ValidateViewName(recordView.Name));
 
             errorList.AddRange(ValidationUtility.ValidateLabel(recordView.Label));
 
