@@ -12,7 +12,7 @@ namespace WebVella.ERP.Api.Models
 	{
 		General = 0,
 		QuickView = 1,
-		QuickCreate = 2
+		Create = 2
 	}
 
 	public enum RecordViewItemType

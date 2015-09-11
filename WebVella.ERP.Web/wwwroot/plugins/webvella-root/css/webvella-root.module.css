@@ -10,6 +10,12 @@ body {
 	margin-top: 20px;
 }
 
+.page-buttons {
+border-top:3px solid #ccc;
+margin-top:1em;
+padding-top:1em;
+}
+
 span.divider {
 	color: #bdbdbd;
 	margin: 0 1em;

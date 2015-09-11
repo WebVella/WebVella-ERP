@@ -41,8 +41,7 @@
 			resolve: {
 				resolvedCurrentView: resolveCurrentView,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-				resolvedEntityRelationsList: resolveEntityRelationsList,
-				resolvedSecondaryViewOrList: resolveSecondaryViewOrList
+				resolvedEntityRelationsList: resolveEntityRelationsList
 			},
 			data: {
 
@@ -78,43 +77,6 @@
 			}
 			else {
 					defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
-		return defer.promise;
-	}
-
-	resolveSecondaryViewOrList.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveSecondaryViewOrList($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.resolve(response.object);
 			}
 		}
 
