@@ -60,12 +60,16 @@
 	</ul>
 	<hr class="divider" />
 	<div class="view-manage-section">
+		<div class="alert alert-info ng-hide" ng-show="contentData.view.type == 'dynamic'"><strong>TIP:</strong> Dynamic views are automatically triggered by using a naming convention with the <span class="go-red">~</span> sign. 
+		Example: A view with the name <span class="go-red">area_name~field_name~value123</span> will be used automatically to display the record details, when the area name is 
+		<span class="go-red">area_name</span> and the record's field <span class="go-red">field_name</span> has the value of <span class="go-red">value123</span>.
+		 The only drawback is that the values of the field should be only alphanumberic chars.</div>
 		<div class="form-horizontal">
 			<div class="form-group">
 				<div class="row">
 					<label class="col-sm-2 control-label" for="name">Name</label>
 					<div class="col-sm-4">
-						<span class="not-editable">{{contentData.view.name}}</span>
+						<a href="javascript:void(0)" editable-text="contentData.view.name" onbeforesave="contentData.fieldUpdate('name',$data)">{{ contentData.view.name || "not set" }}</a>
 					</div>
 					<label class="col-sm-2 control-label" for="type">Type</label>
 					<div class="col-sm-4 position-relative">

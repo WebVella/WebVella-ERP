@@ -12,7 +12,8 @@ namespace WebVella.ERP.Api.Models
 	{
 		General = 0,
 		QuickView = 1,
-		Create = 2
+		Create = 2,
+		Dynamic = 3
 	}
 
 	public enum RecordViewItemType

@@ -1007,6 +1007,8 @@ namespace WebVella.ERP.Web.Controllers
 
 				foreach (var prop in submitObj.Properties())
 				{
+					if (prop.Name.ToLower() == "name")
+						view.Name = inputView.Name;
 					if (prop.Name.ToLower() == "label")
 						view.Label = inputView.Label;
 					if (prop.Name.ToLower() == "default")
