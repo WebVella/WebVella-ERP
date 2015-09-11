@@ -74,6 +74,7 @@ function guid() {
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Record
 		serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
+		serviceInstance.getRecord = getRecord;
 		serviceInstance.createRecord = createRecord;
 		serviceInstance.updateRecord = updateRecord;
 		serviceInstance.patchRecord = patchRecord;
@@ -742,6 +743,12 @@ function guid() {
 		function getRecordsByEntityName(listName, entityName, filter, page, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getRecordsByEntityName> function called');
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
+		///////////////////////
+		function getRecord(recordId, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called');
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
 
 		///////////////////////
