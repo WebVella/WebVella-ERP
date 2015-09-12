@@ -141,6 +141,7 @@
         		className: 'success',
         		content: '<span class="go-green">Success:</span> ' + response.message
         	});
+        	webvellaAdminService.regenerateAllAreaSubscriptions();
         	if (contentData.nameIsChanged) {
         		$timeout(function () {
         			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:contentData.view.name }, { reload: true });

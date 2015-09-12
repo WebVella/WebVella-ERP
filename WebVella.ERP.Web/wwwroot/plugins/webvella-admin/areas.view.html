@@ -270,14 +270,14 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item" href="javascript:void(0)">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span bind-html-unsafe="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
 	</a>
 </script>
 
 <script type="text/ng-template" id="entityTypeaheadTemplate.html">
 	<a>
-		<div bind-html-unsafe="match.model.name | typeaheadHighlight:query"></div>
-		<!--<div class="go-light-blue" bind-html-unsafe="match.model.label"></div>-->
+		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
+		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
 	</a>
 	<hr style="margin:0"/>
 </script>

@@ -142,7 +142,7 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span bind-html-unsafe="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
 	</a>
 </script>
 
