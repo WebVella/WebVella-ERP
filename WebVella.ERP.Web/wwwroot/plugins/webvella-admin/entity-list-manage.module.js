@@ -204,6 +204,14 @@
         //#region << Initialize the list >>
         contentData.list = angular.copy(resolvedCurrentEntityList);
 
+        function patchFieldSuccessCallback(response) {
+        	ngToast.create({
+        		className: 'success',
+        		content: '<span class="go-green">Success:</span> ' + response.message
+        	});
+        	webvellaAdminService.regenerateAllAreaSubscriptions();
+        }
+
         function patchSuccessCallback(response) {
         	ngToast.create({
         		className: 'success',
@@ -220,7 +228,7 @@
         contentData.fieldUpdate = function (fieldName, data) {
         	var postObj = {};
         	postObj[fieldName] = data;
-        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchFieldSuccessCallback, patchErrorCallback)
         }
 
         contentData.updateColumns = function () {
