@@ -268,7 +268,11 @@
             if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view" || resolvedViewLibrary[i].type === "viewFromRelation"
 			 || resolvedViewLibrary[i].type === "list" || resolvedViewLibrary[i].type === "listFromRelation") { //|| resolvedViewLibrary[i].type === "html") {
 
-                //Filter the items that are already used
+
+            	if (resolvedViewLibrary[i].type === "field") {
+            		contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
+            	}
+            	//Filter the items that are already used
                 var alreadyUsedItemInList = false;
                 for (var j = 0; j < contentData.list.columns.length; j++) {
                 	if (contentData.list.columns[j].meta) {
@@ -312,41 +316,41 @@
         	}
 
         	if (notUsed) {
-        	var search = "";
-        	if (item.type != null) {
-        		search += item.type + " ";
-        	}
-        	if (item.tag != null) {
-        		search += item.tag + " ";
-        	}
-        	if (item.fieldName != null) {
-        		search += item.fieldName + " ";
-        	}
-        	if (item.fieldLabel != null) {
-        		search += item.fieldLabel + " ";
-        	}
-        	if (item.entityName != null) {
-        		search += item.entityName + " ";
-        	}
-        	if (item.entityLabel != null) {
-        		search += item.entityLabel + " ";
-        	}
-        	if (item.viewName != null) {
-        		search += item.viewName + " ";
-        	}
-        	if (item.viewLabel != null) {
-        		search += item.viewLabel + " ";
-        	}
-        	if (item.listName != null) {
-        		search += item.listName + " ";
-        	}
-        	if (item.listLabel != null) {
-        		search += item.listLabel + " ";
-        	}
-        	if (item.entityLabelPlural != null) {
-        		search += item.entityLabelPlural + " ";
-        	}
-        	item.search = search;
+        	//var search = "";
+        	//if (item.type != null) {
+        	//	search += item.type + " ";
+        	//}
+        	//if (item.tag != null) {
+        	//	search += item.tag + " ";
+        	//}
+        	//if (item.fieldName != null) {
+        	//	search += item.fieldName + " ";
+        	//}
+        	//if (item.fieldLabel != null) {
+        	//	search += item.fieldLabel + " ";
+        	//}
+        	//if (item.entityName != null) {
+        	//	search += item.entityName + " ";
+        	//}
+        	//if (item.entityLabel != null) {
+        	//	search += item.entityLabel + " ";
+        	//}
+        	//if (item.viewName != null) {
+        	//	search += item.viewName + " ";
+        	//}
+        	//if (item.viewLabel != null) {
+        	//	search += item.viewLabel + " ";
+        	//}
+        	//if (item.listName != null) {
+        	//	search += item.listName + " ";
+        	//}
+        	//if (item.listLabel != null) {
+        	//	search += item.listLabel + " ";
+        	//}
+        	//if (item.entityLabelPlural != null) {
+        	//	search += item.entityLabelPlural + " ";
+        	//}
+        	//item.search = search;
         	contentData.listLibrary.items.push(item);
 		}
         });

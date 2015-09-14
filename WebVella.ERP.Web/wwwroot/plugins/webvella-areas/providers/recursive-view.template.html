@@ -7,14 +7,14 @@
 			{{section.label}}
 		</div>
 		<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
-			<div class="form-horizontal" style="background: transparent">
+			<div class="form" style="background: transparent">
 				<div class="row" ng-repeat="row in section.rows">
 					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 						<div class="form-group" ng-repeat="item in column.items">
 							<!--If item is field WITH NO relation-->
 							<div class="row field" ng-if="item.type === 'field'">
-								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
-								<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
+								<label class="control-label">{{item.meta.label}}</label>
+								<div ng-switch="item.meta.fieldType">
 									<!-- If type 1 - autoincrement -->
 									<div ng-switch-when="1">
 										{{getAutoIncrementString(item,recordData)}}
@@ -92,8 +92,8 @@
 
 							<!-- If item is field WITH relation -->
 							<div class="row field" ng-if="item.type === 'fieldFromRelation'">
-								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
-								<div class="col-sm-9 position-relative" ng-switch="getRelation(item.relationName).relationType">
+								<label class="control-label">{{item.meta.label}}</label>
+								<div ng-switch="getRelation(item.relationName).relationType">
 									<div ng-switch-when="1" ng-switch="getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1" ng-bind-html="getRelatedFieldSingleHtml(item, recordData)"></div>

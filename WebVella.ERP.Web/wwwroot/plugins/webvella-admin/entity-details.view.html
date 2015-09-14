@@ -47,50 +47,58 @@
 
 	</div>
 
-	<div class="form-horizontal">
-		<div class="form-group">
-			<div class="row">
-				<label class="col-sm-2 control-label" for="name">Name</label>
-				<div class="col-sm-4">
+	<div class="form">
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="name">Name</label>
 					<span class="not-editable">{{contentData.entity.name}}</span>
 				</div>
-				<label class="col-sm-2 control-label" for="name">System entity</label>
-				<div class="col-sm-4 position-relative">
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="name">System entity</label>
 					<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
 					<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="row">
 
-				<label class="col-sm-2 control-label" for="label">Label</label>
-				<div class="col-sm-4 position-relative">
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="label">Label</label>
 					<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label || "not set" }}</a>
 				</div>
-				<label class="col-sm-2 control-label" for="labelPlural">Label Plural</label>
-				<div class="col-sm-4 position-relative">
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="labelPlural">Label Plural</label>
 					<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural || "not set" }}</a>
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="row">
-				<label class="col-sm-2 control-label" for="iconName">Icon name</label>
-				<div class="col-sm-4 position-relative">
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="iconName">Icon name</label>
 					<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "not set" }}</a>
 				</div>
-				<label class="col-sm-2 control-label" for="weight">Weight</label>
-				<div class="col-sm-4 position-relative">
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="control-label" for="weight">Weight</label>
 					<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "not set" }}</a>
 				</div>
-
 			</div>
 		</div>
-		<div class="form-group">
-			<div class="row">
-				<label class="col-sm-2 control-label">Record permissions</label>
-				<div class="col-sm-10">
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="control-label">Record permissions</label>
 					<table class="table table-bordered table-permissions">
 						<thead>
 							<tr>
@@ -107,26 +115,26 @@
 								<td>{{role.label}}</td>
 								<td class="position-relative">
 									<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
-                                        <span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
-                                        <span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
+										<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
 									</a>
 								</td>
 								<td class="position-relative">
 									<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
-                                        <span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-                                        <span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										<span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
+										<span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
 									</a>
 								</td>
 								<td class="position-relative">
-									<a  href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
-                                        <span ng-show="role.canUpdate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-                                        <span ng-show="!role.canUpdate"><i class='fa fa-fw fa-close go-red'></i> false</span>
+									<a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
+										<span ng-show="role.canUpdate"><i class='fa fa-fw fa-check go-green'></i> true</span>
+										<span ng-show="!role.canUpdate"><i class='fa fa-fw fa-close go-red'></i> false</span>
 									</a>
 								</td>
 								<td class="position-relative">
 									<a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
-                                        <span ng-show="role.canDelete"><i class='fa fa-fw fa-check go-green'></i> true</span>
-                                        <span ng-show="!role.canDelete"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										<span ng-show="role.canDelete"><i class='fa fa-fw fa-check go-green'></i> true</span>
+										<span ng-show="!role.canDelete"><i class='fa fa-fw fa-close go-red'></i> false</span>
 									</a>
 								</td>
 

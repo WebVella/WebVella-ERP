@@ -58,66 +58,69 @@
         <h3 class="page-header">Basic info</h3>
         <div class="panel panel-default" style="margin-top:2em;">
             <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-sm-2 control-label" for="name">Name</label>
-                            <div class="col-sm-4">
-                                <span class="not-editable">{{contentData.list.name}}</span>
-                            </div>
-                            <label class="col-sm-2 control-label" for="name">Type</label>
-                            <div class="col-sm-4">
-                                <a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
-                                   onbeforesave="contentData.fieldUpdate('type', $data)">
-                                    {{contentData.list.type}}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-sm-2 control-label" for="label">Label</label>
-                            <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" 
-								   editable-text="contentData.list.label" 
+                <div class="form">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Name</label>
+								<span class="not-editable">{{contentData.list.name}}</span>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Type</label>
+								<a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
+								   onbeforesave="contentData.fieldUpdate('type', $data)">
+									{{contentData.list.type}}
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="label">Label</label>
+								<a href="javascript:void(0)" editable-text="contentData.list.label"
 								   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
-                            </div>
-                            <label class="col-sm-2 control-label" for="weight">Weight</label>
-                            <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "not set" }}</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-sm-2 control-label" for="name">Default</label>
-                            <div class="col-sm-4">
-                                <a href="javascript:void(0)" 
-								   editable-checkbox="contentData.list.default" 
-								   e-title="Make this default list?"
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="weight">Weight</label>
+								<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "not set" }}</a>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Default</label>
+								<a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?"
 								   onbeforesave="contentData.fieldUpdate('default', $data)">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
-                            </div>
-                            <label class="col-sm-2 control-label" for="name">System</label>
-                            <div class="col-sm-4">
-                                <span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-                                <span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-sm-2 control-label" for="label">CSS Class</label>
-                            <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
-                            </div>
-                            <label class="col-sm-2 control-label" for="weight">Page size</label>
-                            <div class="col-sm-4 position-relative">
-                                <a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "not set" }}</a>
-                            </div>
-                        </div>
-                    </div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">System</label>
+								<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+								<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="label">CSS Class</label>
+								<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="weight">Page size</label>
+								<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "not set" }}</a>
+							</div>
+						</div>
+					</div>
                 </div>
 
             </div>
@@ -301,7 +304,6 @@
 					<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
 				</div>
 				<div class="panel-body">
-					<!--<pre>{{parentQuery | json}}</pre>-->
 					<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>
 				</div>
 			</div>
