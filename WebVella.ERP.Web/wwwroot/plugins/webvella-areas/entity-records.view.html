@@ -58,7 +58,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>
 </div>
-<div id="text">
+<div id="page-content">
 	<form id="filters" class="form-inline" style="opacity:.2">
 		<div class="form-group" style="padding-right:10px;">
 			<a class="btn btn-default hidden-xs" ng-click="openSetFiltersModal()">
@@ -90,7 +90,7 @@
 			</div>
 		</div>
 	</form>
-	<div id="list">
+	<div id="page-text">
 		<table class="table table-bordered table-hover table-vertical-align-middle {{contentData.recordsMeta.cssClass}}" ng-hide="contentData.records.length == 0">
 			<thead>
 				<tr>

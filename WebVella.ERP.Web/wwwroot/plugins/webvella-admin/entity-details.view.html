@@ -34,7 +34,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="text">
+<div id="page-content">
 	<div class="tabbable tabs-left spilled">
 		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
@@ -46,106 +46,106 @@
 		</ul>
 
 	</div>
+	<div id="page-text">
+		<div class="form">
 
-	<div class="form">
-
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="name">Name</label>
-					<span class="not-editable">{{contentData.entity.name}}</span>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="name">Name</label>
+						<span class="not-editable">{{contentData.entity.name}}</span>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="name">System entity</label>
+						<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+						<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="name">System entity</label>
-					<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-					<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="label">Label</label>
+						<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label || "not set" }}</a>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="labelPlural">Label Plural</label>
+						<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural || "not set" }}</a>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="label">Label</label>
-					<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label || "not set" }}</a>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="iconName">Icon name</label>
+						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "not set" }}</a>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="weight">Weight</label>
+						<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "not set" }}</a>
+					</div>
 				</div>
 			</div>
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="labelPlural">Label Plural</label>
-					<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural || "not set" }}</a>
-				</div>
-			</div>
-		</div>
 
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="iconName">Icon name</label>
-					<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "not set" }}</a>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div class="form-group">
-					<label class="control-label" for="weight">Weight</label>
-					<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "not set" }}</a>
-				</div>
-			</div>
-		</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="control-label">Record permissions</label>
+						<table class="table table-bordered table-permissions">
+							<thead>
+								<tr>
+									<th style="width:20%">role name</th>
+									<th style="width:20%">create</th>
+									<th style="width:20%">read</th>
+									<th style="width:20%">update</th>
+									<th style="width:20%">delete</th>
 
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="form-group">
-					<label class="control-label">Record permissions</label>
-					<table class="table table-bordered table-permissions">
-						<thead>
-							<tr>
-								<th style="width:20%">role name</th>
-								<th style="width:20%">create</th>
-								<th style="width:20%">read</th>
-								<th style="width:20%">update</th>
-								<th style="width:20%">delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="role in contentData.entity.roles">
+									<td>{{role.label}}</td>
+									<td class="position-relative">
+										<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
+											<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
+											<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										</a>
+									</td>
+									<td class="position-relative">
+										<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
+											<span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
+											<span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										</a>
+									</td>
+									<td class="position-relative">
+										<a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
+											<span ng-show="role.canUpdate"><i class='fa fa-fw fa-check go-green'></i> true</span>
+											<span ng-show="!role.canUpdate"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										</a>
+									</td>
+									<td class="position-relative">
+										<a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
+											<span ng-show="role.canDelete"><i class='fa fa-fw fa-check go-green'></i> true</span>
+											<span ng-show="!role.canDelete"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										</a>
+									</td>
 
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="role in contentData.entity.roles">
-								<td>{{role.label}}</td>
-								<td class="position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
-										<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
-										<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
-									</a>
-								</td>
-								<td class="position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
-										<span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-										<span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
-									</a>
-								</td>
-								<td class="position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
-										<span ng-show="role.canUpdate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-										<span ng-show="!role.canUpdate"><i class='fa fa-fw fa-close go-red'></i> false</span>
-									</a>
-								</td>
-								<td class="position-relative">
-									<a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
-										<span ng-show="role.canDelete"><i class='fa fa-fw fa-check go-green'></i> true</span>
-										<span ng-show="!role.canDelete"><i class='fa fa-fw fa-close go-red'></i> false</span>
-									</a>
-								</td>
-
-							</tr>
-						</tbody>
-					</table>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </div>
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item">
