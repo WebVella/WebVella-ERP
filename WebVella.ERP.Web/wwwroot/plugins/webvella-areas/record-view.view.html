@@ -40,15 +40,14 @@
 			{{section.label}}
 		</div>
 		<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-			<div class="form-horizontal">
-
+			<div class="form">
 				<div class="row" ng-repeat="row in section.rows">
 					<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 						<div class="form-group" ng-repeat="item in column.items">
 							<!--If item is field WITH NO relation-->
-							<div class="row editable-field field" ng-if="item.type === 'field'">
-								<label class="col-sm-3 control-label">{{item.meta.label}}</label>
-								<div class="col-sm-9 position-relative" ng-switch="item.meta.fieldType">
+							<div class="editable-field field" ng-if="item.type === 'field'">
+								<label class="control-label">{{item.meta.label}}</label>
+								<div ng-switch="item.meta.fieldType">
 									<!-- If type 1 - autoincrement -->
 									<div ng-switch-when="1" class="form-control-static"
 										 ng-bind="contentData.getAutoIncrementString(item)">
@@ -237,9 +236,9 @@
 							</div>
 
 							<!--If item is field WITH relation-->
-							<div class="row editable-field field" ng-if="item.type === 'fieldFromRelation'">
-								<label class="col-sm-3 control-label">{{item.entityLabel}}</label>
-								<div class="col-sm-9 position-relative" ng-switch="contentData.getRelation(item.relationName).relationType">
+							<div class="editable-field field" ng-if="item.type === 'fieldFromRelation'">
+								<label class="control-label">{{item.entityLabel}}</label>
+								<div ng-switch="contentData.getRelation(item.relationName).relationType">
 									<div ng-switch-when="1" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
 										<div ng-switch-when="1">
@@ -284,7 +283,7 @@
 									</div>
 									<div ng-switch-when="3" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
 										<!-- Case 1 - Current Entity is Origin -->
-										<div ng-switch-when="1">
+										<div ng-switch-when="1" class="position-relative">
 											<table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')">
 												<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName] track by $index" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
 													<td>{{relationDataRecord}}</td>

@@ -64,62 +64,70 @@
 		Example: A view with the name <span class="go-red">area_name~field_name~value123</span> will be used automatically to display the record details, when the area name is 
 		<span class="go-red">area_name</span> and the record's field <span class="go-red">field_name</span> has the value of <span class="go-red">value123</span>.
 		 The only drawback is that the values of the field should be only alphanumberic chars.</div>
-		<div class="form-horizontal">
-			<div class="form-group">
-				<div class="row">
-					<label class="col-sm-2 control-label" for="name">Name</label>
-					<div class="col-sm-4">
+		
+		<div class="form">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="name">Name</label>
 						<a href="javascript:void(0)" editable-text="contentData.view.name" onbeforesave="contentData.fieldUpdate('name',$data)">{{ contentData.view.name || "not set" }}</a>
 					</div>
-					<label class="col-sm-2 control-label" for="type">Type</label>
-					<div class="col-sm-4 position-relative">
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="type">Type</label>
 						<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes" onbeforesave="contentData.fieldUpdate('type', $data)">
 							{{ contentData.showViewType() }}
 						</a>
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="row">
-					<label class="col-sm-2 control-label" for="label">Label</label>
-					<div class="col-sm-4 position-relative">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="label">Label</label>
 						<a href="javascript:void(0)" editable-text="contentData.view.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.view.label || "not set" }}</a>
 					</div>
-					<label class="col-sm-2 control-label" for="weight">Weight</label>
-					<div class="col-sm-4 position-relative">
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="weight">Weight</label>
 						<a href="javascript:void(0)" editable-text="contentData.view.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.view.weight || "not set" }}</a>
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="row">
-					<label class="col-sm-2 control-label" for="default">Default</label>
-					<div class="col-sm-4 position-relative">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="default">Default</label>
 						<a href="javascript:void(0)" editable-checkbox="contentData.view.default" e-title="make this default view" onbeforesave="contentData.fieldUpdate('default',$data)">
 							<span ng-show="contentData.view.default"><i class='fa fa-fw fa-check go-green'></i> true</span>
 							<span ng-show="!contentData.view.default"><i class='fa fa-fw fa-close go-red'></i> false</span>
 						</a>
 					</div>
-					<label class="col-sm-2 control-label" for="system">System view</label>
-					<div class="col-sm-4 position-relative">
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="system">System view</label>
 						<span ng-show="contentData.view.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
 						<span ng-show="!contentData.view.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
 					</div>
-
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="row">
-					<label class="col-sm-2 control-label" for="iconName">CSS class</label>
-					<div class="col-sm-4 position-relative">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label" for="iconName">CSS class</label>
 						<a href="javascript:void(0)" editable-text="contentData.view.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.view.cssClass || "not set" }}</a>
 					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
 
+					</div>
 				</div>
 			</div>
 		</div>
-
-
 	</div>
 </div>
 

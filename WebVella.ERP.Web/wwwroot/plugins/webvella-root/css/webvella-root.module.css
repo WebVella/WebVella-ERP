@@ -31,7 +31,7 @@ span.divider {
 
 .panel .panel {
 	margin: 0 0 5px 0;
-	border: none;
+	/*border: none;*/
 }
 
 .panel-body {
@@ -1859,11 +1859,6 @@ div.form-control {
 	margin-right: 0;
 }
 
-.form .form-group:last-child,
-.form-horizontal .form-group:last-child {
-	margin-bottom: 0;
-}
-
 .form .table,
 .form-horizontal .table {
 	margin-bottom: 0;
@@ -2870,8 +2865,8 @@ table.editable {
 
 	table.editable:after {
 		border: 1px solid #ccc;
-		border-left: none;
-		right: 15px;
+		/*border-left: none;*/
+		right: 0;
 	}
 
 	a.editable.lookup::after, span.editable.lookup::after, table.editable.lookup::after {
@@ -3525,10 +3520,6 @@ span.not-editable {
 
 /*#region << View Manage >> */
 
-
-.view-manage-section .row + .row {
-	margin-top: 10px;
-}
 
 .view-manage-section a:not(.btn):not(.editable) {
 	color: #ccc !important;
