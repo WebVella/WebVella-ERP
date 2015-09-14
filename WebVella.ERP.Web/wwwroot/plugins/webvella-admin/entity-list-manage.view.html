@@ -40,7 +40,7 @@
         <div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
     </div>-->
 </div>
-<div id="text" style="padding-bottom:3em; ">
+<div id="page-content" style="padding-bottom:3em; ">
     <div class="tabbable tabs-left spilled">
         <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
         <ul class="nav nav-tabs">
@@ -52,296 +52,295 @@
         </ul>
 
     </div>
-
-    <div class="view-manage-section">
-        <a class="btn btn-link go-red pull-right" ng-click="contentData.deleteListModal()">[ Delete list ]</a>
-        <h3 class="page-header">Basic info</h3>
-        <div class="panel panel-default" style="margin-top:2em;">
-            <div class="panel-body">
-                <div class="form">
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="name">Name</label>
-								<span class="not-editable">{{contentData.list.name}}</span>
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="name">Type</label>
-								<a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
-								   onbeforesave="contentData.fieldUpdate('type', $data)">
-									{{contentData.list.type}}
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="label">Label</label>
-								<a href="javascript:void(0)" editable-text="contentData.list.label"
-								   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="weight">Weight</label>
-								<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "not set" }}</a>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="name">Default</label>
-								<a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?"
-								   onbeforesave="contentData.fieldUpdate('default', $data)">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="name">System</label>
-								<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-								<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="label">CSS Class</label>
-								<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label" for="weight">Page size</label>
-								<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "not set" }}</a>
-							</div>
-						</div>
-					</div>
-                </div>
-
-            </div>
-        </div>
-
-        <h3 class="page-header">List Columns</h3>
-        <div class="row">
-			<div class="col-xs-6">
-				<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data</small></h5>
-			</div>
-            <div class="col-xs-6">
-                <h5>Library</h5>
-                <!--<form class="form" style="margin-bottom:1em;">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-                            <input type="text" ng-model="contentData.search.name" class="form-control" placeholder="item name" style="width:100%;">
-                        </div>
-                    </div>
-                </form>-->
-            </div>
-        </div>
-        <div class="row">
-			<div class="col-xs-6">
-				<div class="list-field-selection-box">
-					<div class="drop-zone">
-						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
-							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
-								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
-									<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
-									<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-            <div class="col-xs-6">
-                <div class="list-field-selection-box">
-                    <div class="drop-zone">
-                        <div as-sortable="contentData.dragControlListeners" ng-model="contentData.listLibrary.items">
-                            <div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.listLibrary.items | filter: {search:contentData.search}">
-								<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-								</div>
-	                            <div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
-		                            <a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-		                            <i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
-	                            </div>
-	                            <div as-sortable-item-handle ng-if='item.type == "viewFromRelation"' class="clearfix">
-		                            <a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-		                            <i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
-								</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
-									<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
-									<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
-								</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-        <h3 class="page-header">Query</h3>
-
-		<div ng-if="contentData.list.query != null" ng-include="contentData.getIncludeFile(contentData.list.query)" onLoad="parent = null; parentQuery = contentData.list.query"></div>
-		<div ng-if="contentData.list.query == null"><a class="btn btn-success" ng-click="contentData.AddSection(null)">add query section</a></div>
-
-		<script type="text/ng-template" id="queryRule.html">
-			<table class="table table-noborder">
-				<tr>
-					<td>
-						<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items">
-						</select>
-					</td>
-					<td>
-						<select class="form-control" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
-							<option value="EQ">is equal to</option>
-							<option value="NE">is not equal to</option>
-							<option value="LT">is less than</option>
-							<option value="LTE">is less than or equal</option>
-							<option value="GT">is greater than</option>
-							<option value="GTE">is greater than or equal</option>
-							<option value="CONTAINS">contains</option>
-							<option value="NOTCONTAINS">does not contain</option>
-							<option value="STARTSWITH">starts with</option>
-							<option value="NOTSTARTSWITH">does not start with</option>
-						</select>
-					</td>
-					<td>
-						<select class="form-control" disabled>
-							<option value="val" selected="">the value</option>
-							<!--<option value="valInField">the value in the field</option>-->
-						</select>
-					</td>
-					<td class="position-relative" width="250">
-						<div class="editable-field field">
-							<a href="javascript:void(0)" style="width: 100%;border: 1px solid #ccc;background-color: white;"
-							   editable-text="parentQuery.fieldValue"
-							   ng-bind="parentQuery.fieldValue || 'empty string' "
-							   onaftersave="contentData.updateQuery()"></a>
-						</div>
-						<!--<input class="form-control" ng-model="parentQuery.fieldValue" />-->
-					</td>
-					<td style="width:60px;">
-						<a ng-hide="parent.subQueries.length <= 1" class="btn btn-default go-red"  ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
-						<span ng-hide="parent.subQueries.length > 1" class="btn go-red "  tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
-					</td>
-				</tr>
-			</table>
-		</script>
-
-		<script type="text/ng-template" id="querySection.html">
-			<div class="panel panel-default">
-				<div class="panel-heading clearfix">
-					<span class="pull-right">
-						<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
-						<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
-						<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
-					</span>
-					<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
-						<option value="AND">all</option>
-						<option value="OR">any</option>
-					</select>
-					<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
-				</div>
+	<div id="page-text">
+		<div class="view-manage-section">
+			<a class="btn btn-link go-red pull-right" ng-click="contentData.deleteListModal()">[ Delete list ]</a>
+			<h3 class="page-header">Basic info</h3>
+			<div class="panel panel-default" style="margin-top:2em;">
 				<div class="panel-body">
-					<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>
+					<div class="form">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="name">Name</label>
+									<span class="not-editable">{{contentData.list.name}}</span>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="name">Type</label>
+									<a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
+									   onbeforesave="contentData.fieldUpdate('type', $data)">
+										{{contentData.list.type}}
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="label">Label</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.label"
+									   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="weight">Weight</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "not set" }}</a>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="name">Default</label>
+									<a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?"
+									   onbeforesave="contentData.fieldUpdate('default', $data)">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="name">System</label>
+									<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+									<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="label">CSS Class</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="weight">Page size</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "not set" }}</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 
-		</script>
+			<h3 class="page-header">List Columns</h3>
+			<div class="row">
+				<div class="col-xs-6">
+					<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data</small></h5>
+				</div>
+				<div class="col-xs-6">
+					<h5>Library</h5>
+					<!--<form class="form" style="margin-bottom:1em;">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+								<input type="text" ng-model="contentData.search.name" class="form-control" placeholder="item name" style="width:100%;">
+							</div>
+						</div>
+					</form>-->
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="list-field-selection-box">
+						<div class="drop-zone">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
+								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
+									<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "list"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="list-field-selection-box">
+						<div class="drop-zone">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.listLibrary.items">
+								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.listLibrary.items | filter: {search:contentData.search}">
+									<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "list"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""' class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{item.tag}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-        <h3 class="page-header">Sort</h3>
-		<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
-        <div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
-            <div class="panel-heading clearfix">
-                <span class="pull-right">
-                    <a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
-                </span>
-            </div>
-            <div class="panel-body">
-                <table class="table table-noborder">
-                    <tr ng-repeat="sortRule in contentData.list.sorts">
-                        <td style="width:60px"><span ng-if="$index != 0">than</span></td>
-                        <td>
-                            <select class="form-control" ng-model="sortRule.sortType" ng-change="contentData.updateSorts()">
-                                <option value="ascending">sort from low to high by</option>
-                                <option value="descending">sort from high to low by</option>
-                            </select>
-                        </td>
-                        <td>
-							<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.meta.label for item in contentData.onlyFieldsLibrary.items"></select>
+			</div>
+
+
+			<h3 class="page-header">Query</h3>
+
+			<div ng-if="contentData.list.query != null" ng-include="contentData.getIncludeFile(contentData.list.query)" onLoad="parent = null; parentQuery = contentData.list.query"></div>
+			<div ng-if="contentData.list.query == null"><a class="btn btn-success" ng-click="contentData.AddSection(null)">add query section</a></div>
+
+			<script type="text/ng-template" id="queryRule.html">
+				<table class="table table-noborder">
+					<tr>
+						<td>
+							<select class="form-control" ng-model="parentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
+						</td>
+						<td>
+							<select class="form-control" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
+								<option value="EQ">is equal to</option>
+								<option value="NE">is not equal to</option>
+								<option value="LT">is less than</option>
+								<option value="LTE">is less than or equal</option>
+								<option value="GT">is greater than</option>
+								<option value="GTE">is greater than or equal</option>
+								<option value="CONTAINS">contains</option>
+								<option value="NOTCONTAINS">does not contain</option>
+								<option value="STARTSWITH">starts with</option>
+								<option value="NOTSTARTSWITH">does not start with</option>
+							</select>
+						</td>
+						<td>
+							<select class="form-control" disabled>
+								<option value="val" selected="">the value</option>
+								<!--<option value="valInField">the value in the field</option>-->
+							</select>
+						</td>
+						<td class="position-relative" width="250">
+							<div class="editable-field field">
+								<a href="javascript:void(0)" style="width: 100%;border: 1px solid #ccc;background-color: white;"
+								   editable-text="parentQuery.fieldValue"
+								   ng-bind="parentQuery.fieldValue || 'empty string' "
+								   onaftersave="contentData.updateQuery()"></a>
+							</div>
+							<!--<input class="form-control" ng-model="parentQuery.fieldValue" />-->
 						</td>
 						<td style="width:60px;">
-							<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+							<a ng-hide="parent.subQueries.length <= 1" class="btn btn-default go-red" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
+							<span ng-hide="parent.subQueries.length > 1" class="btn go-red " tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
 						</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+					</tr>
+				</table>
+			</script>
 
-    </div>
+			<script type="text/ng-template" id="querySection.html">
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<span class="pull-right">
+							<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
+							<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(parentQuery)">add section</a>
+							<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(parentQuery)">add rule</a>
+						</span>
+						<select class="form-control pull-left" style="width:80px;" ng-model="parentQuery.queryType" ng-change="contentData.updateQuery()">
+							<option value="AND">all</option>
+							<option value="OR">any</option>
+						</select>
+						<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
+					</div>
+					<div class="panel-body">
+						<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>
+					</div>
+				</div>
 
+			</script>
 
+			<h3 class="page-header">Sort</h3>
+			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+			<div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
+				<div class="panel-heading clearfix">
+					<span class="pull-right">
+						<a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
+					</span>
+				</div>
+				<div class="panel-body">
+					<table class="table table-noborder">
+						<tr ng-repeat="sortRule in contentData.list.sorts">
+							<td style="width:60px"><span ng-if="$index != 0">than</span></td>
+							<td>
+								<select class="form-control" ng-model="sortRule.sortType" ng-change="contentData.updateSorts()">
+									<option value="ascending">sort from low to high by</option>
+									<option value="descending">sort from high to low by</option>
+								</select>
+							</td>
+							<td>
+								<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.meta.label for item in contentData.onlyFieldsLibrary.items"></select>
+							</td>
+							<td style="width:60px;">
+								<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
 </div>
 
 

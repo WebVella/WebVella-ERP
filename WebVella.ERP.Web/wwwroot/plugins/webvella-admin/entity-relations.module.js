@@ -381,7 +381,7 @@
             popupData.selectedOriginField = newEntityModel.fields[0];
             popupData.selectedOriginFieldEnabled = true;
 
-            if (popupData.selectedOriginField && popupData.selectedOriginField.id === popupData.selectedTargetField.id) {
+            if ((popupData.relation.relationType != 3) && popupData.selectedOriginField && popupData.selectedOriginField.id === popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;
             } else {
                 popupData.fieldsDuplicatedError = false;
@@ -407,7 +407,7 @@
             }
 
             popupData.selectedTargetFieldEnabled = true;
-            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+            if ((popupData.relation.relationType != 3) && popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;
             } else {
                 popupData.fieldsDuplicatedError = false;
@@ -418,7 +418,7 @@
         popupData.fieldsDuplicatedError = false;
 
         popupData.changeField = function () {
-            if (popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+        	if ((popupData.relation.relationType != 3) && popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
                 popupData.fieldsDuplicatedError = true;
             } else {
                 popupData.fieldsDuplicatedError = false;

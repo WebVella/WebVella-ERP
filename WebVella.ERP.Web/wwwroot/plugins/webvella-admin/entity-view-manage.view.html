@@ -40,7 +40,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="text">
+<div id="page-content">
 	<div class="tabbable tabs-left spilled">
 		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
@@ -52,93 +52,97 @@
 		</ul>
 
 	</div>
-	<ul class="nav nav-pills">
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
-	</ul>
-	<hr class="divider" />
-	<div class="view-manage-section">
-		<div class="row">
-			<div class="col-sm-8">
-				<div class="panel panel-default wrapper">
-					<div class="view-divider section" ng-click="contentData.manageSectionModalOpen(null,1)" title="click to add section"><span>add section here</span></div>
-					<div class="section-wrapper" ng-repeat="section in contentData.viewContentRegion.sections">
-						<div class="panel panel-default section">
-							<div class="panel-heading">
-								<span class="actions pull-right">
-									<a href="javascript:void(0)" ng-click="contentData.removeSection(section.id)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
-									<a href="javascript:void(0)" ng-click="contentData.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
-								</span>
-								<span class="go-gray">({{section.weight}})</span> {{section.label}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
-							</div>
-							<div class="panel-body">
-								<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
-								<div class="row-wrapper" ng-repeat="row in section.rows">
-									<div class="row-actions clearfix">
-										<a title="row settings" class="pull-right" href="javascript:void(0)" ng-click="contentData.manageRowModalOpen(row,section,row.weight)"><i class="fa fa-fw fa-cog"></i></a>
-										<a title="remove row" class="pull-right" href="javascript:void(0)" ng-click="contentData.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
-									</div>
-									<div class="row">
-										<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
-											<div class="drop-zone">
-												<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
-													<div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
-														<div as-sortable-item-handle ng-if='item.type == "field"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i>
+
+	<div id="page-text">
+
+		<ul class="nav nav-pills">
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
+		</ul>
+		<hr class="divider" />
+		<div class="view-manage-section">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="panel panel-default wrapper">
+						<div class="view-divider section" ng-click="contentData.manageSectionModalOpen(null,1)" title="click to add section"><span>add section here</span></div>
+						<div class="section-wrapper" ng-repeat="section in contentData.viewContentRegion.sections">
+							<div class="panel panel-default section">
+								<div class="panel-heading">
+									<span class="actions pull-right">
+										<a href="javascript:void(0)" ng-click="contentData.removeSection(section.id)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
+										<a href="javascript:void(0)" ng-click="contentData.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
+									</span>
+									<span class="go-gray">({{section.weight}})</span> {{section.label}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
+								</div>
+								<div class="panel-body">
+									<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
+									<div class="row-wrapper" ng-repeat="row in section.rows">
+										<div class="row-actions clearfix">
+											<a title="row settings" class="pull-right" href="javascript:void(0)" ng-click="contentData.manageRowModalOpen(row,section,row.weight)"><i class="fa fa-fw fa-cog"></i></a>
+											<a title="remove row" class="pull-right" href="javascript:void(0)" ng-click="contentData.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
+										</div>
+										<div class="row">
+											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+												<div class="drop-zone">
+													<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
+														<div class="dropped-item" data-as-sortable-item ng-repeat="item in column.items">
+															<div as-sortable-item-handle ng-if='item.type == "field"'>
+																<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i>
+															</div>
+															<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'>
+																<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+															</div>
+															<div as-sortable-item-handle ng-if='item.type == "view"'>
+																<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+															</div>
+															<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
+																<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+															</div>
+															<div as-sortable-item-handle ng-if='item.type == "list"'>
+																<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+															</div>
+															<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
+																<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+															</div>
+															<div as-sortable-item-handle ng-if='item.tag == "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
+															<div as-sortable-item-handle ng-if='item.tag != "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
 														</div>
-														<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'>
-															<i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-														<div as-sortable-item-handle ng-if='item.type == "view"'>
-															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
-														</div>
-														<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
-															<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-														<div as-sortable-item-handle ng-if='item.type == "list"'>
-															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
-														</div>
-														<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
-															<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-														<div as-sortable-item-handle ng-if='item.tag == "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
-														<div as-sortable-item-handle ng-if='item.tag != "" && item.type == "html"'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
 													</div>
 												</div>
 											</div>
 										</div>
+										<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,row.weight + 1)"><span>add row here</span></div>
 									</div>
-									<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,row.weight + 1)"><span>add row here</span></div>
 								</div>
 							</div>
+							<div class="view-divider section" title="click to add section" ng-click="contentData.manageSectionModalOpen(null, section.weight + 1)"><span>add section here</span></div>
 						</div>
-						<div class="view-divider section" title="click to add section" ng-click="contentData.manageSectionModalOpen(null, section.weight + 1)"><span>add section here</span></div>
 					</div>
 				</div>
-			</div>
-			<div class="col-sm-4">
-				<div fixed-navigation class="view-library section">
-					<!-- There are problems as the $index of the item is changed when filtered -->
-					<!--<form class="form" style="margin-bottom:1em;">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
+				<div class="col-sm-4">
+					<div fixed-navigation class="view-library section">
+						<!-- There are problems as the $index of the item is changed when filtered -->
+						<!--<form class="form" style="margin-bottom:1em;">
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+									<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
+								</div>
 							</div>
-						</div>
-					</form>-->
-					<div class="drop-zone" id="library-items-list">
-						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
-							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i></div>
-								<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
-								<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
+						</form>-->
+						<div class="drop-zone" id="library-items-list">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
+								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
+									<div as-sortable-item-handle ng-if='item.type == "field"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="item.meta.required"></i></div>
+									<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"'><i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}} ></span> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> No tag</div>
+									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag != ""'><i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.tag}}</div>
+								</div>
 							</div>
 						</div>
 					</div>

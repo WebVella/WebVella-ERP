@@ -816,7 +816,7 @@ ngToast
 	}
 }
 
-@media screen and (max-width:991px) {
+@media screen and (max-width:767px) {
 	#page-topnav {
 		padding: 12px 10px;
 	}
@@ -1235,13 +1235,6 @@ ngToast
 }
 
 
-/* Responsiveness */
-@media screen and (max-width: 991px) {
-	#page-title {
-		padding: 0 0 10px 10px;
-	}
-}
-
 /*#endregion */
 
 /*#region << Area thumbnails >> */
@@ -1514,7 +1507,7 @@ ngToast
 	}
 
 	#page-content #filters {
-		padding: 0 1em 1em 1em;
+		padding: 1em;
 	}
 
 	#page-content #list {
@@ -1523,7 +1516,7 @@ ngToast
 		position: relative;
 	}
 
-	#page-content #text {
+	#page-content #page-text {
 		min-height: 50px;
 		padding: 1em;
 		position: relative;
@@ -2356,7 +2349,7 @@ table .btn-xs.btn-link {
 	position: absolute;
 	left: -206px;
 	z-index: 10;
-	top: -14px;
+	top: -12px;
 }
 
 #sidebar .tabbable.spilled {
@@ -2403,6 +2396,59 @@ table .btn-xs.btn-link {
 		border-color: rgba(255,255,255,0.7);
 		color: #333;
 	}
+
+@media screen and (max-width: 991px) {
+	#content .tabbable.spilled {
+		margin:0;
+		left:-50px;
+		top:14px;
+	}
+
+		#content .tabbable.spilled .back {
+			width:50px;
+			left:0;
+			background:none;
+			padding:0;
+			text-align:center;
+		}
+
+			#content .tabbable.spilled .back i {
+				font-size:18px;
+			}
+			#content .tabbable.spilled .back .text {
+				display:none;
+			}
+
+		#content .tabbable.spilled ul.nav {
+			background:none;
+			border:none;
+			width:50px;
+			padding:0;
+			margin:0;
+		}
+			#content .tabbable.spilled ul.nav li a {
+				min-width:unset;
+				padding:10px 0;
+				text-align:center;
+			}
+				#content .tabbable.spilled ul.nav li a:hover {
+					border-left: none;
+				}
+
+			#content .tabbable.spilled ul.nav li.active a,
+			#content .tabbable.spilled ul.nav li:hover a {
+				border-radius:0;
+			}
+
+			#content .tabbable.spilled ul.nav li a .fa {
+				font-size:18px;
+				margin-right:0;
+			}
+			#content .tabbable.spilled ul.nav li a .text {
+				display:none;
+			}
+}
+
 
 /* Mini Sidebar */
 .mini-sidebar .tabbable.spilled {

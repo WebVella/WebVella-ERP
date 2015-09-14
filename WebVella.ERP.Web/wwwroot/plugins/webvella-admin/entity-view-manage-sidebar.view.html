@@ -40,7 +40,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="text">
+<div id="page-content">
 	<div class="tabbable tabs-left spilled">
 		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
@@ -52,62 +52,64 @@
 		</ul>
 
 	</div>
-	<ul class="nav nav-pills">
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
-		<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
-	</ul>
-	<hr class="divider" />
-	<div class="view-manage-section">
-		<div class="row">
-			<div class="col-sm-8">
-				<div class="panel panel-default wrapper">
-					<div class="drop-zone">
-						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
-							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items">
-								<div as-sortable-item-handle ng-if='item.type == "view"'>
-									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
-									<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"'>
-									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
-</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
-									<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
-</div>
+	<div id="page-text">
+		<ul class="nav nav-pills">
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
+			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
+		</ul>
+		<hr class="divider" />
+		<div class="view-manage-section">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="panel panel-default wrapper">
+						<div class="drop-zone">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
+								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items">
+									<div as-sortable-item-handle ng-if='item.type == "view"'>
+										<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'>
+										<i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "list"'>
+										<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'>
+										<i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div fixed-navigation class="view-library section">
+						<!-- There are problems as the $index of the item is changed when filtered -->
+						<!--<form class="form" style="margin-bottom:1em;">
+							<div class="form-group">
+								<div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+									<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
+								</div>
+							</div>
+						</form>-->
+						<div class="drop-zone" id="library-items-list">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
+								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
+									<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
+									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-4">
-				<div fixed-navigation class="view-library section">
-					<!-- There are problems as the $index of the item is changed when filtered -->
-					<!--<form class="form" style="margin-bottom:1em;">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
-							</div>
-						</div>
-					</form>-->
-					<div class="drop-zone" id="library-items-list">
-						<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
-							<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.library.items">
-								<div as-sortable-item-handle ng-if='item.type == "view"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "list"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> {{item.meta.name}}</div>
-								<div as-sortable-item-handle ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-arrows go-gray pull-right"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+
+
 		</div>
-
-
 	</div>
 </div>
 

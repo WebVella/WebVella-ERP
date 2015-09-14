@@ -445,7 +445,7 @@
 		</div>
 	</form>
 	<div class="page-buttons">
-		<button class="btn btn-primary" ng-click="contentData.create()">Create</button>
+		<button class="btn btn-primary" ng-click="contentData.create()" ng-if="contentData.createViewRegion != null">Create</button>
 		<button class="btn btn-link" ng-click="contentData.cancel()">Cancel</button>
 	</div>
 </div>
