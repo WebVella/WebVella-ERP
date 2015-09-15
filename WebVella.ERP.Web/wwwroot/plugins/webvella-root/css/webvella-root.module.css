@@ -6,6 +6,10 @@ body {
 	background: #000;
 }
 
+a, a:hover, a:active, a:focus  {
+   outline: 0;
+}
+
 .page-header {
 	margin-top: 20px;
 }
@@ -1862,7 +1866,7 @@ div.form-control {
 	.form-horizontal .table thead th {
 		color: #333 !important;
 		font-weight: bold !important;
-		background-color: #eee;
+		background-color: #fff;
 	}
 
 
