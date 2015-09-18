@@ -72,8 +72,8 @@
         $log.debug('webvellaRoot>login> BEGIN controller.exec');
         /* jshint validthis:true */
         var loginData = this;
-        loginData.email = "";
-        loginData.password = "";
+        loginData.email = "erp@webvella.com";
+        loginData.password = "ttg";
         loginData.rememberMe = true;
         loginData.pageTitle = "Login";
         webvellaRootService.setPageTitle(loginData.pageTitle);
@@ -83,14 +83,12 @@
         loginData.doLogin = function(){
             webvellaRootService.login( loginData,
                                       function (response) {
-                                          $log.info('webvellaRoot>login> END controller.doLogin> SUCCESS');
-                                          $log.info(response);
-                                          loginData.result = response;
+                                          $timeout(function () {
+                                              $state.go('webvella-desktop-browse');
+                                          }, 0);
                                       },
                                       function (response) {
-                                          $log.info('webvellaRoot>login> END controller.doLogin> ERROR');
-                                          $log.info(response);
-                                          loginData.result = response;
+                                         //show validation
                                       });
         }
 

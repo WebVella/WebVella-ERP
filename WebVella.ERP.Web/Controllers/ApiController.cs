@@ -34,6 +34,7 @@ namespace WebVella.ERP.Web.Controllers
 			entityManager = new EntityManager(storage);
 		}
 
+        [AllowAnonymous]
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/login")]
         public IActionResult Login([FromBody]JObject submitObj)
         {
@@ -80,11 +81,24 @@ namespace WebVella.ERP.Web.Controllers
             return Json(responseObj);
         }
 
-		#region << Entity Meta >>
+        [AllowAnonymous]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/logout")]
+        public IActionResult Logout()
+        {
+            WebSecurityUtil.Logout(Context);
+            var responseObj = new ResponseModel();
+            responseObj.Object = null;
+            responseObj.Success = true;
+            responseObj.Timestamp = DateTime.UtcNow;
+            responseObj.Object = null; 
+            return Json(responseObj);
+        }
 
-		// Get all entity definitions
-		// GET: api/v1/en_US/meta/entity/list/
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
+        #region << Entity Meta >>
+
+            // Get all entity definitions
+            // GET: api/v1/en_US/meta/entity/list/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
 		public IActionResult GetEntityMetaList()
 		{
 			var bo = entityManager.ReadEntities();
