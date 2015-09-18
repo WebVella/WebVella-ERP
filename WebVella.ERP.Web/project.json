@@ -19,6 +19,7 @@
     "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
     "Microsoft.Framework.Configuration": "1.0.0-beta6",
     "Microsoft.Framework.Configuration.Json": "1.0.0-beta6",
+    "System.Runtime.Extensions": "4.0.11-beta-23225",
 
     "AutoMapper": "3.3.1",
     "mongocsharpdriver": "1.9.2",

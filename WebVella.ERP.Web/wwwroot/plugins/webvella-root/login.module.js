@@ -82,7 +82,7 @@
 
         loginData.doLogin = function(){
             webvellaRootService.login( loginData,
-                                      function (response) {
+                                      function (response ) {
                                           $timeout(function () {
                                               $state.go('webvella-desktop-browse');
                                           }, 0);
