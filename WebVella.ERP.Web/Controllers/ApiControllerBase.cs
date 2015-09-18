@@ -2,9 +2,11 @@
 using System;
 using System.Net;
 using WebVella.ERP.Api.Models;
+using WebVella.ERP.Web.Security;
 
 namespace WebVella.ERP.Web.Controllers
 {
+    [AuthorizeAttribute]
     public class ApiControllerBase : Controller
     {
         protected IErpService service;

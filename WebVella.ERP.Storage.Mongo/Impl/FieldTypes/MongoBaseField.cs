@@ -63,5 +63,11 @@ namespace WebVella.ERP.Storage.Mongo
 
 		[BsonElement("system")]
 		public bool System { get; set; }
+
+        [BsonElement("permissions")]
+        public FieldPermissions Permissions { get; set; }
+
+        [BsonElement("enableSecurity")]
+        public bool EnableSecurity { get; set; }
     }
 }

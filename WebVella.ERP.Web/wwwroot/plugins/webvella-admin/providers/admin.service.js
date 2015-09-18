@@ -33,6 +33,8 @@ function guid() {
 		//create a plug point in the rootScope
 		$rootScope.webvellaAdmin = {};
 
+		serviceInstance.logout = logout;
+
 		//#region << Include functions >>
 		serviceInstance.getMetaEntityList = getMetaEntityList;
 		serviceInstance.initEntity = initEntity;
@@ -98,9 +100,19 @@ function guid() {
 
 		//#region << Aux methods >>
 
+	    ////////////////////
+		function logout(successCallback, errorCallback) {
+		    $log.debug('webvellaAdmin>providers>admin.service>logout> function called');
+		    $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'logout', data: {} }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
 		// Global functions for result handling for all methods of this service
 		function handleErrorResult(data, status, errorCallback) {
-			switch (status) {
+		    switch (status) {
+		        case 403: {
+		            //handled globally by http observer
+		            break;
+		        }
 				case 400:
 					if (errorCallback === undefined || typeof (errorCallback) != "function") {
 						$log.debug('webvellaAdmin>providers>admin.service> result failure: errorCallback not a function or missing ');

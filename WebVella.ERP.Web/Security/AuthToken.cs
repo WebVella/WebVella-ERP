@@ -35,10 +35,9 @@ namespace WebVella.ERP.Web.Security
 
         public static AuthToken Create(Guid userId, DateTime? modifiedOn, bool extendedExpiration)
         {
-            return null;
-            //return new AuthToken(userId, modifiedOn, DateTime.UtcNow.AddDays(extendedExpiration
-            //                                                           ? SecurityContext.AUTH_TOKEN_EXTENDED_EXPIRATION_DAYS
-            //                                                           : SecurityContext.AUTH_TOKEN_EXPIRATION_DAYS));
+            return new AuthToken(userId, modifiedOn, DateTime.UtcNow.AddDays(extendedExpiration
+                                                                       ? WebSecurityUtil.AUTH_TOKEN_EXTENDED_EXPIRATION_DAYS
+                                                                       : WebSecurityUtil.AUTH_TOKEN_EXPIRATION_DAYS));
         }
 
         public static AuthToken Decrypt(string data)

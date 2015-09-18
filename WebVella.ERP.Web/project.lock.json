@@ -2,7 +2,7 @@
   "locked": false,
   "version": 1,
   "targets": {
-    "DNX,Version=v4.5.1": {
+    "DNX,Version=v4.6": {
       "AutoMapper/3.3.1": {
         "compile": {
           "lib/net40/AutoMapper.dll": {},
@@ -1568,20 +1568,11 @@
         }
       },
       "System.Threading/4.0.10-beta-23019": {
-        "dependencies": {
-          "System.Runtime": "4.0.0-beta-23019",
-          "System.Threading.Tasks": "4.0.0-beta-23019"
-        },
         "compile": {
-          "ref/dotnet/System.Threading.dll": {}
-        }
-      },
-      "System.Threading.Tasks/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net45/_._": {}
+          "lib/net46/_._": {}
         }
       }
     }
@@ -2394,7 +2385,7 @@
       ]
     },
     "Microsoft.CSharp/4.0.0-beta-23019": {
-      "sha512": "wp5SlNCIXAFqPbWMOAD8eedaPA1vPyBSh6P/OZUaSab4ogrFdElpHVoW+wTicbXLVJcvQwp1Jtk9xP5Slmq4EA==",
+      "sha512": "TsYR8ylpBw89cxCTzA9eD8wqLR5u4TnNvUCLU7Qt9TlbxmNM0jPaz80L4N+W81kEoOpchlckGGCTA4JVemmEVA==",
       "files": [
         "lib/dotnet/Microsoft.CSharp.dll",
         "lib/net45/_._",
@@ -3168,7 +3159,7 @@
       ]
     },
     "System.Threading/4.0.10-beta-23019": {
-      "sha512": "ss8p5o4C+f+rjpq0hxrcFsRXGUF+ojzjsW9MKfLrAqTuXhQywwDAPiTEvvEmDG8ptpwfQHWR09jlhcBNFhkG6w==",
+      "sha512": "xJYu7J22Fc4G7pfUlPBYuRj4Rla0VkaqU77SW2DyT/oMq1KQmmR7oQnQ7yq/yig0St17I7rYZYBbSrNbe1l5+g==",
       "files": [
         "lib/DNXCore50/System.Threading.dll",
         "lib/net46/_._",
@@ -3179,21 +3170,6 @@
         "System.Threading.4.0.10-beta-23019.nupkg",
         "System.Threading.4.0.10-beta-23019.nupkg.sha512",
         "System.Threading.nuspec"
-      ]
-    },
-    "System.Threading.Tasks/4.0.0-beta-23019": {
-      "sha512": "y3+puoROfucGrjJkHwvSu0BsoBvFFzFWnJvTbQnM20qgKZsH8NMPTUBEOHa/gNilkc8fTGsM7sX3Iug/QiM0Xg==",
-      "files": [
-        "lib/net45/_._",
-        "lib/win8/_._",
-        "License.rtf",
-        "ref/dotnet/System.Threading.Tasks.dll",
-        "ref/net45/_._",
-        "ref/netcore50/System.Threading.Tasks.dll",
-        "ref/win8/_._",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg.sha512",
-        "System.Threading.Tasks.nuspec"
       ]
     }
   },
@@ -3222,7 +3198,7 @@
       "WebVella.ERP.Storage.Mongo >= 1.0.0-*",
       "WebVella.ERP >= 1.0.0-*"
     ],
-    "DNX,Version=v4.5.1": [
+    "DNX,Version=v4.6": [
       "fx/System.Drawing >= 4.0.0.0"
     ]
   }

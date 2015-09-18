@@ -1,5 +1,7 @@
 ﻿<div id="wrapper">
      <div id="login">
-         <button ui-sref="webvella-desktop-base">login</button>
+         <input ng-model="loginData.email" type="text" class="form-control" placeholder="email address">
+         <input ng-model="loginData.password" type="password" class="form-control" placeholder="password">
+         <button href="javascript:void(0)" ng-click="loginData.doLogin()">login</button>
     </div>
 </div>
