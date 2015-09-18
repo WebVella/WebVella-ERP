@@ -433,7 +433,7 @@ function guid() {
 				"id": guid(),
 				"name": "section",
 				"label": "Section",
-				"cssClass": "go-vertical",
+				"cssClass": "",
 				"showLabel": true,
 				"collapsed": false,
 				"weight": 1,
