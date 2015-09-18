@@ -40,7 +40,8 @@
 				}
 			},
 			resolve: {
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta
+				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedRolesList: resolveRolesList,
 			},
 			data: {
 
@@ -87,16 +88,40 @@
 		return defer.promise;
 	}
 
-	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal'];
+	// Resolve Roles list /////////////////////////
+	resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal) {
+	function resolveRolesList($q, $log, webvellaAdminService) {
+		$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		function errorCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entities> END state.resolved');
+		return defer.promise;
+	}
+
+	// Controller ///////////////////////////////
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList'];
+	/* @ngInject */
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedRolesList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.search = {};
 		contentData.entity = resolvedCurrentEntityMeta;
-
+		contentData.rolesList = resolvedRolesList;
 		contentData.entity.fields = contentData.entity.fields.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
@@ -1359,6 +1384,46 @@
 			popupData.fieldTypes[i].searchBox = popupData.fieldTypes[i].label + " " + popupData.fieldTypes[i].description;
 		}
 
+		//Generate roles and checkboxes
+		popupData.fieldPermissions = [];
+		for (var i = 0; i < popupData.contentData.rolesList.data.length; i++) {
+
+			//Now create the new entity.roles array
+			var role = {};
+			role.id = popupData.contentData.rolesList.data[i].id;
+			role.label = popupData.contentData.rolesList.data[i].name;
+			role.canRead = false;
+			role.canUpdate = false;
+			popupData.fieldPermissions.push(role);
+		}
+
+		popupData.togglePermissionRole = function (permission, roleId) {
+			//Get the current state
+
+			var permissionArrayRoleIndex = -1;
+			if (popupData.field.permissions != null) {
+				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
+					if (popupData.field.permissions[permission][k] === roleId) {
+						permissionArrayRoleIndex = k;
+					}
+				}
+			}
+
+			if (permissionArrayRoleIndex != -1) {
+				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
+			}
+			else {
+				if (popupData.field.permissions == null) {
+					popupData.field.permissions = {};
+					popupData.field.permissions.canRead = [];
+					popupData.field.permissions.canUpdate = [];
+				}
+				popupData.field.permissions[permission].push(roleId);
+			}
+
+		}
+
+
 		//Wizard
 		popupData.wizard = {};
 		popupData.wizard.steps = [];
@@ -1408,6 +1473,8 @@
 		popupData.openCalendar = function (event, name) {
 			popupData.calendars[name] = true;
 		}
+
+
 
 		//Currency
 		popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
@@ -1561,6 +1628,53 @@
 				popupData.fieldType = popupData.fieldTypes[i];
 			}
 		}
+
+		//Generate roles and checkboxes
+		popupData.fieldPermissions = [];
+		for (var i = 0; i < popupData.contentData.rolesList.data.length; i++) {
+
+			//Now create the new entity.roles array
+			var role = {};
+			role.id = popupData.contentData.rolesList.data[i].id;
+			role.label = popupData.contentData.rolesList.data[i].name;
+			role.canRead = false;
+			if (popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+				role.canRead = true;
+			}
+			role.canUpdate = false;
+			if (popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+				role.canUpdate = true;
+			}
+			popupData.fieldPermissions.push(role);
+		}
+
+		popupData.togglePermissionRole = function (permission, roleId) {
+			//Get the current state
+
+			var permissionArrayRoleIndex = -1;
+			if (popupData.field.permissions != null) {
+				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
+					if (popupData.field.permissions[permission][k] === roleId) {
+						permissionArrayRoleIndex = k;
+					}
+				}
+			}
+
+			if (permissionArrayRoleIndex != -1) {
+				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
+			}
+			else {
+				if (popupData.field.permissions == null) {
+					popupData.field.permissions = {};
+					popupData.field.permissions.canRead = [];
+					popupData.field.permissions.canUpdate = [];
+				}
+				popupData.field.permissions[permission].push(roleId);
+			}
+
+		}
+
+
 
 		//Currency
 		if (popupData.field.fieldType == 3) {
