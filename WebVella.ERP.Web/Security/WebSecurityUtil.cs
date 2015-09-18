@@ -35,7 +35,10 @@ namespace WebVella.ERP.Web.Security
             if (modifiedOn != identity.User.ModifiedOn)
                 modifiedOn = identity.User.ModifiedOn;
 
-            string token = AuthToken.Create(userId, modifiedOn, rememberMe).Encrypt();
+
+
+            ErpUser user = new SecurityManager(service).GetUser(userId);
+            string token = AuthToken.Create(user, rememberMe).Encrypt();
             if (rememberMe)
             {
                 CookieOptions options = new CookieOptions();

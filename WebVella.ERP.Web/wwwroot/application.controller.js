@@ -18,6 +18,9 @@
 
     /* @ngInject */
     function config($httpProvider) {
+        //$http.defaults.headers.delete = {};
+        //$http.defaults.headers.delete['auth-token'] = 'C3PO R2D2';
+
         $httpProvider.interceptors.push(function ($q, $window) {
             return {
                 'responseError': function (errorResponse) {
