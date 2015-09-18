@@ -21,17 +21,23 @@ namespace WebVella.ERP.Api
         private EntityManager entityManager;
         private EntityRelationManager entityRelationManager;
         private List<EntityRelation> relations = null;
+        private bool ignoreSecurity = false;
 
         /// <summary>
         /// The contructor
         /// </summary>
         /// <param name="service"></param>
-        public RecordManager(IErpService service)
+        public RecordManager(IErpService service) : this( service, false )
+        {
+        }
+
+        internal RecordManager(IErpService service, bool ignoreSecurity = false )
         {
             erpService = service;
             entityCache = new List<Entity>();
             entityManager = new EntityManager(erpService.StorageService);
             entityRelationManager = new EntityRelationManager(erpService.StorageService);
+            this.ignoreSecurity = ignoreSecurity;
         }
 
         public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
@@ -195,6 +201,18 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
+                if (!ignoreSecurity)
+                {
+                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
+                    if (!hasPermisstion)
+                    {
+                        response.Success = false;
+                        response.Message = "Trying to create record in entity with no create access.";
+                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
+                        return response;
+                    }
+                }
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -341,6 +359,19 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
+
+                if (!ignoreSecurity)
+                {
+                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Update, entity);
+                    if (!hasPermisstion)
+                    {
+                        response.Success = false;
+                        response.Message = "Trying to update record in entity with no update access.";
+                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
+                        return response;
+                    }
+                }
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -475,6 +506,18 @@ namespace WebVella.ERP.Api
                 }
 
 
+                if (!ignoreSecurity)
+                {
+                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Delete, entity);
+                    if (!hasPermisstion)
+                    {
+                        response.Success = false;
+                        response.Message = "Trying to delete record in entity with no delete access.";
+                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
+                        return response;
+                    }
+                }
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var query = EntityQuery.QueryEQ("id", id);
@@ -533,6 +576,19 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
+
+                if (!ignoreSecurity)
+                {
+                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+                    if (!hasPermisstion)
+                    {
+                        response.Success = false;
+                        response.Message = "Trying to read records from entity with no read access.";
+                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
+                        return response;
+                    }
+                }
+
                 try
                 {
                     if (query.Query != null)
@@ -541,7 +597,7 @@ namespace WebVella.ERP.Api
                 catch (Exception ex)
                 {
                     response.Success = false;
-                    response.Message = "The query is incorrect and cannot be executed";
+                    response.Message = "The query is incorrect and cannot be executed.";
                     response.Object = null;
                     response.Errors.Add(new ErrorModel { Message = ex.Message });
                     response.Timestamp = DateTime.UtcNow;
@@ -1022,6 +1078,8 @@ namespace WebVella.ERP.Api
                         joinToEntity = relationFieldMeta.OriginEntity;
                     else
                         joinToEntity = relationFieldMeta.TargetEntity;
+
+                    relationFieldMeta.Entity = joinToEntity;
 
                     var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
                     if (relatedField == null)

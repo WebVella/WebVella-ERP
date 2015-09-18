@@ -97,4 +97,13 @@ namespace WebVella.ERP.Api
         Percent,
         Text
     }
+
+    public enum EntityPermission
+    {
+        Read,
+        Create,
+        Update,
+        Delete
+    }
+
 }

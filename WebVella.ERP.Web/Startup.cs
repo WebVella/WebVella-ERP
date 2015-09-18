@@ -9,6 +9,7 @@ using WebVella.ERP.Storage.Mongo;
 using WebVella.ERP.Api.Models.AutoMapper;
 using System.Globalization;
 using Microsoft.Framework.Runtime;
+using WebVella.ERP.Web.Security;
 
 namespace WebVella.ERP.Web
 {
@@ -43,6 +44,10 @@ namespace WebVella.ERP.Web
             IErpService service = app.ApplicationServices.GetService<IErpService>();
             AutoMapperConfiguration.Configure(service);
 
+            app.UseDebugLogMiddleware();
+            app.UseSecurityMiddleware();
+           
+
             //app.Run(async context =>
             //{
             //    IErpService service = app.ApplicationServices.GetService<IErpService>();
@@ -68,6 +73,8 @@ namespace WebVella.ERP.Web
 
             // Add static files to the request pipeline.
             app.UseStaticFiles();
+
+       
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

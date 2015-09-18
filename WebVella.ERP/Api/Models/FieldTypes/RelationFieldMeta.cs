@@ -28,6 +28,9 @@ namespace WebVella.ERP.Api.Models
         [JsonIgnore]
         internal Field TargetField { get; set; }
 
+        [JsonIgnore]
+        public Entity Entity { get; set; }
+
         public RelationFieldMeta()
         {
             Relation = null;
@@ -36,6 +39,7 @@ namespace WebVella.ERP.Api.Models
 
         public RelationFieldMeta(Field field) : base(field)
         {
+            Entity = null;
             Relation = null;
             Fields = new List<Field>();
         }

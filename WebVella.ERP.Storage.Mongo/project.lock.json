@@ -2,7 +2,7 @@
   "locked": false,
   "version": 1,
   "targets": {
-    "DNX,Version=v4.5.1": {
+    "DNX,Version=v4.6": {
       "AutoMapper/3.3.1": {
         "compile": {
           "lib/net40/AutoMapper.dll": {},
@@ -292,29 +292,12 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Runtime/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
-        },
-        "runtime": {
-          "lib/net45/_._": {}
-        }
-      },
       "System.Threading/4.0.10-beta-23019": {
-        "dependencies": {
-          "System.Runtime": "4.0.0-beta-23019",
-          "System.Threading.Tasks": "4.0.0-beta-23019"
-        },
         "compile": {
-          "ref/dotnet/System.Threading.dll": {}
-        }
-      },
-      "System.Threading.Tasks/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net45/_._": {}
+          "lib/net46/_._": {}
         }
       }
     }
@@ -677,21 +660,6 @@
         "System.Linq.nuspec"
       ]
     },
-    "System.Runtime/4.0.0-beta-23019": {
-      "sha512": "BUB/5CSzjDRQlifthFztT1eWmnnb2QCK2WKd0kxAt8ytB+2oXiVqpSvcbtzRsidp8wGdG51fyolfiznodSIX9A==",
-      "files": [
-        "lib/net45/_._",
-        "lib/win8/_._",
-        "License.rtf",
-        "ref/dotnet/System.Runtime.dll",
-        "ref/net45/_._",
-        "ref/netcore50/System.Runtime.dll",
-        "ref/win8/_._",
-        "System.Runtime.4.0.0-beta-23019.nupkg",
-        "System.Runtime.4.0.0-beta-23019.nupkg.sha512",
-        "System.Runtime.nuspec"
-      ]
-    },
     "System.Threading/4.0.10-beta-23019": {
       "sha512": "ss8p5o4C+f+rjpq0hxrcFsRXGUF+ojzjsW9MKfLrAqTuXhQywwDAPiTEvvEmDG8ptpwfQHWR09jlhcBNFhkG6w==",
       "files": [
@@ -705,21 +673,6 @@
         "System.Threading.4.0.10-beta-23019.nupkg.sha512",
         "System.Threading.nuspec"
       ]
-    },
-    "System.Threading.Tasks/4.0.0-beta-23019": {
-      "sha512": "y3+puoROfucGrjJkHwvSu0BsoBvFFzFWnJvTbQnM20qgKZsH8NMPTUBEOHa/gNilkc8fTGsM7sX3Iug/QiM0Xg==",
-      "files": [
-        "lib/net45/_._",
-        "lib/win8/_._",
-        "License.rtf",
-        "ref/dotnet/System.Threading.Tasks.dll",
-        "ref/net45/_._",
-        "ref/netcore50/System.Threading.Tasks.dll",
-        "ref/win8/_._",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg.sha512",
-        "System.Threading.Tasks.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -728,6 +681,6 @@
       "mongocsharpdriver >= 1.9.2",
       "WebVella.ERP >= 1.0.0-*"
     ],
-    "DNX,Version=v4.5.1": []
+    "DNX,Version=v4.6": []
   }
 }

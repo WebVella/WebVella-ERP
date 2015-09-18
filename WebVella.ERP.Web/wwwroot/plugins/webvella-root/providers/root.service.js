@@ -23,6 +23,7 @@
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
         serviceInstance.getSitemap = getSitemap;
+        serviceInstance.login = login;
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.GoToState = GoToState;
 
@@ -110,6 +111,12 @@
         function getSitemap(successCallback, errorCallback) {
         	$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called');
         	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+        ////////////////////
+        function login(postObject, successCallback, errorCallback) {
+            $log.debug('webvellaRoot>providers>root.service>login> function called');
+            $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'login', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
 
