@@ -244,11 +244,11 @@
 	}
 
 
-	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
+	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope','$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
         'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
 
 	/* @ngInject */
-	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
+	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope,$window, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
         resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
@@ -326,13 +326,14 @@
 						}
 					}
 				}
-				returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName]);
+				returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName][0]);
 			}
 
 			return returnObject;
 		};
 
 		var returnedObject = {};
+
 		if ($stateParams.auxPageName === "*") {
 			//The default view meta is active
 			returnedObject = getViewOrListMetaAndData("");
@@ -387,9 +388,68 @@
 				section.collapsed = !section.collapsed;
 			}
 
-			contentData.htmlFieldUpdate = function(item) {
-				contentData.fieldUpdate(item, contentData.selectedSidebarPage.data[item.dataName]);
+			//Html
+			//on #content check if mouse is clicked outside the editor, so to perform a possible field update
+			contentData.viewCheckMouseButton = function ($event) {
+				if (contentData.lastEnabledHtmlField != null) {
+					contentData.fieldUpdate(contentData.lastEnabledHtmlField, contentData.selectedSidebarPage.data[contentData.lastEnabledHtmlField.dataName]);
+					contentData.lastEnabledHtmlFieldData = null;
+					contentData.lastEnabledHtmlField = null;
+				}
+				else {
+					//Do nothing as this is a normal mouse click
+				}
 			}
+			//on the editor textarea, prevent save when the mouse click is in the editor
+			contentData.preventMouseSave = function ($event) {
+				if ($event.currentTarget.className.indexOf("cke_focus") > -1) {
+					$event.stopPropagation();
+				}
+			}
+			//save without unblur on ctrl+S, prevent exiting the textarea on tab, cancel change on esc
+			contentData.htmlFieldCheckEscapeKey = function ($event, item) {
+				if ($event.keyCode == 27) { // escape key maps to keycode `27`
+					//As the id is dynamic in our case and there is a problem with ckeditor and dynamic id-s we should use ng-attr-id in the html and here to cycle through all instances and find the current bye its container.$.id
+					for (var property in CKEDITOR.instances) {
+						if (CKEDITOR.instances[property].container.$.id == item.meta.name) {
+
+							CKEDITOR.instances[property].editable().$.blur();
+							//reinit the field
+							contentData.selectedSidebarPage.data[item.dataName] = angular.copy(contentData.lastEnabledHtmlFieldData);
+							contentData.lastEnabledHtmlField = null;
+							contentData.lastEnabledHtmlFieldData = null;
+							return false;
+						}
+					}
+					var idd = 0;
+				}
+				else if ($event.keyCode == 9) { // tab key maps to keycode `9`
+					$event.preventDefault();
+					return false;
+				}
+				else if ($event.ctrlKey || $event.metaKey) {
+					switch (String.fromCharCode($event.which).toLowerCase()) {
+						case 's':
+							
+							$event.preventDefault();
+							$timeout(function () {
+								contentData.fieldUpdate(contentData.lastEnabledHtmlField, contentData.selectedSidebarPage.data[contentData.lastEnabledHtmlField.dataName]);
+							}, 500);
+							return false;
+							break;
+					}
+				}
+				return true;
+			}
+
+			contentData.lastEnabledHtmlField = null;
+			contentData.lastEnabledHtmlFieldData = null;
+			contentData.htmlFieldIsEnabled = function ($event, item) {
+				contentData.lastEnabledHtmlField = item;
+				contentData.lastEnabledHtmlFieldData = angular.copy(contentData.selectedSidebarPage.data[item.dataName]);
+			}
+
+
 
 			contentData.fieldUpdate = function(item, data) {
 				var defer = $q.defer();
@@ -665,7 +725,7 @@
 				language: 'en',
 				'skin': 'moono',
 				height: '160',
-				//'extraPlugins': "imagebrowser",//"imagebrowser,mediaembed",
+				//'extraPlugins': "save",//"imagebrowser",//"imagebrowser,mediaembed",
 				//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
 				//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
 				//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
@@ -673,10 +733,7 @@
 				toolbarLocation: 'top',
 				toolbar: 'full',
 				toolbar_full: [
-					{
-						name: 'basicstyles',
-						items: ['Bold', 'Italic', 'Strike', 'Underline']
-					},
+					{name: 'basicstyles',items: ['Save','Bold', 'Italic', 'Strike', 'Underline']},
 					{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
 					{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
 					{ name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
