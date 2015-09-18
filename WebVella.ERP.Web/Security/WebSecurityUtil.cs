@@ -52,7 +52,7 @@ namespace WebVella.ERP.Web.Security
             return token;
         }
 
-        public void Logout(HttpContext context)
+        public static void Logout(HttpContext context)
         {
             context.Response.Cookies.Append(AUTH_TOKEN_KEY, "");
             context.User = null;
@@ -87,14 +87,23 @@ namespace WebVella.ERP.Web.Security
                     //1. we don't authenticate it
                     //2. clear identity from cache
                     if (identity.User.ModifiedOn != token.LastModified)
+                    {
+                        RemoveIdentityFromCache(identity.User.Id);
+
+                        identity = CreateIdentity(token.UserId, service);
+
+                        //user has token, but identity cannot be created
+                        //1. user is disabled 
+                        //2. user is missing
+                        if (identity == null)
+                            return;
+
+                        AddIdentityToCache(token.UserId, identity);
+
                         return;
+                    }
 
                     context.User = new ErpPrincipal(identity);
-                }
-                else
-                {
-                    //delete invalid cookie, so we delete it
-                    context.Response.Cookies.Append(AUTH_TOKEN_KEY, "");
                 }
             }
         }
@@ -129,7 +138,10 @@ namespace WebVella.ERP.Web.Security
         {
             SecurityManager secMan = new SecurityManager(service);
             ErpUser user = secMan.GetUser(userId.Value);
-            //check for null and set guest user
+
+            if (user == null || !user.Enabled)
+                return null;
+
             return new ErpIdentity { User = user };
         }
 

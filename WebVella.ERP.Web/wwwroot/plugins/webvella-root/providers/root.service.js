@@ -119,12 +119,15 @@
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'login', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
-
         //// Aux methods //////////////////////////////////////////////////////
 
         // Global functions for result handling for all methods of this service
         function handleErrorResult(data, status, errorCallback) {
-        	switch (status) {
+            switch (status) {
+                case 403: {
+                    //handled globally by http observer
+                    break;
+                }
                 case 400:
                     if (errorCallback === undefined || typeof (errorCallback) != "function") {
                         $log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing ');

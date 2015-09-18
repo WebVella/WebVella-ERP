@@ -93,6 +93,10 @@
         // Global functions for result handling for all methods of this service
         function handleErrorResult(data, status, errorCallback) {
             switch (status) {
+                case 403: {
+                    //handled globally by http observer
+                    break;
+                }
                 case 400:
                     if (errorCallback === undefined || typeof (errorCallback) != "function") {
                         alert("The errorCallback argument is not a function or missing");
