@@ -2,6 +2,7 @@
 
 namespace WebVella.ERP.Web.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : ApiControllerBase
     {
         public HomeController(IErpService service) : base(service)

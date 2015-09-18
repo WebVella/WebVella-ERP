@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Security.Principal;
-using WebVella.ERP.Security;
+using WebVella.ERP.Api.Models;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -11,6 +11,6 @@ namespace WebVella.ERP.Web.Security
 
             public override bool IsAuthenticated { get { return User != null && !String.IsNullOrWhiteSpace(User.Email); } }
 
-            public User User { get; set; }
+            public ErpUser User { get; set; }
     }
 }

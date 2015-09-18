@@ -9,11 +9,38 @@
 
     angular
         .module('wvApp')
+        .config(config)
         .controller('ApplicationController', controller);
 
 
+    // Configuration ///////////////////////////////////
+    config.$inject = ['$httpProvider'];
+
+    /* @ngInject */
+    function config($httpProvider) {
+        $httpProvider.interceptors.push(function ($q, $window) {
+            return {
+                'responseError': function (errorResponse) {
+                    switch (errorResponse.status) {
+                        case 403:
+                            $window.location = '#/login';
+                            //impossible to use state in the config, when i try to inject i get "Unknown provider: $state"
+                            //cannot inject timeout too
+                            //$state.go('webvella-root-login');
+                            break;
+                        case 500:
+                            //$window.location = './500.html';
+                            break;
+                    }
+                    return $q.reject(errorResponse);
+                }
+            }
+        });
+    };
+
+
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout','$state'];
+    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state'];
 
     /* @ngInject */
     function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state) {
@@ -22,7 +49,7 @@
         var appData = this;
         //Set page title
         appData.pageTitle = 'WebVella ERP';
-        $rootScope.$on("application-pageTitle-update", function (event,newValue) {
+        $rootScope.$on("application-pageTitle-update", function (event, newValue) {
             appData.pageTitle = newValue;
         });
         //Set the body color
@@ -30,10 +57,10 @@
         $rootScope.$on("application-body-color-update", function (event, color) {
             appData.bodyColor = color;
         });
-    	//Side menu toggle
+        //Side menu toggle
         appData.$storage = $localStorage;
         if (!appData.$storage.isMiniSidebar) {
-        	appData.$storage.isMiniSidebar = false;
+            appData.$storage.isMiniSidebar = false;
         }
         //appData.isMiniSidebar = false;
         //$rootScope.isMiniSidebar = false;
@@ -41,7 +68,7 @@
         //	appData.isMiniSidebar = true;
         //	$rootScope.isMiniSidebar = true;
         //}
-        
+
         //$rootScope.$on("application-sidebar-mini-toggle", function (event) {
         //	appData.isMiniSidebar = !appData.isMiniSidebar;
         //	$rootScope.isMiniSidebar = appData.isMiniSidebar;
@@ -53,11 +80,11 @@
             appData.sideMenuIsVisible = isVisible;
         });
 
-		//Redirect State (usefull when you need to redirect from resolve)
+        //Redirect State (usefull when you need to redirect from resolve)
         $rootScope.$on("state-change-needed", function (event, stateName, stateParams) {
-        	$timeout(function () {
-        		$state.go(stateName, stateParams, { reload: true });
-        	}, 0);
+            $timeout(function () {
+                $state.go(stateName, stateParams, { reload: true });
+            }, 0);
         });
 
         activate();

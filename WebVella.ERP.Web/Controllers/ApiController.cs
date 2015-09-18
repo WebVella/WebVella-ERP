@@ -11,6 +11,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.Net.Http.Headers;
 using System.IO;
 using WebVella.ERP.Api.Models.AutoMapper;
+using WebVella.ERP.Web.Security;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -33,16 +34,74 @@ namespace WebVella.ERP.Web.Controllers
 			entityManager = new EntityManager(storage);
 		}
 
+        [AllowAnonymous]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/login")]
+        public IActionResult Login([FromBody]JObject submitObj)
+        {
+            string email = (string)submitObj["email"];
+            string password = (string)submitObj["password"];
+            bool rememberMe = (bool)submitObj["rememberMe"];
 
-		#region << Entity Meta >>
+            SecurityManager secMan = new SecurityManager(service);
+            var user = secMan.GetUser(email, password);
+            var responseObj = new ResponseModel();
 
-		// Get all entity definitions
-		// GET: api/v1/en_US/meta/entity/list/
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
+            if (user != null)
+            {
+                if (user.Enabled == false)
+                {
+                    responseObj.Success = false;
+                    var errorMsg = new ErrorModel();
+                    errorMsg.Key = "Email";
+                    errorMsg.Value = email;
+                    errorMsg.Message = "User account is disabled.";
+                    responseObj.Errors.Add(errorMsg);
+                    responseObj.Object = new { token = "" };
+                }
+                else
+                {
+                    responseObj.Object = null;
+                    responseObj.Success = true;
+                    responseObj.Timestamp = DateTime.UtcNow;
+                    responseObj.Object = new { token = WebSecurityUtil.Login(Context, user.Id, user.ModifiedOn, rememberMe, service) };
+                }
+
+            }
+            else
+            {
+                responseObj.Success = false;
+                var errorMsg = new ErrorModel();
+                errorMsg.Key = "Email";
+                errorMsg.Value = email;
+                errorMsg.Message = "Invalid email or password";
+                responseObj.Errors.Add(errorMsg);
+                responseObj.Object = new { token = "" };
+            }
+
+            return Json(responseObj);
+        }
+
+        [AllowAnonymous]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/logout")]
+        public IActionResult Logout()
+        {
+            WebSecurityUtil.Logout(Context);
+            var responseObj = new ResponseModel();
+            responseObj.Object = null;
+            responseObj.Success = true;
+            responseObj.Timestamp = DateTime.UtcNow;
+            responseObj.Object = null; 
+            return Json(responseObj);
+        }
+
+        #region << Entity Meta >>
+
+            // Get all entity definitions
+            // GET: api/v1/en_US/meta/entity/list/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/list")]
 		public IActionResult GetEntityMetaList()
 		{
 			var bo = entityManager.ReadEntities();
-		
 			return DoResponse(bo);
 		}
 
@@ -1832,7 +1891,7 @@ namespace WebVella.ERP.Web.Controllers
                         Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
                         queryFields += field.Name + ", ";
                     }
-                    else if (item is RecordViewSidebarViewItem )
+                    else if (item is RecordViewSidebarViewItem)
                     {
                         //nothing to add, just check for record id
                         if (!queryFields.Contains(" id, ") && !queryFields.StartsWith("id,"))
@@ -2116,8 +2175,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/sitemap")]
 		public IActionResult GetSitemap()
 		{
-			var columnsNeeded = "id,name,label,color,icon_name,weight,roles,"
-				+ "subscriptions";
+            var columnsNeeded = "id,name,label,color,icon_name,weight,roles,subscriptions";
 			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
 			QueryResponse resultAreas = recMan.Find(queryAreas);
 			if (!resultAreas.Success)
@@ -2151,7 +2209,6 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			return Json(response);
 		}
-
 
 		#endregion
 

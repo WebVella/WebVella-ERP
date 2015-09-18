@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WebVella.ERP.Security
+namespace WebVella.ERP.Api.Models
 {
-    public class Role
+    public class ErpRole
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -12,4 +12,4 @@ namespace WebVella.ERP.Security
         public string Name { get; set; }
     }
 
-}
+} 

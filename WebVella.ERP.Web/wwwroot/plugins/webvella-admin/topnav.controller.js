@@ -12,10 +12,10 @@
         .controller('WebVellaAdminTopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$state', '$rootScope', '$timeout'];
+    controller.$inject = ['$localStorage', '$log', '$state', '$rootScope', '$timeout', '$window', 'webvellaAdminService'];
 
     /* @ngInject */
-    function controller($localStorage,$log, $state, $rootScope, $timeout) {
+    function controller($localStorage, $log, $state, $rootScope, $timeout, $window, webvellaAdminService) {
         $log.debug('webvellaAdmin>topnav> BEGIN controller.exec');
         /* jshint validthis:true */
         var topnavData = this;
@@ -29,6 +29,17 @@
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {
         	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;
+        }
+
+        topnavData.logout = function () {
+            webvellaAdminService.logout(
+                    function (response) {
+                        //  $window.location = '#/login';
+                        $timeout(function () {
+                            $state.go('webvella-root-login');
+                        }, 0);
+                    },
+                    function (response) {});
         }
 
         $log.debug('webvellaAdmin>topnav> END controller.exec');
