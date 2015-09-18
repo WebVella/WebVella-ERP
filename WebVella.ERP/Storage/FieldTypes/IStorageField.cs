@@ -25,5 +25,9 @@ namespace WebVella.ERP.Storage
         bool Auditable { get; set; }
 
         bool System { get; set; }
+
+        FieldPermissions Permissions { get; set; }
+
+        bool EnableSecurity { get; set; }
     }
 }

@@ -2,7 +2,7 @@
   "locked": false,
   "version": 1,
   "targets": {
-    "DNX,Version=v4.5.1": {
+    "DNX,Version=v4.6": {
       "AutoMapper/3.3.1": {
         "compile": {
           "lib/net40/AutoMapper.dll": {},
@@ -1568,20 +1568,11 @@
         }
       },
       "System.Threading/4.0.10-beta-23019": {
-        "dependencies": {
-          "System.Runtime": "4.0.0-beta-23019",
-          "System.Threading.Tasks": "4.0.0-beta-23019"
-        },
         "compile": {
-          "ref/dotnet/System.Threading.dll": {}
-        }
-      },
-      "System.Threading.Tasks/4.0.0-beta-23019": {
-        "compile": {
-          "ref/net45/_._": {}
+          "ref/net46/_._": {}
         },
         "runtime": {
-          "lib/net45/_._": {}
+          "lib/net46/_._": {}
         }
       }
     }
@@ -3180,21 +3171,6 @@
         "System.Threading.4.0.10-beta-23019.nupkg.sha512",
         "System.Threading.nuspec"
       ]
-    },
-    "System.Threading.Tasks/4.0.0-beta-23019": {
-      "sha512": "y3+puoROfucGrjJkHwvSu0BsoBvFFzFWnJvTbQnM20qgKZsH8NMPTUBEOHa/gNilkc8fTGsM7sX3Iug/QiM0Xg==",
-      "files": [
-        "lib/net45/_._",
-        "lib/win8/_._",
-        "License.rtf",
-        "ref/dotnet/System.Threading.Tasks.dll",
-        "ref/net45/_._",
-        "ref/netcore50/System.Threading.Tasks.dll",
-        "ref/win8/_._",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg",
-        "System.Threading.Tasks.4.0.0-beta-23019.nupkg.sha512",
-        "System.Threading.Tasks.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -3222,7 +3198,7 @@
       "WebVella.ERP.Storage.Mongo >= 1.0.0-*",
       "WebVella.ERP >= 1.0.0-*"
     ],
-    "DNX,Version=v4.5.1": [
+    "DNX,Version=v4.6": [
       "fx/System.Drawing >= 4.0.0.0"
     ]
   }

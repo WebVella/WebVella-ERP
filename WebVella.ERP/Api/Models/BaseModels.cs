@@ -18,9 +18,23 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "errors")]
         public List<ErrorModel> Errors { get; set; }
 
+        [JsonProperty(PropertyName = "accessWarnings")]
+        public List<AccessWarningModel> AccessWarnings { get; set; }
+
         public BaseResponseModel()
         {
             Errors = new List<ErrorModel>();
+            AccessWarnings = new List<AccessWarningModel>();
+        }
+    }
+
+    public class ResponseModel : BaseResponseModel
+    {
+        [JsonProperty(PropertyName = "object")]
+        public object Object { get; set; }
+
+        public ResponseModel() : base()
+        {
         }
     }
 

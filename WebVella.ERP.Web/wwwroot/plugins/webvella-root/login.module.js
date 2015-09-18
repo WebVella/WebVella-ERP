@@ -23,7 +23,7 @@
                 "rootView": {
                     controller: 'WebVellaRootLoginController',
                     templateUrl: '/plugins/webvella-root/login.view.html',
-                    controllerAs: 'homeData'
+                    controllerAs: 'loginData'
                 }
             },
             resolve: {
@@ -48,6 +48,7 @@
     /* @ngInject */
     function resolvingFunction($q) {
         $log.debug('webvellaRoot>login> BEGIN state.resolved');
+
         // Initialize
         var defer = $q.defer();
         
@@ -71,10 +72,28 @@
         $log.debug('webvellaRoot>login> BEGIN controller.exec');
         /* jshint validthis:true */
         var loginData = this;
+        loginData.email = "";
+        loginData.password = "";
+        loginData.rememberMe = true;
         loginData.pageTitle = "Login";
         webvellaRootService.setPageTitle(loginData.pageTitle);
         activate();
         $log.debug('webvellaRoot>login> END controller.exec');
+
+        loginData.doLogin = function(){
+            webvellaRootService.login( loginData,
+                                      function (response) {
+                                          $log.info('webvellaRoot>login> END controller.doLogin> SUCCESS');
+                                          $log.info(response);
+                                          loginData.result = response;
+                                      },
+                                      function (response) {
+                                          $log.info('webvellaRoot>login> END controller.doLogin> ERROR');
+                                          $log.info(response);
+                                          loginData.result = response;
+                                      });
+        }
+
         function activate() {
 
         }

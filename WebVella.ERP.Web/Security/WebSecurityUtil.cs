@@ -4,27 +4,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebVella.ERP.Security;
+using WebVella.ERP.Api;
+using WebVella.ERP.Api.Models;
 
 namespace WebVella.ERP.Web.Security
 {
-    public class WebSecurityManager
+    public class WebSecurityUtil
     {
-        public const string AUTH_TOKEN_KEY = "x-auth";
-        public const int AUTH_REMEMBER_IDENTITY_DAYS = 30;
-        public const int AUTH_CACHE_EXPIRATION_MINUTES = 5;
-        public const int AUTH_TOKEN_EXPIRATION_DAYS = 2;
-        public const int AUTH_TOKEN_EXTENDED_EXPIRATION_DAYS = 30;
-        private static IMemoryCache cache;
+        internal const string AUTH_TOKEN_KEY = "erp-auth";
+        internal const int AUTH_REMEMBER_IDENTITY_DAYS = 30;
+        internal const int AUTH_CACHE_EXPIRATION_MINUTES = 5;
+        internal const int AUTH_TOKEN_EXPIRATION_DAYS = 2;
+        internal const int AUTH_TOKEN_EXTENDED_EXPIRATION_DAYS = 30;
+        internal static IMemoryCache cache;
 
-        static WebSecurityManager()
+        static WebSecurityUtil()
         {
             var cacheOptions = new MemoryCacheOptions();
             cacheOptions.ExpirationScanFrequency = TimeSpan.FromMinutes(1);
             cache = new MemoryCache(cacheOptions);
         }
 
-        public void Login(HttpContext context, Guid userId, DateTime? modifiedOn, bool rememberMe, IErpService service)
+        public static string Login(HttpContext context, Guid userId, DateTime? modifiedOn, bool rememberMe, IErpService service)
         {
             var identity = CreateIdentity(userId, service);
 
@@ -46,21 +47,18 @@ namespace WebVella.ERP.Web.Security
 
             context.User = new ErpPrincipal(identity);
 
-            //TODO
-            //var dataGateway = new DataGateway(service);
-            //dataGateway.UpdateUserLastLoginTime(userId);
-            //dataGateway.CreateLoginLog(identity.User, identity.Customer);
+            new SecurityManager(service).UpdateUserLastLoginTime(userId);
+
+            return token;
         }
 
         public void Logout(HttpContext context)
         {
-            //delete is not working, so we append empty token
-            //context.Response.Cookies.Delete(AUTH_TOKEN_KEY);
             context.Response.Cookies.Append(AUTH_TOKEN_KEY, "");
             context.User = null;
         }
 
-        public void Authenticate(HttpContext context, IErpService service)
+        public static void Authenticate(HttpContext context, IErpService service)
         {
             var tokenString = context.Request.Headers[AUTH_TOKEN_KEY];
             if (string.IsNullOrEmpty(tokenString))
@@ -93,25 +91,45 @@ namespace WebVella.ERP.Web.Security
 
                     context.User = new ErpPrincipal(identity);
                 }
+                else
+                {
+                    //delete invalid cookie, so we delete it
+                    context.Response.Cookies.Append(AUTH_TOKEN_KEY, "");
+                }
             }
         }
 
-        internal ErpIdentity CreateIdentity(Guid? userId, IErpService service)
+        internal static void OpenScope(HttpContext context)
         {
-            return null;
-            //User userClaim = new User();
-            //userClaim.Id = user.Id;
-            //userClaim.FirstName = user.FirstName;
-            //userClaim.LastName = user.LastName;
-            //userClaim.Email = user.Email;
-            //userClaim.ModifiedOn = user.ModifiedOn;
-            //userClaim.Roles = user.Roles;
+            if (context == null)
+                throw new NullReferenceException("context");
 
-            //return CreateIdentity(userClaim);
+            if (context.User != null && context.User is ErpPrincipal)
+            {
+                var identity = (context.User as ErpPrincipal).Identity as ErpIdentity;
+                if (identity != null)
+                {
+                    var scopeMarker = SecurityContext.OpenScope(identity.User);
+                    context.Items.Add("erp_security_scope_marker", scopeMarker);
+                }
+            }
         }
 
-        internal ErpIdentity CreateIdentity(User user)
+        internal static void CloseScope(HttpContext context)
         {
+            if (context == null)
+                throw new NullReferenceException("context");
+
+            IDisposable scopeMarker = context.Items["erp_security_scope_marker"] as IDisposable;
+            if (scopeMarker != null)
+                scopeMarker.Dispose();
+        }
+
+        internal static ErpIdentity CreateIdentity(Guid? userId, IErpService service)
+        {
+            SecurityManager secMan = new SecurityManager(service);
+            ErpUser user = secMan.GetUser(userId.Value);
+            //check for null and set guest user
             return new ErpIdentity { User = user };
         }
 
@@ -119,18 +137,7 @@ namespace WebVella.ERP.Web.Security
         {
             var options = new MemoryCacheEntryOptions();
             options.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
-
-
-            cache.Set(
-                userId.ToString(),
-                identity,
-                options);
-            // from bet4 to beta5 changed
-            //context =>
-            //{
-            //	context.SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
-            //	return identity;
-            //});
+            cache.Set(userId.ToString(), identity, options);
         }
 
         internal static ErpIdentity GetIdentityFromCache(Guid userId)
