@@ -74,7 +74,7 @@
         var loginData = this;
         loginData.email = "erp@webvella.com";
         loginData.password = "ttg";
-        loginData.rememberMe = true;
+        loginData.rememberMe = false;
         loginData.pageTitle = "Login";
         webvellaRootService.setPageTitle(loginData.pageTitle);
         activate();

@@ -1,7 +1,32 @@
-﻿<div id="wrapper">
-     <div id="login">
-         <input ng-model="loginData.email" type="text" class="form-control" placeholder="email address">
-         <input ng-model="loginData.password" type="password" class="form-control" placeholder="password">
-         <button href="javascript:void(0)" ng-click="loginData.doLogin()">login</button>
-    </div>
-</div>
+﻿<!--<div id="wrapper">
+	 <div id="login">
+		 <input ng-model="loginData.email" type="text" class="form-control" placeholder="email address">
+		 <input  type="password" class="form-control" placeholder="password">
+		 <button>login</button>
+	</div>
+</div>-->
+
+
+<div class="container">
+
+	<div class="form form-signin">
+		<h2 class="form-signin-heading">Please sign in</h2>
+		<div class="form-group">
+			<label for="inputEmail" class="sr-only">Email address</label>
+			<input type="email" ng-model="loginData.email" class="form-control" placeholder="Email address" required autofocus>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword" class="sr-only">Password</label>
+			<input type="password" ng-model="loginData.password" class="form-control" placeholder="Password" required>
+		</div>
+		<div class="form-group">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" value="true" ng-model="loginData.rememberMe"> Remember me
+				</label>
+			</div>
+		</div>
+		<button class="btn btn-lg btn-primary btn-block" href="javascript:void(0)" ng-click="loginData.doLogin()">Sign in</button>
+	</div>
+
+</div> <!-- /container -->

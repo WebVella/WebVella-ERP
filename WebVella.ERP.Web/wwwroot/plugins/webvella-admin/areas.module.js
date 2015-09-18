@@ -95,9 +95,9 @@
     }
 
     // Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
     /* @ngInject */
-    function resolveRolesList($q, $log, webvellaRootService) {
+    function resolveRolesList($q, $log, webvellaAdminService) {
         $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
@@ -111,7 +111,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("null","role","null","null", successCallback, errorCallback);
+        webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entities> END state.resolved');

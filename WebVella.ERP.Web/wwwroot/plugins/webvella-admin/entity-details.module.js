@@ -88,34 +88,35 @@
         return defer.promise;
     }
 
-    // Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
-    /* @ngInject */
-    function resolveRolesList($q, $log, webvellaRootService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
+	// Resolve Roles list /////////////////////////
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
+	/* @ngInject */
+    function resolveRolesList($q, $log, webvellaAdminService) {
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
 
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        webvellaRootService.getEntityRecordsByName("null", "role", "null", "null", successCallback, errorCallback);
+    	webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
-        return defer.promise;
+    	// Return
+    	$log.debug('webvellaAdmin>entities> END state.resolved');
+    	return defer.promise;
     }
 
+
     // Resolve Roles list /////////////////////////
-    resolveAreasList.$inject = ['$q', '$log', 'webvellaRootService'];
+    resolveAreasList.$inject = ['$q', '$log', 'webvellaAdminService'];
     /* @ngInject */
-    function resolveAreasList($q, $log, webvellaRootService) {
+    function resolveAreasList($q, $log, webvellaAdminService) {
         $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
         // Initialize
         var defer = $q.defer();
@@ -129,7 +130,7 @@
             defer.resolve(response.object);
         }
 
-        webvellaRootService.getEntityRecordsByName("null", "area", "null", "null", successCallback, errorCallback);
+        webvellaAdminService.getRecordsByEntityName("null", "area", "null", "null", successCallback, errorCallback);
 
         // Return
         $log.debug('webvellaAdmin>entities> END state.resolved');

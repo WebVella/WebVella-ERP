@@ -81,7 +81,6 @@ namespace WebVella.ERP.Web.Controllers
             return Json(responseObj);
         }
 
-        [AllowAnonymous]
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/logout")]
         public IActionResult Logout()
         {
