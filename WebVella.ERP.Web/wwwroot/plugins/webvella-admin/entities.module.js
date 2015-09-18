@@ -75,30 +75,30 @@
     }
 
 
-    // Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaRootService'];
+	// Resolve Roles list /////////////////////////
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
+	/* @ngInject */
+    function resolveRolesList($q, $log, webvellaAdminService) {
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	// Initialize
+    	var defer = $q.defer();
 
-    /* @ngInject */
-    function resolveRolesList($q, $log, webvellaRootService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
-        // Initialize
-        var defer = $q.defer();
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        // Process
-        function successCallback(response) {
-            defer.resolve(response.object);
-        }
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
 
-        function errorCallback(response) {
-            defer.resolve(response.object);
-        }
+    	webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
-        webvellaRootService.getEntityRecordsByName("null", "role", "null", "null", successCallback, errorCallback);
-
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
-        return defer.promise;
+    	// Return
+    	$log.debug('webvellaAdmin>entities> END state.resolved');
+    	return defer.promise;
     }
+
 	//#endregion
 
     // Controller ///////////////////////////////

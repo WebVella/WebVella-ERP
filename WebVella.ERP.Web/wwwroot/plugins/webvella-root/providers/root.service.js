@@ -19,7 +19,6 @@
 
         serviceInstance.registerHookListener = registerHookListener;
         serviceInstance.launchHook = launchHook;
-        serviceInstance.getEntityRecordsByName = getEntityRecordsByName;
         serviceInstance.setPageTitle = setPageTitle;
         serviceInstance.setBodyColorClass = setBodyColorClass;
         serviceInstance.getSitemap = getSitemap;
@@ -65,12 +64,6 @@
             $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
             $rootScope.$emit("application-body-color-update", color);
             $log.debug('rootScope>events> "application-body-color-update" emitted');
-        }
-
-        ////////////////////
-        function getEntityRecordsByName(listName, entityName, filter, page, successCallback, errorCallback) {
-            $log.debug('webvellaRoot>providers>root.service>getEntityRecords> function called');
-            $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////

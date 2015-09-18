@@ -62,7 +62,7 @@ namespace WebVella.ERP
                     systemSettings.Version = 150508;
 
                     List<Guid> allowedRoles = new List<Guid>();
-                    allowedRoles.Add(new Guid("F42EBA3B-6433-752B-6C34-B322A7B4CE7D"));
+                    allowedRoles.Add(SystemIds.AdministratorRoleId);
 
                     #region << create role entity >>
 

@@ -36,16 +36,6 @@
                 }
             },
             resolve: {
-                //here you can resolve any application wide data you need. It will be available for all children states
-                currentUser: ['$q', '$log', function ($q, $log) {
-                    var deferred = $q.defer();
-                    $log.debug("webvellaRoot>base>config>resolve> user not authenticated")
-                    //Simulate not logged user
-                    //deferred.reject('notAuthenticated');
-                    //Simulate logged user
-                    deferred.resolve('logged');
-                    return deferred.promise;
-                }],
                 pageTitle: function () {
                     return "Webvella ERP";
                 }
@@ -65,21 +55,7 @@
     function run($log, $rootScope, $state, $timeout) {
         $log.debug('webvellaRoot>base> BEGIN module.run');
 
-        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-            // Redirect user to our login page
-            $log.debug("webvellaRoot>base>module.run> State change error: " + error);
-            switch (error) {
-                case "notAuthenticated":
-                    $timeout(function () {
-                        $state.go('webvella-root-login');
-                    }, 0);
-                    break;
-                default:
-                    alert(error);
-                    break;
-            }
-
-        });
+        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) { });
 
         $rootScope.$on('$stateNotFound', function () {
             // Redirect user to our login page

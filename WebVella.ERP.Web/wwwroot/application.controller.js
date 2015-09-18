@@ -18,8 +18,6 @@
 
     /* @ngInject */
     function config($httpProvider) {
-        //$http.defaults.headers.delete = {};
-        //$http.defaults.headers.delete['auth-token'] = 'C3PO R2D2';
 
         $httpProvider.interceptors.push(function ($q, $window) {
             return {
@@ -27,12 +25,6 @@
                     switch (errorResponse.status) {
                         case 403:
                             $window.location = '#/login';
-                            //impossible to use state in the config, when i try to inject i get "Unknown provider: $state"
-                            //cannot inject timeout too
-                            //$state.go('webvella-root-login');
-                            break;
-                        case 500:
-                            //$window.location = './500.html';
                             break;
                     }
                     return $q.reject(errorResponse);
