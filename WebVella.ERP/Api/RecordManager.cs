@@ -207,7 +207,7 @@ namespace WebVella.ERP.Api
                     if (!hasPermisstion)
                     {
                         response.Success = false;
-                        response.Message = "Trying to create record in entity with no create access.";
+                        response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
                         return response;
                     }
@@ -366,7 +366,7 @@ namespace WebVella.ERP.Api
                     if (!hasPermisstion)
                     {
                         response.Success = false;
-                        response.Message = "Trying to update record in entity with no update access.";
+                        response.Message = "Trying to update record in entity '" + entity.Name + "'  with no update access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
                         return response;
                     }
@@ -512,7 +512,7 @@ namespace WebVella.ERP.Api
                     if (!hasPermisstion)
                     {
                         response.Success = false;
-                        response.Message = "Trying to delete record in entity with no delete access.";
+                        response.Message = "Trying to delete record in entity '" + entity.Name + "' with no delete access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
                         return response;
                     }
@@ -583,7 +583,7 @@ namespace WebVella.ERP.Api
                     if (!hasPermisstion)
                     {
                         response.Success = false;
-                        response.Message = "Trying to read records from entity with no read access.";
+                        response.Message = "Trying to read records from entity '" + entity.Name + "'  with no read access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
                         return response;
                     }
