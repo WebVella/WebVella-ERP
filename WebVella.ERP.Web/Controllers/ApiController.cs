@@ -1469,6 +1469,15 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
+            bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+            if (!hasPermisstion)
+            {
+                response.Success = false;
+                response.Message = "Trying to read records from entity '" + entity.Name + "' with no read access.";
+                response.Errors.Add(new ErrorModel { Message = "Access denied." });
+                return DoResponse(response);
+            }
+
             response.Object.Data = GetListRecords(entities, entity, listName, page);
 
 			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
