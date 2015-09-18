@@ -21,7 +21,6 @@
         serviceInstance.getCurrentAreaFromSitemap = getCurrentAreaFromSitemap;
         serviceInstance.getCurrentEntityFromArea = getCurrentEntityFromArea;
         serviceInstance.getViewByName = getViewByName;
-        serviceInstance.getEntityRecord = getEntityRecord;
         serviceInstance.createEntityRecord = createEntityRecord;
         serviceInstance.getListRecords = getListRecords;
         serviceInstance.getViewRecord = getViewRecord;
@@ -66,12 +65,6 @@
         function getViewByName(viewName, entityName, successCallback, errorCallback) {
             $log.debug('webvellaAreas>providers>areas.service>getViewMetaByName> function called');
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
-        }
-
-        ///////////////////////
-        function getEntityRecord(recordId, entityName, successCallback, errorCallback) {
-        	$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called');
-        	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////////

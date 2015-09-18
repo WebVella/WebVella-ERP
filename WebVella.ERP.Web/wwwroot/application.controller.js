@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage'];
+    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout','$state'];
 
     /* @ngInject */
-    function controller($rootScope, $log, $cookies, $localStorage) {
+    function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state) {
         $log.debug('vwApp> BEGIN controller.exec');
         /* jshint validthis:true */
         var appData = this;
@@ -53,6 +53,12 @@
             appData.sideMenuIsVisible = isVisible;
         });
 
+		//Redirect State (usefull when you need to redirect from resolve)
+        $rootScope.$on("state-change-needed", function (event, stateName, stateParams) {
+        	$timeout(function () {
+        		$state.go(stateName, stateParams, { reload: true });
+        	}, 0);
+        });
 
         activate();
         $log.debug('wvApp> END controller.exec');

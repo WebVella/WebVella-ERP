@@ -74,6 +74,7 @@ function guid() {
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Record
 		serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
+		serviceInstance.getRecord = getRecord;
 		serviceInstance.createRecord = createRecord;
 		serviceInstance.updateRecord = updateRecord;
 		serviceInstance.patchRecord = patchRecord;
@@ -89,6 +90,7 @@ function guid() {
 		serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
 		serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
 		serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
+		serviceInstance.regenerateAllAreaSubscriptions = regenerateAllAreaSubscriptions;
 		//Function
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
 
@@ -745,6 +747,12 @@ function guid() {
 		}
 
 		///////////////////////
+		function getRecord(recordId, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called');
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
+		///////////////////////
 		function createRecord(entityName, postObject, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>createRecord> function called');
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
@@ -875,6 +883,124 @@ function guid() {
 		function removeAreaEntityRelation(areaId, entityId, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>removeAreaEntityRelation> function called');
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + areaId + '/entity/' + entityId + '/relation' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
+		///////////////////////
+		function regenerateAllAreaSubscriptions() {
+			$log.debug('webvellaAdmin>providers>admin.service>regenerateAllAreaSubscriptions> function called');
+			var response = {};
+			response.success = true;
+			response.message = "All area subscriptions regenerated";
+
+			var entities = [];
+			var areas = [];
+
+			//#region << Get data >>
+			function rasErrorCallback(data, status) {
+				$log.warn("Area subscriptions were not regenerated due to:  " + response.message);
+			}
+
+			function rasGetEntityMetaListSuccessCallback(data, status) {
+				entities = data.object.entities;
+				//Get all areas
+				getRecordsByEntityName("null", "area", "null", "null", rasGetAreasListSuccessCallback, rasErrorCallback);
+			}
+
+			function rasGetAreasListSuccessCallback(data, status) {
+				areas = data.object.data;
+				executeRegeneration();
+			}
+
+			//Get all entities meta
+			getMetaEntityList(rasGetEntityMetaListSuccessCallback, rasErrorCallback)
+
+			//#endregion
+
+			//#region << Process >>
+			function executeRegeneration() {
+				//Cycle entities and generate array of valid subscription for each
+				var validSubscriptionsArray = [];
+				entities.forEach(function (entity) {
+					var validSubscriptionObj = {
+						name: null,
+						label: null,
+						labelPlural: null,
+						iconName: null,
+						weight: null
+					};
+					validSubscriptionObj.view = {
+						name: null,
+						label: null
+					};
+					validSubscriptionObj.list = {
+						name: null,
+						label: null
+					};
+					//Entity
+					validSubscriptionObj.name = entity.name;
+					validSubscriptionObj.label = entity.label;
+					validSubscriptionObj.labelPlural = entity.labelPlural;
+					validSubscriptionObj.iconName = entity.iconName;
+					validSubscriptionObj.weight = entity.weight;
+					//Views
+					entity.recordViews.sort(function (a, b) {
+						if (a.weight < b.weight) return -1;
+						if (a.weight > b.weight) return 1;
+						return 0;
+					});
+					for (var k = 0; k < entity.recordViews.length; k++) {
+						var view = entity.recordViews[k];
+						if (view.default && view.type == "general") {
+							validSubscriptionObj.view.name = view.name;
+							validSubscriptionObj.view.label = view.label;
+							break;
+						}
+					}
+					//List
+					entity.recordLists.sort(function (a, b) {
+						if (a.weight < b.weight) return -1;
+						if (a.weight > b.weight) return 1;
+						return 0;
+					});
+					for (var m = 0; m < entity.recordLists.length; m++) {
+						var list = entity.recordLists[m];
+						if (list.default && list.type == "general") {
+							validSubscriptionObj.list.name = list.name;
+							validSubscriptionObj.list.label = list.label;
+							break;
+						}
+					}
+
+					if (validSubscriptionObj.view.name && validSubscriptionObj.list.name) {
+						validSubscriptionsArray.push(validSubscriptionObj);
+					}
+				});
+
+				function rasAreaUpdateSuccessCallback(response) {}
+
+				function rasAreaUpdateErrorCallback(response) {
+					$log.warn("Area subscriptions were not regenerated due to:  " + response.message);
+				}
+
+				//Cycle through areas and substitute each entity subscription with its new valid subscription
+				areas.forEach(function (area) {
+					var subscriptions = angular.fromJson(area.subscriptions);
+					var newSubscriptions = [];
+					for (var j = 0; j < validSubscriptionsArray.length; j++) {
+						for (var n = 0; n < subscriptions.length; n++) {
+							if (subscriptions[n].name === validSubscriptionsArray[j].name) {
+								newSubscriptions.push(validSubscriptionsArray[j]);
+								break;
+							}
+						}
+					}
+					area.subscriptions = angular.toJson(newSubscriptions);
+					updateRecord(area.id, "area", area, rasAreaUpdateSuccessCallback, rasAreaUpdateErrorCallback);
+				});
+
+			}
+
+			//#endregion
 		}
 
 		//#endregion
