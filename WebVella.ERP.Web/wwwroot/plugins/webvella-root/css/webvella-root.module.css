@@ -1879,7 +1879,9 @@ div.form-control {
 		background-color: #fff;
 	}
 
-
+.form .radio, .form .checkbox {
+	margin-top:5px;
+}
 
 label.required:after {
 	content: "*";

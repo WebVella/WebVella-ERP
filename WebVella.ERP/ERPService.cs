@@ -364,9 +364,6 @@ namespace WebVella.ERP
                         if (!result.Success)
                             throw new Exception("CREATE FIRST-USER <-> REGULAR ROLE RELATION RECORD:" + result.Message);
 
-                        result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.FirstUserId, SystemIds.GuestRoleId);
-                        if (!result.Success)
-                            throw new Exception("CREATE FIRST-USER <-> GUEST ROLE RELATION RECORD:" + result.Message);
                     }
 
                     #endregion
