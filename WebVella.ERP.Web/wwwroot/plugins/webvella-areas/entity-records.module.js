@@ -42,7 +42,8 @@
 				resolvedListRecords: resolveListRecords,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentArea: resolveCurrentArea,
-				resolvedEntityRelationsList: resolveEntityRelationsList
+				resolvedEntityRelationsList: resolveEntityRelationsList,
+				resolvedCurrentUser: resolveCurrentUser
 			},
 			data: {
 
@@ -171,6 +172,29 @@
 		return defer.promise;
 	}
 
+	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
+	/* @ngInject */
+	function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
+		$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+		// Initialize
+		var defer = $q.defer();
+		// Process
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		function errorCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		var currentUser = webvellaRootService.getCurrentUser();
+
+		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaDesktop>browse> END state.resolved');
+		return defer.promise;
+	}
 
 
 	//#endregion
@@ -178,11 +202,13 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea', 'resolvedEntityRelationsList'];
+        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea',
+		'resolvedEntityRelationsList', 'resolvedCurrentUser'];
 
 	/* @ngInject */
 	function controller($filter, $log, $modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
-        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta, resolvedCurrentArea, resolvedEntityRelationsList) {
+        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta, resolvedCurrentArea,
+		resolvedEntityRelationsList, resolvedCurrentUser) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
@@ -244,6 +270,23 @@
 				page: page
 			};
 			webvellaRootService.GoToState($state, $state.current.name, params);
+		}
+
+		contentData.currentUserRoles = angular.copy(resolvedCurrentUser).data[0].$user_role;
+
+		contentData.currentUserHasReadPermission = function (column) {
+			var result = false;
+			if (!column.meta.enableSecurity || column.meta.permissions == null) {
+				return true;
+			}
+			for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+				for (var k = 0; k < column.meta.permissions.canRead.length; k++) {
+					if (column.meta.permissions.canRead[k] == contentData.currentUserRoles[i].id) {
+						result = true;
+					}
+				}
+			}
+			return result;
 		}
 
 		//#endregion
