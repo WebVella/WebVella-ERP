@@ -95,7 +95,8 @@ function guid() {
 		serviceInstance.regenerateAllAreaSubscriptions = regenerateAllAreaSubscriptions;
 		//Function
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
-
+		//User
+		serviceInstance.getUserById = getUserById;
 		//#endregion
 
 		//#region << Aux methods >>
@@ -738,7 +739,6 @@ function guid() {
 
 		//#endregion
 
-
 		//#region << Records >>
 		/////////////////////
 		function initRecord() {
@@ -1016,6 +1016,15 @@ function guid() {
 		}
 
 		//#endregion
+
+		//#region << User specific >>
+		///////////////////////
+		function getUserById(userId, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>getUserById> function called');
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/' + userId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+		//#endregion
+
 
 		//#region << Functions >>
 		///////////////////////

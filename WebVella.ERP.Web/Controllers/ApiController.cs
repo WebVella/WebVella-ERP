@@ -2220,6 +2220,25 @@ namespace WebVella.ERP.Web.Controllers
 
 		#endregion
 
+		#region << User specific >>
+
+        // GET: api/v1/en_US/user/{userId}
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/{userId}")]
+        public IActionResult GetUserById(Guid userId)
+        {
+
+            QueryObject areaFilterObj = EntityQuery.QueryEQ("id", userId);
+			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name";
+
+            EntityQuery query = new EntityQuery("user", userColumns, areaFilterObj, null, null, null);
+
+            QueryResponse result = recMan.Find(query);
+            if (!result.Success)
+                return DoResponse(result);
+            return Json(result);
+        }
+		#endregion
+
 		#region << Files >>
 
 		[HttpGet]

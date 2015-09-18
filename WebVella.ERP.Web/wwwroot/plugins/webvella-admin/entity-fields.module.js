@@ -1638,11 +1638,11 @@
 			role.id = popupData.contentData.rolesList.data[i].id;
 			role.label = popupData.contentData.rolesList.data[i].name;
 			role.canRead = false;
-			if (popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupData.field.permissions != null && popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
 				role.canRead = true;
 			}
 			role.canUpdate = false;
-			if (popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupData.field.permissions != null && popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
 				role.canUpdate = true;
 			}
 			popupData.fieldPermissions.push(role);
