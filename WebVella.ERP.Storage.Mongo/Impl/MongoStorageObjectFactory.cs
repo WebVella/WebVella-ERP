@@ -67,7 +67,13 @@ namespace WebVella.ERP.Storage.Mongo
 			return new MongoRecordPermissions();
 		}
 
-		public IStorageRecordList CreateEmptyRecordListObject()
+        public IStorageFieldPermissions CreateEmptyFieldPermissionsObject()
+        {
+            return new MongoFieldPermissions();
+        }
+
+
+        public IStorageRecordList CreateEmptyRecordListObject()
 		{
 			return new MongoRecordList();
 		}

@@ -9,6 +9,7 @@ namespace WebVella.ERP.Storage
     {
         IStorageEntity CreateEmptyEntityObject();
         IStorageRecordPermissions CreateEmptyRecordPermissionsObject();
+        IStorageFieldPermissions CreateEmptyFieldPermissionsObject();
         IStorageField CreateEmptyFieldObject(Type type);
         IStorageRecordList CreateEmptyRecordListObject();
         IStorageRecordView CreateEmptyRecordViewObject();

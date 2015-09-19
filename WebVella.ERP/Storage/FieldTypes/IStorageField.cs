@@ -26,7 +26,7 @@ namespace WebVella.ERP.Storage
 
         bool System { get; set; }
 
-        FieldPermissions Permissions { get; set; }
+        IStorageFieldPermissions Permissions { get; set; }
 
         bool EnableSecurity { get; set; }
     }
