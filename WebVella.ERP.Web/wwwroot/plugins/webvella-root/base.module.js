@@ -50,12 +50,17 @@
 
 
     //#region << Run >>
-    run.$inject = ['$log', '$rootScope', '$state', '$timeout'];
+    run.$inject = ['$log', '$rootScope', '$state', '$timeout','$window'];
     /* @ngInject */
-    function run($log, $rootScope, $state, $timeout) {
+    function run($log, $rootScope, $state, $timeout, $window) {
     	$log.debug('webvellaRoot>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) { });
+
+        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams, error) {
+        	$window.scrollTo(0, 0);
+
+        });
 
         $rootScope.$on('$stateNotFound', function () {
             // Redirect user to our login page
