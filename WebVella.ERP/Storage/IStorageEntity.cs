@@ -36,4 +36,11 @@ namespace WebVella.ERP.Storage
 
         List<Guid> CanDelete { get; set; }
     }
+
+    public interface IStorageFieldPermissions
+    {
+        List<Guid> CanRead { get; set; }
+
+        List<Guid> CanUpdate { get; set; }
+    }
 }

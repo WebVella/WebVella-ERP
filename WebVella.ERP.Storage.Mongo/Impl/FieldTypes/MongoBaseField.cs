@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 using WebVella.ERP.Storage;
 
 
@@ -65,7 +66,7 @@ namespace WebVella.ERP.Storage.Mongo
 		public bool System { get; set; }
 
         [BsonElement("permissions")]
-        public FieldPermissions Permissions { get; set; }
+        public IStorageFieldPermissions Permissions { get; set; }
 
         [BsonElement("enableSecurity")]
         public bool EnableSecurity { get; set; }
