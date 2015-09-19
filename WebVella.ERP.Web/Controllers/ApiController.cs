@@ -70,6 +70,7 @@ namespace WebVella.ERP.Web.Controllers
             else
             {
                 responseObj.Success = false;
+				responseObj.Message = "Login failed";
                 var errorMsg = new ErrorModel();
                 errorMsg.Key = "Email";
                 errorMsg.Value = email;
@@ -1446,8 +1447,9 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
-		public IActionResult GetRecordsByEntityName(string entityName, string listName, string filter, int page)
+		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all")
 		{
+			
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
 

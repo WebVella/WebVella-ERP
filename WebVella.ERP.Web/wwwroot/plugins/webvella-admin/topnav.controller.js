@@ -16,7 +16,7 @@
 
     /* @ngInject */
     function controller($localStorage, $log, $state, $rootScope, $timeout, $window, webvellaAdminService) {
-        $log.debug('webvellaAdmin>topnav> BEGIN controller.exec');
+    	$log.debug('webvellaAdmin>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = null;
@@ -42,7 +42,7 @@
                     function (response) {});
         }
 
-        $log.debug('webvellaAdmin>topnav> END controller.exec');
+        $log.debug('webvellaAdmin>topnav> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }
     

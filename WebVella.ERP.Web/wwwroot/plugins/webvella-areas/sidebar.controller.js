@@ -17,12 +17,12 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $state,$stateParams, resolvedSitemap, webvellaAreasService) {
-        $log.debug('webvellaAreas>sidebar> BEGIN controller.exec');
+    	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
-        $log.debug('webvellaAreas>sidebar> END controller.exec');
+        $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

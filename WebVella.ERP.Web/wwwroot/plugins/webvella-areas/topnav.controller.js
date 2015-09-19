@@ -17,7 +17,7 @@
 
     /* @ngInject */
     function controller($localStorage,$log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout, webvellaAreasService) {
-        $log.debug('webvellaAreas>topnav> BEGIN controller.exec');
+    	$log.debug('webvellaAreas>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
@@ -31,7 +31,7 @@
         	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;
         }
 
-        $log.debug('webvellaAreas>topnav> END controller.exec');
+        $log.debug('webvellaAreas>topnav> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

@@ -43,9 +43,9 @@
     run.$inject = ['$log', 'webvellaAreasService', 'webvellaDesktopBrowsenavFactory', '$rootScope'];
     /* @ngInject */
     function run($log, webvellaAreasService, webvellaDesktopBrowsenavFactory, $rootScope) {
-        $log.debug('webvellaAreas>base> BEGIN module.run');
+    	$log.debug('webvellaAreas>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaAreas>base> END module.run');
+    	$log.debug('webvellaAreas>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
     //#endregion
 
@@ -55,7 +55,7 @@
     resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
 	/* @ngInject */
     function resolveSitemap($q, $log, webvellaRootService) {
-    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
 
@@ -72,14 +72,14 @@
     	webvellaRootService.getSitemap(successCallback, errorCallback);
     	
     	// Return
-    	$log.debug('webvellaDesktop>browse> END state.resolved');
+    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
     resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
 	/* @ngInject */
     function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
-    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
     	// Process
@@ -96,7 +96,7 @@
     	webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
 
     	// Return
-    	$log.debug('webvellaDesktop>browse> END state.resolved');
+    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
@@ -106,12 +106,12 @@
     controller.$inject = ['$log'];
     /* @ngInject */
     function controller($log) {
-        $log.debug('webvellaAreas>base> BEGIN controller.exec');
+    	$log.debug('webvellaAreas>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var pluginData = this;
 
         activate();
-        $log.debug('webvellaAreas>base> END controller.exec');
+        $log.debug('webvellaAreas>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() { }
     }
     //#endregion

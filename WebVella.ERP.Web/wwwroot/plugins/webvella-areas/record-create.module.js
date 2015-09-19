@@ -52,9 +52,9 @@
 	run.$inject = ['$log'];
 	/* @ngInject */
 	function run($log) {
-		$log.debug('webvellaAreas>record-create> BEGIN module.run');
+		$log.debug('webvellaAreas>record-create> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-		$log.debug('webvellaAreas>record-create> END module.run');
+		$log.debug('webvellaAreas>record-create> END module.run ' + moment().format('HH:mm:ss SSSS'));
 	};
 	//#endregion
 
@@ -62,7 +62,7 @@
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -92,14 +92,14 @@
 		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>record-create> END state.resolved');
+		$log.debug('webvellaAdmin>record-create> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
 	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -129,7 +129,7 @@
 		webvellaAdminService.getRelationsList(successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>record-create> END state.resolved');
+		$log.debug('webvellaAdmin>record-create> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
@@ -155,7 +155,7 @@
 	/* @ngInject */
 	function controller($filter, $modal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
         resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
-		$log.debug('webvellaAreas>record-create> BEGIN controller.exec');
+		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.stateParams = $stateParams;
@@ -491,7 +491,7 @@
 		//#engregion
 
 
-		$log.debug('webvellaAreas>record-create> END controller.exec');
+		$log.debug('webvellaAreas>record-create> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 

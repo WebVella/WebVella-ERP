@@ -51,7 +51,7 @@
     resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-details> BEGIN resolveCurrentEntityMeta state.resolved');
+    	$log.debug('webvellaAdmin>entity-details> BEGIN resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -81,14 +81,14 @@
         webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entity-details> END resolveCurrentEntityMeta state.resolved');
+        $log.debug('webvellaAdmin>entity-details> END resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
     resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -131,7 +131,7 @@
         webvellaAdminService.getEntityViewLibrary($stateParams.entityName, successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved');
+        $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -143,7 +143,7 @@
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary) {
-        $log.debug('webvellaAdmin>entity-details> START controller.exec');
+    	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var contentData = this;
@@ -156,10 +156,10 @@
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
         //Hide side menu
         $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         $scope.$on("$destroy", function () {
             $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         });
         //#endregion
 
@@ -305,7 +305,7 @@
         };
 
         //#endregion
-        $log.debug('webvellaAdmin>entity-details> END controller.exec');
+        $log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }
     //#endregion

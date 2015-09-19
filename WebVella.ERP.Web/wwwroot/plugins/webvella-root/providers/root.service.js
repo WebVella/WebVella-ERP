@@ -43,32 +43,32 @@
                 unregisterFunc();
             });
 
-            $log.debug('rootScope>events> "' + eventHookName + '" hook registered');
+            $log.debug('rootScope>events> "' + eventHookName + '" hook registered ' + moment().format('HH:mm:ss SSSS'));
         }
 
         /////////////////////
         function launchHook(eventHookName, data) {
             $rootScope.$emit(eventHookName, data);
-            $log.debug('rootScope>events> "'+ eventHookName + '" emitted');
+            $log.debug('rootScope>events> "'+ eventHookName + '" emitted ' + moment().format('HH:mm:ss SSSS'));
         }
 
         ///////////////////////
         function setPageTitle(pageTitle) {
-            $log.debug('webvellaRoot>providers>root.service>setPageTitle> function called');
+        	$log.debug('webvellaRoot>providers>root.service>setPageTitle> function called ' + moment().format('HH:mm:ss SSSS'));
             $rootScope.$emit("application-pageTitle-update", pageTitle);
-            $log.debug('rootScope>events> "application-pageTitle-update" emitted');
+            $log.debug('rootScope>events> "application-pageTitle-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         }
 
         //////////////////////
         function setBodyColorClass(color) {
-            $log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called');
+        	$log.debug('webvellaRoot>providers>root.service>setBodyColorClass> function called ' + moment().format('HH:mm:ss SSSS'));
             $rootScope.$emit("application-body-color-update", color);
-            $log.debug('rootScope>events> "application-body-color-update" emitted');
+            $log.debug('rootScope>events> "application-body-color-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         }
 
         ///////////////////
         function generateValidationMessages(response, scopeObj, formObject, location) {
-            $log.debug('webvellaRoot>providers>root.service>generateValidationMessages> function called');
+        	$log.debug('webvellaRoot>providers>root.service>generateValidationMessages> function called ' + moment().format('HH:mm:ss SSSS'));
             //Fill in validationError boolean and message for each field according to the template
             // scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
             for (var i = 0; i < response.errors.length; i++) {
@@ -93,7 +93,7 @@
 
         //////////////////
         function GoToState(state, stateName, params) {
-        	$log.debug('webvellaRoot>providers>root.service>GoToState> function called');
+        	$log.debug('webvellaRoot>providers>root.service>GoToState> function called ' + moment().format('HH:mm:ss SSSS'));
 
             $timeout(function () {
             	state.go(stateName, params, { reload: true });
@@ -102,23 +102,24 @@
 
     	////////////////////
         function getSitemap(successCallback, errorCallback) {
-        	$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called');
+        	$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called ' + moment().format('HH:mm:ss SSSS'));
         	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ////////////////////
         function login(postObject, successCallback, errorCallback) {
-            $log.debug('webvellaRoot>providers>root.service>login> function called');
+        	$log.debug('webvellaRoot>providers>root.service>login> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'login', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
     	//////////////////
         function getCurrentUser() {
         	var user = null;
-        	var test = "{\"userId\":\"eabd66fd-8de1-4d79-9674-447ee89921c2\",\"email\":\"erp@webvella.com\",\"firstName\":\"system\",\"lastName\":\"user\",\"token\":\"D6N3SV+bfoU5MfveY6D97DSb8K59ACmB+hCY9dvZPHa7P7CUzIrutTUPoSqB5jwCCuxpNDRDlnL+D/ibZhLQA2AGD25BHyx7VTuSn7bD7AfIMa7sr8YaO0g32Mkp+vbX7OOmUBAxe3lEtwUiac3+uGK/H6jc5/7LxG9+ALxWb0GmjppxMscAm4h9D/bn6AAfOtkRx80A7JYS2dAexUUugYycvlqxJNp2zw3BU3wT0sIOqQPNyy2nZJxfAwyBaYM7VS94VvwFXn9XZYP8571zQA==\"}"
         	var cookieValue = $cookies.get("erp-auth");
-        	var cookieValueDecoded = decodeURIComponent(cookieValue);
-        	user = angular.fromJson(cookieValueDecoded);
+        	if (cookieValue) {
+        		var cookieValueDecoded = decodeURIComponent(cookieValue);
+        		user = angular.fromJson(cookieValueDecoded);
+        	}
         	return user;
         }
 
@@ -134,7 +135,7 @@
                 }
                 case 400:
                     if (errorCallback === undefined || typeof (errorCallback) != "function") {
-                        $log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing ');
+                    	$log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing ' + moment().format('HH:mm:ss SSSS'));
                         alert("The errorCallback argument is not a function or missing");
                         return;
                     }
@@ -154,7 +155,7 @@
                     errorCallback(data);
                     break;
                 default:
-                    $log.debug('webvellaRoot>providers>root.service> result failure: API finished with error: ' + status);
+                	$log.debug('webvellaRoot>providers>root.service> result failure: API finished with error: ' + status +' ' + moment().format('HH:mm:ss SSSS'));
                     ngToast.create({
                     	className: 'error',
                     	content: '<span class="go-red">Error:</span> ' + 'An API call finished with error: ' + status
@@ -165,7 +166,7 @@
 
         function handleSuccessResult(data, status, successCallback, errorCallback) {
             if (successCallback === undefined || typeof (successCallback) != "function") {
-                $log.debug('webvellaRoot>providers>root.service> result failure: successCallback not a function or missing ');
+            	$log.debug('webvellaRoot>providers>root.service> result failure: successCallback not a function or missing  ' + moment().format('HH:mm:ss SSSS'));
                 alert("The successCallback argument is not a function or missing");
                 return;
             }
@@ -173,14 +174,14 @@
             if (!data.success) {
                 //when the validation errors occurred
                 if (errorCallback === undefined || typeof (errorCallback) != "function") {
-                    $log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing ');
+                	$log.debug('webvellaRoot>providers>root.service> result failure: errorCallback not a function or missing  ' + moment().format('HH:mm:ss SSSS'));
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
                 errorCallback(data);
             }
             else {
-                 $log.debug('webvellaRoot>providers>root.service> result success: get object ');
+            	$log.debug('webvellaRoot>providers>root.service> result success: get object  ' + moment().format('HH:mm:ss SSSS'));
                 successCallback(data);
             }
         }

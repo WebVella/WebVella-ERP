@@ -39,7 +39,7 @@
 
     /* @ngInject */
     function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state) {
-        $log.debug('vwApp> BEGIN controller.exec');
+    	$log.debug('vwApp> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var appData = this;
         //Set page title
@@ -83,7 +83,7 @@
         });
 
         activate();
-        $log.debug('wvApp> END controller.exec');
+        $log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() {
 
 

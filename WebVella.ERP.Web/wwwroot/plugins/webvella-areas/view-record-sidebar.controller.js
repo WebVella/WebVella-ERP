@@ -17,7 +17,7 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta,resolvedSitemap) {
-        $log.debug('webvellaAreas>sidebar> BEGIN controller.exec');
+    	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.view = resolvedCurrentView.meta;
@@ -64,7 +64,7 @@
         	sidebarData.items.push(item);
         }
 
-        $log.debug('webvellaAreas>sidebar> END controller.exec');
+        $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

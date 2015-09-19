@@ -48,7 +48,7 @@
 
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaAdmin>base> BEGIN module.run');
+    	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
             var item = {
                 "label": "Administration",
@@ -64,7 +64,7 @@
             webvellaDesktopBrowsenavFactory.addItem(item);
         });
 
-        $log.debug('webvellaAdmin>base> END module.run');
+        $log.debug('webvellaAdmin>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
 
@@ -73,7 +73,7 @@
 
     /* @ngInject */
     function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory) {
-        $log.debug('webvellaAdmin>base> START controller.exec');
+    	$log.debug('webvellaAdmin>base> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var adminData = this;
         adminData.sidebar = [];
@@ -120,10 +120,10 @@
         };
         adminData.sidebar.push(item);
         $rootScope.$emit("webvellaAdmin-sidebar-ready");
-        $log.debug('rootScope>events> "webvellaAdmin-sidebar-ready" emitted');
+        $log.debug('rootScope>events> "webvellaAdmin-sidebar-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         activate();
-        $log.debug('webvellaAdmin>base> END controller.exec');
+        $log.debug('webvellaAdmin>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() {
             // Change the body color to all child states to red
             webvellaRootService.setBodyColorClass("red");

@@ -41,14 +41,14 @@
 
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaDesktop>browse> BEGIN module.run');
+    	$log.debug('webvellaDesktop>browse> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
         //Initialize the pluggable object made with factories, always when state is changed. (it fixes the duplication problem with browser back and forward buttons)
         //$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
         //    webvellaDesktopBrowsenavService.initBrowsenav();
         //})
 
-        $log.debug('webvellaDesktop>browse> END module.run');
+    	$log.debug('webvellaDesktop>browse> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
     //#endregion
 
@@ -57,7 +57,7 @@
 
     /* @ngInject */
     function resolveSitemap($q, $log, webvellaRootService) {
-        $log.debug('webvellaDesktop>browse> BEGIN state.resolved');
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -73,7 +73,7 @@
         webvellaRootService.getSitemap(successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaDesktop>browse> END state.resolved');
+        $log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
     //#endregion
@@ -84,7 +84,7 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $scope, $state, pageTitle, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaDesktop>browse> BEGIN controller.exec');
+    	$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
         contentData.browsenav = [];
@@ -124,7 +124,7 @@
 
 
         activate();
-        $log.debug('webvellaDesktop>browse> END controller.exec');
+        $log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() { }
     }
     //#endregion

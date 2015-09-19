@@ -54,7 +54,7 @@
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -84,7 +84,7 @@
 		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved');
+		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
@@ -92,7 +92,7 @@
 	resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
 	/* @ngInject */
 	function resolveRolesList($q, $log, webvellaAdminService) {
-		$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -108,7 +108,7 @@
 		webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>entities> END state.resolved');
+		$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
@@ -116,7 +116,7 @@
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedRolesList) {
-		$log.debug('webvellaAdmin>entity-details> START controller.exec');
+		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.search = {};
@@ -133,10 +133,10 @@
 		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		//Hide Sidemenu
 		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		$scope.$on("$destroy", function () {
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		});
 
 		contentData.fieldTypes = [
@@ -1362,7 +1362,7 @@
 
 
 		activate();
-		$log.debug('webvellaAdmin>entity-details> END controller.exec');
+		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		function activate() { }
 	}
 
@@ -1370,7 +1370,7 @@
 	CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
 	function CreateFieldModalController(contentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
-		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec');
+		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
 
@@ -1605,26 +1605,26 @@
 			//Process the response and generate the validation Messages
 			webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
 		}
-		$log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec');
+		$log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//// Create Field Controllers
 	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$modal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
 	function ManageFieldModalController(contentData, resolvedField, $modal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
-		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec');
+		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.modalInstance = $modalInstance;
 		popupData.contentData = contentData;
 
 		popupData.field = angular.copy(resolvedField);
-		//if (popupData.field.permission = null) {
-		//	popupData.field.permission = {
-		//		canRead: [],
-		//		canUpdate:[]
-		//	}
-		//}
+		if (popupData.field.permissions == null) {
+			popupData.field.permissions = {
+				canRead: [],
+				canUpdate:[]
+			}
+		}
 
 
 		popupData.fieldTypes = contentData.fieldTypes;
@@ -1844,7 +1844,7 @@
 			//Process the response and generate the validation Messages
 			webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
 		}
-		$log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec');
+		$log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
@@ -1853,7 +1853,7 @@
 
 	/* @ngInject */
 	function DeleteFieldModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.parentData = parentPopupData;
@@ -1885,7 +1885,7 @@
 
 
 		}
-		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
