@@ -238,6 +238,12 @@ function guid() {
 				auditable: false,
 				system: false,
 				fieldType: typeId,
+				enableSecurity: false,
+				permissions: {
+					canRead: [],
+					canUpdate:[]
+				}
+
 			};
 
 			switch (typeId) {

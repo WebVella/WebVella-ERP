@@ -42,8 +42,7 @@
 				resolvedListRecords: resolveListRecords,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentArea: resolveCurrentArea,
-				resolvedEntityRelationsList: resolveEntityRelationsList,
-				resolvedCurrentUser: resolveCurrentUser
+				resolvedEntityRelationsList: resolveEntityRelationsList
 			},
 			data: {
 
@@ -171,31 +170,6 @@
 		$log.debug('webvellaAdmin>entity-details> END state.resolved');
 		return defer.promise;
 	}
-
-	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
-	/* @ngInject */
-	function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
-		$log.debug('webvellaDesktop>browse> BEGIN state.resolved');
-		// Initialize
-		var defer = $q.defer();
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		var currentUser = webvellaRootService.getCurrentUser();
-
-		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaDesktop>browse> END state.resolved');
-		return defer.promise;
-	}
-
 
 	//#endregion
 

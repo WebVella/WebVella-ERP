@@ -1376,7 +1376,7 @@
 
 		popupData.contentData = contentData;
 
-		popupData.field = {};
+		popupData.field = webvellaAdminService.initField();
 
 		popupData.fieldTypes = contentData.fieldTypes;
 		// Inject a searchable field
@@ -1619,6 +1619,13 @@
 		popupData.contentData = contentData;
 
 		popupData.field = angular.copy(resolvedField);
+		//if (popupData.field.permission = null) {
+		//	popupData.field.permission = {
+		//		canRead: [],
+		//		canUpdate:[]
+		//	}
+		//}
+
 
 		popupData.fieldTypes = contentData.fieldTypes;
 		popupData.fieldType = null;
