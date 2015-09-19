@@ -10,7 +10,9 @@
 	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreaEntityRecordsController', controller);
+        .controller('WebVellaAreaEntityRecordsController', controller)
+		.controller('SetFiltersModalController', SetFiltersModalController);
+	
 
 
 	// Configuration ///////////////////////////////////
@@ -422,9 +424,49 @@
 
 		//#region << Modals >> ////////////////////////////////////
 
+		//filter modal
+		contentData.openSetFiltersModal = function () {
+			var modalInstance = $modal.open({
+				animation: false,
+				templateUrl: 'setFiltersModalContent.html',
+				controller: 'SetFiltersModalController',
+				controllerAs: "popupData",
+				size: "lg",
+				resolve: {
+					contentData: function () {
+						return contentData;
+					}
+				}
+			});
+
+		}
 		//#endregion
 
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	}
+
+	//// Modal Controllers
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+	/* @ngInject */
+	function SetFiltersModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		var popupData = this;
+
+		//#region << generate searchable fields list
+
+
+
+		//#endregion
+
+		popupData.ok = function () {
+			//webvellaAdminService.createEntity(popupData.entity, successCallback, errorCallback)
+		};
+
+		popupData.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		$log.debug('webvellaAreas>records>SetFiltersModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 

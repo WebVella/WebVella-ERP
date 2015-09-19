@@ -9,7 +9,7 @@
 	angular
 		.module('wvApp')
 		.constant('wvAppConstants', {
-			"debugEnabled": true,
+			"debugEnabled": false,
 			"apiBaseUrl": "/api/v1/en_US/",
 			"apiSandboxBaseUrl": "/sandbox/api",
 			"locale": "en_US",

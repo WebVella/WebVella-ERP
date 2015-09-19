@@ -535,6 +535,144 @@ namespace WebVella.ERP
                     #endregion
                 }
 
+
+                if (currentVersion < 150919)
+                {
+                    systemSettings.Version = 150919;
+                    List<Guid> allowedRoles = new List<Guid>();
+                    allowedRoles.Add(SystemIds.AdministratorRoleId);
+					Guid filterEntityId = new Guid("2a20e8b1-5713-4257-a860-b964a5cfb317");
+
+                    #region << create filter >>
+                    {
+                        InputEntity filterEntity = new InputEntity();
+                        filterEntity.Id = filterEntityId;
+                        filterEntity.Name = "filter";
+                        filterEntity.Label = "Filter";
+                        filterEntity.LabelPlural = "Filters";
+                        filterEntity.System = true;
+                        filterEntity.IconName = "filter";
+                        filterEntity.Weight = 100;
+                        filterEntity.RecordPermissions = new RecordPermissions();
+                        filterEntity.RecordPermissions.CanRead = allowedRoles;
+                        filterEntity.RecordPermissions.CanCreate = allowedRoles;
+                        filterEntity.RecordPermissions.CanUpdate = allowedRoles;
+                        filterEntity.RecordPermissions.CanDelete = allowedRoles;
+                        {
+                            var createResponse = entityManager.CreateEntity(filterEntity);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10330. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField filterId = new InputTextField();
+                        filterId.Id = new Guid("597bd9f4-c534-4244-af88-b6970c6abb21");
+                        filterId.Name = "filter_id";
+                        filterId.Label = "Filter id";
+                        filterId.PlaceholderText = "";
+                        filterId.Description = "";
+                        filterId.HelpText = "";
+                        filterId.Required = true;
+                        filterId.Unique = false;
+                        filterId.Searchable = false;
+                        filterId.Auditable = false;
+                        filterId.System = true;
+                        filterId.DefaultValue = "";
+                        filterId.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, filterId, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField fieldName = new InputTextField();
+                        fieldName.Id = new Guid("e4094c4d-0fd3-44ef-9cc0-190ea48f7bca");
+                        fieldName.Name = "field_name";
+                        fieldName.Label = "Field name";
+                        fieldName.PlaceholderText = "";
+                        fieldName.Description = "";
+                        fieldName.HelpText = "";
+                        fieldName.Required = true;
+                        fieldName.Unique = false;
+                        fieldName.Searchable = false;
+                        fieldName.Auditable = false;
+                        fieldName.System = true;
+                        fieldName.DefaultValue = "";
+                        fieldName.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, fieldName, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField relationName = new InputTextField();
+                        relationName.Id = new Guid("2859082c-5356-4d13-8b7b-e8fe65417279");
+                        relationName.Name = "relation_name";
+                        relationName.Label = "Relation name";
+                        relationName.PlaceholderText = "";
+                        relationName.Description = "";
+                        relationName.HelpText = "";
+                        relationName.Required = true;
+                        relationName.Unique = false;
+                        relationName.Searchable = false;
+                        relationName.Auditable = false;
+                        relationName.System = true;
+                        relationName.DefaultValue = "";
+                        relationName.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, relationName, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField values = new InputTextField();
+                        values.Id = new Guid("ff7511ae-0117-41c6-9a03-08e3c6568c39");
+                        values.Name = "value";
+                        values.Label = "Value";
+                        values.PlaceholderText = "";
+                        values.Description = "array of encoded strings";
+                        values.HelpText = "";
+                        values.Required = true;
+                        values.Unique = false;
+                        values.Searchable = false;
+                        values.Auditable = false;
+                        values.System = true;
+                        values.DefaultValue = "";
+                        values.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, values, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField helper = new InputTextField();
+                        helper.Id = new Guid("9056b9fb-4a4a-456f-9c64-539eaf70b6b2");
+                        helper.Name = "helper";
+                        helper.Label = "Helper";
+                        helper.PlaceholderText = "";
+                        helper.Description = "stringified object that helps constructing the filter on the interface";
+                        helper.HelpText = "";
+                        helper.Required = true;
+                        helper.Unique = false;
+                        helper.Searchable = false;
+                        helper.Auditable = false;
+                        helper.System = true;
+                        helper.DefaultValue = "";
+                        helper.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, helper, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                    }
+                    #endregion				
+					
+				}
+
+
+
+
+
                 storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
                 systemSettingsRepository.Save(storeSystemSettings);
 

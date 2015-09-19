@@ -61,19 +61,19 @@
 <div id="page-content">
 	<form id="filters" class="form-inline">
 		<div class="form-group" style="padding-right:10px;">
-			<a class="btn btn-default hidden-xs" ng-click="openSetFiltersModal()">
+			<a class="btn btn-default hidden-xs" ng-click="contentData.openSetFiltersModal()">
 				<i class="fa fa-filter"></i>
 				<span>Filters</span>
 			</a>
 		</div>
-		<div class="form-group">
+		<!--<div class="form-group">
 			<div class="input-group">
 				<span class="input-group-addon">
 					<i class="fa fa-search"></i>
 				</span>
 				<input ng-model="class" type="text" class="form-control" id="exampleInputName2" placeholder="Search accounts">
 			</div>
-		</div>
+		</div>-->
 		<div class="form-group hidden-xs hidden-sm">
 			<div class="filter">
 				<div class="field">Name</div>
@@ -157,7 +157,6 @@
 
 <script type="text/ng-template" id="setFiltersModalContent.html">
 	<div class="modal-header">
-		<button type="button" class="close" ng-click="close()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h4 class="modal-title">Available filters</h4>
 	</div>
 	<div class="modal-body">
@@ -183,8 +182,6 @@
 							</form>
 						</tab>
 						<tab heading="Country Abbr"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
-						<tab heading="ZIP"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
-						<tab heading="State/Province"><span style="color:#9e9e9e">There are too many existing values to use for filtering</span></tab>
 					</tabset>
 				</div>
 			</div>
@@ -192,7 +189,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">Apply</button>
-		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupData.ok()">Apply</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
