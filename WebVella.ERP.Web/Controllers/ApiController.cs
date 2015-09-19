@@ -78,7 +78,7 @@ namespace WebVella.ERP.Web.Controllers
                 responseObj.Object = new { token = "" };
             }
 
-            return Json(responseObj);
+            return DoResponse(responseObj);
         }
 
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/logout")]
@@ -89,8 +89,8 @@ namespace WebVella.ERP.Web.Controllers
             responseObj.Object = null;
             responseObj.Success = true;
             responseObj.Timestamp = DateTime.UtcNow;
-            responseObj.Object = null; 
-            return Json(responseObj);
+            responseObj.Object = null;
+            return DoResponse(responseObj);
         }
 
         #region << Entity Meta >>
