@@ -59,36 +59,47 @@
 	</div>
 </div>
 <div id="page-content">
-	<form id="filters" class="form-inline">
-		<div class="form-group" style="padding-right:10px;">
-			<a class="btn btn-default hidden-xs" ng-click="contentData.openSetFiltersModal()">
+	<form id="filters" class="form-inline hidden-xs hidden-sm">
+		<div class="form-group" style="padding-left:.5em;">
+			<a class="btn btn-default" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
 				<i class="fa fa-filter"></i>
 				<span>Filters</span>
 			</a>
+			<a class="btn btn-primary" ng-click="" ng-show="contentData.filterChangeRequested">
+				<i class="fa fa-check"></i>
+				<span>Apply</span>
+			</a>
 		</div>
-		<!--<div class="form-group">
-			<div class="input-group">
-				<span class="input-group-addon">
-					<i class="fa fa-search"></i>
-				</span>
-				<input ng-model="class" type="text" class="form-control" id="exampleInputName2" placeholder="Search accounts">
-			</div>
-		</div>-->
-		<div class="form-group hidden-xs hidden-sm">
+		<div class="form-group">
 			<div class="filter">
-				<div class="field">Name</div>
+				<div class="field"><a href="" ng-click="contentData.requestFilterChange()">Name <i class="fa fa-times-circle"></i></a></div>
 				<ul class="criterias list-inline">
 					<li>
-						Oracle
-						<a href="" ng-click="showToast()"><i class="fa fa-times-circle"></i></a>
+						<a href="" ng-click="contentData.requestFilterChange()">Oracle <i class="fa fa-times-circle"></i></a>
 					</li>
 					<li>
-						Microsoft
-						<a href=""><i class="fa fa-times-circle"></i></a>
+						<a href="" ng-click="contentData.requestFilterChange()">Microsoft <i class="fa fa-times-circle"></i></a>
 					</li>
 				</ul>
 			</div>
 		</div>
+		<div class="form-group">
+			<div class="filter">
+				<div class="field"><a href="" ng-click="contentData.requestFilterChange()">City <i class="fa fa-times-circle"></i></a></div>
+				<ul class="criterias list-inline">
+					<li>
+						<a href="" ng-click="contentData.requestFilterChange()">London <i class="fa fa-times-circle"></i></a>
+					</li>
+					<li>
+						<a href="" ng-click="contentData.requestFilterChange()">New York <i class="fa fa-times-circle"></i></a>
+					</li>
+					<li>
+						<a href="" ng-click="contentData.requestFilterChange()">Plovdiv <i class="fa fa-times-circle"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	
 	</form>
 	<div id="page-text">
 		<table class="table table-bordered table-hover table-vertical-align-middle {{contentData.recordsMeta.cssClass}}" ng-hide="contentData.records.length == 0">
