@@ -3042,9 +3042,10 @@ table.editable:hover {
 /* Not editable */
 
 a.not-editable,
-span.not-editable {
+span.not-editable,
+textarea.not-editable {
 	color: #333;
-	display: inline-block;
+	display: block;
 	line-height: 20px;
 	min-height: 32px;
 	padding: 6px 12px;
@@ -3053,8 +3054,19 @@ span.not-editable {
 	position: relative;
 }
 
+a.not-editable {
+	color:#337ab7 !important;
+}
+
+textarea.not-editable {
+	line-height: 1.2em;
+    height: 100px;
+    overflow-y: auto !important;
+}
+
 	a.not-editable:after,
-	span.not-editable:after {
+	span.not-editable:after,
+	textarea.not-editable:after {
 		font-family: 'FontAwesome';
 		content: "\f023";
 		position: absolute;
@@ -3068,23 +3080,47 @@ span.not-editable {
 		color: #BDBDBD;
 		background: #eee;
 		display: inline-block;
+		font-style:normal;
+		text-decoration:none !important;
+	}
+
+	textarea.not-editable:after {
+		border: 1px solid #ccc;
+		/*border-left: none;*/
+		right: 0;
 	}
 
 	a.not-editable:hover:after,
-	span.not-editable:hover:after {
+	span.not-editable:hover:after,
+	textarea.not-editable:hover:after {
 		display: inline-block;
-		background: #EF9A9A;
-		border: 1px solid #EF9A9A;
-		color: #fff;
+		/*background: #EF9A9A;*/
+		/*color:#fff;*/
+		/*border: 1px solid #EF9A9A;*/
+		color: #EF9A9A;
+		text-decoration:none !important;
 	}
 
 	a.not-editable:hover,
-	span.not-editable:hover {
-		background: #FFCDD2;
-		border: 1px solid #EF9A9A;
+	span.not-editable:hover,
+	textarea.not-editable:hover  {
+		/*background: #FFCDD2;*/
+		/*border: 1px solid #EF9A9A;
+		border: 1px solid #999;*/
 		color: #333;
-		cursor: pointer;
+		cursor: initial;
 	}
+
+
+
+/* Hidden */
+	a.not-editable.not-readable,
+	span.not-editable.not-readable {
+		color:#999;
+		font-style:italic;
+		display:block;
+	}
+
 
 .input-group.file-upload .form-control {
 	color: #337ab7;

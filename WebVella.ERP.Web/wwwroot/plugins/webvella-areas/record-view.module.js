@@ -118,22 +118,24 @@
 				//Find the first matching dynamic view
 				for (var k = 0; k < dynamicViewsSorted.length; k++) {
 					var splitArray = dynamicViewsSorted[k].name.split("~");
-					var areaName = splitArray[0];
-					var fieldName = splitArray[1];
-					var fieldValue = splitArray[2];
-					if (recordData[fieldName].toString() == fieldValue && dynamicViewsSorted[k].name != $stateParams.viewName) {
-						var stateParams = {
-							areaName:$stateParams.areaName,
-							entityName:$stateParams.entityName,
-							recordId:$stateParams.recordId,
-							viewName: dynamicViewsSorted[k].name,
-							auxPageName:$stateParams.auxPageName,
-							filter:$stateParams.filter,
-							page:$stateParams.page
+					if (splitArray.length > 3) {
+						var areaName = splitArray[0];
+						var fieldName = splitArray[1];
+						var fieldValue = splitArray[2];
+						if (recordData[fieldName].toString() == fieldValue && dynamicViewsSorted[k].name != $stateParams.viewName) {
+							var stateParams = {
+								areaName: $stateParams.areaName,
+								entityName: $stateParams.entityName,
+								recordId: $stateParams.recordId,
+								viewName: dynamicViewsSorted[k].name,
+								auxPageName: $stateParams.auxPageName,
+								filter: $stateParams.filter,
+								page: $stateParams.page
+							}
+							$rootScope.$emit("state-change-needed", "webvella-areas-record-view", stateParams);
+							//defer.reject();
+							break;
 						}
-						$rootScope.$emit("state-change-needed", "webvella-areas-record-view", stateParams);
-						//defer.reject();
-						break;
 					}
 				}
 				//Return the normal response as there were no matching dynamic views found
@@ -233,7 +235,8 @@
 
 
 	// Controller ///////////////////////////////
-	function multiplyDecimals(val1, val2, decimalPlaces) {
+	
+	function multiplyDecimals(val1, val2, decimalPlaces,$scope) {
 		var helpNumber = 100;
 		for (var i = 0; i < decimalPlaces; i++) {
 			helpNumber = helpNumber * 10;
@@ -245,11 +248,11 @@
 
 
 	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope','$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
+        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser'];
 
 	/* @ngInject */
 	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope,$window, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
-        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
+        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
 		/* jshint validthis:true */
 		var contentData = this;
@@ -779,18 +782,43 @@
 					//JavaScript has a bug when multiplying decimals
 					//The way to correct this is to multiply the decimals before multiple their values,
 					var resultPercentage = 0.00;
-					resultPercentage = multiplyDecimals(fieldValue, 100, 3);
+					resultPercentage = multiplyDecimals(fieldValue, 100, 3, $scope);
 					return resultPercentage + "%";
 				}
 
 			}
 
-			//Test
-
-			contentData.getItem = function(item) {
-				var i = 0;
+			contentData.currentUserRoles = angular.copy(resolvedCurrentUser).data[0].$user_role;
+			contentData.currentUserHasReadPermission = function (item) {
+				var result = false;
+				if (!item.meta.enableSecurity || item.meta.permissions == null) {
+					return true;
+				}
+				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+					for (var k = 0; k < item.meta.permissions.canRead.length; k++) {
+						if (item.meta.permissions.canRead[k] == contentData.currentUserRoles[i].id) {
+							result = true;
+						}
+					}
+				}
+				return result;
 			}
 
+
+			contentData.currentUserHasUpdatePermission = function (item) {
+				var result = false;
+				if (!item.meta.enableSecurity || item.meta.permissions == null) {
+					return true;
+				}
+				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+					for (var k = 0; k < item.meta.permissions.canUpdate.length; k++) {
+						if (item.meta.permissions.canUpdate[k] == contentData.currentUserRoles[i].id) {
+							result = true;
+						}
+					}
+				}
+				return result;
+			}
 
 			//#endregion
 
