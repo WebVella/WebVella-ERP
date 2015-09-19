@@ -75,6 +75,10 @@
 
 		// Process
 		function successCallback(response) {
+			//TODO: Maintain and apply list filters
+			//get and check filter records and list meta
+			//if in the list there are removed fields or now unsearchable fields, which fields are part from the current filter, we need to update the current filter
+			//and make new data request.
 			defer.resolve(response.object);
 		}
 
@@ -191,6 +195,7 @@
 		contentData.records = angular.copy(resolvedListRecords.data);
 		contentData.recordsMeta = angular.copy(resolvedListRecords.meta);
 		contentData.relationsMeta = resolvedEntityRelationsList;
+		contentData.filterChangeRequested = false;
 
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
@@ -263,6 +268,10 @@
 				}
 			}
 			return result;
+		}
+
+		contentData.requestFilterChange = function () {
+			contentData.filterChangeRequested = true;
 		}
 
 		//#endregion
@@ -435,6 +444,10 @@
 				resolve: {
 					contentData: function () {
 						return contentData;
+					},
+					currentFilterRecords: function () {
+					//TODO: apply getting the current filter records
+						return null;
 					}
 				}
 			});
@@ -453,7 +466,24 @@
 		var popupData = this;
 
 		//#region << generate searchable fields list
+		//1. Get the list meta and find who are the searchable fields
+		//2. Generate the filter modal object
+		//3. Generate list of this filters as tabs and update the filter modal object
+		//4. Get the list of already applied filters and update the filter modal object
 
+		// Rules:
+		// Simple fields -> depending on the field type
+		// 1:1 (field is target) -> lookuplist
+		// 1:1 (field is origin) -> textbox
+		// 1:N (field is target) -> lookuplist
+		// 1:N (field is origin) -> textbox
+		// N:N for each of the relations we should generate a tab as it is a different field -> multiselect list
+
+		//The helper object that helps show the filters to the user should include
+		//Applied filter field name and field Id. For the selected values - record id(could be the selected option key) value
+		//If applied filters are for related fields - related entity name, entity id, field name, field id, record id, value
+
+		//If the showed on screen (not popup filters are changed) the pupup button should become an apply button
 
 
 		//#endregion
