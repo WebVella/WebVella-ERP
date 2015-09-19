@@ -29,7 +29,7 @@
         ////////////////
 
         function generateMenuItemFromArea(area) {
-            $log.debug('webvellaDesktop>providers>browsenav.factory>generateMenuItemFromArea> function called');
+        	$log.debug('webvellaDesktop>providers>browsenav.factory>generateMenuItemFromArea> function called ' + moment().format('HH:mm:ss SSSS'));
 
             //Redirect to the first entity of the area
             var menuItem = {};
@@ -73,7 +73,7 @@
             browsenav.push(menuItem);
             browsenav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
             $rootScope.$emit('webvellaDesktop-browsenav-updated', browsenav);
-            $log.debug('rootScope>events> "webvellaDesktop-browsenav-updated" emitted');
+            $log.debug('rootScope>events> "webvellaDesktop-browsenav-updated" emitted ' + moment().format('HH:mm:ss SSSS'));
             return browsenav
         }
 
@@ -81,14 +81,14 @@
         ////////////////
 
         function getBrowsenav() {
-            $log.debug('webvellaDesktop>providers>browsenav.factory>getBrowsenav> function called');
+        	$log.debug('webvellaDesktop>providers>browsenav.factory>getBrowsenav> function called ' + moment().format('HH:mm:ss SSSS'));
             return browsenav
         }
 
         ////////////////
 
         function initBrowsenav() {
-            $log.debug('webvellaDesktop>providers>browsenav.factory>initBrowsenav> function called');
+        	$log.debug('webvellaDesktop>providers>browsenav.factory>initBrowsenav> function called ' + moment().format('HH:mm:ss SSSS'));
             browsenav = [];
             return browsenav
         }

@@ -11,6 +11,7 @@
 
 	<div class="form form-signin">
 		<h2 class="form-signin-heading">Please sign in</h2>
+		<div class="alert alert-error" ng-show="loginData.ValidationErrors"></div>
 		<div class="form-group">
 			<label for="inputEmail" class="sr-only">Email address</label>
 			<input type="email" ng-model="loginData.email" class="form-control" placeholder="Email address" required autofocus>

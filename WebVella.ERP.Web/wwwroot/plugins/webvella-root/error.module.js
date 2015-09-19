@@ -36,9 +36,9 @@
     run.$inject = ['$log'];
     /* @ngInject */
     function run($log) {
-        $log.debug('webvellaRoot>home> BEGIN module.run');
+    	$log.debug('webvellaRoot>home> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaRoot>home> END module.run');
+    	$log.debug('webvellaRoot>home> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
 
@@ -47,7 +47,7 @@
 
     /* @ngInject */
     function resolvingFunction($q) {
-        $log.debug('webvellaRoot>home> BEGIN state.resolved');
+    	$log.debug('webvellaRoot>home> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -55,7 +55,7 @@
         defer.resolve("test");
 
         // Return
-        $log.debug('webvellaRoot>home> END state.resolved');
+        $log.debug('webvellaRoot>home> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
 
     }
@@ -68,7 +68,7 @@
 
     /* @ngInject */
     function controller($state, $log, webvellaRootService, $stateParams, $timeout) {
-        $log.debug('webvellaRoot>home> BEGIN controller.exec');
+    	$log.debug('webvellaRoot>home> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var errorData = this;
 
@@ -106,7 +106,7 @@
 
 
         activate();
-        $log.debug('webvellaRoot>home> END controller.exec');
+        $log.debug('webvellaRoot>home> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() {
         }
     }

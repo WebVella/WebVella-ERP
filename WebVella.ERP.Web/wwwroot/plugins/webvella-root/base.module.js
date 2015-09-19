@@ -23,7 +23,7 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-root', {
-            abstract: true,
+            //abstract: true,
             url: "/",
             views: {
                 "rootView": {
@@ -53,7 +53,7 @@
     run.$inject = ['$log', '$rootScope', '$state', '$timeout'];
     /* @ngInject */
     function run($log, $rootScope, $state, $timeout) {
-        $log.debug('webvellaRoot>base> BEGIN module.run');
+    	$log.debug('webvellaRoot>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
         $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) { });
 
@@ -62,30 +62,37 @@
             $log.error("state not found");
         });
 
-        $log.debug('webvellaRoot>base> END module.run');
+        $log.debug('webvellaRoot>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
     //#endregion
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$timeout', '$state'];
+    controller.$inject = ['$log', '$timeout', '$state', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($log, $timeout, $state) {
-        $log.debug('webvellaRoot>base> BEGIN controller.exec');
+    function controller($log, $timeout, $state, webvellaRootService) {
+    	$log.debug('webvellaRoot>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var rootData = this;
 
-        activate();
-        $log.debug('webvellaRoot>base> END controller.exec');
-
-        $timeout(function () {
-            $state.go("webvella-desktop-browse");
-        }, 0);
-
-        ////////////
-        function activate() {
+        var currentUser = webvellaRootService.getCurrentUser();
+        if (currentUser != null) {
+        	$timeout(function () {
+        		$state.go("webvella-desktop-browse");
+        	}, 0);
         }
+        else {
+        	$timeout(function () {
+        		$state.go("webvella-root-login");
+        	}, 0);
+
+        }
+
+        $log.debug('webvellaRoot>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+
+
+
     }
 
 })();

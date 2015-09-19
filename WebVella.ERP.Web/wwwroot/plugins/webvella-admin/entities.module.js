@@ -54,7 +54,7 @@
 
     /* @ngInject */
     function resolveEntityMetaList($q, $log, webvellaAdminService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -70,7 +70,7 @@
         webvellaAdminService.getMetaEntityList(successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
+        $log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -79,7 +79,7 @@
     resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
 	/* @ngInject */
     function resolveRolesList($q, $log, webvellaAdminService) {
-    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
 
@@ -95,7 +95,7 @@
     	webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
     	// Return
-    	$log.debug('webvellaAdmin>entities> END state.resolved');
+    	$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
@@ -106,7 +106,7 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal, resolvedRolesList, webvellaAdminService) {
-        $log.debug('webvellaAdmin>entities> START controller.exec');
+    	$log.debug('webvellaAdmin>entities> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
         //Update page title
@@ -137,7 +137,7 @@
 
         }
 
-        $log.debug('webvellaAdmin>entities> END controller.exec');
+        $log.debug('webvellaAdmin>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 
@@ -146,7 +146,7 @@
 
     /* @ngInject */
     function createEntityController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+    	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
         popupData.entity = webvellaAdminService.initEntity();
@@ -269,7 +269,7 @@
             //Process the response and generate the validation Messages
             webvellaRootService.generateValidationMessages(response, popupData,popupData.entity, location);
         }
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
 })();

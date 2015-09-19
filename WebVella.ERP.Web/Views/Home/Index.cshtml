@@ -89,7 +89,9 @@
 			// Configuration ///////////////////////////////////
 			config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
 			function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
-				$urlRouterProvider.otherwise('/desktop/browse');
+
+				//$urlRouterProvider.otherwise('/desktop/browse');
+				$urlRouterProvider.otherwise('/');
 				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
 				moment.locale('en');
 				ngToastProvider.configure({

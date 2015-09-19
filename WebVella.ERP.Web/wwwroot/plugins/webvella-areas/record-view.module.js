@@ -54,9 +54,9 @@
 	run.$inject = ['$log'];
 	/* @ngInject */
 	function run($log) {
-		$log.debug('webvellaAreas>entities> BEGIN module.run');
+		$log.debug('webvellaAreas>entities> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-		$log.debug('webvellaAreas>entities> END module.run');
+		$log.debug('webvellaAreas>entities> END module.run ' + moment().format('HH:mm:ss SSSS'));
 	};
     //#endregion
 
@@ -64,7 +64,7 @@
 	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved');
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -94,14 +94,14 @@
 		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved');
+		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', '$rootScope', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, $rootScope, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 		var entityResponse = null;
@@ -189,14 +189,14 @@
 		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved');
+		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
 	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
 	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-	    $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 	    // Initialize
 	    var defer = $q.defer();
 
@@ -226,7 +226,7 @@
 	    webvellaAdminService.getRelationsList(successCallback, errorCallback);
 
 	    // Return
-	    $log.debug('webvellaAdmin>entity-details> END state.resolved');
+	    $log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 	    return defer.promise;
 	}
 
@@ -253,7 +253,7 @@
 	/* @ngInject */
 	function controller($filter,$modal, $log,$q, $rootScope, $state,$stateParams, $scope,$window, pageTitle, webvellaRootService, webvellaAdminService,webvellaAreasService,
         resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser) {
-		$log.debug('webvellaAreas>entities> BEGIN controller.exec');
+		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.selectedSidebarPage = {};
@@ -1093,7 +1093,7 @@
         //#endregion
 
 
-		$log.debug('webvellaAreas>entities> END controller.exec');
+		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 
@@ -1105,7 +1105,7 @@
 	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 
-	    $log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec');
+		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	    /* jshint validthis:true */
 	    var popupData = this;
 	    popupData.currentPage = 1;
@@ -1339,12 +1339,6 @@
 	            //if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
 	        }
 
-	        //$log.debug("currently Highlighted >>");
-	        //$log.debug(popupData.currentlyAttachedIds);
-	        //$log.debug("current attach Delta >>");
-	        //$log.debug(popupData.attachedRecordIdsDelta);
-	        //$log.debug("current detach Delta >>");
-	        //$log.debug(popupData.detachedRecordIdsDelta);
 	    }
 	    popupData.detachRecord = function (record) {
 	        //Add record to detachDelta if it is part of the original list
@@ -1365,12 +1359,6 @@
 	        else {
 	            //if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
 	        }
-	        //$log.debug("currently Highlighted >>");
-	        //$log.debug(popupData.currentlyAttachedIds);
-	        //$log.debug("current attach Delta >>");
-	        //$log.debug(popupData.attachedRecordIdsDelta);
-	        //$log.debug("current detach Delta >>");
-	        //$log.debug(popupData.detachedRecordIdsDelta);
 	    }
 	    popupData.saveRelationChanges = function () {
 	        var returnObject = {
@@ -1494,7 +1482,7 @@
 
 	    //#endregion
 
-	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+	    $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 

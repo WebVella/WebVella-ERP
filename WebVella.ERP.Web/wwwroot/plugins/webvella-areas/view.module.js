@@ -43,9 +43,9 @@
 
     /* @ngInject */
     function run($log) {
-        $log.debug('webvellaAreas>view> BEGIN module.run');
+    	$log.debug('webvellaAreas>view> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaAreas>view> END module.run');
+    	$log.debug('webvellaAreas>view> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
     // Resolve Function /////////////////////////
@@ -53,7 +53,7 @@
 
     /* @ngInject */
     function resolveCurrentArea($q, $log, webvellaAreasService, $stateParams) {
-        $log.debug('webvellaAreas>view> BEGIN state.resolved');
+    	$log.debug('webvellaAreas>view> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -69,7 +69,7 @@
         webvellaAreasService.getAreaByName($stateParams.areaName, successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAreas>view> END state.resolved');
+        $log.debug('webvellaAreas>view> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -79,7 +79,7 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $state, resolvedCurrentArea, $timeout) {
-        $log.debug('webvellaAreas>view> BEGIN controller.exec');
+    	$log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
 
@@ -89,7 +89,7 @@
         var firstEntitySectionName = null;
 
         if (requestedArea == null) {
-            $log.debug('webvellaAreas>view> the resolved object resolvedCurrentArea is null');
+        	$log.debug('webvellaAreas>view> the resolved object resolvedCurrentArea is null ' + moment().format('HH:mm:ss SSSS'));
             alert("No area with this name is found");
             return;
         }
@@ -114,7 +114,7 @@
         }
 
         activate();
-        $log.debug('webvellaAreas>view> BEGIN controller.exec');
+        $log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() { }
     }
 

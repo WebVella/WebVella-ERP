@@ -17,7 +17,7 @@
 
     /* @ngInject */
     function controller($log, $rootScope, $state) {
-        $log.debug('webvellaAdmin>sidebar> BEGIN controller.exec');
+    	$log.debug('webvellaAdmin>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
@@ -26,7 +26,7 @@
         	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
         });
 
-        $log.debug('webvellaAdmin>sidebar> END controller.exec');
+        $log.debug('webvellaAdmin>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }
 

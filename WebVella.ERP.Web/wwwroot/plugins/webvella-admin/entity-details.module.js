@@ -54,7 +54,7 @@
     resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
     function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-        $log.debug('webvellaAdmin>entity-details> BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -84,7 +84,7 @@
         webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entity-details> END state.resolved');
+        $log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -92,7 +92,7 @@
     resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
 	/* @ngInject */
     function resolveRolesList($q, $log, webvellaAdminService) {
-    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
 
@@ -108,7 +108,7 @@
     	webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
 
     	// Return
-    	$log.debug('webvellaAdmin>entities> END state.resolved');
+    	$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
@@ -117,7 +117,7 @@
     resolveAreasList.$inject = ['$q', '$log', 'webvellaAdminService'];
     /* @ngInject */
     function resolveAreasList($q, $log, webvellaAdminService) {
-        $log.debug('webvellaAdmin>entities> BEGIN state.resolved');
+    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -133,7 +133,7 @@
         webvellaAdminService.getRecordsByEntityName("null", "area", "null", "null", successCallback, errorCallback);
 
         // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved');
+        $log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -144,7 +144,7 @@
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $modal,
         resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout) {
-        $log.debug('webvellaAdmin>entity-details> START controller.exec');
+    	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
         contentData.entity = resolvedCurrentEntityMeta;
@@ -153,10 +153,10 @@
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
         //Hide Sidemenu
         $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         $scope.$on("$destroy", function () {
             $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted');
+            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         });
 
         //Create new entity modal
@@ -259,7 +259,7 @@
             return false;
         }
 
-        $log.debug('webvellaAdmin>entity-details> END controller.exec');
+        $log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 
@@ -268,7 +268,7 @@
 
     /* @ngInject */
     function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-        $log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec');
+    	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
         popupData.entity = parentData.entity;
@@ -299,7 +299,7 @@
 
 
         }
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec');
+        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
 })();

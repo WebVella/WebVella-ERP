@@ -18,7 +18,7 @@
     /* @ngInject */
     function config($stateProvider) {
         $stateProvider.state('webvella-root-login', {
-            url: '/login',
+        	url: '/login',
             views: {
                 "rootView": {
                     controller: 'WebVellaRootLoginController',
@@ -27,7 +27,9 @@
                 }
             },
             resolve: {
-                
+            	pageTitle: function () {
+            		return "Webvella ERP";
+            	}
             }
         });
     };
@@ -36,9 +38,9 @@
     run.$inject = ['$log'];
     /* @ngInject */
     function run($log) {
-        $log.debug('webvellaRoot>login> BEGIN module.run');
+    	$log.debug('webvellaRoot>login> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaRoot>login> END module.run');
+    	$log.debug('webvellaRoot>login> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
 
@@ -47,7 +49,7 @@
 
     /* @ngInject */
     function resolvingFunction($q) {
-        $log.debug('webvellaRoot>login> BEGIN state.resolved');
+    	$log.debug('webvellaRoot>login> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 
         // Initialize
         var defer = $q.defer();
@@ -56,7 +58,7 @@
         defer.resolve("test");
 
         // Return
-        $log.debug('webvellaRoot>login> END state.resolved');
+        $log.debug('webvellaRoot>login> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
 
     }
@@ -65,20 +67,24 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$state', '$log', 'webvellaRootService', '$timeout'];
+    controller.$inject = ['$state', '$log', 'webvellaRootService', '$timeout', 'pageTitle'];
 
     /* @ngInject */
-    function controller($state, $log, webvellaRootService, $timeout) {
-        $log.debug('webvellaRoot>login> BEGIN controller.exec');
+    function controller($state, $log, webvellaRootService, $timeout, pageTitle) {
+    	$log.debug('webvellaRoot>login> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var loginData = this;
         loginData.email = "erp@webvella.com";
         loginData.password = "ttg";
         loginData.rememberMe = false;
-        loginData.pageTitle = "Login";
+        loginData.pageTitle = "Login | " + pageTitle;
+        webvellaRootService.setPageTitle(loginData.pageTitle);
+
+        loginData.ValidationErrors = false;
+
         webvellaRootService.setPageTitle(loginData.pageTitle);
         activate();
-        $log.debug('webvellaRoot>login> END controller.exec');
+        $log.debug('webvellaRoot>login> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         loginData.doLogin = function(){
             webvellaRootService.login( loginData,

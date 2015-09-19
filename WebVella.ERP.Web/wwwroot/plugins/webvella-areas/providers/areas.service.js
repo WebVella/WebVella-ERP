@@ -26,7 +26,7 @@
         serviceInstance.getViewRecord = getViewRecord;
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
-            $log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called');
+        	$log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + '/meta/entity/' + areaName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
@@ -63,27 +63,27 @@
 
         ///////////////////////
         function getViewByName(viewName, entityName, successCallback, errorCallback) {
-            $log.debug('webvellaAreas>providers>areas.service>getViewMetaByName> function called');
+        	$log.debug('webvellaAreas>providers>areas.service>getViewMetaByName> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/view/' + viewName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////////
         function createEntityRecord(postObject, entityName, successCallback, errorCallback) {
-            $log.debug('webvellaAdmin>providers>admin.service>createEntityRecord> function called');
+        	$log.debug('webvellaAdmin>providers>admin.service>createEntityRecord> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
 		/////////////////////
         function getListRecords(listName, entityName, filter, page, successCallback, errorCallback) {
         	//api/v1/en_US/record/{entityName}/list/{listName}
-        	$log.debug('webvellaAreas>providers>areas.service>getListRecords> function called');
+        	$log.debug('webvellaAreas>providers>areas.service>getListRecords> function called ' + moment().format('HH:mm:ss SSSS'));
         	$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
         ///////////////////////
         function getViewRecord(recordId, viewName, entityName, successCallback, errorCallback) {
             //"api/v1/en_US/record/{entityName}/view/{viewName}/{id}"
-            $log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called');
+        	$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
@@ -125,7 +125,7 @@
 
         function handleSuccessResult(data, status, successCallback, errorCallback) {
             if (successCallback === undefined || typeof (successCallback) != "function") {
-                $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: successCallback not a function or missing ');
+            	$log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: successCallback not a function or missing  ' + moment().format('HH:mm:ss SSSS'));
                 alert("The successCallback argument is not a function or missing");
                 return;
             }
@@ -133,14 +133,14 @@
             if (!data.success) {
                 //when the validation errors occurred
                 if (errorCallback === undefined || typeof (errorCallback) != "function") {
-                    $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: errorCallback not a function or missing ');
+                	$log.debug('webvellaAreas>providers>areas.service>getAreaByName> result failure: errorCallback not a function or missing  ' + moment().format('HH:mm:ss SSSS'));
                     alert("The errorCallback argument in handleSuccessResult is not a function or missing");
                     return;
                 }
                 errorCallback(data);
             }
             else {
-                $log.debug('webvellaAreas>providers>areas.service>getAreaByName> result success: get object ');
+            	$log.debug('webvellaAreas>providers>areas.service>getAreaByName> result success: get object  ' + moment().format('HH:mm:ss SSSS'));
                 successCallback(data);
             }
         }

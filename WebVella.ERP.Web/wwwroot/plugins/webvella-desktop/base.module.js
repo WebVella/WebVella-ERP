@@ -45,9 +45,9 @@
 
     /* @ngInject */
     function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
-        $log.debug('webvellaDesktop>base> BEGIN module.run');
+    	$log.debug('webvellaDesktop>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaDesktop>base> END module.run');
+    	$log.debug('webvellaDesktop>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
     // Controller ///////////////////////////////
@@ -55,7 +55,7 @@
 
     /* @ngInject */
     function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout) {
-        $log.debug('webvellaDesktop>base> BEGIN controller.exec');
+    	$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var pluginData = this;
@@ -90,9 +90,9 @@
         };
         webvellaDesktopTopnavFactory.addItem(item);
         $rootScope.$emit("webvellaDesktop-topnav-ready");
-        $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted');
+        $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
-        $log.debug('webvellaDesktop>base> END controller.exec');
+        $log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         function activate() {
             if (pluginData.topnav.length > 0) {
