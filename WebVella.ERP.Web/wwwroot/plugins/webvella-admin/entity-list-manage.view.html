@@ -129,7 +129,7 @@
 			<h3 class="page-header">List Columns</h3>
 			<div class="row">
 				<div class="col-xs-6">
-					<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data</small></h5>
+					<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data. The first column is also the default search column</small></h5>
 				</div>
 				<div class="col-xs-6">
 					<h5>Library</h5>
@@ -153,6 +153,7 @@
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
+										<span class="note go-green" ng-show="contentData.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>

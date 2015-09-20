@@ -204,6 +204,19 @@
         //#region << Initialize the list >>
         contentData.list = angular.copy(resolvedCurrentEntityList);
 
+        contentData.defaultFieldName = null;
+        function calculateDefaultSearchFieldName() {
+        	var name = null;
+        	for (var k = 0; k < contentData.list.columns.length; k++) {
+        		if (contentData.list.columns[k].type === "field") {
+        			name = contentData.list.columns[k].meta.name;
+        			break;
+        		}
+        	}
+        	contentData.defaultFieldName = name;
+        }
+        calculateDefaultSearchFieldName();
+
         function patchFieldSuccessCallback(response) {
         	ngToast.create({
         		className: 'success',
@@ -234,6 +247,7 @@
         contentData.updateColumns = function () {
         	var postObj = {};
         	postObj.columns = contentData.list.columns;
+        	calculateDefaultSearchFieldName();
         	webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
         }
 

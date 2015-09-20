@@ -60,14 +60,20 @@
 </div>
 <div id="page-content">
 	<form id="filters" class="form-inline hidden-xs hidden-sm">
-		<div class="form-group" style="padding-left:.5em;">
+		<div class="form-group" ng-if="contentData.defaultSearchField != null">
+			<div class="input-group">
+				<input ng-model="contentData.searchQuery" type="text" class="form-control" placeholder="{{contentData.searchQueryPlaceholder}}" ng-keydown="contentData.checkForSearchEnter($event)">
+				<span class="input-group-btn">
+					<a href="javascript:void(0)" class="btn btn-default" ng-click="contentData.submitSearchQuery()" ><i class="fa fa-fw fa-search"></i></a>
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
 			<a class="btn btn-default" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
-				<i class="fa fa-filter"></i>
-				<span>Filters</span>
+				<i class="fa fa-fw fa-filter"></i>
 			</a>
-			<a class="btn btn-primary" ng-click="" ng-show="contentData.filterChangeRequested">
-				<i class="fa fa-check"></i>
-				<span>Apply</span>
+			<a class="btn btn-success" ng-click="" ng-show="contentData.filterChangeRequested">
+				<i class="fa fa-fw fa-check"></i>
 			</a>
 		</div>
 		<div class="form-group">
@@ -99,7 +105,7 @@
 				</ul>
 			</div>
 		</div>
-	
+
 	</form>
 	<div id="page-text">
 		<table class="table table-bordered table-hover table-vertical-align-middle {{contentData.recordsMeta.cssClass}}" ng-hide="contentData.records.length == 0">
@@ -170,18 +176,20 @@
 	<div class="modal-header">
 		<h4 class="modal-title">Available filters</h4>
 	</div>
-	<div class="modal-body">
+	<div class="modal-body" style="background:#eee">
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="filter-selection-tabs">
+				<div class="vertical-tabs-wrapper ">
 					<tabset vertical="true" type="pills">
-						<tab heading="Name">
-							<div class="filters-selection-list">
+						<tab heading="Name" select="popupData.tabSelected()">
+							<div ng-hide="popupData.tabLoading">
 								<label class="btn btn-default" ng-model="o1" btn-checkbox><i class="fa fa-check"></i> Microsoft</label>
 								<label class="btn btn-default" ng-model="o2" btn-checkbox><i class="fa fa-check"></i> Oracle</label>
 								<label class="btn btn-default" ng-model="o3" btn-checkbox><i class="fa fa-check"></i> Sun</label>
 							</div>
-
+							<div  ng-show="popupData.tabLoading" id="loading-bar-spinner">
+								<div class="spinner-icon"></div>
+							</div>
 						</tab>
 						<tab heading="Country">
 							<form class="form-inline">
@@ -200,7 +208,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.ok()">Apply</button>
+		<button class="btn btn-primary" ng-click="popupData.ok()"><i class="fa fa-fw fa-check"></i> Apply</button>
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>

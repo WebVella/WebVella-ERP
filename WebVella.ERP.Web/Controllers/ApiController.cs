@@ -1447,7 +1447,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
-		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all")
+		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all", string search = "")
 		{
 			
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
