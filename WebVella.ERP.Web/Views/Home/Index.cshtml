@@ -6,22 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title ng-bind="appData.pageTitle"></title>
     <!--plugin:webvella-root-->
-    <link href="~/plugins/webvella-root/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/ngtoast/dist/ngtoast.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/offline/themes/offline-theme-default.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/offline/themes/offline-language-english.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/angular-xeditable/dist/css/xeditable.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/css/webvella-root.module.css" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.css" rel="stylesheet" />
-	<link href="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" />   
+    <link href="~/plugins/webvella-root/lib/bootstrap/dist/css/bootstrap.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/ngtoast/dist/ngtoast.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/font-awesome/css/font-awesome.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/offline/themes/offline-theme-default.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/offline/themes/offline-language-english.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/angular-xeditable/dist/css/xeditable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/css/webvella-root.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    <link href="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+	<link href="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />   
 
     <!-- plugin:webvella-desktop-->
-    <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-desktop/css/webvella-desktop.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
 
     <!-- plugin:webvella-admin-->
-    <link href="~/plugins/webvella-admin/css/webvella-admin.module.css" rel="stylesheet" />
+    <link href="~/plugins/webvella-admin/css/webvella-admin.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
 
 
     @*<link href="~/core/app-core.styles.css" rel="stylesheet" />*@
@@ -34,32 +34,32 @@
 	<div ui-view="rootView"></div>
 
 	<!-- plugin:webvella-root -->
-	<script src="~/plugins/webvella-root/lib/ckeditor/ckeditor.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular/angular.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-i18n/angular-locale_en-us.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js"></script>
-	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-xeditable/dist/js/xeditable.js"></script>
-	<script src="~/plugins/webvella-root/lib/moment/min/moment-with-locales.js"></script>
-	<script src="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.js"></script>
-	<script src="~/plugins/webvella-root/lib/checklist-model/checklist-model.js"></script>
-	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload-shim.js"></script>
-	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload.js"></script>
-	<script src="~/plugins/webvella-root/lib/offline/offline.min.js"></script>
-	<script src="~/plugins/webvella-root/lib/vendor-init.js"></script>
-	<script src="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.js"></script>
-	<script src="~/plugins/webvella-root/lib/libphonenumber/libphonenumber.js"></script>
-	<script src="~/plugins/webvella-root/lib/ngstorage/ngstorage.js"></script>
-	<script src="~/plugins/webvella-root/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js"></script>
+	<script src="~/plugins/webvella-root/lib/ckeditor/ckeditor.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular/angular.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-i18n/angular-locale_en-us.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-animate/angular-animate.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-xeditable/dist/js/xeditable.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/moment/min/moment-with-locales.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/checklist-model/checklist-model.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload-shim.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ng-file-upload/ng-file-upload.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/offline/offline.min.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/vendor-init.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ng-ckeditor/ng-ckeditor.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/libphonenumber/libphonenumber.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ngstorage/ngstorage.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js?v=@ViewBag.CacheBreaker"></script>
 
 	@* Core Application module definition *@
 	<script>
@@ -116,79 +116,58 @@
 	</script>
 
 	<!-- plugin:webvella-root -->
-	<script src="~/plugins/webvella-root/base.module.js"></script>
-	<script src="~/plugins/webvella-root/login.module.js"></script>
-	<script src="~/plugins/webvella-root/error.module.js"></script>
-	<script src="~/plugins/webvella-root/providers/root.service.js"></script>
-	<script src="~/plugins/webvella-root/providers/validdate.directive.js"></script>
-	<script src="~/plugins/webvella-root/providers/confirmclick.directive.js"></script>
+	<script src="~/plugins/webvella-root/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/login.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/error.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/providers/root.service.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/providers/validdate.directive.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/providers/confirmclick.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<!-- plugin:webvella-desktop -->
-	<script src="~/plugins/webvella-desktop/base.module.js"></script>
-	<script src="~/plugins/webvella-desktop/browse.module.js"></script>
-	<script src="~/plugins/webvella-desktop/providers/topnav.factory.js"></script>
-	<script src="~/plugins/webvella-desktop/providers/browsenav.factory.js"></script>
+	<script src="~/plugins/webvella-desktop/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-desktop/browse.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-desktop/providers/topnav.factory.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-desktop/providers/browsenav.factory.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-admin -->
-	<script src="~/plugins/webvella-admin/base.module.js"></script>
-	<script src="~/plugins/webvella-admin/entities.module.js"></script>
-	<script src="~/plugins/webvella-admin/topnav.controller.js"></script>
-	<script src="~/plugins/webvella-admin/sidebar.controller.js"></script>
-	<script src="~/plugins/webvella-admin/entity-details.module.js"></script>
-	<script src="~/plugins/webvella-admin/providers/admin.service.js"></script>
-	<script src="~/plugins/webvella-admin/providers/sidebar.factory.js"></script>
-	<script src="~/plugins/webvella-admin/entity-relations.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-view-manage.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-view-manage-info.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-view-manage-sidebar.module.js"></script>
-	<script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js"></script>
-	<script src="~/plugins/webvella-admin/entity-fields.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-views.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-lists.module.js"></script>
-	<script src="~/plugins/webvella-admin/entity-list-manage.module.js"></script>
-	<script src="~/plugins/webvella-admin/areas.module.js"></script>
+	<script src="~/plugins/webvella-admin/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entities.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/topnav.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/sidebar.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-details.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/providers/admin.service.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/providers/sidebar.factory.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-relations.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-view-manage.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-view-manage-info.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-view-manage-sidebar.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-fields.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-views.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-lists.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/entity-list-manage.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-admin/areas.module.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-areas -->
-	<script src="~/plugins/webvella-areas/base.module.js"></script>
-	<script src="~/plugins/webvella-areas/entity-records.module.js"></script>
-	<script src="~/plugins/webvella-areas/topnav.controller.js"></script>
-	<script src="~/plugins/webvella-areas/sidebar.controller.js"></script>
-	<script src="~/plugins/webvella-areas/providers/areas.service.js"></script>
-	<script src="~/plugins/webvella-areas/record-create.module.js"></script>
-	<script src="~/plugins/webvella-areas/record-view.module.js"></script>
-	<script src="~/plugins/webvella-areas/view-record-sidebar.controller.js"></script>
-	<script src="~/plugins/webvella-areas/providers/recursive-view.directive.js"></script>
-	<script src="~/plugins/webvella-areas/providers/recursive-list.directive.js"></script>
+	<script src="~/plugins/webvella-areas/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/entity-records.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/topnav.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/sidebar.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/providers/areas.service.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/record-create.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/record-view.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/view-record-sidebar.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/providers/recursive-view.directive.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/providers/recursive-list.directive.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-developers -->
-	<script src="~/plugins/webvella-developers/base.module.js"></script>
-	<script src="~/plugins/webvella-developers/providers/query.service.js"></script>
+	<script src="~/plugins/webvella-developers/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-developers/providers/query.service.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- external-plugin:shop -->
-	@*<script src="http://localhost:2201/plugins/shop-base/base.module.js"></script>*@
-	@*<script src="http://localhost:2201/plugins/shop-base/override.module.js"></script>*@
+	@*<script src="http://localhost:2201/plugins/shop-base/base.module.js?v=@ViewBag.CacheBreaker"></script>*@
+	@*<script src="http://localhost:2201/plugins/shop-base/override.module.js?v=@ViewBag.CacheBreaker"></script>*@
 
 	@ViewBag.PluginModulesJsFileStringArray
-
-
-
-
-	<!-- Core Application -->
-	<!--<script src="~/core/app-core.module.js"></script>
-	<script src="~/core/app-core.controller.js"></script>
-	<script src="~/core/app-core.constants.js"></script>
-	<script src="~/core/providers/resolve-site-meta.function.js"></script>
-	<script src="~/core/providers/site-meta.service.js"></script>
-	<script src="~/core/providers/area.service.js"></script>-->
-	<!-- Core Shared Modules -->
-	<!--<script src="~/core/modules/sidebar/sidebar.controller.js"></script>
-	<script src="~/core/modules/topnav/topnav.controller.js"></script>
-	<script src="~/core/modules/topnav/topnav.service.js"></script>
-	<script src="~/core/modules/page-title/page-title.controller.js"></script>-->
-	<!-- Core Page Modules -->
-	<!--<script src="~/core/modules/home/home.controller.js"></script>
-	<script src="~/core/modules/entity-list/entity-list.controller.js"></script>-->
-
-
 
 </body>
 

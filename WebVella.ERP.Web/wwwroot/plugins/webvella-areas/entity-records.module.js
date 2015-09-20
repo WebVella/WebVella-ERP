@@ -22,7 +22,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-entity-records', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:listName/:filter/:page',
+			url: '/:areaName/:entityName/:listName/:filter/:page?search',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -85,8 +85,11 @@
 		function errorCallback(response) {
 			defer.resolve(response.object);
 		}
+		if (!$stateParams.search) {
+			$stateParams.search = "";
+		}
 
-		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page, successCallback, errorCallback);
+		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page,$stateParams.search, successCallback, errorCallback);
 
 		// Return
 		$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
@@ -197,6 +200,11 @@
 		contentData.relationsMeta = resolvedEntityRelationsList;
 		contentData.filterChangeRequested = false;
 
+		//TODO - generate list filters  -> probably the fitlers to be ordered as in the list is a good idea
+
+
+
+
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -234,6 +242,37 @@
 			}
 		}
 
+		//#endregion
+
+		//#region << Search >>
+		contentData.defaultSearchField = null;
+		for (var k = 0; k < contentData.currentListView.columns.length; k++) {
+			if (contentData.currentListView.columns[k].type == "field") {
+				contentData.defaultSearchField = contentData.currentListView.columns[k];
+				break;
+			}
+		}
+		if (contentData.defaultSearchField != null) {
+			contentData.searchQueryPlaceholder = "" + contentData.defaultSearchField.meta.label;
+		}
+
+
+		contentData.searchQuery = null;
+		if ($stateParams.search) {
+			contentData.searchQuery = $stateParams.search;
+		}
+		contentData.checkForSearchEnter = function (e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 13) { //Enter keycode
+				contentData.submitSearchQuery();
+			}
+		}
+		contentData.submitSearchQuery = function () {
+			$timeout(function () {
+				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: $stateParams.filter, search: contentData.searchQuery }, { reload: true });
+			}, 1);
+
+		}
 		//#endregion
 
 		//#region << Logic >> //////////////////////////////////////
@@ -467,7 +506,7 @@
 
 		//#region << generate searchable fields list
 		//1. Get the list meta and find who are the searchable fields
-		//2. Generate the filter modal object
+		//2. Generate the filter modal object -> probably the fitlers to be ordered as in the list is a good idea
 		//3. Generate list of this filters as tabs and update the filter modal object
 		//4. Get the list of already applied filters and update the filter modal object
 
@@ -485,6 +524,13 @@
 
 		//If the showed on screen (not popup filters are changed) the pupup button should become an apply button
 
+		popupData.tabLoading = false;
+		popupData.tabSelected = function () {
+			popupData.tabLoading = true;
+			$timeout(function () {
+				popupData.tabLoading = false;
+			}, 500);
+		}
 
 		//#endregion
 
