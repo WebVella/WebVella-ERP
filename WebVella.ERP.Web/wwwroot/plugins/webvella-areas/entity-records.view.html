@@ -194,10 +194,9 @@
 
 		</div>
 
-		<!--<pre>{{popupData.filterColumns | json}}</pre>-->
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupData.clearAllFilters" class="btn btn-link go-red pull-left">clear all filters</a>
+		<a href="javascript:void(0)" ng-click="popupData.clearAllFilters()" class="btn btn-link go-red pull-left">clear all filters</a>
 		<button class="btn btn-primary" ng-click="popupData.ok()" ng-if="popupData.filterColumns.length > 0"><i class="fa fa-fw fa-check"></i> Apply</button>
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
