@@ -626,8 +626,8 @@ namespace WebVella.ERP
 
                         InputTextField values = new InputTextField();
                         values.Id = new Guid("ff7511ae-0117-41c6-9a03-08e3c6568c39");
-                        values.Name = "value";
-                        values.Label = "Value";
+                        values.Name = "values";
+                        values.Label = "Values";
                         values.PlaceholderText = "";
                         values.Description = "array of encoded strings";
                         values.HelpText = "";
@@ -660,6 +660,46 @@ namespace WebVella.ERP
                         helper.MaxLength = null;
                         {
                             var createResponse = entityManager.CreateField(filterEntityId, helper, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField entityName = new InputTextField();
+                        entityName.Id = new Guid("22f58779-4c91-4278-8412-88e1a55784e1");
+                        entityName.Name = "entity_name";
+                        entityName.Label = "Entity Name";
+                        entityName.PlaceholderText = "";
+                        entityName.Description = "";
+                        entityName.HelpText = "";
+                        entityName.Required = true;
+                        entityName.Unique = false;
+                        entityName.Searchable = false;
+                        entityName.Auditable = false;
+                        entityName.System = true;
+                        entityName.DefaultValue = "";
+                        entityName.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, entityName, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputTextField listName = new InputTextField();
+                        listName.Id = new Guid("a2cb0965-fe51-42b0-a07d-765507da8865");
+                        listName.Name = "list_name";
+                        listName.Label = "List Name";
+                        listName.PlaceholderText = "";
+                        listName.Description = "";
+                        listName.HelpText = "";
+                        listName.Required = true;
+                        listName.Unique = false;
+                        listName.Searchable = false;
+                        listName.Auditable = false;
+                        listName.System = true;
+                        listName.DefaultValue = "";
+                        listName.MaxLength = null;
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, listName, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }

@@ -12,7 +12,7 @@
         .config(config)
         .controller('WebVellaAreaEntityRecordsController', controller)
 		.controller('SetFiltersModalController', SetFiltersModalController);
-	
+
 
 
 	// Configuration ///////////////////////////////////
@@ -72,24 +72,36 @@
 		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
+		var listRecordsObject = {};
+		listRecordsObject.filterRecords = {};
 
 		// Process
-		function successCallback(response) {
+		function filterSuccessCallback(response) {
+			listRecordsObject.filterRecords = response.object;
 			//TODO: Maintain and apply list filters
 			//get and check filter records and list meta
 			//if in the list there are removed fields or now unsearchable fields, which fields are part from the current filter, we need to update the current filter
 			//and make new data request.
-			defer.resolve(response.object);
+
+			defer.resolve(listRecordsObject);
+		}
+
+
+		// Process
+		function successCallback(response) {
+			listRecordsObject = response.object;
+			webvellaAreasService.getListFilter($stateParams.filter, filterSuccessCallback, errorCallback);
 		}
 
 		function errorCallback(response) {
 			defer.resolve(response.object);
 		}
+
 		if (!$stateParams.search) {
-			$stateParams.search = "";
+			$stateParams.search = null;
 		}
 
-		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page,$stateParams.search, successCallback, errorCallback);
+		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page, $stateParams.search, successCallback, errorCallback);
 
 		// Return
 		$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
@@ -198,13 +210,6 @@
 		contentData.records = angular.copy(resolvedListRecords.data);
 		contentData.recordsMeta = angular.copy(resolvedListRecords.meta);
 		contentData.relationsMeta = resolvedEntityRelationsList;
-		contentData.filterChangeRequested = false;
-
-		//TODO - generate list filters  -> probably the fitlers to be ordered as in the list is a good idea
-
-
-
-
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -242,6 +247,24 @@
 			}
 		}
 
+		//#endregion
+
+		//#region << Init filters >>
+		contentData.filterChangeRequested = false;
+		contentData.filterRecords = angular.copy(resolvedListRecords.filterRecords);
+		if (contentData.filterRecords == null || contentData.filterRecords.data == null) {
+			contentData.filterRecords = {};
+			contentData.filterRecords.data = [];
+		}
+		else {
+			for (var i = 0; i < contentData.filterRecords.data.length; i++) {
+				contentData.filterRecords.data[i].helper = angular.fromJson(contentData.filterRecords.data[i].helper);
+				var helperDataAray = contentData.filterRecords.data[i].helper.data;
+				for (var k = 0; k < helperDataAray.length; k++) {
+					helperDataAray[k].value = decodeURIComponent(helperDataAray[k].value);
+				}
+			}
+		}
 		//#endregion
 
 		//#region << Search >>
@@ -291,6 +314,8 @@
 			};
 			webvellaRootService.GoToState($state, $state.current.name, params);
 		}
+
+		contentData.currentUser = angular.copy(resolvedCurrentUser).data[0];
 
 		contentData.currentUserRoles = angular.copy(resolvedCurrentUser).data[0].$user_role;
 
@@ -485,7 +510,7 @@
 						return contentData;
 					},
 					currentFilterRecords: function () {
-					//TODO: apply getting the current filter records
+						//TODO: apply getting the current filter records
 						return null;
 					}
 				}
@@ -498,17 +523,43 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
-
+		popupData.contentData = angular.copy(contentData);
+		popupData.currentUserRoles = angular.copy(contentData.currentUserRoles);
+		popupData.currentUser = angular.copy(contentData.currentUser);
 		//#region << generate searchable fields list
 		//1. Get the list meta and find who are the searchable fields
-		//2. Generate the filter modal object -> probably the fitlers to be ordered as in the list is a good idea
-		//3. Generate list of this filters as tabs and update the filter modal object
-		//4. Get the list of already applied filters and update the filter modal object
+		popupData.filterColumns = [];
+		for (var m = 0; m < popupData.contentData.currentListView.columns.length; m++) {
+			//is this field visible for the currentUser
+			var userHasReadPermissionForField = false;
+			for (var r = 0; r < popupData.currentUserRoles.length; r++) {
+				for (var p = 0; p < popupData.contentData.currentListView.columns[m].meta.permissions.canRead.length; p++) {
+					if (popupData.currentUserRoles[r].id == popupData.contentData.currentListView.columns[m].meta.permissions.canRead[p]) {
+						userHasReadPermissionForField = true;
+						break;
+					}
+				}
+			}
+
+			switch (popupData.contentData.currentListView.columns[m].type) {
+				case "field":
+					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].enableSecurity || (popupData.contentData.currentListView.columns[m].enableSecurity && userHasReadPermissionForField))) {
+						var filterObject = {};
+						filterObject = popupData.contentData.currentListView.columns[m];
+						filterObject.data = [];
+						filterObject.loading = false;
+						popupData.filterColumns.push(filterObject);
+					}
+					break;
+				default:
+					break;
+			}
+		}
 
 		// Rules:
 		// Simple fields -> depending on the field type
@@ -531,11 +582,222 @@
 				popupData.tabLoading = false;
 			}, 500);
 		}
+		popupData.getTabExtraCssClass = function (column) {
+			if (column.data.length > 0) {
+				return "active-filter";
+			}
+			return "";
+		}
+
+		popupData.fieldTypes = [
+					{
+						"id": 1,
+						"name": "AutoNumberField",
+						"label": "Auto increment number",
+						"description": "If you need a automatically incremented number with each new record, this is the field you need. You can customize the display format also."
+					},
+					{
+						"id": 2,
+						"name": "CheckboxField",
+						"label": "Checkbox",
+						"description": "The simple on and off switch. This field allows you to get a True (checked) or False (unchecked) value."
+					},
+					{
+						"id": 3,
+						"name": "CurrencyField",
+						"label": "Currency",
+						"description": "A currency amount can be entered and will be represented in a suitable formatted way"
+					},
+					{
+						"id": 4,
+						"name": "DateField",
+						"label": "Date",
+						"description": "A data pickup field, that can be later converting according to a provided pattern"
+					},
+					{
+						"id": 5,
+						"name": "DateTimeField",
+						"label": "Date & Time",
+						"description": "A date and time can be picked up and later presented according to a provided pattern"
+					},
+					{
+						"id": 6,
+						"name": "EmailField",
+						"label": "Email",
+						"description": "An email can be entered by the user, which will be validated and presented accordingly"
+					},
+					{
+						"id": 7,
+						"name": "FileField",
+						"label": "File",
+						"description": "File upload field. Files will be stored within the system."
+					},
+					{
+						"id": 8,
+						"name": "HtmlField",
+						"label": "HTML",
+						"description": "Provides the ability of entering and presenting an HTML code. Supports multiple input languages."
+					},
+					{
+						"id": 9,
+						"name": "ImageField",
+						"label": "Image",
+						"description": "Image upload field. Images will be stored within the system"
+					},
+					{
+						"id": 10,
+						"name": "MultiLineTextField",
+						"label": "Textarea",
+						"description": "A textarea for plain text input. Will be cleaned and stripped from any web unsafe content"
+					},
+					{
+						"id": 11,
+						"name": "MultiSelectField",
+						"label": "Multiple select",
+						"description": "Multiple values can be selected from a provided list"
+					},
+					{
+						"id": 12,
+						"name": "NumberField",
+						"label": "Number",
+						"description": "Only numbers are allowed. Leading zeros will be stripped."
+					},
+					{
+						"id": 13,
+						"name": "PasswordField",
+						"label": "Password",
+						"description": "This field is suitable for submitting passwords or other data that needs to stay encrypted in the database"
+					},
+					{
+						"id": 14,
+						"name": "PercentField",
+						"label": "Percent",
+						"description": "This will automatically present any number you enter as a percent value"
+					},
+					{
+						"id": 15,
+						"name": "PhoneField",
+						"label": "Phone",
+						"description": "Will allow only valid phone numbers to be submitted"
+					},
+					{
+						"id": 16,
+						"name": "GuidField",
+						"label": "Identifier GUID",
+						"description": "Very important field for any entity to entity relation and required by it"
+					},
+					{
+						"id": 17,
+						"name": "SelectField",
+						"label": "Dropdown",
+						"description": "One value can be selected from a provided list"
+					},
+					{
+						"id": 18,
+						"name": "TextField",
+						"label": "Text",
+						"description": "A simple text field. One of the most needed field nevertheless"
+					},
+					{
+						"id": 19,
+						"name": "UrlField",
+						"label": "URL",
+						"description": "This field will validate local and static URLs. Will present them accordingly"
+					}
+		];
+
+		popupData.getFieldTypeName = function (column) {
+			var fieldLabel = " ";
+			for (var l = 0; l < popupData.fieldTypes.length; l++) {
+				if (popupData.fieldTypes[l].id == column.meta.fieldType) {
+					fieldLabel = popupData.fieldTypes[l].label;
+					break;
+				}
+			}
+			return fieldLabel;
+		}
+
+		popupData.clearFilter = function (column) {
+			column.data = [];
+		}
 
 		//#endregion
+		popupData.filterId = null;
 
 		popupData.ok = function () {
-			//webvellaAdminService.createEntity(popupData.entity, successCallback, errorCallback)
+			//Create the new filter (update currently is not developed as the filter should act as query params search - new options change the link
+			//1. Generate the filter array
+			var filterArray = [];
+			popupData.filterId = moment().format('YYYYMMDDHHmmssSSS');
+			for (var j = 0; j < popupData.filterColumns.length; j++) {
+				if (popupData.filterColumns[j].data != null && popupData.filterColumns[j].data.length > 0) {
+					var filterRecord = {};
+					filterRecord.filter_id = popupData.filterId;
+					filterRecord.field_name = popupData.filterColumns[j].meta.name;
+					filterRecord.entity_name = $state.params.entityName;
+					filterRecord.list_name = $state.params.listName;
+					filterRecord.values = [];
+					//Generate relation name
+					switch (popupData.filterColumns[j].type) {
+						default:
+							//field
+							filterRecord.relation_name = null;
+							break;
+					}
+
+					//Generate helper 
+					var helperObject = {};
+					helperObject.label = popupData.filterColumns[j].meta.label;
+					helperObject.name = popupData.filterColumns[j].meta.name;
+					helperObject.type = popupData.filterColumns[j].type;
+					helperObject.fieldType = popupData.filterColumns[j].meta.fieldType;
+					helperObject.data = [];
+					for (var m = 0; m < popupData.filterColumns[j].data.length; m++) {
+						var valueRecord = {};
+						switch (popupData.filterColumns[j].meta.fieldType) {
+							default:
+								//Single value options - AutoIncrement,
+								valueRecord.value.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])));
+								valueRecord.label.push(valueRecord.value);
+								break;
+						}
+						helperObject.data.push(valueRecord);
+					}
+					filterRecord.helper = angular.toJson(helperObject);
+
+					//Generate values
+					for (var k = 0; k < popupData.filterColumns[j].data.length; k++) {
+						filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])))
+					}
+					filterRecord.id = null;
+					filterRecord.created_by = popupData.currentUser.id;
+					filterRecord.last_modified_by = popupData.currentUser.id;
+					filterRecord.values = angular.toJson(filterRecord.values);
+					filterArray.push(filterRecord);
+				}
+			}
+			//2. Store the array 
+			function successCallback(response) {
+				$timeout(function () {
+					$state.go("webvella-entity-records", { areaName: $state.params.areaName, entityName: $state.params.entityName, listName: $state.params.listName, filter: popupData.filterId, page: 1, search: $state.params.search}, { reload: true });
+					$modalInstance.close('success');
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> ' + 'New filters applied'
+					});
+				}, 0);
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message
+				});
+				$modalInstance.close('success');
+			}
+			webvellaAreasService.createListFilter(filterArray, $state.params.entityName, $state.params.listName, successCallback, errorCallback);
+
+			//3. Redirect to the new link
 		};
 
 		popupData.cancel = function () {
