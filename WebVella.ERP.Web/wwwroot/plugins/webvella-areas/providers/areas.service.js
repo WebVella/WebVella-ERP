@@ -23,6 +23,8 @@
         serviceInstance.getViewByName = getViewByName;
         serviceInstance.createEntityRecord = createEntityRecord;
         serviceInstance.getListRecords = getListRecords;
+        serviceInstance.createListFilter = createListFilter;
+        serviceInstance.getListFilter = getListFilter;
         serviceInstance.getViewRecord = getViewRecord;
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
@@ -90,6 +92,30 @@
             //"api/v1/en_US/record/{entityName}/view/{viewName}/{id}"
         	$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+    	///////////////////////
+        function createListFilter(postObject, entityName, listName, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>createListFilter> function called ' + moment().format('HH:mm:ss SSSS'));
+        	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'filter/' + entityName + '/' + listName, data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+
+    	///////////////////////
+        function getListFilter(filterId, successCallback, errorCallback) {
+        	$log.debug('webvellaAreas>providers>areas.service>getListFilter> function called ' + moment().format('HH:mm:ss SSSS'));
+        	if (filterId != "all") {
+        		$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'filter/' + filterId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        	}
+        	else {
+        		var dummyData = {};
+        		dummyData.errors = [];
+        		dummyData.accessWarnings = [];
+        		dummyData.message = "Success";
+        		dummyData.object = null;
+        		dummyData.success = true;
+        		dummyData.timestamp = moment().utc();
+        		handleSuccessResult(dummyData, 200, successCallback, errorCallback)
+        	}
         }
 
 

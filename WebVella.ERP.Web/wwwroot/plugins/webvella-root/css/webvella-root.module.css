@@ -1741,6 +1741,11 @@ ngToast
 		.vertical-tabs-wrapper .nav-pills a {
 			border-radius: 0;
 			outline: none !important;
+			white-space: nowrap;
+			overflow: hidden;
+			-ms-text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;
+			text-overflow: ellipsis;
 		}
 
 		.vertical-tabs-wrapper .nav-pills .active a {
@@ -1751,9 +1756,10 @@ ngToast
 			background: white;
 			z-index: 2;
 			margin-right: -3px;
-			padding-left: 14px;
-			padding-top: 9px;
-			padding-bottom: 9px;
+			padding-right:30px;
+			padding-left: 15px;
+			padding-top: 10px;
+			padding-bottom: 10px;
 		}
 
 			.vertical-tabs-wrapper .nav-pills .active a:hover,
@@ -1797,6 +1803,20 @@ ngToast
 		width: 3em;
 		height: 3em;
 	}
+
+.nav-stacked li.active-filter a:after {
+		font-family: 'FontAwesome';
+		content: "\f0b0";
+		position: absolute;
+		right: 7px;
+		top:10px;
+		font-size:12px;
+		color:#F44336;
+	}
+
+.nav-stacked li.active-filter.active a:after {
+	right: 10px;
+}
 
 /*#endregion */
 
@@ -2351,6 +2371,17 @@ table .btn-xs.btn-link {
 .go-bkg-grey {
 	background-color: #BDBDBD !important;
 }
+
+.go-gray-light,
+.go-grey-light {
+	color: #eee !important;
+}
+
+.go-bkg-gray-light,
+.go-bkg-grey-light {
+	background-color: #eee !important;
+}
+
 /*#endregion */
 
 /*#region << Vertical tabs >> */
