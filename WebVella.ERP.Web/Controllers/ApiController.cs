@@ -2412,6 +2412,45 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(response);
 		}
 
+		// Delete selected filter Records
+		// POST: api/v1/en_US/filter/{filter_id}/delete-records
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/filter/{filter_id}/delete-records")]
+		public IActionResult DeleteSelectedFieldRecords(string filter_id, [FromBody] Guid[] postObj)
+		{
+			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			response.Message = "Filter successfully deleted";
+			var transaction = recMan.CreateTransaction();
+			try
+			{
+
+				transaction.Begin();
+				foreach (var recordId in postObj)
+				{
+					var queryResult = recMan.DeleteRecord("filter", recordId);
+					if (!queryResult.Success)
+					{
+						response.Errors = queryResult.Errors;
+						response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
+						response.Success = false;
+						return DoResponse(response);
+					}
+				}
+
+				transaction.Commit();
+			}
+			catch (Exception ex)
+			{
+				if (transaction != null)
+					transaction.Rollback();
+
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
+
+			return DoResponse(response);
+		}
+
 		#endregion
 
 	}

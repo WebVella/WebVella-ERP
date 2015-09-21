@@ -25,6 +25,7 @@
         serviceInstance.getListRecords = getListRecords;
         serviceInstance.createListFilter = createListFilter;
         serviceInstance.getListFilter = getListFilter;
+        serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
         serviceInstance.getViewRecord = getViewRecord;
         ///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
@@ -116,6 +117,12 @@
         		dummyData.timestamp = moment().utc();
         		handleSuccessResult(dummyData, 200, successCallback, errorCallback)
         	}
+        }
+
+    	///////////////////////
+        function deleteSelectedFilterRecords(filter_id, postObject, successCallback, errorCallback) {
+        	$log.debug('webvellaAdmin>providers>admin.service>deleteSelectedFilterRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+        	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'filter/' + filter_id + '/delete-records', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         }
 
 

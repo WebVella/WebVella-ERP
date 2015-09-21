@@ -66,31 +66,90 @@
 	//#endregion
 
 	//#region << Resolve Function >>
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams'];
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout','ngToast'];
 	/* @ngInject */
-	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams) {
+	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams, $timeout, ngToast) {
 		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 		var listRecordsObject = {};
-		listRecordsObject.filterRecords = {};
+		listRecordsObject.filterRecords = null;
+		var existingRemovedDelta = 0;
 
-		// Process
-		function filterSuccessCallback(response) {
-			listRecordsObject.filterRecords = response.object;
-			//TODO: Maintain and apply list filters
-			//get and check filter records and list meta
-			//if in the list there are removed fields or now unsearchable fields, which fields are part from the current filter, we need to update the current filter
-			//and make new data request.
-
-			defer.resolve(listRecordsObject);
-		}
-
-
-		// Process
+		// Process get list success
 		function successCallback(response) {
 			listRecordsObject = response.object;
-			webvellaAreasService.getListFilter($stateParams.filter, filterSuccessCallback, errorCallback);
+			if ($stateParams.filter == "all") {
+
+				defer.resolve(listRecordsObject);
+			}
+			else {
+				webvellaAreasService.getListFilter($stateParams.filter, filterSuccessCallback, errorCallback);
+			}
+		}
+
+		// Process get filter records
+		function filterSuccessCallback(response) {
+			listRecordsObject.filterRecords = response.object;
+			if (listRecordsObject.filterRecords != null) {
+				//Maintain and apply list filters
+				//In this operation as it is a system maintenance  
+				//get and check filter records and list meta
+				//if in the list there are removed fields or now unsearchable fields, which fields are part from the current filter, we need to update the current filter
+				//and make new data request.
+				var searchableFieldsChanged = false;
+				var arrayOfFilterRecordsToBeRemoved = [];
+				for (var k = 0; k < listRecordsObject.filterRecords.data.length; k++) {
+					var fieldFound = null;
+					for (var z = 0; z < listRecordsObject.meta.columns.length; z++) {
+						if (listRecordsObject.meta.columns[z].meta.name == listRecordsObject.filterRecords.data[k].field_name) {
+							fieldFound = listRecordsObject.meta.columns[z].meta;
+						}
+					}
+					if (fieldFound == null || !fieldFound.searchable) {
+						searchableFieldsChanged = true;
+						arrayOfFilterRecordsToBeRemoved.push(listRecordsObject.filterRecords.data[k].id);
+					}
+				}
+
+				if (searchableFieldsChanged) {
+					//Call service for removing the filter records
+					existingRemovedDelta = listRecordsObject.filterRecords.data.length - arrayOfFilterRecordsToBeRemoved.length;
+					webvellaAreasService.deleteSelectedFilterRecords($stateParams.filter, arrayOfFilterRecordsToBeRemoved,updateFilterSuccessCallback, errorCallback)
+				}
+				else {
+					defer.resolve(listRecordsObject);
+				}
+
+			}
+			else {
+				$timeout(function () {
+					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
+				}, 0);
+			}
+		}
+
+		// Process filter update
+		function updateFilterSuccessCallback(response) {
+			//Check if there are any records left in the filter to decide where to redirect - to all or to filter
+			if (existingRemovedDelta > 0) {
+				//The filter still has active records
+				defer.resolve(listRecordsObject);
+				ngToast.create({
+					className: 'warning',
+					content: '<span class="go-orange">Filter changed </span> ' + 'Administrative changes altered this filter'
+				});
+			}
+			else {
+				//The filter has no more records
+				$timeout(function () {
+					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
+					ngToast.create({
+						className: 'warning',
+						content: '<span class="go-orange">Filter removed </span> ' + 'Administrative changes removed this filter'
+					});
+				}, 0);
+			}
 		}
 
 		function errorCallback(response) {
@@ -523,14 +582,15 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData) {
+	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData, $stateParams) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = angular.copy(contentData);
 		popupData.currentUserRoles = angular.copy(contentData.currentUserRoles);
 		popupData.currentUser = angular.copy(contentData.currentUser);
+		popupData.filterRecordsList = angular.copy(contentData.filterRecords.data);
 		//#region << generate searchable fields list
 		//1. Get the list meta and find who are the searchable fields
 		popupData.filterColumns = [];
@@ -552,6 +612,11 @@
 						var filterObject = {};
 						filterObject = popupData.contentData.currentListView.columns[m];
 						filterObject.data = [];
+						for (var j = 0; j < popupData.filterRecordsList.length; j++) {
+							if (popupData.filterRecordsList[j].field_name == filterObject.meta.name) {
+								filterObject.data = angular.fromJson(popupData.filterRecordsList[j].values);
+							}
+						}
 						filterObject.loading = false;
 						popupData.filterColumns.push(filterObject);
 					}
@@ -573,7 +638,7 @@
 		//Applied filter field name and field Id. For the selected values - record id(could be the selected option key) value
 		//If applied filters are for related fields - related entity name, entity id, field name, field id, record id, value
 
-		//If the showed on screen (not popup filters are changed) the pupup button should become an apply button
+		//If the showed on screen (not popup filters are changed) the popup button should become an apply button
 
 		popupData.tabLoading = false;
 		popupData.tabSelected = function () {
@@ -721,12 +786,19 @@
 			column.data = [];
 		}
 
+		popupData.clearAllFilters = function () {
+			for (var j = 0; j < popupData.filterColumns.length; j++) {
+				popupData.filterColumns[j].data = [];
+			}
+		}
+
+
 		//#endregion
 		popupData.filterId = null;
 
 		popupData.ok = function () {
 			//Create the new filter (update currently is not developed as the filter should act as query params search - new options change the link
-			//1. Generate the filter array
+			// Generate the filter array
 			var filterArray = [];
 			popupData.filterId = moment().format('YYYYMMDDHHmmssSSS');
 			for (var j = 0; j < popupData.filterColumns.length; j++) {
@@ -734,8 +806,8 @@
 					var filterRecord = {};
 					filterRecord.filter_id = popupData.filterId;
 					filterRecord.field_name = popupData.filterColumns[j].meta.name;
-					filterRecord.entity_name = $state.params.entityName;
-					filterRecord.list_name = $state.params.listName;
+					filterRecord.entity_name = $stateParams.entityName;
+					filterRecord.list_name = $stateParams.listName;
 					filterRecord.values = [];
 					//Generate relation name
 					switch (popupData.filterColumns[j].type) {
@@ -757,8 +829,8 @@
 						switch (popupData.filterColumns[j].meta.fieldType) {
 							default:
 								//Single value options - AutoIncrement,
-								valueRecord.value.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])));
-								valueRecord.label.push(valueRecord.value);
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+								valueRecord.label = valueRecord.value;
 								break;
 						}
 						helperObject.data.push(valueRecord);
@@ -776,15 +848,16 @@
 					filterArray.push(filterRecord);
 				}
 			}
-			//2. Store the array 
+
+			//Process the action
 			function successCallback(response) {
 				$timeout(function () {
-					$state.go("webvella-entity-records", { areaName: $state.params.areaName, entityName: $state.params.entityName, listName: $state.params.listName, filter: popupData.filterId, page: 1, search: $state.params.search}, { reload: true });
-					$modalInstance.close('success');
+					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: popupData.filterId, page: 1, search: $stateParams.search }, { reload: true });
 					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + 'New filters applied'
+						className: 'info',
+						content: '<span class="go-blue"><i class="fa fa-refresh fa-spin"></i> Wait! </span> ' + 'Applying filter ...'
 					});
+					$modalInstance.close('success');
 				}, 0);
 			}
 
@@ -795,9 +868,44 @@
 				});
 				$modalInstance.close('success');
 			}
-			webvellaAreasService.createListFilter(filterArray, $state.params.entityName, $state.params.listName, successCallback, errorCallback);
 
-			//3. Redirect to the new link
+			//Case 1: filter array empty
+			if (filterArray.length == 0) {
+				if ($stateParams.filter != "all") {
+					$timeout(function () {
+						$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
+						$modalInstance.dismiss('cancel');
+					}, 0);
+				}
+				else {
+					$modalInstance.dismiss('cancel');
+				}
+			}
+			else {
+				//Case 2: filter array the same - means all filter fields - relation name - values are matching with the preloaded filterRecords
+				var filterArrayIsTheSame = true;
+				if (popupData.filterRecordsList.length != filterArray.length) {
+					filterArrayIsTheSame = false
+				}
+				else {
+					for (var f = 0; f < filterArray.length; f++) {
+						for (var s = 0; s < popupData.filterRecordsList.length; s++) {
+							var arrayRow = filterArray[f];
+							var filterRecord = popupData.filterRecordsList[s];
+							if (arrayRow.field_name == filterRecord.field_name && arrayRow.relation_name == filterRecord.relation_name && arrayRow.values != filterRecord.values) {
+								filterArrayIsTheSame = false;
+							}
+						}
+					}
+				}
+				if (filterArrayIsTheSame) {
+					$modalInstance.dismiss('cancel');
+				}
+				//Case 3: filter array changed or new - needs create
+				else {
+					webvellaAreasService.createListFilter(filterArray, $stateParams.entityName, $stateParams.listName, successCallback, errorCallback);
+				}
+			}
 		};
 
 		popupData.cancel = function () {
