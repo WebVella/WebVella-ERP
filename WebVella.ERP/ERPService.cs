@@ -230,7 +230,7 @@ namespace WebVella.ERP
                         lastLoggedIn.System = true;
                         lastLoggedIn.DefaultValue = null;
 
-                        lastLoggedIn.Format = "MM/dd/YYYY";
+                        lastLoggedIn.Format = "dd MMM yyyy HH:mm:ss";
                         lastLoggedIn.UseCurrentTimeAsDefaultValue = true;
 
                         fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastLoggedIn, false);
@@ -700,6 +700,29 @@ namespace WebVella.ERP
                         listName.MaxLength = null;
                         {
                             var createResponse = entityManager.CreateField(filterEntityId, listName, false);
+                            if (!createResponse.Success)
+                                throw new Exception("System error 10340. Message:" + createResponse.Message);
+                        }
+
+                        InputDateTimeField lastUsedOn = new InputDateTimeField();
+
+                        lastUsedOn.Id = new Guid("6bee420e-d296-4ca9-adea-a4d6145a7fe5");
+                        lastUsedOn.Name = "last_used_on";
+                        lastUsedOn.Label = "Last used on";
+                        lastUsedOn.PlaceholderText = "";
+                        lastUsedOn.Description = "";
+                        lastUsedOn.HelpText = "";
+                        lastUsedOn.Required = true;
+                        lastUsedOn.Unique = false;
+                        lastUsedOn.Searchable = false;
+                        lastUsedOn.Auditable = false;
+                        lastUsedOn.System = true;
+                        lastUsedOn.DefaultValue = null;
+                        lastUsedOn.Format = "dd  MMM yyyy HH:mm:ss";
+                        lastUsedOn.UseCurrentTimeAsDefaultValue = true;
+
+                        {
+                            var createResponse = entityManager.CreateField(filterEntityId, lastUsedOn, false);
                             if (!createResponse.Success)
                                 throw new Exception("System error 10340. Message:" + createResponse.Message);
                         }

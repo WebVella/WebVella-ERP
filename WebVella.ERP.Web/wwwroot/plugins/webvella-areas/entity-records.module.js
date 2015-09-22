@@ -257,12 +257,12 @@
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser'];
+		'resolvedEntityRelationsList', 'resolvedCurrentUser','ngToast'];
 
 	/* @ngInject */
 	function controller($filter, $log, $modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta, resolvedCurrentArea,
-		resolvedEntityRelationsList, resolvedCurrentUser) {
+		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -393,8 +393,104 @@
 			return result;
 		}
 
-		contentData.requestFilterChange = function () {
-			contentData.filterChangeRequested = true;
+		contentData.filterChangeRequested = false;
+		contentData.filtersPendingRemoval = {};
+		//enlist all filters as pending false
+		for (var k = 0; k < contentData.filterRecords.data.length; k++) {
+			contentData.filtersPendingRemoval[contentData.filterRecords.data[k].field_name] = false;
+		}
+
+		contentData.requestFilterRemoval = function (filterRecord) {
+			if (contentData.filtersPendingRemoval[filterRecord.field_name]) {
+				//this filter was already scheduled for removal. Second click on it - probably the user wants to cancel the remove
+				contentData.filtersPendingRemoval[filterRecord.field_name] = false;
+				var noMoreFiltersPendingRemoval = true;
+				for (var property in contentData.filtersPendingRemoval) {
+					if (contentData.filtersPendingRemoval[property]) {
+						noMoreFiltersPendingRemoval = false;
+					}
+				}
+				if (noMoreFiltersPendingRemoval) {
+					contentData.filterChangeRequested = false;
+				}
+			}
+			else {
+				contentData.filtersPendingRemoval[filterRecord.field_name] = true;
+				contentData.filterChangeRequested = true;
+			}
+		}
+
+		contentData.requestFilterValueRemoval = function (value, filterRecord) {
+			switch (filterRecord.helper.fieldType) {
+
+				default:
+					//all single value fields 
+					contentData.requestFilterRemoval(filterRecord)
+					break;
+			}
+		}
+
+		contentData.applyFilterChange = function () {
+			//Process the action
+			function successCallback(response) {
+				$timeout(function () {
+					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: contentData.filterId, page: 1, search: $stateParams.search }, { reload: true });
+					ngToast.create({
+						className: 'info',
+						content: '<span class="go-blue"><i class="fa fa-refresh fa-spin"></i> Wait! </span> ' + 'Applying filter ...'
+					});
+				}, 0);
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message
+				});
+			}
+
+			//Check if all filters are enabled or all are disabled
+			contentData.noFiltersArePending = true;
+			contentData.allFiltersArePending = true;
+			for (var property in contentData.filtersPendingRemoval) {
+				if (contentData.filtersPendingRemoval[property]) {
+					//pending removal
+					contentData.noFiltersArePending = false;
+				}
+				else {
+					//not pending removal
+					contentData.allFiltersArePending = false;
+				}
+			}
+
+			//Case 1: All filters are pending removal - should redirect to all
+			if (contentData.allFiltersArePending) {
+				$timeout(function () {
+					//TODO: Decide whether we should delete the filter
+					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
+				}, 0);
+			}
+			//Case 2: All filters are enabled - the button should be already disabled so do nothing
+			else if (contentData.noFiltersArePending) {
+
+			}
+			else {
+				//Filter change is needed 
+				contentData.filterId = moment().format('YYYYMMDDHHmmssSSS');
+				var filterArray = [];
+				for (var j = 0; j < contentData.filterRecords.data.length; j++) {
+					if (!contentData.filtersPendingRemoval[contentData.filterRecords.data[j].field_name]) {
+						var activeFilter = angular.copy(contentData.filterRecords.data[j]);
+						activeFilter.id = null;
+						activeFilter.filter_id = contentData.filterId;
+						activeFilter.helper = angular.toJson(activeFilter.helper);
+						//remove the special $$ properties
+						activeFilter = angular.fromJson(angular.toJson(activeFilter));
+						filterArray.push(activeFilter)
+					}
+				}
+				webvellaAreasService.createListFilter(filterArray, $stateParams.entityName, $stateParams.listName, successCallback, errorCallback);
+			}
 		}
 
 		//#endregion
@@ -873,6 +969,7 @@
 			if (filterArray.length == 0) {
 				if ($stateParams.filter != "all") {
 					$timeout(function () {
+						//TODO: Decide whether we should delete the filter
 						$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
 						$modalInstance.dismiss('cancel');
 					}, 0);
@@ -894,6 +991,9 @@
 							var filterRecord = popupData.filterRecordsList[s];
 							if (arrayRow.field_name == filterRecord.field_name && arrayRow.relation_name == filterRecord.relation_name && arrayRow.values != filterRecord.values) {
 								filterArrayIsTheSame = false;
+							}
+							else {
+								//Handle the case when the filters are switch - the 1 old filter is removed and 1 new is added
 							}
 						}
 					}
