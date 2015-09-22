@@ -1981,6 +1981,13 @@ body #loading-bar-spinner {
 	border: 1px solid #e0e0e0;
 }
 
+	.form.form-clean, .form-horizontal.form-clean {
+		background:none;
+		border:none;
+		padding:0;
+	}
+
+
 	.form .form-control,
 	.form-horizontal .form-control {
 		background-color: #fafafa;

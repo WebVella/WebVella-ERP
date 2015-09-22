@@ -66,7 +66,7 @@
 	//#endregion
 
 	//#region << Resolve Function >>
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout','ngToast'];
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout', 'ngToast'];
 	/* @ngInject */
 	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams, $timeout, ngToast) {
 		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
@@ -91,7 +91,7 @@
 		// Process get filter records
 		function filterSuccessCallback(response) {
 			listRecordsObject.filterRecords = response.object;
-			if (listRecordsObject.filterRecords != null) {
+			if (listRecordsObject.filterRecords != null && listRecordsObject.filterRecords.data.length > 0) {
 				//Maintain and apply list filters
 				//In this operation as it is a system maintenance  
 				//get and check filter records and list meta
@@ -115,7 +115,7 @@
 				if (searchableFieldsChanged) {
 					//Call service for removing the filter records
 					existingRemovedDelta = listRecordsObject.filterRecords.data.length - arrayOfFilterRecordsToBeRemoved.length;
-					webvellaAreasService.deleteSelectedFilterRecords($stateParams.filter, arrayOfFilterRecordsToBeRemoved,updateFilterSuccessCallback, errorCallback)
+					webvellaAreasService.deleteSelectedFilterRecords($stateParams.filter, arrayOfFilterRecordsToBeRemoved, updateFilterSuccessCallback, errorCallback)
 				}
 				else {
 					defer.resolve(listRecordsObject);
@@ -190,7 +190,6 @@
 		return defer.promise;
 	}
 
-
 	resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$stateParams'];
 	/* @ngInject */
 	function resolveCurrentArea($q, $log, webvellaAdminService, $state, $stateParams) {
@@ -257,7 +256,7 @@
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser','ngToast'];
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
 
 	/* @ngInject */
 	function controller($filter, $log, $modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
@@ -310,7 +309,12 @@
 
 		//#region << Init filters >>
 		contentData.filterChangeRequested = false;
-		contentData.filterRecords = angular.copy(resolvedListRecords.filterRecords);
+		if (resolvedListRecords.filterRecords == undefined) {
+			resolvedListRecords.filterRecords = null;
+		}
+		else {
+			contentData.filterRecords = angular.copy(resolvedListRecords.filterRecords);
+		}
 		if (contentData.filterRecords == null || contentData.filterRecords.data == null) {
 			contentData.filterRecords = {};
 			contentData.filterRecords.data = [];
@@ -470,7 +474,7 @@
 					$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
 				}, 0);
 			}
-			//Case 2: All filters are enabled - the button should be already disabled so do nothing
+				//Case 2: All filters are enabled - the button should be already disabled so do nothing
 			else if (contentData.noFiltersArePending) {
 
 			}
@@ -687,6 +691,89 @@
 		popupData.currentUserRoles = angular.copy(contentData.currentUserRoles);
 		popupData.currentUser = angular.copy(contentData.currentUser);
 		popupData.filterRecordsList = angular.copy(contentData.filterRecords.data);
+
+		//#region << Match type >>
+		popupData.matchTypesDictionary = {};
+		popupData.selectedMatchType = {};
+		var exactMatch = {
+			key: "exact",
+			value: "Exact match"
+		};
+		var rangeMatch = {
+			key: "range",
+			value: "Range"
+		}
+		var periodMatch = {
+			key: "period",
+			value: "Period"
+		};
+		var regexMatch = {
+			key: "regex",
+			value: "Regular expression"
+		};
+
+		//auto increment type 1
+		popupData.matchTypesDictionary["1"] = [];
+		popupData.matchTypesDictionary["1"].push(exactMatch);
+		popupData.matchTypesDictionary["1"].push(rangeMatch);
+		popupData.matchTypesDictionary["1"].push(regexMatch);
+
+		//Checkbox type 2
+		popupData.matchTypesDictionary["2"] = [];
+		popupData.matchTypesDictionary["2"].push(exactMatch);
+
+		//Currency type 3
+		popupData.matchTypesDictionary["3"] = [];
+		popupData.matchTypesDictionary["3"].push(exactMatch);
+		popupData.matchTypesDictionary["3"].push(rangeMatch);
+		popupData.matchTypesDictionary["3"].push(regexMatch);
+
+		//Date type 4
+		popupData.matchTypesDictionary["4"] = [];
+		popupData.matchTypesDictionary["4"].push(exactMatch);
+		popupData.matchTypesDictionary["4"].push(rangeMatch);
+		popupData.matchTypesDictionary["4"].push(periodMatch);
+		popupData.matchTypesDictionary["4"].push(regexMatch);
+
+
+		popupData.periodDictionary = [
+		{
+			key: "hour",
+			value: "Past hour"
+		},
+		{
+			key: "day",
+			value: "Past 24 hours"
+		},
+		{
+			key: "week",
+			value: "Past week"
+		},
+		{
+			key: "month",
+			value: "Past month"
+		},
+		{
+			key: "year",
+			value: "Past year"
+		}
+		];
+		popupData.selectedPeriod = popupData.periodDictionary[3];
+
+
+		popupData.isDisabledDropdown = function (array) {
+			if (array.length < 2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+
+		}
+
+		//#endregion 
+
+
 		//#region << generate searchable fields list
 		//1. Get the list meta and find who are the searchable fields
 		popupData.filterColumns = [];
@@ -704,14 +791,20 @@
 
 			switch (popupData.contentData.currentListView.columns[m].type) {
 				case "field":
-					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].enableSecurity || (popupData.contentData.currentListView.columns[m].enableSecurity && userHasReadPermissionForField))) {
+					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].meta.enableSecurity || (popupData.contentData.currentListView.columns[m].meta.enableSecurity && userHasReadPermissionForField))) {
 						var filterObject = {};
 						filterObject = popupData.contentData.currentListView.columns[m];
+						filterObject.match_type = popupData.matchTypesDictionary[filterObject.meta.fieldType.toString()][0].key;
 						filterObject.data = [];
 						for (var j = 0; j < popupData.filterRecordsList.length; j++) {
 							if (popupData.filterRecordsList[j].field_name == filterObject.meta.name) {
 								filterObject.data = angular.fromJson(popupData.filterRecordsList[j].values);
+								for (var dd = 0; dd < filterObject.data.length; dd++) {
+									filterObject.data[dd] = decodeURIComponent(filterObject.data[dd]);
+								}
+								filterObject.match_type = popupData.filterRecordsList[j].match_type;
 							}
+
 						}
 						filterObject.loading = false;
 						popupData.filterColumns.push(filterObject);
@@ -721,7 +814,6 @@
 					break;
 			}
 		}
-
 		// Rules:
 		// Simple fields -> depending on the field type
 		// 1:1 (field is target) -> lookuplist
@@ -890,6 +982,22 @@
 
 
 		//#endregion
+
+
+		popupData.calendars = {};
+		popupData.openCalendar = function (event, name) {
+			popupData.calendars[name] = true;
+		}
+
+		popupData.dateMatchTypeChanged = function (column) {
+			if (column.match_type == "period") {
+				column.data[0] = "month";
+			}
+			else if (column.data[0] == "month") {
+				column.data = [];
+			}
+		}
+
 		popupData.filterId = null;
 
 		popupData.ok = function () {
@@ -902,6 +1010,7 @@
 					var filterRecord = {};
 					filterRecord.filter_id = popupData.filterId;
 					filterRecord.field_name = popupData.filterColumns[j].meta.name;
+					filterRecord.match_type = popupData.filterColumns[j].match_type;
 					filterRecord.entity_name = $stateParams.entityName;
 					filterRecord.list_name = $stateParams.listName;
 					filterRecord.values = [];
@@ -915,7 +1024,7 @@
 
 					//Generate helper 
 					var helperObject = {};
-					helperObject.label = popupData.filterColumns[j].meta.label;
+					helperObject.label = popupData.filterColumns[j].meta.label;;
 					helperObject.name = popupData.filterColumns[j].meta.name;
 					helperObject.type = popupData.filterColumns[j].type;
 					helperObject.fieldType = popupData.filterColumns[j].meta.fieldType;
@@ -923,10 +1032,54 @@
 					for (var m = 0; m < popupData.filterColumns[j].data.length; m++) {
 						var valueRecord = {};
 						switch (popupData.filterColumns[j].meta.fieldType) {
-							default:
-								//Single value options - AutoIncrement,
+							case 1: // Auto increment
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to</span> " + popupData.filterColumns[j].data[1];
+								}
+								else {
+									// Exact
+									valueRecord.label = valueRecord.value;
+								}
+								break;
+							case 2: //Checkbox
 								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
 								valueRecord.label = valueRecord.value;
+								break;
+							case 3: // Currency
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.label = "<span class='go-gray'>from " + popupData.filterColumns[j].meta.currency.code + " </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to " + popupData.filterColumns[j].meta.currency.code + "</span> " + popupData.filterColumns[j].data[1];
+								}
+								else {
+									// Exact
+									valueRecord.label = popupData.filterColumns[j].meta.currency.code + " " + valueRecord.value;
+								}
+								break;
+							case 4: //Date
+
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+									valueRecord.label = "<span class='go-gray'>from </span>" + moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY") + " <span class='go-gray'>to </span> " + moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY");
+								}
+								else if (popupData.filterColumns[j].match_type == "period") {
+									for (var p = 0; p < popupData.periodDictionary.length; p++) {
+										if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
+											valueRecord.value = popupData.filterColumns[j].data[m];
+											valueRecord.label = popupData.periodDictionary[p].value;
+										}
+									}
+								}
+								else if (popupData.filterColumns[j].match_type == "regex") {
+									valueRecord.value = "regex";
+									valueRecord.label = "regex";
+								}
+								else {
+									// Exact
+									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+									valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
+								}
 								break;
 						}
 						helperObject.data.push(valueRecord);
@@ -935,7 +1088,22 @@
 
 					//Generate values
 					for (var k = 0; k < popupData.filterColumns[j].data.length; k++) {
-						filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])))
+						if (popupData.filterColumns[j].type == "field") {
+							switch (popupData.filterColumns[j].meta.fieldType) {
+								case 4: //Date - this needs to be done to ensure that in the database is store the ISO and UTC data value
+									if (popupData.filterColumns[j].match_type == "exact" || popupData.filterColumns[j].match_type == "range") {
+										var utcIsoDate = moment(popupData.filterColumns[j].data[k]).utc().toISOString();
+										filterRecord.values.push(encodeURIComponent(utcIsoDate));
+									}
+									else {
+										filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+									}
+									break;
+								default:
+									filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+									break;
+							}
+						}
 					}
 					filterRecord.id = null;
 					filterRecord.created_by = popupData.currentUser.id;
@@ -962,7 +1130,6 @@
 					className: 'error',
 					content: '<span class="go-red">Error:</span> ' + response.message
 				});
-				$modalInstance.close('success');
 			}
 
 			//Case 1: filter array empty
@@ -979,7 +1146,7 @@
 				}
 			}
 			else {
-				//Case 2: filter array the same - means all filter fields - relation name - values are matching with the preloaded filterRecords
+				//Case 2: filter array the same - means all filter fields - relation name - match types - values are matching with the preloaded filterRecords
 				var filterArrayIsTheSame = true;
 				if (popupData.filterRecordsList.length != filterArray.length) {
 					filterArrayIsTheSame = false
@@ -989,7 +1156,7 @@
 						for (var s = 0; s < popupData.filterRecordsList.length; s++) {
 							var arrayRow = filterArray[f];
 							var filterRecord = popupData.filterRecordsList[s];
-							if (arrayRow.field_name == filterRecord.field_name && arrayRow.relation_name == filterRecord.relation_name && arrayRow.values != filterRecord.values) {
+							if (arrayRow.field_name == filterRecord.field_name && arrayRow.relation_name == filterRecord.relation_name && (arrayRow.match_type != filterRecord.match_type || arrayRow.values != filterRecord.values)) {
 								filterArrayIsTheSame = false;
 							}
 							else {
@@ -1001,7 +1168,7 @@
 				if (filterArrayIsTheSame) {
 					$modalInstance.dismiss('cancel');
 				}
-				//Case 3: filter array changed or new - needs create
+					//Case 3: filter array changed or new - needs create
 				else {
 					webvellaAreasService.createListFilter(filterArray, $stateParams.entityName, $stateParams.listName, successCallback, errorCallback);
 				}
