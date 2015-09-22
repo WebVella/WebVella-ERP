@@ -72,16 +72,16 @@
 			<a class="btn btn-default" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
 				<i class="fa fa-fw fa-filter"></i>
 			</a>
-			<a class="btn btn-success" ng-click="" ng-show="contentData.filterChangeRequested">
+			<a class="btn btn-success" ng-click="contentData.applyFilterChange()" ng-show="contentData.filterChangeRequested">
 				<i class="fa fa-fw fa-check"></i>
 			</a>
 		</div>
-		<div class="form-group" ng-repeat="filterRecord in contentData.filterRecords.data">
+		<div class="form-group" ng-repeat="filterRecord in contentData.filterRecords.data"  ng-class="{'pending-removal': contentData.filtersPendingRemoval[filterRecord.field_name]}">
 			<div class="filter">
-				<div class="field"><a href="" ng-click="contentData.requestFilterChange()">{{filterRecord.helper.label}} <i class="fa fa-times-circle"></i></a></div>
+				<div class="field"><a href="" ng-click="contentData.requestFilterRemoval(filterRecord)">{{filterRecord.helper.label}} <i class="fa fa-times-circle"></i></a></div>
 				<ul class="criterias list-inline">
 					<li ng-repeat="dataRecord in filterRecord.helper.data">
-						<a href="" ng-click="contentData.requestFilterChange()">{{dataRecord.label}} <i class="fa fa-times-circle"></i></a>
+						<a href="" ng-click="contentData.requestFilterValueRemoval(dataRecord, filterRecord)">{{dataRecord.label}} <i class="fa fa-times-circle"></i></a>
 					</li>
 				</ul>
 			</div>
@@ -180,6 +180,15 @@
 												only digits are allowed
 											</small>
 										</div>
+									</div>
+									<!--Checkbox-->
+									<div ng-switch-when="2">
+										<label class="radio-inline">
+											<input type="radio" name="{{column.meta.name}}" value="true" ng-model="column.data[0]" > true
+										</label>
+										<label class="radio-inline">
+											<input type="radio" name="{{column.meta.name}}" value="false" ng-model="column.data[0]" > false
+										</label>
 									</div>
 								</div>
 							</div>

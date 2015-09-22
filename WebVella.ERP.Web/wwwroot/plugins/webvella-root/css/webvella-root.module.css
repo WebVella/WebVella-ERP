@@ -1557,6 +1557,14 @@ ngToast
 	padding-left:0.5em;
 }
 
+#filters .form-group.pending-removal {
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+ -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+ opacity: 0.5;
+}
+
 .filter {
 	margin: 0 .5em;
 	background-color: #f5f5f5;
