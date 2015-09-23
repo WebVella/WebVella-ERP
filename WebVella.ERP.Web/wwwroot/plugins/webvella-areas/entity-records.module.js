@@ -735,6 +735,17 @@
 		popupData.matchTypesDictionary["4"].push(periodMatch);
 		popupData.matchTypesDictionary["4"].push(regexMatch);
 
+		//Date type 5
+		popupData.matchTypesDictionary["5"] = [];
+		popupData.matchTypesDictionary["5"].push(exactMatch);
+		popupData.matchTypesDictionary["5"].push(rangeMatch);
+		popupData.matchTypesDictionary["5"].push(periodMatch);
+		popupData.matchTypesDictionary["5"].push(regexMatch);
+
+		//Currency type 6
+		popupData.matchTypesDictionary["6"] = [];
+		popupData.matchTypesDictionary["6"].push(exactMatch);
+		popupData.matchTypesDictionary["6"].push(regexMatch);
 
 		popupData.periodDictionary = [
 		{
