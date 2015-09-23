@@ -1,0 +1,250 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+			<a class="btn btn-success hidden-xs" ng-click="contentData.openManageUserModal(null)"><i class="fa fa-plus"></i> Create New</a>
+		</div>
+		<div class="icon-box">
+			<i class="fa fa-sitemap"></i>
+		</div>
+		<div class="entity-box">
+			<h4 class="no-link" title="Area">Areas</h4>
+		</div>
+		<div class="spacer-box"></div>
+		<div class="divider-box">
+			<i class="fa fa-caret-right"></i>
+		</div>
+		<div class="lists-box">
+			<h4 class="no-link" title="Lists">List</h4>
+		</div>
+	</div>
+	<!--<div id="page-messages">
+		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+	</div>-->
+</div>
+<div id="page-content">
+	<form id="filters" class="form-inline" ng-show="contentData.users.length > 0">
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<i class="fa fa-search"></i>
+				</span>
+				<input ng-model="contentData.search.email" type="text" class="form-control" placeholder="Search emails">
+			</div>
+		</div>
+	</form>
+	<div id="page-text">
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.users.length > 0">
+			<thead>
+				<tr>
+					<th width="60">action</th>
+					<th>email</th>
+                    <th>name</th>
+					<th>roles</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="user in contentData.users | filter: contentData.search">
+
+					<td>
+						<a ng-click="contentData.openManageUserModal(user)" class="btn btn-default">
+							<i class="fa fa-pencil"></i>
+						</a>
+					</td>
+					<td>{{user.email}}</td>
+                    <td>{{user.first_name}} {{user.last_name}}</td>
+					<td>
+						<span ng-repeat="role in user.$user_role">{{role.name}} <span ng-hide="$last">,</span></span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="alert alert-info" ng-show="contentData.users.length == 0" style="margin-top:2em;">
+			<strong>No items!</strong> There are no users created yet
+		</div>
+	</div>
+</div>
+<script type="text/ng-template" id="manageUserModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title" ng-bind-html="popupData.modalTitle"></h3>
+	</div>
+	<div class="modal-body">
+		<form name="manageForm" class="form">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.email.$invalid && !manageForm.email.$pristine || popupData.emailError}">
+						<label class="required control-label">Email</label>
+						<input class="form-control" ng-model="popupData.user.email" name="email" type="text"
+							   ng-required="true" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+							   ng-model-options="{allowInvalid:true}" />
+						<div class="error" ng-show="manageForm.email.$touched && manageForm.email.$dirty && manageForm.email.$invalid ||  popupData.emailError">
+							<small class="error" ng-show="manageForm.email.$error.required && !popupData.emailError">
+								Required.
+							</small>
+							<small class="error" ng-show="manageForm.email.$error.pattern && !popupData.emailError">
+								Invalid email.
+							</small>
+							<small class="error" ng-show="popupData.emailError">
+								{{popupData.emailErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.password.$invalid && !manageForm.password.$pristine || popupData.passwordError }">
+						<label  class="control-label" ng-if="popupData.isUpdate">Change Password with</label>
+						<label class="required control-label" ng-if="!popupData.isUpdate">Password</label>
+						<input class="form-control" ng-model="popupData.password" name="password" type="text"
+							   ng-required="!popupData.isUpdate" ng-model-options="{allowInvalid:true}" />
+						<div class="error" ng-show="manageForm.password.$touched && manageForm.password.$dirty && manageForm.password.$invalid ||  popupData.passwordError">
+							<small class="error" ng-show="manageForm.password.$error.required && !popupData.passwordError">
+								Required.
+							</small>
+							<small class="error" ng-show="popupData.passwordError">
+								{{popupData.passwordErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.first_name.$invalid && !manageForm.first_name.$pristine || popupData.first_nameError }">
+						<label class="control-label">First name</label>
+						<input class="form-control" ng-model="popupData.user.first_name" name="first_name" type="text"  ng-model-options="{allowInvalid:true}" 
+							   ng-required="true"/>
+						<div class="error" ng-show="manageForm.first_name.$touched && manageForm.first_name.$dirty && manageForm.first_name.$invalid ||  popupData.first_nameError">
+							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.last_nameError">
+								Required.
+							</small>							
+							<small class="error" ng-show="popupData.first_nameError">
+								{{popupData.first_nameErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.last_name.$invalid && !manageForm.last_name.$pristine || popupData.last_nameError }">
+						<label class="control-label">Last name</label>
+						<input class="form-control" ng-model="popupData.user.last_name" name="last_name" type="text" ng-model-options="{allowInvalid:true}" 
+							   ng-required="true"/>
+						<div class="error" ng-show="manageForm.last_name.$touched && manageForm.last_name.$dirty && manageForm.last_name.$invalid ||  popupData.last_nameError">
+							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.last_nameError">
+								Required.
+							</small>							
+							<small class="error" ng-show="popupData.last_nameError">
+								{{contentData.last_nameErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupData.imageError }">
+						<label class="control-label">Image</label>
+						<div>
+							<a ng-show='!popupData.user.image && popupData.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+							   ngf-select="popupData.upload(popupData.files.image)" ngf-max-size="20MB" ng-model='popupData.files.image' accept="image/*"  ngf-multiple="false">Browse</a>
+						</div>
+						<div class="progress" ng-show="!popupData.user.image && popupData.progress.image > 0 && popupData.progress.image <= 100">
+							<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress.image}}" aria-valuemin="0" aria-valuemax="100"
+								 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
+								<span ng-show="popupData.progress.image < 100">{{popupData.progress.image}}%</span>
+								<span ng-show="popupData.progress.image == 100">almost done...</span>
+							</div>
+						</div>
+						<div class="image-upload" ng-show='popupData.user.image'>
+							<img class="img-thumbnail" ng-src="{{popupData.user.image}}" />
+							<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteImage()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+						</div>
+						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupData.imageError">
+							<small class="error" ng-show="popupData.last_nameError">
+								{{contentData.last_nameErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.enabled.$invalid && !manageForm.enabled.$pristine || popupData.enabledError }">
+						<label class="control-label">Enabled</label>
+						<div class="checkbox">
+							<label><input type="checkbox" ng-model="popupData.user.enabled" value="true"> enabled</label>
+						</div>
+						<div class="error" ng-show="manageForm.enabled.$touched && manageForm.enabled.$dirty && manageForm.enabled.$invalid ||  popupData.enabledError">
+							<small class="error" ng-show="popupData.enabledError">
+								{{contentData.enabledMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.verified.$invalid && !manageForm.verified.$pristine || popupData.verifiedError }">
+						<label class="control-label">Verified</label>
+						<div class="checkbox">
+							<label><input type="checkbox" ng-model="popupData.user.verified" value="true"> verified</label>
+						</div>
+						<div class="error" ng-show="manageForm.verified.$touched && manageForm.verified.$dirty && manageForm.verified.$invalid ||  popupData.verifiedError">
+							<small class="error" ng-show="popupData.verifiedError">
+								{{contentData.verifiedErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label>Assign roles</label>
+						<div>
+							<label ng-repeat="role in popupData.roles" class="checkbox-inline">
+								<input type="checkbox" checklist-model="popupData.userRoles" checklist-value="role.id"> {{role.name}}
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Save User</button>
+		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="iconTypeaheadTemplate.html">
+	<a class="typeahead-icon-item" href="javascript:void(0)">
+		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
+		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+	</a>
+</script>
+
+<script type="text/ng-template" id="entityTypeaheadTemplate.html">
+	<a>
+		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
+		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
+	</a>
+	<hr style="margin:0"/>
+</script>
+
+<script type="text/ng-template" id="deleteAreaModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Delete an area</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div ng-hide="popupData.hasError">
+			<p>Are you sure that you need this area deleted?</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete Area</button>
+		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>

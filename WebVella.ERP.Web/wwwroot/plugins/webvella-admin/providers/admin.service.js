@@ -97,6 +97,9 @@ function guid() {
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
 		//User
 		serviceInstance.getUserById = getUserById;
+		serviceInstance.getAllUsers = getAllUsers;
+		serviceInstance.createUser = createUser;
+		serviceInstance.initUser = initUser;
 		//#endregion
 
 		//#region << Aux methods >>
@@ -1025,10 +1028,44 @@ function guid() {
 
 		//#region << User specific >>
 		///////////////////////
+		function initUser() {
+			var user = {
+				"_id": null,
+				"created_by": null,
+				"created_on": null,
+				"email": null,
+				"enabled": true,
+				"first_name": null,
+				"image": null,
+				"last_logged_in": null,
+				"last_modified_by": null,
+				"last_modified_on": null,
+				"last_name": null,
+				"password": null,
+				"verified": true
+			}
+			return user;
+		}
+
+		///////////////////////
 		function getUserById(userId, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getUserById> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/' + userId }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
+
+		///////////////////////
+		function getAllUsers(successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>getAllUsers> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/list' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+		///////////////////////
+		function createUser(userObject, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>createUser> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user', data: userObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
+
+
 		//#endregion
 
 
