@@ -304,7 +304,7 @@ namespace WebVella.ERP
 						var roleEntity = em.ReadEntity(SystemIds.RoleEntityId).Object;
 
 						EntityRelation userRoleRelation = new EntityRelation();
-						userRoleRelation.Id = SystemIds.UserRoleRelationId; ;
+						userRoleRelation.Id = SystemIds.UserRoleRelationId;
 						userRoleRelation.Name = "user_role";
 						userRoleRelation.Label = "User-Role";
 						userRoleRelation.System = true;

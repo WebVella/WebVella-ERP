@@ -24,6 +24,7 @@ namespace WebVella.ERP.Web.Controllers
 		//TODO - add created_by and modified_by fields where needed, when the login is done
 		RecordManager recMan;
 		EntityManager entityManager;
+		SecurityManager secMan;
 
 		public IStorageService Storage { get; set; }
 
@@ -31,7 +32,9 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			Storage = storage;
 			recMan = new RecordManager(service);
+			secMan = new SecurityManager(service);
 			entityManager = new EntityManager(storage);
+
 		}
 
 		[AllowAnonymous]
@@ -2224,13 +2227,27 @@ namespace WebVella.ERP.Web.Controllers
 
 		#region << User specific >>
 
+		// GET: api/v1/en_US/user/list
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/list")]
+		public IActionResult GetUsers(Guid userId)
+		{
+
+			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image";
+			EntityQuery query = new EntityQuery("user", userColumns, null, null, null, null);
+
+			QueryResponse result = recMan.Find(query);
+			if (!result.Success)
+				return DoResponse(result);
+			return Json(result);
+		}
+
 		// GET: api/v1/en_US/user/{userId}
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/{userId}")]
 		public IActionResult GetUserById(Guid userId)
 		{
 
 			QueryObject areaFilterObj = EntityQuery.QueryEQ("id", userId);
-			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name";
+			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image";
 
 			EntityQuery query = new EntityQuery("user", userColumns, areaFilterObj, null, null, null);
 
@@ -2239,6 +2256,64 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(result);
 			return Json(result);
 		}
+
+		// Create new user
+		// POST: api/v1/en_US/user
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user")]
+		public IActionResult CreateUser([FromBody]EntityRecord userObj)
+		{
+			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			response.Message = "User successfully created";
+			//var rolesArray = ((JArray)userObj["roles"]).Select(x=> new Guid(x.ToString()));
+			////userObj.Properties.Remove("roles");
+			//var transaction = recMan.CreateTransaction();
+			//try
+			//{
+
+			//	transaction.Begin();
+
+			//	//Create user
+			//	if (userObj["id"] == null)
+			//	{
+			//		userObj["id"] = Guid.NewGuid();
+			//	}
+			//	var createResult = recMan.CreateRecord("user", userObj);
+			//	if (!createResult.Success)
+			//	{
+			//		response.Errors = createResult.Errors;
+			//		response.Message = "Creating user failed. Reason: " + createResult.Message;
+			//		response.Success = false;
+			//		return DoResponse(response);
+			//	}
+
+			//	//Create user role relations
+			//	foreach (var roleId in rolesArray)
+			//	{
+			//		QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, (Guid)userObj["id"]);
+			//		if (!relationResult.Success)
+			//		{
+			//			response.Errors = relationResult.Errors;
+			//			response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+			//			response.Success = false;
+			//			return DoResponse(response);
+			//		}
+			//	}
+
+			//	transaction.Commit();
+			//}
+			//catch (Exception ex)
+			//{
+			//	if (transaction != null)
+			//		transaction.Rollback();
+
+			//	response.Success = false;
+			//	response.Message = ex.Message;
+			//	return DoResponse(response);
+			//}
+
+			return DoResponse(response);
+		}
+
 		#endregion
 
 		#region << Files >>
@@ -2360,7 +2435,8 @@ namespace WebVella.ERP.Web.Controllers
 				transaction.Begin();
 				foreach (var record in postObj)
 				{
-					if(record["id"] == null) {
+					if (record["id"] == null)
+					{
 						record["id"] = Guid.NewGuid();
 					}
 					var createResult = recMan.CreateRecord("filter", record);
