@@ -432,9 +432,9 @@
 						case 5: //Date & Time
 							contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
 							break;
-						case 14: //Persent
+						case 14: //Percent
 							//need to convert to decimal 0 <= val <= 100 Divide by 100
-							//Hack for proper javascript devision
+							//Hack for proper javascript division
 							$scope.Math = window.Math;
 							var helpNumber = 10000000;
 							var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].meta.name] * helpNumber);

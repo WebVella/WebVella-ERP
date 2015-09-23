@@ -249,12 +249,13 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<label for="searchableStatus" class="control-label">Searchable</label>
-							<div class="checkbox">
+							<div class="checkbox" ng-if="popupData.field.fieldType != 13">
 								<label>
 									<input ng-model="popupData.field.searchable" type="checkbox" id="searchableStatus" value="true">
 									the values of this field should be included in the search index
 								</label>
 							</div>
+							<div class="form-control-static" ng-if="popupData.field.fieldType == 13">password cannot be searchable</div>
 						</div>
 
 					</div>
@@ -1399,12 +1400,13 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label for="searchableStatus" class="control-label">Searchable</label>
-						<div class="checkbox">
+						<div class="checkbox" ng-if="popupData.field.fieldType != 13">
 							<label>
 								<input ng-model="popupData.field.searchable" type="checkbox" id="searchableStatus" value="true">
 								the values of this field should be included in the search index
 							</label>
 						</div>
+						<div class="form-control-static" ng-if="popupData.field.fieldType == 13">password cannot be searchable</div>
 					</div>
 
 				</div>

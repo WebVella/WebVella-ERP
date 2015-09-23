@@ -315,6 +315,7 @@
 		else {
 			contentData.filterRecords = angular.copy(resolvedListRecords.filterRecords);
 		}
+
 		if (contentData.filterRecords == null || contentData.filterRecords.data == null) {
 			contentData.filterRecords = {};
 			contentData.filterRecords.data = [];
@@ -324,10 +325,24 @@
 				contentData.filterRecords.data[i].helper = angular.fromJson(contentData.filterRecords.data[i].helper);
 				var helperDataAray = contentData.filterRecords.data[i].helper.data;
 				for (var k = 0; k < helperDataAray.length; k++) {
-					helperDataAray[k].value = decodeURIComponent(helperDataAray[k].value);
+					helperDataAray[k].label = decodeURIComponent(helperDataAray[k].label);
 				}
 			}
 		}
+
+		//Order the filters the same way the columns in the list are ordered
+		var temporaryFilterArray = [];
+		if (contentData.filterRecords.data.length > 0) {
+			for (var k = 0; k < resolvedListRecords.meta.columns.length; k++) {
+				for (var j = 0; j < contentData.filterRecords.data.length; j++) {
+					if (resolvedListRecords.meta.columns[k].meta.name == contentData.filterRecords.data[j].field_name) {
+						temporaryFilterArray.push(contentData.filterRecords.data[j]);
+					}
+				}
+			}
+			contentData.filterRecords.data = angular.copy(temporaryFilterArray);
+		}
+
 		//#endregion
 
 		//#region << Search >>
@@ -398,6 +413,7 @@
 		}
 
 		contentData.filterChangeRequested = false;
+		//TODO: this object does not support relations. To support them the properties should not be only the field_name but plus relation_name
 		contentData.filtersPendingRemoval = {};
 		//enlist all filters as pending false
 		for (var k = 0; k < contentData.filterRecords.data.length; k++) {
@@ -421,16 +437,6 @@
 			else {
 				contentData.filtersPendingRemoval[filterRecord.field_name] = true;
 				contentData.filterChangeRequested = true;
-			}
-		}
-
-		contentData.requestFilterValueRemoval = function (value, filterRecord) {
-			switch (filterRecord.helper.fieldType) {
-
-				default:
-					//all single value fields 
-					contentData.requestFilterRemoval(filterRecord)
-					break;
 			}
 		}
 
@@ -682,9 +688,9 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams'];
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams','$scope'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData, $stateParams) {
+	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData, $stateParams,$scope) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = angular.copy(contentData);
@@ -698,6 +704,14 @@
 		var exactMatch = {
 			key: "exact",
 			value: "Exact match"
+		};
+		var exactMatchAND = {
+			key: "exact_and",
+			value: "Exactly match all"
+		};
+		var exactMatchOR = {
+			key: "exact_or",
+			value: "Exact match at least one"
 		};
 		var rangeMatch = {
 			key: "range",
@@ -742,10 +756,75 @@
 		popupData.matchTypesDictionary["5"].push(periodMatch);
 		popupData.matchTypesDictionary["5"].push(regexMatch);
 
-		//Currency type 6
+		//Email type 6
 		popupData.matchTypesDictionary["6"] = [];
 		popupData.matchTypesDictionary["6"].push(exactMatch);
 		popupData.matchTypesDictionary["6"].push(regexMatch);
+
+		//File 7
+		popupData.matchTypesDictionary["7"] = [];
+		popupData.matchTypesDictionary["7"].push(exactMatch);
+		popupData.matchTypesDictionary["7"].push(regexMatch);
+
+		//HTML 7
+		popupData.matchTypesDictionary["8"] = [];
+		popupData.matchTypesDictionary["8"].push(exactMatch);
+		popupData.matchTypesDictionary["8"].push(regexMatch);
+
+		//Image 9
+		popupData.matchTypesDictionary["9"] = [];
+		popupData.matchTypesDictionary["9"].push(exactMatch);
+		popupData.matchTypesDictionary["9"].push(regexMatch);
+
+		//HTML 10
+		popupData.matchTypesDictionary["10"] = [];
+		popupData.matchTypesDictionary["10"].push(exactMatch);
+		popupData.matchTypesDictionary["10"].push(regexMatch);
+
+		//Multiselect 11
+		popupData.matchTypesDictionary["11"] = [];
+		popupData.matchTypesDictionary["11"].push(exactMatchAND);
+		popupData.matchTypesDictionary["11"].push(exactMatchOR);
+		popupData.matchTypesDictionary["11"].push(regexMatch);
+
+		//Number 12
+		popupData.matchTypesDictionary["12"] = [];
+		popupData.matchTypesDictionary["12"].push(exactMatch);
+		popupData.matchTypesDictionary["12"].push(rangeMatch);
+		popupData.matchTypesDictionary["12"].push(regexMatch);
+
+		//Password 13 - skip cannot be searchable
+
+		//Percent 14
+		popupData.matchTypesDictionary["14"] = [];
+		popupData.matchTypesDictionary["14"].push(exactMatch);
+		popupData.matchTypesDictionary["14"].push(rangeMatch);
+		popupData.matchTypesDictionary["14"].push(regexMatch);
+
+		//Phone 15
+		popupData.matchTypesDictionary["15"] = [];
+		popupData.matchTypesDictionary["15"].push(exactMatch);
+		popupData.matchTypesDictionary["15"].push(regexMatch);
+
+		//Guid 16
+		popupData.matchTypesDictionary["16"] = [];
+		popupData.matchTypesDictionary["16"].push(exactMatch);
+		popupData.matchTypesDictionary["16"].push(regexMatch);
+
+		//Dropdown 17
+		popupData.matchTypesDictionary["17"] = [];
+		popupData.matchTypesDictionary["17"].push(exactMatch);
+		popupData.matchTypesDictionary["17"].push(regexMatch);
+
+		//Text 18
+		popupData.matchTypesDictionary["18"] = [];
+		popupData.matchTypesDictionary["18"].push(exactMatch);
+		popupData.matchTypesDictionary["18"].push(regexMatch);
+
+		//Url 19
+		popupData.matchTypesDictionary["19"] = [];
+		popupData.matchTypesDictionary["19"].push(exactMatch);
+		popupData.matchTypesDictionary["19"].push(regexMatch);
 
 		popupData.periodDictionary = [
 		{
@@ -991,6 +1070,14 @@
 			}
 		}
 
+		popupData.addMultiSelectOption = function (column) {
+			column.data.push("");
+		}
+
+		popupData.removeMultiSelectOption = function (index,column) {
+			column.data.splice(index,1);
+		}
+
 
 		//#endregion
 
@@ -1092,6 +1179,56 @@
 									valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
 								}
 								break;
+							case 5: //Datetime
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+									valueRecord.label = "<span class='go-gray'>from </span>" + moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY HH:mm") + " <span class='go-gray'>to </span> " + moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY HH:mm");
+								}
+								else if (popupData.filterColumns[j].match_type == "period") {
+									for (var p = 0; p < popupData.periodDictionary.length; p++) {
+										if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
+											valueRecord.value = popupData.filterColumns[j].data[m];
+											valueRecord.label = popupData.periodDictionary[p].value;
+										}
+									}
+								}
+								else if (popupData.filterColumns[j].match_type == "regex") {
+									valueRecord.value = "regex";
+									valueRecord.label = "regex";
+								}
+								else {
+									// Exact
+									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+									valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
+								}
+								break;
+							case 12: // Number
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to </span> " + popupData.filterColumns[j].data[1];
+								}
+								else {
+									// Exact
+									valueRecord.label = valueRecord.value;
+								}
+								break;
+
+							case 14: // Percent
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
+								if (popupData.filterColumns[j].match_type == "range") {
+									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + "% <span class='go-gray'>to </span> " + popupData.filterColumns[j].data[1] +"%";
+								}
+								else {
+									// Exact
+									valueRecord.label = valueRecord.value + "%";
+								}
+								break;
+
+							default: // Email, file, Html, Image, Textarea, Multiselect
+								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+								// Exact
+								valueRecord.label = valueRecord.value;
+								break;
 						}
 						helperObject.data.push(valueRecord);
 					}
@@ -1109,6 +1246,24 @@
 									else {
 										filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
 									}
+									break;
+								case 5: //Datetime - this needs to be done to ensure that in the database is store the ISO and UTC data value
+									if (popupData.filterColumns[j].match_type == "exact" || popupData.filterColumns[j].match_type == "range") {
+										var utcIsoDate = moment(popupData.filterColumns[j].data[k]).utc().toISOString();
+										filterRecord.values.push(encodeURIComponent(utcIsoDate));
+									}
+									else {
+										filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+									}
+									break;
+								case 14: //Percent
+										//need to convert to decimal 0 <= val <= 100 Divide by 100
+										//Hack for proper javascript division
+										$scope.Math = window.Math;
+										var helpNumber = 10000000;
+										var multipliedValue = $scope.Math.round(popupData.filterColumns[j].data[k] * helpNumber);
+										var numberToSubmit = multipliedValue / (100 * helpNumber);
+										filterRecord.values.push(encodeURIComponent(numberToSubmit));
 									break;
 								default:
 									filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
