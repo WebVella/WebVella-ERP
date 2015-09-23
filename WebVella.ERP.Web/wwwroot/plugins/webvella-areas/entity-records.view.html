@@ -81,28 +81,26 @@
 				<div class="field"><a href="" ng-click="contentData.requestFilterRemoval(filterRecord)">{{filterRecord.helper.label}} <i class="fa fa-times-circle"></i></a></div>
 				<ul class="criterias list-inline" ng-switch="filterRecord.match_type">
 					<li ng-repeat="dataRecord in filterRecord.helper.data" ng-switch-when="exact">
-						<a href="" ng-click="contentData.requestFilterValueRemoval(dataRecord, filterRecord)">
-							<span ng-bind-html="dataRecord.label"></span>
-							<i class="fa fa-times-circle"></i>
-						</a>
+						<span class="go-black" ng-bind-html="dataRecord.label"></span>
+					</li>
+					<li ng-repeat="dataRecord in filterRecord.helper.data" ng-switch-when="exact_and" style="padding-right:0;">
+						<span class="go-gray" ng-show="$index != 0">and </span> 
+						<span class="go-black" ng-bind-html="dataRecord.label"></span>
+					</li>
+					<li ng-repeat="dataRecord in filterRecord.helper.data" ng-switch-when="exact_or" style="padding-right:0;">
+						<span class="go-gray" ng-show="$index != 0">or </span> 
+						<span class="go-black" ng-bind-html="dataRecord.label"></span>
 					</li>
 					<li ng-switch-when="range">
-						<a href="" ng-click="contentData.requestFilterValueRemoval(filterRecord.helper.data[0], filterRecord)">
-							<span ng-bind-html="filterRecord.helper.data[0].label"></span>
-							<i class="fa fa-times-circle"></i>
-						</a>
+						<span class="go-black" ng-bind-html="filterRecord.helper.data[0].label"></span>
 					</li>
 					<li ng-switch-when="period">
-						<a href="" ng-click="contentData.requestFilterValueRemoval(filterRecord.helper.data[0], filterRecord)">
-							<span ng-bind-html="filterRecord.helper.data[0].label"></span>
-							<i class="fa fa-times-circle"></i>
-						</a>
+						<span class="go-black" ng-bind-html="filterRecord.helper.data[0].label"></span>
 					</li>
 					<li ng-switch-when="regex">
-						<a href="" ng-click="contentData.requestFilterValueRemoval(filterRecord.helper.data[0], filterRecord)">
+						<span class="go-black">
 							<i>regular expression</i>
-							<i class="fa fa-times-circle"></i>
-						</a>
+						</span>
 					</li>
 				</ul>
 			</div>
@@ -197,59 +195,61 @@
 														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
 														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
 											</div>
-											<div class="form-group" ng-show="column.match_type == 'exact'">
-												<label>Value</label>
-												<p>Fill in the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-													   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
-													{{column.meta.helpText}}
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<p>Fill in the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+														   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
+															only digits are allowed
+														</small>
+													</div>
 												</div>
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-													<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
-														only digits are allowed
-													</small>
-												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'range'">
-												<label>Range values</label>
-												<p>Fill in the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
-												<div class="row">
-													<div class="col-sm-5">
-														<div class="input-group">
-															<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
-															<div class="input-group-addon">< =</div>
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
-															<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
-																only digits are allowed
-															</small>
-														</div>
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<p>Fill in the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
+																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
+																<div class="input-group-addon">< =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
+																	only digits are allowed
+																</small>
+															</div>
 
-													</div>
-													<div class="col-sm-2">
-														<div class="form-control-static" style="text-align:center">field value</div>
-													</div>
-													<div class="col-sm-5">
-														<div class="input-group">
-															<div class="input-group-addon">< =</div>
-															<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
 														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
-															<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
-																only digits are allowed
-															</small>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< =</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
+																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
+																	only digits are allowed
+																</small>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type  == 'regex'">
-												<label>Regular Expression</label>
-												<p>Match the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<p>Match the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -288,59 +288,61 @@
 														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
 														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
 											</div>
-											<div class="form-group" ng-show="column.match_type == 'exact'">
-												<label>Value</label>
-												<div class="input-group">
-													<div class="input-group-addon">{{column.meta.currency.code}}</div>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-														   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
-												</div>
-												<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
-													{{column.meta.helpText}}
-												</div>
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-													<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
-														Decimal, comma or ending on comma is not allowed.
-													</small>
-												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'range'">
-												<label>Range values</label>
-												<div class="row">
-													<div class="col-sm-5">
-														<div class="input-group">
-															<div class="input-group-addon">{{column.meta.currency.code}}</div>
-															<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
-															<div class="input-group-addon">< =</div>
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
-															<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
-																Decimal, comma or ending on comma is not allowed.
-															</small>
-														</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<div class="input-group">
+														<div class="input-group-addon">{{column.meta.currency.code}}</div>
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
 													</div>
-													<div class="col-sm-2">
-														<div class="form-control-static" style="text-align:center">field value</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
 													</div>
-													<div class="col-sm-5">
-														<div class="input-group">
-															<div class="input-group-addon">< = {{column.meta.currency.code}}</div>
-															<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
-															<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
-																Decimal, comma or ending on comma is not allowed.
-															</small>
-														</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
+															Decimal, comma or ending on comma is not allowed.
+														</small>
 													</div>
 												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type  == 'regex'">
-												<label>Regular Expression</label>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">{{column.meta.currency.code}}</div>
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																<div class="input-group-addon">< =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< = {{column.meta.currency.code}}</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -354,65 +356,67 @@
 														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
 														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
 											</div>
-											<div class="form-group" ng-show="column.match_type == 'exact'">
-												<label>Value</label>
-												<div class="input-group">
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-														   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name]"
-														   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
-													<span class="input-group-btn">
-														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
-													</span>
-												</div>
-												<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-													{{column.meta.helpText}}
-												</div>
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'range'">
-												<label>Range values</label>
-												<div class="row">
-													<div class="col-sm-5">
-														<div class="input-group">
-															<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
-																   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
-																   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
-															<span class="input-group-btn">
-																<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
-															</span>
-															<div class="input-group-addon">< =</div>
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
-														</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<div class="input-group">
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+															   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name]"
+															   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
+														</span>
 													</div>
-													<div class="col-sm-2">
-														<div class="form-control-static" style="text-align:center">field value</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														{{column.meta.helpText}}
 													</div>
-													<div class="col-sm-5">
-														<div class="input-group">
-															<div class="input-group-addon">< =</div>
-															<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
-																   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
-																   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
-															<span class="input-group-btn">
-																<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
-															</span>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
+																	   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
+																<span class="input-group-btn">
+																	<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
+																</span>
+																<div class="input-group-addon">< =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+															</div>
+														</div>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< =</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
+																	   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
+																<span class="input-group-btn">
+																	<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
+																</span>
 
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'period'">
-												<label>Select period</label>
-												<select class="form-control" ng-model="column.data[0]" ng-options="option.key as option.value for option in popupData.periodDictionary"></select>
-											</div>
-											<div class="form-group" ng-show="column.match_type  == 'regex'">
-												<label>Regular Expression</label>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+												<div class="form-group" ng-switch-when="period">
+													<label>Select period</label>
+													<select class="form-control" ng-model="column.data[0]" ng-options="option.key as option.value for option in popupData.periodDictionary"></select>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -426,65 +430,67 @@
 														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
 														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
 											</div>
-											<div class="form-group" ng-show="column.match_type == 'exact'">
-												<label>Value</label>
-												<div class="input-group">
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-														   datetime-picker="{{column.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupData.calendars[column.meta.name]"
-														   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
-													<span class="input-group-btn">
-														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
-													</span>
-												</div>
-												<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-													{{column.meta.helpText}}
-												</div>
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'range'">
-												<label>Range values</label>
-												<div class="row">
-													<div class="col-sm-5">
-														<div class="input-group">
-															<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
-																   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
-																   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
-															<span class="input-group-btn">
-																<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
-															</span>
-															<div class="input-group-addon">< =</div>
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
-														</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<div class="input-group">
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+															   datetime-picker="{{column.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupData.calendars[column.meta.name]"
+															   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
+														<span class="input-group-btn">
+															<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
+														</span>
 													</div>
-													<div class="col-sm-2">
-														<div class="form-control-static" style="text-align:center">field value</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														{{column.meta.helpText}}
 													</div>
-													<div class="col-sm-5">
-														<div class="input-group">
-															<div class="input-group-addon">< =</div>
-															<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
-																   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
-																   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
-															<span class="input-group-btn">
-																<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
-															</span>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
+																	   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
+																<span class="input-group-btn">
+																	<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
+																</span>
+																<div class="input-group-addon">< =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+															</div>
+														</div>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< =</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
+																	   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
+																<span class="input-group-btn">
+																	<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
+																</span>
 
-														</div>
-														<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div class="form-group" ng-show="column.match_type == 'period'">
-												<label>Select period</label>
-												<select class="form-control" ng-model="column.data[0]" ng-options="option.key as option.value for option in popupData.periodDictionary"></select>
-											</div>
-											<div class="form-group" ng-show="column.match_type  == 'regex'">
-												<label>Regular Expression</label>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+												<div class="form-group" ng-switch-when="period">
+													<label>Select period</label>
+													<select class="form-control" ng-model="column.data[0]" ng-options="option.key as option.value for option in popupData.periodDictionary"></select>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -498,28 +504,466 @@
 														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
 														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
 											</div>
-											<div class="form-group" ng-show="column.match_type == 'exact'">
-												<label>Value</label>
-												<div class="input-group">
-													<div class="input-group-addon"><i class="fa fa-fw fa-envelope"></i></div>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-														   pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" ng-model-options="{allowInvalid:false}">
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<div class="input-group">
+														<div class="input-group-addon"><i class="fa fa-fw fa-envelope"></i></div>
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+															   pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" ng-model-options="{allowInvalid:false}">
+													</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
+															Invalid email.
+														</small>
+													</div>
 												</div>
-												<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
-													{{column.meta.helpText}}
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
-													<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
-														Invalid email.
-													</small>
-												</div>
-												<pre>{{filterForm.email.$dirty}}</pre>
-												<pre>{{filterForm.email.$invalid}}</pre>
 											</div>
-											<div class="form-group" ng-show="column.match_type  == 'regex'">
-												<label>Regular Expression</label>
-												<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
-												<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+										</div>
+									</div>
+									<!-- 7. File -->
+									<div ng-switch-when="7">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<p>Type in the file URL as it appears in the lists</p>
+													<div class="input-group">
+														<div class="input-group-addon">File URL</div>
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 8. Html -->
+									<div ng-switch-when="8">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"></textarea>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 9. Image -->
+									<div ng-switch-when="9">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<p>Type in the image URL as it appears in the lists</p>
+													<div class="input-group">
+														<div class="input-group-addon">Image URL</div>
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 10. Textarea -->
+									<div ng-switch-when="10">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"></textarea>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 11. Multiselect -->
+									<div ng-switch-when="11">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact_and">
+													<label>Value</label>
+													<p>All selected values should be exactly matched</p>
+													<div class="input-group" ng-repeat="dataValue in column.data track by $index" style="margin-bottom:1em;">
+														<div class="input-group-addon">{{$index + 1}}</div>
+														<input type="text" class="form-control" ng-model="column.data[$index]" name="{{column.meta.name + '_' +  $index}}">
+														<span class="input-group-btn">
+															<a class="btn btn-default" ng-click="popupData.removeMultiSelectOption($index,column)"><i class="fa fa-times go-red"></i></a>
+														</span>
+													</div>
+
+													<a href="javascript:void(0)" class="btn btn-success btn-small" ng-click="popupData.addMultiSelectOption(column)">add value</a>
+												</div>
+												<div class="form-group" ng-switch-when="exact_or">
+													<label>Value</label>
+													<p>All selected values should be exactly matched</p>
+													<div class="input-group" ng-repeat="dataValue in column.data track by $index" style="margin-bottom:1em;">
+														<div class="input-group-addon">{{$index + 1}}</div>
+														<input type="text" class="form-control" ng-model="column.data[$index]" name="{{column.meta.name + '_' +  $index}}">
+														<span class="input-group-btn">
+															<a class="btn btn-default" ng-click="popupData.removeMultiSelectOption($index,column)"><i class="fa fa-times go-red"></i></a>
+														</span>
+													</div>
+
+													<a href="javascript:void(0)" class="btn btn-success btn-small" ng-click="popupData.addMultiSelectOption(column)">add value</a>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 12. Number -->
+									<div ng-switch-when="12">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+														   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
+															Decimal, comma or ending on comma is not allowed.
+														</small>
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																<div class="input-group-addon">< =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< =</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 13. Password - skip cannot be searchable -->
+									<!-- 14. Percent -->
+									<div ng-switch-when="14">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<div class="input-group">
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+														<div class="input-group-addon">%</div>
+													</div>
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+														<small class="error" ng-show="filterForm.{{column.meta.name}}.$error.pattern">
+															Decimal, comma or ending on comma is not allowed.
+														</small>
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="range">
+													<label>Range values</label>
+													<div class="row">
+														<div class="col-sm-5">
+															<div class="input-group">
+																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																<div class="input-group-addon">% < =</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+														<div class="col-sm-2">
+															<div class="form-control-static" style="text-align:center">field value</div>
+														</div>
+														<div class="col-sm-5">
+															<div class="input-group">
+																<div class="input-group-addon">< =</div>
+																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																<div class="input-group-addon">%</div>
+															</div>
+															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
+																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
+																	Decimal, comma or ending on comma is not allowed.
+																</small>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 15. Phone -->
+									<div ng-switch-when="15">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 16. Guid -->
+									<div ng-switch-when="16">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 17. Dropdown -->
+									<div ng-switch-when="17">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 18. Text -->
+									<div ng-switch-when="18">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 19. Url -->
+									<div ng-switch-when="19">
+										<div class="form form-clean">
+											<div class="form-group">
+												<label>Matching type</label>
+												<select class="form-control" ng-model="column.match_type"
+														ng-options="option.key as option.value for option in popupData.matchTypesDictionary[column.meta.fieldType.toString()]"
+														ng-disabled="popupData.isDisabledDropdown(popupData.matchTypesDictionary[column.meta.fieldType.toString()])"></select>
+											</div>
+											<div ng-switch="column.match_type">
+												<div class="form-group" ng-switch-when="exact">
+													<label>Value</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+														{{column.meta.helpText}}
+													</div>
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
+												</div>
+												<div class="form-group" ng-switch-when="regex">
+													<label>Regular Expression</label>
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
+													</div>
 												</div>
 											</div>
 										</div>
@@ -544,6 +988,3 @@
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
-<!--<label class="btn btn-default" ng-model="o1" btn-checkbox><i class="fa fa-check"></i> Microsoft</label>
-<label class="btn btn-default" ng-model="o2" btn-checkbox><i class="fa fa-check"></i> Oracle</label>
-<label class="btn btn-default" ng-model="o3" btn-checkbox><i class="fa fa-check"></i> Sun</label>-->
