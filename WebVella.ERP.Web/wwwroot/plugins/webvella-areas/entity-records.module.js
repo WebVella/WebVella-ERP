@@ -1132,9 +1132,16 @@
 						switch (popupData.filterColumns[j].meta.fieldType) {
 							case 1: // Auto increment
 								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-
 								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to</span> " + popupData.filterColumns[j].data[1];
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = popupData.filterColumns[j].data[0];
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = popupData.filterColumns[j].data[1];
+									}
+									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to</span> " + secondValue;
 								}
 								else {
 									// Exact
@@ -1148,7 +1155,15 @@
 							case 3: // Currency
 								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
 								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.label = "<span class='go-gray'>from " + popupData.filterColumns[j].meta.currency.code + " </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to " + popupData.filterColumns[j].meta.currency.code + "</span> " + popupData.filterColumns[j].data[1];
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = popupData.filterColumns[j].data[0];
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = popupData.filterColumns[j].data[1];
+									}
+									valueRecord.label = "<span class='go-gray'>from " + popupData.filterColumns[j].meta.currency.code + " </span>" + firstValue + " <span class='go-gray'>to " + popupData.filterColumns[j].meta.currency.code + "</span> " + secondValue;
 								}
 								else {
 									// Exact
@@ -1159,7 +1174,16 @@
 
 								if (popupData.filterColumns[j].match_type == "range") {
 									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									valueRecord.label = "<span class='go-gray'>from </span>" + moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY") + " <span class='go-gray'>to </span> " + moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY");
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY")
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY")
+									}
+
+									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
 								}
 								else if (popupData.filterColumns[j].match_type == "period") {
 									for (var p = 0; p < popupData.periodDictionary.length; p++) {
@@ -1182,7 +1206,16 @@
 							case 5: //Datetime
 								if (popupData.filterColumns[j].match_type == "range") {
 									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									valueRecord.label = "<span class='go-gray'>from </span>" + moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY HH:mm") + " <span class='go-gray'>to </span> " + moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY HH:mm");
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY HH:mm")
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY HH:mm")
+									}
+									
+									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
 								}
 								else if (popupData.filterColumns[j].match_type == "period") {
 									for (var p = 0; p < popupData.periodDictionary.length; p++) {
@@ -1205,7 +1238,15 @@
 							case 12: // Number
 								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
 								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + " <span class='go-gray'>to </span> " + popupData.filterColumns[j].data[1];
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = popupData.filterColumns[j].data[0];
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = popupData.filterColumns[j].data[1];
+									}
+									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
 								}
 								else {
 									// Exact
@@ -1216,7 +1257,15 @@
 							case 14: // Percent
 								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
 								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.label = "<span class='go-gray'>from </span>" + popupData.filterColumns[j].data[0] + "% <span class='go-gray'>to </span> " + popupData.filterColumns[j].data[1] +"%";
+									var firstValue = "any";
+									if (popupData.filterColumns[j].data[0]) {
+										firstValue = popupData.filterColumns[j].data[0];
+									}
+									var secondValue = "any";
+									if (popupData.filterColumns[j].data[1]) {
+										secondValue = popupData.filterColumns[j].data[1];
+									}
+									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + "% <span class='go-gray'>to </span> " + secondValue + "%";
 								}
 								else {
 									// Exact
@@ -1237,6 +1286,16 @@
 					//Generate values
 					for (var k = 0; k < popupData.filterColumns[j].data.length; k++) {
 						if (popupData.filterColumns[j].type == "field") {
+							//fix the undefined value for ranges when only one part of the range is selected
+							if (popupData.filterColumns[j].match_type == "range" && k == 0) { // We initialize on the first pass
+								if (!popupData.filterColumns[j].data[0]) {
+									popupData.filterColumns[j].data[0] = "";
+								}
+								if (!popupData.filterColumns[j].data[1]) {
+									popupData.filterColumns[j].data[1] = "";
+								}
+							}
+
 							switch (popupData.filterColumns[j].meta.fieldType) {
 								case 4: //Date - this needs to be done to ensure that in the database is store the ISO and UTC data value
 									if (popupData.filterColumns[j].match_type == "exact" || popupData.filterColumns[j].match_type == "range") {
