@@ -1524,7 +1524,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Linq/4.0.0-beta-23109": {
+      "System.Linq/4.0.0": {
         "compile": {
           "ref/net45/_._": {}
         },
@@ -3003,9 +3003,9 @@
         "System.Globalization.nuspec"
       ]
     },
-    "System.Linq/4.0.0-beta-23109": {
+    "System.Linq/4.0.0": {
       "serviceable": true,
-      "sha512": "crD9Hm8AnfaVF1MNj4KKWIIIiCIzVo7QJShWsVbcIhdSO2xSQhOy1OvvtCQspfD80DkqIjY9TLFtcrz66Jkd7A==",
+      "sha512": "r6Hlc+ytE6m/9UBr+nNRRdoJEWjoeQiT3L3lXYFDHoXk3VYsRBCDNXrawcexw7KPLaH0zamQLiAb6avhZ50cGg==",
       "files": [
         "lib/dotnet/System.Linq.dll",
         "lib/net45/_._",
@@ -3030,8 +3030,8 @@
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
-        "System.Linq.4.0.0-beta-23109.nupkg",
-        "System.Linq.4.0.0-beta-23109.nupkg.sha512",
+        "System.Linq.4.0.0.nupkg",
+        "System.Linq.4.0.0.nupkg.sha512",
         "System.Linq.nuspec"
       ]
     },
@@ -3181,7 +3181,8 @@
       "Microsoft.CSharp >= 4.0.0-beta-23019",
       "Newtonsoft.Json >= 7.0.1",
       "WebVella.ERP.Storage.Mongo >= 1.0.0-*",
-      "WebVella.ERP >= 1.0.0-*"
+      "WebVella.ERP >= 1.0.0-*",
+      "System.Linq >= 4.0.0"
     ],
     "DNX,Version=v4.6": [
       "fx/System.Drawing >= 4.0.0.0"

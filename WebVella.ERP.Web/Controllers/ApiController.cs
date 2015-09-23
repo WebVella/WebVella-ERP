@@ -12,6 +12,7 @@ using Microsoft.Net.Http.Headers;
 using System.IO;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Web.Security;
+using Newtonsoft.Json;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -1479,7 +1480,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			response.Object.Data = GetListRecords(entities, entity, listName, page);
+			response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter == "all" ? null : filter );
 
 			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
 			if (list != null)
@@ -1490,10 +1491,135 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null)
-		{
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
+        private QueryObject CreateFilterQuery(string filterId, List<Entity> entities )
+        {
+            QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filterId);
+            EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
+            QueryResponse resultFilters = recMan.Find(queryFilterEntity);
+            if(!resultFilters.Success)
+                throw new Exception(resultFilters.Message);
 
+            List<QueryObject> queries = new List<QueryObject>();
+            var filterFields = resultFilters.Object.Data;
+            foreach( var filter in filterFields )
+            {
+                List<string> values = new List<string>();
+                var jObject = JsonConvert.DeserializeObject("{ 'values' :" + (string)filter["values"] + " }") as JObject;
+                foreach( var value in ((JArray)jObject.Properties().First().First()).Values() )
+                    values.Add(WebUtility.UrlDecode(value.Value<string>()));
+
+                string entityName = (string)filter["entity_name"];
+                Entity entity = entities.Single(e => e.Name == entityName);
+
+                string fieldName = (string)filter["field_name"];
+                string relationName = (string)filter["relation_name"];
+                string matchType = (string)filter["match_type"];
+
+                //TODO validate field and values
+
+                if (matchType == "exact")
+                    queries.Add(EntityQuery.QueryEQ(fieldName, values[0]));
+                else if (matchType == "exact_and")
+                {
+                    MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+                    if (field == null)
+                        throw new Exception("Missing filter field:" + fieldName);
+
+                    foreach (string val in values)
+                    {
+                        //option is not found and because the match type is exact and we will put random GUID as text key, so it shouldn't be found
+                        string optionKey = Guid.NewGuid().ToString();
+                        var option = field.Options.SingleOrDefault(o => o.Value == val);
+                        if (option != null)
+                            optionKey = option.Key;
+
+                        queries.Add(EntityQuery.QueryEQ(fieldName, optionKey ));
+                    }
+                }
+                else if (matchType == "exact_or")
+                {
+                    List<QueryObject> exactOrQueries = new List<QueryObject>();
+
+                    MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+                    if (field == null)
+                        throw new Exception("Missing filter field:" + fieldName);
+
+                    foreach (string val in values)
+                    {
+                        //because the match type is exact OR if a value is missing from select field options, we just skip it
+                        var option = field.Options.SingleOrDefault(o => o.Value == val);
+                        if (option != null)
+                            exactOrQueries.Add(EntityQuery.QueryEQ(fieldName, option.Key));
+                    }
+
+                    if (exactOrQueries.Count == 1)
+                        queries.Add( exactOrQueries.First() );
+                    if ( exactOrQueries.Count > 1 )
+                        queries.Add( EntityQuery.QueryOR( exactOrQueries.ToArray() ) );
+                }
+                else if (matchType == "range")
+                {
+                    if( values.Count != 2 )
+                        throw new Exception("Range filter expects 2 values.");
+
+                    Field field = entity.Fields.SingleOrDefault(x => x.Name == fieldName);
+                    if (field is DateTimeField || field is DateField)
+                    {
+                        if (!string.IsNullOrWhiteSpace(values[0]))
+                            queries.Add(EntityQuery.QueryGTE(fieldName, DateTime.Parse(values[0])));
+                        if (!string.IsNullOrWhiteSpace(values[1]))
+                            queries.Add(EntityQuery.QueryLTE(fieldName, DateTime.Parse(values[1])));
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(values[0]))
+                            queries.Add(EntityQuery.QueryGTE(fieldName, decimal.Parse(values[0])));
+                        if (!string.IsNullOrWhiteSpace(values[1]))
+                            queries.Add(EntityQuery.QueryLTE(fieldName, decimal.Parse(values[1])));
+                    }
+
+                }
+                else if (matchType == "period")
+                {
+                    var fromDate = DateTime.UtcNow;
+                    if(values[0] == "hour")
+                        fromDate = fromDate.AddHours(-1);
+                    if (values[0] == "day")
+                        fromDate = fromDate.AddDays(-1);
+                    if (values[0] == "week")
+                        fromDate = fromDate.AddDays(-7);
+                    if (values[0] == "month")
+                        fromDate = fromDate.AddMonths(-1);
+                    if (values[0] == "year")
+                        fromDate = fromDate.AddYears(-1);
+
+                    queries.Add(EntityQuery.QueryGTE(fieldName, fromDate ));
+                }
+                else if (matchType == "regex")
+                    queries.Add(EntityQuery.QueryRegex(fieldName, values[0] ));
+                else
+                    throw new Exception("Not supported match type: " + matchType);
+
+            }
+
+            if( queries.Count > 0 )
+                return EntityQuery.QueryAND( queries.ToArray() );
+
+            return null;
+        }
+
+        private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null )
+		{
+            var filterQuery = CreateFilterQuery(filter,entities);
+            if (filterQuery != null)
+            {
+                if( queryObj != null )
+                    queryObj = EntityQuery.QueryAND(queryObj, filterQuery);
+                else
+                    queryObj = filterQuery;
+            }
+
+            EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
 			EntityRelationManager relManager = new EntityRelationManager(Storage);
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
@@ -1744,6 +1870,7 @@ namespace WebVella.ERP.Web.Controllers
 			return resultDataList;
 		}
 
+      
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
 		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{

@@ -626,7 +626,7 @@ namespace WebVella.ERP.Api
                             RelationFieldMeta relationField = (RelationFieldMeta)field;
 
                             if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
-                            {
+                            { 
                                 IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
                                 //when the relation is origin -> target entity
                                 if (relationField.Relation.OriginEntityId == entity.Id)

@@ -23,7 +23,7 @@ namespace WebVella.ERP.Api
             entityRepository = storageService.GetEntityRepository();
         }
 
-        #region << Validation >> 
+        #region << Validation >>  
 
         private enum ValidationType
         {

@@ -13,6 +13,7 @@ namespace WebVella.ERP.Api.Models
         AND,
         OR,
         CONTAINS,
-        STARTSWITH
+        STARTSWITH,
+        REGEX
     }
 }
