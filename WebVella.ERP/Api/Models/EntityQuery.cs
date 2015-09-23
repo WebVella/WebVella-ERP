@@ -96,6 +96,11 @@ namespace WebVella.ERP.Api.Models
             return new QueryObject { QueryType = QueryType.STARTSWITH, FieldName = fieldName, FieldValue = value };
         }
 
+        public static QueryObject QueryRegex(string fieldName, object value)
+        {
+            return new QueryObject { QueryType = QueryType.REGEX, FieldName = fieldName, FieldValue = value };
+        }
+
         #endregion
     }
 }

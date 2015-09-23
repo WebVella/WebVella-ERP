@@ -27,7 +27,8 @@
     "Microsoft.CSharp": "4.0.0-beta-23019",
     "Newtonsoft.Json": "7.0.1",
     "WebVella.ERP.Storage.Mongo": "1.0.0-*",
-    "WebVella.ERP": "1.0.0-*"
+    "WebVella.ERP": "1.0.0-*",
+    "System.Linq": "4.0.0"
   },
 
   "commands": {
@@ -43,17 +44,17 @@
     }
   },
 
-    "exclude": [
-      "wwwroot",
-      "node_modules",
-      "bower_components"
-    ],
-    "publishExclude": [
-      "node_modules",
-      "bower_components",
-      "**.xproj",
-      "**.user",
-      "**.vspscc"
-    ],
-    "scripts": {  }
-  }
+  "exclude": [
+    "wwwroot",
+    "node_modules",
+    "bower_components"
+  ],
+  "publishExclude": [
+    "node_modules",
+    "bower_components",
+    "**.xproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "scripts": { }
+}
