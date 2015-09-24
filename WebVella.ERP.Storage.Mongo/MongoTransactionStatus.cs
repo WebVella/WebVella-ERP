@@ -5,7 +5,7 @@
 		Ready,
 		Failed,
 		Started,
-		Commited,
+		Committed,
 		Rollbacked
 	}
 }

@@ -66,7 +66,7 @@ namespace WebVella.ERP.Storage.Mongo
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="MongoTransactionException">
-		///     Cannot start already commited transaction.
+		///     Cannot start already committed transaction.
 		///     or
 		///     Cannot start transaction in failed state.
 		///     or
@@ -78,8 +78,8 @@ namespace WebVella.ERP.Storage.Mongo
 		{
 			switch (Status)
 			{
-				case MongoTransactionStatus.Commited:
-					throw new MongoTransactionException("Cannot start already commited transaction.");
+				case MongoTransactionStatus.Committed:
+					throw new MongoTransactionException("Cannot start already committed transaction.");
 				case MongoTransactionStatus.Failed:
 					throw new MongoTransactionException("Cannot start transaction in failed state.");
 				case MongoTransactionStatus.Rollbacked:
@@ -98,7 +98,7 @@ namespace WebVella.ERP.Storage.Mongo
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="MongoTransactionException">
-		///     Cannot commit already commited transaction.
+		///     Cannot commit already committed transaction.
 		///     or
 		///     Cannot commit transaction in failed state.
 		///     or
@@ -110,8 +110,8 @@ namespace WebVella.ERP.Storage.Mongo
 		{
 			switch (Status)
 			{
-				case MongoTransactionStatus.Commited:
-					throw new MongoTransactionException("Cannot commit already commited transaction.");
+				case MongoTransactionStatus.Committed:
+					throw new MongoTransactionException("Cannot commit already committed transaction.");
 				case MongoTransactionStatus.Failed:
 					throw new MongoTransactionException("Cannot commit transaction in failed state.");
 				case MongoTransactionStatus.Rollbacked:
@@ -121,7 +121,7 @@ namespace WebVella.ERP.Storage.Mongo
 			}
 
 			CommandResult result = MongoStaticContext.Context.Database.RunCommand(CreateCommitTransactionCommandDocument());
-			Status = result.Ok ? MongoTransactionStatus.Commited : MongoTransactionStatus.Failed;
+			Status = result.Ok ? MongoTransactionStatus.Committed : MongoTransactionStatus.Failed;
 			return result.Ok;
 		}
 
@@ -142,7 +142,7 @@ namespace WebVella.ERP.Storage.Mongo
 		{
 			switch (Status)
 			{
-				case MongoTransactionStatus.Commited:
+				case MongoTransactionStatus.Committed:
 					throw new MongoTransactionException("Cannot rollback already committed transaction.");
 				case MongoTransactionStatus.Failed:
 					throw new MongoTransactionException("Cannot rollback transaction in failed state.");
@@ -184,7 +184,7 @@ namespace WebVella.ERP.Storage.Mongo
 					//case TransactionIsolation.Mvcc:
 					commandDocument.Add(new BsonElement("isolation", "mvcc"));
 					break;
-				case MongoTransactionIsolation.ReadUncommited:
+				case MongoTransactionIsolation.ReadUncommitted:
 					commandDocument.Add(new BsonElement("isolation", "readUncommitted"));
 					break;
 				case MongoTransactionIsolation.Serializable:
