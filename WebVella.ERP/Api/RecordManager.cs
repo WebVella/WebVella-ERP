@@ -6,6 +6,7 @@ using WebVella.ERP.Storage;
 using System.Security.Cryptography;
 using WebVella.ERP.Utilities;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace WebVella.ERP.Api
 {
@@ -206,6 +207,7 @@ namespace WebVella.ERP.Api
                     bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
                     if (!hasPermisstion)
                     {
+                        response.StatusCode = HttpStatusCode.Forbidden;
                         response.Success = false;
                         response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
@@ -365,6 +367,7 @@ namespace WebVella.ERP.Api
                     bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Update, entity);
                     if (!hasPermisstion)
                     {
+                        response.StatusCode = HttpStatusCode.Forbidden;
                         response.Success = false;
                         response.Message = "Trying to update record in entity '" + entity.Name + "'  with no update access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
@@ -511,6 +514,7 @@ namespace WebVella.ERP.Api
                     bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Delete, entity);
                     if (!hasPermisstion)
                     {
+                        response.StatusCode = HttpStatusCode.Forbidden;
                         response.Success = false;
                         response.Message = "Trying to delete record in entity '" + entity.Name + "' with no delete access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });
@@ -582,6 +586,7 @@ namespace WebVella.ERP.Api
                     bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
                     if (!hasPermisstion)
                     {
+                        response.StatusCode = HttpStatusCode.Forbidden;
                         response.Success = false;
                         response.Message = "Trying to read records from entity '" + entity.Name + "'  with no read access.";
                         response.Errors.Add(new ErrorModel { Message = "Access denied." });

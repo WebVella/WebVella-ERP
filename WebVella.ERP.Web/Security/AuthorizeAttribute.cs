@@ -28,7 +28,7 @@ namespace WebVella.ERP.Web.Security
             bool authenticated = IsAuthenticated(context);
             if (!authenticated)
             {
-                context.Result = new HttpForbiddenResult();
+                context.Result = new HttpUnauthorizedResult();
             }
 
             base.OnActionExecuting(context);
