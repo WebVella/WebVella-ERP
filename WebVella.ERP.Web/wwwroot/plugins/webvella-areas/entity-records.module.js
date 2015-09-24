@@ -69,7 +69,7 @@
 	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout', 'ngToast'];
 	/* @ngInject */
 	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams, $timeout, ngToast) {
-		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAreas>entity-records> BEGIN entity list resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 		var listRecordsObject = {};
@@ -153,7 +153,7 @@
 		}
 
 		function errorCallback(response) {
-			defer.resolve(response.object);
+			defer.reject(response.message);
 		}
 
 		if (!$stateParams.search) {
@@ -163,14 +163,14 @@
 		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.filter, $stateParams.page, $stateParams.search, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAreas>entity-records> END entity list resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$stateParams'];
 	/* @ngInject */
 	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $state, $stateParams) {
-		$log.debug('webvellaDesktop>resolveCurrentEntityMeta> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAdmin>entity-records> BEGIN entity list resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
@@ -180,7 +180,7 @@
 		}
 
 		function errorCallback(response) {
-			defer.resolve(response.object);
+			defer.reject(response.message);
 		}
 
 		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
@@ -203,7 +203,7 @@
 		}
 
 		function errorCallback(response) {
-			defer.resolve(response.object);
+			defer.reject(response.message);
 		}
 
 		webvellaAdminService.getAreaByName($stateParams.areaName, successCallback, errorCallback);
@@ -239,7 +239,7 @@
 				}, 0);
 			}
 			else {
-				defer.resolve(response.object);
+				defer.reject(response.message);
 			}
 		}
 

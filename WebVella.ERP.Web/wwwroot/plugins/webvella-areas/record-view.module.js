@@ -87,7 +87,7 @@
 				}, 0);
 			}
 			else {
-				defer.resolve(response.object);
+				defer.reject(response.message);
 			}
 		}
 
@@ -182,7 +182,7 @@
 				}, 0);
 			}
 			else {
-				defer.resolve(response.object);
+				defer.reject(response.message);
 			}
 		}
 
@@ -219,7 +219,7 @@
 	            }, 0);
 	        }
 	        else {
-	            defer.resolve(response.object);
+	        	defer.reject(response.message);
 	        }
 	    }
 
@@ -1140,7 +1140,7 @@
 	        }
 
 	        function errorCallback(response) {
-
+	        	
 	        }
 
 	        webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, successCallback, errorCallback);

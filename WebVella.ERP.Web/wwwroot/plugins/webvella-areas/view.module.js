@@ -63,7 +63,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response.object);
+        	defer.reject(response.message);
         }
 
         webvellaAreasService.getAreaByName($stateParams.areaName, successCallback, errorCallback);

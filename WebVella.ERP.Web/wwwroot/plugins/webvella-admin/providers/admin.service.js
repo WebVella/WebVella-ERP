@@ -113,7 +113,11 @@ function guid() {
 
 		// Global functions for result handling for all methods of this service
 		function handleErrorResult(data, status, errorCallback) {
-		    switch (status) {
+			switch (status) {
+				case 401: {
+					//handled globally by http observer
+					break;
+				}
 		        case 403: {
 		            //handled globally by http observer
 		            break;
