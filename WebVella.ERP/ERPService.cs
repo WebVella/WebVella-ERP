@@ -309,6 +309,7 @@ namespace WebVella.ERP
 						user["created_by"] = SystemIds.FirstUserId;
 						user["last_modified_by"] = SystemIds.FirstUserId;
 						user["created_on"] = DateTime.UtcNow;
+						user["enabled"] = true;
 
 						QueryResponse result = recMan.CreateRecord("user", user);
 						if (!result.Success)

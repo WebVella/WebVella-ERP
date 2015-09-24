@@ -67,7 +67,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response.object);
+            defer.reject(response.message);
         }
 
         webvellaRootService.getSitemap(successCallback, errorCallback);

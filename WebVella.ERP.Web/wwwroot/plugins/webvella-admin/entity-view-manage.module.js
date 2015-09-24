@@ -77,7 +77,7 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+            	defer.reject(response.message);
             }
         }
 
@@ -124,7 +124,7 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+            	defer.reject(response.message);
             }
         }
 
