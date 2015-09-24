@@ -2391,54 +2391,54 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			response.Message = "User successfully created";
-			//var rolesArray = ((JArray)userObj["roles"]).Select(x=> new Guid(x.ToString()));
-			////userObj.Properties.Remove("roles");
-			//var transaction = recMan.CreateTransaction();
-			//try
-			//{
+            var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
+            userObj.Properties.Remove("roles");
+            var transaction = recMan.CreateTransaction();
+            try
+            {
 
-			//	transaction.Begin();
+                transaction.Begin();
 
-			//	//Create user
-			//	if (userObj["id"] == null)
-			//	{
-			//		userObj["id"] = Guid.NewGuid();
-			//	}
-			//	var createResult = recMan.CreateRecord("user", userObj);
-			//	if (!createResult.Success)
-			//	{
-			//		response.Errors = createResult.Errors;
-			//		response.Message = "Creating user failed. Reason: " + createResult.Message;
-			//		response.Success = false;
-			//		return DoResponse(response);
-			//	}
+                //Create user
+                if (userObj["id"] == null)
+                {
+                    userObj["id"] = Guid.NewGuid();
+                }
+                var createResult = recMan.CreateRecord("user", userObj);
+                if (!createResult.Success)
+                {
+                    response.Errors = createResult.Errors;
+                    response.Message = "Creating user failed. Reason: " + createResult.Message;
+                    response.Success = false;
+                    return DoResponse(response);
+                }
 
-			//	//Create user role relations
-			//	foreach (var roleId in rolesArray)
-			//	{
-			//		QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, (Guid)userObj["id"]);
-			//		if (!relationResult.Success)
-			//		{
-			//			response.Errors = relationResult.Errors;
-			//			response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
-			//			response.Success = false;
-			//			return DoResponse(response);
-			//		}
-			//	}
+                //Create user role relations
+                foreach (var roleId in rolesArray)
+                {
+                    QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, new Guid((string)userObj["id"]));
+                    if (!relationResult.Success)
+                    {
+                        response.Errors = relationResult.Errors;
+                        response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+                        response.Success = false;
+                        return DoResponse(response);
+                    }
+                }
 
-			//	transaction.Commit();
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (transaction != null)
-			//		transaction.Rollback();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                    transaction.Rollback();
 
-			//	response.Success = false;
-			//	response.Message = ex.Message;
-			//	return DoResponse(response);
-			//}
+                response.Success = false;
+                response.Message = ex.Message;
+                return DoResponse(response);
+            }
 
-			return DoResponse(response);
+            return DoResponse(response);
 		}
 
 		#endregion
