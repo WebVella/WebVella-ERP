@@ -359,11 +359,11 @@ namespace WebVella.ERP
 					}
 
 					{
-						QueryResponse result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.FirstUserId, SystemIds.AdministratorRoleId);
+						QueryResponse result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.AdministratorRoleId, SystemIds.FirstUserId);
 						if (!result.Success)
 							throw new Exception("CREATE FIRST-USER <-> ADMINISTRATOR ROLE RELATION RECORD:" + result.Message);
 
-						result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.FirstUserId, SystemIds.RegularRoleId);
+						result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.RegularRoleId, SystemIds.FirstUserId);
 						if (!result.Success)
 							throw new Exception("CREATE FIRST-USER <-> REGULAR ROLE RELATION RECORD:" + result.Message);
 
