@@ -12,7 +12,6 @@ namespace WebVella.ERP.Web.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            service.InitializeSystemEntities();
 			ViewBag.CacheBreaker = 20150920;
             return View();
         }

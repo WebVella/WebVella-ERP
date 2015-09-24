@@ -43,6 +43,7 @@ namespace WebVella.ERP.Web
             Settings.Initialize(Configuration);
             IErpService service = app.ApplicationServices.GetService<IErpService>();
             AutoMapperConfiguration.Configure(service);
+            service.InitializeSystemEntities();
 
             app.UseDebugLogMiddleware();
             app.UseSecurityMiddleware();
