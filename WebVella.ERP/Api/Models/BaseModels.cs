@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -21,10 +22,14 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "accessWarnings")]
         public List<AccessWarningModel> AccessWarnings { get; set; }
 
+        [JsonIgnore]
+        public HttpStatusCode StatusCode{ get; set; }
+
         public BaseResponseModel()
         {
             Errors = new List<ErrorModel>();
             AccessWarnings = new List<AccessWarningModel>();
+            StatusCode = HttpStatusCode.OK;
         }
     }
 
