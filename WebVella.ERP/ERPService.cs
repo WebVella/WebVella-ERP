@@ -270,30 +270,6 @@ namespace WebVella.ERP
 
 						fieldResponse = entityManager.CreateField(userEntity.Id.Value, verifiedUserField, false);
 
-						#region << image >>
-						{
-							InputImageField imageField = new InputImageField();
-							imageField.Id = new Guid("bf199b74-4448-4f58-93f5-6b86d888843b");
-							imageField.Name = "image";
-							imageField.Label = "Image";
-							imageField.PlaceholderText = "";
-							imageField.Description = "";
-							imageField.HelpText = "";
-							imageField.Required = false;
-							imageField.Unique = false;
-							imageField.Searchable = false;
-							imageField.Auditable = false;
-							imageField.System = true;
-							imageField.DefaultValue = string.Empty;
-							imageField.EnableSecurity = false;
-							{
-								var createResponse = entityManager.CreateField(userEntity.Id.Value, imageField, false);
-								if (!createResponse.Success)
-									throw new Exception("System error 10060. Entity: user. Field: image" + " Message:" + createResponse.Message);
-							}
-						}
-						#endregion
-
 					}
 
 					#endregion
@@ -793,8 +769,34 @@ namespace WebVella.ERP
 				}
 
 
-
-
+				if (currentVersion < 150924)
+				{
+					systemSettings.Version = 150924;
+					//User
+					#region << image >>
+					{
+						InputImageField imageField = new InputImageField();
+						imageField.Id = new Guid("bf199b74-4448-4f58-93f5-6b86d888843b");
+						imageField.Name = "image";
+						imageField.Label = "Image";
+						imageField.PlaceholderText = "";
+						imageField.Description = "";
+						imageField.HelpText = "";
+						imageField.Required = false;
+						imageField.Unique = false;
+						imageField.Searchable = false;
+						imageField.Auditable = false;
+						imageField.System = true;
+						imageField.DefaultValue = string.Empty;
+						imageField.EnableSecurity = false;
+						{
+							var createResponse = entityManager.CreateField(SystemIds.UserEntityId, imageField, false);
+							if (!createResponse.Success)
+								throw new Exception("System error 10060. Entity: user. Field: image" + " Message:" + createResponse.Message);
+						}
+					}
+					#endregion
+				}
 
 				storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
 				systemSettingsRepository.Save(storeSystemSettings);
