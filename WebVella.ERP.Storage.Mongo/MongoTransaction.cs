@@ -130,7 +130,7 @@ namespace WebVella.ERP.Storage.Mongo
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="MongoTransactionException">
-		///     Cannot rollback already commited transaction.
+		///     Cannot rollback already committed transaction.
 		///     or
 		///     Cannot rollback transaction in failed state.
 		///     or
@@ -143,7 +143,7 @@ namespace WebVella.ERP.Storage.Mongo
 			switch (Status)
 			{
 				case MongoTransactionStatus.Commited:
-					throw new MongoTransactionException("Cannot rollback already commited transaction.");
+					throw new MongoTransactionException("Cannot rollback already committed transaction.");
 				case MongoTransactionStatus.Failed:
 					throw new MongoTransactionException("Cannot rollback transaction in failed state.");
 				case MongoTransactionStatus.Rollbacked:

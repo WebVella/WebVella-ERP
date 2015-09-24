@@ -70,10 +70,12 @@
         function generateValidationMessages(response, scopeObj, formObject, location) {
         	$log.debug('webvellaRoot>providers>root.service>generateValidationMessages> function called ' + moment().format('HH:mm:ss SSSS'));
             //Fill in validationError boolean and message for each field according to the template
-            // scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
-            for (var i = 0; i < response.errors.length; i++) {
-                scopeObj[response.errors[i].key + "Message"] = response.errors[i].message;
-                scopeObj[response.errors[i].key + "Error"] = true;
+        	// scopeDate.fieldNameError => boolean; scopeDate.fieldNameMessage => the error from the api; 
+        	scopeObj.validation = {};
+        	for (var i = 0; i < response.errors.length; i++) {
+        		scopeObj.validation[response.errors[i].key] = {};
+                scopeObj.validation[response.errors[i].key]["message"] = response.errors[i].message;
+                scopeObj.validation[response.errors[i].key]["state"] = true;
             }
             //Rebind the form with the data returned from the server
             formObject = response.object;

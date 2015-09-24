@@ -38,7 +38,8 @@
             resolve: {
                 pageTitle: function () {
                     return "Webvella ERP";
-                }
+                },
+                resolvedCurrentUser: resolveCurrentUser
             },
             data: {
                 //Any injectable application wide variables you may need. Can be overwritten by the child states
@@ -70,6 +71,35 @@
         $log.debug('webvellaRoot>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
     //#endregion
+
+    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
+	/* @ngInject */
+    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	var currentUser = webvellaRootService.getCurrentUser();
+
+    	if (currentUser != null) {
+    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    	}
+    	else {
+    		defer.resolve(null);
+    	}
+
+    	// Return
+    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
 
 
     // Controller ///////////////////////////////
