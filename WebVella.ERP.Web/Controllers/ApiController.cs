@@ -56,7 +56,9 @@ namespace WebVella.ERP.Web.Controllers
 				if (user.Enabled == false)
 				{
 					responseObj.Success = false;
-					var errorMsg = new ErrorModel();
+                    responseObj.Message = "Error while user authentication.";
+
+                    var errorMsg = new ErrorModel();
 					errorMsg.Key = "Email";
 					errorMsg.Value = email;
 					errorMsg.Message = "User account is disabled.";
