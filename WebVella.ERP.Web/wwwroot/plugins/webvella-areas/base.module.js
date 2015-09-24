@@ -93,7 +93,12 @@
 
     	var currentUser = webvellaRootService.getCurrentUser();
 
-    	webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    	if (currentUser != null) {
+    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    	}
+    	else {
+    		defer.resolve(null);
+    	}
 
     	// Return
     	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));

@@ -13,16 +13,17 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap', 'resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta,resolvedSitemap) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, resolvedSitemap, resolvedCurrentUser) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.view = resolvedCurrentView.meta;
         sidebarData.stateParams = $stateParams;
         sidebarData.entity = resolvedCurrentEntityMeta;
+        sidebarData.currentUser = resolvedCurrentUser.data[0];
     	//#region << Select default list >>
         sidebarData.defaultEntityAreaListName = "";
     	//get the current area meta

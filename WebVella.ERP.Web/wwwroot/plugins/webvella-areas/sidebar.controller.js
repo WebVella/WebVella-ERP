@@ -13,15 +13,16 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state,$stateParams, resolvedSitemap, webvellaAreasService) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
+        sidebarData.currentUser = resolvedCurrentUser.data[0];
         $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 

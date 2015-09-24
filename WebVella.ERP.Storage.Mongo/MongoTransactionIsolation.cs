@@ -4,6 +4,6 @@
 	{
 		Mvcc,
 		Serializable,
-		ReadUncommited
+		ReadUncommitted
 	}
 }

@@ -18,6 +18,8 @@ We will greatly appriciate your support of the project by:
 3. Set the /WebVella.ERP.Web/Config.json with the proper connection string settings. There is example configuration there. The EncriptionKey is optional and if not provided will use a default hardcoded one. For test purposes you can leave it as it is.
 4. Set up the site 
 5. Browse :)
+6. Default account is with email "erp@webvella.com" and password "erp"
+
 
 You will get a barebone installation. A test set is going to be available until the end of 2015. Before that you can test by doing the following:
 1. Create a test entity from "administration -> entities"
@@ -31,15 +33,6 @@ You will get a barebone installation. A test set is going to be available until 
 9. Click the area. You should be redirected to the test entity records, which are non existent to this moment.
 10. Create some records.
 11. Do not forget to play with the API too. There are a lot nice methods already present in the APIController.
-
-## Contributors
-
-### Contributors on GitHub
-* Rumen Yankov
-* George Raykov
-* Bozhidar Zashev
-* Iglika Raykova
-* Todor Uzunov
 
 ### Translations
 * Translation support pending

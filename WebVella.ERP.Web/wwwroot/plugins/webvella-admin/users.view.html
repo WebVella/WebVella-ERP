@@ -72,36 +72,36 @@
 		<form name="manageForm" class="form">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.email.$invalid && !manageForm.email.$pristine || popupData.emailError}">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.email.$invalid && !manageForm.email.$pristine || popupData.validation.email.state}">
 						<label class="required control-label">Email</label>
 						<input class="form-control" ng-model="popupData.user.email" name="email" type="text"
 							   ng-required="true" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
 							   ng-model-options="{allowInvalid:true}" />
-						<div class="error" ng-show="manageForm.email.$touched && manageForm.email.$dirty && manageForm.email.$invalid ||  popupData.emailError">
-							<small class="error" ng-show="manageForm.email.$error.required && !popupData.emailError">
+						<div class="error" ng-show="manageForm.email.$touched && manageForm.email.$dirty && manageForm.email.$invalid ||  popupData.validation.email.state">
+							<small class="error" ng-show="manageForm.email.$error.required && !popupData.validation.email.state">
 								Required.
 							</small>
-							<small class="error" ng-show="manageForm.email.$error.pattern && !popupData.emailError">
+							<small class="error" ng-show="manageForm.email.$error.pattern && !popupData.validation.email.state">
 								Invalid email.
 							</small>
-							<small class="error" ng-show="popupData.emailError">
-								{{popupData.emailErrorMessage}}
+							<small class="error" ng-show="popupData.validation.email.state">
+								{{popupData.validation.email.message}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.password.$invalid && !manageForm.password.$pristine || popupData.passwordError }">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.password.$invalid && !manageForm.password.$pristine || popupData.validation.password.state }">
 						<label  class="control-label" ng-if="popupData.isUpdate">Change Password with</label>
 						<label class="required control-label" ng-if="!popupData.isUpdate">Password</label>
 						<input class="form-control" ng-model="popupData.password" name="password" type="text"
 							   ng-required="!popupData.isUpdate" ng-model-options="{allowInvalid:true}" />
-						<div class="error" ng-show="manageForm.password.$touched && manageForm.password.$dirty && manageForm.password.$invalid ||  popupData.passwordError">
-							<small class="error" ng-show="manageForm.password.$error.required && !popupData.passwordError">
+						<div class="error" ng-show="manageForm.password.$touched && manageForm.password.$dirty && manageForm.password.$invalid ||  popupData.validation.password.state">
+							<small class="error" ng-show="manageForm.password.$error.required && !popupData.validation.password.state">
 								Required.
 							</small>
-							<small class="error" ng-show="popupData.passwordError">
-								{{popupData.passwordErrorMessage}}
+							<small class="error" ng-show="popupData.validation.password.state">
+								{{popupData.validation.password.message}}
 							</small>
 						</div>
 					</div>
@@ -109,31 +109,31 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.first_name.$invalid && !manageForm.first_name.$pristine || popupData.first_nameError }">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.first_name.$invalid && !manageForm.first_name.$pristine || popupData.validation.first_name.state}">
 						<label class="control-label">First name</label>
 						<input class="form-control" ng-model="popupData.user.first_name" name="first_name" type="text"  ng-model-options="{allowInvalid:true}" 
 							   ng-required="true"/>
-						<div class="error" ng-show="manageForm.first_name.$touched && manageForm.first_name.$dirty && manageForm.first_name.$invalid ||  popupData.first_nameError">
-							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.last_nameError">
+						<div class="error" ng-show="manageForm.first_name.$touched && manageForm.first_name.$dirty && manageForm.first_name.$invalid ||  popupData.validation.first_name.state">
+							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.validation.first_name.state">
 								Required.
 							</small>							
-							<small class="error" ng-show="popupData.first_nameError">
-								{{popupData.first_nameErrorMessage}}
+							<small class="error" ng-show="popupData.validation.first_name.state">
+								{{popupData.validation.first_name.message}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.last_name.$invalid && !manageForm.last_name.$pristine || popupData.last_nameError }">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.last_name.$invalid && !manageForm.last_name.$pristine || popupData.validation.last_name.state }">
 						<label class="control-label">Last name</label>
 						<input class="form-control" ng-model="popupData.user.last_name" name="last_name" type="text" ng-model-options="{allowInvalid:true}" 
 							   ng-required="true"/>
-						<div class="error" ng-show="manageForm.last_name.$touched && manageForm.last_name.$dirty && manageForm.last_name.$invalid ||  popupData.last_nameError">
-							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.last_nameError">
+						<div class="error" ng-show="manageForm.last_name.$touched && manageForm.last_name.$dirty && manageForm.last_name.$invalid ||  popupData.validation.last_name.state">
+							<small class="error" ng-show="manageForm.last_name.$error.required && !popupData.validation.last_name.state">
 								Required.
 							</small>							
-							<small class="error" ng-show="popupData.last_nameError">
-								{{contentData.last_nameErrorMessage}}
+							<small class="error" ng-show="popupData.validation.last_name.state">
+								{{popupData.validation.last_name.message}}
 							</small>
 						</div>
 					</div>
@@ -141,7 +141,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupData.imageError }">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupData.validation.image.state }">
 						<label class="control-label">Image</label>
 						<div>
 							<a ng-show='!popupData.user.image && popupData.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
@@ -158,9 +158,9 @@
 							<img class="img-thumbnail" ng-src="{{popupData.user.image}}" />
 							<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteImage()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 						</div>
-						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupData.imageError">
-							<small class="error" ng-show="popupData.last_nameError">
-								{{contentData.last_nameErrorMessage}}
+						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupData.validation.image.state">
+							<small class="error" ng-show="popupData.validation.image.state">
+								{{popupData.validation.image.message}}
 							</small>
 						</div>
 					</div>
@@ -170,28 +170,18 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.enabled.$invalid && !manageForm.enabled.$pristine || popupData.enabledError }">
+					<div class="form-group">
 						<label class="control-label">Enabled</label>
 						<div class="checkbox">
 							<label><input type="checkbox" ng-model="popupData.user.enabled" value="true"> enabled</label>
 						</div>
-						<div class="error" ng-show="manageForm.enabled.$touched && manageForm.enabled.$dirty && manageForm.enabled.$invalid ||  popupData.enabledError">
-							<small class="error" ng-show="popupData.enabledError">
-								{{contentData.enabledMessage}}
-							</small>
-						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.verified.$invalid && !manageForm.verified.$pristine || popupData.verifiedError }">
+					<div class="form-group">
 						<label class="control-label">Verified</label>
 						<div class="checkbox">
 							<label><input type="checkbox" ng-model="popupData.user.verified" value="true"> verified</label>
-						</div>
-						<div class="error" ng-show="manageForm.verified.$touched && manageForm.verified.$dirty && manageForm.verified.$invalid ||  popupData.verifiedError">
-							<small class="error" ng-show="popupData.verifiedError">
-								{{contentData.verifiedErrorMessage}}
-							</small>
 						</div>
 					</div>
 				</div>
@@ -203,7 +193,7 @@
 						<label>Assign roles</label>
 						<div>
 							<label ng-repeat="role in popupData.roles" class="checkbox-inline">
-								<input type="checkbox" checklist-model="popupData.userRoles" checklist-value="role.id"> {{role.name}}
+								<input type="checkbox" checklist-model="popupData.userRoles" checklist-value="role.id" ng-disabled="role.id == '987148b1-afa8-4b33-8616-55861e5fd065' "> {{role.name}}
 							</label>
 						</div>
 					</div>
@@ -213,38 +203,6 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()">Save User</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
-	</div>
-</script>
-
-<script type="text/ng-template" id="iconTypeaheadTemplate.html">
-	<a class="typeahead-icon-item" href="javascript:void(0)">
-		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
-	</a>
-</script>
-
-<script type="text/ng-template" id="entityTypeaheadTemplate.html">
-	<a>
-		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
-		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
-	</a>
-	<hr style="margin:0"/>
-</script>
-
-<script type="text/ng-template" id="deleteAreaModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete an area</h3>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
-			<p>Are you sure that you need this area deleted?</p>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete Area</button>
 		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>

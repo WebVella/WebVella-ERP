@@ -35,7 +35,8 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 'pageTitle': function () {
                     return "Webvella ERP";
-                }
+                },
+               	resolvedCurrentUser: resolveCurrentUser
             },
             'data': {
                 //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -66,6 +67,36 @@
 
         $log.debug('webvellaAdmin>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
+
+	// Resolve ///////////////////////////////////
+    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
+	/* @ngInject */
+    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
+    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	var currentUser = webvellaRootService.getCurrentUser();
+
+    	if (currentUser != null) {
+    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    	}
+    	else {
+    		defer.resolve(null);
+    	}
+
+    	// Return
+    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
 
 
     // Controller ///////////////////////////////
