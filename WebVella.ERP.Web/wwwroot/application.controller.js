@@ -19,7 +19,7 @@
     /* @ngInject */
     function config($httpProvider, wvAppConstants) {
 
-        $httpProvider.interceptors.push(function ($q, $window) {
+    	$httpProvider.interceptors.push(function ($q, $window, ngToast) {
         	return {
         		'request': function (request) {
         			if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
@@ -46,11 +46,15 @@
         			return $q.resolve(request);
         		},
                 'responseError': function (errorResponse) {
-                    switch (errorResponse.status) {
-                        case 403:
-                            $window.location = '#/login';
-                            break;
-                    }
+                	switch (errorResponse.status) {
+                		case 403:
+                			ngToast.create({
+                				className: 'error',
+                				content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+                			});
+                			$window.location = '#/login';
+                			break;
+                	}
                     return $q.reject(errorResponse);
                 }
             }
@@ -59,10 +63,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state'];
+    controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaRootService'];
 
     /* @ngInject */
-    function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state) {
+    function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaRootService) {
     	$log.debug('vwApp> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var appData = this;
@@ -106,12 +110,17 @@
             }, 0);
         });
 
-        activate();
+
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+        	var currentUser = webvellaRootService.getCurrentUser();
+        	if (currentUser == null) {
+        		$timeout(function () {
+        			$state.go("webvella-root-login");
+        		}, 0);
+        	}
+        })
+
         $log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        function activate() {
-
-
-        }
     }
 
 })();

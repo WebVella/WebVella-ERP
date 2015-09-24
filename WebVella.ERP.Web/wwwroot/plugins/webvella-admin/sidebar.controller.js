@@ -13,19 +13,19 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log','$rootScope', '$state'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state) {
+    function controller($log, $rootScope, $state, resolvedCurrentUser) {
     	$log.debug('webvellaAdmin>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
-
+//        sidebarData.currentUser = resolvedCurrentUser.data[0];
         $rootScope.$on("application-sidebar-mini-toggle", function (event) {
         	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
         });
-
+        sidebarData.currentUser = resolvedCurrentUser.data[0];
         $log.debug('webvellaAdmin>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }

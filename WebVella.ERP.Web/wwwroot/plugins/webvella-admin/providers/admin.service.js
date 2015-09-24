@@ -99,6 +99,7 @@ function guid() {
 		serviceInstance.getUserById = getUserById;
 		serviceInstance.getAllUsers = getAllUsers;
 		serviceInstance.createUser = createUser;
+		serviceInstance.updateUser = updateUser;
 		serviceInstance.initUser = initUser;
 		//#endregion
 
@@ -1030,7 +1031,7 @@ function guid() {
 		///////////////////////
 		function initUser() {
 			var user = {
-				"_id": null,
+				"id": null,
 				"created_by": null,
 				"created_on": null,
 				"email": null,
@@ -1064,7 +1065,11 @@ function guid() {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user', data: userObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
 
-
+		///////////////////////
+		function updateUser(userId, userObject, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>updateUser> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'user/' + userId, data: userObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
 
 		//#endregion
 
