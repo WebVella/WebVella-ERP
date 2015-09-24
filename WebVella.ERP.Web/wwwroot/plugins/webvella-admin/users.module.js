@@ -185,6 +185,8 @@
         popupData.user = angular.copy(contentData.currentUser);
         popupData.roles = angular.copy(contentData.roles);
         popupData.password = null;
+    	//Init user roles
+        popupData.userRoles = [];
 
         popupData.isUpdate = true;
         if (popupData.user.id == null) {
@@ -192,8 +194,13 @@
         	popupData.user.$user_role = [];
             popupData.modalTitle = "Create new area";
             popupData.user.id = guid();
+            popupData.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
+        	//Guest role = 987148b1-afa8-4b33-8616-55861e5fd065
         }
         else {
+        	for (var i = 0; i < popupData.user.$user_role.length; i++) {
+        		popupData.userRoles.push(popupData.user.$user_role[i].id);
+        	}
             popupData.modalTitle ='Edit user <span class="go-green">' + popupData.user.email + '</span>';
         }
 
@@ -255,23 +262,21 @@
 
         }
 
-    	//Init user roles
-        popupData.userRoles = [];
-        for (var i = 0; i < popupData.user.$user_role.length; i++) {
-        	popupData.userRoles.push(popupData.user.$user_role[i].id);
-        }
-
 
         /// EXIT functions
         popupData.ok = function () {
+        	popupData.validation = {};
         	if (!popupData.isUpdate) {
+        		popupData.user.password = popupData.password;
         		popupData.user.roles = popupData.userRoles;
             	webvellaAdminService.createUser(popupData.user, successCallback, errorCallback);
             }
             else {
-                popupData.area.roles = angular.toJson(popupData.area.roles);
-                popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
-                webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
+        		popupData.user.roles = popupData.userRoles;
+        		if (popupData.password) {
+        			popupData.user.password = popupData.password;
+        		}
+        		webvellaAdminService.updateUser(popupData.user.id, popupData.user, successCallback, errorCallback);
             } 
         };
 
@@ -292,24 +297,9 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+            webvellaRootService.generateValidationMessages(response, popupData, popupData.user, location);
         }
 
-        //Delete
-        //Delete field
-        //Create new field modal
-        popupData.deleteAreaModal = function () {
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: 'deleteAreaModal.html',
-                controller: 'DeleteAreaModalController',
-                controllerAs: "popupData",
-                size: "",
-                resolve: {
-                    parentPopupData: function () { return popupData; }
-                }
-            });
-        }
 
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };

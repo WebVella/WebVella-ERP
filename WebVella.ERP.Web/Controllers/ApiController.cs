@@ -13,6 +13,7 @@ using System.IO;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -1483,7 +1484,7 @@ namespace WebVella.ERP.Web.Controllers
 				return DoResponse(response);
 			}
 
-			response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter == "all" ? null : filter );
+			response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter == "all" ? null : filter);
 
 			RecordList list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
 			if (list != null)
@@ -1494,135 +1495,135 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-        private QueryObject CreateFilterQuery(string filterId, List<Entity> entities )
-        {
-            QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filterId);
-            EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
-            QueryResponse resultFilters = recMan.Find(queryFilterEntity);
-            if(!resultFilters.Success)
-                throw new Exception(resultFilters.Message);
-
-            List<QueryObject> queries = new List<QueryObject>();
-            var filterFields = resultFilters.Object.Data;
-            foreach( var filter in filterFields )
-            {
-                List<string> values = new List<string>();
-                var jObject = JsonConvert.DeserializeObject("{ 'values' :" + (string)filter["values"] + " }") as JObject;
-                foreach( var value in ((JArray)jObject.Properties().First().First()).Values() )
-                    values.Add(WebUtility.UrlDecode(value.Value<string>()));
-
-                string entityName = (string)filter["entity_name"];
-                Entity entity = entities.Single(e => e.Name == entityName);
-
-                string fieldName = (string)filter["field_name"];
-                string relationName = (string)filter["relation_name"];
-                string matchType = (string)filter["match_type"];
-
-                //TODO validate field and values
-
-                if (matchType == "exact")
-                    queries.Add(EntityQuery.QueryEQ(fieldName, values[0]));
-                else if (matchType == "exact_and")
-                {
-                    MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
-                    if (field == null)
-                        throw new Exception("Missing filter field:" + fieldName);
-
-                    foreach (string val in values)
-                    {
-                        //option is not found and because the match type is exact and we will put random GUID as text key, so it shouldn't be found
-                        string optionKey = Guid.NewGuid().ToString();
-                        var option = field.Options.SingleOrDefault(o => o.Value == val);
-                        if (option != null)
-                            optionKey = option.Key;
-
-                        queries.Add(EntityQuery.QueryEQ(fieldName, optionKey ));
-                    }
-                }
-                else if (matchType == "exact_or")
-                {
-                    List<QueryObject> exactOrQueries = new List<QueryObject>();
-
-                    MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
-                    if (field == null)
-                        throw new Exception("Missing filter field:" + fieldName);
-
-                    foreach (string val in values)
-                    {
-                        //because the match type is exact OR if a value is missing from select field options, we just skip it
-                        var option = field.Options.SingleOrDefault(o => o.Value == val);
-                        if (option != null)
-                            exactOrQueries.Add(EntityQuery.QueryEQ(fieldName, option.Key));
-                    }
-
-                    if (exactOrQueries.Count == 1)
-                        queries.Add( exactOrQueries.First() );
-                    if ( exactOrQueries.Count > 1 )
-                        queries.Add( EntityQuery.QueryOR( exactOrQueries.ToArray() ) );
-                }
-                else if (matchType == "range")
-                {
-                    if( values.Count != 2 )
-                        throw new Exception("Range filter expects 2 values.");
-
-                    Field field = entity.Fields.SingleOrDefault(x => x.Name == fieldName);
-                    if (field is DateTimeField || field is DateField)
-                    {
-                        if (!string.IsNullOrWhiteSpace(values[0]))
-                            queries.Add(EntityQuery.QueryGTE(fieldName, DateTime.Parse(values[0])));
-                        if (!string.IsNullOrWhiteSpace(values[1]))
-                            queries.Add(EntityQuery.QueryLTE(fieldName, DateTime.Parse(values[1])));
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrWhiteSpace(values[0]))
-                            queries.Add(EntityQuery.QueryGTE(fieldName, decimal.Parse(values[0])));
-                        if (!string.IsNullOrWhiteSpace(values[1]))
-                            queries.Add(EntityQuery.QueryLTE(fieldName, decimal.Parse(values[1])));
-                    }
-
-                }
-                else if (matchType == "period")
-                {
-                    var fromDate = DateTime.UtcNow;
-                    if(values[0] == "hour")
-                        fromDate = fromDate.AddHours(-1);
-                    if (values[0] == "day")
-                        fromDate = fromDate.AddDays(-1);
-                    if (values[0] == "week")
-                        fromDate = fromDate.AddDays(-7);
-                    if (values[0] == "month")
-                        fromDate = fromDate.AddMonths(-1);
-                    if (values[0] == "year")
-                        fromDate = fromDate.AddYears(-1);
-
-                    queries.Add(EntityQuery.QueryGTE(fieldName, fromDate ));
-                }
-                else if (matchType == "regex")
-                    queries.Add(EntityQuery.QueryRegex(fieldName, values[0] ));
-                else
-                    throw new Exception("Not supported match type: " + matchType);
-
-            }
-
-            if( queries.Count > 0 )
-                return EntityQuery.QueryAND( queries.ToArray() );
-
-            return null;
-        }
-
-        private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null )
+		private QueryObject CreateFilterQuery(string filterId, List<Entity> entities)
 		{
-            var filterQuery = CreateFilterQuery(filter,entities);
-            if (filterQuery != null)
-            {
-                if( queryObj != null )
-                    queryObj = EntityQuery.QueryAND(queryObj, filterQuery);
-                else
-                    queryObj = filterQuery;
-            }
+			QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filterId);
+			EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
+			QueryResponse resultFilters = recMan.Find(queryFilterEntity);
+			if (!resultFilters.Success)
+				throw new Exception(resultFilters.Message);
 
-            EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
+			List<QueryObject> queries = new List<QueryObject>();
+			var filterFields = resultFilters.Object.Data;
+			foreach (var filter in filterFields)
+			{
+				List<string> values = new List<string>();
+				var jObject = JsonConvert.DeserializeObject("{ 'values' :" + (string)filter["values"] + " }") as JObject;
+				foreach (var value in ((JArray)jObject.Properties().First().First()).Values())
+					values.Add(WebUtility.UrlDecode(value.Value<string>()));
+
+				string entityName = (string)filter["entity_name"];
+				Entity entity = entities.Single(e => e.Name == entityName);
+
+				string fieldName = (string)filter["field_name"];
+				string relationName = (string)filter["relation_name"];
+				string matchType = (string)filter["match_type"];
+
+				//TODO validate field and values
+
+				if (matchType == "exact")
+					queries.Add(EntityQuery.QueryEQ(fieldName, values[0]));
+				else if (matchType == "exact_and")
+				{
+					MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+					if (field == null)
+						throw new Exception("Missing filter field:" + fieldName);
+
+					foreach (string val in values)
+					{
+						//option is not found and because the match type is exact and we will put random GUID as text key, so it shouldn't be found
+						string optionKey = Guid.NewGuid().ToString();
+						var option = field.Options.SingleOrDefault(o => o.Value == val);
+						if (option != null)
+							optionKey = option.Key;
+
+						queries.Add(EntityQuery.QueryEQ(fieldName, optionKey));
+					}
+				}
+				else if (matchType == "exact_or")
+				{
+					List<QueryObject> exactOrQueries = new List<QueryObject>();
+
+					MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+					if (field == null)
+						throw new Exception("Missing filter field:" + fieldName);
+
+					foreach (string val in values)
+					{
+						//because the match type is exact OR if a value is missing from select field options, we just skip it
+						var option = field.Options.SingleOrDefault(o => o.Value == val);
+						if (option != null)
+							exactOrQueries.Add(EntityQuery.QueryEQ(fieldName, option.Key));
+					}
+
+					if (exactOrQueries.Count == 1)
+						queries.Add(exactOrQueries.First());
+					if (exactOrQueries.Count > 1)
+						queries.Add(EntityQuery.QueryOR(exactOrQueries.ToArray()));
+				}
+				else if (matchType == "range")
+				{
+					if (values.Count != 2)
+						throw new Exception("Range filter expects 2 values.");
+
+					Field field = entity.Fields.SingleOrDefault(x => x.Name == fieldName);
+					if (field is DateTimeField || field is DateField)
+					{
+						if (!string.IsNullOrWhiteSpace(values[0]))
+							queries.Add(EntityQuery.QueryGTE(fieldName, DateTime.Parse(values[0])));
+						if (!string.IsNullOrWhiteSpace(values[1]))
+							queries.Add(EntityQuery.QueryLTE(fieldName, DateTime.Parse(values[1])));
+					}
+					else
+					{
+						if (!string.IsNullOrWhiteSpace(values[0]))
+							queries.Add(EntityQuery.QueryGTE(fieldName, decimal.Parse(values[0])));
+						if (!string.IsNullOrWhiteSpace(values[1]))
+							queries.Add(EntityQuery.QueryLTE(fieldName, decimal.Parse(values[1])));
+					}
+
+				}
+				else if (matchType == "period")
+				{
+					var fromDate = DateTime.UtcNow;
+					if (values[0] == "hour")
+						fromDate = fromDate.AddHours(-1);
+					if (values[0] == "day")
+						fromDate = fromDate.AddDays(-1);
+					if (values[0] == "week")
+						fromDate = fromDate.AddDays(-7);
+					if (values[0] == "month")
+						fromDate = fromDate.AddMonths(-1);
+					if (values[0] == "year")
+						fromDate = fromDate.AddYears(-1);
+
+					queries.Add(EntityQuery.QueryGTE(fieldName, fromDate));
+				}
+				else if (matchType == "regex")
+					queries.Add(EntityQuery.QueryRegex(fieldName, values[0]));
+				else
+					throw new Exception("Not supported match type: " + matchType);
+
+			}
+
+			if (queries.Count > 0)
+				return EntityQuery.QueryAND(queries.ToArray());
+
+			return null;
+		}
+
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null)
+		{
+			var filterQuery = CreateFilterQuery(filter, entities);
+			if (filterQuery != null)
+			{
+				if (queryObj != null)
+					queryObj = EntityQuery.QueryAND(queryObj, filterQuery);
+				else
+					queryObj = filterQuery;
+			}
+
+			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
 			EntityRelationManager relManager = new EntityRelationManager(Storage);
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
@@ -1873,7 +1874,7 @@ namespace WebVella.ERP.Web.Controllers
 			return resultDataList;
 		}
 
-      
+
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
 		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{
@@ -2373,10 +2374,10 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetUserById(Guid userId)
 		{
 
-			QueryObject areaFilterObj = EntityQuery.QueryEQ("id", userId);
+			QueryObject userFilterObj = EntityQuery.QueryEQ("id", userId);
 			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image";
 
-			EntityQuery query = new EntityQuery("user", userColumns, areaFilterObj, null, null, null);
+			EntityQuery query = new EntityQuery("user", userColumns, userFilterObj, null, null, null);
 
 			QueryResponse result = recMan.Find(query);
 			if (!result.Success)
@@ -2391,55 +2392,266 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			response.Message = "User successfully created";
-            var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
-            userObj.Properties.Remove("roles");
-            var transaction = recMan.CreateTransaction();
-            try
-            {
+			var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
+			userObj.Properties.Remove("roles");
+			var transaction = recMan.CreateTransaction();
+			try
+			{
 
-                transaction.Begin();
+				transaction.Begin();
 
-                //Create user
-                if (userObj["id"] == null)
-                {
-                    userObj["id"] = Guid.NewGuid();
-                }
-                var createResult = recMan.CreateRecord("user", userObj);
-                if (!createResult.Success)
-                {
-                    response.Errors = createResult.Errors;
-                    response.Message = "Creating user failed. Reason: " + createResult.Message;
-                    response.Success = false;
-                    return DoResponse(response);
-                }
+				//Create user
+				if (userObj["id"] == null)
+				{
+					userObj["id"] = Guid.NewGuid();
+				}
+				Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+				//Validation required fields
+				response.Success = true;
+				if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
+				{
+					response.Success = false;
+					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
+				}
+				else if (!emailRgx.IsMatch((string)userObj["email"]))
+				{
+					response.Success = false;
+					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
+				}
 
-                //Create user role relations
-                foreach (var roleId in rolesArray)
-                {
-                    QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, new Guid((string)userObj["id"]));
-                    if (!relationResult.Success)
-                    {
-                        response.Errors = relationResult.Errors;
-                        response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
-                        response.Success = false;
-                        return DoResponse(response);
-                    }
-                }
+				if (!userObj.Properties.ContainsKey("password") || String.IsNullOrEmpty((string)userObj["password"]))
+				{
+					response.Success = false;
+					response.Errors.Add(new ErrorModel("password", (string)userObj["password"], "password is required"));
+				}
 
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                if (transaction != null)
-                    transaction.Rollback();
+				if (!response.Success)
+				{
+					response.Message = "Validation error occurred";
+					if (transaction != null)
+						transaction.Rollback();
+					return DoResponse(response);
+				}
 
-                response.Success = false;
-                response.Message = ex.Message;
-                return DoResponse(response);
-            }
+				if (!userObj.Properties.ContainsKey("created_on"))
+				{
+					userObj.Properties.Add("created_on",DateTime.Now);
+				}
 
-            return DoResponse(response);
+				if (!userObj.Properties.ContainsKey("created_by"))
+				{
+					userObj.Properties.Add("created_by",SecurityContext.CurrentUser.Id);	
+				}
+
+				if (!userObj.Properties.ContainsKey("last_modified_on"))
+				{
+					userObj.Properties.Add("last_modified_on",DateTime.Now);	
+				}
+
+				if (!userObj.Properties.ContainsKey("last_modified_by"))
+				{
+					userObj.Properties.Add("last_modified_by",SecurityContext.CurrentUser.Id);	
+				}
+
+				var createResult = recMan.CreateRecord("user", userObj);
+
+				if (!createResult.Success)
+				{
+					response.Errors = createResult.Errors;
+					response.Message = createResult.Message;
+					response.Success = false;
+					if (transaction != null)
+						transaction.Rollback();
+					return DoResponse(response);
+				}
+
+				//Create user role relations
+				foreach (var roleId in rolesArray)
+				{
+					QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, new Guid((string)userObj["id"]));
+					if (!relationResult.Success)
+					{
+						response.Errors = relationResult.Errors;
+						response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+						response.Success = false;
+						if (transaction != null)
+							transaction.Rollback();
+						return DoResponse(response);
+					}
+				}
+
+				transaction.Commit();
+			}
+			catch (Exception ex)
+			{
+				if (transaction != null)
+					transaction.Rollback();
+
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
+
+			return DoResponse(response);
 		}
+
+
+		// Update user
+		// PUT: api/v1/en_US/user/{user_id}
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/user/{userId}")]
+		public IActionResult UpdateUser(Guid userId, [FromBody]EntityRecord userObj)
+		{
+			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
+			response.Message = "User successfully updated";
+			var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
+			userObj.Properties.Remove("roles");
+			var transaction = recMan.CreateTransaction();
+			try
+			{
+
+				transaction.Begin();
+				//Get oldUserObject
+				var oldUserRoles = new List<EntityRecord>();
+				QueryObject oldUserRolesFilterObj = EntityQuery.QueryEQ("id", userId);
+				var oldUserRolesColumns = "$user_role.id";
+				EntityQuery oldUserRolesQuery = new EntityQuery("user", oldUserRolesColumns, oldUserRolesFilterObj, null, null, null);
+				QueryResponse oldUserRolesResult = recMan.Find(oldUserRolesQuery);
+
+				if (!oldUserRolesResult.Success)
+				{
+					response.Success = false;
+					response.Message = "Cannot get old user roles";
+					if (transaction != null)
+						transaction.Rollback();
+					return DoResponse(oldUserRolesResult);
+				}
+				else
+				{
+					oldUserRoles = (List<EntityRecord>)oldUserRolesResult.Object.Data[0]["$user_role"];
+				}
+
+				if (!userObj.Properties.ContainsKey("id"))
+				{
+					userObj.Properties.Add("id",userId);	
+				}
+				else {
+					userObj["id"] = userId;
+				}
+
+				Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+				//Validation required fields
+				response.Success = true;
+
+				if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
+				{
+					response.Success = false;
+					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
+				}
+				else if (!emailRgx.IsMatch((string)userObj["email"]))
+				{
+					response.Success = false;
+					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
+				}
+
+				if (!response.Success)
+				{
+					response.Message = "Validation error occurred";
+					if (transaction != null)
+						transaction.Rollback();
+					return DoResponse(response);
+				}
+
+				if (!userObj.Properties.ContainsKey("last_modified_on"))
+				{
+					userObj.Properties.Add("last_modified_on",DateTime.Now);	
+				}
+
+				if (!userObj.Properties.ContainsKey("last_modified_by"))
+				{
+					userObj.Properties.Add("last_modified_by",SecurityContext.CurrentUser.Id);	
+				}
+
+				var updateResult = recMan.UpdateRecord("user", userObj);
+
+				if (!updateResult.Success)
+				{
+					response.Errors = updateResult.Errors;
+					response.Message = updateResult.Message;
+					response.Success = false;
+					if (transaction != null)
+						transaction.Rollback();
+					return DoResponse(response);
+				}
+
+				//Create new user role relations
+				foreach (var roleId in rolesArray)
+				{
+					var roleIdIsNew = true;
+					foreach (var oldRole in oldUserRoles)
+					{
+						if ((Guid)roleId == (Guid)oldRole["id"])
+						{
+							roleIdIsNew = false;
+						}
+
+					}
+					if (roleIdIsNew)
+					{
+						QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, (Guid)userObj["id"]);
+						if (!relationResult.Success)
+						{
+							response.Errors = relationResult.Errors;
+							response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+							response.Success = false;
+							if (transaction != null)
+								transaction.Rollback();
+							return DoResponse(response);
+						}
+					}
+				}
+
+				//Remove outdated user role relations
+				foreach (var oldRole in oldUserRoles)
+				{
+					var oldRoleIsKept = false;
+					foreach (var roleId in rolesArray)
+					{
+						if ((Guid)roleId == (Guid)oldRole["id"])
+						{
+							oldRoleIsKept = true;
+						}
+					}
+					if (!oldRoleIsKept)
+					{
+						QueryResponse relationResult = recMan.RemoveRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)oldRole["id"], (Guid)userObj["id"]);
+						if (!relationResult.Success)
+						{
+							response.Errors = relationResult.Errors;
+							response.Message = "Removing old user role relation failed. Reason: " + relationResult.Message;
+							response.Success = false;
+							if (transaction != null)
+								transaction.Rollback();
+							return DoResponse(response);
+						}
+					}
+				}
+
+
+				transaction.Commit();
+			}
+			catch (Exception ex)
+			{
+				if (transaction != null)
+					transaction.Rollback();
+
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
+
+			return DoResponse(response);
+		}
+
 
 		#endregion
 
@@ -2572,6 +2784,8 @@ namespace WebVella.ERP.Web.Controllers
 						response.Errors = createResult.Errors;
 						response.Message = "Creating filter record for field " + record["field_name"] + " failed. Reason: " + createResult.Message;
 						response.Success = false;
+						if (transaction != null)
+							transaction.Rollback();
 						return DoResponse(response);
 					}
 				}
@@ -2618,7 +2832,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Delete selected filter Records
 		// POST: api/v1/en_US/filter/{filter_id}/delete-records
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/filter/{filter_id}/delete-records")]
-		public IActionResult DeleteSelectedFieldRecords(string filter_id, [FromBody] Guid[] postObj)
+		public IActionResult DeleteSelectedFilterRecords(string filter_id, [FromBody] Guid[] postObj)
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			response.Message = "Filter successfully deleted";
@@ -2635,6 +2849,8 @@ namespace WebVella.ERP.Web.Controllers
 						response.Errors = queryResult.Errors;
 						response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
 						response.Success = false;
+						if (transaction != null)
+							transaction.Rollback();
 						return DoResponse(response);
 					}
 				}
