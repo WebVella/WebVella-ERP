@@ -1703,7 +1703,9 @@ namespace WebVella.ERP.Web.Controllers
 
             }
 
-			if (queries.Count > 0)
+            if (queries.Count == 1 )
+                return queries[0];
+            else if (queries.Count > 1)
 				return EntityQuery.QueryAND(queries.ToArray());
 
             return null;
