@@ -24,7 +24,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-areas-lists', {
             parent: 'webvella-admin-base',
-            url: '/areas/lists', 
+            url: '/areas', 
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -43,6 +43,7 @@
                 }
             },
             resolve: {
+            	checkedAccessPermission: checkAccessPermission,
             	resolvedAreaRecordsList: resolveAreaRecordsList,
                 resolvedRolesList: resolveRolesList,
                 resolvedEntityMetaList: resolveEntityMetaList
@@ -55,6 +56,36 @@
 
 
     //#region << Resolve Functions >>/////////////////////////
+
+    checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
+	/* @ngInject */
+    function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
+    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+    	var defer = $q.defer();
+    	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
+    	var accessPermission = false;
+    	for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
+    		if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+    			accessPermission = true;
+    		}
+    	}
+
+    	if (accessPermission) {
+    		defer.resolve();
+    	}
+    	else {
+
+    		ngToast.create({
+    			className: 'error',
+    			content: messageContent
+    		});
+    		defer.reject("No access");
+    	}
+
+    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
+
 
     resolveAreaRecordsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */

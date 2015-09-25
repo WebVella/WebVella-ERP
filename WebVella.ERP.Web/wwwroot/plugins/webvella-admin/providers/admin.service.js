@@ -1036,15 +1036,11 @@ function guid() {
 		function initUser() {
 			var user = {
 				"id": null,
-				"created_by": null,
-				"created_on": null,
 				"email": null,
 				"enabled": true,
 				"first_name": null,
 				"image": null,
 				"last_logged_in": null,
-				"last_modified_by": null,
-				"last_modified_on": null,
 				"last_name": null,
 				"password": null,
 				"verified": true
