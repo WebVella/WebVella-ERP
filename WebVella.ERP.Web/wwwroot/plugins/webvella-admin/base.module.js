@@ -51,21 +51,22 @@
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
     	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
-            var item = {
-                "label": "Administration",
-                "stateName": "webvella-admin-entities",
-                "stateParams": {},
-                "parentName": "",
-                "nodes": [],
-                "weight": 100.0,
-                "color": "red",
-                "iconName": "cog",
-                "roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
-            };
             var currentUser = webvellaRootService.getCurrentUser();
         	//TODO: check role and allow only for admins
-
-            webvellaDesktopBrowsenavFactory.addItem(item);
+            if (currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") > -1) {
+            	var item = {
+            		"label": "Administration",
+            		"stateName": "webvella-admin-entities",
+            		"stateParams": {},
+            		"parentName": "",
+            		"nodes": [],
+            		"weight": 100.0,
+            		"color": "red",
+            		"iconName": "cog",
+            		"roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
+            	};
+            	webvellaDesktopBrowsenavFactory.addItem(item);
+            }
         });
 
         $log.debug('webvellaAdmin>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
@@ -79,18 +80,10 @@
     	// Initialize
     	var defer = $q.defer();
     	// Process
-    	function successCallback(response) {
-    		defer.resolve(response.object);
-    	}
-
-    	function errorCallback(response) {
-    		defer.reject(response.message);
-    	}
-
     	var currentUser = webvellaRootService.getCurrentUser();
 
     	if (currentUser != null) {
-    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    		defer.resolve(currentUser);
     	}
     	else {
     		defer.reject(null);

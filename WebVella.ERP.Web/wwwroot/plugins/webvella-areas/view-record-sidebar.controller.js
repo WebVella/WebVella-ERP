@@ -23,7 +23,7 @@
         sidebarData.view = resolvedCurrentView.meta;
         sidebarData.stateParams = $stateParams;
         sidebarData.entity = resolvedCurrentEntityMeta;
-        sidebarData.currentUser = resolvedCurrentUser.data[0];
+        sidebarData.currentUser = angular.copy(resolvedCurrentUser);
     	//#region << Select default list >>
         sidebarData.defaultEntityAreaListName = "";
     	//get the current area meta

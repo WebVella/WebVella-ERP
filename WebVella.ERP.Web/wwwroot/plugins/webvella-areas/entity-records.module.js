@@ -393,9 +393,9 @@
 			webvellaRootService.GoToState($state, $state.current.name, params);
 		}
 
-		contentData.currentUser = angular.copy(resolvedCurrentUser).data[0];
+		contentData.currentUser = angular.copy(resolvedCurrentUser);
 
-		contentData.currentUserRoles = angular.copy(resolvedCurrentUser).data[0].$user_role;
+		contentData.currentUserRoles = contentData.currentUser.roles;
 
 		contentData.currentUserHasReadPermission = function (column) {
 			var result = false;

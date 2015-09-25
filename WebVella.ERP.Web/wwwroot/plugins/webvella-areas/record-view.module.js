@@ -788,7 +788,7 @@
 
 			}
 
-			contentData.currentUserRoles = angular.copy(resolvedCurrentUser).data[0].$user_role;
+			contentData.currentUserRoles = angular.copy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {
 				var result = false;
 				if (!item.meta.enableSecurity || item.meta.permissions == null) {
