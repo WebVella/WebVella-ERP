@@ -117,16 +117,6 @@
             }, 0);
         });
 
-
-        //$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-        //	var currentUser = webvellaRootService.getCurrentUser();
-        //	if (currentUser == null) {
-        //		$timeout(function () {
-        //			$state.go("webvella-root-login");
-        //		}, 0);
-        //	}
-        //})
-
         $log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 

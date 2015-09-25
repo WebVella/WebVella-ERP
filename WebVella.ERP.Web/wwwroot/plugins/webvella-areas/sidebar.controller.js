@@ -22,7 +22,7 @@
         var sidebarData = this;
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
-        sidebarData.currentUser = resolvedCurrentUser.data[0];
+        sidebarData.currentUser = angular.copy(resolvedCurrentUser);
         $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 

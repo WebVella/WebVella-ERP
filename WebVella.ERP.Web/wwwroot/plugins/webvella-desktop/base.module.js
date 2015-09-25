@@ -59,16 +59,13 @@
     	// Initialize
     	var defer = $q.defer();
     	// Process
-    	function successCallback(response) {
-    		defer.resolve(response.object);
-    	}
-
-    	function errorCallback(response) {
-    		defer.reject(response.message);
-    	}
-
     	var currentUser = webvellaRootService.getCurrentUser();
-    	defer.resolve(currentUser);
+    	if (currentUser != null) {
+    		defer.resolve(currentUser);
+    	}
+    	else {
+    		defer.reject(null);
+    	}
 
     	// Return
     	$log.debug('webvellaAreas>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));

@@ -83,21 +83,12 @@
     	// Initialize
     	var defer = $q.defer();
     	// Process
-    	function successCallback(response) {
-    		defer.resolve(response.object);
-    	}
-
-    	function errorCallback(response) {
-    		defer.reject(response.message);
-    	}
-
     	var currentUser = webvellaRootService.getCurrentUser();
-
     	if (currentUser != null) {
-    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    		defer.resolve(currentUser);
     	}
     	else {
-    		defer.resolve(null);
+    		defer.reject(null);
     	}
 
     	// Return
