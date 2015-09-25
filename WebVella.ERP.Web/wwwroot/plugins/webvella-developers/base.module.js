@@ -56,7 +56,7 @@
                 "color": "purple",
                 "iconName": "code"
             };
-
+			//If item is admin
             webvellaDesktopBrowsenavFactory.addItem(item);
         });
         $log.debug('webvellaDevelopers>base> END module.run ' + moment().format('HH:mm:ss SSSS'));

@@ -93,7 +93,6 @@
         contentData.pageTitle = "Browse Desktop | " + pageTitle;
         webvellaRootService.setPageTitle(contentData.pageTitle);
         //#endregion
-
         //#region << Make the Browsenav pluggable & Initialize>>
         ////1. CONSTRUCTOR - initialize the factory
         webvellaDesktopBrowsenavFactory.initBrowsenav();

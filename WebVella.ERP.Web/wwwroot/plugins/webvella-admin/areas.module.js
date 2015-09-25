@@ -263,8 +263,8 @@
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
         }
         else {
-            popupData.area.roles = angular.fromJson(popupData.area.roles);
-
+            //popupData.area.roles = angular.fromJson(popupData.area.roles);
+            popupData.rolesValues = angular.fromJson(popupData.area.roles);
             //Remove the already subscribed from the available for subscription list
         	popupData.tempEntitiesList = [];
         	for (var i = 0; i < popupData.cleanEntities.length; i++) {
@@ -440,12 +440,12 @@
         /// EXIT functions
         popupData.ok = function () {
             if (!popupData.isUpdate) {
-                popupData.area.roles = angular.toJson(popupData.area.roles);
+            	popupData.area.roles = angular.toJson(popupData.rolesValues);
                 popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
                 webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
             }
             else {
-                popupData.area.roles = angular.toJson(popupData.area.roles);
+            	popupData.area.roles = angular.toJson(popupData.rolesValues);
                 popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
                 webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
             } 

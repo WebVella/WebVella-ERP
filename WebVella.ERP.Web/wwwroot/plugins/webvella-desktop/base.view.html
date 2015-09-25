@@ -1,28 +1,34 @@
-<nav class="navbar navbar-inverse">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" ng-click="topbarData.toggleCollapsedNav()">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="" title="WebVella ERP" style="margin-right:30px;">
-                <img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="display:inline-block;margin-right:10px; position: relative; top: -2px;" />
-                <span class="hidden-xs hidden-sm">WebVella ERP</span>
-            </a>
-        </div>
-        <div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
-            <!--<ul class="nav navbar-nav">
-                <li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
-            </ul>-->
-            <ul class="nav navbar-nav navbar-right">
-                <li class="hidden-xs hidden-sm"><p class="navbar-text">{{pluginData.user.first_name}} {{pluginData.user.last_name}}</p></li>
-                <!--<li><a href="javascript:void(0)">Account</a></li>-->
-                <li><a href="javascript:void(0)" ng-click="pluginData.logout()"><i class="fa fa-sign-out"></i> logout</a></li>
-            </ul>
-        </div>
-    </div>
+<nav class="navbar navbar-inverse desktop">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" ng-click="topbarData.toggleCollapsedNav()">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="" title="WebVella ERP" style="margin-right:30px;">
+				<img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="display:inline-block;margin-right:10px; position: relative; top: -2px;" />
+				<span class="hidden-xs hidden-sm">WebVella ERP</span>
+			</a>
+		</div>
+		<div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
+			<!--<ul class="nav navbar-nav">
+				<li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
+			</ul>-->
+			<ul class="nav navbar-nav navbar-right">
+				<li class="hidden-xs hidden-sm">
+					<p class="navbar-text">
+						<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
+						<img class="avatar" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
+						{{pluginData.user.first_name}} {{pluginData.user.last_name}}
+					</p>
+				</li>
+				<!--<li><a href="javascript:void(0)">Account</a></li>-->
+				<li><a href="javascript:void(0)" ng-click="pluginData.logout()"><i class="fa fa-sign-out"></i> logout</a></li>
+			</ul>
+		</div>
+	</div>
 </nav>
 
 

@@ -121,4 +121,11 @@
         background:#795548;
     }
 
+
+.desktop .avatar {
+	width:24px;
+	max-height:24px;
+	margin-right:5px;
+}
+
 /*#endregion */

@@ -68,13 +68,7 @@
     	}
 
     	var currentUser = webvellaRootService.getCurrentUser();
-
-    	if (currentUser != null) {
-    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
-    	}
-    	else {
-    		defer.resolve(null);
-    	}
+    	defer.resolve(currentUser);
 
     	// Return
     	$log.debug('webvellaAreas>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));
@@ -94,7 +88,7 @@
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.topnav = [];
-        pluginData.user = angular.copy(resolvedCurrentUser.data[0]);
+        pluginData.user = angular.copy(resolvedCurrentUser);
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaDesktopTopnavFactory.initTopnav();

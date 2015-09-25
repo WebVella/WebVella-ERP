@@ -21,7 +21,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="page-content">
+<div id="page-body">
 	<form id="filters" class="form-inline" ng-show="contentData.users.length > 0">
 		<div class="form-group">
 			<div class="input-group">
@@ -46,7 +46,7 @@
 				<tr ng-repeat="user in contentData.users | filter: contentData.search">
 
 					<td>
-						<a ng-click="contentData.openManageUserModal(user)" class="btn btn-default">
+						<a ng-click="contentData.openManageUserModal(user)" class="btn btn-default btn-sm">
 							<i class="fa fa-pencil"></i>
 						</a>
 					</td>

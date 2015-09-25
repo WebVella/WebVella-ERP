@@ -52,40 +52,39 @@
     	$log.debug('webvellaRoot>login> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
     	var loginData = this;
+    	loginData.loginIsActive = false;
     	var currentUser = webvellaRootService.getCurrentUser();
-        if (currentUser != null) {
-        	$timeout(function () {
-        		$state.go("webvella-desktop-browse");
-        	}, 0);
-        }
+    	if (currentUser != null) {
+    		$timeout(function () {
+    			$state.go("webvella-desktop-browse");
+    		}, 0);
+    	}
+    	else {
+    		loginData.loginIsActive = true;
 
-        loginData.email = "erp@webvella.com";
-        loginData.password = "ttg";
-        loginData.rememberMe = false;
-        loginData.pageTitle = "Login | " + pageTitle;
-        webvellaRootService.setPageTitle(loginData.pageTitle);
+    		loginData.email = "erp@webvella.com";
+    		loginData.password = "ttg";
+    		loginData.rememberMe = false;
+    		loginData.pageTitle = "Login | " + pageTitle;
+    		webvellaRootService.setPageTitle(loginData.pageTitle);
 
-        loginData.ValidationErrors = false;
+    		loginData.ValidationErrors = false;
 
-        webvellaRootService.setPageTitle(loginData.pageTitle);
-        activate();
-        $log.debug('webvellaRoot>login> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    		webvellaRootService.setPageTitle(loginData.pageTitle);
 
-        loginData.doLogin = function(){
-            webvellaRootService.login( loginData,
-                                      function (response ) {
-                                          $timeout(function () {
-                                              $state.go('webvella-desktop-browse');
-                                          }, 0);
-                                      },
-                                      function (response) {
-                                         //show validation
-                                      });
-        }
-
-        function activate() {
-
-        }
+    		loginData.doLogin = function () {
+    			webvellaRootService.login(loginData,
+										  function (response) {
+										  	$timeout(function () {
+										  		$state.go('webvella-desktop-browse');
+										  	}, 0);
+										  },
+										  function (response) {
+										  	//show validation
+										  });
+    		}
+    	}
+    	$log.debug('webvellaRoot>login> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

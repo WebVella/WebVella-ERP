@@ -45,10 +45,10 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory', 'webvellaRootService'];
 
     /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
     	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
             var item = {
@@ -59,8 +59,11 @@
                 "nodes": [],
                 "weight": 100.0,
                 "color": "red",
-                "iconName": "cog"
+                "iconName": "cog",
+                "roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
             };
+            var currentUser = webvellaRootService.getCurrentUser();
+        	//TODO: check role and allow only for admins
 
             webvellaDesktopBrowsenavFactory.addItem(item);
         });

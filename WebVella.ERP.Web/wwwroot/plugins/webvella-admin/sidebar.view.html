@@ -1,8 +1,8 @@
 <div id="userbox" class="dropdown" dropdown>
     <div class="dropdown-toggle" dropdown-toggle>
-		<img class="avatar img-circle" src="/plugins/webvella-root/assets/avatar.png" ng-if="!sidebarData.currentUser.image">
-		<img class="avatar img-circle" ng-src="{{sidebarData.currentUser.image}}" ng-if="sidebarData.currentUser.image">
-		<span class="username">{{sidebarData.currentUser.first_name}}</span>
+		<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!sidebarData.currentUser.image">
+		<img class="avatar" ng-src="{{sidebarData.currentUser.image}}" ng-if="sidebarData.currentUser.image">
+		<span class="username">{{sidebarData.currentUser.first_name}} {{sidebarData.currentUser.last_name}}</span>
     </div>
     <ul class="dropdown-menu dropdown-menu-right">
         <li>
@@ -26,5 +26,8 @@
     <li role="presentation" ui-sref-active="active">
         <a ui-sref="webvella-admin-users" tooltip="Users" tooltip-enable="{{sidebarData.isMiniSidebar}}"  tooltip-placement="right"><i class="fa fa-users fa-fw"></i><span class="text">Users</span></a>
     </li>
+	<li role="presentation" ui-sref-active="active">
+		<a ui-sref="webvella-admin-roles" tooltip="Roles" tooltip-enable="{{sidebarData.isMiniSidebar}}" tooltip-placement="right"><i class="fa fa-key fa-fw"></i><span class="text">Roles</span></a>
+	</li>
 
 </ul>
