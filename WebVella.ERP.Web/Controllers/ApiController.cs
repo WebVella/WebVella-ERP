@@ -1487,7 +1487,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
             try
             {
-                response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter == "all" ? null : filter);
+                response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter, search );
             }
             catch (Exception ex)
             {
@@ -1507,8 +1507,68 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(response);
 		}
 
-		private QueryObject CreateFilterQuery(string filterId, List<Entity> entities)
+        private QueryObject CreateSearchQuery(string search, RecordList list, Entity entity )
         {
+            if (string.IsNullOrWhiteSpace(search))
+                return null;
+
+            if (list == null)
+                return null;
+
+            search = search.Trim();
+
+            var listFields = list.Columns.Where(c => c is RecordListFieldItem).Select(c=>c as RecordListFieldItem).ToList();
+            var firstSearchableField = listFields.FirstOrDefault(x => entity.Fields.Single(f => f.Id == x.FieldId).Searchable);
+            if (firstSearchableField == null)
+                throw new Exception("The field you are searching in is missing.");
+
+            var field = entity.Fields.SingleOrDefault(f => f.Id == firstSearchableField.FieldId);
+            if (field == null)
+                throw new Exception("The field you are searching in is missing.");
+
+
+            if ( field is AutoNumberField || field is CurrencyField || field is NumberField || field is PercentField )
+            {
+                decimal value;
+                if (!decimal.TryParse(search, out value))
+                    throw new Exception("Invalid search value. It should be a number.");
+
+                return EntityQuery.QueryEQ(field.Name, value);
+            }
+            else if (field is GuidField )
+            {
+                Guid value;
+                if (!Guid.TryParse(search, out value))
+                    throw new Exception("Invalid search value. It should be an unique identifier formated text.");
+
+                return EntityQuery.QueryEQ(field.Name, value);
+            }
+            else if (field is DateTimeField || field is DateField )
+            {
+                DateTime value;
+                if (!DateTime.TryParse(search, out value))
+                    throw new Exception("Invalid search value. Cannot be recognized as date.");
+
+                value = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+                return EntityQuery.QueryEQ(field.Name, value);
+            }
+            else if (field is MultiSelectField )
+            {
+                var option = (field as MultiSelectField).Options.FirstOrDefault(o => o.Value == search);
+                if( option == null )
+                    return EntityQuery.QueryEQ(field.Name,Guid.NewGuid().ToString()); //this will always be not found
+                else
+                    return EntityQuery.QueryEQ(field.Name, option.Key); //search in the keys
+            }
+            else
+                return EntityQuery.QueryContains(field.Name, search );
+        }
+
+        private QueryObject CreateFilterQuery(string filterId, List<Entity> entities)
+        {
+            if (filterId == "all" || string.IsNullOrWhiteSpace(filterId))
+                return null;
+
             QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filterId);
             EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
             QueryResponse resultFilters = recMan.Find(queryFilterEntity);
@@ -1568,7 +1628,7 @@ namespace WebVella.ERP.Web.Controllers
 
                     if (exactOrQueries.Count == 1)
 						queries.Add(exactOrQueries.First());
-					if (exactOrQueries.Count > 1)
+					if (exactOrQueries.Count > 1) 
 						queries.Add(EntityQuery.QueryOR(exactOrQueries.ToArray()));
                 }
                 else if (matchType == "range")
@@ -1649,9 +1709,22 @@ namespace WebVella.ERP.Web.Controllers
             return null;
         }
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null, string search = null )
 		{
-			var filterQuery = CreateFilterQuery(filter, entities);
+            RecordList list = null;
+            if (entity != null && entity.RecordLists != null)
+                list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+
+            var searchQuery = CreateSearchQuery(search, list, entity );
+            if (searchQuery != null)
+            {
+                if (queryObj != null)
+                    queryObj = EntityQuery.QueryAND(queryObj, searchQuery);
+                else
+                    queryObj = searchQuery;
+            }
+
+            var filterQuery = CreateFilterQuery(filter, entities);
             if (filterQuery != null)
             {
 				if (queryObj != null)
@@ -1668,11 +1741,11 @@ namespace WebVella.ERP.Web.Controllers
 			if (relListResponse.Object != null)
 				relationList = relListResponse.Object;
 
-			RecordList list = null;
-			if (entity != null && entity.RecordLists != null)
-				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+			
 
-			if (list != null)
+          
+
+            if (list != null)
 			{
 				List<QuerySortObject> sortList = new List<QuerySortObject>();
 				if (list.Sorts != null && list.Sorts.Count > 0)
