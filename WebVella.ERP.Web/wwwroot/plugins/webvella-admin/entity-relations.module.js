@@ -65,7 +65,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response.object);
+        	defer.reject(response.message);
         }
 
         webvellaAdminService.getRelationsList(successCallback, errorCallback);
@@ -101,7 +101,7 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+            	defer.reject(response.message);
             }
         }
 
@@ -125,7 +125,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response.object);
+        	defer.reject(response.message);
         }
 
         webvellaAdminService.getMetaEntityList(successCallback, errorCallback);

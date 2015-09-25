@@ -82,7 +82,7 @@
                 }, 0);
             }
             else {
-                defer.resolve(response.object);
+                defer.reject(response.message);
             }
         }
 
@@ -108,7 +108,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response.object);
+        	defer.reject(response.message);
         }
 
         webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
@@ -133,7 +133,7 @@
     	}
 
     	function errorCallback(response) {
-    		defer.resolve(response.object);
+    		defer.reject(response.message);
     	}
 
     	webvellaAdminService.getMetaEntityList(successCallback, errorCallback);

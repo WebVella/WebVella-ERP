@@ -19,7 +19,7 @@
     /* @ngInject */
     function config($httpProvider, wvAppConstants) {
 
-    	$httpProvider.interceptors.push(function ($q, $window, ngToast) {
+    	$httpProvider.interceptors.push(function ($q, $window, ngToast, $cookies) {
         	return {
         		'request': function (request) {
         			if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
@@ -47,12 +47,19 @@
         		},
                 'responseError': function (errorResponse) {
                 	switch (errorResponse.status) {
+                		case 401:
+                			ngToast.create({
+                				className: 'error',
+                				content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+                			});
+                			var cookieValue = $cookies.remove("erp-auth");
+                			$window.location = '#/login';
+                			break;
                 		case 403:
                 			ngToast.create({
                 				className: 'error',
                 				content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
                 			});
-                			$window.location = '#/login';
                 			break;
                 	}
                     return $q.reject(errorResponse);
@@ -111,14 +118,14 @@
         });
 
 
-        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-        	var currentUser = webvellaRootService.getCurrentUser();
-        	if (currentUser == null) {
-        		$timeout(function () {
-        			$state.go("webvella-root-login");
-        		}, 0);
-        	}
-        })
+        //$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+        //	var currentUser = webvellaRootService.getCurrentUser();
+        //	if (currentUser == null) {
+        //		$timeout(function () {
+        //			$state.go("webvella-root-login");
+        //		}, 0);
+        //	}
+        //})
 
         $log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }

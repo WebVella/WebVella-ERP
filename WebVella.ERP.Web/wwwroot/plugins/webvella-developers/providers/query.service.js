@@ -71,6 +71,10 @@
         function handleErrorResult(data, status, errorCallback) {
             $log.info("error:", data, status, errorCallback);
             switch (status) {
+            	case 401: {
+            		//handled globally by http observer
+            		break;
+            	}
                 case 403: {
                     //handled globally by http observer
                     break;

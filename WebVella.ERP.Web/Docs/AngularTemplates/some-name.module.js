@@ -60,7 +60,7 @@
         }
 
         function errorCallback(response) {
-            defer.resolve(response);
+        	defer.reject(response.message);
         }
 
         siteMetaService.getUpdateSiteMeta(successCallback, errorCallback);

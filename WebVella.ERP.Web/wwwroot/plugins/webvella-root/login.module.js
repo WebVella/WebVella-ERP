@@ -17,7 +17,7 @@
     config.$inject = ['$stateProvider'];
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-root-login', {
+    	$stateProvider.state('webvella-root-login', {
         	url: '/login',
             views: {
                 "rootView": {
@@ -44,28 +44,6 @@
     };
 
 
-    // Resolve Function /////////////////////////
-    resolvingFunction.$inject = ['$q'];
-
-    /* @ngInject */
-    function resolvingFunction($q) {
-    	$log.debug('webvellaRoot>login> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-
-        // Initialize
-        var defer = $q.defer();
-        
-        // Process
-        defer.resolve("test");
-
-        // Return
-        $log.debug('webvellaRoot>login> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-        return defer.promise;
-
-    }
-
-
-
-
     // Controller ///////////////////////////////
     controller.$inject = ['$state', '$log', 'webvellaRootService', '$timeout', 'pageTitle'];
 
@@ -73,7 +51,14 @@
     function controller($state, $log, webvellaRootService, $timeout, pageTitle) {
     	$log.debug('webvellaRoot>login> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var loginData = this;
+    	var loginData = this;
+    	var currentUser = webvellaRootService.getCurrentUser();
+        if (currentUser != null) {
+        	$timeout(function () {
+        		$state.go("webvella-desktop-browse");
+        	}, 0);
+        }
+
         loginData.email = "erp@webvella.com";
         loginData.password = "ttg";
         loginData.rememberMe = false;
