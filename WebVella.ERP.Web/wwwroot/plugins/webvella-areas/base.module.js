@@ -55,7 +55,7 @@
     resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
 	/* @ngInject */
     function resolveSitemap($q, $log, webvellaRootService) {
-    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAreas>base>resolveSitemap> BEGIN sitemap resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
 
@@ -65,21 +65,21 @@
     	}
 
     	function errorCallback(response) {
-    		defer.resolve(response.object);
+    		defer.reject(response.message);
     	}
 
     	//webvellaRootService.getSitemap(successCallback, errorCallback);
     	webvellaRootService.getSitemap(successCallback, errorCallback);
     	
     	// Return
-    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAreas>base>resolveSitemap> END sitemap resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
     resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
 	/* @ngInject */
     function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
-    	$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAreas>base>resolveCurrentUser> BEGIN user resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
     	// Process
@@ -88,7 +88,7 @@
     	}
 
     	function errorCallback(response) {
-    		defer.resolve(response.object);
+    		defer.reject(response.message);
     	}
 
     	var currentUser = webvellaRootService.getCurrentUser();
@@ -101,7 +101,7 @@
     	}
 
     	// Return
-    	$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAreas>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 

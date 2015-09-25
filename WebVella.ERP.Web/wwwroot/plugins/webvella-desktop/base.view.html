@@ -17,9 +17,9 @@
                 <li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
             </ul>-->
             <ul class="nav navbar-nav navbar-right">
-                <li class="hidden-xs hidden-sm"><p class="navbar-text">Hi  Wolfgang Mozart</p></li>
-                <li><a href="javascript:void(0)">Account</a></li>
-                <li><a href="javascript:void(0)">Logout</a></li>
+                <li class="hidden-xs hidden-sm"><p class="navbar-text">{{pluginData.user.first_name}} {{pluginData.user.last_name}}</p></li>
+                <!--<li><a href="javascript:void(0)">Account</a></li>-->
+                <li><a href="javascript:void(0)" ng-click="pluginData.logout()"><i class="fa fa-sign-out"></i> logout</a></li>
             </ul>
         </div>
     </div>

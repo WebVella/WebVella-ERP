@@ -33,7 +33,8 @@
                 //here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
                 pageTitle: function () {
                     return "Webvella ERP";
-                }                
+                },
+                resolvedCurrentUser: resolveCurrentUser
             },
             data: { }
         });
@@ -50,17 +51,50 @@
     	$log.debug('webvellaDesktop>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
+	// Resolve /////////////////////////////////
+    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
+	/* @ngInject */
+    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
+    	$log.debug('webvellaAreas>base>resolveCurrentUser> BEGIN user resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.reject(response.message);
+    	}
+
+    	var currentUser = webvellaRootService.getCurrentUser();
+
+    	if (currentUser != null) {
+    		webvellaAdminService.getUserById(currentUser.userId, successCallback, errorCallback);
+    	}
+    	else {
+    		defer.resolve(null);
+    	}
+
+    	// Return
+    	$log.debug('webvellaAreas>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
+
+
+
+
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout'];
+    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout','webvellaAdminService','resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout) {
+    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout,webvellaAdminService,resolvedCurrentUser) {
     	$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.topnav = [];
-
+        pluginData.user = angular.copy(resolvedCurrentUser.data[0]);
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaDesktopTopnavFactory.initTopnav();
@@ -91,6 +125,19 @@
         webvellaDesktopTopnavFactory.addItem(item);
         $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
+
+
+        pluginData.logout = function () {
+        	webvellaAdminService.logout(
+                    function (response) {
+                    	//  $window.location = '#/login';
+                    	$timeout(function () {
+                    		$state.go('webvella-root-login');
+                    	}, 0);
+                    },
+                    function (response) { });
+        }
+
 
         $log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 

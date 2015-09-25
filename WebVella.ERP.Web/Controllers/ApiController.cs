@@ -2673,9 +2673,8 @@ namespace WebVella.ERP.Web.Controllers
                     }
                 }
 				}
-
-
                 transaction.Commit();
+				WebSecurityUtil.RemoveIdentityFromCache(userId);
             }
             catch (Exception ex)
             {
