@@ -1763,14 +1763,17 @@ namespace WebVella.ERP.Web.Controllers
 
 				if (list.Query != null)
 				{
-					if (queryObj != null)
+                    var listQuery = RecordListQuery.ConvertQuery(list.Query);
+
+                    if (queryObj != null)
 					{
-						List<QueryObject> subQueries = new List<QueryObject>();
-						subQueries.Add(RecordListQuery.ConvertQuery(list.Query));
-						queryObj.SubQueries = subQueries;
+                        if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
+                            queryObj.SubQueries.Add(listQuery);
+                        else
+                            queryObj = EntityQuery.QueryAND(listQuery, queryObj);
 					}
 					else
-						queryObj = RecordListQuery.ConvertQuery(list.Query);
+						queryObj = listQuery;
 
 					resultQuery.Query = queryObj;
 				}
