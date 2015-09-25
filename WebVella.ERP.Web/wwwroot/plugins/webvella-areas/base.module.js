@@ -67,8 +67,6 @@
     	function errorCallback(response) {
     		defer.reject(response.message);
     	}
-
-    	//webvellaRootService.getSitemap(successCallback, errorCallback);
     	webvellaRootService.getSitemap(successCallback, errorCallback);
     	
     	// Return
@@ -99,16 +97,13 @@
 	//#endregion
 
     //#region << Controller >>
-    controller.$inject = ['$log'];
+    controller.$inject = ['$log', '$stateParams', 'webvellaRootService', 'resolvedCurrentUser', 'resolvedSitemap', 'ngToast', '$window'];
     /* @ngInject */
-    function controller($log) {
+    function controller($log, $stateParams, webvellaRootService, resolvedCurrentUser, resolvedSitemap, ngToast, $window) {
     	$log.debug('webvellaAreas>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var pluginData = this;
-
-        activate();
+    	var pluginData = this;
         $log.debug('webvellaAreas>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        function activate() { }
     }
     //#endregion
 

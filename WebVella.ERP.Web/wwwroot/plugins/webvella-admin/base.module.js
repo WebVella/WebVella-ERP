@@ -51,8 +51,8 @@
     function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
     	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
-            var currentUser = webvellaRootService.getCurrentUser();
-        	//TODO: check role and allow only for admins
+			//Allow visible only to admins
+        	var currentUser = webvellaRootService.getCurrentUser();
             if (currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") > -1) {
             	var item = {
             		"label": "Administration",

@@ -41,6 +41,7 @@
 				}
 			},
 			resolve: {
+				checkedAccessPermission: checkAccessPermission,
 				resolvedListRecords: resolveListRecords,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentArea: resolveCurrentArea,
@@ -53,19 +54,32 @@
 	};
 
 
-	//#region << Run //////////////////////////////////////
-	run.$inject = ['$log'];
-
-	/* @ngInject */
-	function run($log) {
-		$log.debug('webvellaAreas>entities> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-		$log.debug('webvellaAreas>entities> END module.run ' + moment().format('HH:mm:ss SSSS'));
-	};
-
-	//#endregion
-
 	//#region << Resolve Function >>
+
+	checkAccessPermission.$inject = ['$q', '$log', 'webvellaRootService', '$stateParams', 'resolvedSitemap', 'resolvedCurrentUser', 'ngToast'];
+	/* @ngInject */
+	function checkAccessPermission($q, $log, webvellaRootService, $stateParams, resolvedSitemap, resolvedCurrentUser, ngToast) {
+		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+		var defer = $q.defer();
+		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">' + $stateParams.areaName + '</span> area';
+		var accessPermission = webvellaRootService.applyAreaAccessPolicy($stateParams.areaName, resolvedCurrentUser, resolvedSitemap);
+		if (accessPermission) {
+			defer.resolve();
+		}
+		else {
+			
+			ngToast.create({
+				className: 'error',
+				content: messageContent
+			});
+			defer.reject("No access");
+		}
+
+		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+		return defer.promise;
+	}
+
+	////////////////////////
 	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout', 'ngToast'];
 	/* @ngInject */
 	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams, $timeout, ngToast) {
