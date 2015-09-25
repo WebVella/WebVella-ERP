@@ -62,8 +62,8 @@
     	else {
     		loginData.loginIsActive = true;
 
-    		loginData.email = "erp@webvella.com";
-    		loginData.password = "ttg";
+    		//loginData.email = "erp@webvella.com";
+    		//loginData.password = "erp";
     		loginData.rememberMe = false;
     		loginData.pageTitle = "Login | " + pageTitle;
     		webvellaRootService.setPageTitle(loginData.pageTitle);

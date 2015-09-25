@@ -62,6 +62,9 @@
                 "page": 1
             };
 
+        	//Roles
+            menuItem.roles = angular.fromJson(area.roles);
+			
 
             return menuItem
         }

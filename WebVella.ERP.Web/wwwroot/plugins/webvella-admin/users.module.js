@@ -23,7 +23,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-users', {
             parent: 'webvella-admin-base',
-            url: '/users/lists', 
+            url: '/users', 
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -42,6 +42,7 @@
                 }
             },
             resolve: {
+            	checkedAccessPermission: checkAccessPermission,
             	resolvedUserRecordsList: resolveUserRecordsList,
                 resolvedRolesList: resolveRolesList
             },
@@ -53,6 +54,35 @@
 
 
     //#region << Resolve Functions >>/////////////////////////
+    checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
+	/* @ngInject */
+    function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
+    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+    	var defer = $q.defer();
+    	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
+    	var accessPermission = false;
+    	for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
+    		if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+    			accessPermission = true;
+    		}
+    	}
+
+    	if (accessPermission) {
+    		defer.resolve();
+    	}
+    	else {
+
+    		ngToast.create({
+    			className: 'error',
+    			content: messageContent
+    		});
+    		defer.reject("No access");
+    	}
+
+    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
+
 
     resolveUserRecordsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
@@ -288,7 +318,7 @@
         function successCallback(response) {
             ngToast.create({
                 className: 'success',
-                content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
+                content: '<span class="go-green">Success:</span> ' + 'The user was successfully saved'
             });
             $modalInstance.close('success');
             webvellaRootService.GoToState($state,$state.current.name, {});

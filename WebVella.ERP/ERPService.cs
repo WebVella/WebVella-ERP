@@ -319,7 +319,7 @@ namespace WebVella.ERP
 					{
 						EntityRecord adminRole = new EntityRecord();
 						adminRole["id"] = SystemIds.AdministratorRoleId;
-						adminRole["name"] = "Administrator";
+						adminRole["name"] = "administrator";
 						adminRole["description"] = "";
 						adminRole["created_by"] = SystemIds.FirstUserId;
 						adminRole["last_modified_by"] = SystemIds.FirstUserId;
@@ -333,7 +333,7 @@ namespace WebVella.ERP
 					{
 						EntityRecord regularRole = new EntityRecord();
 						regularRole["id"] = SystemIds.RegularRoleId;
-						regularRole["name"] = "Regular";
+						regularRole["name"] = "regular";
 						regularRole["description"] = "";
 						regularRole["created_by"] = SystemIds.FirstUserId;
 						regularRole["last_modified_by"] = SystemIds.FirstUserId;
@@ -347,7 +347,7 @@ namespace WebVella.ERP
 					{
 						EntityRecord guestRole = new EntityRecord();
 						guestRole["id"] = SystemIds.GuestRoleId;
-						guestRole["name"] = "Guest";
+						guestRole["name"] = "guest";
 						guestRole["description"] = "";
 						guestRole["created_by"] = SystemIds.FirstUserId;
 						guestRole["last_modified_by"] = SystemIds.FirstUserId;
