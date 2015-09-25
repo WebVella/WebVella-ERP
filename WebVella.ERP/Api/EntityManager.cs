@@ -1085,9 +1085,13 @@ namespace WebVella.ERP.Api
 
                                                             bool foundMoreThanOneTime = false;
                                                             if (inputItem.FieldId == null)
-                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldName == inputItem.FieldName).Count() > 1;
+                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem
+                                                                                    && ((InputRecordViewRelationFieldItem)i).FieldName == inputItem.FieldName
+                                                                                    && ((InputRecordViewRelationFieldItem)i).RelationId == inputItem.RelationId ).Count() > 1;
                                                             else
-                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem && ((InputRecordViewRelationFieldItem)i).FieldId == inputItem.FieldId).Count() > 1;
+                                                                foundMoreThanOneTime = column.Items.Where(i => i is InputRecordViewRelationFieldItem 
+                                                                                && ((InputRecordViewRelationFieldItem)i).FieldId == inputItem.FieldId
+                                                                                && ((InputRecordViewRelationFieldItem)i).RelationId == inputItem.RelationId ).Count() > 1;
 
                                                             if (foundMoreThanOneTime)
                                                                 errorList.Add(new ErrorModel("regions.sections.rows.columns.items.fieldName", null, "There is already an item with such field name or id!"));
