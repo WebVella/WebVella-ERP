@@ -1160,6 +1160,11 @@ namespace WebVella.ERP.Api
                     if (obj.FieldValue != null && obj.FieldValue is string )
                         obj.FieldValue = new Guid(obj.FieldValue as string);
                 }
+                else if (field is CheckboxField)
+                {
+                    if (obj.FieldValue != null && obj.FieldValue is string)
+                        obj.FieldValue = bool.Parse(obj.FieldValue as string);
+                }
                 else if (field is PasswordField && obj.FieldValue != null)
                     obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
 
