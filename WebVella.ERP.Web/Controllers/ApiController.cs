@@ -2548,20 +2548,32 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					userObj.Properties.Add("created_on",DateTime.Now);
 				}
+				else {
+					userObj["created_on"] = DateTime.Now;
+				}
 
 				if (!userObj.Properties.ContainsKey("created_by"))
 				{
 					userObj.Properties.Add("created_by",SecurityContext.CurrentUser.Id);	
+				}
+				else {
+					userObj["created_by"] = SecurityContext.CurrentUser.Id;
 				}
 
 				if (!userObj.Properties.ContainsKey("last_modified_on"))
 				{
 					userObj.Properties.Add("last_modified_on",DateTime.Now);	
 				}
+				else {
+					userObj["last_modified_on"] = DateTime.Now;
+				}
 
 				if (!userObj.Properties.ContainsKey("last_modified_by"))
 				{
 					userObj.Properties.Add("last_modified_by",SecurityContext.CurrentUser.Id);	
+				}
+				else {
+					userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
 				}
 
                 var createResult = recMan.CreateRecord("user", userObj);
@@ -2676,10 +2688,16 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					userObj.Properties.Add("last_modified_on",DateTime.Now);	
 				}
+				else {
+					userObj["last_modified_on"] = DateTime.Now;
+				}
 
 				if (!userObj.Properties.ContainsKey("last_modified_by"))
 				{
 					userObj.Properties.Add("last_modified_by",SecurityContext.CurrentUser.Id);	
+				}
+				else {
+					userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
 				}
 
 				var updateResult = recMan.UpdateRecord("user", userObj);

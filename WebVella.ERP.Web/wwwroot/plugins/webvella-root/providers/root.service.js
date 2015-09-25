@@ -26,6 +26,7 @@
         serviceInstance.generateValidationMessages = generateValidationMessages;
         serviceInstance.GoToState = GoToState;
         serviceInstance.getCurrentUser = getCurrentUser;
+        serviceInstance.applyAreaAccessPolicy = applyAreaAccessPolicy;
 
         ///////////////////////
         function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
@@ -123,6 +124,41 @@
         		user = angular.fromJson(cookieValueDecoded);
         	}
         	return user;
+        }
+
+    	///////////////////////////////////////////////////////////////////////
+        function applyAreaAccessPolicy(areaName, currentUser, sitemap) {
+        	if (currentUser == null) {
+        		return false;
+        	}
+	
+        	var currentAreaObject = null;
+        	for (var i = 0; i < sitemap.data.length; i++) {
+        		if (sitemap.data[i].name == areaName) {
+        			currentAreaObject = sitemap.data[i];
+        		}
+        	}
+        	if (currentAreaObject == null) {
+				return false;
+        	}
+
+        	var areaRoles = angular.fromJson(currentAreaObject.roles);
+        	var userHasAreaRole = false;
+        	for (var j = 0; j < areaRoles.length; j++) {
+        		for (var k = 0; k < currentUser.roles.length; k++) {
+        			if (currentUser.roles[k] == areaRoles[j]) {
+        				userHasAreaRole = true;
+        				break;
+        			}
+
+        		}
+        	}
+        	if (userHasAreaRole) {
+        		return true;
+        	}
+        	else {
+        		return false;
+        	}
         }
 
 
