@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Utilities;
@@ -35,6 +37,12 @@ namespace WebVella.ERP.Web.Security
         [JsonProperty(PropertyName = "lastName")]
         public string LastName { get; set; }
 
+        [JsonProperty(PropertyName = "image")]
+        public string Image { get; set; }
+
+        [JsonProperty(PropertyName = "roles")]
+        public List<ErpRole> Roles { get; set; }
+
         public AuthToken()
         {
         }
@@ -47,6 +55,8 @@ namespace WebVella.ERP.Web.Security
             LastName = user.LastName;
             LastModified = user.ModifiedOn;
             ExpirationDate = expirationDate;
+            Roles = user.Roles;
+            Image = user.Image;
         }
 
         public static AuthToken Create(ErpUser user, bool extendedExpiration)
@@ -100,6 +110,12 @@ namespace WebVella.ERP.Web.Security
             [JsonProperty(PropertyName = "lastName")]
             public string LastName { get; set; }
 
+            [JsonProperty(PropertyName = "image")]
+            public string Image { get; set; }
+
+            [JsonProperty(PropertyName = "roles")]
+            public List<Guid> Roles { get; set; }
+
             [JsonProperty(PropertyName = "token")]
             public string Token { get; set; }
 
@@ -113,6 +129,9 @@ namespace WebVella.ERP.Web.Security
                 Email = token.Email;
                 FirstName = token.FirstName;
                 LastName = token.LastName;
+                Image = token.Image;
+                Roles = new List<Guid>();
+                Roles.AddRange(token.Roles.Select(x => x.Id));
                 Token = CryptoUtility.EncryptDES(JsonConvert.SerializeObject(token, new IsoDateTimeConverter()));
             }
         }

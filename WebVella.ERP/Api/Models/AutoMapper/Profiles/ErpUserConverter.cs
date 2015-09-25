@@ -20,6 +20,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
             dest.Password = (string)src["password"];
             dest.FirstName = (string)src["first_name"];
             dest.LastName = (string)src["last_name"];
+            dest.Image = (string)src["image"];
             dest.CreatedOn = (DateTime)src["created_on"];
             dest.CreatedBy = (Guid?)src["created_by"];
             dest.ModifiedOn = (DateTime)src["last_modified_on"];

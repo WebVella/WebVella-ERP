@@ -31,6 +31,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "lastName")]
         public string LastName { get; set; }
 
+        [JsonProperty(PropertyName = "image")]
+        public string Image { get; set; }
+
         [JsonProperty(PropertyName = "enabled")]
         public bool Enabled { get; set; }
 
