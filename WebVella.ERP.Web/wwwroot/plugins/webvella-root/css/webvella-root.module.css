@@ -423,10 +423,12 @@ ngToast
 		color: #BDBDBD;
 		white-space: nowrap;
 		overflow: hidden;
-		max-width: 185px;
-		display: inline-block;
+		/*max-width: 185px;
+		display: inline-block;*/
+		display:block;
 		height: 2.5em;
 		line-height: 2.5em;
+		text-overflow:ellipsis;
 	}
 
 /*Mini sidebar*/
@@ -1515,8 +1517,7 @@ ngToast
 
 #page-content {
 	position: relative;
-	min-height: 900px;
-	padding-bottom: 1em;
+	min-height: 500px;
 	background-color: #fff;
 }
 
@@ -2120,9 +2121,20 @@ form .error {
 		display: none;
 	}
 
+	.table.hide-header tbody tr:first-child td {
+		border-top:none;
+	}
+
 .table-vertical-align-middle tbody th,
 .table-vertical-align-middle tbody td {
 	vertical-align: middle !important;
+}
+
+.table .img-thumbnail {
+	border:none;
+	border-radius:0;
+	padding:0;
+	max-height:60px;
 }
 
 table thead th.actions,
@@ -2512,7 +2524,7 @@ table .btn-xs.btn-link {
 	position: absolute;
 	left: -206px;
 	z-index: 10;
-	top: -12px;
+	top: 47px;
 }
 
 #sidebar .tabbable.spilled {
@@ -2646,7 +2658,7 @@ table .btn-xs.btn-link {
 .mini-sidebar .tabbable.spilled {
 	left: -50px;
 	margin: 0;
-	top: 14px;
+	top: 76px;
 }
 
 .mini-sidebar #sidebar .tabbable.spilled {

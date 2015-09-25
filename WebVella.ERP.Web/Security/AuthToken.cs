@@ -19,22 +19,22 @@ namespace WebVella.ERP.Web.Security
 
     internal class AuthToken
     {
-        [JsonProperty(PropertyName = "lastModified")]
+        [JsonProperty(PropertyName = "last_modified_on")]
         public DateTime? LastModified { get; set; }
 
-        [JsonProperty(PropertyName = "expirationDate")]
+        [JsonProperty(PropertyName = "expiration_date")]
         public  DateTime ExpirationDate { get; set; }
 
-        [JsonProperty(PropertyName = "userId")]
+        [JsonProperty(PropertyName = "id")]
         public Guid UserId { get; set; }
 
         [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
 
-        [JsonProperty(PropertyName = "firstName")]
+        [JsonProperty(PropertyName = "first_name")]
         public string FirstName { get; set; }
 
-        [JsonProperty(PropertyName = "lastName")]
+        [JsonProperty(PropertyName = "last_name")]
         public string LastName { get; set; }
 
         [JsonProperty(PropertyName = "image")]
@@ -98,16 +98,16 @@ namespace WebVella.ERP.Web.Security
 
         private class TokenWrapper
         {
-            [JsonProperty(PropertyName = "userId")]
+            [JsonProperty(PropertyName = "id")]
             public Guid UserId { get; set; }
 
             [JsonProperty(PropertyName = "email")]
             public string Email { get; set; }
 
-            [JsonProperty(PropertyName = "firstName")]
+            [JsonProperty(PropertyName = "first_name")]
             public string FirstName { get; set; }
 
-            [JsonProperty(PropertyName = "lastName")]
+            [JsonProperty(PropertyName = "last_name")]
             public string LastName { get; set; }
 
             [JsonProperty(PropertyName = "image")]

@@ -21,7 +21,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="page-content">
+<div id="page-body">
 	<form id="filters" class="form-inline" ng-show="contentData.areas.length > 0">
 		<div class="form-group">
 			<div class="input-group">
@@ -48,7 +48,7 @@
 				<tr ng-repeat="area in contentData.areas | filter: contentData.search">
 
 					<td>
-						<a ng-click="contentData.openManageAreaModal(area)" class="btn btn-default">
+						<a ng-click="contentData.openManageAreaModal(area)" class="btn btn-default btn-sm">
 							<i class="fa fa-pencil"></i>
 						</a>
 					</td>
@@ -190,7 +190,7 @@
 						<label>Allow access to</label>
 						<div>
 							<label ng-repeat="role in popupData.roles" class="checkbox-inline">
-								<input type="checkbox" checklist-model="popupData.area.roles" checklist-value="role.id"> {{role.name}}
+								<input type="checkbox" checklist-model="popupData.rolesValues" checklist-value="role.id"> {{role.name}}
 							</label>
 						</div>
 					</div>

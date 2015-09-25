@@ -1,14 +1,4 @@
-﻿<!--<div id="wrapper">
-	 <div id="login">
-		 <input ng-model="loginData.email" type="text" class="form-control" placeholder="email address">
-		 <input  type="password" class="form-control" placeholder="password">
-		 <button>login</button>
-	</div>
-</div>-->
-
-
-<div class="container">
-
+﻿<div class="container ng-hide" ng-show="loginData.loginIsActive">
 	<div class="form form-signin">
 		<h2 class="form-signin-heading">Please sign in</h2>
 		<div class="alert alert-error" ng-show="loginData.ValidationErrors"></div>
@@ -29,5 +19,4 @@
 		</div>
 		<button class="btn btn-lg btn-primary btn-block" href="javascript:void(0)" ng-click="loginData.doLogin()">Sign in</button>
 	</div>
-
-</div> <!-- /container -->
+</div>

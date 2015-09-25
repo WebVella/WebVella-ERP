@@ -58,7 +58,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>
 </div>
-<div id="page-content">
+<div id="page-body">
 	<form id="filters" class="form-inline hidden-xs hidden-sm">
 		<div class="form-group" ng-if="contentData.defaultSearchField != null">
 			<div class="input-group">
@@ -118,7 +118,7 @@
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td class="actions">
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default btn-sm">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
@@ -126,7 +126,7 @@
 						<div ng-if="contentData.currentUserHasReadPermission(column)">
 							<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
 								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
-								<span ng-switch-when="2">{{contentData.getCheckboxString(record,column)}}</span>
+								<span ng-switch-when="2" ng-bind-html="contentData.getCheckboxString(record,column)"></span>
 								<span ng-switch-when="3">{{contentData.getCurrencyString(record,column)}}</span>
 								<span ng-switch-when="4">{{contentData.getDateString(record,column)}}</span>
 								<span ng-switch-when="5">{{contentData.getDateTimeString(record,column)}}</span>
@@ -162,7 +162,7 @@
 		<div class="alert alert-info" ng-show="contentData.records.length == 0">
 			There are no records matching your query
 		</div>
-		<ul class="pager">
+		<ul class="pager" ng-hide="contentData.currentPage == 1 && contentData.currentListView.pageSize > contentData.records.length">
 			<li ng-if="contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 			<li ng-if="contentData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 			<li ng-if="contentData.currentListView.pageSize <= contentData.records.length" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>

@@ -523,10 +523,10 @@
 		contentData.getCheckboxString = function (record, field) {
 			var fieldValue = record[field.dataName];
 			if (fieldValue) {
-				return "true";
+				return "<span class='label label-success'>true</span>";
 			}
 			else {
-				return "false";
+				return "<span class='label label-danger'>false</span>";
 			}
 		}
 		//3.Currency
@@ -870,15 +870,19 @@
 		for (var m = 0; m < popupData.contentData.currentListView.columns.length; m++) {
 			//is this field visible for the currentUser
 			var userHasReadPermissionForField = false;
-			for (var r = 0; r < popupData.currentUserRoles.length; r++) {
-				for (var p = 0; p < popupData.contentData.currentListView.columns[m].meta.permissions.canRead.length; p++) {
-					if (popupData.currentUserRoles[r].id == popupData.contentData.currentListView.columns[m].meta.permissions.canRead[p]) {
-						userHasReadPermissionForField = true;
-						break;
+			if (!popupData.contentData.currentListView.columns[m].meta.enableSecurity) {
+				userHasReadPermissionForField = true;
+			}
+			else {
+				for (var r = 0; r < popupData.currentUserRoles.length; r++) {
+					for (var p = 0; p < popupData.contentData.currentListView.columns[m].meta.permissions.canRead.length; p++) {
+						if (popupData.currentUserRoles[r].id == popupData.contentData.currentListView.columns[m].meta.permissions.canRead[p]) {
+							userHasReadPermissionForField = true;
+							break;
+						}
 					}
 				}
 			}
-
 			switch (popupData.contentData.currentListView.columns[m].type) {
 				case "field":
 					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].meta.enableSecurity || (popupData.contentData.currentListView.columns[m].meta.enableSecurity && userHasReadPermissionForField))) {
