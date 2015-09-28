@@ -21,7 +21,9 @@ namespace WebVella.ERP.Storage
 
 		string CssClass { get; set; }
 
-		RecordListType Type { get; set; }
+        string IconName{ get; set; }
+
+        RecordListType Type { get; set; }
 
 		int PageSize { get; set; }
 
