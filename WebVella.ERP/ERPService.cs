@@ -75,10 +75,17 @@ namespace WebVella.ERP
 						roleEntity.LabelPlural = "Roles";
 						roleEntity.System = true;
 						roleEntity.RecordPermissions = new RecordPermissions();
-						roleEntity.RecordPermissions.CanRead = allowedRoles;
-						roleEntity.RecordPermissions.CanCreate = allowedRoles;
-						roleEntity.RecordPermissions.CanUpdate = allowedRoles;
-						roleEntity.RecordPermissions.CanDelete = allowedRoles;
+						roleEntity.RecordPermissions.CanCreate = new List<Guid>();
+						roleEntity.RecordPermissions.CanRead = new List<Guid>();
+						roleEntity.RecordPermissions.CanUpdate = new List<Guid>();
+						roleEntity.RecordPermissions.CanDelete = new List<Guid>();
+						roleEntity.RecordPermissions.CanCreate.Add(SystemIds.GuestRoleId);
+						roleEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+						roleEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+						roleEntity.RecordPermissions.CanRead.Add(SystemIds.GuestRoleId);
+						roleEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+						roleEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+						roleEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 
 						response = entityManager.CreateEntity(roleEntity);
 
@@ -133,10 +140,17 @@ namespace WebVella.ERP
 						userEntity.LabelPlural = "Users";
 						userEntity.System = true;
 						userEntity.RecordPermissions = new RecordPermissions();
-						userEntity.RecordPermissions.CanRead = allowedRoles;
-						userEntity.RecordPermissions.CanCreate = allowedRoles;
-						userEntity.RecordPermissions.CanUpdate = allowedRoles;
-						userEntity.RecordPermissions.CanDelete = allowedRoles;
+						userEntity.RecordPermissions.CanCreate = new List<Guid>();
+						userEntity.RecordPermissions.CanRead = new List<Guid>();
+						userEntity.RecordPermissions.CanUpdate = new List<Guid>();
+						userEntity.RecordPermissions.CanDelete = new List<Guid>();
+						userEntity.RecordPermissions.CanCreate.Add(SystemIds.GuestRoleId);
+						userEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+						userEntity.RecordPermissions.CanRead.Add(SystemIds.GuestRoleId);
+						userEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+						userEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+						userEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+						userEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 
 						response = entityManager.CreateEntity(userEntity);
 
@@ -382,10 +396,15 @@ namespace WebVella.ERP
 						areaEntity.IconName = "folder";
 						areaEntity.Weight = 10;
 						areaEntity.RecordPermissions = new RecordPermissions();
-						areaEntity.RecordPermissions.CanRead = allowedRoles;
-						areaEntity.RecordPermissions.CanCreate = allowedRoles;
-						areaEntity.RecordPermissions.CanUpdate = allowedRoles;
-						areaEntity.RecordPermissions.CanDelete = allowedRoles;
+						areaEntity.RecordPermissions.CanCreate = new List<Guid>();
+						areaEntity.RecordPermissions.CanRead = new List<Guid>();
+						areaEntity.RecordPermissions.CanUpdate = new List<Guid>();
+						areaEntity.RecordPermissions.CanDelete = new List<Guid>();
+						areaEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+						areaEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+						areaEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+						areaEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+						areaEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
 						{
 							var createResponse = entityManager.CreateEntity(areaEntity);
 							if (!createResponse.Success)
@@ -557,10 +576,18 @@ namespace WebVella.ERP
 						filterEntity.IconName = "filter";
 						filterEntity.Weight = 100;
 						filterEntity.RecordPermissions = new RecordPermissions();
-						filterEntity.RecordPermissions.CanRead = allowedRoles;
-						filterEntity.RecordPermissions.CanCreate = allowedRoles;
-						filterEntity.RecordPermissions.CanUpdate = allowedRoles;
-						filterEntity.RecordPermissions.CanDelete = allowedRoles;
+						filterEntity.RecordPermissions.CanCreate = new List<Guid>();
+						filterEntity.RecordPermissions.CanRead = new List<Guid>();
+						filterEntity.RecordPermissions.CanUpdate = new List<Guid>();
+						filterEntity.RecordPermissions.CanDelete = new List<Guid>();
+						filterEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+						filterEntity.RecordPermissions.CanCreate.Add(SystemIds.RegularRoleId);
+						filterEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+						filterEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+						filterEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+						filterEntity.RecordPermissions.CanUpdate.Add(SystemIds.RegularRoleId);
+						filterEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+						filterEntity.RecordPermissions.CanDelete.Add(SystemIds.RegularRoleId);
 						{
 							var createResponse = entityManager.CreateEntity(filterEntity);
 							if (!createResponse.Success)

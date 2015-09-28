@@ -413,6 +413,7 @@ ngToast
 	#userbox .avatar {
 		width: 2.5em;
 		height: 2.5em;
+		border-radius:2.5em;
 		float: left;
 		margin-right: 10px;
 		display: block;
@@ -441,6 +442,8 @@ ngToast
 	.mini-sidebar #userbox .avatar {
 		float: none;
 		margin: 0 auto;
+		width: 2em;
+		height: 2em;
 	}
 
 	.mini-sidebar #userbox .username {
@@ -1858,16 +1861,16 @@ body.mini-sidebar #loading-bar-spinner {
 }
 
 body #loading-bar-spinner {
-	top: 10px;
-	left: 13px;
+	top: 7px;
+	left: 12px;
 }
 
 #loading-bar-spinner .spinner-icon {
 	border-top-color: #F44336;
 	border-left-color: #F44336;
-	width: 36px;
-	height: 36px;
-	border-radius: 36px;
+	width: 3em;
+	height: 3em;
+	border-radius: 3em;
 	border-width: 3px;
 }
 

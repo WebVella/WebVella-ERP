@@ -1,6 +1,6 @@
 WebVella ERP
 ======
-**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET 5, MVC6 and AngularJS. Supports multiple databases, but the initial release will be for TokuDB (mongodb with transactions). Targets Linux or Windows as host OS.
+**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET 5, MVC6 and AngularJS. Supports multiple databases, but the initial release will be for TokuMX (mongodb with transactions). The support for MS SQL and MySQL databases will be available until the end of 2016. Targets Linux or Windows as host OS.
 
 We will greatly appriciate your support of the project by: 
 * giving it a "star" 

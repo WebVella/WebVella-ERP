@@ -142,7 +142,7 @@ return defer.promise;
 				//Find the first matching dynamic view
 				for (var k = 0; k < dynamicViewsSorted.length; k++) {
 					var splitArray = dynamicViewsSorted[k].name.split("~");
-					if (splitArray.length > 3) {
+					if (splitArray.length == 3) {
 						var areaName = splitArray[0];
 						var fieldName = splitArray[1];
 						var fieldValue = splitArray[2];
@@ -347,13 +347,15 @@ return defer.promise;
 						contentData.selectedSidebarPage.isView = true;
 						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
 							contentData.selectedSidebarPage.isEdit = true;
+							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName][0]);
 						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list"
 							|| contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
 							contentData.selectedSidebarPage.isView = false;
+							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName]);
 						}
 					}
 				}
-				returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName][0]);
+				
 			}
 
 			return returnObject;
@@ -820,7 +822,7 @@ return defer.promise;
 				}
 				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 					for (var k = 0; k < item.meta.permissions.canRead.length; k++) {
-						if (item.meta.permissions.canRead[k] == contentData.currentUserRoles[i].id) {
+						if (item.meta.permissions.canRead[k] == contentData.currentUserRoles[i]) {
 							result = true;
 						}
 					}
@@ -836,7 +838,7 @@ return defer.promise;
 				}
 				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 					for (var k = 0; k < item.meta.permissions.canUpdate.length; k++) {
-						if (item.meta.permissions.canUpdate[k] == contentData.currentUserRoles[i].id) {
+						if (item.meta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
 							result = true;
 						}
 					}
