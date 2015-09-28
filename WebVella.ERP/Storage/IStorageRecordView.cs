@@ -21,6 +21,8 @@ namespace WebVella.ERP.Storage
 
         string CssClass { get; set; }
 
+        string IconName { get; set; }
+
         RecordViewType Type { get; set; }
 
         List<IStorageRecordViewRegion> Regions { get; set; }
