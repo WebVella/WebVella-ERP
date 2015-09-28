@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using WebVella.ERP.Storage;
 using WebVella.ERP.Utilities;
 
 namespace WebVella.ERP.Api.Models
@@ -318,7 +319,7 @@ namespace WebVella.ERP.Api.Models
 
 	#region << Default Classes >>
 
-	public class RecordView
+	public class RecordView 
 	{
 		public RecordView()
 		{
@@ -329,6 +330,7 @@ namespace WebVella.ERP.Api.Models
 			System = false;
 			Weight = 1;
 			CssClass = "";
+            IconName = "";
 			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.General).ToLower();
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
@@ -355,7 +357,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
 
-		[JsonProperty(PropertyName = "type")]
+        [JsonProperty(PropertyName = "iconName")]
+        public string IconName { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
 		[JsonProperty(PropertyName = "regions")]

@@ -31,7 +31,10 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("cssClass")]
 		public string CssClass { get; set; }
 
-		[BsonElement("type")]
+        [BsonElement("iconName")]
+        public string IconName { get; set; }
+
+        [BsonElement("type")]
 		public RecordListType Type { get; set; }
 
         [BsonElement("pageSize")]

@@ -48,7 +48,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
 
-		[JsonProperty(PropertyName = "type")]
+        [JsonProperty(PropertyName = "iconName")]
+        public string IconName { get; set; }
+
+        [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
 		//[JsonProperty(PropertyName = "recordsLimit")]

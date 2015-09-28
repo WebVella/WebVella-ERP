@@ -16,6 +16,7 @@ namespace WebVella.ERP.Storage.Mongo
             System = false;
             Weight = 1;
             CssClass = "";
+            IconName = "";
             Type = RecordViewType.General;
             Regions = new List<IStorageRecordViewRegion>();
             Sidebar = new MongoRecordViewSidebar();
@@ -41,6 +42,9 @@ namespace WebVella.ERP.Storage.Mongo
 
         [BsonElement("cssClass")]
         public string CssClass { get; set; }
+
+        [BsonElement("iconName")]
+        public string IconName { get; set; }
 
         [BsonElement("type")]
         public RecordViewType Type { get; set; }
