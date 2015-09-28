@@ -727,7 +727,9 @@ namespace WebVella.ERP.Web.Controllers
 						list.Query = inputList.Query;
 					if (prop.Name.ToLower() == "sorts")
 						list.Sorts = inputList.Sorts;
-				}
+                    if (prop.Name.ToLower() == "iconname")
+                        list.IconName = inputList.IconName;
+                }
 			}
 			catch (Exception e)
 			{
@@ -1091,7 +1093,9 @@ namespace WebVella.ERP.Web.Controllers
 						view.Regions = inputView.Regions;
 					if (prop.Name.ToLower() == "sidebar")
 						view.Sidebar = inputView.Sidebar;
-				}
+                    if (prop.Name.ToLower() == "iconname")
+                        view.IconName = inputView.IconName;
+                }
 			}
 			catch (Exception e)
 			{
