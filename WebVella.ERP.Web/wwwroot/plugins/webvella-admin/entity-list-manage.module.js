@@ -204,7 +204,10 @@
         var contentData = this;
         //#region << Initialize the current entity >>
         contentData.entity = resolvedCurrentEntityMeta;
-        //#endregion
+    	//#endregion
+
+    	//Awesome font icon names array 
+        contentData.icons = getFontAwesomeIconNames();
 
         //#region << Update page title & hide the side menu >>
         contentData.pageTitle = "Entity Details | " + pageTitle;

@@ -141,7 +141,10 @@
             $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         });
-        //#endregion
+    	//#endregion
+
+    	//Awesome font icon names array 
+        contentData.icons = getFontAwesomeIconNames();
 
     	//#region << Initialize View and Content Region >>
         contentData.view = {};
