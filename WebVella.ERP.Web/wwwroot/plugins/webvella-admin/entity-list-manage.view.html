@@ -81,13 +81,13 @@
 								<div class="form-group">
 									<label class="control-label" for="label">Label</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.label"
-									   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "not set" }}</a>
+									   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label || "" }}</a>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="weight">Weight</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "not set" }}</a>
+									<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight || "" }}</a>
 								</div>
 							</div>
 						</div>
@@ -102,8 +102,8 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="name">System</label>
-									<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-									<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+									<span ng-show="contentData.list.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
+									<span ng-show="!contentData.list.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
 								</div>
 							</div>
 						</div>
@@ -111,14 +111,24 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="label">CSS Class</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "not set" }}</a>
+									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass || "" }}</a>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="weight">Page size</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "not set" }}</a>
+									<label class="control-label" for="weight">Icon Name</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)">{{ contentData.list.iconName || "" }}</a>
 								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="weight">Page size</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "" }}</a>
+								</div>
+							</div>
+							<div class="col-sm-6">
 							</div>
 						</div>
 					</div>

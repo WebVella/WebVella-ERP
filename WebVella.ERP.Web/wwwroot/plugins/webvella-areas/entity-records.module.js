@@ -418,7 +418,7 @@
 			}
 			for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 				for (var k = 0; k < column.meta.permissions.canRead.length; k++) {
-					if (column.meta.permissions.canRead[k] == contentData.currentUserRoles[i].id) {
+					if (column.meta.permissions.canRead[k] == contentData.currentUserRoles[i]) {
 						result = true;
 					}
 				}

@@ -1,5 +1,5 @@
 ﻿	<div ng-if="listData.length == 0">No items</div>
-	<table class="table table-vertical-align-middle {{listMeta.cssClass}}" ng-if="listData.length > 0">
+	<table class="table table-vertical-align-middle table-bordered {{listMeta.cssClass}}" ng-if="listData.length > 0">
 		<thead>
 		<tr>
 			<th class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns">{{column.meta.label}}</th>

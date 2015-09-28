@@ -382,7 +382,7 @@
 		</div>
 	</div>
 
-	<div ng-if="!contentData.selectedSidebarPage.isEdit">
+	<div id="page-text" ng-if="!contentData.selectedSidebarPage.isEdit">
 		<div class="records-details" ng-if="contentData.selectedSidebarPage.isView">
 			<recursive-view view-meta="contentData.selectedSidebarPage" view-data="contentData.selectedSidebarPage.data" relations-list="contentData.relationsList"></recursive-view>
 		</div>
