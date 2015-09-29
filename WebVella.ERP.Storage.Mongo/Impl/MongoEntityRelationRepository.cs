@@ -8,6 +8,8 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoEntityRelationRepository : IStorageEntityRelationRepository
     {
+        private static object lockObject = new object();
+        private static List<IStorageEntityRelation> cachedRelations = null;
         private const string RELATION_COLLECTION_PREFIX = "rel_";
 
         /// <summary>
@@ -16,7 +18,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public List<IStorageEntityRelation> Read()
         {
-            return MongoStaticContext.Context.EntityRelations.Get().ToList<IStorageEntityRelation>();
+            lock (lockObject)
+            {
+                if (cachedRelations == null)
+                    cachedRelations = MongoStaticContext.Context.EntityRelations.Get().ToList<IStorageEntityRelation>();
+
+                return cachedRelations;
+            }
         }
 
         /// <summary>
@@ -26,7 +34,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public IStorageEntityRelation Read(Guid id)
         {
-            return MongoStaticContext.Context.EntityRelations.SingleOrDefault(x => x.Id == id);
+            lock( lockObject)
+            {
+                if (cachedRelations == null)
+                    cachedRelations = Read();
+
+                return cachedRelations.SingleOrDefault(x => x.Id == id);
+            }
         }
 
         /// <summary>
@@ -36,7 +50,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public IStorageEntityRelation Read(string name)
         {
-            return MongoStaticContext.Context.EntityRelations.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant());
+            lock (lockObject)
+            {
+                if (cachedRelations == null)
+                    cachedRelations = Read();
+
+                return cachedRelations.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant());
+            }
         }
 
         /// <summary>
@@ -45,15 +65,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Create(IStorageEntityRelation entityRelation)
         {
-            if (entityRelation == null)
-                throw new ArgumentNullException("entityRelation");
+            lock( lockObject )
+            {
+                if (entityRelation == null)
+                    throw new ArgumentNullException("entityRelation");
 
-            var mongoEntityRelation = entityRelation as MongoEntityRelation;
+                var mongoEntityRelation = entityRelation as MongoEntityRelation;
 
-            if (mongoEntityRelation == null)
-                throw new Exception("The specified entityRelation is not mongo storage object.");
+                if (mongoEntityRelation == null)
+                    throw new Exception("The specified entityRelation is not mongo storage object.");
 
-            return MongoStaticContext.Context.EntityRelations.Create(mongoEntityRelation);
+                cachedRelations = null;
+
+                return MongoStaticContext.Context.EntityRelations.Create(mongoEntityRelation);
+            }
         }
 
         /// <summary>
@@ -62,15 +87,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Update(IStorageEntityRelation entityRelation)
         {
-            if (entityRelation == null)
-                throw new ArgumentNullException("entityRelation");
+            lock( lockObject )
+            {
+                if (entityRelation == null)
+                    throw new ArgumentNullException("entityRelation");
 
-            var mongoEntityRelation = entityRelation as MongoEntityRelation;
+                var mongoEntityRelation = entityRelation as MongoEntityRelation;
 
-            if (mongoEntityRelation == null)
-                throw new StorageException("The specified entityRelation is not mongo storage object.");
+                if (mongoEntityRelation == null)
+                    throw new StorageException("The specified entityRelation is not mongo storage object.");
 
-            return MongoStaticContext.Context.EntityRelations.Update(mongoEntityRelation);
+                cachedRelations = null;
+
+                return MongoStaticContext.Context.EntityRelations.Update(mongoEntityRelation);
+            }
         }
 
         /// <summary>
@@ -80,24 +110,28 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public bool Delete(Guid id)
         {
-            var transaction = MongoStaticContext.Context.CreateTransaction();
-            try
+            lock( lockObject )
             {
+                var transaction = MongoStaticContext.Context.CreateTransaction();
+                try
+                {
 
-                //remove system collection for many to many collection
-                var relation = Read(id);
-                string relationCollectionName = RELATION_COLLECTION_PREFIX + relation.Name;
-                if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
-                    MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
+                    //remove system collection for many to many collection
+                    var relation = Read(id);
+                    string relationCollectionName = RELATION_COLLECTION_PREFIX + relation.Name;
+                    if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
+                        MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
 
-                var result = MongoStaticContext.Context.EntityRelations.Delete(Query.EQ("_id", id));
-                transaction.Commit();
-                return result;
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
+                    var result = MongoStaticContext.Context.EntityRelations.Delete(Query.EQ("_id", id));
+                    transaction.Commit();
+                    cachedRelations = null;
+                    return result;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
@@ -107,15 +141,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Save(IStorageEntityRelation entityRelation)
         {
-            if (entityRelation == null)
-                throw new ArgumentNullException("entityRelation");
+            lock( lockObject )
+            {
+                if (entityRelation == null)
+                    throw new ArgumentNullException("entityRelation");
 
-            var mongoEntityRelation = entityRelation as MongoEntityRelation;
+                var mongoEntityRelation = entityRelation as MongoEntityRelation;
 
-            if (mongoEntityRelation == null)
-                throw new StorageException("The specified entityRelation is not mongo storage object.");
+                if (mongoEntityRelation == null)
+                    throw new StorageException("The specified entityRelation is not mongo storage object.");
 
-            return MongoStaticContext.Context.EntityRelations.Save(mongoEntityRelation);
+                cachedRelations = null;
+
+                return MongoStaticContext.Context.EntityRelations.Save(mongoEntityRelation);
+            }
         }
 
         /// <summary>
@@ -188,7 +227,7 @@ namespace WebVella.ERP.Storage.Mongo
             string relationCollectionName = RELATION_COLLECTION_PREFIX + relation.Name;
             var mongoCollection = MongoStaticContext.Context.GetBsonCollection(relationCollectionName);
 
-            var query = Query.And(Query.EQ("relationId", relationId), Query.EQ("targetId", targetId ));
+            var query = Query.And(Query.EQ("relationId", relationId), Query.EQ("targetId", targetId));
             var records = mongoCollection.Find(query);
             return records.Select(x => (Guid)x["originId"]).ToList();
         }

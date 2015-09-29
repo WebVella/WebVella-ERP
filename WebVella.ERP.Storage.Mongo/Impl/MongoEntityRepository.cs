@@ -8,7 +8,8 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoEntityRepository : IStorageEntityRepository
     {
-
+        private static object lockObject = new object();
+        private static List<IStorageEntity> cachedEntities;
         private const string RECORD_COLLECTION_PREFIX = "rec_";
 
         /// <summary>
@@ -26,7 +27,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public List<IStorageEntity> Read()
         {
-            return MongoStaticContext.Context.Entities.Get().ToList<IStorageEntity>();
+            lock( lockObject )
+            {
+                if (cachedEntities == null)
+                    cachedEntities = MongoStaticContext.Context.Entities.Get().ToList<IStorageEntity>();
+
+                return cachedEntities;
+            }
         }
 
         /// <summary>
@@ -36,7 +43,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public IStorageEntity Read(Guid id)
         {
-            return MongoStaticContext.Context.Entities.SingleOrDefault(x => x.Id == id);
+            lock( lockObject )
+            {
+                if (cachedEntities == null)
+                    cachedEntities = Read();
+
+                return cachedEntities.SingleOrDefault(x => x.Id == id);
+            }
         }
 
         /// <summary>
@@ -46,7 +59,13 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public IStorageEntity Read(string name)
         {
-            return MongoStaticContext.Context.Entities.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant());
+            lock (lockObject)
+            {
+                if (cachedEntities == null)
+                    cachedEntities = Read();
+
+                return cachedEntities.SingleOrDefault(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant());
+            }
         }
 
         /// <summary>
@@ -55,15 +74,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Create(IStorageEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException("entity");
+            lock (lockObject)
+            {
+                if (entity == null)
+                    throw new ArgumentNullException("entity");
 
-            var mongoEntity = entity as MongoEntity;
+                var mongoEntity = entity as MongoEntity;
 
-            if (mongoEntity == null)
-                throw new Exception("The specified entity is not mongo storage object.");
+                if (mongoEntity == null)
+                    throw new Exception("The specified entity is not mongo storage object.");
 
-            return MongoStaticContext.Context.Entities.Create(mongoEntity);
+                cachedEntities = null;
+
+                return MongoStaticContext.Context.Entities.Create(mongoEntity);
+            }
         }
 
         /// <summary>
@@ -72,15 +96,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Update(IStorageEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException("entity");
+            lock (lockObject)
+            {
+                if (entity == null)
+                    throw new ArgumentNullException("entity");
 
-            var mongoEntity = entity as MongoEntity;
+                var mongoEntity = entity as MongoEntity;
 
-            if (mongoEntity == null)
-                throw new Exception("The specified entity is not mongo storage object.");
+                if (mongoEntity == null)
+                    throw new Exception("The specified entity is not mongo storage object.");
 
-            return MongoStaticContext.Context.Entities.Update(mongoEntity);
+                cachedEntities = null;
+
+                return MongoStaticContext.Context.Entities.Update(mongoEntity);
+            }
         }
 
         /// <summary>
@@ -90,23 +119,29 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public bool Delete(Guid id)
         {
-            var transaction = MongoStaticContext.Context.CreateTransaction();
-            try
+            lock (lockObject)
             {
-                //remove value storage
-                var entity = Read(id);
-                string relationCollectionName = RECORD_COLLECTION_PREFIX + entity.Name;
-                if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
-                    MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
+                var transaction = MongoStaticContext.Context.CreateTransaction();
+                try
+                {
+                    //remove value storage
+                    var entity = Read(id);
+                    string relationCollectionName = RECORD_COLLECTION_PREFIX + entity.Name;
+                    if (MongoStaticContext.Context.Database.CollectionExists(relationCollectionName))
+                        MongoStaticContext.Context.Database.DropCollection(relationCollectionName);
 
-                var result = MongoStaticContext.Context.Entities.Delete(Query.EQ("_id", id));
-                transaction.Commit();
-                return result;
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
+                    var result = MongoStaticContext.Context.Entities.Delete(Query.EQ("_id", id));
+                    transaction.Commit();
+
+                    cachedEntities = null;
+
+                    return result;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
         }
 
@@ -116,15 +151,20 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Save(IStorageEntity entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException("entity");
+            lock (lockObject)
+            {
+                if (entity == null)
+                    throw new ArgumentNullException("entity");
 
-            var mongoEntity = entity as MongoEntity;
+                var mongoEntity = entity as MongoEntity;
 
-            if (mongoEntity == null)
-                throw new Exception("The specified entity is not mongo storage object.");
+                if (mongoEntity == null)
+                    throw new Exception("The specified entity is not mongo storage object.");
 
-            return MongoStaticContext.Context.Entities.Save(mongoEntity);
+                cachedEntities = null;
+
+                return MongoStaticContext.Context.Entities.Save(mongoEntity);
+            }
         }
     }
 }
