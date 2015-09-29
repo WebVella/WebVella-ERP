@@ -330,10 +330,10 @@ return defer.promise;
 				var selectedDataName = "";
 				contentData.selectedSidebarPage.isEdit = false;
 				for (var i = 0; i < contentData.defaultRecordView.sidebar.items.length; i++) {
-					//TODO: the names of different views and lists for different entities could be the same and this will fail to select the right one. We should possibly use the dataName?
-					if (contentData.defaultRecordView.sidebar.items[i].meta.name === name) {
+					if (contentData.defaultRecordView.sidebar.items[i].dataName === name) {
 						// If in edit mode (view from the current entity) the data should be different -> we need the content region meta, not the view meta as in recursive-view directive
-						if (contentData.defaultRecordView.sidebar.items[i].type === "view") { 
+						if (contentData.defaultRecordView.sidebar.items[i].type === "view"
+						|| contentData.defaultRecordView.sidebar.items[i].type === "viewFromRelation") {
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									returnObject.meta = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
@@ -345,7 +345,8 @@ return defer.promise;
 
 						selectedDataName = contentData.defaultRecordView.sidebar.items[i].dataName;
 						contentData.selectedSidebarPage.isView = true;
-						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
+						if (contentData.defaultRecordView.sidebar.items[i].type === "view"
+							|| contentData.defaultRecordView.sidebar.items[i].type === "viewFromRelation") {
 							contentData.selectedSidebarPage.isEdit = true;
 							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName][0]);
 						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list"
