@@ -1387,7 +1387,9 @@ namespace WebVella.ERP.Api
                                     }
                                 }
 
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationListItem && ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName).Count() > 1)
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationListItem &&
+                                       ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName &&
+                                       ((InputRecordViewSidebarRelationListItem)i).RelationId == inputItem.RelationId ).Count() > 1)
                                     errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
 
                             }
@@ -1449,7 +1451,9 @@ namespace WebVella.ERP.Api
                                     }
                                 }
 
-                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationViewItem && ((InputRecordViewSidebarRelationViewItem)i).ViewName == inputItem.ViewName).Count() > 1)
+                                if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationViewItem && 
+                                    ((InputRecordViewSidebarRelationViewItem)i).ViewName == inputItem.ViewName &&
+                                    ((InputRecordViewSidebarRelationViewItem)i).RelationId == inputItem.RelationId ).Count() > 1)
                                     errorList.Add(new ErrorModel("sidebar.items.viewName", null, "There is already an item with such view name!"));
 
                             }
