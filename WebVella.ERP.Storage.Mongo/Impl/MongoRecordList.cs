@@ -34,6 +34,9 @@ namespace WebVella.ERP.Storage.Mongo
         [BsonElement("iconName")]
         public string IconName { get; set; }
 
+        [BsonElement("viewNameOverride")]
+        public string ViewNameOverride { get; set; }
+
         [BsonElement("type")]
 		public RecordListType Type { get; set; }
 

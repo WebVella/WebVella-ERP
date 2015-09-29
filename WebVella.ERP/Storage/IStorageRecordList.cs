@@ -23,6 +23,8 @@ namespace WebVella.ERP.Storage
 
         string IconName{ get; set; }
 
+		string ViewNameOverride{ get; set; }
+
         RecordListType Type { get; set; }
 
 		int PageSize { get; set; }
