@@ -58,9 +58,15 @@
         	item.label = sidebarData.view.sidebar.items[i].meta.label;
         	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
         		item.iconName = "file-text-o";
+        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
+        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+        		}
         	}
         	else if (sidebarData.view.sidebar.items[i].type === "list" || sidebarData.view.sidebar.items[i].type === "listFromRelation") {
         		item.iconName = "list";
+        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
+        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+        		}
         	}
         	sidebarData.items.push(item);
         }

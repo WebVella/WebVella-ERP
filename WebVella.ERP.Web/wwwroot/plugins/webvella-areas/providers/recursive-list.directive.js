@@ -143,7 +143,7 @@
 				return "";
 			}
 			else {
-				return '<img class="img-thumbnail" src="' + fieldValue + '"  />';
+				return '<a href="'+ fieldValue+ '" target="_blank"><img class="img-thumbnail" src="' + fieldValue + '"  /></a>';
 
 			}
 		}
