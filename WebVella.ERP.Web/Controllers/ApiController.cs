@@ -729,6 +729,8 @@ namespace WebVella.ERP.Web.Controllers
 						list.Sorts = inputList.Sorts;
                     if (prop.Name.ToLower() == "iconname")
                         list.IconName = inputList.IconName;
+                    if (prop.Name.ToLower() == "viewnameoverride")
+                        list.ViewNameOverride = inputList.ViewNameOverride;
                 }
 			}
 			catch (Exception e)
