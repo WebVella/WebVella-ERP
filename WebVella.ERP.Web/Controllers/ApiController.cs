@@ -731,6 +731,8 @@ namespace WebVella.ERP.Web.Controllers
                         list.IconName = inputList.IconName;
                     if (prop.Name.ToLower() == "viewnameoverride")
                         list.ViewNameOverride = inputList.ViewNameOverride;
+                    if (prop.Name.ToLower() == "visiblecolumnscount")
+                        list.VisibleColumnsCount = inputList.VisibleColumnsCount;
                 }
 			}
 			catch (Exception e)

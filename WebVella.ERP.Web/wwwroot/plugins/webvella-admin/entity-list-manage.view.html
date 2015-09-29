@@ -124,15 +124,28 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
+									<label class="control-label" for="weight">Visible columns count</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.visibleColumnsCount" onbeforesave="contentData.fieldUpdate('visibleColumnsCount', $data)">{{ contentData.list.visibleColumnsCount || "" }}</a>
+									<div class="form-description">how many selected columns to show in the lists</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label" for="weight">View name override</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride || "" }}</a>
+									<div class="form-description">you can generate dynamic names with {fieldName} in the string</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
 									<label class="control-label" for="weight">Page size</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "" }}</a>
 								</div>
 							</div>
 							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="weight">ViewName Override</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride || "" }}</a>
-								</div>
+
 							</div>
 						</div>
 					</div>
@@ -166,33 +179,33 @@
 									<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 										<span class="note go-green" ng-show="contentData.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "fieldFromRelation"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "view"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "viewFromRelation"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "list"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}}
+										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "listFromRelation"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
 									<div as-sortable-item-handle ng-if='item.type == "html" && item.tag == ""' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
