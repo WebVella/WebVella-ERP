@@ -302,6 +302,12 @@
 		}
 
 
+		//var obj = { Id: 1, Rate: 5, Price: 200, Name: "History" }
+		//var templateString = '<option id="{Id}">{Name}</option>'
+		//var optionString = templateString.replace(/\{(\w+)\}/g, function (_, k) {
+		//	return obj[k];
+		//});
+
 		//Select default details view
 		contentData.selectedView = {};
 		for (var j = 0; j < contentData.entity.recordViews.length; j++) {

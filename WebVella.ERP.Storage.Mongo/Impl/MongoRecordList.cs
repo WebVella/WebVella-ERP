@@ -37,6 +37,9 @@ namespace WebVella.ERP.Storage.Mongo
         [BsonElement("viewNameOverride")]
         public string ViewNameOverride { get; set; }
 
+        [BsonElement("visibleColumnsCount")]
+        public int VisibleColumnsCount { get; set; }
+
         [BsonElement("type")]
 		public RecordListType Type { get; set; }
 

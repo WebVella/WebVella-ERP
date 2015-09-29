@@ -25,6 +25,8 @@ namespace WebVella.ERP.Storage
 
 		string ViewNameOverride{ get; set; }
 
+		int VisibleColumnsCount { get; set; }
+
         RecordListType Type { get; set; }
 
 		int PageSize { get; set; }
