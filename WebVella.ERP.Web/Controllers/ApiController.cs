@@ -788,11 +788,11 @@ namespace WebVella.ERP.Web.Controllers
 
 			foreach (var field in entity.Fields)
 			{
-				itemList.Add(new RecordViewFieldItem
+    			itemList.Add(new RecordViewFieldItem
 				{
 					FieldId = field.Id,
 					FieldName = field.Name,
-					Meta = field,
+					Meta = CleanupFieldForLibrary(field),
 					EntityId = entity.Id,
 					EntityName = entity.Name,
 					EntityLabel = entity.Label,
@@ -856,7 +856,7 @@ namespace WebVella.ERP.Web.Controllers
 						EntityLabelPlural = relatedEntity.LabelPlural,
 						FieldId = field.Id,
 						FieldName = field.Name,
-						Meta = field,
+						Meta = CleanupFieldForLibrary( field ),
 						DataName = string.Format("$field${0}${1}", relation.Name, field.Name)
 					});
 				}
@@ -901,6 +901,15 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(result);
 		}
+
+        private Field CleanupFieldForLibrary(Field field)
+        {
+            //TODO remove default values and options and all not needed data
+            if (field is SelectField)
+                ((SelectField)field).Options = new List<SelectFieldOption>();
+
+            return field;
+        }
 
 		//[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{Id}/view")]
 		//public IActionResult CreateRecordView(Guid Id, [FromBody]JObject submitObj)
@@ -2330,11 +2339,21 @@ namespace WebVella.ERP.Web.Controllers
 							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
-							QueryObject subListQueryObj = EntityQuery.QueryEQ(relField.Name, record[field.Name]);
+                            var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
+                            List<QueryObject> queries = new List<QueryObject>();
+                            foreach( var relatedRecord in relatedRecords )
+                                queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
 
-							List<EntityRecord> subListResult = GetListRecords(entities, relEntity, ((RecordViewSidebarRelationListItem)item).ListName, queryObj: subListQueryObj);
-							dataRecord[((RecordViewSidebarRelationListItem)item).DataName] = subListResult;
-						}
+                            if (queries.Count > 0)
+                            {
+                                //QueryObject subListQueryObj = EntityQuery.QueryEQ(relField.Name, record[field.Name]);
+                                QueryObject subListQueryObj = EntityQuery.QueryAND( queries.ToArray() );
+                                List<EntityRecord> subListResult = GetListRecords(entities, relEntity, ((RecordViewSidebarRelationListItem)item).ListName, queryObj: subListQueryObj);
+                                dataRecord[((RecordViewSidebarRelationListItem)item).DataName] = subListResult;
+                            }
+                            else
+                                dataRecord[((RecordViewSidebarRelationListItem)item).DataName] = new List<object>();
+                        }
 						else if (item is RecordViewSidebarRelationViewItem)
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationViewItem)item).RelationId);
