@@ -54,7 +54,7 @@
 
         for (var i = 0; i < sidebarData.view.sidebar.items.length; i++) {
         	var item = {};
-        	item.name = sidebarData.view.sidebar.items[i].meta.name;
+        	item.name = sidebarData.view.sidebar.items[i].dataName;
         	item.label = sidebarData.view.sidebar.items[i].meta.label;
         	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
         		item.iconName = "file-text-o";
