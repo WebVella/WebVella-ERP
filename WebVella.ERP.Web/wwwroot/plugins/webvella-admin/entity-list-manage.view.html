@@ -126,26 +126,23 @@
 								<div class="form-group">
 									<label class="control-label" for="weight">Visible columns count</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.visibleColumnsCount" onbeforesave="contentData.fieldUpdate('visibleColumnsCount', $data)">{{ contentData.list.visibleColumnsCount || "" }}</a>
-									<div class="form-description">how many selected columns to show in the lists</div>
 								</div>
 							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="weight">View name override</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride || "" }}</a>
-									<div class="form-description">you can generate dynamic names with {fieldName} in the string</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="weight">Page size</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize || "" }}</a>
 								</div>
-							</div>
-							<div class="col-sm-6">
 
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label class="control-label" for="weight">View name override</label>
+									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride || "" }}</a>
+									<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}"</div>
+								</div>
 							</div>
 						</div>
 					</div>
