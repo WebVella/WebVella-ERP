@@ -9,7 +9,7 @@ namespace WebVella.ERP.Storage.Mongo
 {
     public class MongoRecordRepository : IStorageRecordRepository
     {
-        private const string RECORD_COLLECTION_PREFIX = "rec_";
+        internal const string RECORD_COLLECTION_PREFIX = "rec_";
 
         /// <summary>
         /// Create record

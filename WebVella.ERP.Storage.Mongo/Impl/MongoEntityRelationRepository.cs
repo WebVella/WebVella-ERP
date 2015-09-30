@@ -34,7 +34,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public IStorageEntityRelation Read(Guid id)
         {
-            lock( lockObject)
+            lock (lockObject)
             {
                 if (cachedRelations == null)
                     cachedRelations = Read();
@@ -65,20 +65,24 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Create(IStorageEntityRelation entityRelation)
         {
-            lock( lockObject )
+            if (entityRelation == null)
+                throw new ArgumentNullException("entityRelation");
+
+            var mongoEntityRelation = entityRelation as MongoEntityRelation;
+
+            if (mongoEntityRelation == null)
+                throw new Exception("The specified entityRelation is not mongo storage object.");
+
+
+            bool result = false;
+            lock (lockObject)
             {
-                if (entityRelation == null)
-                    throw new ArgumentNullException("entityRelation");
-
-                var mongoEntityRelation = entityRelation as MongoEntityRelation;
-
-                if (mongoEntityRelation == null)
-                    throw new Exception("The specified entityRelation is not mongo storage object.");
-
                 cachedRelations = null;
-
-                return MongoStaticContext.Context.EntityRelations.Create(mongoEntityRelation);
+                result = MongoStaticContext.Context.EntityRelations.Create(mongoEntityRelation);
             }
+
+            InvalidateRelationIndex(entityRelation);
+            return result;
         }
 
         /// <summary>
@@ -87,8 +91,6 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Update(IStorageEntityRelation entityRelation)
         {
-            lock( lockObject )
-            {
                 if (entityRelation == null)
                     throw new ArgumentNullException("entityRelation");
 
@@ -97,10 +99,16 @@ namespace WebVella.ERP.Storage.Mongo
                 if (mongoEntityRelation == null)
                     throw new StorageException("The specified entityRelation is not mongo storage object.");
 
+            bool result = false;
+            lock (lockObject)
+            {
                 cachedRelations = null;
-
-                return MongoStaticContext.Context.EntityRelations.Update(mongoEntityRelation);
+                result = MongoStaticContext.Context.EntityRelations.Update(mongoEntityRelation);
             }
+
+            InvalidateRelationIndex(entityRelation);
+            return result;
+
         }
 
         /// <summary>
@@ -110,7 +118,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// <returns></returns>
         public bool Delete(Guid id)
         {
-            lock( lockObject )
+            lock (lockObject)
             {
                 var transaction = MongoStaticContext.Context.CreateTransaction();
                 try
@@ -141,8 +149,7 @@ namespace WebVella.ERP.Storage.Mongo
         /// <param name="entity"></param>
         public bool Save(IStorageEntityRelation entityRelation)
         {
-            lock( lockObject )
-            {
+           
                 if (entityRelation == null)
                     throw new ArgumentNullException("entityRelation");
 
@@ -151,10 +158,16 @@ namespace WebVella.ERP.Storage.Mongo
                 if (mongoEntityRelation == null)
                     throw new StorageException("The specified entityRelation is not mongo storage object.");
 
+            var result = false;
+            lock (lockObject)
+            {
                 cachedRelations = null;
-
-                return MongoStaticContext.Context.EntityRelations.Save(mongoEntityRelation);
+                result =  MongoStaticContext.Context.EntityRelations.Save(mongoEntityRelation);
             }
+
+            InvalidateRelationIndex(entityRelation);
+
+            return result;
         }
 
         /// <summary>
@@ -230,6 +243,81 @@ namespace WebVella.ERP.Storage.Mongo
             var query = Query.And(Query.EQ("relationId", relationId), Query.EQ("targetId", targetId));
             var records = mongoCollection.Find(query);
             return records.Select(x => (Guid)x["originId"]).ToList();
+        }
+
+
+        private void InvalidateRelationIndex(IStorageEntityRelation entityRelation)
+        {
+            MongoEntity originEntity = MongoStaticContext.Context.Entities.GetById(entityRelation.OriginEntityId);
+            MongoEntity targetEntity = MongoStaticContext.Context.Entities.GetById(entityRelation.TargetEntityId);
+
+            if (originEntity == null || targetEntity == null)
+                return;
+
+            IStorageField originField = originEntity.Fields.SingleOrDefault(x => x.Id == entityRelation.OriginFieldId);
+            IStorageField targetField = targetEntity.Fields.SingleOrDefault(x => x.Id == entityRelation.TargetFieldId);
+
+            if (originField == null || targetField == null)
+                return;
+
+            if (entityRelation.RelationType != Api.Models.EntityRelationType.ManyToMany)
+            {
+                var originCollection = MongoStaticContext.Context.GetBsonCollection(MongoRecordRepository.RECORD_COLLECTION_PREFIX + originEntity.Name);
+                if (originCollection == null)
+                    return;
+
+                if (originField.Name != "id")
+                {
+                    var originIndexes = originCollection.GetIndexes();
+                    var originIndexName = "relation_" + entityRelation.Id + "_" + originField.Name;
+                    var originIndex = originIndexes.SingleOrDefault(x => x.Name == originIndexName);
+                    if (originIndex != null)
+                        originCollection.DropIndexByName(originIndexName);
+
+                    IndexOptionsBuilder options = IndexOptions.SetUnique(false).SetDropDups(false).SetName(originIndexName).SetBackground(true);
+                    originCollection.CreateIndex(new IndexKeysBuilder().Ascending(originField.Name), options);
+                }
+
+                var targetCollection = MongoStaticContext.Context.GetBsonCollection(MongoRecordRepository.RECORD_COLLECTION_PREFIX + targetEntity.Name);
+                if (targetEntity == null)
+                    return;
+
+                if (targetField.Name != "id")
+                {
+                    var targetIndexes = targetCollection.GetIndexes();
+                    var targetIndexName = "relation_" + entityRelation.Id + "_" + targetField.Name;
+                    var targetIndex = targetIndexes.SingleOrDefault(x => x.Name == targetIndexName);
+                    if (targetIndex != null)
+                        targetCollection.DropIndexByName(targetIndexName);
+
+                    IndexOptionsBuilder options = IndexOptions.SetUnique(false).SetDropDups(false).SetName(targetIndexName).SetBackground(true);
+                    targetCollection.CreateIndex(new IndexKeysBuilder().Ascending(targetField.Name), options);
+                }
+            }
+            else
+            {
+                var collection = MongoStaticContext.Context.GetBsonCollection(RELATION_COLLECTION_PREFIX + entityRelation.Name);
+
+                var indexes = collection.GetIndexes();
+                var originIndexName = "relation_origin";
+                var originIndex = indexes.SingleOrDefault(x => x.Name == originIndexName);
+                if (originIndex != null)
+                    collection.DropIndexByName(originIndexName);
+
+                IndexOptionsBuilder options = IndexOptions.SetUnique(false).SetDropDups(false).SetName(originIndexName).SetBackground(true);
+                collection.CreateIndex(new IndexKeysBuilder().Ascending("relationId").Ascending("originId"), options);
+
+                var targetIndexName = "relation_target";
+                var targetIndex = indexes.SingleOrDefault(x => x.Name == targetIndexName);
+                if (targetIndex != null)
+                    collection.DropIndexByName(targetIndexName);
+
+                options = IndexOptions.SetUnique(false).SetDropDups(false).SetName(targetIndexName).SetBackground(true);
+                collection.CreateIndex(new IndexKeysBuilder().Ascending("relationId").Ascending("targetId"), options);
+
+
+            }
+
         }
     }
 }
