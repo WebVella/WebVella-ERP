@@ -67,7 +67,7 @@
             <tbody>
                 <tr ng-repeat="list in contentData.lists | filter: {label: searchFilter}">
                     <td class="actions">
-                        <a class="btn btn-default" ui-sref="webvella-admin-entity-list-manage({entityName:'{{contentData.entity.name}}',listName:'{{list.name}}'})">
+                        <a class="btn btn-default btn-sm" ui-sref="webvella-admin-entity-list-manage({entityName:'{{contentData.entity.name}}',listName:'{{list.name}}'})">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
