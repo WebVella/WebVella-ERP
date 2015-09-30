@@ -2,12 +2,12 @@
 	<table class="table table-vertical-align-middle table-bordered {{listMeta.cssClass}}" ng-if="listData.length > 0">
 		<thead>
 		<tr>
-			<th class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns">{{column.meta.label}}</th>
+			<th class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns | limitTo: listMeta.visibleColumnsCount">{{column.meta.label}}</th>
 		</tr>
 		</thead>
 		<tbody>
 		<tr ng-repeat="record in listData">
-			<td class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns">
+			<td class="wv-{{column.meta.name}}" ng-repeat="column in listMeta.columns  | limitTo: listMeta.visibleColumnsCount">
 				<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
 					<span ng-switch-when="1">{{getAutoIncrementString(column,record)}}</span>
 					<span ng-switch-when="2" ng-bind-html="getCheckboxString(column,record)"></span>

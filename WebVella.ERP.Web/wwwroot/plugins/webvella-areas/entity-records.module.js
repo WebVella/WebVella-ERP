@@ -302,6 +302,68 @@
 		}
 
 
+		//Slugify function
+		function convertToSlug(Text) {
+			return Text
+				.toLowerCase()
+				.replace(/ /g, '-')
+				.replace(/[^\w-]+/g, '')
+			;
+		}
+
+		contentData.generateViewName = function (record) {
+			//default is the selected view in the area
+			var result = angular.copy(contentData.selectedView.name);
+
+			if (contentData.recordsMeta.viewNameOverride && contentData.recordsMeta.viewNameOverride.length > 0) {
+				var arrayOfTemplateKeys = contentData.recordsMeta.viewNameOverride.match(/\{(\w+)\}/g);
+				var resultStringStorage = angular.copy(contentData.recordsMeta.viewNameOverride);
+
+				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
+					if ( arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
+						switch (arrayOfTemplateKeys[i]) {
+							case "{areaName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+							case "{entityName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+							case "{filter}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+							case "{page}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+							case "{searchQuery}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+						}
+					}
+					else {
+						//Extract the dataName from string by removing the leading and the closing {}
+						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
+						//Check template has corresponding list data value
+						if (record[dataName] != undefined) {
+							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
+							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
+						}
+						else {
+							//NO -> substitute the template key with the dataName only, as no value could be extracted
+							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(dataName));
+						}
+					}
+
+				}
+				result = resultStringStorage;
+			}
+
+			return result;
+		}
+
+
+
+
+
 		//Select default details view
 		contentData.selectedView = {};
 		for (var j = 0; j < contentData.entity.recordViews.length; j++) {

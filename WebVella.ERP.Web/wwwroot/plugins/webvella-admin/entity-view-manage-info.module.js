@@ -216,10 +216,6 @@
 		{
 			name: "create",
 			label: "create"
-		},
-		{
-			name: "dynamic",
-			label: "dynamic"
 		}
         ];
 

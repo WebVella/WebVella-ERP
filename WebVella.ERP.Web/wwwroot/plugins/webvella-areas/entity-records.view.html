@@ -112,17 +112,17 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">{{column.meta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td class="actions">
-						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.selectedView.name,auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default btn-sm">
+						<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.generateViewName(record),auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default btn-sm">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns">
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
 						<div ng-if="contentData.currentUserHasReadPermission(column)">
 							<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
 								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
