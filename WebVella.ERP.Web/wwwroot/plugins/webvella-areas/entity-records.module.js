@@ -446,7 +446,7 @@
 		}
 		contentData.submitSearchQuery = function () {
 			$timeout(function () {
-				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: $stateParams.filter, search: contentData.searchQuery }, { reload: true });
+				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: $stateParams.filter,page:1, search: contentData.searchQuery }, { reload: true });
 			}, 1);
 
 		}
@@ -952,7 +952,7 @@
 			else {
 				for (var r = 0; r < popupData.currentUserRoles.length; r++) {
 					for (var p = 0; p < popupData.contentData.currentListView.columns[m].meta.permissions.canRead.length; p++) {
-						if (popupData.currentUserRoles[r].id == popupData.contentData.currentListView.columns[m].meta.permissions.canRead[p]) {
+						if (popupData.currentUserRoles[r] == popupData.contentData.currentListView.columns[m].meta.permissions.canRead[p]) {
 							userHasReadPermissionForField = true;
 							break;
 						}
