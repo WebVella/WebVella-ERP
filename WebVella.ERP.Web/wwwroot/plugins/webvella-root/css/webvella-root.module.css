@@ -43,6 +43,10 @@ span.divider {
 	font-size: 0.8em;
 }
 
+.navbar-brand {
+	font-size:17px;
+}
+
 .panel, .panel-heading {
 	border-radius: 0;
 }
