@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success hidden-xs" ng-click="contentData.openManageAreaModal(null)"><i class="fa fa-plus"></i> Create New</a>
+			<a class="btn btn-success hidden-xs" ng-click="contentData.openManageAreaModal(null)" href="javascript:void(0)"><i class="fa fa-plus"></i> Create New</a>
 		</div>
 		<div class="icon-box">
 			<i class="fa fa-sitemap"></i>
@@ -41,7 +41,7 @@
 					<th width="60" class="text-center">color</th>
 					<th width="60" class="text-center">icon</th>
 					<th>name</th>
-                    <th>label</th>
+					<th>label</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -60,7 +60,7 @@
 					</td>
 					<td class="text-center"><i class="fa fa-{{area.icon_name}}" style="font-size:24px;" title="{{area.icon_name}}"></i></td>
 					<td>{{area.name}}</td>
-                    <td>{{area.label}}</td>
+					<td>{{area.label}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -82,20 +82,14 @@
 						<label class="required" for="areaName">Name</label>
 						<input ng-model="popupData.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. sales"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.name.$touched && manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
-							<small class="error" ng-show="manageArea.name.$error.required && !popupData.nameError">
-								required field
-							</small>
-							<small class="error" ng-show="manageArea.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error" ng-show="manageArea.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
-							<small class="error" ng-show="popupData.nameError">
-								{{popupData.nameMessage}}
-							</small>
-						</div>
+						<ng-messages for="manageArea.name.$error" ng-if="manageArea.name.$touched && manageArea.name.$dirty && manageArea.name.$invalid || popupData.nameError">
+							<ng-message when="required" class="error">required field</ng-message>
+							<ng-message when="pattern" class="error">only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars</ng-message>
+							<ng-message when="maxlength" class="error">must be less than 50 chars</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupData.nameError">
+							{{popupData.nameMessage}}
+						</small>
 					</div>
 				</div>
 				<div class="col-sm-6">
@@ -103,14 +97,12 @@
 						<label class="required" for="label">Label</label>
 						<input ng-model="popupData.area.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Sales"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.label.$touched && manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
-							<small class="error" ng-show="manageArea.label.$error.required && !popupData.labelError">
-								Area label is required.
-							</small>
-							<small class="error" ng-show="popupData.labelError">
-								{{popupData.labelMessage}}
-							</small>
-						</div>
+						<ng-messages for="manageArea.label.$error" ng-if="manageArea.label.$touched && manageArea.label.$dirty && manageArea.label.$invalid || popupData.labelError">
+							<ng-message when="required" class="error">required field</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupData.labelError">
+							{{popupData.labelMessage}}
+						</small>
 					</div>
 				</div>
 			</div>
@@ -155,14 +147,12 @@
 								   ng-model-options="{allowInvalid:true}">
 							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 						</div>
-						<div class="error" ng-show="manageArea.icon_name.$touched && manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
-							<small class="error" ng-show="createEntity.icon_name.$error.required && !popupData.icon_nameError">
-								Icon name is required.
-							</small>
-							<small class="error" ng-show="popupData.icon_nameError">
-								{{popupData.icon_nameMessage}}
-							</small>
-						</div>
+						<ng-messages for="manageArea.icon_name.$error" ng-if="manageArea.icon_name.$touched && manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
+							<ng-message when="required" class="error">required field</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupData.icon_nameError">
+							{{popupData.icon_nameMessage}}
+						</small>
 					</div>
 				</div>
 				<div class="col-sm-6">
@@ -170,17 +160,13 @@
 						<label class="required" for="weight">Sort Weight</label>
 						<input ng-model="popupData.area.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
 							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageArea.weight.$touched && manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
-							<small class="error" ng-show="manageArea.weight.$error.required && !popupData.weightError">
-								Entity weight is required
-							</small>
-							<small class="error" ng-show="manageArea.weight.$error.pattern && !popupData.weightError">
-								Weight should be a positive integer or decimal number, with two decimal places after the dot
-							</small>
-							<small class="error" ng-show="popupData.weightError">
-								{{popupData.weightMessage}}
-							</small>
-						</div>
+						<ng-messages for="manageArea.weight.$error" ng-if="manageArea.weight.$touched && manageArea.weight.$dirty && manageArea.weight.$invalid || popupData.weightError">
+							<ng-message when="required" class="error">required field</ng-message>
+							<ng-message when="pattern" class="error">weight should be a positive integer or decimal number, with two decimal places after the dot</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupData.weightError">
+							{{popupData.weightMessage}}
+						</small>
 					</div>
 				</div>
 			</div>
@@ -201,16 +187,16 @@
 			<div class="col-sm-12">
 				<div class="form-group">
 					<label>Attached entities</label>
-					
+
 					<form class="form" style="margin:1em 0;">
 						<div class="row">
 							<div class="col-sm-10">
 								<div class="form-group" style="margin-bottom:0;">
-									<div class="input-group clean-addon" ng-show="popupData.cleanEntities.length == 0" style="margin-bottom:0;">
+									<div class="input-group clean-addon ng-hide" ng-show="popupData.cleanEntities.length == 0" style="margin-bottom:0;">
 										<input type="text" class="form-control" placeholder="No more entities can be attached!" disabled>
 										<span class="input-group-addon"><i class="fa fa-warning go-red"></i></span>
 									</div>
-									<div class="input-group clean-addon fluid-dropdown" ng-show="popupData.cleanEntities.length > 0"  style="margin-bottom:0;">
+									<div class="input-group clean-addon fluid-dropdown ng-hide" ng-show="popupData.cleanEntities.length > 0" style="margin-bottom:0;">
 										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity name"
 											   required typeahead="entity.name for entity in popupData.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
@@ -224,8 +210,8 @@
 						</div>
 					</form>
 					<div>
-						<div class="alert alert-info" ng-show="popupData.subscribedEntities.length == 0">No entities are attached to this area</div>
-						<table class="table table-bordered x-editable" ng-show="popupData.subscribedEntities.length > 0">
+						<div class="alert alert-info ng-hide" ng-show="popupData.subscribedEntities.length == 0">No entities are attached to this area</div>
+						<table class="table table-bordered x-editable ng-hide" ng-show="popupData.subscribedEntities.length > 0">
 							<thead>
 								<tr>
 									<th width="60">w.</th>
@@ -249,9 +235,6 @@
 								</tr>
 							</tbody>
 						</table>
-
-
-
 					</div>
 				</div>
 			</div>
@@ -277,7 +260,7 @@
 		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
 		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
 	</a>
-	<hr style="margin:0"/>
+	<hr style="margin:0" />
 </script>
 
 <script type="text/ng-template" id="deleteAreaModal.html">
