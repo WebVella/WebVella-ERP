@@ -1458,7 +1458,12 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
-			if (string.IsNullOrEmpty((string)postObj["id"]))
+            if( postObj == null )
+                postObj = new EntityRecord();
+
+            if (!postObj.GetProperties().Any(x => x.Key == "id"))
+                postObj["id"] = Guid.NewGuid();
+            else if (string.IsNullOrEmpty(postObj["id"] as string))
 				postObj["id"] = Guid.NewGuid();
 
 			QueryResponse result = recMan.CreateRecord(entityName, postObj);
