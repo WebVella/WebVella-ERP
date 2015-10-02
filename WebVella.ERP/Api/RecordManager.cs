@@ -28,11 +28,11 @@ namespace WebVella.ERP.Api
         /// The contructor
         /// </summary>
         /// <param name="service"></param>
-        public RecordManager(IErpService service) : this( service, false )
+        public RecordManager(IErpService service) : this(service, false)
         {
         }
 
-        internal RecordManager(IErpService service, bool ignoreSecurity = false )
+        internal RecordManager(IErpService service, bool ignoreSecurity = false)
         {
             erpService = service;
             entityCache = new List<Entity>();
@@ -215,6 +215,8 @@ namespace WebVella.ERP.Api
                     }
                 }
 
+                SetRecordServiceInformation(record, true);
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -375,6 +377,7 @@ namespace WebVella.ERP.Api
                     }
                 }
 
+                SetRecordServiceInformation(record, false);
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -631,7 +634,7 @@ namespace WebVella.ERP.Api
                             RelationFieldMeta relationField = (RelationFieldMeta)field;
 
                             if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
-                            { 
+                            {
                                 IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
                                 //when the relation is origin -> target entity
                                 if (relationField.Relation.OriginEntityId == entity.Id)
@@ -1157,7 +1160,7 @@ namespace WebVella.ERP.Api
                 }
                 else if (field is GuidField)
                 {
-                    if (obj.FieldValue != null && obj.FieldValue is string )
+                    if (obj.FieldValue != null && obj.FieldValue is string)
                         obj.FieldValue = new Guid(obj.FieldValue as string);
                 }
                 else if (field is CheckboxField)
@@ -1175,6 +1178,40 @@ namespace WebVella.ERP.Api
                 {
                     ProcessQueryObject(entity, subObj);
                 }
+        }
+
+
+        private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true)
+        {
+            if (record == null)
+                return;
+
+            if (newRecord)
+            {
+
+                record["created_on"] = DateTime.UtcNow;
+                record["last_modified_on"] = DateTime.UtcNow;
+                if (SecurityContext.CurrentUser != null)
+                {
+                    record["created_by"] = SecurityContext.CurrentUser.Id;
+                    record["last_modified_by"] = SecurityContext.CurrentUser.Id;
+                }
+                else
+                {
+                    record["created_by"] = null;
+                    record["last_modified_by"] = null;
+                }
+            }
+            else
+            {
+                record["last_modified_on"] = DateTime.UtcNow;
+
+                if (SecurityContext.CurrentUser != null)
+                    record["last_modified_by"] = SecurityContext.CurrentUser.Id;
+                else
+                    record["last_modified_by"] = null;
+
+            }
         }
     }
 }
