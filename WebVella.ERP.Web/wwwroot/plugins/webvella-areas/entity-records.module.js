@@ -44,7 +44,6 @@
 				checkedAccessPermission: checkAccessPermission,
 				resolvedListRecords: resolveListRecords,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-				resolvedCurrentArea: resolveCurrentArea,
 				resolvedEntityRelationsList: resolveEntityRelationsList
 			},
 			data: {
@@ -204,29 +203,6 @@
 		return defer.promise;
 	}
 
-	resolveCurrentArea.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$stateParams'];
-	/* @ngInject */
-	function resolveCurrentArea($q, $log, webvellaAdminService, $state, $stateParams) {
-		$log.debug('webvellaDesktop>resolveCurrentEntityMeta> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-
-		webvellaAdminService.getAreaByName($stateParams.areaName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaDesktop>resolveCurrentEntityMeta> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
 	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
 	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
@@ -269,12 +245,12 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'resolvedCurrentArea',
+        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
 
 	/* @ngInject */
 	function controller($filter, $log, $modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
-        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta, resolvedCurrentArea,
+        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
 		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -291,7 +267,15 @@
 
 		//Get the current meta
 		contentData.entity = angular.copy(resolvedCurrentEntityMeta);
-		contentData.area = angular.copy(resolvedCurrentArea.data[0]);
+
+		contentData.area = {};
+		for (var i = 0; i < resolvedSitemap.data.length; i++) {
+			if (resolvedSitemap.data[i].name == $stateParams.areaName) {
+				contentData.area = resolvedSitemap.data[i];
+			}
+		}
+
+
 		contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
 		contentData.areaEntitySubscription = {};
 		for (var i = 0; i < contentData.area.subscriptions.length; i++) {
@@ -584,7 +568,11 @@
 		//#region << Columns render>> //////////////////////////////////////
 		//1.Auto increment
 		contentData.getAutoIncrementString = function (record, field) {
+			
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (!fieldValue) {
 				return "";
 			}
@@ -598,6 +586,9 @@
 		//2.Checkbox
 		contentData.getCheckboxString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				return "<span class='label label-success'>true</span>";
 			}
@@ -608,6 +599,9 @@
 		//3.Currency
 		contentData.getCurrencyString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (!fieldValue) {
 				return "";
 			}
@@ -626,16 +620,25 @@
 		//4.Date
 		contentData.getDateString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			return moment(fieldValue).format("DD MMMM YYYY");
 		}
 		//5.Datetime
 		contentData.getDateTimeString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			return moment(fieldValue).format("DD MMMM YYYY HH:mm");
 		}
 		//6.Email
 		contentData.getEmailString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				//There is a problem in Angular when having in href -> the href is not rendered
 				//return "<a href='mailto:" + fieldValue + "' data-rel='external'>" + fieldValue + "</a>";
@@ -648,6 +651,9 @@
 		//7.File
 		contentData.getFileString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				return "<a href='" + fieldValue + "' taget='_blank' class='link-icon'>view file</a>";
 			}
@@ -658,6 +664,9 @@
 		//8.Html
 		contentData.getHtmlString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				return fieldValue;
 			}
@@ -668,6 +677,9 @@
 		//9.Image
 		contentData.getImageString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				return "<img src='" + fieldValue + "' class='table-image'/>";
 			}
@@ -678,6 +690,9 @@
 		//11.Multiselect
 		contentData.getMultiselectString = function (record, field) {
 			var fieldValueArray = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			var generatedStringArray = [];
 			if (fieldValueArray.length === 0) {
 				return "";
@@ -695,6 +710,9 @@
 		//14.Percent
 		contentData.getPercentString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (!fieldValue) {
 				return "";
 			}
@@ -705,6 +723,9 @@
 		//15.Phone
 		contentData.getPhoneString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (!fieldValue) {
 				return "";
 			}
@@ -715,6 +736,9 @@
 		//17.Dropdown
 		contentData.getDropdownString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (!fieldValue) {
 				return "";
 			}
@@ -727,6 +751,9 @@
 		//18.Url
 		contentData.getUrlString = function (record, field) {
 			var fieldValue = record[field.dataName];
+			if (field.type == "fieldFromRelation") {
+				fieldValue = record[field.dataName][0];
+			}
 			if (fieldValue) {
 				return "<a href='" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
 			}
