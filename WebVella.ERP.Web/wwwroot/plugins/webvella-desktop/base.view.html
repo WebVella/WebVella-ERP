@@ -16,7 +16,7 @@
 			<!--<ul class="nav navbar-nav">
 				<li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
 			</ul>-->
-			<ul class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right"  ng-cloak>
 				<li class="hidden-xs hidden-sm">
 					<p class="navbar-text">
 						<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
@@ -33,7 +33,7 @@
 
 
 
-<div id="desktop-content" ui-view="contentView">
+<div id="desktop-content" ui-view="contentView"  ng-cloak>
 
 
 </div>
