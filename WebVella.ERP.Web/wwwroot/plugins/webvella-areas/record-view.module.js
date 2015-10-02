@@ -42,13 +42,15 @@
 				checkedAccessPermission: checkAccessPermission,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentView: resolveCurrentView,
-				resolvedEntityRelationsList: resolveEntityRelationsList
-			},
-			data: {
-
+				resolvedEntityRelationsList: resolveEntityRelationsList,
+				pluginAuxPageName: function () {
+					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
+					return "";
+				}
 			}
 		});
 	};
+	
 
 
 	//#region << Run >> //////////////////////////////////////

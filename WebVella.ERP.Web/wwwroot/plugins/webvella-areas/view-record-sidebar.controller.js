@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap', 'resolvedCurrentUser'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap', 'resolvedCurrentUser', 'pluginAuxPageName'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, resolvedSitemap, resolvedCurrentUser) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, resolvedSitemap, resolvedCurrentUser, pluginAuxPageName) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
@@ -70,6 +70,19 @@
         	}
         	sidebarData.items.push(item);
         }
+
+        sidebarData.isItemActive = function (item) {
+        	if (!$stateParams.auxPageName) {
+        		if (item.name == pluginAuxPageName) {
+        		return true;
+        		}
+        	}
+        	if (item.name == $stateParams.auxPageName) {
+        		return true;
+        	}
+        	return false;
+        }
+
 
         $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }

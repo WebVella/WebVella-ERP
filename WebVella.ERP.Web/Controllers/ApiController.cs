@@ -1436,6 +1436,22 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(result);
 		}
 
+		// Get an entity records by field and regex
+		// GET: api/v1/en_US/record/{entityName}/regex
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/regex/{fieldName}")]
+		public IActionResult GetRecordsByFieldAndRegex(string fieldName, string entityName, [FromBody]EntityRecord patternObj)
+		{
+
+			QueryObject filterObj = EntityQuery.QueryRegex(fieldName, patternObj["pattern"]);
+
+			EntityQuery query = new EntityQuery(entityName, "*", filterObj, null, null, null);
+
+			QueryResponse result = recMan.Find(query);
+			if (!result.Success)
+				return DoResponse(result);
+			return Json(result);
+		}
+
 
 		// Create an entity record
 		// POST: api/v1/en_US/record/{entityName}
