@@ -4,7 +4,7 @@
 		<img class="avatar" ng-src="{{sidebarData.currentUser.image}}" ng-if="sidebarData.currentUser.image">
 		<span class="username">{{sidebarData.currentUser.first_name}} {{sidebarData.currentUser.last_name}}</span>
     </div>
-    <ul class="dropdown-menu dropdown-menu-right">
+    <!--<ul class="dropdown-menu dropdown-menu-right">
         <li>
             <a href>Account settings</a>
         </li>
@@ -14,20 +14,20 @@
         <li>
             <a href>Account settings</a>
         </li>
-    </ul>
+    </ul>-->
 </div>
 <ul class="nav nav-pills nav-stacked">
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-entities" tooltip="Entities" tooltip-enable="{{sidebarData.isMiniSidebar}}" tooltip-placement="right"><i class="fa fa-database fa-fw"></i><span class="text">Entities</span></a>
+        <a ui-sref="webvella-admin-entities" title="Entities"><i class="fa fa-database fa-fw"></i><span class="text">Entities</span></a>
     </li>
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-areas-lists" tooltip="Areas" tooltip-enable="{{sidebarData.isMiniSidebar}}"  tooltip-placement="right"><i class="fa fa-sitemap fa-fw"></i><span class="text">Areas</span></a>
+        <a ui-sref="webvella-admin-areas-lists" title="Areas"><i class="fa fa-sitemap fa-fw"></i><span class="text">Areas</span></a>
     </li>
     <li role="presentation" ui-sref-active="active">
-        <a ui-sref="webvella-admin-users" tooltip="Users" tooltip-enable="{{sidebarData.isMiniSidebar}}"  tooltip-placement="right"><i class="fa fa-users fa-fw"></i><span class="text">Users</span></a>
+        <a ui-sref="webvella-admin-users" title="Users"><i class="fa fa-users fa-fw"></i><span class="text">Users</span></a>
     </li>
 	<li role="presentation" ui-sref-active="active">
-		<a ui-sref="webvella-admin-roles" tooltip="Roles" tooltip-enable="{{sidebarData.isMiniSidebar}}" tooltip-placement="right"><i class="fa fa-key fa-fw"></i><span class="text">Roles</span></a>
+		<a ui-sref="webvella-admin-roles" title="Roles"><i class="fa fa-key fa-fw"></i><span class="text">Roles</span></a>
 	</li>
 
 </ul>
