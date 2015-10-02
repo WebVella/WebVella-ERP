@@ -19,7 +19,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-create', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/create?listName&filter&page',
+			url: '/create?listName&filter&page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -37,11 +37,7 @@
 					controllerAs: 'contentData'
 				}
 			},
-			resolve: {
-				checkedAccessPermission: checkAccessPermission,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
-				resolvedEntityRelationsList: resolveEntityRelationsList
-			},
+			resolve: {},
 			data: {
 
 			}
@@ -60,104 +56,6 @@
 	//#endregion
 
 	//#region << Resolve Function >> /////////////////////////
-	checkAccessPermission.$inject = ['$q', '$log', 'webvellaRootService', '$stateParams', 'resolvedSitemap', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
-	function checkAccessPermission($q, $log, webvellaRootService, $stateParams, resolvedSitemap, resolvedCurrentUser, ngToast) {
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
-		var defer = $q.defer();
-		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">' + $stateParams.areaName + '</span> area';
-		var accessPermission = webvellaRootService.applyAreaAccessPolicy($stateParams.areaName, resolvedCurrentUser, resolvedSitemap);
-		if (accessPermission) {
-			defer.resolve();
-		}
-		else {
-
-			ngToast.create({
-				className: 'error',
-				content: messageContent
-			});
-			defer.reject("No access");
-		}
-
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
-
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>record-create> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>record-create> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaAdminService.getRelationsList(successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>record-create> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
 
 	//#endregion
 
