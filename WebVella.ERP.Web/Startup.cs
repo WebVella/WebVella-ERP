@@ -47,21 +47,29 @@ namespace WebVella.ERP.Web
 
             app.UseDebugLogMiddleware();
             app.UseSecurityMiddleware();
-           
 
-            //app.Run(async context =>
-            //{
-            //    IErpService service = app.ApplicationServices.GetService<IErpService>();
-            //    service.Run();
-            //    context.Response.ContentType = "text/html";
-            //    context.Response.StatusCode = 200;
-            //    System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            //    byte[] buffer = encoding.GetBytes("<h1>test</h1>");
-            //    await context.Response.Body.WriteAsync(buffer, 0, buffer.Length);
-            //});
+			//Enable CORS
+			//app.Use((context, next) =>
+			//{
+			//	context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+			//	context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "*" });
+			//	context.Response.Headers.Add("Access-Control-Allow-Methods", new[] { "*" });
+			//	return next();
+			//});
 
-            // Add the following to the request pipeline only in development environment.
-            if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
+			//app.Run(async context =>
+			//{
+			//    IErpService service = app.ApplicationServices.GetService<IErpService>();
+			//    service.Run();
+			//    context.Response.ContentType = "text/html";
+			//    context.Response.StatusCode = 200;
+			//    System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+			//    byte[] buffer = encoding.GetBytes("<h1>test</h1>");
+			//    await context.Response.Body.WriteAsync(buffer, 0, buffer.Length);
+			//});
+
+			// Add the following to the request pipeline only in development environment.
+			if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
             {
                 app.UseErrorPage();
             }
