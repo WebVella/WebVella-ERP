@@ -20,7 +20,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:areaName/:entityName/:recordId/:viewName/:auxPageName/:filter/:page',
+			url: '/:recordId/:viewName/:auxPageName/:filter/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -39,10 +39,7 @@
 				}
 			},
 			resolve: {
-				checkedAccessPermission: checkAccessPermission,
-				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedCurrentView: resolveCurrentView,
-				resolvedEntityRelationsList: resolveEntityRelationsList,
 				pluginAuxPageName: function () {
 					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
 					return "";
@@ -64,28 +61,6 @@
 	//#endregion
 
 	//#region << Resolve Function >> /////////////////////////
-	checkAccessPermission.$inject = ['$q', '$log', 'webvellaRootService', '$stateParams', 'resolvedSitemap', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
-	function checkAccessPermission($q, $log, webvellaRootService, $stateParams, resolvedSitemap, resolvedCurrentUser, ngToast) {
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
-		var defer = $q.defer();
-		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">' + $stateParams.areaName + '</span> area';
-		var accessPermission = webvellaRootService.applyAreaAccessPolicy($stateParams.areaName, resolvedCurrentUser, resolvedSitemap);
-		if (accessPermission) {
-			defer.resolve();
-		}
-		else {
-
-			ngToast.create({
-				className: 'error',
-				content: messageContent
-			});
-			defer.reject("No access");
-		}
-
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
 
 	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
 	/* @ngInject */
@@ -123,74 +98,6 @@
 		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
-
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', '$rootScope', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveCurrentEntityMeta($q, $log, $rootScope, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object == null) {
-				$timeout(function () {
-					$state.go("webvella-root-not-found");
-				}, 0);
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		webvellaAdminService.getRelationsList(successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
 
 	//#endregion
 

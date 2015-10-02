@@ -6,8 +6,12 @@ body {
 	background: #000;
 }
 
-[ng\:cloak], [ng-cloak], .ng-cloak {
+/*[ng\:cloak], [ng-cloak], .ng-cloak {
 	display: none !important;
+}*/
+
+div.ng-cloak + div {
+    opacity: 0;
 }
 
 a, a:hover, a:active, a:focus {
@@ -41,6 +45,10 @@ span.divider {
 
 .text-small {
 	font-size: 0.8em;
+}
+
+.navbar-brand {
+	font-size:17px;
 }
 
 .panel, .panel-heading {
@@ -1520,7 +1528,7 @@ ngToast
 
 #page-content {
 	position: relative;
-	min-height: 700px;
+	min-height: 900px;
 	background-color: #fff;
 }
 
@@ -3183,9 +3191,11 @@ table.editable:hover {
 	}
 
 /*Html*/
-.cke_editable_inline {
+.cke_editable_inline,
+.control-cke-editor {
 	overflow-y: scroll;
 	height: 100px !important;
+	min-height: 100px !important;
 }
 
 	.cke_editable_inline:not(.cke_focus):hover {

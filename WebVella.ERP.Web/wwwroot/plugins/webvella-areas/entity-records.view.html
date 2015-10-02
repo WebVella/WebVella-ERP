@@ -144,6 +144,27 @@
 								<span ng-switch-when="18">{{record[column.dataName]}}</span>
 								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column)"></span>
 							</div>
+							<div ng-switch="column.meta.fieldType" ng-if="column.type=='fieldFromRelation'">
+								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
+								<span ng-switch-when="2" ng-bind-html="contentData.getCheckboxString(record,column)"></span>
+								<span ng-switch-when="3">{{contentData.getCurrencyString(record,column)}}</span>
+								<span ng-switch-when="4">{{contentData.getDateString(record,column)}}</span>
+								<span ng-switch-when="5">{{contentData.getDateTimeString(record,column)}}</span>
+								<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column)"></span>
+								<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column)"></span>
+								<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column)"></span>
+								<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column)"></span>
+								<pre ng-switch-when="10" ng-bind="record[column.dataName][0]"></pre>
+								<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column)"></span>
+								<span ng-switch-when="12" ng-bind="record[column.dataName][0]"></span>
+								<span ng-switch-when="13">******</span>
+								<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column)"></span>
+								<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column)"></span>
+								<span ng-switch-when="16">{{record[column.dataName][0]}}</span>
+								<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column)"></span>
+								<span ng-switch-when="18">{{record[column.dataName][0]}}</span>
+								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column)"></span>
+							</div>
 							<div ng-if="column.type=='view' || column.type == 'viewFromRelation'">
 								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
 							</div>
