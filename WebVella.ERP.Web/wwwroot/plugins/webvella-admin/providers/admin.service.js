@@ -105,10 +105,10 @@ function guid() {
 
 		//#region << Aux methods >>
 
-	    ////////////////////
+		////////////////////
 		function logout(successCallback, errorCallback) {
-		    $log.debug('webvellaAdmin>providers>admin.service>logout> function called' );
-		    $http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'logout', data: {} }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			$log.debug('webvellaAdmin>providers>admin.service>logout> function called');
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'logout', data: {} }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
 
 		// Global functions for result handling for all methods of this service
@@ -118,10 +118,10 @@ function guid() {
 					//handled globally by http observer
 					break;
 				}
-		        case 403: {
-		            //handled globally by http observer
-		            break;
-		        }
+				case 403: {
+					//handled globally by http observer
+					break;
+				}
 				case 400:
 					if (errorCallback === undefined || typeof (errorCallback) != "function") {
 						$log.debug('webvellaAdmin>providers>admin.service> result failure: errorCallback not a function or missing ' + moment().format('HH:mm:ss SSSS'));
@@ -249,7 +249,7 @@ function guid() {
 				enableSecurity: false,
 				permissions: {
 					canRead: [],
-					canUpdate:[]
+					canUpdate: []
 				}
 
 			};
@@ -945,6 +945,7 @@ function guid() {
 			//#endregion
 
 			//#region << Process >>
+	
 			function executeRegeneration() {
 				//Cycle entities and generate array of valid subscription for each
 				var validSubscriptionsArray = [];
@@ -970,7 +971,9 @@ function guid() {
 					validSubscriptionObj.labelPlural = entity.labelPlural;
 					validSubscriptionObj.iconName = entity.iconName;
 					validSubscriptionObj.weight = entity.weight;
+
 					//Views
+
 					entity.recordViews.sort(function (a, b) {
 						if (a.weight < b.weight) return -1;
 						if (a.weight > b.weight) return 1;
@@ -1004,21 +1007,58 @@ function guid() {
 					}
 				});
 
-				function rasAreaUpdateSuccessCallback(response) {}
+				function rasAreaUpdateSuccessCallback(response) { }
 
 				function rasAreaUpdateErrorCallback(response) {
 					$log.warn("Area subscriptions were not regenerated due to:  " + response.message);
 				}
 
 				//Cycle through areas and substitute each entity subscription with its new valid subscription
+				function checkIfEntityViewListExists(entityName, viewName, listName) {
+					var isEntityViewListExist = {};
+					isEntityViewListExist.view = false;
+					isEntityViewListExist.list = false;
+					for (var i = 0; i < entities.length; i++) {
+						if (entities[i].name == entityName) {
+							for (var j = 0; j < entities[i].recordViews.length; j++) {
+								if (entities[i].recordViews[j].name == viewName) {
+									isEntityViewListExist.view = true;
+									break;
+								}
+							}
+							for (var m = 0; m < entities[i].recordLists.length; m++) {
+								if (entities[i].recordLists[m].name == listName) {
+									isEntityViewListExist.list = true;
+									break;
+								}
+							}
+						}
+					}
+					return isEntityViewListExist;
+				}
+
 				areas.forEach(function (area) {
 					var subscriptions = angular.fromJson(area.subscriptions);
 					var newSubscriptions = [];
-					for (var j = 0; j < validSubscriptionsArray.length; j++) {
-						for (var n = 0; n < subscriptions.length; n++) {
-							if (subscriptions[n].name === validSubscriptionsArray[j].name) {
-								newSubscriptions.push(validSubscriptionsArray[j]);
-								break;
+					for (var n = 0; n < subscriptions.length; n++) {
+						//if subscription view or list exists do not change it. This will enable the manual selections not to be overwritten
+						var isEntityViewListExist = {};
+						isEntityViewListExist.view = false;
+						isEntityViewListExist.list = false;
+						isEntityViewListExist = checkIfEntityViewListExists(subscriptions[n].name,subscriptions[n].view.name,subscriptions[n].list.name);
+						if (isEntityViewListExist.view || isEntityViewListExist.list) {
+							for (var j = 0; j < validSubscriptionsArray.length; j++) {
+								if (subscriptions[n].name === validSubscriptionsArray[j].name) {
+									var newSubscriptionObject = validSubscriptionsArray[j];
+									if (isEntityViewListExist.view) {
+										newSubscriptionObject.view = subscriptions[n].view;
+									}
+									if (isEntityViewListExist.list) {
+										newSubscriptionObject.list = subscriptions[n].list;
+									}
+									newSubscriptions.push(newSubscriptionObject);
+									break;
+								}
 							}
 						}
 					}
