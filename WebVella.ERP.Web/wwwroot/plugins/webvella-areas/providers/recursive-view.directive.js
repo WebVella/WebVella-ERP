@@ -44,9 +44,9 @@
 	}
 
 
-	DirectiveController.$inject = ['$filter', '$log', '$scope'];
+	DirectiveController.$inject = ['$filter', '$log', '$scope', 'webvellaAreasService'];
 	/* @ngInject */
-	function DirectiveController($filter, $log, $scope) {
+	function DirectiveController($filter, $log, $scope, webvellaAreasService) {
 		//#region << Init >>
 		//var directiveData = this;
 		$scope.itemEntityId = $scope.viewMeta().entityId;
@@ -86,156 +86,45 @@
 		}
 		//#endregion
 
-		//#region << Field Render logic >>
-		//1. Auto increment
-		$scope.getAutoIncrementString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (!fieldValue) {
-				return "empty";
-			}
-			else if (item.meta.displayFormat) {
-				return item.meta.displayFormat.replace("{0}", fieldValue);
-			}
-			else {
-				return fieldValue;
-			}
-		}
-
-		//2. Checkbox
-		$scope.getCheckboxString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (fieldValue) {
-				return "<i class='fa fa-fw fa-check go-green'></i> true";
-			}
-			else {
-				return "<i class='fa fa-fw fa-close go-red'></i> false";
-			}
-		}
-
-		//3. Currency
-		$scope.getCurrencyString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (!fieldValue) {
-				return "empty";
-			}
-			else if (item.meta.currency != null && item.meta.currency !== {} && item.meta.currency.symbol) {
-				if (item.meta.currency.symbolPlacement === 1) {
-					return item.meta.currency.symbol + " " + fieldValue;
-				}
-				else {
-					return fieldValue + " " + item.meta.currency.symbol;
-				}
-			}
-			else {
-				return fieldValue;
-			}
-		}
-
-		//4 and 5. Date & DateTime 
-		$scope.getDateString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			var format = "dd MMM yyyy";
-			if (item.meta.fieldType === 5) {
-				format = "dd MMM yyyy HH:mm";
-			}
-			if (item.meta.format) {
-				format = item.meta.format;
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return $filter('date')(fieldValue, format);
-			}
-		}
-
-		//7. File upload
-		$scope.getFileString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return '<a class="link-icon" href="' + fieldValue + '" target="_blank">view file</a>';
-			}
-		}
-
-		//9. Image
-		$scope.getImageString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return '<img class="img-thumbnail" src="' + fieldValue + '"  />';
-
-			}
-		}
-
-		//11. Checkbox list
-		$scope.getCheckboxlistString = function (item, record) {
-			var fieldData = record[item.dataName];
-			if (fieldData) {
-				var selected = [];
-				angular.forEach(item.meta.options, function (s) {
-					if (fieldData.indexOf(s.key) >= 0) {
-						selected.push(s.value);
-					}
-				});
-				return selected.length ? selected.join(', ') : '';
-			}
-			else {
-				return '';
-			}
-		}
-
-
-		//14. Percent
-		$scope.Math = window.Math;
-		function multiplyDecimals(val1, val2, decimalPlaces) {
-			var helpNumber = 100;
-			for (var i = 0; i < decimalPlaces; i++) {
-				helpNumber = helpNumber * 10;
-			}
-			var temp1 = $scope.Math.round(val1 * helpNumber);
-			var temp2 = $scope.Math.round(val2 * helpNumber);
-			return (temp1 * temp2) / (helpNumber * helpNumber);
-		}
-
-
-		$scope.getPercentString = function (item, record) {
-			var fieldValue = record[item.dataName];
-
-			if (!fieldValue) {
-				return "empty";
-			}
-			else {
-				//JavaScript has a bug when multiplying decimals
-				//The way to correct this is to multiply the decimals before multiple their values,
-				var resultPercentage = 0.00;
-				resultPercentage = multiplyDecimals(fieldValue, 100, 3);
-				return resultPercentage + "%";
-			}
-
-		}
-
-		//17. Dropdown
-		$scope.getDropdownString = function (item, record) {
-			var selected = $filter('filter')(item.meta.options, { key: record[item.dataName] });
-			return (record[item.dataName] && selected.length) ? selected[0].value : 'empty';
-		}
-
-		//19. URL
-		$scope.getUrlString = function (item, record) {
-			var fieldValue = record[item.dataName];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return '<a class="link-icon" href="' + fieldValue + '" target="_blank">visit link</a>';
-			}
-		}
-
+		//#region << Columns render>> //////////////////////////////////////
+		//1.Auto increment
+		$scope.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
+		//2.Checkbox
+		$scope.getCheckboxString = webvellaAreasService.getCheckboxString;
+		//3.Currency
+		$scope.getCurrencyString = webvellaAreasService.getCurrencyString;
+		//4.Date
+		$scope.getDateString = webvellaAreasService.getDateString;
+		//5.Datetime
+		$scope.getDateTimeString = webvellaAreasService.getDateTimeString;
+		//6.Email
+		$scope.getEmailString = webvellaAreasService.getEmailString;
+		//7.File
+		$scope.getFileString = webvellaAreasService.getFileString;
+		//8.Html
+		$scope.getHtmlString = webvellaAreasService.getHtmlString;
+		//9.Image
+		$scope.getImageString = webvellaAreasService.getImageString;
+		//10.Textarea
+		$scope.getTextareaString = webvellaAreasService.getTextareaString;
+		//11.Multiselect
+		$scope.getMultiselectString = webvellaAreasService.getMultiselectString;
+		//12.Number
+		$scope.getNumberString = webvellaAreasService.getNumberString;
+		//13.Password
+		$scope.getPasswordString = webvellaAreasService.getPasswordString;
+		//14.Percent
+		$scope.getPercentString = webvellaAreasService.getPercentString;
+		//15.Phone
+		$scope.getPhoneString = webvellaAreasService.getPhoneString;
+		//15.Guid
+		$scope.getGuidString = webvellaAreasService.getGuidString;
+		//17.Dropdown
+		$scope.getDropdownString = webvellaAreasService.getDropdownString;
+		//18. Text
+		$scope.getTextString = webvellaAreasService.getTextString;
+		//18.Url
+		$scope.getUrlString = webvellaAreasService.getUrlString;
 		//#endregion
 
 		//#region << Field Relation render >>

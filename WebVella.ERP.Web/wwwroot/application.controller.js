@@ -19,7 +19,7 @@
     /* @ngInject */
     function config($httpProvider, wvAppConstants) {
 
-    	$httpProvider.interceptors.push(function ($q, $window, ngToast, $cookies) {
+    	$httpProvider.interceptors.push(function ($q, $window, ngToast, $cookies,$rootScope) {
         	return {
         		'request': function (request) {
         			if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
@@ -48,21 +48,24 @@
                 'responseError': function (errorResponse) {
                 	switch (errorResponse.status) {
                 		case 401:
-                			ngToast.create({
-                				className: 'error',
-                				content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
-                			});
-                			var cookieValue = $cookies.remove("erp-auth");
-                			$window.location = '#/login';
-                			break;
+                			//Check if already called if yes do not call redirect or show message
+                			if (!$rootScope.notAuthorizedAlreadyProcessed) {
+                				ngToast.create({
+                					className: 'error',
+                					content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+                				});
+                				var cookieValue = $cookies.remove("erp-auth");
+                				$rootScope.notAuthorizedAlreadyProcessed = true;
+                				//$state.go("webvella-root-login");
+                				$window.location = '#/login';
+                			}
                 		case 403:
                 			ngToast.create({
                 				className: 'error',
                 				content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
                 			});
-                			break;
+                			return $q.reject(errorResponse);
                 	}
-                    return $q.reject(errorResponse);
                 }
             }
         });

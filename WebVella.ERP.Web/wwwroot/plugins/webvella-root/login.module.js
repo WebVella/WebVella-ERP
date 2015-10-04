@@ -53,13 +53,13 @@
         /* jshint validthis:true */
     	var loginData = this;
     	loginData.loginIsActive = false;
-    	var currentUser = webvellaRootService.getCurrentUser();
-    	if (currentUser != null) {
-    		$timeout(function () {
-    			$state.go("webvella-desktop-browse");
-    		}, 0);
-    	}
-    	else {
+    	//var currentUser = webvellaRootService.getCurrentUser();
+    	//if (currentUser != null) {
+    	//	$timeout(function () {
+    	//		$state.go("webvella-desktop-browse");
+    	//	}, 0);
+    	//}
+    	//else {
     		loginData.loginIsActive = true;
 
     		//loginData.email = "erp@webvella.com";
@@ -83,7 +83,7 @@
 										  	//show validation
 										  });
     		}
-    	}
+    	//}
     	$log.debug('webvellaRoot>login> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 

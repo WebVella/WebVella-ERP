@@ -166,6 +166,7 @@
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = angular.copy(contentData.defaultRecordView.regions[i]);
+						returnObject.meta.label = "General";
 					}
 				}
 				contentData.selectedSidebarPage.isView = true;
@@ -181,6 +182,7 @@
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									contentData.selectedSidebarPage.isEdit = true;
 									returnObject.meta = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
+									returnObject.meta.label = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
 								}
 							}
@@ -228,9 +230,10 @@
 
 		//#endregion
 
-		//#region << Intialize current entity >>
+		//#region << Initialize current entity >>
 		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
-
+		contentData.viewSection = {};
+		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Entity relations functions >>
@@ -459,48 +462,20 @@
 
 			//Auto increment
 			contentData.getAutoIncrementString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-				if (!fieldValue) {
-					return "empty";
-				} else if (item.meta.displayFormat) {
-					return item.meta.displayFormat.replace("{0}", fieldValue);
-				} else {
-					return fieldValue;
-				}
-			}
+				return webvellaAreasService.getAutoIncrementString(contentData.selectedSidebarPage.data[item.dataName],item.meta);
+			};
 			//Checkbox
 			contentData.getCheckboxString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-				if (fieldValue) {
-					return "<i class='fa fa-fw fa-check go-green'></i> true";
-				} else {
-					return "<i class='fa fa-fw fa-close go-red'></i> false";
-				}
-			}
+				return webvellaAreasService.getCheckboxString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 			//Currency
 			contentData.getCurrencyString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-				if (!fieldValue) {
-					return "empty";
-				} else if (item.meta.currency != null && item.meta.currency !== {} && item.meta.currency.symbol) {
-					if (item.meta.currency.symbolPlacement === 1) {
-						return item.meta.currency.symbol + " " + fieldValue;
-					} else {
-						return fieldValue + " " + item.meta.currency.symbol;
-					}
-				} else {
-					return fieldValue;
-				}
-			}
+				return webvellaAreasService.getCurrencyString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 			//Date & DateTime 
 			contentData.getDateString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-				if (!fieldValue) {
-					return "";
-				} else {
-					return $filter('date')(fieldValue, "dd MMM yyyy");
-				}
-			}
+				return webvellaAreasService.getDateString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 			contentData.getTimeString = function (item) {
 				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
 				if (!fieldValue) {
@@ -623,45 +598,22 @@
 			};
 
 			//Checkbox list
-			contentData.getCheckboxlistString = function (fieldData, array) {
-				if (fieldData) {
-					var selected = [];
-					angular.forEach(array, function (s) {
-						if (fieldData.indexOf(s.key) >= 0) {
-							selected.push(s.value);
-						}
-					});
-					return selected.length ? selected.join(', ') : 'empty';
-				} else {
-					return 'empty';
-				}
-			}
+			contentData.getMultiselectString = function (item) {
+				return webvellaAreasService.getMultiselectString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 
 			//Password
 			contentData.dummyPasswordModels = {}; //as the password value is of know use being encrypted, we will assign dummy models
 			//Dropdown
-			contentData.getDropdownString = function (fieldData, array) {
-				var selected = $filter('filter')(array, { key: fieldData });
-				return (fieldData && selected.length) ? selected[0].value : 'empty';
-			}
-
+			contentData.getDropdownString = function (item) {
+				return webvellaAreasService.getDropdownString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 			//Percent
 			$scope.Math = window.Math;
 
 			contentData.getPercentString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-
-				if (!fieldValue) {
-					return "empty";
-				} else {
-					//JavaScript has a bug when multiplying decimals
-					//The way to correct this is to multiply the decimals before multiple their values,
-					var resultPercentage = 0.00;
-					resultPercentage = multiplyDecimals(fieldValue, 100, 3, $scope);
-					return resultPercentage + "%";
-				}
-
-			}
+				return webvellaAreasService.getPercentString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
+			};
 
 			contentData.currentUserRoles = angular.copy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {

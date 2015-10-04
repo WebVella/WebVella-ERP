@@ -1,4 +1,4 @@
-﻿/* area.service.js */
+/* area.service.js */
 
 /**
 * @desc all actions with site area
@@ -11,10 +11,10 @@
         .module('webvellaAreas')
         .service('webvellaAreasService', service);
 
-    service.$inject = ['$log','$http', 'wvAppConstants','$timeout','ngToast'];
+    service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter'];
 
     /* @ngInject */
-    function service($log, $http, wvAppConstants, $timeout, ngToast) {
+    function service($log, $http, wvAppConstants, $timeout, ngToast, $filter) {
         var serviceInstance = this;
 
         serviceInstance.getAreaByName = getAreaByName;
@@ -28,7 +28,28 @@
         serviceInstance.getListFilter = getListFilter;
         serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
         serviceInstance.getViewRecord = getViewRecord;
-        ///////////////////////
+		//// Record data presenting
+        serviceInstance.getAutoIncrementString = getAutoIncrementString;
+        serviceInstance.getCheckboxString = getCheckboxString;
+        serviceInstance.getCurrencyString = getCurrencyString;
+        serviceInstance.getDateString = getDateString;
+        serviceInstance.getDateTimeString = getDateTimeString;
+        serviceInstance.getEmailString = getEmailString;
+        serviceInstance.getFileString = getFileString;
+        serviceInstance.getHtmlString = getHtmlString;
+        serviceInstance.getImageString = getImageString;
+        serviceInstance.getTextareaString = getTextareaString;
+        serviceInstance.getMultiselectString = getMultiselectString;
+        serviceInstance.getNumberString = getNumberString;
+        serviceInstance.getPasswordString = getPasswordString;
+        serviceInstance.getPercentString = getPercentString;
+        serviceInstance.getPhoneString = getPhoneString;
+        serviceInstance.getGuidString = getGuidString;
+        serviceInstance.getDropdownString = getDropdownString;
+        serviceInstance.getTextString = getTextString;
+        serviceInstance.getUrlString = getUrlString;
+		//#region << API calls >>
+    	///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
         	$log.debug('webvellaAreas>providers>areas.service>getAreaByName> function called ' + moment().format('HH:mm:ss SSSS'));
             $http({ method: 'GET', url: wvAppConstants.apiBaseUrl + '/meta/entity/' + areaName }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
@@ -131,6 +152,176 @@
         function deleteSelectedFilterRecords(filter_id, postObject, successCallback, errorCallback) {
         	$log.debug('webvellaAdmin>providers>admin.service>deleteSelectedFilterRecords> function called ' + moment().format('HH:mm:ss SSSS'));
         	$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'filter/' + filter_id + '/delete-records', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+        }
+		//#endregion
+
+
+    	/// Field data presentation ///////////////////////////////////////////
+		//1.Auto increment
+		function getAutoIncrementString (data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else if (fieldMeta.displayFormat) {
+				return fieldMeta.displayFormat.replace("{0}", data);
+			}
+			else {
+				return data;
+			}
+		}  
+    	//2.Checkbox
+		function getCheckboxString(data, fieldMeta) {
+			if (data) {
+				return "<span class='go-green'>true</span>";
+			}
+			else {
+				return "<span class='go-red'>false</span>";
+			}
+		}
+    	//3.Currency
+		function getCurrencyString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
+				if (fieldMeta.currency.symbolPlacement === 1) {
+					return fieldMeta.currency.symbol + " " + data;
+				}
+				else {
+					return data + " " + fieldMeta.currency.symbol;
+				}
+			}
+			else {
+				return data;
+			}
+		}
+    	//4.Date
+		function getDateString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return moment(data).format("DD MMM YYYY");
+			}
+		}
+    	//5.Datetime
+		function getDateTimeString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return moment(data).format("DD MMM YYYY HH:mm");
+			}
+		}
+    	//6.Email
+		function getEmailString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				//There is a problem in Angular when having in href -> the href is not rendered
+				//return "<a href='mailto:" + fieldValue + "' data-rel='external'>" + fieldValue + "</a>";
+				return data;
+			}
+		}
+    	//7.File
+		function getFileString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return "<a href='" + data + "' taget='_blank' class='link-icon'>view file</a>";
+			}
+		}
+    	//8.Html
+		function getHtmlString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return data;
+			}
+		}
+    	//9.Image
+		function getImageString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return "<img src='" + data + "' class='table-image'/>";
+			}
+		}
+    	//10. Textarea
+		function getTextareaString(data, fieldMeta) {
+			return data;
+		}
+    	//11.Multiselect
+		function getMultiselectString(data, fieldMeta) {
+			var generatedStringArray = [];
+			if (data.length === 0) {
+				return "";
+			}
+			else {
+				for (var i = 0; i < data.length; i++) {
+					var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
+					generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
+				}
+				return generatedStringArray.join(', ');
+			}
+		}
+    	//12. Number
+		function getNumberString(data, fieldMeta) {
+			return data;
+		}
+    	//13. Password
+		function getPasswordString(data, fieldMeta) {
+			return "******";
+		}
+    	//14.Percent
+		function getPercentString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return data * 100 + "%";
+			}
+		}
+    	//15. Phone
+		function getPhoneString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				return phoneUtils.formatInternational(data);
+			}
+		}
+    	//16. Guid
+		function getGuidString(data, fieldMeta) {
+			return data;
+		}
+    	//17.Dropdown
+		function getDropdownString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else {
+				var selected = $filter('filter')(fieldMeta.options, { key: data });
+				return (data && selected.length) ? selected[0].value : 'empty';
+			}
+
+		}
+    	//18. Text
+        function getTextString(data, fieldMeta) {
+        	return data;
+        }
+    	//19.Url
+        function getUrlString(data, fieldMeta) {
+        	if (!data) {
+        		return "";
+        	}
+        	else {
+        		return "<a href='" + data + "' target='_blank'>" + data + "</a>";
+        	}
         }
 
 
