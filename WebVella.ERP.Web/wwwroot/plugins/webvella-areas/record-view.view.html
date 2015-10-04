@@ -199,7 +199,7 @@
 											<!-- If type 11 - multichoice -->
 											<div ng-switch-when="11" ng-if="contentData.currentUserHasUpdatePermission(item)">
 												<a href="javascript:void(0)" editable-checklist="contentData.selectedSidebarPage.data[item.dataName]" e-ng-options="s.key as s.value for s in item.meta.options"
-												   ng-bind="contentData.getCheckboxlistString(contentData.selectedSidebarPage.data[item.dataName],item.meta.options)"
+												   ng-bind="contentData.getMultiselectString(item)"
 												   onbeforesave="contentData.fieldUpdate(item, $data)">
 												</a>
 											</div>
@@ -236,7 +236,7 @@
 											<!-- If type 17 - dropdown -->
 											<div ng-switch-when="17">
 												<a href="javascript:void(0)" editable-select="contentData.selectedSidebarPage.data[item.dataName]" e-ng-options="s.key as s.value for s in item.meta.options"
-												   ng-bind="contentData.getDropdownString(contentData.selectedSidebarPage.data[item.dataName],item.meta.options)"
+												   ng-bind="contentData.getDropdownString(item)"
 												   onbeforesave="contentData.fieldUpdate(item, $data)"  ng-if="contentData.currentUserHasUpdatePermission(item)">
 												</a>
 											</div>

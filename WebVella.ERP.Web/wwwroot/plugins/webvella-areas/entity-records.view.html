@@ -84,11 +84,11 @@
 						<span class="go-black" ng-bind-html="dataRecord.label"></span>
 					</li>
 					<li ng-repeat="dataRecord in filterRecord.helper.data" ng-switch-when="exact_and" style="padding-right:0;">
-						<span class="go-gray" ng-show="$index != 0">and </span> 
+						<span class="go-gray" ng-show="$index != 0">and </span>
 						<span class="go-black" ng-bind-html="dataRecord.label"></span>
 					</li>
 					<li ng-repeat="dataRecord in filterRecord.helper.data" ng-switch-when="exact_or" style="padding-right:0;">
-						<span class="go-gray" ng-show="$index != 0">or </span> 
+						<span class="go-gray" ng-show="$index != 0">or </span>
 						<span class="go-black" ng-bind-html="dataRecord.label"></span>
 					</li>
 					<li ng-switch-when="range">
@@ -124,46 +124,46 @@
 					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
 						<div ng-if="contentData.currentUserHasReadPermission(column)">
 							<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
-								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
-								<span ng-switch-when="2" ng-bind-html="contentData.getCheckboxString(record,column)"></span>
-								<span ng-switch-when="3">{{contentData.getCurrencyString(record,column)}}</span>
-								<span ng-switch-when="4">{{contentData.getDateString(record,column)}}</span>
-								<span ng-switch-when="5">{{contentData.getDateTimeString(record,column)}}</span>
-								<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column)"></span>
-								<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column)"></span>
-								<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column)"></span>
-								<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column)"></span>
-								<pre ng-switch-when="10" ng-bind="record[column.dataName]"></pre>
-								<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column)"></span>
-								<span ng-switch-when="12" ng-bind="record[column.dataName]"></span>
-								<span ng-switch-when="13">******</span>
-								<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column)"></span>
-								<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column)"></span>
-								<span ng-switch-when="16">{{record[column.dataName]}}</span>
-								<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column)"></span>
-								<span ng-switch-when="18">{{record[column.dataName]}}</span>
-								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column)"></span>
+								<span ng-switch-when="1" ng-bind="contentData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="2" ng-bind-html="contentData.getCheckboxString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="3" ng-bind="contentData.getCurrencyString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="4" ng-bind="contentData.getDateString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="5" ng-bind="contentData.getDateTimeString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="8" ng-bind="contentData.getHtmlString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="10" ng-bind="contentData.getTextareaString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="11" ng-bind="contentData.getMultiselectString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="12" ng-bind="contentData.getNumberString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="13" ng-bind="contentData.getPasswordString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="14" ng-bind="contentData.getPercentString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="15" ng-bind="contentData.getPhoneString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="16" ng-bind="contentData.getGuidString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="17" ng-bind="contentData.getDropdownString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="18" ng-bind="contentData.getTextString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record[column.dataName],column.meta)"></span>
 							</div>
 							<div ng-switch="column.meta.fieldType" ng-if="column.type=='fieldFromRelation'">
-								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record,column)}}</span>
-								<span ng-switch-when="2" ng-bind-html="contentData.getCheckboxString(record,column)"></span>
-								<span ng-switch-when="3">{{contentData.getCurrencyString(record,column)}}</span>
-								<span ng-switch-when="4">{{contentData.getDateString(record,column)}}</span>
-								<span ng-switch-when="5">{{contentData.getDateTimeString(record,column)}}</span>
-								<span ng-switch-when="6" ng-bind-html="contentData.getEmailString(record,column)"></span>
-								<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record,column)"></span>
-								<span ng-switch-when="8" ng-bind-html="contentData.getHtmlString(record,column)"></span>
-								<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record,column)"></span>
-								<pre ng-switch-when="10" ng-bind="record[column.dataName][0]"></pre>
-								<span ng-switch-when="11" ng-bind-html="contentData.getMultiselectString(record,column)"></span>
-								<span ng-switch-when="12" ng-bind="record[column.dataName][0]"></span>
-								<span ng-switch-when="13">******</span>
-								<span ng-switch-when="14" ng-bind-html="contentData.getPercentString(record,column)"></span>
-								<span ng-switch-when="15" ng-bind-html="contentData.getPhoneString(record,column)"></span>
-								<span ng-switch-when="16">{{record[column.dataName][0]}}</span>
-								<span ng-switch-when="17" ng-bind-html="contentData.getDropdownString(record,column)"></span>
-								<span ng-switch-when="18">{{record[column.dataName][0]}}</span>
-								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record,column)"></span>
+								<span ng-switch-when="1">{{contentData.getAutoIncrementString(record[column.dataName][0],column.meta)}}</span>
+								<span ng-switch-when="2" ng-bind="contentData.getCheckboxString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="3" ng-bind-html="contentData.getCurrencyString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="4" ng-bind="contentData.getDateString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="5" ng-bind="contentData.getDateTimeString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="6" ng-bind="contentData.getEmailString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="7" ng-bind-html="contentData.getFileString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="8" ng-bind="contentData.getHtmlString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="9" ng-bind-html="contentData.getImageString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="10" ng-bind="contentData.getTextareaString(record[column.dataName],column.meta)"></span>
+								<span ng-switch-when="11" ng-bind="contentData.getMultiselectString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="12" ng-bind="contentData.getNumberString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="13" ng-bind="contentData.getPasswordString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="14" ng-bind="contentData.getPercentString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="15" ng-bind="contentData.getPhoneString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="16" ng-bind="contentData.getGuidString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="17" ng-bind="contentData.getDropdownString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="18" ng-bind="contentData.getTextString(record[column.dataName][0],column.meta)"></span>
+								<span ng-switch-when="19" ng-bind-html="contentData.getUrlString(record[column.dataName][0],column.meta)"></span>
 							</div>
 							<div ng-if="column.type=='view' || column.type == 'viewFromRelation'">
 								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
@@ -199,10 +199,10 @@
 	<div class="modal-body" ng-class="{'go-bkg-gray-light': popupData.filterColumns.length > 0}">
 		<div class="row">
 			<div class="col-sm-12">
-				<form name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
+				<div name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
 					<tabset vertical="true" type="pills">
 						<tab heading="{{column.meta.label}}" select="popupData.tabSelected(column)" ng-repeat="column in popupData.filterColumns" class="{{popupData.getTabExtraCssClass(column)}}">
-							<div ng-hide="column.loading" ng-switch="column.type">
+							<div ng-hide="popupData.tabLoading || popupData.tabError" ng-switch="column.type">
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.getFieldTypeName(column)}}</span></div>
 									<hr class="divider clear" style="margin-top:0;" />
@@ -989,13 +989,99 @@
 										</div>
 									</div>
 								</div>
+								<div ng-switch-when="fieldFromRelation">
+									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.relatedEntity.labelPlural}}</span></div>
+									<hr class="divider clear" style="margin-top:0;" />
+									<form id="filters" class="form-inline" style="margin-bottom:1em; opacity:.2">
+										<div class="form-group">
+											<div class="input-group">
+												<span class="input-group-addon" id="basic-addon1">
+													<i class="fa fa-search"></i>
+												</span>
+												<input ng-model="class" type="text" class="form-control" placeholder="Search">
+											</div>
+										</div>
+									</form>
+
+									<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" ng-show="popupData.relationLookupList.data.length > 0">
+										<thead>
+											<tr>
+												<th class="actions" style="width:80px;" ng-if="popupData.modalMode != 'single-trigger-selection'"></th>
+												<th class="actions" style="width:110px;" ng-if="popupData.modalMode == 'single-trigger-selection'"></th>
+												<th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}">{{column.meta.label}}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="record in popupData.relationLookupList.data" ng-class="{'warning': popupData.isSelectedRecord(record.id)}">
+												<td ng-if="popupData.modalMode == 'single-selection'">
+													<a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+														select
+													</a>
+													<span class="go-red" ng-if="popupData.isSelectedRecord(record.id)">
+														selected
+													</span>
+												</td>
+												<td ng-if="popupData.modalMode == 'multi-selection'">
+													<a ng-click='popupData.attachRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+														select
+													</a>
+													<a ng-click='popupData.detachRecord(record)' href="javascript:void(0)" ng-if="popupData.isSelectedRecord(record.id)">
+														deselect
+													</a>
+												</td>
+												<td ng-if="popupData.modalMode == 'single-trigger-selection'">
+													<span class="go-gray" ng-show="popupData.processingRecordId == record.id">processing...</span>
+													<a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupData.isSelectedRecord(record.id) && popupData.processingRecordId != record.id">
+														select now
+													</a>
+													<a ng-click='popupData.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupData.isSelectedRecord(record.id)  && popupData.processingRecordId != record.id">
+														deselect now
+													</a>
+												</td>
+												<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
+													<span ng-switch-when="1">{{popupData.getAutoIncrementString(record,column.meta)}}</span>
+													<span ng-switch-when="2">{{popupData.getCheckboxString(record,column.meta)}}</span>
+													<span ng-switch-when="3">{{popupData.getCurrencyString(record,column.meta)}}</span>
+													<span ng-switch-when="4">{{popupData.getDateString(record,column.meta)}}</span>
+													<span ng-switch-when="5">{{popupData.getDateTimeString(record,column.meta)}}</span>
+													<span ng-switch-when="6" ng-bind-html="popupData.getEmailString(record,column.meta)"></span>
+													<span ng-switch-when="7" ng-bind-html="popupData.getFileString(record,column.meta)"></span>
+													<span ng-switch-when="8" ng-bind-html="popupData.getHtmlString(record,column.meta)"></span>
+													<span ng-switch-when="9" ng-bind-html="popupData.getImageString(record,column.meta)"></span>
+													<pre ng-switch-when="10" ng-bind="record[column.meta.name]"></pre>
+													<span ng-switch-when="11" ng-bind-html="popupData.getMultiselectString(record,column.meta)"></span>
+													<span ng-switch-when="12" ng-bind="record[column.meta.name]"></span>
+													<span ng-switch-when="13">******</span>
+													<span ng-switch-when="14" ng-bind-html="popupData.getPercentString(record,column.meta)"></span>
+													<span ng-switch-when="15" ng-bind-html="popupData.getPhoneString(record,column.meta)"></span>
+													<span ng-switch-when="16">{{record[column.dataName]}}</span>
+													<span ng-switch-when="17" ng-bind-html="popupData.getDropdownString(record,column.meta)"></span>
+													<span ng-switch-when="18">{{popupData.getTextString(record[column.dataName],column.meta)}}</span>
+													<span ng-switch-when="19" ng-bind-html="popupData.getUrlString(record,column.meta)"></span>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="alert alert-info ng-hide" ng-show="popupData.relationLookupList.data.length == 0">
+										No records found
+									</div>
+									<ul class="pager">
+										<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+										<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+										<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+										<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+									</ul>
+								</div>
 							</div>
-							<div ng-show="column.loading" id="loading-bar-spinner">
+							<div class="ng-hide" ng-show="popupData.tabLoading" id="loading-bar-spinner">
 								<div class="spinner-icon"></div>
+							</div>
+							<div class="ng-hide" ng-show="popupData.tabError">
+								<div class="alert alert-warning" ng-bind-html="popupData.tabErrorMessage"></div>
 							</div>
 						</tab>
 					</tabset>
-				</form>
+				</div>
 				<div class="alert alert-warning" ng-if="popupData.filterColumns.length == 0">There are no searchable columns for this list</div>
 			</div>
 

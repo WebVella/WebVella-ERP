@@ -1,4 +1,4 @@
-﻿/* entities.module.js */
+/* entities.module.js */
 
 /**
 * @desc this module manages the application home desktop screen
@@ -481,200 +481,43 @@
 
 		//#region << Columns render>> //////////////////////////////////////
 		//1.Auto increment
-		contentData.getAutoIncrementString = function (record, field) {
-			
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else if (field.meta.displayFormat) {
-				return field.meta.displayFormat.replace("{0}", fieldValue);
-			}
-			else {
-				return fieldValue;
-			}
-		}
+		contentData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
 		//2.Checkbox
-		contentData.getCheckboxString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				return "<span class='label label-success'>true</span>";
-			}
-			else {
-				return "<span class='label label-danger'>false</span>";
-			}
-		}
+		contentData.getCheckboxString = webvellaAreasService.getCheckboxString;
 		//3.Currency
-		contentData.getCurrencyString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else if (field.meta.currency != null && field.meta.currency !== {} && field.meta.currency.symbol) {
-				if (field.meta.currency.symbolPlacement === 1) {
-					return field.meta.currency.symbol + " " + fieldValue;
-				}
-				else {
-					return fieldValue + " " + field.meta.currency.symbol;
-				}
-			}
-			else {
-				return fieldValue;
-			}
-		}
+		contentData.getCurrencyString = webvellaAreasService.getCurrencyString;
 		//4.Date
-		contentData.getDateString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			return moment(fieldValue).format("DD MMMM YYYY");
-		}
+		contentData.getDateString = webvellaAreasService.getDateString;
 		//5.Datetime
-		contentData.getDateTimeString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			return moment(fieldValue).format("DD MMMM YYYY HH:mm");
-		}
+		contentData.getDateTimeString = webvellaAreasService.getDateTimeString;
 		//6.Email
-		contentData.getEmailString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				//There is a problem in Angular when having in href -> the href is not rendered
-				//return "<a href='mailto:" + fieldValue + "' data-rel='external'>" + fieldValue + "</a>";
-				return fieldValue;
-			}
-			else {
-				return "";
-			}
-		}
+		contentData.getEmailString = webvellaAreasService.getEmailString;
 		//7.File
-		contentData.getFileString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				return "<a href='" + fieldValue + "' taget='_blank' class='link-icon'>view file</a>";
-			}
-			else {
-				return "";
-			}
-		}
+		contentData.getFileString = webvellaAreasService.getFileString;
 		//8.Html
-		contentData.getHtmlString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				return fieldValue;
-			}
-			else {
-				return "";
-			}
-		}
+		contentData.getHtmlString = webvellaAreasService.getHtmlString;
 		//9.Image
-		contentData.getImageString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				return "<img src='" + fieldValue + "' class='table-image'/>";
-			}
-			else {
-				return "";
-			}
-		}
+		contentData.getImageString = webvellaAreasService.getImageString;
+		//10.Textarea
+		contentData.getTextareaString = webvellaAreasService.getTextareaString;
 		//11.Multiselect
-		contentData.getMultiselectString = function (record, field) {
-			var fieldValueArray = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			var generatedStringArray = [];
-			if (fieldValueArray.length === 0) {
-				return "";
-			}
-			else {
-				for (var i = 0; i < fieldValueArray.length; i++) {
-					var selected = $filter('filter')(field.meta.options, { key: fieldValueArray[i] });
-					generatedStringArray.push((fieldValueArray[i] && selected.length) ? selected[0].value : 'empty');
-				}
-				return generatedStringArray.join(', ');
-
-			}
-
-		}
+		contentData.getMultiselectString = webvellaAreasService.getMultiselectString;
+		//12.Number
+		contentData.getNumberString = webvellaAreasService.getNumberString;
+		//13.Password
+		contentData.getPasswordString = webvellaAreasService.getPasswordString;
 		//14.Percent
-		contentData.getPercentString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return fieldValue * 100 + "%";
-			}
-		}
+		contentData.getPercentString = webvellaAreasService.getPercentString;
 		//15.Phone
-		contentData.getPhoneString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return phoneUtils.formatInternational(fieldValue);
-			}
-		}
+		contentData.getPhoneString = webvellaAreasService.getPhoneString;
+		//15.Guid
+		contentData.getGuidString = webvellaAreasService.getGuidString;
 		//17.Dropdown
-		contentData.getDropdownString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				var selected = $filter('filter')(field.meta.options, { key: fieldValue });
-				return (fieldValue && selected.length) ? selected[0].value : 'empty';
-			}
-
-		}
+		contentData.getDropdownString = webvellaAreasService.getDropdownString;
+		//18. Text
+		contentData.getTextString = webvellaAreasService.getTextString;
 		//18.Url
-		contentData.getUrlString = function (record, field) {
-			var fieldValue = record[field.dataName];
-			if (field.type == "fieldFromRelation") {
-				fieldValue = record[field.dataName][0];
-			}
-			if (fieldValue) {
-				return "<a href='" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
-			}
-			else {
-				return "";
-			}
-		}
+		contentData.getUrlString = webvellaAreasService.getUrlString;
 		//#endregion
 
 		//#region << Modals >> ////////////////////////////////////
@@ -705,9 +548,9 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams','$scope'];
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService','webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams','$scope'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, ngToast, $timeout, $state, $location, contentData, $stateParams,$scope) {
+	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams,$scope) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = angular.copy(contentData);
@@ -900,8 +743,7 @@
 					}
 				}
 			}
-			switch (popupData.contentData.currentListView.columns[m].type) {
-				case "field":
+			if (popupData.contentData.currentListView.columns[m].type == "field" || popupData.contentData.currentListView.columns[m].type == "fieldFromRelation") {
 					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].meta.enableSecurity || (popupData.contentData.currentListView.columns[m].meta.enableSecurity && userHasReadPermissionForField))) {
 						var filterObject = {};
 						filterObject = popupData.contentData.currentListView.columns[m];
@@ -920,9 +762,6 @@
 						filterObject.loading = false;
 						popupData.filterColumns.push(filterObject);
 					}
-					break;
-				default:
-					break;
 			}
 		}
 		// Rules:
@@ -940,11 +779,72 @@
 		//If the showed on screen (not popup filters are changed) the popup button should become an apply button
 
 		popupData.tabLoading = false;
-		popupData.tabSelected = function () {
-			popupData.tabLoading = true;
-			$timeout(function () {
-				popupData.tabLoading = false;
-			}, 500);
+		popupData.tabError = false;
+		popupData.tabSelected = function (column) {
+			popupData.tabLoading = false;
+			popupData.tabError = false;
+			if(column.type == "fieldFromRelation"){
+				popupData.tabLoading = true;
+
+				//Find the relation type and the role of the current entity
+				var relationName = column.relationName;
+				var relation = {};
+				for(var i = 0; i < popupData.contentData.relationsMeta.length; i++){
+					if(popupData.contentData.relationsMeta[i].name == relationName){
+						relation = popupData.contentData.relationsMeta[i];
+						break; 
+					}
+				}
+				//relation.relationType -> 1 - one-to-one, 2 - one-to-many, 3 - many-to-many
+				var isCurrentEntityOrigin = false;
+				if(relation.originEntityName == column.entityName){
+					isCurrentEntityOrigin = true;
+				}
+
+				function tabErrorCallback(response) {
+					popupData.tabLoading = false;
+					popupData.tabError = true;
+					popupData.tabErrorMessage = "<i class='fa fa-fw fa-exclamation-triangle go-red'></i> " + response.message;
+				}
+
+				function getListRecordsSuccessCallback(response){
+					popupData.relationLookupList = response.object;
+
+					if(relation.relationType == 1 ||(relation.relationType == 2 && !isCurrentEntityOrigin)){
+						//single click selection
+						popupData.modalMode = "single-trigger-selection";
+					}
+					else {
+						//multiclick selection
+						popupData.modalMode = "multi-trigger-selection";
+					}
+					popupData.tabLoading = false;					
+				}
+
+				function getEntityMetaSuccessCallback(response) {
+					popupData.relatedEntity = response.object;
+					var relatedLookupList = null;
+
+					//Find the default lookup field if none return null.
+					for (var i = 0; i < popupData.relatedEntity.recordLists.length; i++) {
+						if (popupData.relatedEntity.recordLists[i].default && popupData.relatedEntity.recordLists[i].type == "lookup") {
+							relatedLookupList = popupData.relatedEntity.recordLists[i];
+							break;
+						}
+					}	
+
+					if(relatedLookupList == null){
+						popupData.tabLoading = false;
+						popupData.tabError = true;
+						popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";						
+					}
+					else {
+						webvellaAreasService.getListRecords(relatedLookupList.name,popupData.relatedEntity.name,"all",1,null, getListRecordsSuccessCallback, tabErrorCallback);		
+					}				
+				}
+
+				webvellaAdminService.getEntityMeta(column.entityName, getEntityMetaSuccessCallback, tabErrorCallback);
+			}
 		}
 		popupData.getTabExtraCssClass = function (column) {
 			if (column.data.length > 0) {
@@ -1118,6 +1018,12 @@
 		}
 
 		popupData.filterId = null;
+
+
+		//#region << Lookup lists >>
+		popupData.getTextString = webvellaAreasService.getTextString;
+
+		//#endregion
 
 		popupData.ok = function () {
 			//Create the new filter (update currently is not developed as the filter should act as query params search - new options change the link
