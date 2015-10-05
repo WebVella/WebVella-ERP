@@ -779,6 +779,7 @@
 		//If the showed on screen (not popup filters are changed) the popup button should become an apply button
 
 		popupData.tabLoading = false;
+		popupData.helpers = {};
 		popupData.tabError = false;
 		popupData.tabSelected = function (column) {
 			popupData.tabLoading = false;
@@ -809,7 +810,8 @@
 
 				function getListRecordsSuccessCallback(response){
 					popupData.relationLookupList = response.object;
-
+					popupData.helpers.lookupCurrentPage = 1;
+					popupData.helpers.lookupSearch = null;
 					if(relation.relationType == 1 ||(relation.relationType == 2 && !isCurrentEntityOrigin)){
 						//single click selection
 						popupData.modalMode = "single-trigger-selection";
@@ -1021,7 +1023,69 @@
 
 
 		//#region << Lookup lists >>
+
+		//#region << Columns render>> //////////////////////////////////////
+		//1.Auto increment
+		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
+		//2.Checkbox
+		popupData.getCheckboxString = webvellaAreasService.getCheckboxString;
+		//3.Currency
+		popupData.getCurrencyString = webvellaAreasService.getCurrencyString;
+		//4.Date
+		popupData.getDateString = webvellaAreasService.getDateString;
+		//5.Datetime
+		popupData.getDateTimeString = webvellaAreasService.getDateTimeString;
+		//6.Email
+		popupData.getEmailString = webvellaAreasService.getEmailString;
+		//7.File
+		popupData.getFileString = webvellaAreasService.getFileString;
+		//8.Html
+		popupData.getHtmlString = webvellaAreasService.getHtmlString;
+		//9.Image
+		popupData.getImageString = webvellaAreasService.getImageString;
+		//10.Textarea
+		popupData.getTextareaString = webvellaAreasService.getTextareaString;
+		//11.Multiselect
+		popupData.getMultiselectString = webvellaAreasService.getMultiselectString;
+		//12.Number
+		popupData.getNumberString = webvellaAreasService.getNumberString;
+		//13.Password
+		popupData.getPasswordString = webvellaAreasService.getPasswordString;
+		//14.Percent
+		popupData.getPercentString = webvellaAreasService.getPercentString;
+		//15.Phone
+		popupData.getPhoneString = webvellaAreasService.getPhoneString;
+		//15.Guid
+		popupData.getGuidString = webvellaAreasService.getGuidString;
+		//17.Dropdown
+		popupData.getDropdownString = webvellaAreasService.getDropdownString;
+		//18. Text
 		popupData.getTextString = webvellaAreasService.getTextString;
+		//18.Url
+		popupData.getUrlString = webvellaAreasService.getUrlString;
+		//#endregion
+
+		popupData.rebindLookupList = function (page, event) {
+			function getListRecordsErrorCallback(response) {
+				popupData.tabLoading = false;
+				popupData.tabError = true;
+				popupData.tabErrorMessage = "<i class='fa fa-fw fa-exclamation-triangle go-red'></i> " + response.message;
+			}
+
+			function getListRecordsSuccessCallback(response) {
+				popupData.relationLookupList = response.object;
+				popupData.helpers.lookupCurrentPage = page;
+				popupData.tabLoading = false;
+			}
+			if (page == null) {
+				page = popupData.helpers.lookupCurrentPage;
+				if (event.which != 13) {
+					return;
+				}
+			}
+			popupData.tabLoading = true;
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.relatedEntity.name, "all", page, popupData.helpers.lookupSearch, getListRecordsSuccessCallback, getListRecordsErrorCallback);
+		}
 
 		//#endregion
 
