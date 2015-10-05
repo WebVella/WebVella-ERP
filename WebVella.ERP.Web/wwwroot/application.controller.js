@@ -63,6 +63,13 @@
 						});
 						return $q.reject(errorResponse);
 					}
+					else if (errorResponse.status === 500) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+						});
+						return $q.reject(errorResponse);
+					}
 				}
 			}
 		});

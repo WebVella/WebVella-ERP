@@ -48,6 +48,7 @@
         serviceInstance.getDropdownString = getDropdownString;
         serviceInstance.getTextString = getTextString;
         serviceInstance.getUrlString = getUrlString;
+
 		//#region << API calls >>
     	///////////////////////
         function getAreaByName(areaName, successCallback, errorCallback) {
@@ -106,6 +107,7 @@
         		$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page}).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         	}
         	else {
+        		search = encodeURIComponent(search);
         		$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page + '?search=' + search }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
         	}
         }
@@ -155,8 +157,7 @@
         }
 		//#endregion
 
-
-    	/// Field data presentation ///////////////////////////////////////////
+    	//#region << Field data presentation ///////////////////////////////////////////
 		//1.Auto increment
 		function getAutoIncrementString (data, fieldMeta) {
 			if (!data) {
@@ -323,7 +324,7 @@
         		return "<a href='" + data + "' target='_blank'>" + data + "</a>";
         	}
         }
-
+		//#endregion
 
         //// Aux methods //////////////////////////////////////////////////////
 
