@@ -989,16 +989,17 @@
 										</div>
 									</div>
 								</div>
+								<!--fieldFromRelation-->
 								<div ng-switch-when="fieldFromRelation">
 									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.relatedEntity.labelPlural}}</span></div>
 									<hr class="divider clear" style="margin-top:0;" />
-									<form id="filters" class="form-inline" style="margin-bottom:1em; opacity:.2">
+									<form id="filters" class="form-inline" ng-keypress="popupData.rebindLookupList(null,$event)">
 										<div class="form-group">
 											<div class="input-group">
-												<span class="input-group-addon" id="basic-addon1">
+												<span class="input-group-addon">
 													<i class="fa fa-search"></i>
 												</span>
-												<input ng-model="class" type="text" class="form-control" placeholder="Search">
+												<input ng-model="popupData.helpers.lookupSearch" type="text" class="form-control" placeholder="Search">
 											</div>
 										</div>
 									</form>
@@ -1039,25 +1040,25 @@
 													</a>
 												</td>
 												<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
-													<span ng-switch-when="1">{{popupData.getAutoIncrementString(record,column.meta)}}</span>
-													<span ng-switch-when="2">{{popupData.getCheckboxString(record,column.meta)}}</span>
-													<span ng-switch-when="3">{{popupData.getCurrencyString(record,column.meta)}}</span>
-													<span ng-switch-when="4">{{popupData.getDateString(record,column.meta)}}</span>
-													<span ng-switch-when="5">{{popupData.getDateTimeString(record,column.meta)}}</span>
-													<span ng-switch-when="6" ng-bind-html="popupData.getEmailString(record,column.meta)"></span>
-													<span ng-switch-when="7" ng-bind-html="popupData.getFileString(record,column.meta)"></span>
-													<span ng-switch-when="8" ng-bind-html="popupData.getHtmlString(record,column.meta)"></span>
-													<span ng-switch-when="9" ng-bind-html="popupData.getImageString(record,column.meta)"></span>
-													<pre ng-switch-when="10" ng-bind="record[column.meta.name]"></pre>
-													<span ng-switch-when="11" ng-bind-html="popupData.getMultiselectString(record,column.meta)"></span>
-													<span ng-switch-when="12" ng-bind="record[column.meta.name]"></span>
-													<span ng-switch-when="13">******</span>
-													<span ng-switch-when="14" ng-bind-html="popupData.getPercentString(record,column.meta)"></span>
-													<span ng-switch-when="15" ng-bind-html="popupData.getPhoneString(record,column.meta)"></span>
-													<span ng-switch-when="16">{{record[column.dataName]}}</span>
-													<span ng-switch-when="17" ng-bind-html="popupData.getDropdownString(record,column.meta)"></span>
-													<span ng-switch-when="18">{{popupData.getTextString(record[column.dataName],column.meta)}}</span>
-													<span ng-switch-when="19" ng-bind-html="popupData.getUrlString(record,column.meta)"></span>
+													<span ng-switch-when="1" ng-bind="popupData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="2" ng-bind-html="popupData.getCheckboxString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="3" ng-bind="popupData.getCurrencyString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="4" ng-bind="popupData.getDateString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="5" ng-bind="popupData.getDateTimeString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="6" ng-bind-html="popupData.getEmailString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="7" ng-bind-html="popupData.getFileString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="8" ng-bind="popupData.getHtmlString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="9" ng-bind-html="popupData.getImageString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="10" ng-bind="popupData.getTextareaString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="11" ng-bind="popupData.getMultiselectString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="12" ng-bind="popupData.getNumberString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="13" ng-bind="popupData.getPasswordString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="14" ng-bind="popupData.getPercentString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="15" ng-bind="popupData.getPhoneString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="16" ng-bind="popupData.getGuidString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="17" ng-bind="popupData.getDropdownString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="18" ng-bind="popupData.getTextString(record[column.dataName],column.meta)"></span>
+													<span ng-switch-when="19" ng-bind-html="popupData.getUrlString(record[column.dataName],column.meta)"></span>
 												</td>
 											</tr>
 										</tbody>
@@ -1067,8 +1068,8 @@
 									</div>
 									<ul class="pager">
 										<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-										<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-										<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+										<li ng-if="popupData.helpers.lookupCurrentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(popupData.helpers.lookupCurrentPage - 1,$event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+										<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(popupData.helpers.lookupCurrentPage + 1,$event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 										<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 									</ul>
 								</div>
