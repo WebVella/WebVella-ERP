@@ -20,7 +20,7 @@
 
 	/* @ngInject */
 	function config($stateProvider) {
-		$stateProvider.state('webvella-entity-records', {
+		$stateProvider.state('webvella-entity-records', {  
 			parent: 'webvella-areas-base',
 			url: '/:listName/:filter/:page?search',
 			views: {
@@ -172,6 +172,7 @@
 		contentData.records = angular.copy(resolvedListRecords.data);
 		contentData.recordsMeta = angular.copy(resolvedListRecords.meta);
 		contentData.relationsMeta = resolvedEntityRelationsList;
+
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -258,10 +259,6 @@
 			return result;
 		}
 
-
-
-
-
 		//Select default details view
 		contentData.selectedView = {};
 		for (var j = 0; j < contentData.entity.recordViews.length; j++) {
@@ -309,7 +306,7 @@
 		if (contentData.filterRecords.data.length > 0) {
 			for (var k = 0; k < resolvedListRecords.meta.columns.length; k++) {
 				for (var j = 0; j < contentData.filterRecords.data.length; j++) {
-					if (resolvedListRecords.meta.columns[k].meta.name == contentData.filterRecords.data[j].field_name) {
+					if (resolvedListRecords.meta.columns[k].meta.name == contentData.filterRecords.data[j].field_name && resolvedListRecords.meta.columns[k].entityName == contentData.filterRecords.data[j].entity_name) {
 						temporaryFilterArray.push(contentData.filterRecords.data[j]);
 					}
 				}
@@ -750,7 +747,7 @@
 						filterObject.match_type = popupData.matchTypesDictionary[filterObject.meta.fieldType.toString()][0].key;
 						filterObject.data = [];
 						for (var j = 0; j < popupData.filterRecordsList.length; j++) {
-							if (popupData.filterRecordsList[j].field_name == filterObject.meta.name) {
+							if (popupData.filterRecordsList[j].field_name == filterObject.meta.name && popupData.filterRecordsList[j].entity_name == filterObject.entityName) {
 								filterObject.data = angular.fromJson(popupData.filterRecordsList[j].values);
 								for (var dd = 0; dd < filterObject.data.length; dd++) {
 									filterObject.data[dd] = decodeURIComponent(filterObject.data[dd]);
@@ -784,6 +781,7 @@
 		popupData.tabSelected = function (column) {
 			popupData.tabLoading = false;
 			popupData.tabError = false;
+			popupData.relationLookupList = null;
 			if(column.type == "fieldFromRelation"){
 				popupData.tabLoading = true;
 
@@ -810,15 +808,16 @@
 
 				function getListRecordsSuccessCallback(response){
 					popupData.relationLookupList = response.object;
-					popupData.helpers.lookupCurrentPage = 1;
-					popupData.helpers.lookupSearch = null;
+					popupData.helpers[column.dataName] = {};
+					popupData.helpers[column.dataName].lookupCurrentPage = 1;
+					popupData.helpers[column.dataName].lookupSearch = null;
 					if(relation.relationType == 1 ||(relation.relationType == 2 && !isCurrentEntityOrigin)){
 						//single click selection
-						popupData.modalMode = "single-trigger-selection";
+						popupData.helpers[column.dataName].modalMode = "single-selection";
 					}
 					else {
 						//multiclick selection
-						popupData.modalMode = "multi-trigger-selection";
+						popupData.helpers[column.dataName].modalMode = "multi-selection";
 					}
 					popupData.tabLoading = false;					
 				}
@@ -841,7 +840,37 @@
 						popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";						
 					}
 					else {
-						webvellaAreasService.getListRecords(relatedLookupList.name,popupData.relatedEntity.name,"all",1,null, getListRecordsSuccessCallback, tabErrorCallback);		
+						if (column.data.length == 0) {
+							//filter does not have value
+							webvellaAreasService.getListRecords(relatedLookupList.name, popupData.relatedEntity.name, "all", 1, null, getListRecordsSuccessCallback, tabErrorCallback);
+						}
+						else {
+							//filter already has a value
+							if (!popupData.helpers[column.dataName]) {
+								popupData.helpers[column.dataName] = {};
+							}
+							popupData.helpers[column.dataName].lookupCurrentPage = 1;
+							popupData.helpers[column.dataName].lookupSearch = null;
+							if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
+								//single click selection
+								popupData.helpers[column.dataName].modalMode = "single-selection";
+								if (!popupData.helpers[column.dataName].selected) {
+									popupData.helpers[column.dataName].selected = {};
+									for (var m = 0; m < popupData.filterRecordsList.length; m++) {
+										if (popupData.filterRecordsList[m].entity_name == column.entityName && popupData.filterRecordsList[m].field_name == column.fieldName) {
+											popupData.helpers[column.dataName].selected = popupData.filterRecordsList[m].helper.data[0];
+											break;
+										}
+									}
+								}
+
+							}
+							else {
+								//multiclick selection
+								popupData.helpers[column.dataName].modalMode = "multi-selection";
+							}
+							popupData.tabLoading = false;
+						}
 					}				
 				}
 
@@ -1025,6 +1054,7 @@
 		//#region << Lookup lists >>
 
 		//#region << Columns render>> //////////////////////////////////////
+
 		//1.Auto increment
 		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
 		//2.Checkbox
@@ -1065,7 +1095,7 @@
 		popupData.getUrlString = webvellaAreasService.getUrlString;
 		//#endregion
 
-		popupData.rebindLookupList = function (page, event) {
+		popupData.rebindLookupList = function (column, page, event) {
 			function getListRecordsErrorCallback(response) {
 				popupData.tabLoading = false;
 				popupData.tabError = true;
@@ -1074,17 +1104,57 @@
 
 			function getListRecordsSuccessCallback(response) {
 				popupData.relationLookupList = response.object;
-				popupData.helpers.lookupCurrentPage = page;
+				popupData.helpers[column.dataName].lookupCurrentPage = page;
 				popupData.tabLoading = false;
 			}
 			if (page == null) {
-				page = popupData.helpers.lookupCurrentPage;
+				page = popupData.helpers[column.dataName].lookupCurrentPage;
 				if (event.which != 13) {
 					return;
 				}
 			}
+			popupData.helpers[column.dataName].lookupSearch = popupData.helpers[column.dataName].lookupSearch.trim();
 			popupData.tabLoading = true;
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.relatedEntity.name, "all", page, popupData.helpers.lookupSearch, getListRecordsSuccessCallback, getListRecordsErrorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.relatedEntity.name, "all", page, popupData.helpers[column.dataName].lookupSearch, getListRecordsSuccessCallback, getListRecordsErrorCallback);
+		}
+
+		popupData.lookupSingleSelect = function (record,column) {
+			popupData.helpers[column.dataName].selected = {};
+			popupData.helpers[column.dataName].selected.value = record.id;
+			popupData.helpers[column.dataName].selected.label = "";
+			//select column in the following priority if found -> label, name, first non id column
+			var selectedLabel = "";
+			var selectedName = "";
+			var selectedFirstNonId = "";
+			for (var property in record) {
+				if (selectedLabel == "" && property == "label") {
+					selectedLabel = record[property];
+				}
+				else if (selectedName == "" && property == "name") {
+					selectedName = record[property];
+				}
+				if (selectedFirstNonId == "" && property != "id") {
+					selectedFirstNonId = record[property];
+				}
+			}
+			if (selectedLabel != "") {
+				popupData.helpers[column.dataName].selected.label = selectedLabel;
+			}
+			else if (selectedName != "") {
+				popupData.helpers[column.dataName].selected.label = selectedName;
+			}
+			else if (selectedFirstNonId != "") {
+				popupData.helpers[column.dataName].selected.label = selectedFirstNonId;
+			}
+			column.data.push(record.id);
+
+			//Update the filterRecord data
+			for (var m = 0; m < popupData.filterRecordsList.length; m++) {
+				if (popupData.filterRecordsList[m].entity_name == column.entityName && popupData.filterRecordsList[m].field_name == column.fieldName) {
+					popupData.filterRecordsList[m].helper.data = popupData.helpers[column.dataName].selected;
+				}
+			}
+
 		}
 
 		//#endregion
@@ -1120,155 +1190,161 @@
 					helperObject.data = [];
 					for (var m = 0; m < popupData.filterColumns[j].data.length; m++) {
 						var valueRecord = {};
-						switch (popupData.filterColumns[j].meta.fieldType) {
-							case 1: // Auto increment
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-								if (popupData.filterColumns[j].match_type == "range") {
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = popupData.filterColumns[j].data[0];
+						if (popupData.filterColumns[j].type == "field") {
+							switch (popupData.filterColumns[j].meta.fieldType) {
+								case 1: // Auto increment
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									if (popupData.filterColumns[j].match_type == "range") {
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = popupData.filterColumns[j].data[0];
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = popupData.filterColumns[j].data[1];
+										}
+										valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to</span> " + secondValue;
 									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = popupData.filterColumns[j].data[1];
+									else {
+										// Exact
+										valueRecord.label = valueRecord.value;
 									}
-									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to</span> " + secondValue;
-								}
-								else {
-									// Exact
+									break;
+								case 2: //Checkbox
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
 									valueRecord.label = valueRecord.value;
-								}
-								break;
-							case 2: //Checkbox
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-								valueRecord.label = valueRecord.value;
-								break;
-							case 3: // Currency
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-								if (popupData.filterColumns[j].match_type == "range") {
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = popupData.filterColumns[j].data[0];
+									break;
+								case 3: // Currency
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									if (popupData.filterColumns[j].match_type == "range") {
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = popupData.filterColumns[j].data[0];
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = popupData.filterColumns[j].data[1];
+										}
+										valueRecord.label = "<span class='go-gray'>from " + popupData.filterColumns[j].meta.currency.code + " </span>" + firstValue + " <span class='go-gray'>to " + popupData.filterColumns[j].meta.currency.code + "</span> " + secondValue;
 									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = popupData.filterColumns[j].data[1];
+									else {
+										// Exact
+										valueRecord.label = popupData.filterColumns[j].meta.currency.code + " " + valueRecord.value;
 									}
-									valueRecord.label = "<span class='go-gray'>from " + popupData.filterColumns[j].meta.currency.code + " </span>" + firstValue + " <span class='go-gray'>to " + popupData.filterColumns[j].meta.currency.code + "</span> " + secondValue;
-								}
-								else {
-									// Exact
-									valueRecord.label = popupData.filterColumns[j].meta.currency.code + " " + valueRecord.value;
-								}
-								break;
-							case 4: //Date
+									break;
+								case 4: //Date
 
-								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY")
-									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY")
-									}
+									if (popupData.filterColumns[j].match_type == "range") {
+										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY")
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY")
+										}
 
-									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
-								}
-								else if (popupData.filterColumns[j].match_type == "period") {
-									for (var p = 0; p < popupData.periodDictionary.length; p++) {
-										if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
-											valueRecord.value = popupData.filterColumns[j].data[m];
-											valueRecord.label = popupData.periodDictionary[p].value;
+										valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
+									}
+									else if (popupData.filterColumns[j].match_type == "period") {
+										for (var p = 0; p < popupData.periodDictionary.length; p++) {
+											if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
+												valueRecord.value = popupData.filterColumns[j].data[m];
+												valueRecord.label = popupData.periodDictionary[p].value;
+											}
 										}
 									}
-								}
-								else if (popupData.filterColumns[j].match_type == "regex") {
-									valueRecord.value = "regex";
-									valueRecord.label = "regex";
-								}
-								else {
-									// Exact
-									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
-								}
-								break;
-							case 5: //Datetime
-								if (popupData.filterColumns[j].match_type == "range") {
-									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY HH:mm")
+									else if (popupData.filterColumns[j].match_type == "regex") {
+										valueRecord.value = "regex";
+										valueRecord.label = "regex";
 									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY HH:mm")
+									else {
+										// Exact
+										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+										valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
 									}
-									
-									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
-								}
-								else if (popupData.filterColumns[j].match_type == "period") {
-									for (var p = 0; p < popupData.periodDictionary.length; p++) {
-										if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
-											valueRecord.value = popupData.filterColumns[j].data[m];
-											valueRecord.label = popupData.periodDictionary[p].value;
+									break;
+								case 5: //Datetime
+									if (popupData.filterColumns[j].match_type == "range") {
+										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = moment(popupData.filterColumns[j].data[0]).format("DD MMM YYYY HH:mm")
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = moment(popupData.filterColumns[j].data[1]).format("DD MMM YYYY HH:mm")
+										}
+
+										valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
+									}
+									else if (popupData.filterColumns[j].match_type == "period") {
+										for (var p = 0; p < popupData.periodDictionary.length; p++) {
+											if (popupData.filterColumns[j].data[m] == popupData.periodDictionary[p].key) {
+												valueRecord.value = popupData.filterColumns[j].data[m];
+												valueRecord.label = popupData.periodDictionary[p].value;
+											}
 										}
 									}
-								}
-								else if (popupData.filterColumns[j].match_type == "regex") {
-									valueRecord.value = "regex";
-									valueRecord.label = "regex";
-								}
-								else {
-									// Exact
-									valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-									valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
-								}
-								break;
-							case 12: // Number
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-								if (popupData.filterColumns[j].match_type == "range") {
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = popupData.filterColumns[j].data[0];
+									else if (popupData.filterColumns[j].match_type == "regex") {
+										valueRecord.value = "regex";
+										valueRecord.label = "regex";
 									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = popupData.filterColumns[j].data[1];
+									else {
+										// Exact
+										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+										valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
 									}
-									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
-								}
-								else {
+									break;
+								case 12: // Number
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									if (popupData.filterColumns[j].match_type == "range") {
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = popupData.filterColumns[j].data[0];
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = popupData.filterColumns[j].data[1];
+										}
+										valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + " <span class='go-gray'>to </span> " + secondValue;
+									}
+									else {
+										// Exact
+										valueRecord.label = valueRecord.value;
+									}
+									break;
+
+								case 14: // Percent
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
+									if (popupData.filterColumns[j].match_type == "range") {
+										var firstValue = "any";
+										if (popupData.filterColumns[j].data[0]) {
+											firstValue = popupData.filterColumns[j].data[0];
+										}
+										var secondValue = "any";
+										if (popupData.filterColumns[j].data[1]) {
+											secondValue = popupData.filterColumns[j].data[1];
+										}
+										valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + "% <span class='go-gray'>to </span> " + secondValue + "%";
+									}
+									else {
+										// Exact
+										valueRecord.label = valueRecord.value + "%";
+									}
+									break;
+
+								default: // Email, file, Html, Image, Textarea, Multiselect
+									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
 									// Exact
 									valueRecord.label = valueRecord.value;
-								}
-								break;
-
-							case 14: // Percent
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
-								if (popupData.filterColumns[j].match_type == "range") {
-									var firstValue = "any";
-									if (popupData.filterColumns[j].data[0]) {
-										firstValue = popupData.filterColumns[j].data[0];
-									}
-									var secondValue = "any";
-									if (popupData.filterColumns[j].data[1]) {
-										secondValue = popupData.filterColumns[j].data[1];
-									}
-									valueRecord.label = "<span class='go-gray'>from </span>" + firstValue + "% <span class='go-gray'>to </span> " + secondValue + "%";
-								}
-								else {
-									// Exact
-									valueRecord.label = valueRecord.value + "%";
-								}
-								break;
-
-							default: // Email, file, Html, Image, Textarea, Multiselect
-								valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
-								// Exact
-								valueRecord.label = valueRecord.value;
-								break;
+									break;
+							}
+						}
+						else if (popupData.filterColumns[j].type == "fieldFromRelation") {
+							valueRecord.value = popupData.helpers[popupData.filterColumns[j].dataName].selected.value;
+							valueRecord.label = popupData.helpers[popupData.filterColumns[j].dataName].selected.label;
 						}
 						helperObject.data.push(valueRecord);
 					}
@@ -1319,6 +1395,12 @@
 									filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
 									break;
 							}
+
+						}
+						else if (popupData.filterColumns[j].type == "fieldFromRelation") {
+							filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+							filterRecord.relation_name = popupData.filterColumns[j].relationName;
+							filterRecord.entity_name = popupData.filterColumns[j].entityName;
 						}
 					}
 					filterRecord.id = null;

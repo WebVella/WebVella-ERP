@@ -1,4 +1,4 @@
-<div id="page-title">
+﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
 			<div class="btn-group" role="group" aria-label="page toolbar">
@@ -24,7 +24,7 @@
 		</div>
 		<accordion>
 			<accordion-group is-open="moreListsOpened">
-				<form class="form-inline">
+				<form class="form-inline ng-hide">
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon" id="basic-addon1">
@@ -47,7 +47,7 @@
 						</div>
 					</div>
 				</form>
-				<hr class="divider" />
+				<hr class="divider ng-hide" />
 				<ul class="list-inline">
 					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="webvella-entity-records({areaName:contentData.currentArea.name,entityName:contentData.entity.name,listName:list.name,filter:'all',page:1})"><i class="fa fa-fw fa-bars"></i> {{list.label}}</a></li>
 				</ul>
@@ -189,7 +189,7 @@
 			<li ng-if="contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
-</div>
+</div> 
 
 
 <script type="text/ng-template" id="setFiltersModalContent.html">
@@ -202,7 +202,7 @@
 				<div name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
 					<tabset vertical="true" type="pills">
 						<tab heading="{{column.meta.label}}" select="popupData.tabSelected(column)" ng-repeat="column in popupData.filterColumns" class="{{popupData.getTabExtraCssClass(column)}}">
-							<div ng-hide="popupData.tabLoading || popupData.tabError" ng-switch="column.type">
+							<div ng-hide="popupData.tabError" ng-switch="column.type"  ng-class="popupData.tabLoading ? 'transparent' : ''">
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.getFieldTypeName(column)}}</span></div>
 									<hr class="divider clear" style="margin-top:0;" />
@@ -989,22 +989,21 @@
 										</div>
 									</div>
 								</div>
-								<!--fieldFromRelation-->
+								<!--fieldFromRelation -->
 								<div ng-switch-when="fieldFromRelation">
 									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.relatedEntity.labelPlural}}</span></div>
 									<hr class="divider clear" style="margin-top:0;" />
-									<form id="filters" class="form-inline" ng-keypress="popupData.rebindLookupList(null,$event)">
+									<form id="filters" class="form-inline ng-hide" ng-keypress="popupData.rebindLookupList(column,null,$event)"  ng-show="!column.data.length > 0">
 										<div class="form-group">
 											<div class="input-group">
 												<span class="input-group-addon">
 													<i class="fa fa-search"></i>
 												</span>
-												<input ng-model="popupData.helpers.lookupSearch" type="text" class="form-control" placeholder="Search">
+												<input ng-model="popupData.helpers[column.dataName].lookupSearch" type="text" class="form-control" placeholder="Search">
 											</div>
 										</div>
 									</form>
-
-									<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" ng-show="popupData.relationLookupList.data.length > 0">
+									<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" ng-show="popupData.relationLookupList.data.length > 0 && !column.data.length > 0">
 										<thead>
 											<tr>
 												<th class="actions" style="width:80px;" ng-if="popupData.modalMode != 'single-trigger-selection'"></th>
@@ -1014,29 +1013,20 @@
 										</thead>
 										<tbody>
 											<tr ng-repeat="record in popupData.relationLookupList.data" ng-class="{'warning': popupData.isSelectedRecord(record.id)}">
-												<td ng-if="popupData.modalMode == 'single-selection'">
-													<a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+												<td ng-if="popupData.helpers[column.dataName].modalMode == 'single-selection'">
+													<a ng-click='popupData.lookupSingleSelect(record, column)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
 														select
 													</a>
 													<span class="go-red" ng-if="popupData.isSelectedRecord(record.id)">
 														selected
 													</span>
 												</td>
-												<td ng-if="popupData.modalMode == 'multi-selection'">
+												<td ng-if="popupData.helpers[column.dataName].modalMode == 'multi-selection'">
 													<a ng-click='popupData.attachRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
 														select
 													</a>
 													<a ng-click='popupData.detachRecord(record)' href="javascript:void(0)" ng-if="popupData.isSelectedRecord(record.id)">
 														deselect
-													</a>
-												</td>
-												<td ng-if="popupData.modalMode == 'single-trigger-selection'">
-													<span class="go-gray" ng-show="popupData.processingRecordId == record.id">processing...</span>
-													<a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupData.isSelectedRecord(record.id) && popupData.processingRecordId != record.id">
-														select now
-													</a>
-													<a ng-click='popupData.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupData.isSelectedRecord(record.id)  && popupData.processingRecordId != record.id">
-														deselect now
 													</a>
 												</td>
 												<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
@@ -1063,18 +1053,24 @@
 											</tr>
 										</tbody>
 									</table>
+									<div class="ng-hide" ng-show="column.data.length > 0">
+										<div ng-if="popupData.helpers[column.dataName].modalMode == 'single-selection'">
+											<a class="btn btn-primary" href="javascript:void(0)" ng-click="popupData.clearFilter(column)">
+												{{popupData.helpers[column.dataName].selected.label}} <span class="badge" style="margin-left:3px"><i class="fa fa-times go-red"></i></span>
+											</a>
+										</div>
+									</div>
 									<div class="alert alert-info ng-hide" ng-show="popupData.relationLookupList.data.length == 0">
 										No records found
 									</div>
-									<ul class="pager">
-										<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-										<li ng-if="popupData.helpers.lookupCurrentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(popupData.helpers.lookupCurrentPage - 1,$event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-										<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(popupData.helpers.lookupCurrentPage + 1,$event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+									<ul class="pager" ng-show="!column.data.length > 0">
+										<li ng-if="popupData.helpers[column.dataName].lookupCurrentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(column, popupData.helpers[column.dataName].lookupCurrentPage - 1,$event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+										<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.rebindLookupList(column, popupData.helpers[column.dataName].lookupCurrentPage + 1,$event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 										<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 									</ul>
 								</div>
 							</div>
-							<div class="ng-hide" ng-show="popupData.tabLoading" id="loading-bar-spinner">
+							<div ng-class="popupData.tabLoading ? '' : 'transparent'" id="loading-bar-spinner">
 								<div class="spinner-icon"></div>
 							</div>
 							<div class="ng-hide" ng-show="popupData.tabError">
@@ -1085,9 +1081,7 @@
 				</div>
 				<div class="alert alert-warning" ng-if="popupData.filterColumns.length == 0">There are no searchable columns for this list</div>
 			</div>
-
 		</div>
-
 	</div>
 	<div class="modal-footer">
 		<a href="javascript:void(0)" ng-click="popupData.clearAllFilters()" class="btn btn-link go-red pull-left" ng-if="popupData.filterColumns.length > 0">clear all filters</a>

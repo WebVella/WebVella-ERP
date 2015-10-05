@@ -10,6 +10,12 @@ body {
   display: none !important;
 }
 
+.transparent {
+    opacity: 0;  /* Opacity for Modern Browsers */
+    filter: alpha(opacity=0);  /* Opacity for IE8 and lower */
+    zoom: 1;  /* Fix for IE7 */
+}
+
 a, a:hover, a:active, a:focus {
 	outline: 0;
 }
