@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api.Models.AutoMapper;
@@ -65,14 +66,13 @@ namespace WebVella.ERP.Api
             return user;
         }
 
-        public bool UpdateUserLastLoginTime(Guid userId)
+        public void UpdateUserLastLoginTime(Guid userId)
         {
-            RecordManager recMan = new RecordManager(service);
-            var record = new EntityRecord();
-            record["id"] = userId;
-            record["last_logged_in"] = DateTime.UtcNow;
-            var response = recMan.UpdateRecord("user", record);
-            return response.Success;
+            List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+            storageRecordData.Add(new KeyValuePair<string, object>("id", userId ));
+            storageRecordData.Add(new KeyValuePair<string, object>("last_logged_in", DateTime.UtcNow ));
+            var recRepo = service.StorageService.GetRecordRepository();
+            recRepo.Update("user", storageRecordData);
         }
     }
 }
