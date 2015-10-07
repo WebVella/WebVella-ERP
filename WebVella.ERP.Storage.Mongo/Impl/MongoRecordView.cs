@@ -55,6 +55,9 @@ namespace WebVella.ERP.Storage.Mongo
         [BsonElement("sidebar")]
         public IStorageRecordViewSidebar Sidebar { get; set; }
 
+        [BsonElement("relationOptions")]
+        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+
     }
 
     ////////////////////////

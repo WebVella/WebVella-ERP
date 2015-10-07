@@ -60,9 +60,6 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "type")]
 		public string Type { get; set; }
 
-		//[JsonProperty(PropertyName = "recordsLimit")]
-		//public int? RecordsLimit { get; set; }
-
 		[JsonProperty(PropertyName = "pageSize")]
 		public int? PageSize { get; set; }
 
@@ -75,7 +72,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "sorts")]
 		public List<InputRecordListSort> Sorts { get; set; }
 
-		public static InputRecordList Convert(JObject inputList)
+        [JsonProperty(PropertyName = "relationOptions")]
+        public List<EntityRelationOptionsItem> RelationOptions { get; set; }
+
+        public static InputRecordList Convert(JObject inputList)
 		{
 			InputRecordList list = JsonConvert.DeserializeObject<InputRecordList>(inputList.ToString(), new RecordListItemConverter());
 
@@ -241,7 +241,10 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "sorts")]
 		public List<RecordListSort> Sorts { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "relationOptions")]
+        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+    }
 
 	public class RecordListQuery
 	{
@@ -482,7 +485,7 @@ namespace WebVella.ERP.Api.Models
 			if (type == "listfromrelation")
 				return new InputRecordListRelationListItem();
 
-			return new InputRecordListFieldItem();
+            return new InputRecordListFieldItem();
 		}
 	}
 }
