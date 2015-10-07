@@ -1,0 +1,701 @@
+﻿{
+  "id": "4277b305-f405-4ae6-991e-3bd7f58e1b24",
+  "name": "default",
+  "label": "Default View",
+  "default": true,
+  "system": false,
+  "weight": 1,
+  "cssClass": "",
+  "iconName": "",
+  "type": "general",
+  "regions": [
+    {
+      "name": "content",
+      "render": false,
+      "cssClass": "",
+      "sections": [
+        {
+          "id": "15cf0f3b-b35a-b0dc-57df-ec7a1098f25f",
+          "name": "section",
+          "label": "Section 1",
+          "cssClass": "",
+          "showLabel": true,
+          "collapsed": false,
+          "weight": 1,
+          "tabOrder": "left-right",
+          "rows": [
+            {
+              "id": "7195a7be-26e3-f5b0-bc52-9ad36c79dc96",
+              "weight": 1,
+              "columns": [
+                {
+                  "items": [
+                    {
+                      "type": "field",
+                      "fieldName": "created_by"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "id"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "guid"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "auto_inc"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "number"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "currency"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "percent"
+                    }
+                  ],
+                  "gridColCount": 6
+                },
+                {
+                  "items": [
+                    {
+                      "type": "field",
+                      "fieldName": "date"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "last_modified_by"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "datetime"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "image"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "file"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "created_on"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "last_modified_on"
+                    },
+                    {
+                      "type": "fieldFromRelation",
+                      "fieldName": "email",
+                      "relationName": "rumen_modified_by"
+                    },
+                    {
+                      "type": "fieldFromRelation",
+                      "fieldName": "email",
+                      "relationName": "rumen_created_by"
+                    },
+                    {
+                      "type": "fieldFromRelation",
+                      "fieldName": "last_logged_in",
+                      "relationName": "rumen_modified_by"
+                    }
+                  ],
+                  "gridColCount": 6
+                }
+              ]
+            },
+            {
+              "id": "addfccd0-1135-1b1f-260e-357a60e408ae",
+              "weight": 2,
+              "columns": [
+                {
+                  "items": [
+                    {
+                      "type": "field",
+                      "fieldName": "email"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "text"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "url"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "phone"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "textarea"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "html"
+                    },
+                    {
+                      "type": "field",
+                      "fieldName": "password"
+                    }
+                  ],
+                  "gridColCount": 12
+                }
+              ]
+            },
+            {
+              "id": "1242f627-73c7-6d3a-eac6-23201857490c",
+              "weight": 3,
+              "columns": [
+                {
+                  "items": [
+                    {
+                      "type": "field",
+                      "fieldName": "multiselect"
+                    }
+                  ],
+                  "gridColCount": 6
+                },
+                {
+                  "items": [
+                    {
+                      "type": "field",
+                      "fieldName": "checkbox"
+                    }
+                  ],
+                  "gridColCount": 6
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "relationOptions": [ { "relationId": "a6452e04-b130-4b21-9fc0-e0a77aa8fce9", "relationName": "rumen_modified_by", "direction":"target-origin"} ],
+  "sidebar": {
+    "render": false,
+    "cssClass": "",
+    "items": [
+      {
+        "type": "view",
+        "viewId": "c23c1928-83f4-4138-846c-d51bb655ea96",
+        "viewName": "create",
+        "meta": {
+          "id": "c23c1928-83f4-4138-846c-d51bb655ea96",
+          "name": "create",
+          "label": "create",
+          "default": true,
+          "system": false,
+          "weight": 1,
+          "cssClass": "",
+          "iconName": "",
+          "type": "create",
+          "regions": [
+            {
+              "name": "content",
+              "render": false,
+              "cssClass": "",
+              "sections": [
+                {
+                  "id": "1723b5b6-de91-7a4b-4b75-8beb75bc2546",
+                  "name": "section",
+                  "label": "Section",
+                  "cssClass": "",
+                  "showLabel": true,
+                  "collapsed": false,
+                  "weight": 1,
+                  "tabOrder": "left-right",
+                  "rows": [
+                    {
+                      "id": "de958ee0-e17c-f296-7e7c-84053af2a44e",
+                      "weight": 1,
+                      "columns": [
+                        {
+                          "items": [
+                            {
+                              "type": "field",
+                              "fieldId": "b20489b7-e7eb-4076-9cce-a146ed1e0e7f",
+                              "fieldName": "email",
+                              "meta": {
+                                "fieldType": 6,
+                                "defaultValue": null,
+                                "maxLength": null,
+                                "id": "b20489b7-e7eb-4076-9cce-a146ed1e0e7f",
+                                "name": "email",
+                                "label": "email",
+                                "placeholderText": "",
+                                "description": "",
+                                "helpText": "",
+                                "required": false,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": false,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "email",
+                              "entityId": "e64a6fa2-6b04-4f30-a0ea-972249b72553",
+                              "entityLabel": "rumen test entity",
+                              "entityName": "rumen",
+                              "entityLabelPlural": "Rumen"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "59204e63-242d-4b44-9ed4-f41f9b5df27b",
+                              "fieldName": "date",
+                              "meta": {
+                                "fieldType": 4,
+                                "defaultValue": "2015-09-24T21:00:00Z",
+                                "format": "yyyy-MMM-dd",
+                                "useCurrentTimeAsDefaultValue": true,
+                                "id": "59204e63-242d-4b44-9ed4-f41f9b5df27b",
+                                "name": "date",
+                                "label": "date",
+                                "placeholderText": "",
+                                "description": "",
+                                "helpText": "",
+                                "required": false,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": false,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "date",
+                              "entityId": "e64a6fa2-6b04-4f30-a0ea-972249b72553",
+                              "entityLabel": "rumen test entity",
+                              "entityName": "rumen",
+                              "entityLabelPlural": "Rumen"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "9646dc17-0bfb-49a1-954a-1c1cd1c1bca4",
+                              "fieldName": "checkbox",
+                              "meta": {
+                                "fieldType": 2,
+                                "defaultValue": true,
+                                "id": "9646dc17-0bfb-49a1-954a-1c1cd1c1bca4",
+                                "name": "checkbox",
+                                "label": "checkbox",
+                                "placeholderText": "checkbox",
+                                "description": "",
+                                "helpText": "",
+                                "required": false,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": false,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "checkbox",
+                              "entityId": "e64a6fa2-6b04-4f30-a0ea-972249b72553",
+                              "entityLabel": "rumen test entity",
+                              "entityName": "rumen",
+                              "entityLabelPlural": "Rumen"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "7dd44f32-ed07-4975-a3fc-c58763e5c0b1",
+                              "fieldName": "multiselect",
+                              "meta": {
+                                "fieldType": 11,
+                                "defaultValue": [ ],
+                                "options": [
+                                  {
+                                    "key": "red",
+                                    "value": "red"
+                                  },
+                                  {
+                                    "key": "blue",
+                                    "value": "blue"
+                                  },
+                                  {
+                                    "key": "green",
+                                    "value": "green"
+                                  },
+                                  {
+                                    "key": "yellow",
+                                    "value": "yellow"
+                                  },
+                                  {
+                                    "key": "black",
+                                    "value": "black"
+                                  }
+                                ],
+                                "id": "7dd44f32-ed07-4975-a3fc-c58763e5c0b1",
+                                "name": "multiselect",
+                                "label": "multiselect",
+                                "placeholderText": "",
+                                "description": "",
+                                "helpText": "",
+                                "required": false,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": false,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "multiselect",
+                              "entityId": "e64a6fa2-6b04-4f30-a0ea-972249b72553",
+                              "entityLabel": "rumen test entity",
+                              "entityName": "rumen",
+                              "entityLabelPlural": "Rumen"
+                            }
+                          ],
+                          "gridColCount": 12
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "relationOptions": [ ],
+          "sidebar": {
+            "render": false,
+            "cssClass": "",
+            "items": [ ]
+          }
+        },
+        "dataName": "$view$create",
+        "entityId": "e64a6fa2-6b04-4f30-a0ea-972249b72553",
+        "entityLabel": "rumen test entity",
+        "entityName": "rumen",
+        "entityLabelPlural": "Rumen"
+      },
+      {
+        "type": "viewFromRelation",
+        "relationId": "a6452e04-b130-4b21-9fc0-e0a77aa8fce9",
+        "relationName": "rumen_modified_by",
+        "viewId": "81f5efe1-8437-4a42-bfda-3362d1db8085",
+        "viewName": "rumen_user_test",
+        "meta": {
+          "id": "81f5efe1-8437-4a42-bfda-3362d1db8085",
+          "name": "rumen_user_test",
+          "label": "Rumen Test View",
+          "default": false,
+          "system": false,
+          "weight": 1,
+          "cssClass": "",
+          "iconName": null,
+          "type": "general",
+          "regions": [
+            {
+              "name": "content",
+              "render": false,
+              "cssClass": "",
+              "sections": [
+                {
+                  "id": "6bb4bb9d-a917-257f-0517-8433c15014be",
+                  "name": "section",
+                  "label": "Section",
+                  "cssClass": "",
+                  "showLabel": true,
+                  "collapsed": false,
+                  "weight": 1,
+                  "tabOrder": "left-right",
+                  "rows": [
+                    {
+                      "id": "abffda58-1121-9e40-8436-bebdc795b47f",
+                      "weight": 1,
+                      "columns": [
+                        {
+                          "items": [
+                            {
+                              "type": "field",
+                              "fieldId": "df211549-41cc-4d11-bb43-daca4c164411",
+                              "fieldName": "first_name",
+                              "meta": {
+                                "fieldType": 18,
+                                "defaultValue": "",
+                                "maxLength": 200,
+                                "id": "df211549-41cc-4d11-bb43-daca4c164411",
+                                "name": "first_name",
+                                "label": "First Name",
+                                "placeholderText": "",
+                                "description": "First name of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "first_name",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "63e685b1-b2c6-4961-b393-2b6723ebd1bf",
+                              "fieldName": "last_name",
+                              "meta": {
+                                "fieldType": 18,
+                                "defaultValue": "",
+                                "maxLength": 200,
+                                "id": "63e685b1-b2c6-4961-b393-2b6723ebd1bf",
+                                "name": "last_name",
+                                "label": "Last Name",
+                                "placeholderText": "",
+                                "description": "Last name of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "last_name",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "9fc75c8f-ce80-4a64-81d7-e2befa5e4815",
+                              "fieldName": "email",
+                              "meta": {
+                                "fieldType": 6,
+                                "defaultValue": "",
+                                "maxLength": 255,
+                                "id": "9fc75c8f-ce80-4a64-81d7-e2befa5e4815",
+                                "name": "email",
+                                "label": "Email",
+                                "placeholderText": "",
+                                "description": "Email address of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": true,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "email",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            }
+                          ],
+                          "gridColCount": 12
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "relationOptions": [ ],
+          "sidebar": {
+            "render": false,
+            "cssClass": "",
+            "items": [ ]
+          }
+        },
+        "dataName": "$view$rumen_modified_by$rumen_user_test",
+        "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+        "entityLabel": "User",
+        "entityName": "user",
+        "entityLabelPlural": null
+      },
+      {
+        "type": "viewFromRelation",
+        "relationId": "e419349d-a423-4722-ae92-edf288a16101",
+        "relationName": "rumen_created_by",
+        "viewId": "81f5efe1-8437-4a42-bfda-3362d1db8085",
+        "viewName": "rumen_user_test",
+        "meta": {
+          "id": "81f5efe1-8437-4a42-bfda-3362d1db8085",
+          "name": "rumen_user_test",
+          "label": "Rumen Test View",
+          "default": false,
+          "system": false,
+          "weight": 1,
+          "cssClass": "",
+          "iconName": null,
+          "type": "general",
+          "regions": [
+            {
+              "name": "content",
+              "render": false,
+              "cssClass": "",
+              "sections": [
+                {
+                  "id": "6bb4bb9d-a917-257f-0517-8433c15014be",
+                  "name": "section",
+                  "label": "Section",
+                  "cssClass": "",
+                  "showLabel": true,
+                  "collapsed": false,
+                  "weight": 1,
+                  "tabOrder": "left-right",
+                  "rows": [
+                    {
+                      "id": "abffda58-1121-9e40-8436-bebdc795b47f",
+                      "weight": 1,
+                      "columns": [
+                        {
+                          "items": [
+                            {
+                              "type": "field",
+                              "fieldId": "df211549-41cc-4d11-bb43-daca4c164411",
+                              "fieldName": "first_name",
+                              "meta": {
+                                "fieldType": 18,
+                                "defaultValue": "",
+                                "maxLength": 200,
+                                "id": "df211549-41cc-4d11-bb43-daca4c164411",
+                                "name": "first_name",
+                                "label": "First Name",
+                                "placeholderText": "",
+                                "description": "First name of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "first_name",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "63e685b1-b2c6-4961-b393-2b6723ebd1bf",
+                              "fieldName": "last_name",
+                              "meta": {
+                                "fieldType": 18,
+                                "defaultValue": "",
+                                "maxLength": 200,
+                                "id": "63e685b1-b2c6-4961-b393-2b6723ebd1bf",
+                                "name": "last_name",
+                                "label": "Last Name",
+                                "placeholderText": "",
+                                "description": "Last name of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": false,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "last_name",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            },
+                            {
+                              "type": "field",
+                              "fieldId": "9fc75c8f-ce80-4a64-81d7-e2befa5e4815",
+                              "fieldName": "email",
+                              "meta": {
+                                "fieldType": 6,
+                                "defaultValue": "",
+                                "maxLength": 255,
+                                "id": "9fc75c8f-ce80-4a64-81d7-e2befa5e4815",
+                                "name": "email",
+                                "label": "Email",
+                                "placeholderText": "",
+                                "description": "Email address of the user",
+                                "helpText": "",
+                                "required": true,
+                                "unique": true,
+                                "searchable": true,
+                                "auditable": false,
+                                "system": true,
+                                "permissions": {
+                                  "canRead": [ ],
+                                  "canUpdate": [ ]
+                                },
+                                "enableSecurity": false
+                              },
+                              "dataName": "email",
+                              "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+                              "entityLabel": "User",
+                              "entityName": "user",
+                              "entityLabelPlural": "Users"
+                            }
+                          ],
+                          "gridColCount": 12
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "relationOptions": [ ],
+          "sidebar": {
+            "render": false,
+            "cssClass": "",
+            "items": [ ]
+          }
+        },
+        "dataName": "$view$rumen_created_by$rumen_user_test",
+        "entityId": "b9cebc3b-6443-452a-8e34-b311a73dcc8b",
+        "entityLabel": "User",
+        "entityName": "user",
+        "entityLabelPlural": null
+      }
+    ]
+  }
+}

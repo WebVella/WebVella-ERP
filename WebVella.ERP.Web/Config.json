@@ -1,6 +1,6 @@
 ﻿{
   "Settings": {
-	"ConnectionString": "mongodb://dev:dev@192.168.0.5:27017/wv_erp?safe=true",
+	"ConnectionString": "mongodb://dev:dev@192.168.0.5:27017/wv-erp?safe=true",
       "EncriptionKey": "BC93B776A42877CFEE808823BA8B37C83B6B0AD23198AC3AF2B5A54DCB647658"
   }
 }

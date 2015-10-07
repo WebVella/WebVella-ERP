@@ -29,6 +29,8 @@ namespace WebVella.ERP.Storage
 
         IStorageRecordViewSidebar Sidebar { get; set; }
 
+        List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+
     }
 
     ////////////////////////
