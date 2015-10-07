@@ -85,6 +85,7 @@ function guid() {
 		serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
 		serviceInstance.deleteFileFromFS = deleteFileFromFS;
 		serviceInstance.manageRecordsRelation = manageRecordsRelation;
+		serviceInstance.getRecordsByFieldRegex = getRecordsByFieldRegex;
 		//Area
 		serviceInstance.initArea = initArea;
 		serviceInstance.getAreaByName = getAreaByName;
@@ -811,6 +812,16 @@ function guid() {
 			}
 
 		}
+
+
+		///////////////////////
+		function getRecordsByFieldRegex(fieldName, entityName, pattern, successCallback, errorCallback) {
+			var patternObject = {};
+			patternObject.pattern = pattern;
+			$log.debug('webvellaAdmin>providers>admin.service>getRecordsByFieldRegex> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/regex/' + fieldName, data: patternObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
 
 		///////////////////////
 		function uploadFileToTemp(file, fieldName, progressCallback, successCallback, errorCallback) {
