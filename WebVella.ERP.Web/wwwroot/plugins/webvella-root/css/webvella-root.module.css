@@ -20,6 +20,10 @@ a, a:hover, a:active, a:focus {
 	outline: 0;
 }
 
+.clickable:hover {
+	cursor:pointer;
+}
+
 h5 small {
 	font-size:12px;
 }
