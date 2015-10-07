@@ -844,22 +844,29 @@ namespace WebVella.ERP.Web.Controllers
 				Guid relatedEntityId = relation.OriginEntityId == entity.Id ? relation.TargetEntityId : relation.OriginEntityId;
 				Entity relatedEntity = entityManager.ReadEntity(relatedEntityId).Object;
 
-				//TODO validation
-				if (relatedEntity == null)
+                itemList.Add(new EntityRelationOptionsItem
+                {
+                    RelationId = relation.Id,
+                    RelationName = relation.Name,
+                    Direction = "ogirin-target"
+                });
+
+                //TODO validation
+                if (relatedEntity == null)
 					throw new Exception(string.Format("Invalid relation '{0}'. Related entity '{1}' do not exist.", relation.Name, relatedEntityId));
 
 				foreach (var field in relatedEntity.Fields)
 				{
-					itemList.Add(new RecordViewRelationFieldItem
-					{
-						RelationId = relation.Id,
-						RelationName = relation.Name,
-						EntityId = relatedEntity.Id,
-						EntityName = relatedEntity.Name,
-						EntityLabel = relatedEntity.Label,
-						EntityLabelPlural = relatedEntity.LabelPlural,
-						FieldId = field.Id,
-						FieldName = field.Name,
+                    itemList.Add(new RecordViewRelationFieldItem
+                    {
+                        RelationId = relation.Id,
+                        RelationName = relation.Name,
+                        EntityId = relatedEntity.Id,
+                        EntityName = relatedEntity.Name,
+                        EntityLabel = relatedEntity.Label,
+                        EntityLabelPlural = relatedEntity.LabelPlural,
+                        FieldId = field.Id,
+                        FieldName = field.Name,
 						Meta = CleanupFieldForLibrary( field ),
 						DataName = string.Format("$field${0}${1}", relation.Name, field.Name)
 					});

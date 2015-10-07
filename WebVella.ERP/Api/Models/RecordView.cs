@@ -59,7 +59,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "regions")]
 		public List<InputRecordViewRegion> Regions { get; set; }
 
-		[JsonProperty(PropertyName = "sidebar")]
+        [JsonProperty(PropertyName = "relationOptions")]
+        public List<EntityRelationOptionsItem> RelationOptions { get; set; }
+
+        [JsonProperty(PropertyName = "sidebar")]
 		public InputRecordViewSidebar Sidebar { get; set; }
 
 		public static InputRecordView Convert(JObject inputField)
@@ -72,8 +75,8 @@ namespace WebVella.ERP.Api.Models
 		}
 	}
 
-	////////////////////////
-	public class InputRecordViewSidebar
+    ////////////////////////
+    public class InputRecordViewSidebar
 	{
 		[JsonProperty(PropertyName = "render")]
 		public bool? Render { get; set; }
@@ -333,6 +336,7 @@ namespace WebVella.ERP.Api.Models
 			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.General).ToLower();
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
+            RelationOptions = new List<IStorageEntityRelationOptions>();
 		}
 
 		[JsonProperty(PropertyName = "id")]
@@ -365,13 +369,16 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "regions")]
 		public List<RecordViewRegion> Regions { get; set; }
 
-		[JsonProperty(PropertyName = "sidebar")]
+        [JsonProperty(PropertyName = "relationOptions")]
+        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+
+        [JsonProperty(PropertyName = "sidebar")]
 		public RecordViewSidebar Sidebar { get; set; }
 
 	}
 
-	////////////////////////
-	public class RecordViewSidebar
+    ////////////////////////
+    public class RecordViewSidebar
 	{
 		public RecordViewSidebar()
 		{

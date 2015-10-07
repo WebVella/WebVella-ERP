@@ -36,7 +36,9 @@ namespace WebVella.ERP.Storage
 		IStorageRecordListQuery Query { get; set; }
 
 		List<IStorageRecordListSort> Sorts { get; set; }
-	}
+
+        List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+    }
 
 	public interface IStorageRecordListQuery
 	{
