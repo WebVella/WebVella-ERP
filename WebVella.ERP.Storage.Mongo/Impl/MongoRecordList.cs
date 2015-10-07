@@ -54,7 +54,10 @@ namespace WebVella.ERP.Storage.Mongo
 
 		[BsonElement("sorts")]
 		public List<IStorageRecordListSort> Sorts { get; set; }
-	}
+
+        [BsonElement("relationOptions")]
+        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+    }
 
 	public class MongoRecordListQuery : IStorageRecordListQuery
 	{

@@ -378,6 +378,7 @@ namespace WebVella.ERP.Api
                 }
 
                 SetRecordServiceInformation(record, false);
+
                 List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
                 var recordFields = record.GetProperties();
@@ -1032,13 +1033,21 @@ namespace WebVella.ERP.Api
 
                     string relationName = relationData[0];
                     string relationFieldName = relationData[1];
-
-                    if (string.IsNullOrWhiteSpace(relationName) || relationName == "$")
+                    string direction = "origin-target";
+                     
+                    if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$" )
                         throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
                     else if (!relationName.StartsWith("$"))
                         throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
                     else
                         relationName = relationName.Substring(1);
+
+                    //check for target priority mark $$
+                    if( relationName.StartsWith("$") )
+                    {
+                        direction = "target-origin";
+                        relationName = relationName.Substring(1);
+                    }
 
                     if (string.IsNullOrWhiteSpace(relationFieldName))
                         throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
@@ -1051,17 +1060,21 @@ namespace WebVella.ERP.Api
                     {
                         relationFieldMeta = new RelationFieldMeta();
                         relationFieldMeta.Name = "$" + relationName;
-                        result.Add(relationFieldMeta);
+                        relationFieldMeta.Direction = direction;
+                        result.Add(relationFieldMeta); 
                     }
                     else
                         relationFieldMeta = (RelationFieldMeta)field;
-
-                    relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
+                    
+                     relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
                     if (relationFieldMeta.Relation == null)
                         throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
 
                     if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
                         throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token));
+
+                    if (relationFieldMeta.Direction != direction )
+                        throw new Exception(string.Format("You are trying to query relation '{0}' from origin->target and target->origin direction in single query. This is not allowed.", token));
 
                     relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
                     relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);

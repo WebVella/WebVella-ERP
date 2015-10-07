@@ -31,6 +31,10 @@ namespace WebVella.ERP.Api.Models
         [JsonIgnore]
         public Entity Entity { get; set; }
 
+        [JsonIgnore]
+        public string Direction { get; set; }
+
+
         public RelationFieldMeta()
         {
             Relation = null;
