@@ -13,10 +13,10 @@
         .module('webvellaAreas')
         .directive('recursiveList', directive);
 
-	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService', 'webvellaAreasService'];
+	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
 
 	/* @ngInject */
-	function directive($compile, $templateRequest, RecursionHelper, webvellaAdminService, webvellaAreasService) {
+	function directive($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
 		//Text Binding (Prefix: @)
 		//One-way Binding (Prefix: &)
 		//Two-way Binding (Prefix: =)
@@ -42,9 +42,9 @@
 	}
 
 
-	DirectiveController.$inject = ['$filter', '$log', '$scope'];
+	DirectiveController.$inject = ['$filter', '$log', '$scope','webvellaAreasService'];
 	/* @ngInject */
-	function DirectiveController($filter, $log, $scope) {
+	function DirectiveController($filter, $log, $scope, webvellaAreasService) {
 		$scope.relationsList = $scope.relationsList();
 		$scope.listData = $scope.listData();
 		$scope.listMeta = $scope.listMeta().meta;
