@@ -693,6 +693,8 @@
             containment = (scope.sortableScope.options.containment)? $helper.findAncestor(element, scope.sortableScope.options.containment):angular.element($document[0].body);
             //capture mouse move on containment.
             containment.css('cursor', 'move');
+            containment.css('cursor', '-webkit-grabbing');
+            containment.css('cursor', '-moz-grabbing');
             containment.addClass('as-sortable-un-selectable');
 
             // container positioning

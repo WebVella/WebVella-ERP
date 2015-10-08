@@ -768,7 +768,10 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/getEntityViewLibrary")]
 		public IActionResult GetEntityLibrary(string entityName)
 		{
+			
 			var result = new EntityLibraryItemsResponse() { Success = true, Timestamp = DateTime.UtcNow };
+
+		
 			var relMan = new EntityRelationManager(service.StorageService);
 
 			if (string.IsNullOrWhiteSpace(entityName))
@@ -806,6 +809,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			}
 
+
 			foreach (var view in entity.RecordViews)
 			{
 				itemList.Add(new RecordViewViewItem
@@ -820,6 +824,7 @@ namespace WebVella.ERP.Web.Controllers
 					DataName = string.Format("view{0}", view.Name)
 				});
 			}
+
 
 			foreach (var list in entity.RecordLists)
 			{

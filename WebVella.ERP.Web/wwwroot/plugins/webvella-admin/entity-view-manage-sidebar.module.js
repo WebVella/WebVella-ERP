@@ -178,7 +178,7 @@
         /* jshint validthis:true */
         var contentData = this;
         //#region << Initialize Current Entity >>
-        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & Hide side menu>>
@@ -197,7 +197,7 @@
         contentData.view = {};
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
         	if (contentData.entity.recordViews[i].name == $stateParams.viewName) {
-        		contentData.view = angular.copy(contentData.entity.recordViews[i]);
+        		contentData.view = fastCopy(contentData.entity.recordViews[i]);
         	}
         }
 
@@ -205,7 +205,7 @@
         var usedItemsArray = contentData.view.sidebar.items;
 
         contentData.tempLibrary = {};
-        contentData.tempLibrary.items = angular.copy(resolvedViewLibrary);
+        contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
         contentData.tempLibrary.items = contentData.tempLibrary.items.sort(function (a, b) {
         	if (a.type < b.type) return -1;
         	if (a.type > b.type) return 1;

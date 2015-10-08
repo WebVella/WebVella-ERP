@@ -128,7 +128,7 @@
         /* jshint validthis:true */
         var contentData = this;
         //#region << Initialize Current Entity >>
-        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & Hide side menu>>
@@ -151,8 +151,8 @@
         contentData.originalView = {};
         for (var i = 0; i < contentData.entity.recordViews.length; i++) {
         	if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
-        		contentData.view = angular.copy(contentData.entity.recordViews[i]);
-        		contentData.originalView = angular.copy(contentData.entity.recordViews[i]);
+        		contentData.view = fastCopy(contentData.entity.recordViews[i]);
+        		contentData.originalView = fastCopy(contentData.entity.recordViews[i]);
         	}
         }
         //#endregion

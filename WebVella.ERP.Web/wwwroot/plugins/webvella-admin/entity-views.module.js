@@ -124,8 +124,8 @@
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
-        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
-        contentData.views = angular.copy(resolvedCurrentEntityMeta.recordViews);
+        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
+        contentData.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
         if (contentData.views == null) {
         	contentData.views = [];
         }
@@ -173,7 +173,7 @@
     	var popupData = this;
     	popupData.modalInstance = $modalInstance;
     	popupData.view = webvellaAdminService.initView();
-    	popupData.currentEntity = angular.copy(contentData.entity);
+    	popupData.currentEntity = fastCopy(contentData.entity);
 
     	popupData.ok = function () {
     		webvellaAdminService.createEntityView(popupData.view, popupData.currentEntity.name, successCallback, errorCallback);

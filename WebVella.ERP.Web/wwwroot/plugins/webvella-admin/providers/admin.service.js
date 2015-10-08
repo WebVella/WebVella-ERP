@@ -171,6 +171,7 @@ function guid() {
 				$log.debug('webvellaAdmin>providers>admin.service> result success: get object  ' + moment().format('HH:mm:ss SSSS'));
 				successCallback(data);
 			}
+			
 		}
 		//#endregion
 
@@ -460,13 +461,13 @@ function guid() {
 			var section = {
 				"id": guid(),
 				"name": "section",
-				"label": "Section",
+				"label": "Section name",
 				"cssClass": "",
 				"showLabel": true,
 				"collapsed": false,
 				"weight": 1,
 				"tabOrder": "left-right",
-				"rows": []
+				"rows": [initViewRow(1)]
 			}
 			return section;
 		}
@@ -827,7 +828,6 @@ function guid() {
 		function uploadFileToTemp(file, fieldName, progressCallback, successCallback, errorCallback) {
 			//"/fs/upload/" file
 			$log.debug('webvellaAdmin>providers>admin.service>uploadFileToTemp> function called ' + moment().format('HH:mm:ss SSSS'));
-			//$log.info(file);
 			Upload.upload({
 				url: '/fs/upload/',
 				fields: {},
@@ -868,7 +868,7 @@ function guid() {
 			}
 
 
-			$log.info('webvellaAdmin>providers>query.service>execute manageRecordsRelation> function called');
+			$log.debug('webvellaAdmin>providers>query.service>execute manageRecordsRelation> function called');
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/relation', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
 

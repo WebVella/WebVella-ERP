@@ -164,10 +164,10 @@
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
     	//#endregion
 
-        contentData.users = angular.copy(resolvedUserRecordsList.data);
+        contentData.users = fastCopy(resolvedUserRecordsList.data);
         contentData.users = contentData.users.sort(function (a, b) { return parseFloat(a.email) - parseFloat(b.email) });
 
-        contentData.roles = angular.copy(resolvedRolesList.data);
+        contentData.roles = fastCopy(resolvedRolesList.data);
         contentData.roles = contentData.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
@@ -212,8 +212,8 @@
         /* jshint validthis:true */
         var popupData = this;
         popupData.modalInstance = $modalInstance;
-        popupData.user = angular.copy(contentData.currentUser);
-        popupData.roles = angular.copy(contentData.roles);
+        popupData.user = fastCopy(contentData.currentUser);
+        popupData.roles = fastCopy(contentData.roles);
         popupData.password = null;
     	//Init user roles
         popupData.userRoles = [];
