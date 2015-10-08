@@ -193,17 +193,17 @@
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
     	//#endregion
 
-        contentData.areas = angular.copy(resolvedAreaRecordsList.data);
+        contentData.areas = fastCopy(resolvedAreaRecordsList.data);
         contentData.areas = contentData.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-        contentData.roles = angular.copy(resolvedRolesList.data);
+        contentData.roles = fastCopy(resolvedRolesList.data);
         contentData.roles = contentData.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
             return 0;
         });
 
-	    contentData.entities = angular.copy(resolvedEntityMetaList.entities);
+	    contentData.entities = fastCopy(resolvedEntityMetaList.entities);
         contentData.entities = contentData.entities.sort(function (a, b) {
         	if (a.label < b.label) return -1;
         	if (a.label > b.label) return 1;
@@ -248,10 +248,10 @@
         /* jshint validthis:true */
         var popupData = this;
         popupData.modalInstance = $modalInstance;
-        popupData.area = angular.copy(contentData.currentArea);
-        popupData.areaEntityRelations = angular.copy(contentData.areaEntityRelations);
-        popupData.roles = angular.copy(contentData.roles);
-        popupData.entities = angular.copy(contentData.entities);
+        popupData.area = fastCopy(contentData.currentArea);
+        popupData.areaEntityRelations = fastCopy(contentData.areaEntityRelations);
+        popupData.roles = fastCopy(contentData.roles);
+        popupData.entities = fastCopy(contentData.entities);
         popupData.subscribedEntities = [];
         if (popupData.area.subscriptions != null && popupData.area.subscriptions.length > 0 ) {
             popupData.subscribedEntities = angular.fromJson(popupData.area.subscriptions);

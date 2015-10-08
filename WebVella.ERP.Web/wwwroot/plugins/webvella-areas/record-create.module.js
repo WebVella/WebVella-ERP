@@ -86,7 +86,7 @@
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
-		contentData.siteMap = angular.copy(resolvedSitemap);
+		contentData.siteMap = fastCopy(resolvedSitemap);
 		contentData.currentArea = null;
 		for (var i = 0; i < contentData.siteMap.data.length; i++) {
 			if (contentData.siteMap.data[i].name == $state.params.areaName) {
@@ -97,7 +97,7 @@
 		//#endregion
 
 		//#region << Intialize current entity >>
-		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
+		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
 		//#endregion
 
 		//#region << Set enironment >> /////////////////////
@@ -132,12 +132,12 @@
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
-							contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+							contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							break;
 
 						case 3: //Currency
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 4: //Date
@@ -165,39 +165,39 @@
 						case 7: //File
 							contentData.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 9: //Image
 							contentData.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 11: //Multiselect
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 12: //Number
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 13: //Password
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								//Does not have default value
-								//contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								//contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 14: //Percent
@@ -214,27 +214,27 @@
 							break;
 						case 15: //Phone
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 16: //Guid
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 17: //Dropdown
 							if (availableViewFields[j].meta.required && availableViewFields[j].meta.defaultValue) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 18: //Text
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 19: //URL
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = angular.copy(availableViewFields[j].meta.defaultValue);
+								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 					}

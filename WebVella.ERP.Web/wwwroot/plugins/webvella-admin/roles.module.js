@@ -125,7 +125,7 @@
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
     	//#endregion
 
-        contentData.roles = angular.copy(resolvedRolesList.data);
+        contentData.roles = fastCopy(resolvedRolesList.data);
         contentData.roles = contentData.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
@@ -173,7 +173,7 @@
         /* jshint validthis:true */
         var popupData = this;
         popupData.modalInstance = $modalInstance;
-        popupData.role = angular.copy(contentData.currentRole);
+        popupData.role = fastCopy(contentData.currentRole);
         popupData.isUpdate = true;
         if (popupData.role.id == null) {
         	popupData.isUpdate = false;

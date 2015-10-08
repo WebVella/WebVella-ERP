@@ -98,7 +98,7 @@
 		webvellaDesktopBrowsenavFactory.initBrowsenav();
 		////2. READY hook listener
 		var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
-			var sitemapAreas = angular.copy(resolvedSitemap.data);
+			var sitemapAreas = fastCopy(resolvedSitemap.data);
 			sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 			for (var i = 0; i < sitemapAreas.length; i++) {
 				var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(resolvedSitemap.data[i]);

@@ -24,6 +24,14 @@ a, a:hover, a:active, a:focus {
 	cursor:pointer;
 }
 
+.as-sortable-item-handle:hover {
+	cursor:move;
+}
+
+.as-sortable-placeholder {
+	display:block !important;
+}
+
 h5 small {
 	font-size:12px;
 }
@@ -3874,6 +3882,13 @@ span.not-editable.not-readable {
 .drop-zone {
 	border: 1px dashed #FDD835;
 	background: #fffff0;
+	padding: 0;
+	position: relative;
+}
+
+.drop-zone-disabled {
+	border: 1px dashed #ddd;
+	background: #fafafa;
 	padding: 0;
 	position: relative;
 }

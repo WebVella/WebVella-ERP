@@ -136,7 +136,7 @@
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
-		contentData.siteMap = angular.copy(resolvedSitemap);
+		contentData.siteMap = fastCopy(resolvedSitemap);
 		contentData.currentArea = null;
 		for (var i = 0; i < contentData.siteMap.data.length; i++) {
 			if (contentData.siteMap.data[i].name == $state.params.areaName) {
@@ -149,7 +149,7 @@
 		//#region << Initialize view and regions>>
 
 		//1. Get the current view
-		contentData.defaultRecordView = angular.copy(resolvedCurrentView.meta);
+		contentData.defaultRecordView = fastCopy(resolvedCurrentView.meta);
 
 		//2. Load the sidebar
 		contentData.sidebarRegion = contentData.defaultRecordView.sidebar;
@@ -162,10 +162,10 @@
 			};
 
 			if (name === "") {
-				returnObject.data = angular.copy(resolvedCurrentView.data[0]);
+				returnObject.data = fastCopy(resolvedCurrentView.data[0]);
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
-						returnObject.meta = angular.copy(contentData.defaultRecordView.regions[i]);
+						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
 						returnObject.meta.label = "General";
 					}
 				}
@@ -181,8 +181,8 @@
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									contentData.selectedSidebarPage.isEdit = true;
-									returnObject.meta = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
-									returnObject.meta.label = angular.copy(contentData.defaultRecordView.sidebar.items[i].meta.label);
+									returnObject.meta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
+									returnObject.meta.label = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
 								}
 							}
@@ -194,15 +194,15 @@
 						selectedDataName = contentData.defaultRecordView.sidebar.items[i].dataName;
 						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
 							contentData.selectedSidebarPage.isView = true;
-							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName][0]);
+							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName][0]);
 						}
 						else if (contentData.defaultRecordView.sidebar.items[i].type === "viewFromRelation") {
 							contentData.selectedSidebarPage.isView = true;
-							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName]);
+							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list"
 							|| contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
 							contentData.selectedSidebarPage.isView = false;
-							returnObject.data = angular.copy(resolvedCurrentView.data[0][selectedDataName]);
+							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						}
 					}
 				}
@@ -231,13 +231,13 @@
 		//#endregion
 
 		//#region << Initialize current entity >>
-		contentData.currentEntity = angular.copy(resolvedCurrentEntityMeta);
+		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
 		contentData.viewSection = {};
 		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Entity relations functions >>
-		contentData.relationsList = angular.copy(resolvedEntityRelationsList);
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.getRelation = function (relationName) {
 			for (var i = 0; i < contentData.relationsList.length; i++) {
 				if (contentData.relationsList[i].name == relationName) {
@@ -296,7 +296,7 @@
 
 							CKEDITOR.instances[property].editable().$.blur();
 							//reinit the field
-							contentData.selectedSidebarPage.data[item.dataName] = angular.copy(contentData.lastEnabledHtmlFieldData);
+							contentData.selectedSidebarPage.data[item.dataName] = fastCopy(contentData.lastEnabledHtmlFieldData);
 							contentData.lastEnabledHtmlField = null;
 							contentData.lastEnabledHtmlFieldData = null;
 							return false;
@@ -327,7 +327,7 @@
 			contentData.lastEnabledHtmlFieldData = null;
 			contentData.htmlFieldIsEnabled = function ($event, item) {
 				contentData.lastEnabledHtmlField = item;
-				contentData.lastEnabledHtmlFieldData = angular.copy(contentData.selectedSidebarPage.data[item.dataName]);
+				contentData.lastEnabledHtmlFieldData = fastCopy(contentData.selectedSidebarPage.data[item.dataName]);
 			}
 
 
@@ -443,7 +443,7 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					contentData.selectedSidebarPage.data = angular.copy(response.object.data[0]);
+					contentData.selectedSidebarPage.data = fastCopy(response.object.data[0]);
 					defer.resolve();
 				}
 
@@ -615,7 +615,7 @@
 				return webvellaAreasService.getPercentString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
 			};
 
-			contentData.currentUserRoles = angular.copy(resolvedCurrentUser.roles);
+			contentData.currentUserRoles = fastCopy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {
 				var result = false;
 				if (!item.meta.enableSecurity || item.meta.permissions == null) {
@@ -936,22 +936,22 @@
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.currentPage = 1;
-		popupData.parentData = angular.copy(contentData);
-		popupData.selectedItem = angular.copy(selectedItem);
-		popupData.modalMode = angular.copy(modalMode);
+		popupData.parentData = fastCopy(contentData);
+		popupData.selectedItem = fastCopy(selectedItem);
+		popupData.modalMode = fastCopy(modalMode);
 		popupData.hasWarning = false;
 		popupData.warningMessage = "";
 
 		//Init
-		popupData.currentlyAttachedIds = angular.copy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
-		popupData.dbAttachedIds = angular.copy(popupData.currentlyAttachedIds);
+		popupData.currentlyAttachedIds = fastCopy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
+		popupData.dbAttachedIds = fastCopy(popupData.currentlyAttachedIds);
 		popupData.attachedRecordIdsDelta = [];
 		popupData.detachedRecordIdsDelta = [];
 
 
 		//Get the default lookup list for the entity
 		if (resolvedLookupRecords.success) {
-			popupData.relationLookupList = angular.copy(resolvedLookupRecords.object);
+			popupData.relationLookupList = fastCopy(resolvedLookupRecords.object);
 		}
 		else {
 			popupData.hasWarning = true;
@@ -962,7 +962,7 @@
 		popupData.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupData.relationLookupList = angular.copy(response.object);
+				popupData.relationLookupList = fastCopy(response.object);
 				popupData.currentPage = page;
 			}
 
@@ -1217,7 +1217,7 @@
 			}
 
 			function successCallback(response) {
-				var currentRecordId = angular.copy(popupData.processingRecordId);
+				var currentRecordId = fastCopy(popupData.processingRecordId);
 				var elementIndex = popupData.currentlyAttachedIds.indexOf(currentRecordId);
 				if (popupData.processOperation == "attach" && elementIndex == -1) {
 					popupData.currentlyAttachedIds.push(currentRecordId);
