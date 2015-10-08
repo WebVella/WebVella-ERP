@@ -848,7 +848,7 @@ namespace WebVella.ERP.Web.Controllers
                 {
                     RelationId = relation.Id,
                     RelationName = relation.Name,
-                    Direction = "ogirin-target"
+                    Direction = "origin-target"
                 });
 
                 //TODO validation
