@@ -13,6 +13,8 @@
 
 .as-sortable-item-handle {
     cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
 }
 
 .as-sortable-placeholder {

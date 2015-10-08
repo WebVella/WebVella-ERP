@@ -169,8 +169,8 @@
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
-		contentData.records = angular.copy(resolvedListRecords.data);
-		contentData.recordsMeta = angular.copy(resolvedListRecords.meta);
+		contentData.records = fastCopy(resolvedListRecords.data);
+		contentData.recordsMeta = fastCopy(resolvedListRecords.meta);
 		contentData.relationsMeta = resolvedEntityRelationsList;
 
 		//#region << Set Environment >>
@@ -181,7 +181,7 @@
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 
 		//Get the current meta
-		contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 
 		contentData.area = {};
 		for (var i = 0; i < resolvedSitemap.data.length; i++) {
@@ -212,11 +212,11 @@
 
 		contentData.generateViewName = function (record) {
 			//default is the selected view in the area
-			var result = angular.copy(contentData.selectedView.name);
+			var result = fastCopy(contentData.selectedView.name);
 
 			if (contentData.recordsMeta.viewNameOverride && contentData.recordsMeta.viewNameOverride.length > 0) {
 				var arrayOfTemplateKeys = contentData.recordsMeta.viewNameOverride.match(/\{(\w+)\}/g);
-				var resultStringStorage = angular.copy(contentData.recordsMeta.viewNameOverride);
+				var resultStringStorage = fastCopy(contentData.recordsMeta.viewNameOverride);
 
 				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
 					if ( arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
@@ -284,7 +284,7 @@
 			resolvedListRecords.filterRecords = null;
 		}
 		else {
-			contentData.filterRecords = angular.copy(resolvedListRecords.filterRecords);
+			contentData.filterRecords = fastCopy(resolvedListRecords.filterRecords);
 		}
 
 		if (contentData.filterRecords == null || contentData.filterRecords.data == null) {
@@ -311,7 +311,7 @@
 					}
 				}
 			}
-			contentData.filterRecords.data = angular.copy(temporaryFilterArray);
+			contentData.filterRecords.data = fastCopy(temporaryFilterArray);
 		}
 
 		//#endregion
@@ -364,7 +364,7 @@
 			webvellaRootService.GoToState($state, $state.current.name, params);
 		}
 
-		contentData.currentUser = angular.copy(resolvedCurrentUser);
+		contentData.currentUser = fastCopy(resolvedCurrentUser);
 
 		contentData.currentUserRoles = contentData.currentUser.roles;
 
@@ -461,7 +461,7 @@
 				var filterArray = [];
 				for (var j = 0; j < contentData.filterRecords.data.length; j++) {
 					if (!contentData.filtersPendingRemoval[contentData.filterRecords.data[j].field_name]) {
-						var activeFilter = angular.copy(contentData.filterRecords.data[j]);
+						var activeFilter = fastCopy(contentData.filterRecords.data[j]);
 						activeFilter.id = null;
 						activeFilter.filter_id = contentData.filterId;
 						activeFilter.helper = angular.toJson(activeFilter.helper);
@@ -550,10 +550,10 @@
 	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams,$scope) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
-		popupData.contentData = angular.copy(contentData);
-		popupData.currentUserRoles = angular.copy(contentData.currentUserRoles);
-		popupData.currentUser = angular.copy(contentData.currentUser);
-		popupData.filterRecordsList = angular.copy(contentData.filterRecords.data);
+		popupData.contentData = fastCopy(contentData);
+		popupData.currentUserRoles = fastCopy(contentData.currentUserRoles);
+		popupData.currentUser = fastCopy(contentData.currentUser);
+		popupData.filterRecordsList = fastCopy(contentData.filterRecords.data);
 
 		//#region << Match type >>
 		popupData.matchTypesDictionary = {};
@@ -1193,7 +1193,7 @@
 						if (popupData.filterColumns[j].type == "field") {
 							switch (popupData.filterColumns[j].meta.fieldType) {
 								case 1: // Auto increment
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m]));
 									if (popupData.filterColumns[j].match_type == "range") {
 										var firstValue = "any";
 										if (popupData.filterColumns[j].data[0]) {
@@ -1211,11 +1211,11 @@
 									}
 									break;
 								case 2: //Checkbox
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m]));
 									valueRecord.label = valueRecord.value;
 									break;
 								case 3: // Currency
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m]));
 									if (popupData.filterColumns[j].match_type == "range") {
 										var firstValue = "any";
 										if (popupData.filterColumns[j].data[0]) {
@@ -1298,7 +1298,7 @@
 									}
 									break;
 								case 12: // Number
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m]));
 									if (popupData.filterColumns[j].match_type == "range") {
 										var firstValue = "any";
 										if (popupData.filterColumns[j].data[0]) {
@@ -1317,7 +1317,7 @@
 									break;
 
 								case 14: // Percent
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m])); //In the help object we will not need to convert to less than 1 decimal
 									if (popupData.filterColumns[j].match_type == "range") {
 										var firstValue = "any";
 										if (popupData.filterColumns[j].data[0]) {
@@ -1336,7 +1336,7 @@
 									break;
 
 								default: // Email, file, Html, Image, Textarea, Multiselect
-									valueRecord.value = encodeURIComponent(angular.copy(popupData.filterColumns[j].data[m]));
+									valueRecord.value = encodeURIComponent(fastCopy(popupData.filterColumns[j].data[m]));
 									// Exact
 									valueRecord.label = valueRecord.value;
 									break;
@@ -1370,7 +1370,7 @@
 										filterRecord.values.push(encodeURIComponent(utcIsoDate));
 									}
 									else {
-										filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+										filterRecord.values.push(encodeURIComponent(fastCopy(popupData.filterColumns[j].data[k])));
 									}
 									break;
 								case 5: //Datetime - this needs to be done to ensure that in the database is store the ISO and UTC data value
@@ -1379,7 +1379,7 @@
 										filterRecord.values.push(encodeURIComponent(utcIsoDate));
 									}
 									else {
-										filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+										filterRecord.values.push(encodeURIComponent(fastCopy(popupData.filterColumns[j].data[k])));
 									}
 									break;
 								case 14: //Percent
@@ -1392,13 +1392,13 @@
 										filterRecord.values.push(encodeURIComponent(numberToSubmit));
 									break;
 								default:
-									filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+									filterRecord.values.push(encodeURIComponent(fastCopy(popupData.filterColumns[j].data[k])));
 									break;
 							}
 
 						}
 						else if (popupData.filterColumns[j].type == "fieldFromRelation") {
-							filterRecord.values.push(encodeURIComponent(angular.copy(popupData.filterColumns[j].data[k])));
+							filterRecord.values.push(encodeURIComponent(fastCopy(popupData.filterColumns[j].data[k])));
 							filterRecord.relation_name = popupData.filterColumns[j].relationName;
 							filterRecord.entity_name = popupData.filterColumns[j].entityName;
 						}

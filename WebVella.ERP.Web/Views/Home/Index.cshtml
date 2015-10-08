@@ -11,7 +11,7 @@
     <link href="~/plugins/webvella-root/lib/font-awesome/css/font-awesome.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/offline/themes/offline-theme-default.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/offline/themes/offline-language-english.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
-    <link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+    @*<link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />*@
     <link href="~/plugins/webvella-root/lib/angular-xeditable/dist/css/xeditable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/css/webvella-root.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
@@ -46,7 +46,7 @@
 	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-bootstrap/ui-bootstrap-tpls.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>
+	@*<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>*@
 	<script src="~/plugins/webvella-root/lib/angular-xeditable/dist/js/xeditable.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/moment/min/moment-with-locales.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.js?v=@ViewBag.CacheBreaker"></script>
@@ -71,9 +71,9 @@
                     // Angular modules
                     'ngAnimate', 'ngTouch', 'ngCookies', 'ngSanitize',
                      // 3rd Party Modules
-                    'ui.router', 'ngMessages', 'angular-loading-bar', 'ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model',
+                    'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper',
-
+					//'angular-loading-bar' - disabled due to poor performance
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 
@@ -87,17 +87,18 @@
                 .run(run);
 
 			// Configuration ///////////////////////////////////
-			config.$inject = ['$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
-			function config($urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
+			config.$inject = ['$httpProvider', '$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
+			function config($httpProvider,$urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
 
-				//$urlRouterProvider.otherwise('/desktop/browse');
+				$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
 				$urlRouterProvider.otherwise('/login');
 				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
 				moment.locale('en');
 				ngToastProvider.configure({
 					animation: 'fade',
 					horizontalPosition: 'center',
-					timeout: 4000,
+					timeout: 1000,
 					maxNumber: 1
 				});
 			};

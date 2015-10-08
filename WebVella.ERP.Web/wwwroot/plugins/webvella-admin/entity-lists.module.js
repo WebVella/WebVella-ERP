@@ -164,7 +164,7 @@
         /* jshint validthis:true */
         var contentData = this;
         //#region << Initialize the current entity >>
-        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
+        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & hide the side menu >>
@@ -180,7 +180,7 @@
         //#endregion
 
         //#region << Initialize the lists >>
-        contentData.lists = angular.copy(resolvedEntityRecordsList.recordLists);
+        contentData.lists = fastCopy(resolvedEntityRecordsList.recordLists);
         //#endregion
 
     	//Create new list modal
@@ -210,7 +210,7 @@
     	/* jshint validthis:true */
     	var popupData = this;
     	popupData.modalInstance = $modalInstance;
-    	popupData.contentData = angular.copy(contentData);
+    	popupData.contentData = fastCopy(contentData);
     	popupData.list = webvellaAdminService.initList();
     	//Check if there is an id column set, if not include it as it always should be there
 
