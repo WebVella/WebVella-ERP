@@ -65,7 +65,7 @@
 					<div class="panel panel-default wrapper">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
-								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by $index">
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by $index">
 									<div ng-if='item.type == "view"'>
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{item.meta.name}}
