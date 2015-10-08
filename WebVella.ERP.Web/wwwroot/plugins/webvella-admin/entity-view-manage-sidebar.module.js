@@ -305,12 +305,6 @@
             //#region << 1.Define functions >>
             var moveSuccess, moveFailure, successCallback, errorCallback;
 
-            moveSuccess = function () {};
-            moveFailure = function () {
-                //eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-                //eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
-            };
-
             function successCallback(response) {
                 if (response.success) {
                     ngToast.create({
@@ -319,7 +313,6 @@
                     });
                     contentData.library.items = fastCopy(contentData.originalLibrary);
                     contentData.view.sidebar.items = response.object.sidebar.items;
-                    moveSuccess();
                 }
                 else {
                 	errorCallback(response);
@@ -333,17 +326,11 @@
                     content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout:7000
                 });
-                moveFailure();
             }
             //#endregion
 
         	//1. Clean contentData.view from system properties like $$hashKey
-
-            for (var i = 0; i < contentData.view.regions.length; i++) {
-            	if (contentData.view.regions[i].name === "content") {
-            		contentData.view.regions[i] = fastCopy(contentData.viewContentRegion);
-            	}
-            }
+            contentData.view.sidebar.items = fastCopy(contentData.view.sidebar.items);
         	//contentData.view = angular.fromJson(angular.toJson(contentData.view));
         	////2. Call the service
             webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
@@ -455,7 +442,6 @@
         			}
         		}
         	}
-
         	webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
         }
 
@@ -491,3 +477,4 @@
 
 
 })();
+ 
