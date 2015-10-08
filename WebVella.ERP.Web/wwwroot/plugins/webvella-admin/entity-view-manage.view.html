@@ -166,25 +166,31 @@
 							</div>
 						</div>
 					</div>
-					<br/>
+					<br />
 					<table class="table table-border">
 						<thead>
-						<tr>
-							<th>relation</th>
-							<th width="80">in library</th>
-							<th>direction</th>
-						</tr>
+							<tr>
+								<th class="go-bkg-white">relations</th>
+								<th width="90" class="go-bkg-white">in library</th>
+								<th width="115" class="go-bkg-white">direction</th>
+							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="relation in contentData.library.relations">
-								<td>{{relation.relationName}}</td>
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{relation.relationName}}</div></td>
 								<td>
-									<a ng-click="contentData.addRelationToLibrary(relation)">
+									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
 										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
 									</a>
 								</td>
-								<td>{{relation.direction}}</td>
+								<td>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
+									<a ng-click="contentData.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
+									</a>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -353,7 +359,7 @@
 		<div class="go-red">TODO: Implementation needed</div>
 		<form name="addHtmlItem">
 			<div class="form-group">
-				<label >Html content</label>
+				<label>Html content</label>
 				<textarea ng-model="popupData.content" class="form-control"></textarea>
 			</div>
 		</form>
