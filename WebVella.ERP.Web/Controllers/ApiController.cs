@@ -853,7 +853,7 @@ namespace WebVella.ERP.Web.Controllers
                 {
                     RelationId = relation.Id,
                     RelationName = relation.Name,
-                    Direction = "ogirin-target"
+                    Direction = "origin-target"
                 });
 
                 //TODO validation
@@ -1840,12 +1840,20 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						else if (column is RecordListRelationFieldItem)
 						{
-							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
-							queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordListRelationFieldItem)column).Meta.Name);
+                            string targetOriginPrefix = "";
+                            if (list.RelationOptions != null)
+                            {
+                                var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationFieldItem)column).RelationId);
+                                if (options != null && options.Direction == "target-origin")
+                                    targetOriginPrefix = "$";
+                            }
+
+                            EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
+							queryFields += string.Format( targetOriginPrefix + "${0}.{1}, ", relation.Name, ((RecordListRelationFieldItem)column).Meta.Name);
 
 							//add ID field automatically if not added
-							if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
-								queryFields += string.Format("${0}.id,", relation.Name);
+							if (!queryFields.Contains(string.Format(targetOriginPrefix + "${0}.id", relation.Name)))
+								queryFields += string.Format(targetOriginPrefix + "${0}.id,", relation.Name);
 
 							//always add origin field in query, its value may be required for relative view and list
 							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
@@ -1861,7 +1869,15 @@ namespace WebVella.ERP.Web.Controllers
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
 
-							string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                            string targetOriginPrefix = "";
+                            if (list.RelationOptions != null)
+                            {
+                                var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationListItem)column).RelationId);
+                                if (options != null && options.Direction == "target-origin")
+                                    targetOriginPrefix = "$";
+                            }
+
+                            string relName = relation != null ? string.Format( targetOriginPrefix + "${0}.", relation.Name) : "";
 
 							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
@@ -1883,7 +1899,15 @@ namespace WebVella.ERP.Web.Controllers
 						{
 							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
 
-							string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                            string targetOriginPrefix = "";
+                            if (list.RelationOptions != null)
+                            {
+                                var options = list.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationViewItem)column).RelationId);
+                                if (options != null && options.Direction == "target-origin")
+                                    targetOriginPrefix = "$";
+                            }
+
+                            string relName = relation != null ? string.Format( targetOriginPrefix +  "${0}.", relation.Name) : "";
 
 							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
@@ -2135,17 +2159,25 @@ namespace WebVella.ERP.Web.Controllers
 					}
 					else if (item is RecordViewRelationFieldItem)
 					{
-						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
+                        string targetOriginPrefix = "";
+                        if (view.RelationOptions != null)
+                        {
+                            var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationFieldItem)item).RelationId);
+                            if (options != null && options.Direction == "target-origin")
+                                targetOriginPrefix = "$";
+
+                        }
+                        EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
 
 						//add ID field automatically if not added
-						if (!queryFields.Contains(string.Format("${0}.id", relation.Name)))
-							queryFields += string.Format("${0}.id,", relation.Name);
+						if (!queryFields.Contains(string.Format(targetOriginPrefix + "${0}.id", relation.Name)))
+							queryFields += string.Format(targetOriginPrefix + "${0}.id,", relation.Name);
 
 						Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
 						Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
 
 						queryFields += field.Name + ", ";
-						queryFields += string.Format("${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
+						queryFields += string.Format(targetOriginPrefix + "${0}.{1}, ", relation.Name, ((RecordViewRelationFieldItem)item).Meta.Name);
 
 					}
 					else if (item is RecordViewListItem || item is RecordViewViewItem)
@@ -2157,7 +2189,15 @@ namespace WebVella.ERP.Web.Controllers
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationListItem)item).RelationId);
 
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                        string targetOriginPrefix = "";
+                        if (view.RelationOptions != null)
+                        {
+                            var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationListItem)item).RelationId);
+                            if (options != null && options.Direction == "target-origin")
+                                targetOriginPrefix = "$";
+                        }
+
+                        string relName = relation != null ? string.Format(targetOriginPrefix  + "${0}.", relation.Name) : "";
 
 						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
@@ -2180,7 +2220,15 @@ namespace WebVella.ERP.Web.Controllers
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationViewItem)item).RelationId);
 
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                        string targetOriginPrefix = "";
+                        if (view.RelationOptions != null)
+                        {
+                            var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationViewItem)item).RelationId);
+                            if (options != null && options.Direction == "target-origin")
+                                targetOriginPrefix = "$";
+                        }
+
+                        string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
 
 						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
@@ -2214,7 +2262,15 @@ namespace WebVella.ERP.Web.Controllers
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationListItem)item).RelationId);
 
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                        string targetOriginPrefix = "";
+                        if (view.RelationOptions != null)
+                        {
+                            var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationListItem)item).RelationId);
+                            if (options != null && options.Direction == "target-origin")
+                                targetOriginPrefix = "$";
+                        }
+
+                        string relName = relation != null ? string.Format( targetOriginPrefix + "${0}.", relation.Name) : "";
 
 						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
@@ -2236,7 +2292,15 @@ namespace WebVella.ERP.Web.Controllers
 					{
 						EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationViewItem)item).RelationId);
 
-						string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+                        string targetOriginPrefix = "";
+                        if (view.RelationOptions != null)
+                        {
+                            var options = view.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationViewItem)item).RelationId);
+                            if (options != null && options.Direction == "target-origin")
+                                targetOriginPrefix = "$";
+                        }
+
+                        string relName = relation != null ? string.Format(targetOriginPrefix + "${0}.", relation.Name) : "";
 
 						Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
 						Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
