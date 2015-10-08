@@ -111,7 +111,7 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns track by $index | limitTo: contentData.recordsMeta.visibleColumnsCount">{{column.meta.label}}</th>
+					<th class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount  track by $index">{{column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -121,7 +121,7 @@
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns track by $index | limitTo: contentData.recordsMeta.visibleColumnsCount">
+					<td class="wv-{{column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount track by $index ">
 						<div ng-if="contentData.currentUserHasReadPermission(column)">
 							<div ng-switch="column.meta.fieldType" ng-if="column.type=='field'">
 								<span ng-switch-when="1" ng-bind="::contentData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
