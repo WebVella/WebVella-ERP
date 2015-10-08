@@ -42,6 +42,7 @@
 			resolve: {
 				checkedAccessPermission: checkAccessPermission,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+				resolvedEntityRelationsList: resolveEntityRelationsList,
 				resolvedViewLibrary: resolveViewLibrary
 			},
 			data: {
@@ -165,14 +166,51 @@
 		return defer.promise;
 	}
 
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.resolve(response.object);
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object == null) {
+				$timeout(function () {
+					$state.go("webvella-root-not-found");
+				}, 0);
+			}
+			else {
+				defer.reject(response.message);
+			}
+		}
+
+		webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		return defer.promise;
+	}
+
 	//#endregion
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', '$timeout', 'pageTitle', '$modal',
-                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary'];
+                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $modal,
-                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary) {
+                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -205,9 +243,7 @@
 				contentData.viewContentRegion = contentData.view.regions[i];
 			}
 		}
-		//Get fields already used in the view so they need to be removed from the library
-		var usedItemsArray = webvellaAdminService.getItemsFromRegion(contentData.viewContentRegion);
-
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.tempLibrary = {};
 		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
 
@@ -221,6 +257,12 @@
 			}
 			else if (item.type == "relationOptions") {
 				item.addedToLibrary = false;
+				item.sameOriginTargetEntity = false;
+				for (var r = 0; r < contentData.relationsList.length; r++) {
+					if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+						item.sameOriginTargetEntity = true;
+					}
+				}
 				contentData.library.relations.push(item);
 			}
 		});
@@ -234,11 +276,23 @@
 		sortLibrary();
 		contentData.originalLibrary = fastCopy(contentData.library.items);
 
+		//Extract the direction change information from the view if present
+		for (var k = 0; k < contentData.view.relationOptions.length; k++) {
+			for (var m = 0; m < contentData.library.relations.length; m++) {
+				if (contentData.view.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
+					contentData.library.relations[m].direction = contentData.view.relationOptions[k].direction;
+				}
+
+			}
+
+		}
+
 		contentData.library.relations = contentData.library.relations.sort(function (a, b) {
 			if (a.relationName < b.relationName) return -1;
 			if (a.relationName > b.relationName) return 1;
 			return 0;
 		});
+
 
 		//Generate the relationOptions current Status
 
@@ -414,7 +468,7 @@
 				if (response.success) {
 					ngToast.create({
 						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message						
+						content: '<span class="go-green">Success:</span> ' + response.message
 					});
 					contentData.library.items = fastCopy(contentData.originalLibrary);
 					for (var i = 0; i < response.object.regions.length; i++) {
@@ -435,7 +489,7 @@
 				ngToast.create({
 					className: 'error',
 					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout:7000
+					timeout: 7000
 				});
 				moveFailure();
 			}
@@ -502,7 +556,7 @@
 		};
 
 		contentData.dragItemRemove = function (column, index) {
-		
+
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
@@ -526,6 +580,78 @@
 			}
 			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
 		}
+
+		//#endregion
+
+		//#region << Relations >>
+
+		contentData.changeRelationDirection = function (relation) {
+			if (relation.direction == "origin-target") {
+				relation.direction = "target-origin";
+			}
+			else {
+				relation.direction = "origin-target";
+			}
+			contentData.view.relationOptions = [];
+
+			for (var i = 0; i < contentData.library.relations.length; i++) {
+				var relation = fastCopy(contentData.library.relations[i]);
+				delete relation.addedToLibrary;
+				delete relation.sameOriginTargetEntity;
+				contentData.view.relationOptions.push(relation);
+			}
+
+			function successCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + response.message
+				});
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				//Undo change
+				for (var j = 0; j < contentData.library.relations.length; j++) {
+					if (contentData.library.relations[j].relationName == relation.relationName) {
+						if (contentData.library.relations[j].direction == "origin-target") {
+							contentData.library.relations[j].direction = "target-origin";
+						}
+						else {
+							contentData.library.relations[j].direction = "origin-target";
+						}
+					}
+				}
+			}
+
+			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+		}
+
+		contentData.toggleRelationToLibrary = function (relation) {
+			if (!relation.addedToLibrary) {
+				contentData.tempLibrary.items.forEach(function (item) {
+					if (item.relationName && item.relationName == relation.relationName) {
+						contentData.library.items.push(item);
+					}
+				});
+				relation.addedToLibrary = true;
+			}
+			else {
+				var tempRelationChangeLibrary = [];
+				contentData.library.items.forEach(function (item) {
+					if (!item.relationName || item.relationName != relation.relationName) {
+						tempRelationChangeLibrary.push(item);
+					}
+				});
+				contentData.library.items = tempRelationChangeLibrary;
+				relation.addedToLibrary = false;
+			}
+			sortLibrary();
+		}
+
 
 		//#endregion
 
@@ -813,3 +939,4 @@
 	//#endregion
 
 })();
+

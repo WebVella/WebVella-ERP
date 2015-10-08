@@ -18,6 +18,7 @@ body {
 
 a, a:hover, a:active, a:focus {
 	outline: 0;
+	text-decoration:none;
 }
 
 .clickable:hover {
@@ -2282,6 +2283,15 @@ table .btn-xs.btn-link {
 /*#endregion */
 
 /*#region << Colors >> */
+.go-white {
+	color: #fff !important;
+}
+
+.go-bkg-white {
+	background-color: #fff !important;
+}
+
+
 .go-red {
 	color: #F44336 !important;
 }
