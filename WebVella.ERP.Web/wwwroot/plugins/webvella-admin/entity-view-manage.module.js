@@ -268,8 +268,8 @@
 		});
 		function sortLibrary() {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
-				if (a.fieldName < b.fieldName) return -1;
-				if (a.fieldName > b.fieldName) return 1;
+				if (a.dataName < b.dataName) return -1;
+				if (a.dataName > b.dataName) return 1;
 				return 0;
 			});
 		}
@@ -460,8 +460,8 @@
 				}
 			};
 			moveFailure = function () {
-				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+				//eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
 			};
 
 			function successCallback(response) {

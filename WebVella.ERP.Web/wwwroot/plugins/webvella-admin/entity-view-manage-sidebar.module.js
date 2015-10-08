@@ -1,4 +1,4 @@
-﻿/* entity-view-manage.module.js */
+/* entity-view-manage.module.js */
 
 /**
 * @desc this module manages a single entity view in the admin screen
@@ -38,7 +38,8 @@
             },
             resolve: {
             	checkedAccessPermission: checkAccessPermission,
-                resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+            	resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
+            	resolvedEntityRelationsList: resolveEntityRelationsList,
                 resolvedViewLibrary: resolveViewLibrary
             },
             data: {
@@ -77,6 +78,7 @@
     	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
+
 
     resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
     /* @ngInject */
@@ -165,14 +167,52 @@
         return defer.promise;
     }
 
+    resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+    function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+    	$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.resolve(response.object);
+    		}
+    	}
+
+    	function errorCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.reject(response.message);
+    		}
+    	}
+
+    	webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+    	// Return
+    	$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
+
+
     //#endregion
 
     //#region << Controller >> ////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state','$stateParams', 'pageTitle', '$modal',
-                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary'];
+                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary','resolvedEntityRelationsList'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
-                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary) {
+                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
@@ -201,9 +241,7 @@
         	}
         }
 
-    	//Get fields already used in the view so they need to be removed from the library
-        var usedItemsArray = contentData.view.sidebar.items;
-
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
         contentData.tempLibrary = {};
         contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
         contentData.tempLibrary.items = contentData.tempLibrary.items.sort(function (a, b) {
@@ -212,63 +250,51 @@
         	return 0;
         });
         contentData.library = {};
+        contentData.library.relations = [];
         contentData.library.items = [];
         contentData.tempLibrary.items.forEach(function (item) {
-        	var notUsed = true;
-        	for (var k = 0; k < usedItemsArray.length; k++) {
-				if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
-        			notUsed = false;
-        		}
-        		else if (item.type === "viewFromRelation" && usedItemsArray[k].type === "viewFromRelation" && item.viewId == usedItemsArray[k].viewId) {
-        			notUsed = false;
-        		}
-        		else if (item.type === "list" && usedItemsArray[k].type === "list" && item.listId == usedItemsArray[k].listId) {
-        			notUsed = false;
-        		}
-        		else if (item.type === "listFromRelation" && usedItemsArray[k].type === "listFromRelation" && item.listId == usedItemsArray[k].listId) {
-        			notUsed = false;
-        		}
-        	}
-        	if (notUsed) {
-        		//var search = "";
-        		//if (item.type != null) {
-        		//	search += item.type + " ";
-        		//}
-        		//if (item.tag != null) {
-        		//	search += item.tag + " ";
-        		//}
-        		//if (item.fieldName != null) {
-        		//	search += item.fieldName + " ";
-        		//}
-        		//if (item.fieldLabel != null) {
-        		//	search += item.fieldLabel + " ";
-        		//}
-        		//if (item.entityName != null) {
-        		//	search += item.entityName + " ";
-        		//}
-        		//if (item.entityLabel != null) {
-        		//	search += item.entityLabel + " ";
-        		//}
-        		//if (item.viewName != null) {
-        		//	search += item.viewName + " ";
-        		//}
-        		//if (item.viewLabel != null) {
-        		//	search += item.viewLabel + " ";
-        		//}
-        		//if (item.listName != null) {
-        		//	search += item.listName + " ";
-        		//}
-        		//if (item.listLabel != null) {
-        		//	search += item.listLabel + " ";
-        		//}
-        		//if (item.entityLabelPlural != null) {
-        		//	search += item.entityLabelPlural + " ";
-        		//}
-        		//item.search = search;
+        	//Initially remove all items that are from relation or relationOptions
+        	if (item.type != "relationOptions" && !item.relationName && item.type != "html") {
         		contentData.library.items.push(item);
         	}
+        	else if (item.type == "relationOptions") {
+        		item.addedToLibrary = false;
+        		item.sameOriginTargetEntity = false;
+        		for (var r = 0; r < contentData.relationsList.length; r++) {
+        			if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+        				item.sameOriginTargetEntity = true;
+        			}
+        		}
+        		contentData.library.relations.push(item);
+        	}
         });
+        function sortLibrary() {
+        	contentData.library.items = contentData.library.items.sort(function (a, b) {
+        		if (a.dataName < b.dataName) return -1;
+        		if (a.dataName > b.dataName) return 1;
+        		return 0;
+        	});
+        }
+        sortLibrary();
+        contentData.originalLibrary = fastCopy(contentData.library.items);
 
+
+    	//Extract the direction change information from the view if present
+        for (var k = 0; k < contentData.view.relationOptions.length; k++) {
+        	for (var m = 0; m < contentData.library.relations.length; m++) {
+        		if (contentData.view.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
+        			contentData.library.relations[m].direction = contentData.view.relationOptions[k].direction;
+        		}
+
+        	}
+
+        }
+
+        contentData.library.relations = contentData.library.relations.sort(function (a, b) {
+        	if (a.relationName < b.relationName) return -1;
+        	if (a.relationName > b.relationName) return 1;
+        	return 0;
+        });
 
 
         //#endregion
@@ -281,8 +307,8 @@
 
             moveSuccess = function () {};
             moveFailure = function () {
-                eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-                eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+                //eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+                //eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
             };
 
             function successCallback(response) {
@@ -291,7 +317,8 @@
                         className: 'success',
                         content: '<span class="go-green">Success:</span> ' + response.message
                     });
-
+                    contentData.library.items = fastCopy(contentData.originalLibrary);
+                    contentData.view.sidebar.items = response.object.sidebar.items;
                     moveSuccess();
                 }
                 else {
@@ -303,13 +330,22 @@
             function errorCallback(response) {
                 ngToast.create({
                     className: 'error',
-                    content: '<span class="go-red">Error:</span> ' + response.message
+                    content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout:7000
                 });
                 moveFailure();
             }
             //#endregion
 
-            //2. Call the service
+        	//1. Clean contentData.view from system properties like $$hashKey
+
+            for (var i = 0; i < contentData.view.regions.length; i++) {
+            	if (contentData.view.regions[i].name === "content") {
+            		contentData.view.regions[i] = fastCopy(contentData.viewContentRegion);
+            	}
+            }
+        	//contentData.view = angular.fromJson(angular.toJson(contentData.view));
+        	////2. Call the service
             webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
         }
 
@@ -334,7 +370,120 @@
             }
         };
 
-        //#endregion
+        contentData.libraryDragControlListeners = {
+        	accept: function (sourceItemHandleScope, destSortableScope) {
+        		if (sourceItemHandleScope.itemScope.element[0].id != "library" && destSortableScope.element[0].id == "library") {
+        			return false;
+        		}
+        		return true;
+        	},
+        	itemMoved: function (eventObj) {
+        		//Item is moved from one column to another
+        		executeDragViewChange(eventObj);
+        	},
+        	orderChanged: function (eventObj) {
+        		//Item is moved within the same column
+        		executeDragViewChange(eventObj);
+        	}
+        };
+
+        contentData.dragItemRemove = function (index) {
+
+        	function successCallback(response) {
+        		ngToast.create({
+        			className: 'success',
+        			content: '<span class="go-green">Success:</span> ' + response.message
+        		});
+        	}
+
+        	function errorCallback(response) {
+        		ngToast.create({
+        			className: 'error',
+        			content: '<span class="go-red">Error:</span> ' + response.message
+        		});
+        		$state.reload();
+        	}
+
+        	contentData.view.sidebar.items.splice(index, 1);
+        	webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+        }
+
+
+
+    	//#endregion
+
+    	//#region << Relations >>
+
+        contentData.changeRelationDirection = function (relation) {
+        	if (relation.direction == "origin-target") {
+        		relation.direction = "target-origin";
+        	}
+        	else {
+        		relation.direction = "origin-target";
+        	}
+        	contentData.view.relationOptions = [];
+
+        	for (var i = 0; i < contentData.library.relations.length; i++) {
+        		var relation = fastCopy(contentData.library.relations[i]);
+        		delete relation.addedToLibrary;
+        		delete relation.sameOriginTargetEntity;
+        		contentData.view.relationOptions.push(relation);
+        	}
+
+        	function successCallback(response) {
+        		ngToast.create({
+        			className: 'success',
+        			content: '<span class="go-green">Success:</span> ' + response.message
+        		});
+        	}
+
+        	function errorCallback(response) {
+        		ngToast.create({
+        			className: 'error',
+        			content: '<span class="go-red">Error:</span> ' + response.message,
+        			timeout: 7000
+        		});
+        		//Undo change
+        		for (var j = 0; j < contentData.library.relations.length; j++) {
+        			if (contentData.library.relations[j].relationName == relation.relationName) {
+        				if (contentData.library.relations[j].direction == "origin-target") {
+        					contentData.library.relations[j].direction = "target-origin";
+        				}
+        				else {
+        					contentData.library.relations[j].direction = "origin-target";
+        				}
+        			}
+        		}
+        	}
+
+        	webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+        }
+
+        contentData.toggleRelationToLibrary = function (relation) {
+        	if (!relation.addedToLibrary) {
+        		contentData.tempLibrary.items.forEach(function (item) {
+        			if (item.relationName && item.relationName == relation.relationName) {
+        				contentData.library.items.push(item);
+        			}
+        		});
+        		relation.addedToLibrary = true;
+        	}
+        	else {
+        		var tempRelationChangeLibrary = [];
+        		contentData.library.items.forEach(function (item) {
+        			if (!item.relationName || item.relationName != relation.relationName) {
+        				tempRelationChangeLibrary.push(item);
+        			}
+        		});
+        		contentData.library.items = tempRelationChangeLibrary;
+        		relation.addedToLibrary = false;
+        	}
+        	sortLibrary();
+        }
+
+
+    	//#endregion
+
         $log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }
