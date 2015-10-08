@@ -157,22 +157,14 @@
 				</div>
 				<div class="col-xs-6">
 					<h5>Library</h5>
-					<!--<form class="form" style="margin-bottom:1em;">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.name" class="form-control" placeholder="item name" style="width:100%;">
-							</div>
-						</div>
-					</form>-->
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-xs-6">
-					<div class="list-field-selection-box">
+					<div class="list-field-selection-box" style="height:400px;">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
-								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns">
 									<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left"></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
@@ -220,10 +212,18 @@
 					</div>
 				</div>
 				<div class="col-xs-6">
-					<div class="list-field-selection-box">
-						<div class="drop-zone">
-							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.listLibrary.items">
-								<div class="dropped-item" data-as-sortable-item ng-repeat="item in contentData.listLibrary.items | filter: {search:contentData.search}">
+					<form class="form" style="margin-bottom:1em;padding:0;background:transparent;border:none;">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+								<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
+							</div>
+						</div>
+					</form>
+					<div  style="height:200px;overflow-y:scroll;">
+						<div class="drop-zone-disabled">
+							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
+								<div class="dropped-item"  ng-model="item" data-as-sortable-item ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search}  track by $index">
 									<div as-sortable-item-handle ng-if='item.type == "field"' class="clearfix">
 										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{item.meta.name}}
@@ -260,6 +260,34 @@
 							</div>
 						</div>
 					</div>
+					<br />
+					<table class="table table-border">
+						<thead>
+							<tr>
+								<th class="go-bkg-white">relations</th>
+								<th width="90" class="go-bkg-white">in library</th>
+								<th width="115" class="go-bkg-white">direction</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="relation in contentData.library.relations">
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{relation.relationName}}</div></td>
+								<td>
+									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
+										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
+										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
+									</a>
+								</td>
+								<td>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
+									<a ng-click="contentData.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>				
 				</div>
 
 			</div>

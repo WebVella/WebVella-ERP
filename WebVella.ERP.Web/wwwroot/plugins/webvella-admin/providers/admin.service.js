@@ -73,6 +73,7 @@ function guid() {
 		serviceInstance.getEntityList = getEntityList;
 		serviceInstance.createEntityList = createEntityList;
 		serviceInstance.patchEntityList = patchEntityList;
+		serviceInstance.updateEntityList = updateEntityList;
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Record
 		serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
@@ -747,6 +748,13 @@ function guid() {
 			//"api/v1/en_US/meta/entity/{Name}/list/{ListName}") -> submitObj
 			$log.debug('webvellaAdmin>providers>admin.service>patchEntityList> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listName, data: submitObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+		}
+
+		//////////////////////
+		function updateEntityList(listObj, entityName, successCallback, errorCallback) {
+			//"api/v1/en_US/meta/entity/{Name}/list/{ListName}") -> submitObj
+			$log.debug('webvellaAdmin>providers>admin.service>patchEntityList> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/list/" + listObj.name, data: listObj }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
 		}
 
 		///////////////////////

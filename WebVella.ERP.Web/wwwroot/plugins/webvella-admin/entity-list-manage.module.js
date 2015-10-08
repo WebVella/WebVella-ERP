@@ -42,7 +42,8 @@
             	checkedAccessPermission: checkAccessPermission,
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedViewLibrary: resolveViewLibrary,
-                resolvedCurrentEntityList: resolveCurrentEntityList
+                resolvedCurrentEntityList: resolveCurrentEntityList,
+                resolvedEntityRelationsList: resolveEntityRelationsList,
             },
             data: {
 
@@ -191,14 +192,51 @@
         $log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
+
+    resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
+	/* @ngInject */
+    function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
+    	$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.resolve(response.object);
+    		}
+    	}
+
+    	function errorCallback(response) {
+    		if (response.object == null) {
+    			$timeout(function () {
+    				$state.go("webvella-root-not-found");
+    			}, 0);
+    		}
+    		else {
+    			defer.reject(response.message);
+    		}
+    	}
+
+    	webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+    	// Return
+    	$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaAdminService'];
+						'resolvedViewLibrary', 'webvellaAdminService', 'resolvedEntityRelationsList'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, ngToast, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaAdminService) {
+						resolvedViewLibrary, webvellaAdminService, resolvedEntityRelationsList) {
     	$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -236,6 +274,7 @@
 
         //#region << Initialize the list >>
         contentData.list = fastCopy(resolvedCurrentEntityList);
+        contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 
         contentData.defaultFieldName = null;
         function calculateDefaultSearchFieldName() {
@@ -299,108 +338,55 @@
         //#endregion
 
         //#region << Initialize the library >>
-        //Items list eligable to be selected as columns
-        contentData.listLibrary = {};
-        contentData.listLibrary.items = [];
+        contentData.tempLibrary = {};
+        contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
+        contentData.library = {};
+        contentData.library.relations = [];
+        contentData.library.items = [];
+        contentData.tempLibrary.items.forEach(function (item) {
+        	//Initially remove all items that are from relation or relationOptions
+        	if (item.type != "relationOptions" && !item.relationName && item.type != "html") {
+        		contentData.library.items.push(item);
+        	}
+        	else if (item.type == "relationOptions") {
+        		item.addedToLibrary = false;
+        		item.sameOriginTargetEntity = false;
+        		for (var r = 0; r < contentData.relationsList.length; r++) {
+        			if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+        				item.sameOriginTargetEntity = true;
+        			}
+        		}
+        		contentData.library.relations.push(item);
+        	}
+        });
+        function sortLibrary() {
+        	contentData.library.items = contentData.library.items.sort(function (a, b) {
+        		if (a.dataName < b.dataName) return -1;
+        		if (a.dataName > b.dataName) return 1;
+        		return 0;
+        	});
+        }
+        sortLibrary();
+        contentData.originalLibrary = fastCopy(contentData.library.items);
 
-        //Fields list eligable to be options in the sort and query dropdowns
-        contentData.onlyFieldsLibrary = {};
-        contentData.onlyFieldsLibrary.items = [];
+    	//Extract the direction change information from the list if present
+        for (var k = 0; k < contentData.list.relationOptions.length; k++) {
+        	for (var m = 0; m < contentData.library.relations.length; m++) {
+        		if (contentData.list.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
+        			contentData.library.relations[m].direction = contentData.list.relationOptions[k].direction;
+        		}
 
-        //Temporary working set
-        contentData.tempFieldsLibrary = {};
-        contentData.tempFieldsLibrary.items = [];
+        	}
 
-        for (var i = 0; i < resolvedViewLibrary.length; i++) {
-            if (resolvedViewLibrary[i].type === "field" || resolvedViewLibrary[i].type === "fieldFromRelation" || resolvedViewLibrary[i].type === "view" || resolvedViewLibrary[i].type === "viewFromRelation"
-			 || resolvedViewLibrary[i].type === "list" || resolvedViewLibrary[i].type === "listFromRelation") { //|| resolvedViewLibrary[i].type === "html") {
-
-
-            	if (resolvedViewLibrary[i].type === "field") {
-            		contentData.onlyFieldsLibrary.items.push(resolvedViewLibrary[i]);
-            	}
-            	//Filter the items that are already used
-                var alreadyUsedItemInList = false;
-                for (var j = 0; j < contentData.list.columns.length; j++) {
-                	if (contentData.list.columns[j].meta) {
-                		if (resolvedViewLibrary[i].meta.id === contentData.list.columns[j].meta.id) {
-                			alreadyUsedItemInList = true;
-                		}
-	                }
-                }
-
-                if (!alreadyUsedItemInList) {
-                    contentData.tempFieldsLibrary.items.push(resolvedViewLibrary[i]);
-                }
-            }
         }
 
-        contentData.tempFieldsLibrary.items = contentData.tempFieldsLibrary.items.sort(function (a, b) {
-        	if (a.type < b.type) return -1;
-        	if (a.type > b.type) return 1;
+        contentData.library.relations = contentData.library.relations.sort(function (a, b) {
+        	if (a.relationName < b.relationName) return -1;
+        	if (a.relationName > b.relationName) return 1;
         	return 0;
         });
 
-    	//Get fields already used in the view so they need to be removed from the library
-        var usedItemsArray = [];
-        for (var j = 0; j < contentData.list.columns.length; j++) {
-        	usedItemsArray.push(contentData.list.columns[j]);
-        }
-        contentData.tempFieldsLibrary.items.forEach(function (item) {
-        	var notUsed = true;
-        	for (var k = 0; k < usedItemsArray.length; k++) {
-        		if (item.type === "field" && usedItemsArray[k].type === "field"
-						&& item.fieldId == usedItemsArray[k].fieldId) {
-        			notUsed = false;
-        		}
-        		else if (item.type === "fieldFromRelation" && usedItemsArray[k].type === "fieldFromRelation"
-						&& item.fieldId == usedItemsArray[k].fieldId && item.relationId == usedItemsArray[k].relationId) {
-        			notUsed = false;
-        		}
-        		else if (item.type === "view" && usedItemsArray[k].type === "view" && item.viewId == usedItemsArray[k].viewId) {
-        			notUsed = false;
-        		}
-        	}
 
-        	if (notUsed) {
-        	//var search = "";
-        	//if (item.type != null) {
-        	//	search += item.type + " ";
-        	//}
-        	//if (item.tag != null) {
-        	//	search += item.tag + " ";
-        	//}
-        	//if (item.fieldName != null) {
-        	//	search += item.fieldName + " ";
-        	//}
-        	//if (item.fieldLabel != null) {
-        	//	search += item.fieldLabel + " ";
-        	//}
-        	//if (item.entityName != null) {
-        	//	search += item.entityName + " ";
-        	//}
-        	//if (item.entityLabel != null) {
-        	//	search += item.entityLabel + " ";
-        	//}
-        	//if (item.viewName != null) {
-        	//	search += item.viewName + " ";
-        	//}
-        	//if (item.viewLabel != null) {
-        	//	search += item.viewLabel + " ";
-        	//}
-        	//if (item.listName != null) {
-        	//	search += item.listName + " ";
-        	//}
-        	//if (item.listLabel != null) {
-        	//	search += item.listLabel + " ";
-        	//}
-        	//if (item.entityLabelPlural != null) {
-        	//	search += item.entityLabelPlural + " ";
-        	//}
-        	//item.search = search;
-        	contentData.listLibrary.items.push(item);
-		}
-        });
         //#endregion
 
         //#region << Logic >>
@@ -408,16 +394,16 @@
             //Add Item at the end of the columns list
         	contentData.list.columns.push(item);
             //Remove from library
-        	contentData.listLibrary.items.splice(index, 1);
+        	contentData.library.items.splice(index, 1);
         	contentData.updateColumns();
         }
         contentData.moveToLibrary = function (item, index) {
             //Add Item at the end of the columns list
-            contentData.listLibrary.items.push(item);
+            contentData.library.items.push(item);
             //Remove from library
             contentData.list.columns.splice(index, 1);
 
-            contentData.listLibrary.items = contentData.listLibrary.items.sort(function (a, b) {
+            contentData.library.items = contentData.library.items.sort(function (a, b) {
             	if (a.type < b.type) return -1;
             	if (a.type > b.type) return 1;
             	return 0;
@@ -562,6 +548,77 @@
         }
 		//#endregion
 
+    	//#region << Relations >>
+
+        contentData.changeRelationDirection = function (relation) {
+        	if (relation.direction == "origin-target") {
+        		relation.direction = "target-origin";
+        	}
+        	else {
+        		relation.direction = "origin-target";
+        	}
+        	contentData.list.relationOptions = [];
+
+        	for (var i = 0; i < contentData.library.relations.length; i++) {
+        		var relation = fastCopy(contentData.library.relations[i]);
+        		delete relation.addedToLibrary;
+        		delete relation.sameOriginTargetEntity;
+        		contentData.list.relationOptions.push(relation);
+        	}
+
+        	function successCallback(response) {
+        		ngToast.create({
+        			className: 'success',
+        			content: '<span class="go-green">Success:</span> ' + response.message
+        		});
+        	}
+
+        	function errorCallback(response) {
+        		ngToast.create({
+        			className: 'error',
+        			content: '<span class="go-red">Error:</span> ' + response.message,
+        			timeout: 7000
+        		});
+        		//Undo change
+        		for (var j = 0; j < contentData.library.relations.length; j++) {
+        			if (contentData.library.relations[j].relationName == relation.relationName) {
+        				if (contentData.library.relations[j].direction == "origin-target") {
+        					contentData.library.relations[j].direction = "target-origin";
+        				}
+        				else {
+        					contentData.library.relations[j].direction = "origin-target";
+        				}
+        			}
+        		}
+        	}
+
+        	webvellaAdminService.updateEntityList(contentData.list, contentData.entity.name, successCallback, errorCallback);
+        }
+
+        contentData.toggleRelationToLibrary = function (relation) {
+        	if (!relation.addedToLibrary) {
+        		contentData.tempLibrary.items.forEach(function (item) {
+        			if (item.relationName && item.relationName == relation.relationName) {
+        				contentData.library.items.push(item);
+        			}
+        		});
+        		relation.addedToLibrary = true;
+        	}
+        	else {
+        		var tempRelationChangeLibrary = [];
+        		contentData.library.items.forEach(function (item) {
+        			if (!item.relationName || item.relationName != relation.relationName) {
+        				tempRelationChangeLibrary.push(item);
+        			}
+        		});
+        		contentData.library.items = tempRelationChangeLibrary;
+        		relation.addedToLibrary = false;
+        	}
+        	sortLibrary();
+        }
+
+
+    	//#endregion
 
         //Delete list
         contentData.deleteListModal = function () {
