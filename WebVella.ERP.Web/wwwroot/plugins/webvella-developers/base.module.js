@@ -90,42 +90,35 @@
 			if (files && files.length) {
 				for (var i = 0; i < files.length; i++) {
 					var file = files[i];
-					$log.info(file);
 					Upload.upload({
 						url: 'http://localhost:2202/fs/upload/',
 						file: file
 					}).progress(function (evt) {
 						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-						$log.info(progressPercentage + '%');
 					}).success(function (data, status, headers, config) {
 						$timeout(function () {
-							//$scope.log = 'file: ' + config.file.name + ', Response: ' + angular.toJson(data) + '\n' + $scope.log;
-							//$log.info(data);
-							//$log.info(status);
-							//$log.info(headers);
-							//$log.info(config);
 							queryService.moveFile({ 'source': data.object.url, 'target': "/test/test.pdf", overwrite: true },
                                 function (response) {
-                                	$log.info('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
+                                	$log.debug('webvellaDevelopers>base> END controller.moveFile> SUCCESS');
                                 	pluginData.result = response;
 
                                 	queryService.deleteFile("/fs/test/test.pdf",
                                         function (response) {
-                                        	$log.info('webvellaDevelopers>base> END controller.deleteFile> SUCCESS');
-                                        	$log.info(response);
+                                        	$log.debug('webvellaDevelopers>base> END controller.deleteFile> SUCCESS');
+                                        	$log.debug(response);
                                         	pluginData.result = response;
                                         },
                                         function (response) {
-                                        	$log.info('webvellaDevelopers>base> END controller.deleteFile> ERROR');
-                                        	$log.info(response);
+                                        	$log.debug('webvellaDevelopers>base> END controller.deleteFile> ERROR');
+                                        	$log.debug(response);
                                         	pluginData.result = response;
                                         });
 
 
                                 },
 				                function (response) {
-				                	$log.info('webvellaDevelopers>base> END controller.moveFile> ERROR');
-				                	$log.info(response);
+				                	$log.debug('webvellaDevelopers>base> END controller.moveFile> ERROR');
+				                	$log.debug(response);
 				                	pluginData.result = response;
 				                });
 

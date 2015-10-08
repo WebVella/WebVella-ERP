@@ -235,7 +235,7 @@
         //#endregion
 
         //#region << Initialize the list >>
-        contentData.list = angular.copy(resolvedCurrentEntityList);
+        contentData.list = fastCopy(resolvedCurrentEntityList);
 
         contentData.defaultFieldName = null;
         function calculateDefaultSearchFieldName() {

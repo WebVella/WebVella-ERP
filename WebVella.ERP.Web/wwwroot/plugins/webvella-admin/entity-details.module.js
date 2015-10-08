@@ -208,7 +208,7 @@
         contentData.icons = getFontAwesomeIconNames();
 
         //Get Areas list and selected areas for the entity
-        contentData.areas = angular.copy(resolvedAreasList.data);
+        contentData.areas = fastCopy(resolvedAreasList.data);
         contentData.areas = contentData.areas.sort(function (a, b) {
             if (a.label < b.label) return -1;
             if (a.label > b.label) return 1;

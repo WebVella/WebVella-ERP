@@ -1458,11 +1458,11 @@
 		popupData.wizard = {};
 		popupData.wizard.steps = [];
 		//Initialize steps
-		var step = angular.copy({ "active": false }, { "completed": false });
+		var step = fastCopy({ "active": false }, { "completed": false });
 		popupData.wizard.steps.push(step); // Dummy step
-		step = angular.copy({ "active": false }, { "completed": false });
+		step = fastCopy({ "active": false }, { "completed": false });
 		popupData.wizard.steps.push(step); // Step 1
-		step = angular.copy({ "active": false }, { "completed": false });
+		step = fastCopy({ "active": false }, { "completed": false });
 		popupData.wizard.steps.push(step); // Step 2
 		// Set steps
 		popupData.wizard.steps[1].active = true;
@@ -1606,7 +1606,7 @@
 						cleanArray.push(popupData.field.defaultValue[j]);
 					}
 				}
-				popupData.field.defaultValue = angular.copy(cleanArray);
+				popupData.field.defaultValue = fastCopy(cleanArray);
 			} else {
 				popupData.field.defaultValue.push(key);
 			}
@@ -1648,7 +1648,7 @@
 		popupData.modalInstance = $modalInstance;
 		popupData.contentData = contentData;
 
-		popupData.field = angular.copy(resolvedField);
+		popupData.field = fastCopy(resolvedField);
 		if (popupData.field.permissions == null) {
 			popupData.field.permissions = {
 				canRead: [],
@@ -1845,7 +1845,7 @@
 						cleanArray.push(popupData.field.defaultValue[j]);
 					}
 				}
-				popupData.field.defaultValue = angular.copy(cleanArray);
+				popupData.field.defaultValue = fastCopy(cleanArray);
 			} else {
 				popupData.field.defaultValue.push(key);
 			}

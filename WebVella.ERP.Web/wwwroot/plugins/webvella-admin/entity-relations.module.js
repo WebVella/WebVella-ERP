@@ -175,10 +175,10 @@
         /* jshint validthis:true */
         var contentData = this;
         contentData.search = {};
-        contentData.allRelations = angular.copy(resolvedRelationsList);
+        contentData.allRelations = fastCopy(resolvedRelationsList);
         contentData.currentEntityRelation = [];
-        contentData.entity = angular.copy(resolvedCurrentEntityMeta);
-        contentData.entityList = angular.copy(resolvedEntityList.entities);
+        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
+        contentData.entityList = fastCopy(resolvedEntityList.entities);
 
         //Initialize relations in the scope of this entity
         for (var i = 0; i < contentData.allRelations.length; i++) {
@@ -279,7 +279,7 @@
             popupData.relation = webvellaAdminService.initRelation();
         }
         else {
-            popupData.relation = angular.copy(managedRelation);
+            popupData.relation = fastCopy(managedRelation);
         }
 
         popupData.currentEntity = contentData.entity;
@@ -495,7 +495,7 @@
                 webvellaAdminService.createRelation(popupData.relation, successCallback, errorCallback)
             }
             else {
-                var putObject = angular.copy(managedRelation);
+                var putObject = fastCopy(managedRelation);
                 putObject.label = popupData.relation.label;
                 putObject.description = popupData.relation.description;
                 if (!managedRelation.system) {

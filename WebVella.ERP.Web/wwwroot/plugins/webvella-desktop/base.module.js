@@ -85,7 +85,7 @@
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.topnav = [];
-        pluginData.user = angular.copy(resolvedCurrentUser);
+        pluginData.user = fastCopy(resolvedCurrentUser);
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaDesktopTopnavFactory.initTopnav();
