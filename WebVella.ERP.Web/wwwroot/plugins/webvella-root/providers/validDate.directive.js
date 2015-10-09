@@ -30,7 +30,7 @@
         function link(scope, element, attrs, ngModel) {
             ngModel.$validators.validDate = function (modelValue) {
                 //moment().toISOString();
-                if (modelValue === "") {
+            	if (modelValue == "" || modelValue == null) {
                     return true;
                 } else {
                     if (moment(modelValue).isValid()) {

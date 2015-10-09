@@ -1054,7 +1054,7 @@ namespace WebVella.ERP
 			dateField.System = true;
 			dateField.DefaultValue = DateTime.MinValue;
 
-			dateField.Format = "dd.MM.YYYY";
+			dateField.Format = "dd MMM yyyy";
 
 			fields.Add(dateField);
 
@@ -1073,7 +1073,7 @@ namespace WebVella.ERP
 			dateTimeField.System = true;
 			dateTimeField.DefaultValue = DateTime.MinValue;
 
-			dateTimeField.Format = "dd.MM.YYYY";
+			dateTimeField.Format = "dd MMM yyyy HH:mm";
 
 			fields.Add(dateTimeField);
 
