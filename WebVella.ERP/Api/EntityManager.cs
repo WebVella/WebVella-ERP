@@ -4519,7 +4519,7 @@ namespace WebVella.ERP.Api
             createdOn.System = true;
             createdOn.DefaultValue = null;
 
-            createdOn.Format = "MM/dd/YYYY";
+            createdOn.Format = "dd MMM yyyy HH:mm";
             createdOn.UseCurrentTimeAsDefaultValue = true;
 
             fields.Add(createdOn);
@@ -4539,7 +4539,7 @@ namespace WebVella.ERP.Api
             modifiedOn.System = true;
             modifiedOn.DefaultValue = null;
 
-            modifiedOn.Format = "MM/dd/YYYY";
+            modifiedOn.Format = "dd MMM yyyy HH:mm";
             modifiedOn.UseCurrentTimeAsDefaultValue = true;
 
             fields.Add(modifiedOn);

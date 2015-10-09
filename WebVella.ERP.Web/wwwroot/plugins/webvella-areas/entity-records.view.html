@@ -219,7 +219,7 @@
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
 													<p>Fill in the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"  ng-change="popupData.ensureNullOnEmpty(column,0)"
 														   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
@@ -237,7 +237,7 @@
 														<div class="col-sm-5">
 															<div class="input-group">
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 																<div class="input-group-addon">< =</div>
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
@@ -254,7 +254,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< =</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^[0-9]{1,50}$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,1)">
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
 																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
@@ -267,7 +267,7 @@
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
 													<p>Match the integer displayed in the format: {{column.meta.displayFormat}}. Starting number is {{column.meta.startingNumber}}</p>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -314,7 +314,7 @@
 													<div class="input-group">
 														<div class="input-group-addon">{{column.meta.currency.code}}</div>
 														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													</div>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
@@ -332,7 +332,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">{{column.meta.currency.code}}</div>
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 																<div class="input-group-addon">< =</div>
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
@@ -348,7 +348,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< = {{column.meta.currency.code}}</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,1)">
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
 																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
@@ -381,7 +381,7 @@
 													<label>Value</label>
 													<div class="input-group">
 														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-															   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name]"
+															   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name]"  ng-change="popupData.ensureNullOnEmpty(column,0)"
 															   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
 														<span class="input-group-btn">
 															<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
@@ -399,7 +399,7 @@
 														<div class="col-sm-5">
 															<div class="input-group">
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
-																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"  ng-change="popupData.ensureNullOnEmpty(column,0)"
 																	   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
 																<span class="input-group-btn">
 																	<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
@@ -416,7 +416,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< =</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
-																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"  ng-change="popupData.ensureNullOnEmpty(column,1)"
 																	   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
 																<span class="input-group-btn">
 																	<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
@@ -434,7 +434,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -455,7 +455,7 @@
 													<label>Value</label>
 													<div class="input-group">
 														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-															   datetime-picker="{{column.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupData.calendars[column.meta.name]"
+															   datetime-picker="{{column.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupData.calendars[column.meta.name]" ng-change="popupData.ensureNullOnEmpty(column,0)"
 															   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name)" ng-model-options="{allowInvalid:true}">
 														<span class="input-group-btn">
 															<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name)"><i class="fa fa-calendar"></i></button>
@@ -473,7 +473,7 @@
 														<div class="col-sm-5">
 															<div class="input-group">
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}" placeholder="{{column.meta.placeholderText}}"
-																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_0']"  ng-change="popupData.ensureNullOnEmpty(column,0)"
 																	   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_0')" ng-model-options="{allowInvalid:true}">
 																<span class="input-group-btn">
 																	<button type="button" style="border-radius:0" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_0')"><i class="fa fa-calendar"></i></button>
@@ -490,7 +490,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< =</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}" placeholder="{{column.meta.placeholderText}}"
-																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"
+																	   datetime-picker="{{column.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[column.meta.name  + '_1']"  ng-change="popupData.ensureNullOnEmpty(column,1)"
 																	   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, column.meta.name + '_1')" ng-model-options="{allowInvalid:true}">
 																<span class="input-group-btn">
 																	<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, column.meta.name + '_1')"><i class="fa fa-calendar"></i></button>
@@ -508,7 +508,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,1)"> 
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -529,7 +529,7 @@
 													<label>Value</label>
 													<div class="input-group">
 														<div class="input-group-addon"><i class="fa fa-fw fa-envelope"></i></div>
-														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"  ng-change="popupData.ensureNullOnEmpty(column,0)"
 															   pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" ng-model-options="{allowInvalid:false}">
 													</div>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
@@ -543,7 +543,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -565,7 +565,7 @@
 													<p>Type in the file URL as it appears in the lists</p>
 													<div class="input-group">
 														<div class="input-group-addon">File URL</div>
-														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													</div>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
@@ -575,7 +575,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -594,7 +594,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"></textarea>
+													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)"></textarea>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -603,7 +603,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -625,7 +625,7 @@
 													<p>Type in the image URL as it appears in the lists</p>
 													<div class="input-group">
 														<div class="input-group-addon">Image URL</div>
-														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													</div>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
@@ -635,7 +635,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -654,7 +654,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"></textarea>
+													<textarea class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)"></textarea>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -663,7 +663,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -708,7 +708,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -728,7 +728,7 @@
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
 													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-														   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+														   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -744,7 +744,7 @@
 														<div class="col-sm-5">
 															<div class="input-group">
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 																<div class="input-group-addon">< =</div>
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
@@ -760,7 +760,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< =</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,1)">
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
 																<small class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$error.pattern">
@@ -772,7 +772,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -794,7 +794,7 @@
 													<label>Value</label>
 													<div class="input-group">
 														<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" placeholder="{{column.meta.placeholderText}}"
-															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+															   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 														<div class="input-group-addon">%</div>
 													</div>
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
@@ -812,7 +812,7 @@
 														<div class="col-sm-5">
 															<div class="input-group">
 																<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name + '_0'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 																<div class="input-group-addon">% < =</div>
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_0'}}.$dirty && filterForm.{{column.meta.name + '_0'}}.$invalid">
@@ -828,7 +828,7 @@
 															<div class="input-group">
 																<div class="input-group-addon">< =</div>
 																<input type="text" class="form-control" ng-model="column.data[1]" name="{{column.meta.name + '_1'}}"
-																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+																	   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,1)">
 																<div class="input-group-addon">%</div>
 															</div>
 															<div class="error" ng-show="filterForm.{{column.meta.name + '_1'}}.$dirty && filterForm.{{column.meta.name + '_1'}}.$invalid">
@@ -841,7 +841,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -861,7 +861,7 @@
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
 													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
-													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 														{{column.meta.helpText}}
 													</div>
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
@@ -869,7 +869,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -888,7 +888,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -897,7 +897,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -916,7 +916,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -925,7 +925,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -944,7 +944,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -953,7 +953,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
@@ -972,7 +972,7 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
@@ -981,7 +981,7 @@
 												</div>
 												<div class="form-group" ng-switch-when="regex">
 													<label>Regular Expression</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:true}"  ng-change="popupData.ensureNullOnEmpty(column,0)">
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">
 													</div>
 												</div>
