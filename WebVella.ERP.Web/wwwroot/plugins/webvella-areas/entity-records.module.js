@@ -1286,7 +1286,7 @@
 									}
 									else {
 										// Exact
-										if (valueRecord.value != null) {
+										if (popupData.filterColumns[j].data[m]) {
 											valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
 											valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
 										}
@@ -1320,7 +1320,7 @@
 									}
 									else {
 										// Exact
-										if (valueRecord.value != null) {
+										if (popupData.filterColumns[j].data[m]) {
 											valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
 											valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
 										}
