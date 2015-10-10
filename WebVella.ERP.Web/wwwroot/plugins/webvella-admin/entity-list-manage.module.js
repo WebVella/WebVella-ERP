@@ -340,10 +340,16 @@
         //#region << Initialize the library >>
         contentData.tempLibrary = {};
         contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
+    	//Fields list eligable to be options in the sort and query dropdowns
+        contentData.onlyFieldsLibrary = {};
+        contentData.onlyFieldsLibrary.items = [];
         contentData.library = {};
         contentData.library.relations = [];
         contentData.library.items = [];
         contentData.tempLibrary.items.forEach(function (item) {
+        	if (item.type === "field") {
+        		contentData.onlyFieldsLibrary.items.push(item);
+        	}
         	//Initially remove all items that are from relation or relationOptions
         	if (item.type != "relationOptions" && !item.relationName && item.type != "html") {
         		contentData.library.items.push(item);
