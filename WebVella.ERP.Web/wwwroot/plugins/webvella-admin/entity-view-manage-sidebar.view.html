@@ -15,10 +15,10 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-{{contentData.entity.iconName}}"></i>
+			<i class="fa fa-{{::contentData.entity.iconName}}"></i>
 		</div>
 		<div class="entity-box">
-			<h4 class="no-link" title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
+			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -26,7 +26,7 @@
 		</div>
 		<div class="entity-box">
 			<h4 title="Record Views">record views</h4>
-			<a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-arrow-left"></i> Back to list</a>
+			<a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-arrow-left"></i> Back to list</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -42,21 +42,27 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li class="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
 	<div id="page-text">
 		<ul class="nav nav-pills">
-			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-info({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Basic info</a></li>
-			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Content</a></li>
-			<li role="presentation" ui-sref-active="active"><a ui-sref="webvella-admin-entity-view-manage-sidebar({entityName:'{{contentData.entity.name}}',viewName:'{{contentData.view.name}}'})">Sidebar</a></li>
+			<li role="presentation">
+				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/info">Basic info</a>
+			</li>
+			<li role="presentation">
+				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}">Content</a>
+			</li>
+			<li role="presentation" class="active">
+				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/sidebar">Sidebar</a>
+			</li>
 		</ul>
 		<hr class="divider" />
 		<div class="view-manage-section">
@@ -66,21 +72,21 @@
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
 								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by $index">
-									<div ng-if='item.type == "view"'>
+									<div ng-if='::item.type == "view"'>
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}
 									</div>
-									<div ng-if='item.type == "viewFromRelation"'>
+									<div ng-if='::item.type == "viewFromRelation"'>
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
-									<div ng-if='item.type == "list"'>
+									<div ng-if='::item.type == "list"'>
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> {{item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}
 									</div>
-									<div ng-if='item.type == "listFromRelation"'>
+									<div ng-if='::item.type == "listFromRelation"'>
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 								</div>
 							</div>
@@ -100,10 +106,10 @@
 						<div class="drop-zone-disabled" id="library-items-list">
 							<div as-sortable="contentData.libraryDragControlListeners" ng-model="contentData.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item" ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search}  track by $index">
-									<div ng-if='item.type == "view"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{item.meta.name}}</div>
-									<div ng-if='item.type == "viewFromRelation"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
-									<div ng-if='item.type == "list"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> {{item.meta.name}}</div>
-									<div ng-if='item.type == "listFromRelation"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{item.relationName}}<span class="divider">></span></span>{{item.meta.name}}</div>
+									<div ng-if='::item.type == "view"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}</div>
+									<div ng-if='::item.type == "viewFromRelation"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
+									<div ng-if='::item.type == "list"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}</div>
+									<div ng-if='::item.type == "listFromRelation"'><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
 								</div>
 							</div>
 						</div>
@@ -119,7 +125,7 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="relation in contentData.library.relations">
-								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{relation.relationName}}</div></td>
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{::relation.relationName}}</div></td>
 								<td>
 									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>

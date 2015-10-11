@@ -1,8 +1,8 @@
 <div id="userbox" class="dropdown" dropdown>
     <div class="dropdown-toggle" dropdown-toggle>
-        <img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!sidebarData.currentUser.image">
-		<img class="avatar" ng-src="{{sidebarData.currentUser.image}}" ng-if="sidebarData.currentUser.image">
-        <span class="username">{{sidebarData.currentUser.first_name}} {{sidebarData.currentUser.last_name}}</span>
+        <img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
+		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
+        <span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
     </div>
     <!--<ul class="dropdown-menu dropdown-menu-right">
         <li>
@@ -17,7 +17,8 @@
     </ul>-->
 </div>
 <ul class="nav nav-pills nav-stacked">
-    <li role="presentation" ui-sref-active="active" ng-repeat="entity in sidebarData.currentArea.subscriptions">
-        <a ui-sref='webvella-entity-records({areaName: "{{sidebarData.currentArea.name}}", entityName: "{{entity.name}}", listName: "{{entity.list.name}}",filter:"all", page: 1})'><i class="fa fa-{{entity.iconName}} fa-fw"></i><span class="text">{{entity.labelPlural}}</span></a>
+    <li role="presentation" ui-sref-active="active" ng-repeat="entity in sidebarData.currentArea.subscriptions track by $index">
+        <!--<a ui-sref='webvella-entity-records({areaName: "{{sidebarData.currentArea.name}}", entityName: "{{entity.name}}", listName: "{{entity.list.name}}",filter:"all", page: 1})'><i class="fa fa-{{entity.iconName}} fa-fw"></i><span class="text">{{entity.labelPlural}}</span></a>-->
+		<a href='#/areas/{{::sidebarData.currentArea.name}}/{{::entity.name}}/{{::entity.list.name}}/all/1'><i class="fa fa-{{::entity.iconName}} fa-fw"></i><span class="text">{{::entity.labelPlural}}</span></a>
     </li>
 </ul>

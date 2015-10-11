@@ -15,10 +15,10 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-{{contentData.entity.iconName}}"></i>
+			<i class="fa fa-{{::contentData.entity.iconName}}"></i>
 		</div>
 		<div class="entity-box">
-			<h4 class="no-link" title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
+			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -34,13 +34,13 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
@@ -65,24 +65,24 @@
 					<th class="meta">Info</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="field in contentData.entity.fields | filter: contentData.search">
+				<tr ng-repeat="field in contentData.entity.fields | filter: contentData.search track by field.id">
 					<td class="actions">
 						<a class="btn btn-default btn-sm" ng-click="contentData.manageFieldModal(field.id)">
 							<i class="fa fa-pencil"></i>
 						</a>
 					</td>
 					<td class="name">
-						{{field.name}}
-						<span class="badge badge-danger badge-inverse" ng-show="field.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+						{{::field.name}}
+						<span class="badge badge-danger badge-inverse" ng-show="::field.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
 					</td>
 					<td class="type">
-						{{contentData.fieldTypes[field.fieldType - 1].label}}
+						{{::contentData.fieldTypes[field.fieldType - 1].label}}
 					</td>
 					<td class="meta">
-						<span ng-show="field.required">required, </span>
-						<span ng-show="field.unique">unique, </span>
-						<span ng-show="field.searchable">searchable, </span>
-						<span ng-show="field.auditable">auditable, </span>
+						<span ng-show="::field.required">required, </span>
+						<span ng-show="::field.unique">unique, </span>
+						<span ng-show="::field.searchable">searchable, </span>
+						<span ng-show="::field.auditable">auditable, </span>
 					</td>
 				</tr>
 			</tbody>
