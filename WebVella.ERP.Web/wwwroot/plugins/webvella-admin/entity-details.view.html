@@ -36,13 +36,13 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
@@ -69,13 +69,13 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" for="label">Label</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label || "not set" }}</a>
+						<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label }}</a>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" for="labelPlural">Label Plural</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural || "not set" }}</a>
+						<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural }}</a>
 					</div>
 				</div>
 			</div>
@@ -84,13 +84,13 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" for="iconName">Icon name</label>
-						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName || "not set" }}</a>
+						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName }}</a>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" for="weight">Weight</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight || "not set" }}</a>
+						<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight }}</a>
 					</div>
 				</div>
 			</div>
@@ -111,8 +111,8 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="role in contentData.entity.roles">
-									<td>{{role.label}}</td>
+								<tr ng-repeat="role in contentData.entity.roles track by role.id">
+									<td>{{::role.label}}</td>
 									<td class="position-relative">
 										<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
 											<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>

@@ -1,16 +1,16 @@
 <div id="userbox" class="dropdown" dropdown>
 	<div class="dropdown-toggle" dropdown-toggle>
-		<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!sidebarData.currentUser.image">
-		<img class="avatar" ng-src="{{sidebarData.currentUser.image}}" ng-if="sidebarData.currentUser.image">
-		<span class="username">{{sidebarData.currentUser.first_name}} {{sidebarData.currentUser.last_name}}</span>
+		<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
+		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
+		<span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>
 	</div>
 </div>
 <div class="tabbable tabs-left spilled">
-	<a class="back clearfix" ui-sref="webvella-entity-records({areaName: sidebarData.stateParams.areaName,entityName:sidebarData.stateParams.entityName,listName:sidebarData.defaultEntityAreaListName,filter:'all',page:1})"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+	<a class="back clearfix" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/all/1"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 	<ul class="nav nav-tabs">
-		<li role="presentation" ng-class="{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items">
-			<a href="#/areas/{{sidebarData.stateParams.areaName}}/{{sidebarData.stateParams.entityName}}/{{sidebarData.stateParams.recordId}}/{{sidebarData.stateParams.viewName}}/{{item.name}}/*/*">
-				<i class="fa fa-{{item.iconName}} fa-fw"></i><span class="text ng-binding">{{item.label}}</span>
+		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items track by $index">
+			<a href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.stateParams.recordId}}/{{::sidebarData.stateParams.viewName}}/{{::item.name}}/*/*">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
 		</li>
 	</ul>

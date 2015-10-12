@@ -36,7 +36,13 @@
                 resolvedCurrentUser: resolveCurrentUser,
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedEntityRelationsList: resolveEntityRelationsList,
-                checkedAccessPermission: checkAccessPermission
+                checkedAccessPermission: checkAccessPermission,
+                resolvedAreaName: function ($stateParams) {
+                	return $stateParams.areaName;
+                },
+                resolvedEntityName: function ($stateParams) {
+                	return $stateParams.entityName;
+                },
             }
         });
     };

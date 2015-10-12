@@ -91,9 +91,9 @@ function guid() {
 		serviceInstance.initArea = initArea;
 		serviceInstance.getAreaByName = getAreaByName;
 		serviceInstance.deleteArea = deleteArea;
-		serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
-		serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
-		serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
+		//serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
+		//serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
+		//serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
 		serviceInstance.regenerateAllAreaSubscriptions = regenerateAllAreaSubscriptions;
 		//Function
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;

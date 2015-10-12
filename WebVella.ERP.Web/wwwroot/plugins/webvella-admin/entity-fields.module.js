@@ -1,4 +1,4 @@
-﻿/* entity-fields.module.js */
+/* entity-fields.module.js */
 
 /**
 * @desc this module manages the entity record fields in the admin screen
@@ -1480,8 +1480,11 @@
 			{
 				popupData.field.options = [];
 			}
-			else if (typeId == 4 || typeId == 5) {// If date or datetime
+			else if (typeId == 4 ) {// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd";
+			}
+			else if (typeId == 5){// If date or datetime
+				popupData.field.format = "yyyy-MMM-dd HH:mm";
 			}
 		}
 		popupData.setActiveStep = function (stepIndex) {
@@ -1561,10 +1564,14 @@
 					}
 					break;
 				case 4: //Date
-					popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					if(popupData.field.defaultValue!=null) {
+						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					}
 					break;
 				case 5: //Date & Time
-					popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					if(popupData.field.defaultValue!=null) {
+						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					}
 					break;
 			}
 			webvellaAdminService.createField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
@@ -1785,10 +1792,14 @@
 					}
 					break;
 				case 4: //Date
-					popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					if(popupData.field.defaultValue!=null) {
+						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					}
 					break;
 				case 5: //Date & Time
-					popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					if(popupData.field.defaultValue!=null) {
+						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					}
 					break;
 			}
 			webvellaAdminService.updateField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);

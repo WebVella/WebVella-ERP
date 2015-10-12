@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title ng-bind="appData.pageTitle"></title>
+    <title ng-bind="::appData.pageTitle"></title>
     <!--plugin:webvella-root-->
     <link href="~/plugins/webvella-root/lib/bootstrap/dist/css/bootstrap.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/ngtoast/dist/ngtoast.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
@@ -90,9 +90,10 @@
 			config.$inject = ['$httpProvider', '$urlRouterProvider', '$logProvider', 'wvAppConstants', 'ngToastProvider'];
 			function config($httpProvider,$urlRouterProvider, $logProvider, wvAppConstants, ngToastProvider) {
 
-				$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+				//$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
 				$urlRouterProvider.otherwise('/login');
+				$httpProvider.useApplyAsync("true");
 				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
 				moment.locale('en');
 				ngToastProvider.configure({
