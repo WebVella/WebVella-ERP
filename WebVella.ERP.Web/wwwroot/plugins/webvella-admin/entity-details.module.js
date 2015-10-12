@@ -72,7 +72,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -168,11 +169,11 @@
     }
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$modal',
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$uibModal',
         'resolvedRolesList', 'webvellaAdminService', 'resolvedAreasList', '$timeout'];
 
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $modal,
+    function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $uibModal,
         resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout) {
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
@@ -191,7 +192,7 @@
 
         //Create new entity modal
         contentData.openDeleteEntityModal = function () {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'deleteEntityModal.html',
                 controller: 'DeleteEntityModalController',
@@ -284,7 +285,8 @@
         function patchFailedCallback(response) {
             ngToast.create({
                 className: 'error',
-                content: '<span class="go-red">Error:</span> ' + response.message
+                content: '<span class="go-red">Error:</span> ' + response.message,
+                timeout: 7000
             });
             return false;
         }

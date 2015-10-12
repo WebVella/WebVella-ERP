@@ -73,7 +73,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -167,10 +168,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$modal'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal'];
 
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList,resolvedCurrentEntityMeta,resolvedEntityList, $modal) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal) {
     	$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -234,7 +235,7 @@
 
 
         contentData.manageRelationModal = function (relation) {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageRelationModal.html',
                 controller: 'ManageRelationModalController',
@@ -529,7 +530,7 @@
 
         //Delete relation
         popupData.deleteRelationModal = function () {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'deleteRelationModal.html',
                 controller: 'DeleteRelationModalController',

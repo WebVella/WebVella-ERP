@@ -74,7 +74,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -111,10 +112,10 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 
-							'resolvedRolesList', '$modal','webvellaAdminService'];
+							'resolvedRolesList', '$uibModal', 'webvellaAdminService'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle,
-						resolvedRolesList, $modal, webvellaAdminService) {
+						resolvedRolesList, $uibModal, webvellaAdminService) {
     	$log.debug('webvellaAdmin>roles> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -143,7 +144,7 @@
         		contentData.currentRole.id = null;
         		contentData.currentRole.name = "";
             }
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageRoleModal.html',
                 controller: 'ManageRoleModalController',

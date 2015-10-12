@@ -45,10 +45,9 @@
 				<div class="form">
 					<div class="row" ng-repeat="row in section.rows track by $index">
 						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns track by $index">
-							<div class="form-group" ng-repeat="item in column.items track by $index">
-
+							<div class="form-group" ng-repeat="item in column.items track by $index" ng-switch="item.type">
 								<!--If item is field WITH NO relation-->
-								<div class="editable-field field" ng-if="::item.type === 'field'">
+								<div class="editable-field field" ng-switch-when="field">
 									<label class="control-label">{{::item.meta.label}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::item.meta.fieldType">
@@ -261,7 +260,7 @@
 								</div>
 
 								<!--If item is field WITH relation-->
-								<div class="editable-field field" ng-if="::item.type === 'fieldFromRelation'">
+								<div class="editable-field field" ng-switch-when="fieldFromRelation">
 									<label class="control-label">{{::item.entityLabel}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
@@ -354,8 +353,8 @@
 									</div>
 								</div>
 
-								<!--If item is view WITH relation-->
-								<div class="field" ng-if="::item.type === 'view' || item.type === 'viewFromRelation'">
+								<!--If item is view WITH NO relation-->
+								<div class="field" ng-switch-when="view">
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<recursive-view view-meta="item" view-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-view>
 									</div>
@@ -364,10 +363,30 @@
 									</div>
 								</div>
 
-								<!--If item is list WITH relation-->
-								<div class="field" ng-if="::item.type === 'list' || item.type === 'listFromRelation'">
+								<!--If item is view WITH relation-->
+								<div class="field" ng-switch-when="viewFromRelation">
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
-										<recursive-list list-meta="item" list-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-list>
+										<recursive-view view-meta="item" view-data="contentData.selectedSidebarPage.data[item.dataName]" relations-list="contentData.relationsList"></recursive-view>
+									</div>
+									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
+										<span class="not-editable not-readable">hidden</span>
+									</div>
+								</div>
+
+								<!--If item is list WITH NO relation-->
+								<div class="field" ng-switch-when="list">
+									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+										<recursive-list list-meta="item.meta" list-data="contentData.selectedSidebarPage.data[item.dataName]" relation="null"></recursive-list>
+									</div>
+									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
+										<span class="not-editable not-readable">hidden</span>
+									</div>
+								</div>
+
+								<!--If item is list WITH relation-->
+								<div class="field" ng-switch-when="listFromRelation">
+									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+										<recursive-list list-meta="item.meta" list-data="contentData.selectedSidebarPage.data[item.dataName]" relation="contentData.getRelation(item.relationName)" ></recursive-list>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -382,12 +401,24 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if="!contentData.selectedSidebarPage.isEdit">
-		<div class="records-details" ng-if="contentData.selectedSidebarPage.isView">
-			<recursive-view view-meta="contentData.selectedSidebarPage" view-data="contentData.selectedSidebarPage.data" relations-list="contentData.relationsList"></recursive-view>
+	<div id="page-text" ng-if="::!contentData.selectedSidebarPage.isEdit">
+		<div class="records-details" ng-if="::contentData.selectedSidebarPage.isView">
+			<recursive-view view-meta="::contentData.selectedSidebarPage" 
+							view-data="contentData.selectedSidebarPage.data" 
+							relations-list="::contentData.relationsList">
+			</recursive-view>
 		</div>
-		<div class="records-list" ng-if="!contentData.selectedSidebarPage.isView">
-			<recursive-list list-meta="contentData.selectedSidebarPage" list-data="contentData.selectedSidebarPage.data" relations-list="contentData.relationsList"></recursive-list>
+		<div class="records-list" ng-if="::!contentData.selectedSidebarPage.isView">
+			<recursive-list list-meta="::contentData.selectedSidebarPage.meta" 
+							list-data="::contentData.selectedSidebarPage.data" 
+							list-entity="::contentData.selectedSidebarPage.relatedEntity"
+							can-add-existing="true"
+							can-create="true"
+							can-remove="true"
+							can-edit="true"
+							relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)" 
+							parent-id="::contentData.stateParams.recordId">
+			</recursive-list>
 		</div>
 	</div>
 
@@ -396,7 +427,7 @@
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select one <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
+		<h3 class="modal-title">Select <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>

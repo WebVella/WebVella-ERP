@@ -69,7 +69,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -118,10 +119,10 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$modal','$timeout',
+    controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
                             'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast'];
     /* @ngInject */
-    function controller($filter,$scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,$timeout,
+    function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast) {
     	$log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
@@ -185,14 +186,15 @@
         function patchFailedCallback(response) {
         	ngToast.create({
         		className: 'error',
-        		content: '<span class="go-red">Error:</span> ' + response.message
+        		content: '<span class="go-red">Error:</span> ' + response.message,
+        		timeout: 7000
         	});
         	return false;
         }
 
     	//Delete view
         contentData.deleteViewModal = function () {
-        	var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'deleteViewModal.html',
         		controller: 'DeleteViewModalController',
@@ -210,12 +212,16 @@
 			label: "general"
 		},
 		{
-			name: "quickview",
-			label: "quick-view"
+			name: "quick_view",
+			label: "quick view"
 		},
 		{
 			name: "create",
 			label: "create"
+		},
+		{
+			name: "quick_create",
+			label: "quick create"
 		}
         ];
 

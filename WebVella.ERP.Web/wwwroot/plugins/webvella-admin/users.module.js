@@ -74,7 +74,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -150,10 +151,10 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedUserRecordsList',
-							'resolvedRolesList', '$modal','webvellaAdminService'];
+							'resolvedRolesList', '$uibModal', 'webvellaAdminService'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedUserRecordsList,
-						resolvedRolesList, $modal, webvellaAdminService) {
+						resolvedRolesList, $uibModal, webvellaAdminService) {
     	$log.debug('webvellaAdmin>user-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -183,7 +184,7 @@
             else {
             	contentData.currentUser = webvellaAdminService.initUser();
             }
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageUserModal.html',
                 controller: 'ManageUserModalController',
@@ -283,7 +284,8 @@
         	function deleteFailedCallback(response) {
         		ngToast.create({
         			className: 'error',
-        			content: '<span class="go-red">Error:</span> ' + response.message
+        			content: '<span class="go-red">Error:</span> ' + response.message,
+        			timeout: 7000
         		});
         		return "validation error";
         	}

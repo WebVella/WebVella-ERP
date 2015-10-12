@@ -141,7 +141,8 @@ function guid() {
 					}
 					ngToast.create({
 						className: 'error',
-						content: messageString
+						content: messageString,
+						timeout: 7000
 					});
 					errorCallback(data);
 					break;
