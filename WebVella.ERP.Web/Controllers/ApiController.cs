@@ -1362,7 +1362,8 @@ namespace WebVella.ERP.Web.Controllers
 								var updResult = recMan.UpdateRecord(targetEntity, record);
 								if (!updResult.Success)
 								{
-									response.Errors = updResult.Errors;
+                                    transaction.Rollback();
+                                    response.Errors = updResult.Errors;
 									response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
 									response.Success = false;
 									return DoResponse(response);
@@ -1376,7 +1377,8 @@ namespace WebVella.ERP.Web.Controllers
 								var updResult = recMan.UpdateRecord(targetEntity, record);
 								if (!updResult.Success)
 								{
-									response.Errors = updResult.Errors;
+                                    transaction.Rollback();
+                                    response.Errors = updResult.Errors;
 									response.Message = "Target record id=[" + record["id"] + "] attach operation failed.";
 									response.Success = false;
 									return DoResponse(response);
@@ -1392,7 +1394,8 @@ namespace WebVella.ERP.Web.Controllers
 
 								if (!updResult.Success)
 								{
-									response.Errors = updResult.Errors;
+                                    transaction.Rollback();
+                                    response.Errors = updResult.Errors;
 									response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
 									response.Success = false;
 									return DoResponse(response);
@@ -1405,7 +1408,8 @@ namespace WebVella.ERP.Web.Controllers
 
 								if (!updResult.Success)
 								{
-									response.Errors = updResult.Errors;
+                                    transaction.Rollback();
+                                    response.Errors = updResult.Errors;
 									response.Message = "Target record id=[" + record["id"] + "] attach  operation failed.";
 									response.Success = false;
 									return DoResponse(response);
@@ -1414,22 +1418,25 @@ namespace WebVella.ERP.Web.Controllers
 						}
 						break;
 					default:
-						throw new Exception("Not supported relation type");
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Not supported relation type");
+                        }
 				}
 
 				transaction.Commit();
 			}
 			catch (Exception ex)
 			{
-				if (transaction != null)
-					transaction.Rollback();
+                if (transaction != null)
+                    transaction.Rollback();
 
 				response.Success = false;
 				response.Message = ex.Message;
 				return DoResponse(response);
 			}
 
-			return DoResponse(response);
+            return DoResponse(response);
 		}
 
 		// Get an entity record list
@@ -2673,8 +2680,7 @@ namespace WebVella.ERP.Web.Controllers
 				if (!response.Success)
 				{
 					response.Message = "Validation error occurred";
-					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 					return DoResponse(response);
 				}
 
@@ -2717,8 +2723,7 @@ namespace WebVella.ERP.Web.Controllers
                     response.Errors = createResult.Errors;
 					response.Message = createResult.Message;
                     response.Success = false;
-					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
                     return DoResponse(response);
                 }
 
@@ -2731,8 +2736,7 @@ namespace WebVella.ERP.Web.Controllers
                         response.Errors = relationResult.Errors;
                         response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
 						response.Success = false;
-						if (transaction != null)
-							transaction.Rollback();
+						transaction.Rollback();
 						return DoResponse(response);
 					}
 				}
@@ -2778,8 +2782,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					response.Success = false;
 					response.Message = "Cannot get old user roles";
-					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 					return DoResponse(oldUserRolesResult);
 				}
 				else
@@ -2813,8 +2816,7 @@ namespace WebVella.ERP.Web.Controllers
 				if (!response.Success)
 				{
 					response.Message = "Validation error occurred";
-					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 					return DoResponse(response);
 				}
 
@@ -2841,8 +2843,7 @@ namespace WebVella.ERP.Web.Controllers
 					response.Errors = updateResult.Errors;
 					response.Message = updateResult.Message;
 					response.Success = false;
-					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 					return DoResponse(response);
 				}
 
@@ -2865,9 +2866,8 @@ namespace WebVella.ERP.Web.Controllers
 						{
 							response.Errors = relationResult.Errors;
 							response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
-                        response.Success = false;
-							if (transaction != null)
-								transaction.Rollback();
+                            response.Success = false;
+							transaction.Rollback();
 							return DoResponse(response);
 						}
 					}
@@ -2892,11 +2892,10 @@ namespace WebVella.ERP.Web.Controllers
 							response.Errors = relationResult.Errors;
 							response.Message = "Removing old user role relation failed. Reason: " + relationResult.Message;
 							response.Success = false;
-							if (transaction != null)
-								transaction.Rollback();
-                        return DoResponse(response);
+							transaction.Rollback();
+                            return DoResponse(response);
+                        }
                     }
-                }
 				}
                 transaction.Commit();
 				WebSecurityUtil.RemoveIdentityFromCache(userId);
@@ -3046,8 +3045,7 @@ namespace WebVella.ERP.Web.Controllers
 						response.Errors = createResult.Errors;
 						response.Message = "Creating filter record for field " + record["field_name"] + " failed. Reason: " + createResult.Message;
 						response.Success = false;
-						if (transaction != null)
-							transaction.Rollback();
+						transaction.Rollback();
 						return DoResponse(response);
 					}
 				}
@@ -3111,8 +3109,7 @@ namespace WebVella.ERP.Web.Controllers
 						response.Errors = queryResult.Errors;
 						response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
 						response.Success = false;
-						if (transaction != null)
-							transaction.Rollback();
+						transaction.Rollback();
 						return DoResponse(response);
 					}
 				}
