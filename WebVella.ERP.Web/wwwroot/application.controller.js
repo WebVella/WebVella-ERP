@@ -50,7 +50,8 @@
 						//Check if already called if yes do not call redirect or show message
 						ngToast.create({
 							className: 'error',
-							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
 						});
 						var cookieValue = $cookies.remove("erp-auth");
 						$location.path("/login");//.search({ returnUrl: angular.toJson(document.URL) });
@@ -59,14 +60,16 @@
 					else if (errorResponse.status === 403) {
 						ngToast.create({
 							className: 'error',
-							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
 						});
 						return $q.reject(errorResponse);
 					}
 					else if (errorResponse.status === 500) {
 						ngToast.create({
 							className: 'error',
-							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
 						});
 						return $q.reject(errorResponse);
 					}

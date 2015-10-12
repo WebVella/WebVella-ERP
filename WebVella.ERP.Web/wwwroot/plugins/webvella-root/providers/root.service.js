@@ -83,7 +83,8 @@
             //Notify with a toast about the error and show the server response.message
             ngToast.create({
                 className: 'error',
-                content: '<span class="go-red">Error:</span> ' + response.message
+                content: '<span class="go-red">Error:</span> ' + response.message,
+                timeout: 7000
             });
             //Scroll top
             // set the location.hash to the id of
@@ -192,7 +193,8 @@
 	                }
 	                ngToast.create({
                     	className: 'error',
-                    	content: messageString
+                    	content: messageString,
+                    	timeout: 7000
                     });
                     errorCallback(data);
                     break;

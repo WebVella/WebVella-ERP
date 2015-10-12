@@ -1,5 +1,5 @@
-<div id="userbox" class="dropdown" dropdown>
-    <div class="dropdown-toggle" dropdown-toggle>
+<div id="userbox" class="dropdown" uib-dropdown>
+    <div class="dropdown-toggle" uib-dropdown-toggle>
         <img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="::!sidebarData.currentUser.image">
 		<img class="avatar" ng-src="{{::sidebarData.currentUser.image}}" ng-if="::sidebarData.currentUser.image">
         <span class="username">{{::sidebarData.currentUser.first_name}} {{::sidebarData.currentUser.last_name}}</span>

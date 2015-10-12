@@ -249,7 +249,7 @@
 				return "";
 			}
 			else {
-				return "<img src='" + data + "' class='table-image'/>";
+				return "<a target='_blank' href='" + data + "'><img src='" + data + "' class='table-image'/></a>";
 			}
 		}
     	//10. Textarea
@@ -355,7 +355,8 @@
                     }
                     ngToast.create({
                     	className: 'error',
-                    	content: messageString
+                    	content: messageString,
+                    	timeout: 7000
                     });
                     errorCallback(data);
                     break;

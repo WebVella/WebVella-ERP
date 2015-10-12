@@ -77,7 +77,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -178,11 +179,11 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
-							'resolvedRolesList', 'resolvedEntityMetaList', '$modal',
+							'resolvedRolesList', 'resolvedEntityMetaList', '$uibModal',
                             'webvellaAdminService'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
-						resolvedRolesList, resolvedEntityMetaList, $modal,
+						resolvedRolesList, resolvedEntityMetaList, $uibModal,
                         webvellaAdminService) {
     	$log.debug('webvellaAdmin>areas-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
@@ -218,7 +219,7 @@
             else {
                 contentData.currentArea = webvellaAdminService.initArea();
             }
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageAreaModal.html',
                 controller: 'ManageAreaModalController',
@@ -506,7 +507,7 @@
         //Delete field
         //Create new field modal
         popupData.deleteAreaModal = function () {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'deleteAreaModal.html',
                 controller: 'DeleteAreaModalController',

@@ -158,12 +158,12 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
+	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
 
 	/* @ngInject */
-	function controller($filter, $log, $modal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
+	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
 		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -426,7 +426,8 @@
 			function errorCallback(response) {
 				ngToast.create({
 					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
 				});
 			}
 
@@ -521,7 +522,7 @@
 
 		//filter modal
 		contentData.openSetFiltersModal = function () {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'setFiltersModalContent.html',
 				controller: 'SetFiltersModalController',
@@ -883,7 +884,6 @@
 			}
 			return "";
 		}
-
 		popupData.fieldTypes = [
 					{
 						"id": 1,
@@ -1455,7 +1455,8 @@
 			function errorCallback(response) {
 				ngToast.create({
 					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
 				});
 			}
 

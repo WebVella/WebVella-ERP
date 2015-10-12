@@ -70,7 +70,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -208,10 +209,10 @@
     //#endregion
 
     //#region << Controller >> ////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state','$stateParams', 'pageTitle', '$modal',
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal',
                             'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary','resolvedEntityRelationsList'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state,$stateParams, pageTitle, $modal,
+    function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
@@ -386,7 +387,8 @@
         	function errorCallback(response) {
         		ngToast.create({
         			className: 'error',
-        			content: '<span class="go-red">Error:</span> ' + response.message
+        			content: '<span class="go-red">Error:</span> ' + response.message,
+        			timeout: 7000
         		});
         		$state.reload();
         	}

@@ -70,7 +70,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -133,10 +134,10 @@
 	//#endregion
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$modal', 'resolvedRolesList', 'webvellaAdminService'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaAdminService'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $modal, resolvedRolesList, webvellaAdminService) {
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaAdminService) {
     	$log.debug('webvellaAdmin>entities> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -153,7 +154,7 @@
         contentData.search = {};
         //Create new entity modal
         contentData.openAddEntityModal = function () {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'createEntityModal.html',
                 controller: 'CreateEntityModalController',

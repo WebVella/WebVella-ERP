@@ -115,11 +115,11 @@
 	}
 
 
-	controller.$inject = ['$filter', '$modal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
+	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
         'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser'];
 
 	/* @ngInject */
-	function controller($filter, $modal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
+	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
         resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -194,14 +194,31 @@
 						selectedDataName = contentData.defaultRecordView.sidebar.items[i].dataName;
 						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
 							contentData.selectedSidebarPage.isView = true;
+							contentData.selectedSidebarPage.relationName = null;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName][0]);
 						}
 						else if (contentData.defaultRecordView.sidebar.items[i].type === "viewFromRelation") {
 							contentData.selectedSidebarPage.isView = true;
+							contentData.selectedSidebarPage.relationName = contentData.defaultRecordView.sidebar.items[i].relationName;
+							var relatedEntity = {};
+							relatedEntity.name = contentData.defaultRecordView.sidebar.items[i].entityName;
+							relatedEntity.label = contentData.defaultRecordView.sidebar.items[i].entityLabel;
+							relatedEntity.labelPlural = contentData.defaultRecordView.sidebar.items[i].entityLabelPlural;
+							relatedEntity.id = contentData.defaultRecordView.sidebar.items[i].entityId;
+							contentData.selectedSidebarPage.relatedEntity = relatedEntity;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
-						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list"
-							|| contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
+						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list") {
 							contentData.selectedSidebarPage.isView = false;
+							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
+						} else if (contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
+							contentData.selectedSidebarPage.isView = false;
+							contentData.selectedSidebarPage.relationName = contentData.defaultRecordView.sidebar.items[i].relationName;
+							var relatedEntity = {};
+							relatedEntity.name = contentData.defaultRecordView.sidebar.items[i].entityName;
+							relatedEntity.label = contentData.defaultRecordView.sidebar.items[i].entityLabel;
+							relatedEntity.labelPlural = contentData.defaultRecordView.sidebar.items[i].entityLabelPlural;
+							relatedEntity.id = contentData.defaultRecordView.sidebar.items[i].entityId;
+							contentData.selectedSidebarPage.relatedEntity = relatedEntity;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						}
 					}
@@ -238,6 +255,7 @@
 
 		//#region << Entity relations functions >>
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
+
 		contentData.getRelation = function (relationName) {
 			for (var i = 0; i < contentData.relationsList.length; i++) {
 				if (contentData.relationsList[i].name == relationName) {
@@ -450,7 +468,8 @@
 				function patchFailedCallback(response) {
 					ngToast.create({
 						className: 'error',
-						content: '<span class="go-red">Error:</span> ' + response.message
+						content: '<span class="go-red">Error:</span> ' + response.message,
+						timeout: 7000
 					});
 					defer.resolve("validation error");
 				}
@@ -564,7 +583,8 @@
 				function deleteFailedCallback(response) {
 					ngToast.create({
 						className: 'error',
-						content: '<span class="go-red">Error:</span> ' + response.message
+						content: '<span class="go-red">Error:</span> ' + response.message,
+						timeout: 7000
 					});
 					return "validation error";
 				}
@@ -651,7 +671,6 @@
 
 		}
 
-
 		//#region << Modals >>
 
 		////Relation field
@@ -664,7 +683,7 @@
 
 			//Select ONE item modal
 			if (relationType == 1 || (relationType == 2 && dataKind == "target")) {
-				var modalInstance = $modal.open({
+				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
 					controller: 'ManageRelationFieldModalController',
@@ -717,7 +736,8 @@
 						}
 						ngToast.create({
 							className: 'error',
-							content: '<span class="go-red">Error:</span> ' + messageHtml
+							content: '<span class="go-red">Error:</span> ' + messageHtml,
+							timeout: 7000
 						});
 					}
 
@@ -740,7 +760,7 @@
 			}
 				//Select MULTIPLE item modal
 			else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
-				var modalInstance = $modal.open({
+				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
 					controller: 'ManageRelationFieldModalController',
@@ -792,7 +812,8 @@
 						}
 						ngToast.create({
 							className: 'error',
-							content: '<span class="go-red">Error:</span> ' + messageHtml
+							content: '<span class="go-red">Error:</span> ' + messageHtml,
+							timeout: 7000
 						});
 					}
 
@@ -806,7 +827,7 @@
 				});
 			}
 			else if ((relationType == 3 && dataKind == "target")) {
-				var modalInstance = $modal.open({
+				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
 					controller: 'ManageRelationFieldModalController',
@@ -851,7 +872,8 @@
 			function errorCallback(response) {
 				ngToast.create({
 					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
 				});
 				defer.reject();
 			}
@@ -902,12 +924,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1,null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (contentData.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, getListRecordsSuccessCallback, errorCallback);
+						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1,null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -970,7 +992,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page,null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -1246,7 +1268,8 @@
 				}
 				ngToast.create({
 					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + messageHtml
+					content: '<span class="go-red">Error:</span> ' + messageHtml,
+					timeout: 7000
 				});
 
 			}

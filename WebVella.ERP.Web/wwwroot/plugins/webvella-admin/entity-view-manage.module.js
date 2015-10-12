@@ -73,7 +73,8 @@
 
 			ngToast.create({
 				className: 'error',
-				content: messageContent
+				content: messageContent,
+				timeout: 7000
 			});
 			defer.reject("No access");
 		}
@@ -206,10 +207,10 @@
 	//#endregion
 
 	//#region << Controller >> ////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', '$timeout', 'pageTitle', '$modal',
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', '$timeout', 'pageTitle', '$uibModal',
                             'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $modal,
+	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $uibModal,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -303,7 +304,7 @@
 
 		//Create or Update view section
 		contentData.manageSectionModalOpen = function (sectionObj, weight) {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageSectionModal.html',
 				controller: 'ManageSectionModalController',
@@ -354,7 +355,8 @@
 		function errorSectionRemoveCallback(response) {
 			ngToast.create({
 				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message
+				content: '<span class="go-red">Error:</span> ' + response.message,
+				timeout: 7000
 			});
 		}
 
@@ -364,7 +366,7 @@
 
 		//Create view row
 		contentData.manageRowModalOpen = function (rowObj, sectionObj, weight) {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageRowModal.html',
 				controller: 'ManageRowModalController',
@@ -422,7 +424,8 @@
 		function errorRowRemoveCallback(response) {
 			ngToast.create({
 				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message
+				content: '<span class="go-red">Error:</span> ' + response.message,
+				timeout: 7000
 			});
 		}
 
@@ -435,7 +438,7 @@
 			var moveSuccess, moveFailure, successCallback, errorCallback, openItemSettingsModal;
 
 			openItemSettingsModal = function () {
-				var modalInstance = $modal.open({
+				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageItemModal.html',
 					controller: 'ManageItemModalController',
@@ -567,7 +570,8 @@
 			function errorCallback(response) {
 				ngToast.create({
 					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
 				});
 				$state.reload();
 			}

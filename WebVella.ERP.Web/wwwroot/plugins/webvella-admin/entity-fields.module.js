@@ -72,7 +72,8 @@
 
 			ngToast.create({
 				className: 'error',
-				content: messageContent
+				content: messageContent,
+				timeout: 7000
 			});
 			defer.reject("No access");
 		}
@@ -143,9 +144,9 @@
 	}
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedRolesList'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedRolesList) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -1355,7 +1356,7 @@
 
 		//Create new field modal
 		contentData.createFieldModal = function () {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createFieldModal.html',
 				controller: 'CreateFieldModalController',
@@ -1369,7 +1370,7 @@
 
 		//Manage field modal
 		contentData.manageFieldModal = function (fieldId) {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageFieldModal.html',
 				controller: 'ManageFieldModalController',
@@ -1646,9 +1647,9 @@
 	};
 
 	//// Create Field Controllers
-	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$modal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
-	function ManageFieldModalController(contentData, resolvedField, $modal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function ManageFieldModalController(contentData, resolvedField, $uibModal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1812,7 +1813,7 @@
 		//Delete field
 		//Create new field modal
 		popupData.deleteFieldModal = function () {
-			var modalInstance = $modal.open({
+			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'deleteFieldModal.html',
 				controller: 'DeleteFieldModalController',

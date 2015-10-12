@@ -71,7 +71,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -157,9 +158,9 @@
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedEntityRecordsList'];
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedEntityRecordsList'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedEntityRecordsList) {
+    function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedEntityRecordsList) {
     	$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -185,7 +186,7 @@
 
     	//Create new list modal
         contentData.createListModal = function () {
-        	var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'createListModal.html',
         		controller: 'createListModalController',

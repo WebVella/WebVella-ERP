@@ -26,8 +26,8 @@
 			<h4 title="Newest active offers">{{::contentData.currentListView.label}}</h4>
 			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
 		</div>
-		<accordion>
-			<accordion-group is-open="moreListsOpened">
+		<uib-accordion>
+			<uib-accordion-group is-open="moreListsOpened">
 				<form class="form-inline ng-hide">
 					<div class="form-group">
 						<div class="input-group">
@@ -59,8 +59,8 @@
 						</a>
 					</li>
 				</ul>
-			</accordion-group>
-		</accordion>
+			</uib-accordion-group>
+		</uib-accordion>
 	</div>
 	<div id="page-messages" class="hide">
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
@@ -180,7 +180,7 @@
 								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
 							</div>
 							<div ng-if="::column.type=='list' || column.type == 'listFromRelation'">
-								<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-list>
+								<recursive-list list-meta="column.meta" list-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-list>
 							</div>
 						</div>
 						<div ng-if="::!contentData.currentUserHasReadPermission(column)">
@@ -211,8 +211,8 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
-					<tabset vertical="true" type="pills">
-						<tab heading="{{::column.meta.label}}" select="popupData.tabSelected(column)" ng-repeat="column in popupData.filterColumns" class="{{popupData.getTabExtraCssClass(column)}}">
+					<uib-tabset vertical="true" type="pills">
+						<uib-tab heading="{{::column.meta.label}}" select="popupData.tabSelected(column)" ng-repeat="column in popupData.filterColumns" class="{{popupData.getTabExtraCssClass(column)}}">
 							<div ng-hide="popupData.tabError" ng-switch="column.type"  ng-class="popupData.tabLoading ? 'transparent' : ''">
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div class="clear"><a ng-show="column.data.length > 0" class="pull-right" href="javascript:void(0)" ng-click="popupData.clearFilter(column)"><i class="fa fa-fw fa-times go-red"></i> clear filter</a> <span style="display:inline-block;min-height:1em;" class="go-green">{{popupData.getFieldTypeName(column)}}</span></div>
@@ -1087,8 +1087,8 @@
 							<div class="ng-hide" ng-show="popupData.tabError">
 								<div class="alert alert-warning" ng-bind-html="popupData.tabErrorMessage"></div>
 							</div>
-						</tab>
-					</tabset>
+						</uib-tab>
+					</uib-tabset>
 				</div>
 				<div class="alert alert-warning" ng-if="popupData.filterColumns.length == 0">There are no searchable columns for this list</div>
 			</div>

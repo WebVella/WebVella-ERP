@@ -73,7 +73,8 @@
 
     		ngToast.create({
     			className: 'error',
-    			content: messageContent
+    			content: messageContent,
+    			timeout: 7000
     		});
     		defer.reject("No access");
     	}
@@ -232,10 +233,10 @@
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$modal', 'resolvedCurrentEntityList',
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
 						'resolvedViewLibrary', 'webvellaAdminService', 'resolvedEntityRelationsList'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, ngToast, pageTitle, resolvedCurrentEntityMeta, $modal, resolvedCurrentEntityList,
+    function controller($scope, $log, $rootScope, $state, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
 						resolvedViewLibrary, webvellaAdminService, resolvedEntityRelationsList) {
     	$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
@@ -306,7 +307,8 @@
         function patchErrorCallback(response) {
         	ngToast.create({
         		className: 'error',
-        		content: '<span class="go-red">Error:</span> ' + response.message
+        		content: '<span class="go-red">Error:</span> ' + response.message,
+        		timeout: 7000
         	});
         }
 
@@ -628,7 +630,7 @@
 
         //Delete list
         contentData.deleteListModal = function () {
-            var modalInstance = $modal.open({
+        	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'deleteListModal.html',
                 controller: 'DeleteListModalController',
