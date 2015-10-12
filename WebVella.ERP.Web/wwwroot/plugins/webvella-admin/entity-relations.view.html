@@ -15,10 +15,10 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="icon-box">
-            <i class="fa fa-{{contentData.entity.iconName}}"></i>
+            <i class="fa fa-{{::contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 class="no-link" title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
+            <h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -34,14 +34,14 @@
 </div>
 <div id="page-body">
     <div class="tabbable tabs-left spilled">
-        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
-        <ul class="nav nav-tabs">
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
-        </ul>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<ul class="nav nav-tabs">
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+		</ul>
 
     </div>
 
@@ -58,8 +58,8 @@
     </form>
 
     <div id="page-text">
-        <div class="alert alert-info" ng-show="contentData.currentEntityRelation.length == 0">This entity does not have any existing relations yet!</div>
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.currentEntityRelation.length != 0">
+        <div class="alert alert-info" ng-show="::contentData.currentEntityRelation.length == 0">This entity does not have any existing relations yet!</div>
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::contentData.currentEntityRelation.length != 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
@@ -68,29 +68,29 @@
                     <th class="icon">Target</th>
             </thead>
             <tbody>
-                <tr ng-repeat="relation in contentData.currentEntityRelation | filter: contentData.search">
+                <tr ng-repeat="relation in contentData.currentEntityRelation | filter: contentData.search track by relation.id">
                     <td class="actions">
                         <a class="btn btn-default btn-sm" ng-click="contentData.manageRelationModal(relation)">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
                     <td class="name">
-                        {{relation.name}}
-                            <span class="badge badge-danger badge-inverse" ng-show="relation.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
-                            <span ng-show="relation.relationType == 1" class="badge badge-primary badge-inverse" title="One to One" style="margin-left:5px;">1 : 1</span>
-                            <span ng-show="relation.relationType == 2" class="badge badge-primary badge-inverse" title="One to Many" style="margin-left:5px;">1 : N</span>
-                            <span ng-show="relation.relationType == 3" class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>
+                        {{::relation.name}}
+                            <span class="badge badge-danger badge-inverse" ng-show="::relation.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+                            <span ng-show="::relation.relationType == 1" class="badge badge-primary badge-inverse" title="One to One" style="margin-left:5px;">1 : 1</span>
+                            <span ng-show="::relation.relationType == 2" class="badge badge-primary badge-inverse" title="One to Many" style="margin-left:5px;">1 : N</span>
+                            <span ng-show="::relation.relationType == 3" class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>
                             <!--<span ng-show="relation.relationType == 1">One to One</span>
                             <span ng-show="relation.relationType == 2">One to Many</span>
                             <span ng-show="relation.relationType == 3">Many to Many</span>-->
                     </td>
                     <td>
-                        <div><span class="go-gray">Entity: </span> {{relation.originEntityLabel}}</div>
-                        <div><span class="go-gray">Field: </span> {{relation.originFieldLabel}}</div>
+                        <div><span class="go-gray">Entity: </span> {{::relation.originEntityLabel}}</div>
+                        <div><span class="go-gray">Field: </span> {{::relation.originFieldLabel}}</div>
                     </td>
                     <td>
-                        <div><span class="go-gray">Entity: </span> {{relation.targetEntityLabel}}</div>
-                        <div><span class="go-gray">Field: </span> {{relation.targetFieldLabel}}</div>
+                        <div><span class="go-gray">Entity: </span> {{::relation.targetEntityLabel}}</div>
+                        <div><span class="go-gray">Field: </span> {{::relation.targetFieldLabel}}</div>
                     </td>
                 </tr>
             </tbody>

@@ -20,7 +20,7 @@
 
 	/* @ngInject */
 	function config($stateProvider) {
-		$stateProvider.state('webvella-entity-records', {  
+		$stateProvider.state('webvella-entity-records', {
 			parent: 'webvella-areas-base',
 			url: '/:listName/:filter/:page?search',
 			views: {
@@ -159,7 +159,7 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$modal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 
+        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
 
 	/* @ngInject */
@@ -219,7 +219,7 @@
 				var resultStringStorage = fastCopy(contentData.recordsMeta.viewNameOverride);
 
 				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
-					if ( arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
+					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
 						switch (arrayOfTemplateKeys[i]) {
 							case "{areaName}":
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
@@ -341,7 +341,7 @@
 		}
 		contentData.submitSearchQuery = function () {
 			$timeout(function () {
-				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: $stateParams.filter,page:1, search: contentData.searchQuery }, { reload: true });
+				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: $stateParams.filter, page: 1, search: contentData.searchQuery }, { reload: true });
 			}, 1);
 
 		}
@@ -545,9 +545,9 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService','webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams','$scope'];
+	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams,$scope) {
+	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = fastCopy(contentData);
@@ -741,24 +741,24 @@
 				}
 			}
 			if (popupData.contentData.currentListView.columns[m].type == "field" || popupData.contentData.currentListView.columns[m].type == "fieldFromRelation") {
-					if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].meta.enableSecurity || (popupData.contentData.currentListView.columns[m].meta.enableSecurity && userHasReadPermissionForField))) {
-						var filterObject = {};
-						filterObject = popupData.contentData.currentListView.columns[m];
-						filterObject.match_type = popupData.matchTypesDictionary[filterObject.meta.fieldType.toString()][0].key;
-						filterObject.data = [];
-						for (var j = 0; j < popupData.filterRecordsList.length; j++) {
-							if (popupData.filterRecordsList[j].field_name == filterObject.meta.name && popupData.filterRecordsList[j].entity_name == filterObject.entityName) {
-								filterObject.data = angular.fromJson(popupData.filterRecordsList[j].values);
-								for (var dd = 0; dd < filterObject.data.length; dd++) {
-									filterObject.data[dd] = decodeURIComponent(filterObject.data[dd]);
-								}
-								filterObject.match_type = popupData.filterRecordsList[j].match_type;
+				if (popupData.contentData.currentListView.columns[m].meta.searchable && (!popupData.contentData.currentListView.columns[m].meta.enableSecurity || (popupData.contentData.currentListView.columns[m].meta.enableSecurity && userHasReadPermissionForField))) {
+					var filterObject = {};
+					filterObject = popupData.contentData.currentListView.columns[m];
+					filterObject.match_type = popupData.matchTypesDictionary[filterObject.meta.fieldType.toString()][0].key;
+					filterObject.data = [];
+					for (var j = 0; j < popupData.filterRecordsList.length; j++) {
+						if (popupData.filterRecordsList[j].field_name == filterObject.meta.name && popupData.filterRecordsList[j].entity_name == filterObject.entityName) {
+							filterObject.data = angular.fromJson(popupData.filterRecordsList[j].values);
+							for (var dd = 0; dd < filterObject.data.length; dd++) {
+								filterObject.data[dd] = decodeURIComponent(filterObject.data[dd]);
 							}
-
+							filterObject.match_type = popupData.filterRecordsList[j].match_type;
 						}
-						filterObject.loading = false;
-						popupData.filterColumns.push(filterObject);
+
 					}
+					filterObject.loading = false;
+					popupData.filterColumns.push(filterObject);
+				}
 			}
 		}
 		// Rules:
@@ -782,21 +782,21 @@
 			popupData.tabLoading = false;
 			popupData.tabError = false;
 			popupData.relationLookupList = null;
-			if(column.type == "fieldFromRelation"){
+			if (column.type == "fieldFromRelation") {
 				popupData.tabLoading = true;
 
 				//Find the relation type and the role of the current entity
 				var relationName = column.relationName;
 				var relation = {};
-				for(var i = 0; i < popupData.contentData.relationsMeta.length; i++){
-					if(popupData.contentData.relationsMeta[i].name == relationName){
+				for (var i = 0; i < popupData.contentData.relationsMeta.length; i++) {
+					if (popupData.contentData.relationsMeta[i].name == relationName) {
 						relation = popupData.contentData.relationsMeta[i];
-						break; 
+						break;
 					}
 				}
 				//relation.relationType -> 1 - one-to-one, 2 - one-to-many, 3 - many-to-many
 				var isCurrentEntityOrigin = false;
-				if(relation.originEntityName == column.entityName){
+				if (relation.originEntityName == column.entityName) {
 					isCurrentEntityOrigin = true;
 				}
 
@@ -806,12 +806,12 @@
 					popupData.tabErrorMessage = "<i class='fa fa-fw fa-exclamation-triangle go-red'></i> " + response.message;
 				}
 
-				function getListRecordsSuccessCallback(response){
+				function getListRecordsSuccessCallback(response) {
 					popupData.relationLookupList = response.object;
 					popupData.helpers[column.dataName] = {};
 					popupData.helpers[column.dataName].lookupCurrentPage = 1;
 					popupData.helpers[column.dataName].lookupSearch = null;
-					if(relation.relationType == 1 ||(relation.relationType == 2 && !isCurrentEntityOrigin)){
+					if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
 						//single click selection
 						popupData.helpers[column.dataName].modalMode = "single-selection";
 					}
@@ -819,7 +819,7 @@
 						//multiclick selection
 						popupData.helpers[column.dataName].modalMode = "multi-selection";
 					}
-					popupData.tabLoading = false;					
+					popupData.tabLoading = false;
 				}
 
 				function getEntityMetaSuccessCallback(response) {
@@ -832,12 +832,12 @@
 							relatedLookupList = popupData.relatedEntity.recordLists[i];
 							break;
 						}
-					}	
+					}
 
-					if(relatedLookupList == null){
+					if (relatedLookupList == null) {
 						popupData.tabLoading = false;
 						popupData.tabError = true;
-						popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";						
+						popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";
 					}
 					else {
 						if (column.data.length == 0) {
@@ -871,7 +871,7 @@
 							}
 							popupData.tabLoading = false;
 						}
-					}				
+					}
 				}
 
 				webvellaAdminService.getEntityMeta(column.entityName, getEntityMetaSuccessCallback, tabErrorCallback);
@@ -1026,14 +1026,14 @@
 			column.data.push("");
 		}
 
-		popupData.removeMultiSelectOption = function (index,column) {
-			column.data.splice(index,1);
+		popupData.removeMultiSelectOption = function (index, column) {
+			column.data.splice(index, 1);
 		}
 
 
 		//#endregion
 
-
+		//#region << Logic >>
 		popupData.calendars = {};
 		popupData.openCalendar = function (event, name) {
 			popupData.calendars[name] = true;
@@ -1050,6 +1050,31 @@
 
 		popupData.filterId = null;
 
+
+		popupData.ensureNullOnEmpty = function (column, index) {
+			switch (column.match_type) {
+				case "exact":
+					if (column.data[0] == "" || column.data[0] == null) {
+						column.data = [];
+					}
+					column.data.splice(1, 1); //always remove any possible second option
+					break;
+				case "range":
+					if (column.data[index] == "" || column.data[index] == null) {
+						column.data.splice(index, 1);
+					}
+					column.data.splice(1, 1);
+					break;
+				case "regex":
+					if (column.data[0] == "" || column.data[0] == null) {
+						column.data = [];
+					}
+					column.data.splice(1, 1); //always remove any possible second option
+					break;
+			}
+		}
+
+		//#endregion
 
 		//#region << Lookup lists >>
 
@@ -1118,7 +1143,7 @@
 			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.relatedEntity.name, "all", page, popupData.helpers[column.dataName].lookupSearch, getListRecordsSuccessCallback, getListRecordsErrorCallback);
 		}
 
-		popupData.lookupSingleSelect = function (record,column) {
+		popupData.lookupSingleSelect = function (record, column) {
 			popupData.helpers[column.dataName].selected = {};
 			popupData.helpers[column.dataName].selected.value = record.id;
 			popupData.helpers[column.dataName].selected.label = "";
@@ -1261,8 +1286,10 @@
 									}
 									else {
 										// Exact
-										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-										valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
+										if (popupData.filterColumns[j].data[m]) {
+											valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+											valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY");
+										}
 									}
 									break;
 								case 5: //Datetime
@@ -1293,8 +1320,10 @@
 									}
 									else {
 										// Exact
-										valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
-										valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
+										if (popupData.filterColumns[j].data[m]) {
+											valueRecord.value = moment(popupData.filterColumns[j].data[m]).utc().toISOString();
+											valueRecord.label = moment(popupData.filterColumns[j].data[m]).format("DD MMM YYYY HH:mm");
+										}
 									}
 									break;
 								case 12: // Number
@@ -1383,13 +1412,13 @@
 									}
 									break;
 								case 14: //Percent
-										//need to convert to decimal 0 <= val <= 100 Divide by 100
-										//Hack for proper javascript division
-										$scope.Math = window.Math;
-										var helpNumber = 10000000;
-										var multipliedValue = $scope.Math.round(popupData.filterColumns[j].data[k] * helpNumber);
-										var numberToSubmit = multipliedValue / (100 * helpNumber);
-										filterRecord.values.push(encodeURIComponent(numberToSubmit));
+									//need to convert to decimal 0 <= val <= 100 Divide by 100
+									//Hack for proper javascript division
+									$scope.Math = window.Math;
+									var helpNumber = 10000000;
+									var multipliedValue = $scope.Math.round(popupData.filterColumns[j].data[k] * helpNumber);
+									var numberToSubmit = multipliedValue / (100 * helpNumber);
+									filterRecord.values.push(encodeURIComponent(numberToSubmit));
 									break;
 								default:
 									filterRecord.values.push(encodeURIComponent(fastCopy(popupData.filterColumns[j].data[k])));

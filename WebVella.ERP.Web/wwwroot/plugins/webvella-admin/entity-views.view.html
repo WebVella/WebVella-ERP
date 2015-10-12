@@ -15,10 +15,10 @@
             <i class="fa fa-caret-right"></i>
         </div>
         <div class="icon-box">
-            <i class="fa fa-{{contentData.entity.iconName}}"></i>
+            <i class="fa fa-{{::contentData.entity.iconName}}"></i>
         </div>
         <div class="entity-box">
-            <h4 class="no-link" title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
+            <h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
         </div>
         <div class="spacer-box"></div>
         <div class="divider-box">
@@ -34,14 +34,14 @@
 </div>
 <div id="page-body">
     <div class="tabbable tabs-left spilled">
-        <a class="back" ui-sref="webvella-admin-entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
-        <ul class="nav nav-tabs">
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-details({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-fields({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-views({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-lists({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-            <li ui-sref-active="active"><a ui-sref="webvella-admin-entity-relations({entityName:'{{contentData.entity.name}}'})"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
-        </ul>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<ul class="nav nav-tabs">
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+		</ul>
 
     </div>
 
@@ -68,17 +68,17 @@
             <tbody>
                 <tr ng-repeat="view in contentData.views | filter: {label: searchFilter}">
                     <td class="actions">
-                        <a class="btn btn-default btn-sm" ui-sref="webvella-admin-entity-view-manage-info({entityName: '{{contentData.entity.name}}', viewName: '{{view.name}}'})">
+                        <a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/views/{{::view.name}}/info">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
                     <td class="name">
-                        {{view.name}} 
-                        <span class="badge badge-danger badge-inverse" ng-show="view.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
-                        <span class="badge badge-primary badge-inverse" ng-show="view.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
+                        {{::view.name}} 
+                        <span class="badge badge-danger badge-inverse" ng-show="::view.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+                        <span class="badge badge-primary badge-inverse" ng-show="::view.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
                     </td>
                     <td class="type">
-                        {{view.type}}
+                        {{::view.type}}
                     </td>
                 </tr>
             </tbody>

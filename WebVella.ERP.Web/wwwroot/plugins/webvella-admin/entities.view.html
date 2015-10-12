@@ -45,20 +45,20 @@
                 <th class="lists" style="width:6em"># lists</th>
         </thead>
         <tbody>
-            <tr ng-repeat="entity in contentData.entities | filter: contentData.search">
+            <tr ng-repeat="entity in contentData.entities | filter: contentData.search track by entity.id">
                 <td class="actions ">
-                    <a ui-sref="webvella-admin-entity-details({entityName: '{{entity.name}}' })" class="btn btn-default btn-sm">
+                    <a href="#/admin/entities/{{::entity.name}}" class="btn btn-default btn-sm">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </td>
                 <td class="name">
-                    {{entity.name}}
-                    <span class="badge badge-danger badge-inverse" ng-show="entity.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+                    {{::entity.name}}
+                    <span class="badge badge-danger badge-inverse" ng-show="::entity.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
                 </td>
-                <td class="icon"><i class="fa fa-{{entity.iconName}}"></i></td>
-                <td class="fields">{{entity.fields.length}}</td>
-                <td class="views">{{entity.recordViews.length}}</td>
-                <td class="lists">{{entity.recordLists.length}}</td>
+                <td class="icon"><i class="fa fa-{{::entity.iconName}}"></i></td>
+                <td class="fields">{{::entity.fields.length}}</td>
+                <td class="views">{{::entity.recordViews.length}}</td>
+                <td class="lists">{{::entity.recordLists.length}}</td>
             </tr>
         </tbody>
     </table>
