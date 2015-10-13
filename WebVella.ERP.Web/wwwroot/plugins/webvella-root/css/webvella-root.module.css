@@ -115,6 +115,7 @@ span.divider {
 
 .navbar {
 	border-radius: 0;
+	background: #212121;
 }
 
 .text-center {
@@ -424,7 +425,7 @@ ngToast
 *****************************/
 #userbox {
 	padding: 10px 15px;
-	background: #222;
+	background: #212121;
 	position: relative;
 	height: 56px;
 	white-space: nowrap;
@@ -1554,6 +1555,7 @@ ngToast
 
 	#page-content #filters {
 		padding: 1em .5em 0 .5em;
+		margin-bottom:-1em;
 	}
 
 	#page-content #list {
@@ -2010,8 +2012,8 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .form, .form-horizontal {
 	padding: 15px;
-	background-color: #eee;
-	border: 1px solid #e0e0e0;
+	background-color: #f2f2f2;
+	/*border: 1px solid #e5e5e5;*/
 }
 
 	.form.form-clean, .form-horizontal.form-clean {
@@ -2139,7 +2141,7 @@ form .error {
 
 	.table thead th,
 	.table thead td {
-		background: #eee;
+		background: #f8f8f8;
 	}
 
 	.table .table {

@@ -7,11 +7,11 @@
 	</a>
 </p>
 
-<table class="table table-vertical-align-middle table-bordered {{::listMeta.cssClass}} ng-hide" ng-show="::listData.length > 0">
+<table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0">
 	<thead>
 		<tr>
 			<th ng-if="::canRemove"></th>
-			<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.columns | limitTo: listMeta.visibleColumnsCount">{{::column.meta.label}}</th>
+			<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,11 +20,11 @@
 				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)">
 					<i class="fa fa-pencil"></i>
 				</a>
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="instantDettachRecord(record)">
+				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" >
 					<i class="fa fa-times go-red"></i>
 				</a>
 			</td>
-			<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.columns  | limitTo: listMeta.visibleColumnsCount track by $index" ng-switch="::column.type">
+			<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount track by $index" ng-switch="::column.type">
 				<div ng-switch="::column.meta.fieldType" ng-switch-when="field">
 					<span ng-switch-when="1" ng-bind="::getAutoIncrementString(record[column.dataName],column.meta)"></span>
 					<span ng-switch-when="2" ng-bind-html="::getCheckboxString(record[column.dataName],column.meta)"></span>
@@ -78,7 +78,7 @@
 				<div class="alert alert-warning">{{::popupData.warningMessage}}</div>
 			</div>
 			<div ng-if="!popupData.hasWarning">
-				<form id="filters" class="form-inline" style="margin-bottom:1em;">
+				<form id="filters" class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
 							<input ng-model="popupData.searchQuery" type="text" class="form-control" placeholder="{{::popupData.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupData.checkForSearchEnter($event)">
@@ -569,8 +569,8 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
-		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
+		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="!popupData.isEdit">Create & Add</button>
+		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="popupData.isEdit">Save change</button>
 		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>

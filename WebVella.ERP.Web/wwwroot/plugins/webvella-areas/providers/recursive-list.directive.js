@@ -29,7 +29,6 @@
 			scope: {
 				listData: '&',
 				listMeta: '&',
-				listEntity: '&',
 				relation: '&',
 				parentId: '&',
 				canAddExisting: '&',
@@ -50,15 +49,18 @@
 	}
 
 
-	DirectiveController.$inject = ['$filter', '$log','$state', '$scope', '$q', '$uibModal','ngToast', 'webvellaAreasService', 'webvellaAdminService'];
+	DirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
-	function DirectiveController($filter, $log,$state,  $scope,$q, $uibModal,ngToast, webvellaAreasService, webvellaAdminService) {
+	function DirectiveController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
 
 		//#region << Init >>
 		$scope.relation = $scope.relation();
 		$scope.listData = $scope.listData();
 		$scope.listMeta = $scope.listMeta();
-		$scope.listEntity = $scope.listEntity();
+		$scope.listEntity = {};
+		$scope.listEntity.id = $scope.listMeta.entityId;
+		$scope.listEntity.name = $scope.listMeta.entityName;
+
 		$scope.parentId = $scope.parentId();
 		$scope.canAddExisting = $scope.canAddExisting();
 		$scope.canCreate = $scope.canCreate();
@@ -67,9 +69,11 @@
 
 		//Calculate listEntity stance in the relation
 		$scope.dataKind = "target";
-		if ($scope.listEntity.id === $scope.relation.originEntityId) {
+		if ($scope.relation && $scope.listEntity.id === $scope.relation.originEntityId) {
 			$scope.dataKind = "origin";
 		}
+
+
 		//#endregion
 
 		//#region << Columns render>> //////////////////////////////////////
@@ -134,7 +138,7 @@
 				}
 			});
 			//On modal exit
-			modalInstance.result.then(function () {	});
+			modalInstance.result.then(function () { });
 
 		}
 		//Resolve function lookup records
@@ -439,7 +443,7 @@
 				relationName: popupData.relation.name,
 				dataKind: popupData.dataKind,
 				selectedRecordId: record.id,
-				operation:"attach"
+				operation: "attach"
 			}
 			popupData.processInstantSelection(returnObject);
 			$modalInstance.close();
@@ -465,15 +469,18 @@
 	};
 
 
-	ManageRelatedRecordModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', '$scope',
+	ManageRelatedRecordModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedManagedRecordQuickCreateView'];
-	function ManageRelatedRecordModalController(contentData, $modalInstance, $log, $q, $stateParams,$scope,
+	function ManageRelatedRecordModalController(contentData, $modalInstance, $log, $q, $stateParams, $scope, $location,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedManagedRecordQuickCreateView) {
 		$log.debug('webvellaAdmin>recursive-list>ManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		//#region << Init >>
 		/* jshint validthis:true */
 		var popupData = this;
+		popupData.relation = fastCopy(contentData.relation);
+		popupData.dataKind = fastCopy(contentData.dataKind);
+		popupData.listEntity = fastCopy(contentData.listEntity);
 		if (resolvedManagedRecordQuickCreateView.data == null) {
 			popupData.isEdit = false;
 			popupData.recordData = {};
@@ -501,7 +508,7 @@
 		if (popupData.contentRegion != null) {
 			availableViewFields = webvellaAdminService.getItemsFromRegion(popupData.contentRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
-				if (!popupData.recordData[availableViewFields[j].meta.name]  && availableViewFields[j].type === "field") {
+				if (!popupData.recordData[availableViewFields[j].meta.name] && availableViewFields[j].type === "field") {
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
@@ -716,6 +723,43 @@
 		//#endregion
 
 		//#region << Logic >>
+		popupData.ok = function () {
+			if (!popupData.isEdit) {
+				webvellaAdminService.createRecord(popupData.listEntity.name, popupData.recordData, createSuccessCallback, manageErrorCallback);
+			}
+			else {
+				webvellaAdminService.updateRecord(popupData.recordData.id, popupData.listEntity.name, popupData.recordData, successCallback, manageErrorCallback);
+			}
+		}
+
+		/// Aux
+		function createSuccessCallback(response) {
+			var returnObject = {
+				relationName: popupData.relation.name,
+				dataKind: popupData.dataKind,
+				selectedRecordId: response.object.data[0].id,
+				operation: "attach"
+			}
+			popupData.processInstantSelection = contentData.processInstantSelection;
+			popupData.processInstantSelection(returnObject);
+			$modalInstance.close('success');
+		}
+
+		function successCallback(response) {
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> ' + 'The record was successfully updated'
+			});
+			$state.reload();
+			$modalInstance.close('success');
+		}
+
+		function manageErrorCallback(response) {
+			var location = $location;
+			//Process the response and generate the validation Messages
+			webvellaRootService.generateValidationMessages(response, popupData, popupData.recordData, location);
+		}
+
 		popupData.cancel = function () {
 			$modalInstance.dismiss('cancel');
 		};
