@@ -1,4 +1,4 @@
-﻿<p ng-if="::canAddExisting || canAddNew">
+﻿<p ng-if="::(canAddExisting || canCreate) && !hasError">
 	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 		<i class="fa fa-download"></i> Add existing
 	</a>
@@ -7,20 +7,20 @@
 	</a>
 </p>
 
-<table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0">
+<table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
 	<thead>
 		<tr>
-			<th ng-if="::canRemove"></th>
+			<th ng-if="::(canRemove || canCreate)"></th>
 			<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in listData track by $index">
-			<td ng-if="::canRemove" style="width:1%;white-space:nowrap;">
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)">
+			<td ng-if="::(canRemove || canCreate)" style="width:1%;white-space:nowrap;">
+				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canCreate">
 					<i class="fa fa-pencil"></i>
 				</a>
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" >
+				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
 					<i class="fa fa-times go-red"></i>
 				</a>
 			</td>
@@ -65,7 +65,10 @@
 		</tr>
 	</tbody>
 </table>
-<div ng-show="::listData.length == 0" class="ng-hide">No items</div>
+<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>
+<div ng-if="::hasError" ng-bind="errorMessage" class="go-red"></div>
+
+
 <script type="text/ng-template" id="addExistingModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>

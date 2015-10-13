@@ -376,7 +376,12 @@
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
-										<recursive-list list-meta="item.meta" list-data="contentData.selectedSidebarPage.data[item.dataName]" relation="null"></recursive-list>
+										<recursive-list list-meta="::item"
+														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
+														can-create="true"
+														can-edit="true"
+														parent-id="::contentData.stateParams.recordId">
+										</recursive-list>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -386,7 +391,15 @@
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
-										<recursive-list list-meta="item.meta" list-data="contentData.selectedSidebarPage.data[item.dataName]" relation="contentData.getRelation(item.relationName)" ></recursive-list>
+										<recursive-list list-meta="::item"
+														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
+														can-add-existing="true"
+														can-create="true"
+														can-remove="true"
+														can-edit="true"
+														relation="::contentData.getRelation(item.relationName)"
+														parent-id="::contentData.stateParams.recordId">
+										</recursive-list>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>

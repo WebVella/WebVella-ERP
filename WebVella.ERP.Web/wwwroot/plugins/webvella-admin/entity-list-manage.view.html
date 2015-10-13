@@ -164,7 +164,7 @@
 					<div class="list-field-selection-box" style="height:400px;">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.list.columns">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns track by $index"
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns"
 									 ng-switch="::item.type">
 									<div ng-switch-when="field" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>

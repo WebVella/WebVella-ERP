@@ -303,6 +303,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
+			contentData.list = response.object;
 		}
 		function patchErrorCallback(response) {
 			ngToast.create({
@@ -351,7 +352,7 @@
 		contentData.tempLibrary.items.forEach(function (item) {
 			switch (item.type) {
 				case "field":
-					contentData.onlyFieldsLibrary.items.push(item);
+					contentData.library.items.push(item);
 					break;
 				case "relationOptions":
 					item.addedToLibrary = false;
