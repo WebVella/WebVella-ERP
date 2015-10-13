@@ -10,7 +10,7 @@
 		</div>
 		<div class="entity-box">
 			<h4>{{::contentData.currentEntity.label}}</h4>
-			<a target="_blank" href='#/admin/entities/{{::contentData.entity.name}}"'><i class="fa fa-gear"></i> Settings</a>
+			<a target="_blank" href='#/admin/entities/{{::contentData.entity.name}}'><i class="fa fa-gear"></i> Settings</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -409,9 +409,8 @@
 			</recursive-view>
 		</div>
 		<div class="records-list" ng-if="::!contentData.selectedSidebarPage.isView">
-			<recursive-list list-meta="::contentData.selectedSidebarPage.meta" 
+			<recursive-list list-meta="::contentData.selectedSidebarPage" 
 							list-data="::contentData.selectedSidebarPage.data" 
-							list-entity="::contentData.selectedSidebarPage.relatedEntity"
 							can-add-existing="true"
 							can-create="true"
 							can-remove="true"

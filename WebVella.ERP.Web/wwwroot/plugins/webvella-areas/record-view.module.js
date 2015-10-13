@@ -158,29 +158,32 @@
 		function getViewOrListMetaAndData(name) {
 			var returnObject = {
 				data: null,
-				meta: null
+				meta: null,
+				isView: true,
+				isEdit: true
 			};
 
 			if (name === "") {
-				returnObject.data = fastCopy(resolvedCurrentView.data[0]);
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
 						returnObject.meta.label = "General";
 					}
 				}
-				contentData.selectedSidebarPage.isView = true;
-				contentData.selectedSidebarPage.isEdit = true;
+				returnObject.isView = true;
+				returnObject.isEdit = true;
+				returnObject.data = fastCopy(resolvedCurrentView.data[0]);
 			} else {
 				var selectedDataName = "";
-				contentData.selectedSidebarPage.isEdit = false;
+				returnObject.isEdit = false;
 				for (var i = 0; i < contentData.defaultRecordView.sidebar.items.length; i++) {
 					if (contentData.defaultRecordView.sidebar.items[i].dataName === name) {
+						//Set meta
 						// If in edit mode (view from the current entity) the data should be different -> we need the content region meta, not the view meta as in recursive-view directive
 						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
-									contentData.selectedSidebarPage.isEdit = true;
+									returnObject.isEdit = true;
 									returnObject.meta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
 									returnObject.meta.label = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
@@ -188,37 +191,23 @@
 							}
 						}
 						else {
-							returnObject.meta = contentData.defaultRecordView.sidebar.items[i].meta;
+							returnObject = contentData.defaultRecordView.sidebar.items[i];
 						}
 
+						//Set data
 						selectedDataName = contentData.defaultRecordView.sidebar.items[i].dataName;
 						if (contentData.defaultRecordView.sidebar.items[i].type === "view") {
-							contentData.selectedSidebarPage.isView = true;
-							contentData.selectedSidebarPage.relationName = null;
+							returnObject.isView = true;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName][0]);
 						}
 						else if (contentData.defaultRecordView.sidebar.items[i].type === "viewFromRelation") {
-							contentData.selectedSidebarPage.isView = true;
-							contentData.selectedSidebarPage.relationName = contentData.defaultRecordView.sidebar.items[i].relationName;
-							var relatedEntity = {};
-							relatedEntity.name = contentData.defaultRecordView.sidebar.items[i].entityName;
-							relatedEntity.label = contentData.defaultRecordView.sidebar.items[i].entityLabel;
-							relatedEntity.labelPlural = contentData.defaultRecordView.sidebar.items[i].entityLabelPlural;
-							relatedEntity.id = contentData.defaultRecordView.sidebar.items[i].entityId;
-							contentData.selectedSidebarPage.relatedEntity = relatedEntity;
+							returnObject.isView = true;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						} else if (contentData.defaultRecordView.sidebar.items[i].type === "list") {
-							contentData.selectedSidebarPage.isView = false;
+							returnObject.isView = false;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						} else if (contentData.defaultRecordView.sidebar.items[i].type === "listFromRelation") {
-							contentData.selectedSidebarPage.isView = false;
-							contentData.selectedSidebarPage.relationName = contentData.defaultRecordView.sidebar.items[i].relationName;
-							var relatedEntity = {};
-							relatedEntity.name = contentData.defaultRecordView.sidebar.items[i].entityName;
-							relatedEntity.label = contentData.defaultRecordView.sidebar.items[i].entityLabel;
-							relatedEntity.labelPlural = contentData.defaultRecordView.sidebar.items[i].entityLabelPlural;
-							relatedEntity.id = contentData.defaultRecordView.sidebar.items[i].entityId;
-							contentData.selectedSidebarPage.relatedEntity = relatedEntity;
+							returnObject.isView = false;
 							returnObject.data = fastCopy(resolvedCurrentView.data[0][selectedDataName]);
 						}
 					}
@@ -230,18 +219,17 @@
 		};
 
 		var returnedObject = {};
-
+		contentData.selectedSidebarPage = {};
 		if ($stateParams.auxPageName === "*") {
 			//The default view meta is active
 			returnedObject = getViewOrListMetaAndData("");
-			contentData.selectedSidebarPage.meta = returnedObject.meta;
-			contentData.selectedSidebarPage.data = returnedObject.data;
+			contentData.selectedSidebarPage = returnedObject;
 		}
 		else {
 			//One of the sidebar view or lists is active
 			//Load the data
 			returnedObject = getViewOrListMetaAndData($stateParams.auxPageName);
-			contentData.selectedSidebarPage.meta = returnedObject.meta;
+			contentData.selectedSidebarPage = returnedObject;
 			contentData.selectedSidebarPage.data = returnedObject.data;
 		}
 

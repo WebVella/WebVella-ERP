@@ -172,7 +172,6 @@
 		contentData.records = fastCopy(resolvedListRecords.data);
 		contentData.recordsMeta = fastCopy(resolvedListRecords.meta);
 		contentData.relationsMeta = resolvedEntityRelationsList;
-
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -348,6 +347,28 @@
 		//#endregion
 
 		//#region << Logic >> //////////////////////////////////////
+
+		contentData.getRelation = function (relationName) {
+			for (var i = 0; i < contentData.relationsMeta.length; i++) {
+				if (contentData.relationsMeta[i].name == relationName) {
+					//set current entity role
+					if (contentData.entity.id == contentData.relationsMeta[i].targetEntityId && contentData.entity.id == contentData.relationsMeta[i].originEntityId) {
+						contentData.relationsMeta[i].currentEntityRole = 3; //both origin and target
+					}
+					else if (contentData.entity.id == contentData.relationsMeta[i].targetEntityId && contentData.entity.id != contentData.relationsMeta[i].originEntityId) {
+						contentData.relationsMeta[i].currentEntityRole = 2; //target
+					}
+					else if (contentData.entity.id != contentData.relationsMeta[i].targetEntityId && contentData.entity.id == contentData.relationsMeta[i].originEntityId) {
+						contentData.relationsMeta[i].currentEntityRole = 1; //origin
+					}
+					else if (contentData.entity.id != contentData.relationsMeta[i].targetEntityId && contentData.entity.id != contentData.relationsMeta[i].originEntityId) {
+						contentData.relationsMeta[i].currentEntityRole = 0; //possible problem
+					}
+					return contentData.relationsMeta[i];
+				}
+			}
+			return null;
+		}
 
 		contentData.goDesktopBrowse = function () {
 			webvellaRootService.GoToState($state, "webvella-desktop-browse", {});

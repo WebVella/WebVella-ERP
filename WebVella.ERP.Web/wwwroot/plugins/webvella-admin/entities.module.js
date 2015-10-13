@@ -76,7 +76,7 @@
     		defer.reject("No access");
     	}
 
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAreas>entities> END check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
