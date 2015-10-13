@@ -2001,13 +2001,7 @@ namespace WebVella.ERP.Web.Controllers
                         }
                         else if (column is RecordListListItem)
                         {
-                            QueryObject subListQueryObj = new QueryObject();
-                            subListQueryObj.QueryType = QueryType.AND;
-                            subListQueryObj.SubQueries = new List<QueryObject>();
-                            subListQueryObj.SubQueries.Add(new QueryObject { FieldName = "id", FieldValue = record["id"], QueryType = QueryType.EQ });
-
-                            List<EntityRecord> subListResult = GetListRecords(entities, entity, ((RecordListListItem)column).ListName, queryObj: subListQueryObj);
-                            dataRecord[column.DataName] = subListResult;
+                            dataRecord[column.DataName] = GetListRecords(entities, entity, ((RecordListListItem)column).ListName);
                         }
                         else if (column is RecordListRelationListItem)
                         {
@@ -2037,8 +2031,7 @@ namespace WebVella.ERP.Web.Controllers
                         }
                         else if (column is RecordListViewItem)
                         {
-                            List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
-                            dataRecord[column.DataName] = subViewResult;
+                            dataRecord[column.DataName] = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
                         }
                         else if (column is RecordListRelationViewItem)
                         {
@@ -2365,14 +2358,11 @@ namespace WebVella.ERP.Web.Controllers
                         }
                         else if (item is RecordViewListItem)
                         {
-                            var query = EntityQuery.QueryEQ("id", record["id"]);
-                            List<EntityRecord> subListResult = GetListRecords(entities, entity, ((RecordViewListItem)item).ListName, queryObj: query);
-                            dataRecord[((RecordViewListItem)item).DataName] = subListResult;
+                            dataRecord[((RecordViewListItem)item).DataName] = GetListRecords(entities, entity, ((RecordViewListItem)item).ListName);
                         }
                         else if (item is RecordViewViewItem)
                         {
-                            List<EntityRecord> subViewResult = GetViewRecords(entities, entity, ((RecordViewViewItem)item).ViewName, "id", record["id"]);
-                            dataRecord[((RecordViewViewItem)item).DataName] = subViewResult;
+                            dataRecord[((RecordViewViewItem)item).DataName] = GetViewRecords(entities, entity, ((RecordViewViewItem)item).ViewName, "id", record["id"]);
                         }
                         else if (item is RecordViewRelationFieldItem)
                         {
