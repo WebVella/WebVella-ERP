@@ -1196,15 +1196,6 @@ namespace WebVella.ERP.Api
                                                         }
                                                         else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
                                                         {
-                                                            InputRecordViewRelationListItem listItm = null;
-                                                            if (string.IsNullOrWhiteSpace(inputItem.ListName))
-                                                                listItm = (InputRecordViewRelationListItem)column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListId == inputItem.ListId);
-                                                            else
-                                                                listItm = (InputRecordViewRelationListItem)column.Items.Where(i => i is InputRecordViewRelationListItem && ((InputRecordViewRelationListItem)i).ListName == inputItem.ListName);
-
-                                                            if (listItm != null)
-                                                                errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "There is already an item with such list name or id!"));
-
                                                             if (relation != null)
                                                             {
                                                                 Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
