@@ -191,27 +191,22 @@
 								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
 							</div>
 							<div ng-switch-when="list">
-								<!--<recursive-list list-meta="column.meta" list-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-list>-->
-								<!--<recursive-list list-meta="::column"
+								<recursive-list list-meta="::column"
 												list-data="::record[column.dataName]"
-												can-add-existing="true"
-												can-create="true"
-												can-remove="true"
-												can-edit="true"
-												relation="::contentData.getRelation(column.relationName)"
-												parent-id="::contentData.stateParams.recordId">
-								</recursive-list>-->
-								<pre>{{record | json}}</pre>
+												can-create="false"
+												can-edit="false"
+												parent-id="::record.id">
+								</recursive-list>
 							</div>
 							<div ng-switch-when="listFromRelation">
 								<recursive-list list-meta="::column"
 												list-data="::record[column.dataName]"
-												can-add-existing="true"
-												can-create="true"
-												can-remove="true"
-												can-edit="true"
+												can-add-existing="false"
+												can-create="false"
+												can-remove="false"
+												can-edit="false"
 												relation="::contentData.getRelation(column.relationName)"
-												parent-id="::contentData.stateParams.recordId">
+												parent-id="::record.id">
 								</recursive-list>
 							</div>
 						</div>
