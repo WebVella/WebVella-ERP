@@ -12,8 +12,8 @@
 	angular
         .module('webvellaAreas')
         .directive('recursiveList', directive)
-		.controller('AddExistingModalController', AddExistingModalController)
-		.controller('ManageRelatedRecordModalController', ManageRelatedRecordModalController);
+		.controller('RLAddExistingModalController', RLAddExistingModalController)
+		.controller('RLManageRelatedRecordModalController', RLManageRelatedRecordModalController);
 
 	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
 
@@ -57,9 +57,9 @@
 		$scope.relation = $scope.relation();
 		$scope.listData = $scope.listData();
 		$scope.listMeta = $scope.listMeta();
-		$scope.listEntity = {};
-		$scope.listEntity.id = $scope.listMeta.entityId;
-		$scope.listEntity.name = $scope.listMeta.entityName;
+		$scope.entity = {};
+		$scope.entity.id = $scope.listMeta.entityId;
+		$scope.entity.name = $scope.listMeta.entityName;
 		$scope.parentId = $scope.parentId();
 		$scope.canAddExisting = $scope.canAddExisting();
 		$scope.canCreate = $scope.canCreate();
@@ -110,11 +110,11 @@
 			$scope.canEdit = false;
 		}
 
-		//Calculate listEntity stance in the relation
+		//Calculate entity stance in the relation
 		$scope.dataKind = "target";
-		if ($scope.relation && $scope.listEntity.id === $scope.relation.originEntityId) {
+		if ($scope.relation && $scope.entity.id === $scope.relation.originEntityId) {
 			$scope.dataKind = "origin";
-			if ($scope.listEntity.id === $scope.relation.targetEntityId) {
+			if ($scope.entity.id === $scope.relation.targetEntityId) {
 				$scope.dataKind = "origin-target";
 			}
 		}
@@ -162,153 +162,6 @@
 		$scope.getTextString = webvellaAreasService.getTextString;
 		//18.Url
 		$scope.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
-
-		//#region << Modals >>
-		$scope.addExistingItem = function () {
-			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many) only 2 or 3 are viable here
-			//dataKind - target, origin, origin-target
-			var modalInstance = $uibModal.open({
-				animation: false,
-				templateUrl: 'addExistingModal.html',
-				controller: 'AddExistingModalController',
-				controllerAs: "popupData",
-				size: "lg",
-				resolve: {
-					contentData: function () {
-						return $scope;
-					},
-					resolvedLookupRecords: function () {
-						return resolveLookupRecords();
-					}
-				}
-			});
-			//On modal exit
-			modalInstance.result.then(function () { });
-
-		}
-		//Resolve function lookup records
-		var resolveLookupRecords = function () {
-			// Initialize
-			var defer = $q.defer();
-
-			// Process
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				defer.reject();
-			}
-			function getListRecordsSuccessCallback(response) {
-				defer.resolve(response); //Submitting the whole response to manage the error states
-			}
-
-			function getEntityMetaSuccessCallback(response) {
-				var entityMeta = response.object;
-				var defaultLookupList = null;
-
-				//Find the default lookup field if none return null.
-				for (var i = 0; i < entityMeta.recordLists.length; i++) {
-					if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
-						defaultLookupList = entityMeta.recordLists[i];
-						break;
-					}
-				}
-
-				if (defaultLookupList == null) {
-					response.message = "This entity does not have a default lookup list";
-					response.success = false;
-					errorCallback(response);
-				}
-				else {
-					webvellaAreasService.getListRecords(defaultLookupList.name, $scope.listEntity.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
-				}
-			}
-
-			webvellaAdminService.getEntityMeta($scope.listEntity.name, getEntityMetaSuccessCallback, errorCallback);
-
-			return defer.promise;
-		}
-
-		$scope.manageRelatedRecordItem = function (record) {
-			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many) only 2 or 3 are viable here
-			//dataKind - target, origin, origin-target
-			var modalInstance = $uibModal.open({
-				animation: false,
-				templateUrl: 'manageRelatedRecordModal.html',
-				controller: 'ManageRelatedRecordModalController',
-				controllerAs: "popupData",
-				size: "lg",
-				resolve: {
-					contentData: function () {
-						return $scope;
-					},
-					resolvedManagedRecordQuickCreateView: resolveManagedRecordQuickCreateView(record)
-				}
-			});
-			//On modal exit
-			modalInstance.result.then(function () { });
-		}
-
-		//Resolve function lookup records
-		var resolveManagedRecordQuickCreateView = function (managedRecord) {
-			// Initialize
-			var defer = $q.defer();
-
-			// Process
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				defer.reject();
-			}
-			function getViewRecordSuccessCallback(response) {
-				defer.resolve(response.object); //Submitting the whole response to manage the error states
-			}
-
-			function getViewMetaSuccessCallback(response) {
-				var responseObject = {};
-				responseObject.meta = response.object;
-				responseObject.data = null;
-				defer.resolve(responseObject); //Submitting the whole response to manage the error states
-			}
-
-			function getEntityMetaSuccessCallback(response) {
-				var entityMeta = response.object;
-				var defaultQuickCreateView = null;
-
-				//Find the default lookup field if none return null.
-				for (var i = 0; i < entityMeta.recordViews.length; i++) {
-					if (entityMeta.recordViews[i].default && entityMeta.recordViews[i].type == "quick_create") {
-						defaultQuickCreateView = entityMeta.recordViews[i];
-						break;
-					}
-				}
-
-				if (defaultQuickCreateView == null) {
-					response.message = "This entity does not have a default quick create view";
-					response.success = false;
-					errorCallback(response);
-				}
-				else {
-					if (managedRecord == null) {
-						webvellaAreasService.getViewByName(defaultQuickCreateView.name, $scope.listEntity.name, getViewMetaSuccessCallback, errorCallback);
-					}
-					else {
-						webvellaAreasService.getViewRecord(managedRecord.id, defaultQuickCreateView.name, $scope.listEntity.name, getViewRecordSuccessCallback, errorCallback);
-					}
-				}
-			}
-
-			webvellaAdminService.getEntityMeta($scope.listEntity.name, getEntityMetaSuccessCallback, errorCallback);
-
-			return defer.promise;
-		}
-
 		//#endregion
 
 		//#region << Logic >>
@@ -370,18 +223,167 @@
 			}
 		}
 		//#endregion
+
+		//#region << Modals >>
+		$scope.addExistingItem = function () {
+			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many) only 2 or 3 are viable here
+			//dataKind - target, origin, origin-target
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'addExistingModal.html',
+				controller: 'RLAddExistingModalController',
+				controllerAs: "popupData",
+				size: "lg",
+				resolve: {
+					contentData: function () {
+						return $scope;
+					},
+					resolvedLookupRecords: function () {
+						return resolveLookupRecords();
+					}
+				}
+			});
+			//On modal exit
+			modalInstance.result.then(function () { });
+
+		}
+		//Resolve function lookup records
+		var resolveLookupRecords = function () {
+			// Initialize
+			var defer = $q.defer();
+
+			// Process
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.reject();
+			}
+			function getListRecordsSuccessCallback(response) {
+				defer.resolve(response); //Submitting the whole response to manage the error states
+			}
+
+			function getEntityMetaSuccessCallback(response) {
+				var entityMeta = response.object;
+				var defaultLookupList = null;
+
+				//Find the default lookup field if none return null.
+				for (var i = 0; i < entityMeta.recordLists.length; i++) {
+					if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
+						defaultLookupList = entityMeta.recordLists[i];
+						break;
+					}
+				}
+
+				if (defaultLookupList == null) {
+					response.message = "This entity does not have a default lookup list";
+					response.success = false;
+					errorCallback(response);
+				}
+				else {
+					webvellaAreasService.getListRecords(defaultLookupList.name, $scope.entity.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+				}
+			}
+
+			webvellaAdminService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
+
+			return defer.promise;
+		}
+
+		$scope.manageRelatedRecordItem = function (record) {
+			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many) only 2 or 3 are viable here
+			//dataKind - target, origin, origin-target
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageRelatedRecordModal.html',
+				controller: 'RLManageRelatedRecordModalController',
+				controllerAs: "popupData",
+				size: "lg",
+				resolve: {
+					contentData: function () {
+						return $scope;
+					},
+					resolvedManagedRecordQuickCreateView: resolveManagedRecordQuickCreateView(record)
+				}
+			});
+			//On modal exit
+			modalInstance.result.then(function () { });
+		}
+
+		//Resolve function lookup records
+		var resolveManagedRecordQuickCreateView = function (managedRecord) {
+			// Initialize
+			var defer = $q.defer();
+
+			// Process
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.reject();
+			}
+			function getViewRecordSuccessCallback(response) {
+				defer.resolve(response.object); //Submitting the whole response to manage the error states
+			}
+
+			function getViewMetaSuccessCallback(response) {
+				var responseObject = {};
+				responseObject.meta = response.object;
+				responseObject.data = null;
+				defer.resolve(responseObject); //Submitting the whole response to manage the error states
+			}
+
+			function getEntityMetaSuccessCallback(response) {
+				var entityMeta = response.object;
+				var defaultQuickCreateView = null;
+
+				//Find the default lookup field if none return null.
+				for (var i = 0; i < entityMeta.recordViews.length; i++) {
+					if (entityMeta.recordViews[i].default && entityMeta.recordViews[i].type == "quick_create") {
+						defaultQuickCreateView = entityMeta.recordViews[i];
+						break;
+					}
+				}
+
+				if (defaultQuickCreateView == null) {
+					response.message = "This entity does not have a default quick create view";
+					response.success = false;
+					errorCallback(response);
+				}
+				else {
+					if (managedRecord == null) {
+						webvellaAreasService.getViewByName(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
+					}
+					else {
+						webvellaAreasService.getViewRecord(managedRecord.id, defaultQuickCreateView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+					}
+				}
+			}
+
+			webvellaAdminService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
+
+			return defer.promise;
+		}
+
+		//#endregion
+
+
 	}
 
 
 	//#region < Modal Controllers >
 
-	AddExistingModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
+	RLAddExistingModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
-	function AddExistingModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+	function RLAddExistingModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedLookupRecords,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService) {
 
-		$log.debug('webvellaAdmin>recursive-list>AddExistingModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAdmin>recursive-list>RLAddExistingModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		//#region << Init >>
 		/* jshint validthis:true */
 		var popupData = this;
@@ -389,7 +391,7 @@
 		popupData.relation = fastCopy(contentData.relation);
 		popupData.hasWarning = false;
 		popupData.warningMessage = "";
-		popupData.parentEntity = fastCopy(contentData.listEntity);
+		popupData.parentEntity = fastCopy(contentData.entity);
 		popupData.searchQuery = null;
 		popupData.parentRecordId = fastCopy(contentData.parentId);
 		popupData.listData = fastCopy(contentData.listData);
@@ -511,15 +513,15 @@
 		}
 		//#endregion
 
-		$log.debug('webvellaAdmin>recursive-list>AddExistingModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAdmin>recursive-list>RLAddExistingModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
-	ManageRelatedRecordModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
+	RLManageRelatedRecordModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedManagedRecordQuickCreateView'];
-	function ManageRelatedRecordModalController(contentData, $modalInstance, $log, $q, $stateParams, $scope, $location,
+	function RLManageRelatedRecordModalController(contentData, $modalInstance, $log, $q, $stateParams, $scope, $location,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedManagedRecordQuickCreateView) {
-		$log.debug('webvellaAdmin>recursive-list>ManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		//#region << Init >>
 		/* jshint validthis:true */
@@ -532,7 +534,7 @@
 			popupData.relation = fastCopy(contentData.relation);
 			popupData.dataKind = fastCopy(contentData.dataKind);
 		}
-		popupData.listEntity = fastCopy(contentData.listEntity);
+		popupData.entity = fastCopy(contentData.entity);
 		if (resolvedManagedRecordQuickCreateView.data == null) {
 			popupData.isEdit = false;
 			popupData.recordData = {};
@@ -777,10 +779,10 @@
 		//#region << Logic >>
 		popupData.ok = function () {
 			if (!popupData.isEdit) {
-				webvellaAdminService.createRecord(popupData.listEntity.name, popupData.recordData, createSuccessCallback, manageErrorCallback);
+				webvellaAdminService.createRecord(popupData.entity.name, popupData.recordData, createSuccessCallback, manageErrorCallback);
 			}
 			else {
-				webvellaAdminService.updateRecord(popupData.recordData.id, popupData.listEntity.name, popupData.recordData, successCallback, manageErrorCallback);
+				webvellaAdminService.updateRecord(popupData.recordData.id, popupData.entity.name, popupData.recordData, successCallback, manageErrorCallback);
 			}
 		}
 
@@ -823,7 +825,7 @@
 		};
 		//#endregion
 
-		$log.debug('webvellaAdmin>recursive-list>ManageRelatedRecordModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//#endregion
