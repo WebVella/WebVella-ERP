@@ -22,7 +22,7 @@ namespace WebVella.ERP.Api
         private EntityManager entityManager;
         private EntityRelationManager entityRelationManager;
         private List<EntityRelation> relations = null;
-        private bool ignoreSecurity = false;
+        private bool ignoreSecurity = false; 
 
         /// <summary>
         /// The contructor
@@ -674,22 +674,47 @@ namespace WebVella.ERP.Api
                             {
                                 IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
                                 //when the relation is origin -> target entity
-                                if (relationField.Relation.OriginEntityId == entity.Id)
+
+                                if (relationField.Relation.OriginEntityId != relationField.Relation.TargetEntityId)
                                 {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-                                    if (recValue.Value != null)
+                                    if (relationField.Relation.OriginEntityId == entity.Id)
                                     {
-                                        var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-                                        relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+                                        recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+                                        if (recValue.Value != null)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+                                            relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+                                        }
+                                    }
+                                    else //when the relation is target -> origin, we have to query origin entity
+                                    {
+                                        recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+                                        if (recValue.Value != null)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+                                            relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+                                        }
                                     }
                                 }
-                                else //when the relation is target -> origin, we have to query origin entity
+                                else
                                 {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-                                    if (recValue.Value != null)
+                                    if( relationField.Direction == "target-origin")
                                     {
-                                        var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-                                        relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+                                        recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+                                        if (recValue.Value != null)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+                                            relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+                                        if (recValue.Value != null)
+                                        {
+                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+                                            relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+                                        }
                                     }
                                 }
 
