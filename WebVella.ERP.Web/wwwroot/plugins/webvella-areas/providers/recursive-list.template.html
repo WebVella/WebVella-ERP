@@ -24,7 +24,7 @@
 					<i class="fa fa-times go-red"></i>
 				</a>
 			</td>
-			<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount track by $index" ng-switch="::column.type">
+			<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount" ng-switch="::column.type">
 				<div ng-switch="::column.meta.fieldType" ng-switch-when="field">
 					<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(record[column.dataName],column.meta)"></span>
 					<span ng-switch-when="2" ng-bind-html="::getCheckboxString(record[column.dataName],column.meta)"></span>
@@ -230,7 +230,7 @@
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
-							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns track by $index">{{::column.meta.label}}</th>
+							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns">{{::column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -243,7 +243,7 @@
 									selected
 								</span>
 							</td>
-							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns track by $index" ng-switch="::column.meta.fieldType">
+							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns" ng-switch="::column.meta.fieldType">
 								<span ng-switch-when="1" ng-bind-html="::popupData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
 								<span ng-switch-when="2" ng-bind-html="::popupData.getCheckboxString(record[column.dataName],column.meta)"></span>
 								<span ng-switch-when="3" ng-bind-html="::popupData.getCurrencyString(record[column.dataName],column.meta)"></span>

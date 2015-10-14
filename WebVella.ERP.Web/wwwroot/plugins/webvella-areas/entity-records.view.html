@@ -52,7 +52,7 @@
 				</form>
 				<hr class="divider ng-hide" />
 				<ul class="list-inline">
-					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter} track by $index" ui-sref-active="active">
+					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active">
 						<a href="#/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1})">
 							<i class="fa fa-fw fa-bars"></i> {{::list.label}}
 						</a>
@@ -92,7 +92,7 @@
 				<i class="fa fa-fw fa-check"></i>
 			</a>
 		</div>
-		<div class="form-group" ng-repeat="filterRecord in contentData.filterRecords.data track by $index" ng-class="{'pending-removal': contentData.filtersPendingRemoval[filterRecord.field_name]}">
+		<div class="form-group" ng-repeat="filterRecord in contentData.filterRecords.data" ng-class="{'pending-removal': contentData.filtersPendingRemoval[filterRecord.field_name]}">
 			<div class="filter">
 				<div class="field"><a href="" ng-click="contentData.requestFilterRemoval(filterRecord)">{{filterRecord.helper.label}} <i class="fa fa-times-circle"></i></a></div>
 				<ul class="criterias list-inline" ng-switch="filterRecord.match_type">
@@ -127,7 +127,7 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount  track by $index">{{::column.meta.label}}</th>
+					<th class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -140,7 +140,7 @@
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>
-					<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount track by $index ">
+					<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
 						<div ng-if="::contentData.currentUserHasReadPermission(column)" ng-switch="::column.type">
 							<div ng-switch="::column.meta.fieldType" ng-switch-when="field">
 								<span ng-switch-when="1" ng-bind-html="::contentData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
@@ -708,7 +708,7 @@
 												<div class="form-group" ng-switch-when="exact_and">
 													<label>Value</label>
 													<p>All selected values should be exactly matched</p>
-													<div class="input-group" ng-repeat="dataValue in column.data track by $index" style="margin-bottom:1em;">
+													<div class="input-group" ng-repeat="dataValue in column.data" style="margin-bottom:1em;">
 														<div class="input-group-addon">{{$index + 1}}</div>
 														<input type="text" class="form-control" ng-model="column.data[$index]" name="{{column.meta.name + '_' +  $index}}">
 														<span class="input-group-btn">
@@ -721,7 +721,7 @@
 												<div class="form-group" ng-switch-when="exact_or">
 													<label>Value</label>
 													<p>All selected values should be exactly matched</p>
-													<div class="input-group" ng-repeat="dataValue in column.data track by $index" style="margin-bottom:1em;">
+													<div class="input-group" ng-repeat="dataValue in column.data" style="margin-bottom:1em;">
 														<div class="input-group-addon">{{$index + 1}}</div>
 														<input type="text" class="form-control" ng-model="column.data[$index]" name="{{column.meta.name + '_' +  $index}}">
 														<span class="input-group-btn">

@@ -25,8 +25,8 @@
 			</div>
 			<div class="form" style="background: transparent">
 				<div class="row" ng-repeat="row in section.rows track by row.id">
-					<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns track by $index">
-						<div class="form-group" ng-repeat="item in column.items track by $index"
+					<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
+						<div class="form-group" ng-repeat="item in column.items"
 							ng-switch="::item.type">
 							<!--If item is field WITH NO relation-->
 							<div class="field" ng-switch-when="field">
@@ -247,7 +247,7 @@
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
-							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns track by $index">{{::column.meta.label}}</th>
+							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns">{{::column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -260,7 +260,7 @@
 									selected
 								</span>
 							</td>
-							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns track by $index" ng-switch="::column.meta.fieldType">
+							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns" ng-switch="::column.meta.fieldType">
 								<span ng-switch-when="1" ng-bind-html="::popupData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
 								<span ng-switch-when="2" ng-bind-html="::popupData.getCheckboxString(record[column.dataName],column.meta)"></span>
 								<span ng-switch-when="3" ng-bind-html="::popupData.getCurrencyString(record[column.dataName],column.meta)"></span>
