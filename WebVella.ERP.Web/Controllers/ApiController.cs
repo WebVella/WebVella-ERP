@@ -2433,8 +2433,14 @@ namespace WebVella.ERP.Web.Controllers
                             Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
                             Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
-                            List<EntityRecord> subViewResult = GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, relField.Name, record[field.Name]);
+                            List<EntityRecord> subViewResult = new List<EntityRecord>();
+                            var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
+                            foreach (var relatedRecord in relatedRecords)
+                            {
+                                subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, relField.Name, relatedRecord[relField.Name]));
+                            }
                             dataRecord[((RecordViewRelationViewItem)item).DataName] = subViewResult;
+
                         }
                         else if (item is RecordViewSidebarViewItem)
                         {
