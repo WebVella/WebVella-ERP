@@ -60,12 +60,55 @@
 		$scope.listEntity = {};
 		$scope.listEntity.id = $scope.listMeta.entityId;
 		$scope.listEntity.name = $scope.listMeta.entityName;
-
 		$scope.parentId = $scope.parentId();
 		$scope.canAddExisting = $scope.canAddExisting();
 		$scope.canCreate = $scope.canCreate();
 		$scope.canRemove = $scope.canRemove();
 		$scope.canEdit = $scope.canEdit();
+
+		//Validation
+		if (!$scope.parentId || $scope.parentId == "") {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No list parent Id provided!";
+		}
+		else if (!$scope.listData || $scope.listData.length == 0) {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No list data provided!";
+		}
+		else if (!$scope.listMeta || $scope.listMeta.length == 0) {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No list meta provided!";
+		}
+		else if (!$scope.listMeta || $scope.listMeta.length == 0) {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No list meta provided!";
+		}
+		else if (!$scope.listMeta.entityId || $scope.listMeta.entityId == "") {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No entityId property in the list meta found!";
+		}
+		else if (!$scope.listMeta.entityName || $scope.listMeta.entityName == "") {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No entityName property in the list meta found!";
+		}
+
+		if (!$scope.canRemove) {
+			$scope.canRemove = false;
+		}
+		if (!$scope.canAddExisting) {
+			$scope.canAddExisting = false;
+		}
+		else if (!$scope.relation) {
+			$scope.canAddExisting = false;
+			$scope.canRemove = false;
+		}
+
+		if (!$scope.canCreate) {
+			$scope.canCreate = false;
+		}
+		if (!$scope.canEdit) {
+			$scope.canEdit = false;
+		}
 
 		//Calculate listEntity stance in the relation
 		$scope.dataKind = "target";
@@ -478,8 +521,14 @@
 		//#region << Init >>
 		/* jshint validthis:true */
 		var popupData = this;
-		popupData.relation = fastCopy(contentData.relation);
-		popupData.dataKind = fastCopy(contentData.dataKind);
+		popupData.isFromRelation = true;
+		if (!contentData.relation) {
+			popupData.isFromRelation = false;
+		}
+		else {
+			popupData.relation = fastCopy(contentData.relation);
+			popupData.dataKind = fastCopy(contentData.dataKind);
+		}
 		popupData.listEntity = fastCopy(contentData.listEntity);
 		if (resolvedManagedRecordQuickCreateView.data == null) {
 			popupData.isEdit = false;
@@ -734,15 +783,21 @@
 
 		/// Aux
 		function createSuccessCallback(response) {
-			var returnObject = {
-				relationName: popupData.relation.name,
-				dataKind: popupData.dataKind,
-				selectedRecordId: response.object.data[0].id,
-				operation: "attach"
+			if (!popupData.isFromRelation) {
+				$state.reload();
+				$modalInstance.close('success');
 			}
-			popupData.processInstantSelection = contentData.processInstantSelection;
-			popupData.processInstantSelection(returnObject);
-			$modalInstance.close('success');
+			else {
+				var returnObject = {
+					relationName: popupData.relation.name,
+					dataKind: popupData.dataKind,
+					selectedRecordId: response.object.data[0].id,
+					operation: "attach"
+				}
+				popupData.processInstantSelection = contentData.processInstantSelection;
+				popupData.processInstantSelection(returnObject);
+				$modalInstance.close('success');
+			}
 		}
 
 		function successCallback(response) {
