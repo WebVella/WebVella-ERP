@@ -988,157 +988,44 @@
 		//#region << Render Logic >>
 
 		//1.Auto increment
-		popupData.getAutoIncrementString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (!fieldValue) {
-				return "";
-			}
-			else if (fieldMeta.displayFormat) {
-				return fieldMeta.displayFormat.replace("{0}", fieldValue);
-			}
-			else {
-				return fieldValue;
-			}
-		}
+		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
 		//2.Checkbox
-		popupData.getCheckboxString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return "true";
-			}
-			else {
-				return "false";
-			}
-		}
+		popupData.getCheckboxString = webvellaAreasService.getCheckboxString;
 		//3.Currency
-		popupData.getCurrencyString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (!fieldValue) {
-				return "";
-			}
-			else if (fieldMeta.currency != null && fieldMeta.currency != {} && fieldMeta.currency.symbol) {
-				if (fieldMeta.currency.symbolPlacement == 1) {
-					return fieldMeta.currency.symbol + " " + fieldValue
-				}
-				else {
-					return fieldValue + " " + fieldMeta.currency.symbol
-				}
-			}
-			else {
-				return fieldValue;
-			}
-		}
+		popupData.getCurrencyString = webvellaAreasService.getCurrencyString;
 		//4.Date
-		popupData.getDateString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			return moment(fieldValue).format('DD MMMM YYYY');
-		}
+		popupData.getDateString = webvellaAreasService.getDateString;
 		//5.Datetime
-		popupData.getDateTimeString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			return moment(fieldValue).format('DD MMMM YYYY HH:mm');
-		}
+		popupData.getDateTimeString = webvellaAreasService.getDateTimeString;
 		//6.Email
-		popupData.getEmailString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return "<a href='mailto:" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
-			}
-			else {
-				return "";
-			}
-		}
+		popupData.getEmailString = webvellaAreasService.getEmailString;
 		//7.File
-		popupData.getFileString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return "<a href='" + fieldValue + "' taget='_blank' class='link-icon'>view file</a>";
-			}
-			else {
-				return "";
-			}
-		}
+		popupData.getFileString = webvellaAreasService.getFileString;
 		//8.Html
-		popupData.getHtmlString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return fieldValue;
-			}
-			else {
-				return "";
-			}
-		}
+		popupData.getHtmlString = webvellaAreasService.getHtmlString;
 		//9.Image
-		popupData.getImageString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return "<img src='" + fieldValue + "' class='table-image'/>";
-			}
-			else {
-				return "";
-			}
-		}
+		popupData.getImageString = webvellaAreasService.getImageString;
+		//10.Textarea
+		popupData.getTextareaString = webvellaAreasService.getTextareaString;
 		//11.Multiselect
-		popupData.getMultiselectString = function (record, fieldMeta) {
-			var fieldValueArray = record[fieldMeta.name];
-			var generatedStringArray = [];
-			if (fieldValueArray.length == 0) {
-				return "";
-			}
-			else {
-				for (var i = 0; i < fieldValueArray.length; i++) {
-					var selected = $filter('filter')(fieldMeta.options, { key: fieldValueArray[i] });
-					generatedStringArray.push((fieldValueArray[i] && selected.length) ? selected[0].value : 'empty');
-				}
-				return generatedStringArray.join(', ');
-
-			}
-
-		}
+		popupData.getMultiselectString = webvellaAreasService.getMultiselectString;
+		//12.Number
+		popupData.getNumberString = webvellaAreasService.getNumberString;
+		//13.Password
+		popupData.getPasswordString = webvellaAreasService.getPasswordString;
 		//14.Percent
-		popupData.getPercentString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return fieldValue * 100 + "%";
-			}
-		}
+		popupData.getPercentString = webvellaAreasService.getPercentString;
 		//15.Phone
-		popupData.getPhoneString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				return phoneUtils.formatInternational(fieldValue);
-			}
-		}
+		popupData.getPhoneString = webvellaAreasService.getPhoneString;
+		//15.Guid
+		popupData.getGuidString = webvellaAreasService.getGuidString;
 		//17.Dropdown
-		popupData.getDropdownString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (!fieldValue) {
-				return "";
-			}
-			else {
-				var selected = $filter('filter')(fieldMeta.options, { key: fieldValue });
-				return (fieldValue && selected.length) ? selected[0].value : 'empty';
-			}
-
-		}
+		popupData.getDropdownString = webvellaAreasService.getDropdownString;
+		//18. Text
+		popupData.getTextString = webvellaAreasService.getTextString;
 		//18.Url
-		popupData.getUrlString = function (record, fieldMeta) {
-			var fieldValue = record[fieldMeta.name];
-			if (fieldValue) {
-				return "<a href='" + fieldValue + "' target='_blank'>" + fieldValue + "</a>";
-			}
-			else {
-				return "";
-			}
-		}
-
-		//#endregion 
+		popupData.getUrlString = webvellaAreasService.getUrlString;
+		//#endregion
 
 		popupData.isSelectedRecord = function (recordId) {
 			return popupData.currentlyAttachedIds.indexOf(recordId) > -1
