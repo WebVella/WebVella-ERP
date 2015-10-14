@@ -40,7 +40,7 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         [AllowAnonymous]
-        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/login")]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/login")]
         public IActionResult Login([FromBody]JObject submitObj)
         {
             string email = (string)submitObj["email"];
@@ -89,7 +89,7 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(responseObj);
         }
 
-        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/logout")]
+        [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/logout")]
         public IActionResult Logout()
         {
             WebSecurityUtil.Logout(Context);
@@ -101,7 +101,7 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         [AllowAnonymous]
-        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/permissions")]
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/permissions")]
         public IActionResult CurrentUserPermissions()
         {
             var responseObj = new ResponseModel();

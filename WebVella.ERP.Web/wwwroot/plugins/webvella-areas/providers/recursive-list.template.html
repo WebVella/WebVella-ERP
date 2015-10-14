@@ -10,14 +10,14 @@
 <table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
 	<thead>
 		<tr>
-			<th ng-if="::(canRemove || canCreate)"></th>
+			<th ng-if="::(canUpdate || canRemove)"></th>
 			<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in listData track by record.id">
-			<td ng-if="::(canRemove || canCreate)" style="width:1%;white-space:nowrap;">
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canCreate">
+			<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;">
+				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 					<i class="fa fa-pencil"></i>
 				</a>
 				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
@@ -184,16 +184,16 @@
 					</div>
 				</div>
 				<div ng-switch-when="view">
-					<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="relationsList"></recursive-view>
+					<recursive-view view-meta="::column" view-data="::record[column.dataName]">	</recursive-view>
 				</div>
 				<div ng-switch-when="viewFromRelation">
-					<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="relationsList"></recursive-view>
+					<recursive-view view-meta="::column" view-data="::record[column.dataName]">	</recursive-view>
 				</div>
 				<div ng-switch-when="list">
-					<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="relationsList"></recursive-list>
+					<recursive-list list-meta="column" list-data="record[column.dataName]"></recursive-list>
 				</div>
 				<div ng-switch-when="listFromRelation">
-					<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="relationsList"></recursive-list>
+					<recursive-list list-meta="column" list-data="record[column.dataName]"></recursive-list>
 				</div>
 			</td>
 		</tr>

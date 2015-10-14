@@ -33,8 +33,6 @@ function guid() {
 		//create a plug point in the rootScope
 		$rootScope.webvellaAdmin = {};
 
-		serviceInstance.logout = logout;
-
 		//#region << Include functions >>
 		serviceInstance.getMetaEntityList = getMetaEntityList;
 		serviceInstance.initEntity = initEntity;
@@ -106,12 +104,6 @@ function guid() {
 		//#endregion
 
 		//#region << Aux methods >>
-
-		////////////////////
-		function logout(successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>logout> function called');
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'logout', data: {} }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
-		}
 
 		// Global functions for result handling for all methods of this service
 		function handleErrorResult(data, status, errorCallback) {

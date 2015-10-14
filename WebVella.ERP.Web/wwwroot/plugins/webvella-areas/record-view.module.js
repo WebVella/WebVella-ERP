@@ -116,11 +116,13 @@
 
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser'];
+        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+		'resolvedCurrentUserEntityPermissions'];
 
 	/* @ngInject */
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser) {
+        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+		resolvedCurrentUserEntityPermissions) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -132,7 +134,7 @@
 		contentData.selectedSidebarPage.meta = null;
 		contentData.selectedSidebarPage.data = null;
 		contentData.stateParams = $stateParams;
-
+		contentData.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -929,7 +931,54 @@
 
 		//#endregion
 
-
+		//#region << Logic >>
+		contentData.recursiveObjectCanDo = function (permissionName, relatedEntityName) {
+			var currentEntityPermissions = {};
+			var relatedEntityPermissions = {};
+			for (var i = 0; i < contentData.currentUserEntityPermissions.length; i++) {
+				if (contentData.currentUserEntityPermissions[i].entityName == contentData.currentEntity.name) {
+					currentEntityPermissions = contentData.currentUserEntityPermissions[i];
+				}
+				else if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
+					relatedEntityPermissions = contentData.currentUserEntityPermissions[i];
+				}
+			}
+			switch (permissionName) {
+				case "can-add-existing":
+					if(currentEntityPermissions.canUpdate){
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-create":
+					if (currentEntityPermissions.canUpdate && relatedEntityPermissions.canCreate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-edit":
+					if (relatedEntityPermissions.canUpdate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-remove":
+					if (currentEntityPermissions.canUpdate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+			}
+		}
+		//#endregion
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 

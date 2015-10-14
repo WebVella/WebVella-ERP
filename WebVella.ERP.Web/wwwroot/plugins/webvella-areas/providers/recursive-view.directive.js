@@ -36,7 +36,7 @@
 				canAddExisting: '&',
 				canCreate: '&',
 				canRemove: '&',
-				canEdit: '&'
+				canUpdate: '&'
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -65,7 +65,53 @@
 		$scope.canAddExisting = $scope.canAddExisting();
 		$scope.canCreate = $scope.canCreate();
 		$scope.canRemove = $scope.canRemove();
-		$scope.canEdit = $scope.canEdit();
+		$scope.canUpdate = $scope.canUpdate();
+
+		if (!$scope.viewData || $scope.viewData.length == 0) {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No view data provided!";
+		}
+		else if (!$scope.viewMeta || $scope.viewMeta.length == 0) {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No view meta provided!";
+		}
+		else if (!$scope.viewMeta.entityId || $scope.viewMeta.entityId == "") {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No entityId property in the view meta found!";
+		}
+		else if (!$scope.viewMeta.entityName || $scope.viewMeta.entityName == "") {
+			$scope.hasError = true;
+			$scope.errorMessage = "Error: No entityName property in the view meta found!";
+		}
+
+
+		if (!$scope.parentId || $scope.parentId == "") {
+			$scope.canAddExisting = false;
+			$scope.canCreate = false;
+			$scope.canRemove = false;
+			$scope.canUpdate = false;
+		}
+
+		if (!$scope.relation) {
+			$scope.canAddExisting = false;
+			$scope.canRemove = false;
+		}
+
+
+		if (!$scope.canRemove) {
+			$scope.canRemove = false;
+		}
+		if (!$scope.canAddExisting) {
+			$scope.canAddExisting = false;
+		}
+		if (!$scope.canCreate) {
+			$scope.canCreate = false;
+		}
+		if (!$scope.canUpdate) {
+			$scope.canUpdate = false;
+		}
+
+
 
 		$scope.selectedRegion = null;
 		for (var i = 0; i < $scope.viewMeta.meta.regions.length; i++) {
