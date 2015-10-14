@@ -2537,16 +2537,10 @@ table .btn-xs.btn-link {
 		border-radius: 4px 0 0 4px;
 	}
 
-		.tabs-left > .nav-tabs > li > a:hover,
-		.tabs-left > .nav-tabs > li > a:focus {
-			border-color: #eeeeee #dddddd #eeeeee #eeeeee;
-		}
-
 	.tabs-left > .nav-tabs .active > a,
 	.tabs-left > .nav-tabs .active > a:hover,
 	.tabs-left > .nav-tabs .active > a:focus {
-		border-color: #ddd transparent #ddd #ddd;
-		*border-right-color: #ffffff;
+		border:none;
 	}
 
 .tabs-right > .nav-tabs {

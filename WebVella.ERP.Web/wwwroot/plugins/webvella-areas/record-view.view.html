@@ -272,9 +272,9 @@
 													<a class="editable editable-click target lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,1,'target')" ng-bind="contentData.selectedSidebarPage.data['{{item.dataName}}'][0]"></a>
 												</div>
 
-												<!-- Case 3 - Current Entity is both Orgin and Target -->
+												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3">
-													<span class="go-red">Not implemented. We need a test case. Please submit an issue in github's project page</span>
+													<span class="go-red">1:1 - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
 												</div>
 												<!-- Case 0 - Error -->
 												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
@@ -297,9 +297,10 @@
 													<a class="editable editable-click target lookup" href="javascript:void(0)" ng-click="contentData.openManageRelationFieldModal(item,2,'target')" ng-bind="contentData.selectedSidebarPage.data['{{item.dataName}}'][0]"></a>
 												</div>
 
-												<!-- Case 3 - Current Entity is both Orgin and Target -->
+												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3">
-													<span class="go-red">Not implemented. We need a test case. Please submit an issue in github's project page</span>
+													<p>Value:<span ng-bind-html="contentData.selectedSidebarPage.data['{{item.dataName}}'][0]"></span></p>
+													<span class="go-red">1:N - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
 												</div>
 
 												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
