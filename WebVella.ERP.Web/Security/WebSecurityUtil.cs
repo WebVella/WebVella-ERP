@@ -166,5 +166,59 @@ namespace WebVella.ERP.Web.Security
         {
             cache.Remove(userId.ToString());
         }
+
+        internal static object GetCurrentUserPermissions(HttpContext context, IErpService service)
+        {
+            if (context == null)
+                throw new NullReferenceException("context");
+
+            ErpUser user = null;
+            if (context.User != null && context.User is ErpPrincipal)
+            {
+                var identity = (context.User as ErpPrincipal).Identity as ErpIdentity;
+                if (identity != null)
+                    user = identity.User;
+            }
+
+            EntityManager entMan = new EntityManager(service.StorageService);
+            var entities = entMan.ReadEntities().Object.Entities;
+
+            List<object> permissions = new List<object>();
+            foreach (var entity in entities)
+            {
+                bool canRead = false;
+                bool canCreate = false;
+                bool canUpdate = false;
+                bool canDelete = false;
+
+                if (user != null)
+                {
+                    canRead = user.Roles.Any(x => entity.RecordPermissions.CanRead.Any(z => z == x.Id));
+                    canCreate = user.Roles.Any(x => entity.RecordPermissions.CanCreate.Any(z => z == x.Id));
+                    canUpdate = user.Roles.Any(x => entity.RecordPermissions.CanUpdate.Any(z => z == x.Id));
+                    canDelete = user.Roles.Any(x => entity.RecordPermissions.CanDelete.Any(z => z == x.Id));
+                }
+                else
+                {
+                    canRead = entity.RecordPermissions.CanRead.Any(z => z == SystemIds.GuestRoleId);
+                    canCreate = entity.RecordPermissions.CanCreate.Any(z => z == SystemIds.GuestRoleId);
+                    canUpdate = entity.RecordPermissions.CanUpdate.Any(z => z == SystemIds.GuestRoleId);
+                    canDelete = entity.RecordPermissions.CanDelete.Any(z => z == SystemIds.GuestRoleId);
+                }
+
+                if (canRead || canCreate || canUpdate || canDelete)
+                    permissions.Add(new
+                    {
+                        entityId = entity.Id,
+                        entityName = entity.Name,
+                        canRead = canRead,
+                        canCreate = canCreate,
+                        canUpdate = canUpdate,
+                        canDelete = canDelete
+                    });
+            }
+
+            return permissions;
+        }
     }
 }

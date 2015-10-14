@@ -97,7 +97,17 @@ namespace WebVella.ERP.Web.Controllers
             responseObj.Object = null;
             responseObj.Success = true;
             responseObj.Timestamp = DateTime.UtcNow;
-            responseObj.Object = null;
+            return DoResponse(responseObj);
+        }
+
+        [AllowAnonymous]
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/permissions")]
+        public IActionResult CurrentUserPermissions()
+        {
+            var responseObj = new ResponseModel();
+            responseObj.Object = WebSecurityUtil.GetCurrentUserPermissions(Context, service);
+            responseObj.Success = true;
+            responseObj.Timestamp = DateTime.UtcNow;
             return DoResponse(responseObj);
         }
 
