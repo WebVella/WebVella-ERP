@@ -35,7 +35,7 @@
 <div class="record-details">
 	<div class="alert alert-warning" ng-if="contentData.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
 	<form name="createRecord">
-		<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.createViewRegion.sections" ng-if="contentData.createViewRegion != null">
+		<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.createViewRegion.sections track by section.id" ng-if="contentData.createViewRegion != null">
 			<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
 				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
 				<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
@@ -43,7 +43,7 @@
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
 				<div class="form">
-					<div class="row" ng-repeat="row in section.rows">
+					<div class="row" ng-repeat="row in section.rows track by row.id">
 						<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 							<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || contentData[item.meta.name + 'Error'] }">
 								<!--If item is field WITH NO relation-->
