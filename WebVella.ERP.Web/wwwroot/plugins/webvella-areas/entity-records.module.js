@@ -804,6 +804,80 @@
 			popupData.tabLoading = false;
 			popupData.tabError = false;
 			popupData.relationLookupList = null;
+			function tabErrorCallback(response) {
+				popupData.tabLoading = false;
+				popupData.tabError = true;
+				popupData.tabErrorMessage = "<i class='fa fa-fw fa-exclamation-triangle go-red'></i> " + response.message;
+			}
+
+			function getListRecordsSuccessCallback(response) {
+				popupData.relationLookupList = response.object;
+				popupData.helpers[column.dataName] = {};
+				popupData.helpers[column.dataName].lookupCurrentPage = 1;
+				popupData.helpers[column.dataName].lookupSearch = null;
+				if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
+					//single click selection
+					popupData.helpers[column.dataName].modalMode = "single-selection";
+				}
+				else {
+					//multiclick selection
+					popupData.helpers[column.dataName].modalMode = "multi-selection";
+				}
+				popupData.tabLoading = false;
+			}
+
+			function getEntityMetaSuccessCallback(response) {
+				popupData.relatedEntity = response.object;
+				var relatedLookupList = null;
+
+				//Find the default lookup field if none return null.
+				for (var i = 0; i < popupData.relatedEntity.recordLists.length; i++) {
+					if (popupData.relatedEntity.recordLists[i].default && popupData.relatedEntity.recordLists[i].type == "lookup") {
+						relatedLookupList = popupData.relatedEntity.recordLists[i];
+						break;
+					}
+				}
+
+				if (relatedLookupList == null) {
+					popupData.tabLoading = false;
+					popupData.tabError = true;
+					popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";
+				}
+				else {
+					if (column.data.length == 0) {
+						//filter does not have value
+						webvellaAreasService.getListRecords(relatedLookupList.name, popupData.relatedEntity.name, "all", 1, null, getListRecordsSuccessCallback, tabErrorCallback);
+					}
+					else {
+						//filter already has a value
+						if (!popupData.helpers[column.dataName]) {
+							popupData.helpers[column.dataName] = {};
+						}
+						popupData.helpers[column.dataName].lookupCurrentPage = 1;
+						popupData.helpers[column.dataName].lookupSearch = null;
+						if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
+							//single click selection
+							popupData.helpers[column.dataName].modalMode = "single-selection";
+							if (!popupData.helpers[column.dataName].selected) {
+								popupData.helpers[column.dataName].selected = {};
+								for (var m = 0; m < popupData.filterRecordsList.length; m++) {
+									if (popupData.filterRecordsList[m].entity_name == column.entityName && popupData.filterRecordsList[m].field_name == column.fieldName) {
+										popupData.helpers[column.dataName].selected = popupData.filterRecordsList[m].helper.data[0];
+										break;
+									}
+								}
+							}
+
+						}
+						else {
+							//multiclick selection
+							popupData.helpers[column.dataName].modalMode = "multi-selection";
+						}
+						popupData.tabLoading = false;
+					}
+				}
+			}
+
 			if (column.type == "fieldFromRelation") {
 				popupData.tabLoading = true;
 
@@ -820,80 +894,6 @@
 				var isCurrentEntityOrigin = false;
 				if (relation.originEntityName == column.entityName) {
 					isCurrentEntityOrigin = true;
-				}
-
-				function tabErrorCallback(response) {
-					popupData.tabLoading = false;
-					popupData.tabError = true;
-					popupData.tabErrorMessage = "<i class='fa fa-fw fa-exclamation-triangle go-red'></i> " + response.message;
-				}
-
-				function getListRecordsSuccessCallback(response) {
-					popupData.relationLookupList = response.object;
-					popupData.helpers[column.dataName] = {};
-					popupData.helpers[column.dataName].lookupCurrentPage = 1;
-					popupData.helpers[column.dataName].lookupSearch = null;
-					if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
-						//single click selection
-						popupData.helpers[column.dataName].modalMode = "single-selection";
-					}
-					else {
-						//multiclick selection
-						popupData.helpers[column.dataName].modalMode = "multi-selection";
-					}
-					popupData.tabLoading = false;
-				}
-
-				function getEntityMetaSuccessCallback(response) {
-					popupData.relatedEntity = response.object;
-					var relatedLookupList = null;
-
-					//Find the default lookup field if none return null.
-					for (var i = 0; i < popupData.relatedEntity.recordLists.length; i++) {
-						if (popupData.relatedEntity.recordLists[i].default && popupData.relatedEntity.recordLists[i].type == "lookup") {
-							relatedLookupList = popupData.relatedEntity.recordLists[i];
-							break;
-						}
-					}
-
-					if (relatedLookupList == null) {
-						popupData.tabLoading = false;
-						popupData.tabError = true;
-						popupData.tabErrorMessage = "<strong>" + popupData.relatedEntity.label + "</strong> entity does not have a default lookup list. Contact your system administrator.";
-					}
-					else {
-						if (column.data.length == 0) {
-							//filter does not have value
-							webvellaAreasService.getListRecords(relatedLookupList.name, popupData.relatedEntity.name, "all", 1, null, getListRecordsSuccessCallback, tabErrorCallback);
-						}
-						else {
-							//filter already has a value
-							if (!popupData.helpers[column.dataName]) {
-								popupData.helpers[column.dataName] = {};
-							}
-							popupData.helpers[column.dataName].lookupCurrentPage = 1;
-							popupData.helpers[column.dataName].lookupSearch = null;
-							if (relation.relationType == 1 || (relation.relationType == 2 && !isCurrentEntityOrigin)) {
-								//single click selection
-								popupData.helpers[column.dataName].modalMode = "single-selection";
-								if (!popupData.helpers[column.dataName].selected) {
-									popupData.helpers[column.dataName].selected = {};
-									for (var m = 0; m < popupData.filterRecordsList.length; m++) {
-										if (popupData.filterRecordsList[m].entity_name == column.entityName && popupData.filterRecordsList[m].field_name == column.fieldName) {
-											popupData.helpers[column.dataName].selected = popupData.filterRecordsList[m].helper.data[0];
-											break;
-										}
-									}
-								}
-
-							}
-							else {
-								//multiclick selection
-								popupData.helpers[column.dataName].modalMode = "multi-selection";
-							}
-							popupData.tabLoading = false;
-						}
-					}
 				}
 
 				webvellaAdminService.getEntityMeta(column.entityName, getEntityMetaSuccessCallback, tabErrorCallback);

@@ -255,18 +255,28 @@
         contentData.library.items = [];
         contentData.tempLibrary.items.forEach(function (item) {
         	//Initially remove all items that are from relation or relationOptions
-        	if (item.type != "relationOptions" && !item.relationName && item.type != "html") {
-        		contentData.library.items.push(item);
-        	}
-        	else if (item.type == "relationOptions") {
-        		item.addedToLibrary = false;
-        		item.sameOriginTargetEntity = false;
-        		for (var r = 0; r < contentData.relationsList.length; r++) {
-        			if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
-        				item.sameOriginTargetEntity = true;
+        	switch (item.type) {
+        		//case "field":
+        		//	contentData.library.items.push(item);
+        		//	break;
+        		case "view":
+        			if (item.viewId != contentData.view.id) {
+        				contentData.library.items.push(item);
         			}
-        		}
-        		contentData.library.relations.push(item);
+        			break;
+        		case "list":
+        			contentData.library.items.push(item);
+        			break;
+        		case "relationOptions":
+        			item.addedToLibrary = false;
+        			item.sameOriginTargetEntity = false;
+        			for (var r = 0; r < contentData.relationsList.length; r++) {
+        				if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+        					item.sameOriginTargetEntity = true;
+        				}
+        			}
+        			contentData.library.relations.push(item);
+        			break;
         	}
         });
         function sortLibrary() {
@@ -451,7 +461,19 @@
         	if (!relation.addedToLibrary) {
         		contentData.tempLibrary.items.forEach(function (item) {
         			if (item.relationName && item.relationName == relation.relationName) {
-        				contentData.library.items.push(item);
+        				switch (item.type) {
+        					//case "fieldFromRelation":
+        					//	contentData.library.items.push(item);
+        					//	break;
+        					case "viewFromRelation":
+        						if (item.viewId != contentData.view.id) {
+        							contentData.library.items.push(item);
+        						}
+        						break;
+        					case "listFromRelation":
+        						contentData.library.items.push(item);
+        						break;
+        				}
         			}
         		});
         		relation.addedToLibrary = true;
@@ -459,7 +481,10 @@
         	else {
         		var tempRelationChangeLibrary = [];
         		contentData.library.items.forEach(function (item) {
-        			if (!item.relationName || item.relationName != relation.relationName) {
+        			if (!item.relationName) {
+        				tempRelationChangeLibrary.push(item);
+        			}
+        			else if (item.relationName != relation.relationName) {
         				tempRelationChangeLibrary.push(item);
         			}
         		});

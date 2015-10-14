@@ -278,7 +278,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="relation in contentData.library.relations">
+							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
 								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{::relation.relationName}}</div></td>
 								<td>
 									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
