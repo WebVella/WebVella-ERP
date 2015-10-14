@@ -114,6 +114,9 @@
 		$scope.dataKind = "target";
 		if ($scope.relation && $scope.listEntity.id === $scope.relation.originEntityId) {
 			$scope.dataKind = "origin";
+			if ($scope.listEntity.id === $scope.relation.targetEntityId) {
+				$scope.dataKind = "origin-target";
+			}
 		}
 
 

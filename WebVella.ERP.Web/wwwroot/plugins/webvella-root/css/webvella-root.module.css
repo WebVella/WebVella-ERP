@@ -96,6 +96,11 @@ span.divider {
 		padding-left: 15px;
 	}
 
+.field-list {
+	padding-left:1em;
+}
+
+
 .panel .alert {
 	margin: 5px;
 }

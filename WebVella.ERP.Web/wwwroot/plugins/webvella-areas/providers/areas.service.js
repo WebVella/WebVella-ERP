@@ -163,21 +163,74 @@
 			if (!data) {
 				return "";
 			}
-			else if (fieldMeta.displayFormat) {
-				return fieldMeta.displayFormat.replace("{0}", data);
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					if (fieldMeta.displayFormat) {
+						return fieldMeta.displayFormat.replace("{0}", data);
+					}
+					else {
+						return data;
+					}
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getAutoIncrementString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
 			}
 			else {
-				return data;
+				if (fieldMeta.displayFormat) {
+					return fieldMeta.displayFormat.replace("{0}", data);
+				}
+				else {
+					return data;
+				}
 			}
 		}  
     	//2.Checkbox
 		function getCheckboxString(data, fieldMeta) {
-			if (data) {
-				return "<span class='go-green'>true</span>";
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					if (data) {
+						return "<span class='go-green'>true</span>";
+					}
+					else {
+						return "<span class='go-red'>false</span>";
+					}
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getCheckboxString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
 			}
 			else {
-				return "<span class='go-red'>false</span>";
+				if (data) {
+					return "<span class='go-green'>true</span>";
+				}
+				else {
+					return "<span class='go-red'>false</span>";
+				}
+
 			}
+
+
+
 		}
     	//3.Currency
 		function getCurrencyString(data, fieldMeta) {
@@ -201,8 +254,24 @@
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return moment(data).format("DD MMM YYYY");;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getDateString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
-				return moment(data).format("DD MMM YYYY");
+				return moment(data).format("DD MMM YYYY");;
 			}
 		}
     	//5.Datetime
@@ -210,25 +279,75 @@
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return moment(data).format("DD MMM YYYY HH:mm");
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getDateTimeString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				return moment(data).format("DD MMM YYYY HH:mm");
 			}
+
 		}
     	//6.Email
 		function getEmailString(data, fieldMeta) {
+			//There is a problem in Angular when having in href -> the href is not rendered
+			//return "<a href='mailto:" + fieldValue + "' data-rel='external'>" + fieldValue + "</a>";
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getEmailString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
-				//There is a problem in Angular when having in href -> the href is not rendered
-				//return "<a href='mailto:" + fieldValue + "' data-rel='external'>" + fieldValue + "</a>";
 				return data;
 			}
+
 		}
     	//7.File
 		function getFileString(data, fieldMeta) {
 			if (!data) {
 				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return "<a href='" + data + "' taget='_blank' class='link-icon'>view file</a>";
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getFileString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
 			}
 			else {
 				return "<a href='" + data + "' taget='_blank' class='link-icon'>view file</a>";
@@ -239,6 +358,22 @@
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getHtmlString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				return data;
 			}
@@ -248,19 +383,76 @@
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return "<a target='_blank' href='" + data + "'><img src='" + data + "' class='table-image'/></a>";
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getImageString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				return "<a target='_blank' href='" + data + "'><img src='" + data + "' class='table-image'/></a>";
 			}
 		}
     	//10. Textarea
 		function getTextareaString(data, fieldMeta) {
-			return data;
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getTextareaString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return data;
+			}
 		}
     	//11.Multiselect
 		function getMultiselectString(data, fieldMeta) {
 			var generatedStringArray = [];
-			if (data.length === 0) {
+			if (!data) {
 				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					for (var i = 0; i < data.length; i++) {
+						var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
+						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
+					}
+					return generatedStringArray.join(', ');
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getMultiselectString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
 			}
 			else {
 				for (var i = 0; i < data.length; i++) {
@@ -272,57 +464,207 @@
 		}
     	//12. Number
 		function getNumberString(data, fieldMeta) {
-			return data;
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getNumberString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return data;
+			}
 		}
     	//13. Password
 		function getPasswordString(data, fieldMeta) {
-			return "******";
+			if (!data) {
+				return "******";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "******";
+				}
+				else if (data.length == 1) {
+					return "******";
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getPasswordString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return "******";
+			}
 		}
     	//14.Percent
 		function getPercentString(data, fieldMeta) {
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data * 100 + "%";
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getPercentString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				return data * 100 + "%";
 			}
+
 		}
     	//15. Phone
 		function getPhoneString(data, fieldMeta) {
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return phoneUtils.formatInternational(data);
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getPhoneString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				return phoneUtils.formatInternational(data);
 			}
+
 		}
     	//16. Guid
 		function getGuidString(data, fieldMeta) {
-			return data;
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getGuidString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return data;
+			}
 		}
     	//17.Dropdown
 		function getDropdownString(data, fieldMeta) {
 			if (!data) {
 				return "";
 			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					var selected = $filter('filter')(fieldMeta.options, { key: data });
+					return (data && selected.length) ? selected[0].value : 'empty';
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getDropdownString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
 			else {
 				var selected = $filter('filter')(fieldMeta.options, { key: data });
 				return (data && selected.length) ? selected[0].value : 'empty';
 			}
-
 		}
     	//18. Text
-        function getTextString(data, fieldMeta) {
-        	return data;
+		function getTextString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return data;
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getTextString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return data;
+			}
         }
     	//19.Url
-        function getUrlString(data, fieldMeta) {
-        	if (!data) {
-        		return "";
-        	}
-        	else {
-        		return "<a href='" + data + "' target='_blank'>" + data + "</a>";
-        	}
+		function getUrlString(data, fieldMeta) {
+			if (!data) {
+				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return "<a href='" + data + "' target='_blank'>" + data + "</a>";
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getUrlString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else {
+				return "<a href='" + data + "' target='_blank'>" + data + "</a>";
+			}
         }
 		//#endregion
 

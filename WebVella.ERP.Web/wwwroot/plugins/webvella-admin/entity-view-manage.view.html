@@ -71,7 +71,7 @@
 				<div class="col-sm-8">
 					<div class="panel panel-default wrapper">
 						<div class="view-divider section" ng-click="contentData.manageSectionModalOpen(null,1)" title="click to add section"><span>add section here</span></div>
-						<div class="section-wrapper" ng-repeat="section in contentData.viewContentRegion.sections track by $index">
+						<div class="section-wrapper" ng-repeat="section in contentData.viewContentRegion.sections track by section.id">
 							<div class="panel panel-default section">
 								<div class="panel-heading">
 									<span class="actions pull-right">
@@ -82,7 +82,7 @@
 								</div>
 								<div class="panel-body">
 									<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
-									<div class="row-wrapper" ng-repeat="row in section.rows track by $index">
+									<div class="row-wrapper" ng-repeat="row in section.rows track by row.id">
 										<div class="row-actions clearfix">
 											<a title="row settings" class="pull-right" href="javascript:void(0)" ng-click="contentData.manageRowModalOpen(row,section,row.weight)"><i class="fa fa-fw fa-cog"></i></a>
 											<a title="remove row" class="pull-right" href="javascript:void(0)" ng-click="contentData.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
@@ -91,30 +91,33 @@
 											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns track by $index">
 												<div class="drop-zone">
 													<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
-														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by $index">
-															<div ng-if='::item.type == "field"'>
+														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by item.dataName"
+															ng-switch="::item.type">
+															<div ng-switch-when="field">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 															</div>
-															<div ng-if='::item.type == "fieldFromRelation"'>
+															<div ng-switch-when="fieldFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray"> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
-															<div ng-if='::item.type == "view"'>
+															<div ng-switch-when="view">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}}
 															</div>
-															<div ng-if='::item.type == "viewFromRelation"'>
+															<div ng-switch-when="viewFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
-															<div ng-if='::item.type == "list"'>
+															<div ng-switch-when="list">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}}
 															</div>
-															<div ng-if='::item.type == "listFromRelation"'>
+															<div ng-switch-when="listFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
-															<div ng-if='::item.tag == "" && item.type == "html"'>
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> No tag
-															</div>
-															<div ng-if='::item.tag != "" && item.type == "html"'>
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.tag}}
+															<div ng-switch-when="html">
+																<div ng-if='item.tag == ""'>
+																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> No tag
+																</div>
+																<div ng-if='item.tag != ""'>
+																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.tag}}
+																</div>
 															</div>
 														</div>
 													</div>
@@ -142,30 +145,34 @@
 					<div class="view-library section" style="height:300px;overflow-y:scroll;">
 						<div class="drop-zone-disabled" id="library-items-list">
 							<div as-sortable="contentData.libraryDragControlListeners" ng-model="contentData.library.items" id="library">
-								<div class="dropped-item" data-as-sortable-item ng-model="item" ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search} track by item.dataName">
-									<div ng-if='::item.type == "field"'>
+								<div class="dropped-item" data-as-sortable-item ng-model="item" 
+									ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search} track by item.dataName"
+									ng-switch="::item.type">
+									<div ng-switch-when="field">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 									</div>
-									<div ng-if='::item.type == "fieldFromRelation"'>
+									<div ng-switch-when="fieldFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
 									</div>
-									<div ng-if='::item.type == "view"'>
+									<div ng-switch-when="view">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}
 									</div>
-									<div ng-if='::item.type == "viewFromRelation"'>
+									<div ng-switch-when="viewFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
 									</div>
-									<div ng-if='::item.type == "list"'>
+									<div ng-switch-when="list">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}
 									</div>
-									<div ng-if='::item.type == "listFromRelation"'>
+									<div ng-switch-when="listFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
 									</div>
-									<div ng-if='::item.type == "html" && item.tag == ""'>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> No tag
-									</div>
-									<div ng-if='::item.type == "html" && item.tag != ""'>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> {{::item.tag}}
+									<div ng-switch-when="html">
+										<div ng-if='item.tag == ""'>
+											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> No tag
+										</div>
+										<div ng-if='item.tag != ""'>
+											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> {{::item.tag}}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -181,7 +188,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="relation in contentData.library.relations track by $index">
+							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
 								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{::relation.relationName}}</div></td>
 								<td>
 									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">

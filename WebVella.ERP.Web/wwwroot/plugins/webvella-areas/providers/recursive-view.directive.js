@@ -29,7 +29,12 @@
 			scope: {
 				viewData: '&',
 				viewMeta: '&',
-				relationsList: '&'
+				relation: '&',
+				parentId: '&',
+				canAddExisting: '&',
+				canCreate: '&',
+				canRemove: '&',
+				canEdit: '&'
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -48,20 +53,36 @@
 	/* @ngInject */
 	function DirectiveController($filter, $log, $scope, webvellaAreasService) {
 		//#region << Init >>
-		//var directiveData = this;
-		$scope.itemEntityId = $scope.viewMeta().entityId;
-		$scope.viewMeta = $scope.viewMeta().meta;
-		$scope.relationsList = $scope.relationsList();
+		$scope.relation = $scope.relation();
+		$scope.viewMeta = $scope.viewMeta();
+		$scope.viewData = $scope.viewData();
+		$scope.viewEntity = {};
+		$scope.viewEntity.id = $scope.viewMeta.entityId;
+		$scope.viewEntity.name = $scope.viewMeta.entityName;
+		$scope.parentId = $scope.parentId();
+		$scope.canAddExisting = $scope.canAddExisting();
+		$scope.canCreate = $scope.canCreate();
+		$scope.canRemove = $scope.canRemove();
+		$scope.canEdit = $scope.canEdit();
+
 		$scope.selectedRegion = null;
-		for (var i = 0; i < $scope.viewMeta.regions.length; i++) {
-			if ($scope.viewMeta.regions[i].name === "content") {
-				$scope.selectedRegion = $scope.viewMeta.regions[i];
+		for (var i = 0; i < $scope.viewMeta.meta.regions.length; i++) {
+			if ($scope.viewMeta.meta.regions[i].name === "content") {
+				$scope.selectedRegion = $scope.viewMeta.meta.regions[i];
 			}
 		}
 		if ($scope.selectedRegion == null) {
 			$log.error("the subview: " + $scope.viewMeta.name + " does not have a content region");
 		}
-		$scope.viewData = $scope.viewData();
+
+		//Calculate listEntity stance in the relation
+		$scope.dataKind = "target";
+		if ($scope.relation && $scope.viewEntity.id === $scope.relation.originEntityId) {
+			$scope.dataKind = "origin";
+			if ($scope.viewEntity.id === $scope.relation.targetEntityId) {
+				$scope.dataKind = "origin-target";
+			}
+		}
 
 		//SubViews sections collapsed state - depends on sectionId and recordId as there could be multiple records presented with the same view (section id)
 		$scope.sectionCollapsedData = [];
@@ -87,6 +108,7 @@
 		//#endregion
 
 		//#region << Columns render>> //////////////////////////////////////
+
 		//1.Auto increment
 		$scope.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
 		//2.Checkbox
@@ -127,124 +149,6 @@
 		$scope.getUrlString = webvellaAreasService.getUrlString;
 		//#endregion
 
-		//#region << Field Relation render >>
-
-		$scope.getRelation = function (relationName) {
-			for (var i = 0; i < $scope.relationsList.length; i++) {
-				if ($scope.relationsList[i].name === relationName) {
-					//set current entity role
-					if ($scope.itemEntityId === $scope.relationsList[i].targetEntityId && $scope.itemEntityId === $scope.relationsList[i].originEntityId) {
-						$scope.relationsList[i].currentEntityRole = 3; //both origin and target
-					}
-					else if ($scope.itemEntityId === $scope.relationsList[i].targetEntityId && $scope.itemEntityId !== $scope.relationsList[i].originEntityId) {
-						$scope.relationsList[i].currentEntityRole = 2; //target
-					}
-					else if ($scope.itemEntityId !== $scope.relationsList[i].targetEntityId && $scope.itemEntityId === $scope.relationsList[i].originEntityId) {
-						$scope.relationsList[i].currentEntityRole = 1; //origin
-					}
-					else if ($scope.itemEntityId !== $scope.relationsList[i].targetEntityId && $scope.itemEntityId !== $scope.relationsList[i].originEntityId) {
-						$scope.relationsList[i].currentEntityRole = 0; //possible problem
-					}
-					return $scope.relationsList[i];
-				}
-			}
-			return null;
-		}
-
-		$scope.getRelatedFieldSingleHtml = function (item, record) {
-			var htmlString = "&nbsp;";
-			switch (item.meta.fieldType) {
-				case 1:
-					htmlString = $scope.getAutoIncrementString(item, record);
-					break;
-				case 2:
-					htmlString = $scope.getCheckboxString(item, record);
-					break;
-				case 3:
-					htmlString = $scope.getCurrencyString(item, record);
-					break;
-				case 4:
-					htmlString = $scope.getDateString(item, record);
-					break;
-				case 5:
-					htmlString = $scope.getDateString(item, record);
-					break;
-				case 7:
-					htmlString = $scope.getFileString(item, record);
-					break;
-				case 9:
-					htmlString = $scope.getImageString(item, record);
-					break;
-				case 11:
-					htmlString = $scope.getCheckboxlistString(item, record);
-					break;
-				case 14:
-					htmlString = $scope.getPercentString(item, record);
-					break;
-				case 17:
-					htmlString = $scope.getDropdownString(item, record);
-					break;
-				case 19:
-					htmlString = $scope.getUrlString(item, record);
-					break;
-				default:
-					htmlString = record[item.dataName];
-					break;
-			}
-
-			return htmlString;
-		}
-
-		$scope.getRelatedFieldMultiHtml = function (item, record) {
-			var htmlString = "<ul>";
-			for (var j = 0; j < record[item.dataName].length; j++) {
-				var tempRecord = {};
-				tempRecord[item.dataName] = record[item.dataName][j];
-				switch (item.meta.fieldType) {
-					case 1:
-						htmlString += "<li>" + $scope.getAutoIncrementString(item, tempRecord) + "</li>";
-						break;
-					case 2:
-						htmlString += "<li>" + $scope.getCheckboxString(item, tempRecord) + "</li>";
-						break;
-					case 3:
-						htmlString += "<li>" + $scope.getCurrencyString(item, tempRecord) + "</li>";
-						break;
-					case 4:
-						htmlString += "<li>" + $scope.getDateString(item, tempRecord) + "</li>";
-						break;
-					case 5:
-						htmlString += "<li>" + $scope.getDateString(item, tempRecord) + "</li>";
-						break;
-					case 7:
-						htmlString += "<li>" + $scope.getFileString(item, tempRecord) + "</li>";
-						break;
-					case 9:
-						htmlString += "<li>" + $scope.getImageString(item, tempRecord) + "</li>";
-						break;
-					case 11:
-						htmlString += "<li>" + $scope.getCheckboxlistString(item, tempRecord) + "</li>";
-						break;
-					case 14:
-						htmlString += "<li>" + $scope.getPercentString(item, tempRecord) + "</li>";
-						break;
-					case 17:
-						htmlString += "<li>" + $scope.getDropdownString(item, tempRecord) + "</li>";
-						break;
-					case 19:
-						htmlString += "<li>" + $scope.getUrlString(item, tempRecord) + "</li>";
-						break;
-					default:
-						htmlString += "<li>" + $scope.getRelatedFieldSingleHtml(item, tempRecord) + "</li>";
-						break;
-				}
-			}
-			htmlString += "</ul>";
-			return htmlString;
-		}
-
-
-		//#endregion
 	}
 
 
