@@ -185,29 +185,16 @@
 								<span ng-switch-when="19" ng-bind-html="::contentData.getUrlString(record[column.dataName],column.meta)"></span>
 							</div>
 							<div ng-switch-when="view">
-								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
+								<recursive-view view-meta="::column" view-data="::record[column.dataName]"></recursive-view>
 							</div>
 							<div ng-switch-when="viewFromRelation">
-								<recursive-view view-meta="column" view-data="record[column.dataName]" relations-list="contentData.relationsMeta"></recursive-view>
+								<recursive-view view-meta="::column" view-data="::record[column.dataName]"></recursive-view>
 							</div>
 							<div ng-switch-when="list">
-								<recursive-list list-meta="::column"
-												list-data="::record[column.dataName]"
-												can-create="false"
-												can-edit="false"
-												parent-id="::record.id">
-								</recursive-list>
+								<recursive-list list-meta="::column" list-data="::record[column.dataName]"></recursive-list>
 							</div>
 							<div ng-switch-when="listFromRelation">
-								<recursive-list list-meta="::column"
-												list-data="::record[column.dataName]"
-												can-add-existing="false"
-												can-create="false"
-												can-remove="false"
-												can-edit="false"
-												relation="::contentData.getRelation(column.relationName)"
-												parent-id="::record.id">
-								</recursive-list>
+								<recursive-list list-meta="::column" list-data="::record[column.dataName]"></recursive-list>
 							</div>
 						</div>
 						<div ng-if="::!contentData.currentUserHasReadPermission(column)">

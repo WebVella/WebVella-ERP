@@ -34,6 +34,7 @@
                 },
                 resolvedSitemap: resolveSitemap,
                 resolvedCurrentUser: resolveCurrentUser,
+                resolvedCurrentUserEntityPermissions: resolveCurrentUserEntityPermissions,
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedEntityRelationsList: resolveEntityRelationsList,
                 checkedAccessPermission: checkAccessPermission,
@@ -186,6 +187,29 @@
     	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
+
+    resolveCurrentUserEntityPermissions.$inject = ['$q', '$log', 'webvellaRootService'];
+	/* @ngInject */
+    function resolveCurrentUserEntityPermissions($q, $log, webvellaRootService) {
+    	$log.debug('webvellaAreas>base>resolveCurrentUserEntityPermissions> BEGIN resolved ' + moment().format('HH:mm:ss SSSS'));
+    	// Initialize
+    	var defer = $q.defer();
+
+    	// Process
+    	function successCallback(response) {
+    		defer.resolve(response.object);
+    	}
+
+    	function errorCallback(response) {
+    		defer.reject(response.message);
+    	}
+    	webvellaRootService.getCurrentUserPermissions(successCallback, errorCallback);
+
+    	// Return
+    	$log.debug('webvellaAreas>base>resolveCurrentUserEntityPermissions> END resolved ' + moment().format('HH:mm:ss SSSS'));
+    	return defer.promise;
+    }
+
 
 	//#endregion
 

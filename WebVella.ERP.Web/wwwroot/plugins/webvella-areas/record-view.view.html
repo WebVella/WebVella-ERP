@@ -357,8 +357,8 @@
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
-														can-create="true"
-														can-edit="true">
+														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
 										</recursive-view>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
@@ -373,10 +373,10 @@
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="true"
-														can-create="true"
-														can-remove="true"
-														can-edit="true">
+														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
+														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
+														can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
 										</recursive-view>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
@@ -390,8 +390,8 @@
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
-														can-create="true"
-														can-edit="true">
+														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
 										</recursive-list>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
@@ -406,10 +406,10 @@
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="true"
-														can-create="true"
-														can-remove="true"
-														can-edit="true">
+														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
+														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
+														can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
 										</recursive-list>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
@@ -432,8 +432,8 @@
 					<recursive-view view-meta="::contentData.selectedSidebarPage"
 									view-data="::contentData.selectedSidebarPage.data"
 									parent-id="::contentData.stateParams.recordId"
-									can-create="true"
-									can-edit="true">
+									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
 					</recursive-view>
 				</div>
 				<div ng-switch-when="viewFromRelation">
@@ -442,9 +442,9 @@
 									relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)"
 									parent-id="::contentData.stateParams.recordId"
 									can-add-existing="true"
-									can-create="true"
-									can-remove="true"
-									can-edit="true">
+									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
+									can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
 					</recursive-view>
 				</div>
 			</div>
@@ -455,17 +455,17 @@
 					<recursive-list list-meta="::contentData.selectedSidebarPage"
 									list-data="::contentData.selectedSidebarPage.data"
 									parent-id="::contentData.stateParams.recordId"
-									can-create="true"
-									can-edit="true">
+									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
 					</recursive-list>
 				</div>
 				<div ng-switch-when="listFromRelation">
 					<recursive-list list-meta="::contentData.selectedSidebarPage"
 									list-data="::contentData.selectedSidebarPage.data"
-									can-add-existing="true"
-									can-create="true"
-									can-remove="true"
-									can-edit="true"
+									can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
+									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
+									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
+									can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)"
 									relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)"
 									parent-id="::contentData.stateParams.recordId">
 					</recursive-list>

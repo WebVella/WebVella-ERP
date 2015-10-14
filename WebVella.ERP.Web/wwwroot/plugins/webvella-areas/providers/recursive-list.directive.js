@@ -34,7 +34,7 @@
 				canAddExisting: '&',
 				canCreate: '&',
 				canRemove: '&',
-				canEdit: '&'
+				canUpdate: '&'
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -64,20 +64,12 @@
 		$scope.canAddExisting = $scope.canAddExisting();
 		$scope.canCreate = $scope.canCreate();
 		$scope.canRemove = $scope.canRemove();
-		$scope.canEdit = $scope.canEdit();
+		$scope.canUpdate = $scope.canUpdate();
 
 		//Validation
-		if (!$scope.parentId || $scope.parentId == "") {
-			$scope.hasError = true;
-			$scope.errorMessage = "Error: No list parent Id provided!";
-		}
-		else if (!$scope.listData || $scope.listData.length == 0) {
+		if (!$scope.listData || $scope.listData.length == 0) {
 			$scope.hasError = true;
 			$scope.errorMessage = "Error: No list data provided!";
-		}
-		else if (!$scope.listMeta || $scope.listMeta.length == 0) {
-			$scope.hasError = true;
-			$scope.errorMessage = "Error: No list meta provided!";
 		}
 		else if (!$scope.listMeta || $scope.listMeta.length == 0) {
 			$scope.hasError = true;
@@ -92,23 +84,34 @@
 			$scope.errorMessage = "Error: No entityName property in the list meta found!";
 		}
 
-		if (!$scope.canRemove) {
-			$scope.canRemove = false;
-		}
-		if (!$scope.canAddExisting) {
+
+		if (!$scope.parentId || $scope.parentId == "") {
 			$scope.canAddExisting = false;
+			$scope.canCreate = false;
+			$scope.canRemove = false;
+			$scope.canUpdate = false;
 		}
-		else if (!$scope.relation) {
+
+		if (!$scope.relation) {
 			$scope.canAddExisting = false;
 			$scope.canRemove = false;
 		}
 
-		if (!$scope.canCreate) {
+
+		if ($scope.canRemove == undefined) {
+			$scope.canRemove = false;
+		}
+		if ($scope.canAddExisting == undefined) {
+			$scope.canAddExisting = false;
+		}
+		if ($scope.canCreate == undefined) {
 			$scope.canCreate = false;
 		}
-		if (!$scope.canEdit) {
-			$scope.canEdit = false;
+		if ($scope.canUpdate == undefined) {
+			$scope.canUpdate = false;
 		}
+
+
 
 		//Calculate entity stance in the relation
 		$scope.dataKind = "target";

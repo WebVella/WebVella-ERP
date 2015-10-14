@@ -15,8 +15,8 @@
 			{{::section.label}}
 		</div>
 		<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
-			<div class="panel-body-actions" ng-if="::(canRemove || canCreate)">
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canCreate">
+			<div class="panel-body-actions" ng-if="::(canRemove || canUpdate)">
+				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canUpdate">
 					<i class="fa fa-pencil"></i>
 				</a>
 				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(recordData)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
@@ -198,17 +198,17 @@
 
 							<!-- If item is view -->
 							<div class="field" ng-switch-when="view">
-								<recursive-view view-meta="item" view-data="recordData[item.dataName]" relations-list="relationsList"></recursive-view>
+								<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
 							</div>
 							<div class="field" ng-switch-when="viewFromRelation">
-								<recursive-view view-meta="item" view-data="recordData[item.dataName]" relations-list="relationsList"></recursive-view>
+								<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
 							</div>
 							<!-- If item is list -->
 							<div class="field" ng-switch-when="list">
-								<span class="go-red">case not implemented yet</span>
+								<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
 							</div>
 							<div class="field" ng-switch-when="listFromRelation">
-								<span class="go-red">case not implemented yet</span>
+								<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
 							</div>
 
 						</div>
