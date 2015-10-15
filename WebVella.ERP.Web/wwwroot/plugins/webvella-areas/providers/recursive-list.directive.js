@@ -400,7 +400,11 @@
 			}
 
 			function errorCallback(response) {
-
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-green">Error:</span> ' + response.message,
+					timeout: 7000
+				});
 			}
 			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.parentEntity.name, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
 
