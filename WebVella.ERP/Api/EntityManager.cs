@@ -1831,6 +1831,15 @@ namespace WebVella.ERP.Api
                                         var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationFieldItem)column).RelationId);
                                         ((RecordListRelationFieldItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
+                                        if( relation != null )
+                                        {
+                                            var relationOptions = recordList.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationFieldItem)column).RelationId);
+                                            if (relationOptions != null)
+                                                ((RecordListRelationFieldItem)column).RelationDirection = relationOptions.Direction;
+                                            else
+                                                ((RecordListRelationFieldItem)column).RelationDirection = "origin-target";
+                                        }
+
                                         Field field = fields.FirstOrDefault(f => f.Id == ((RecordListRelationFieldItem)column).FieldId);
                                         if (field != null)
                                         {
@@ -1866,6 +1875,16 @@ namespace WebVella.ERP.Api
                                         var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationViewItem)column).RelationId);
                                         ((RecordListRelationViewItem)column).RelationName = relation != null ? relation.Name : string.Empty;
 
+                                        if (relation != null)
+                                        {
+                                            var relationOptions = recordList.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationViewItem)column).RelationId);
+                                            if (relationOptions != null)
+                                                ((RecordListRelationViewItem)column).RelationDirection = relationOptions.Direction;
+                                            else
+                                                ((RecordListRelationViewItem)column).RelationDirection = "origin-target";
+                                        }
+
+
                                         RecordView view = recordViews.FirstOrDefault(v => v.Id == ((RecordListRelationViewItem)column).ViewId);
                                         if (view != null)
                                         {
@@ -1900,6 +1919,15 @@ namespace WebVella.ERP.Api
 
                                         var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationListItem)column).RelationId);
                                         ((RecordListRelationListItem)column).RelationName = relation != null ? relation.Name : string.Empty;
+
+                                        if (relation != null)
+                                        {
+                                            var relationOptions = recordList.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordListRelationListItem)column).RelationId);
+                                            if (relationOptions != null)
+                                                ((RecordListRelationListItem)column).RelationDirection = relationOptions.Direction;
+                                            else
+                                                ((RecordListRelationListItem)column).RelationDirection = "origin-target";
+                                        }
 
                                         RecordList list = recordLists.FirstOrDefault(l => l.Id == ((RecordListRelationListItem)column).ListId);
                                         if (list != null)
@@ -2004,6 +2032,15 @@ namespace WebVella.ERP.Api
                                                     var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationFieldItem)item).RelationId);
                                                     ((RecordViewRelationFieldItem)item).RelationName = relation != null ? relation.Name : string.Empty;
 
+                                                    if (relation != null)
+                                                    {
+                                                        var relationOptions = recordView.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationFieldItem)item).RelationId);
+                                                        if (relationOptions != null)
+                                                            ((RecordViewRelationFieldItem)item).RelationDirection = relationOptions.Direction;
+                                                        else
+                                                            ((RecordViewRelationFieldItem)item).RelationDirection = "origin-target";
+                                                    }
+
                                                     Field field = fields.FirstOrDefault(f => f.Id == ((RecordViewRelationFieldItem)item).FieldId);
                                                     if (field != null)
                                                     {
@@ -2017,6 +2054,15 @@ namespace WebVella.ERP.Api
                                                 {
                                                     var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationViewItem)item).RelationId);
                                                     ((RecordViewRelationViewItem)item).RelationName = relation != null ? relation.Name : string.Empty;
+
+                                                    if (relation != null)
+                                                    {
+                                                        var relationOptions = recordView.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationViewItem)item).RelationId);
+                                                        if (relationOptions != null)
+                                                            ((RecordViewRelationViewItem)item).RelationDirection = relationOptions.Direction;
+                                                        else
+                                                            ((RecordViewRelationViewItem)item).RelationDirection = "origin-target";
+                                                    }
 
                                                     Entity relEntity = GetEntityByViewId(((RecordViewRelationViewItem)item).ViewId, entities);
                                                     if (relEntity != null)
@@ -2039,6 +2085,15 @@ namespace WebVella.ERP.Api
                                                 {
                                                     var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationListItem)item).RelationId);
                                                     ((RecordViewRelationListItem)item).RelationName = relation != null ? relation.Name : string.Empty;
+
+                                                    if (relation != null)
+                                                    {
+                                                        var relationOptions = recordView.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewRelationListItem)item).RelationId);
+                                                        if (relationOptions != null)
+                                                            ((RecordViewRelationListItem)item).RelationDirection = relationOptions.Direction;
+                                                        else
+                                                            ((RecordViewRelationListItem)item).RelationDirection = "origin-target";
+                                                    }
 
                                                     Entity relEntity = GetEntityByListId(((RecordViewRelationListItem)item).ListId, entities);
                                                     if (relEntity != null)
@@ -2103,6 +2158,15 @@ namespace WebVella.ERP.Api
                                         var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationViewItem)item).RelationId);
                                         ((RecordViewSidebarRelationViewItem)item).RelationName = relation != null ? relation.Name : string.Empty;
 
+                                        if (relation != null)
+                                        {
+                                            var relationOptions = recordView.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationViewItem)item).RelationId);
+                                            if (relationOptions != null)
+                                                ((RecordViewSidebarRelationViewItem)item).RelationDirection = relationOptions.Direction;
+                                            else
+                                                ((RecordViewSidebarRelationViewItem)item).RelationDirection = "origin-target";
+                                        }
+
                                         Entity relEntity = GetEntityByViewId(((RecordViewSidebarRelationViewItem)item).ViewId, entities);
                                         if (relEntity != null)
                                         {
@@ -2124,6 +2188,15 @@ namespace WebVella.ERP.Api
                                     {
                                         var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationListItem)item).RelationId);
                                         ((RecordViewSidebarRelationListItem)item).RelationName = relation != null ? relation.Name : string.Empty;
+
+                                        if (relation != null)
+                                        {
+                                            var relationOptions = recordView.RelationOptions.SingleOrDefault(x => x.RelationId == ((RecordViewSidebarRelationListItem)item).RelationId);
+                                            if (relationOptions != null)
+                                                ((RecordViewSidebarRelationListItem)item).RelationDirection = relationOptions.Direction;
+                                            else
+                                                ((RecordViewSidebarRelationListItem)item).RelationDirection = "origin-target";
+                                        }
 
                                         Entity relEntity = GetEntityByListId(((RecordViewSidebarRelationListItem)item).ListId, entities);
                                         if (relEntity != null)
