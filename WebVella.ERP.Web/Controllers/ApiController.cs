@@ -1585,15 +1585,14 @@ namespace WebVella.ERP.Web.Controllers
             search = search.Trim();
 
             var listFields = list.Columns.Where(c => c is RecordListFieldItem).Select(c => c as RecordListFieldItem).ToList();
+
+
             var firstSearchableField = listFields.FirstOrDefault(x => entity.Fields.Single(f => f.Id == x.FieldId).Searchable);
             if (firstSearchableField == null)
-                throw new Exception("The field you are searching in is missing.");
+                throw new Exception("The list has no searchable fields.");
 
             var field = entity.Fields.SingleOrDefault(f => f.Id == firstSearchableField.FieldId);
-            if (field == null)
-                throw new Exception("The field you are searching in is missing.");
-
-
+          
             if (field is AutoNumberField || field is CurrencyField || field is NumberField || field is PercentField)
             {
                 decimal value;
