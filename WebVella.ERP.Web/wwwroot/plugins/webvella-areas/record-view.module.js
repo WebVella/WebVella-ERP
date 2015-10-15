@@ -1000,9 +1000,15 @@
 			}
 
 			function errorCallback(response) {
-
+				//ngToast.create({
+				//	className: 'error',
+				//	content: '<span class="go-green">Error:</span> ' + response.message,
+				//	timeout: 7000
+				//});
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+			if(popupData.searchQuery){
+				webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+				}
 
 		}
 		//#endregion

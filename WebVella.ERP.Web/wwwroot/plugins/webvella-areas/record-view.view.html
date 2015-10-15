@@ -457,7 +457,7 @@
 		<h3 class="modal-title">Select <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
 		<div ng-hide="popupData.hasError">
 			<div ng-if="popupData.hasWarning">
 				<div class="alert alert-warning">{{popupData.warningMessage}}</div>
