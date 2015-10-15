@@ -347,7 +347,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "meta")]
 		public Field Meta { get; set; }
 	}
 
@@ -386,7 +389,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "meta")]
 		public RecordView Meta { get; set; }
 	}
 
@@ -425,7 +431,11 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "meta")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+
+        [JsonProperty(PropertyName = "meta")]
 		public RecordList Meta { get; set; }
 	}
 

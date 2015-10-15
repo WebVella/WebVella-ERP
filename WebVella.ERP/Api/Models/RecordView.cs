@@ -458,7 +458,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "viewId")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "viewId")]
 		public Guid ViewId { get; set; }
 
 		[JsonProperty(PropertyName = "viewName")]
@@ -479,7 +482,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "listId")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "listId")]
 		public Guid ListId { get; set; }
 
 		[JsonProperty(PropertyName = "listName")]
@@ -670,7 +676,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "fieldId")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "fieldId")]
 		public Guid FieldId { get; set; }
 
 		[JsonProperty(PropertyName = "fieldName")]
@@ -691,7 +700,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "viewId")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "viewId")]
 		public Guid ViewId { get; set; }
 
 		[JsonProperty(PropertyName = "viewName")]
@@ -712,7 +724,10 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "relationName")]
 		public string RelationName { get; set; }
 
-		[JsonProperty(PropertyName = "listId")]
+        [JsonProperty(PropertyName = "relationDirection")]
+        public string RelationDirection { get; set; }
+
+        [JsonProperty(PropertyName = "listId")]
 		public Guid ListId { get; set; }
 
 		[JsonProperty(PropertyName = "listName")]
