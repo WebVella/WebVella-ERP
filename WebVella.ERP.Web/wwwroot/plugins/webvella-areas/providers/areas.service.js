@@ -28,26 +28,27 @@
         serviceInstance.getListFilter = getListFilter;
         serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
         serviceInstance.getViewRecord = getViewRecord;
-		//// Record data presenting
-        serviceInstance.getAutoIncrementString = getAutoIncrementString;
-        serviceInstance.getCheckboxString = getCheckboxString;
-        serviceInstance.getCurrencyString = getCurrencyString;
-        serviceInstance.getDateString = getDateString;
-        serviceInstance.getDateTimeString = getDateTimeString;
-        serviceInstance.getEmailString = getEmailString;
-        serviceInstance.getFileString = getFileString;
-        serviceInstance.getHtmlString = getHtmlString;
-        serviceInstance.getImageString = getImageString;
-        serviceInstance.getTextareaString = getTextareaString;
-        serviceInstance.getMultiselectString = getMultiselectString;
-        serviceInstance.getNumberString = getNumberString;
-        serviceInstance.getPasswordString = getPasswordString;
-        serviceInstance.getPercentString = getPercentString;
-        serviceInstance.getPhoneString = getPhoneString;
-        serviceInstance.getGuidString = getGuidString;
-        serviceInstance.getDropdownString = getDropdownString;
-        serviceInstance.getTextString = getTextString;
-        serviceInstance.getUrlString = getUrlString;
+    	//// Record data presenting
+        serviceInstance.renderFieldValue = renderFieldValue;
+        //serviceInstance.getAutoIncrementString = getAutoIncrementString;
+        //serviceInstance.getCheckboxString = getCheckboxString;
+        //serviceInstance.getCurrencyString = getCurrencyString;
+        //serviceInstance.getDateString = getDateString;
+        //serviceInstance.getDateTimeString = getDateTimeString;
+        //serviceInstance.getEmailString = getEmailString;
+        //serviceInstance.getFileString = getFileString;
+        //serviceInstance.getHtmlString = getHtmlString;
+        //serviceInstance.getImageString = getImageString;
+        //serviceInstance.getTextareaString = getTextareaString;
+        //serviceInstance.getMultiselectString = getMultiselectString;
+        //serviceInstance.getNumberString = getNumberString;
+        //serviceInstance.getPasswordString = getPasswordString;
+        //serviceInstance.getPercentString = getPercentString;
+        //serviceInstance.getPhoneString = getPhoneString;
+        //serviceInstance.getGuidString = getGuidString;
+        //serviceInstance.getDropdownString = getDropdownString;
+        //serviceInstance.getTextString = getTextString;
+        //serviceInstance.getUrlString = getUrlString;
 
 		//#region << API calls >>
     	///////////////////////
@@ -158,6 +159,49 @@
 		//#endregion
 
     	//#region << Field data presentation ///////////////////////////////////////////
+    	//General Compile method
+        function renderFieldValue(data, fieldMeta) {
+        	switch (fieldMeta.fieldType) {
+        		case 1:
+        			return getAutoIncrementString(data, fieldMeta);
+        		case 2:
+        			return getCheckboxString(data, fieldMeta);
+        		case 3:
+        			return getCurrencyString(data, fieldMeta);
+        		case 4:
+        			return getDateString(data, fieldMeta);
+        		case 5:
+        			return getDateTimeString(data, fieldMeta);
+        		case 6:
+        			return getEmailString(data, fieldMeta);
+        		case 7:
+        			return getFileString(data, fieldMeta);
+        		case 8:
+        			return getHtmlString(data, fieldMeta);
+        		case 9:
+        			return getImageString(data, fieldMeta);
+        		case 10:
+        			return getTextareaString(data, fieldMeta);
+        		case 11:
+        			return getMultiselectString(data, fieldMeta);
+        		case 12:
+        			return getNumberString(data, fieldMeta);
+        		case 13:
+        			return getPasswordString(data, fieldMeta);
+        		case 14:
+        			return getPercentString(data, fieldMeta);
+        		case 15:
+        			return getPhoneString(data, fieldMeta);
+        		case 16:
+        			return getGuidString(data, fieldMeta);
+        		case 17:
+        			return getDropdownString(data, fieldMeta);
+        		case 18:
+        			return getTextString(data, fieldMeta);
+        		case 19:
+        			return getUrlString(data, fieldMeta);
+        	}
+        }
 		//1.Auto increment
 		function getAutoIncrementString (data, fieldMeta) {
 			if (!data) {
@@ -195,7 +239,7 @@
 		}  
     	//2.Checkbox
 		function getCheckboxString(data, fieldMeta) {
-			if (!data) {
+			if (data == undefined) {
 				return "";
 			}
 			else if (data instanceof Array) {
@@ -413,7 +457,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -425,7 +469,7 @@
 				}
 			}
 			else {
-				return data;
+				return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
 			}
 		}
     	//11.Multiselect

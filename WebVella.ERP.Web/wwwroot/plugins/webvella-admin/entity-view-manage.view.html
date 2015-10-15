@@ -189,7 +189,12 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
-								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{::relation.relationName}}</div></td>
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">
+									<span ng-show="::contentData.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+									<span ng-show="::contentData.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+									<span ng-show="::contentData.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
+									{{::relation.relationName}}
+								</div></td>
 								<td>
 									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>

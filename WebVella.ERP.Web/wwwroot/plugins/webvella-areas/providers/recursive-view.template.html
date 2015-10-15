@@ -31,26 +31,8 @@
 							<!--If item is field WITH NO relation-->
 							<div class="field" ng-switch-when="field">
 								<label class="control-label">{{::item.meta.label}}</label>
-								<div ng-switch="::item.meta.fieldType">
-									<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-									<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+								<div>
+									<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 								</div>
 							</div>
 
@@ -59,137 +41,29 @@
 								<label class="control-label">{{::item.meta.label}}</label>
 								<div ng-switch="::relation.relationType">
 									<div ng-switch-when="1" ng-switch="::dataKind">
-										<div ng-switch-when="origin" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="origin">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
-										<div ng-switch-when="target" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="target">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
 										<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
 									</div>
 									<div ng-switch-when="2" ng-switch="::dataKind">
-										<div ng-switch-when="origin" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="origin">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
-										<div ng-switch-when="target" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="target">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
 										<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
 									</div>
 									<div ng-switch-when="3" ng-switch="::dataKind">
-										<div ng-switch-when="origin" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="origin">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
-										<div ng-switch-when="target" ng-switch="::item.meta.fieldType">
-											<span ng-switch-when="1" ng-bind-html="::getAutoIncrementString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="2" ng-bind-html="::getCheckboxString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="3" ng-bind-html="::getCurrencyString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="4" ng-bind-html="::getDateString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="5" ng-bind-html="::getDateTimeString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="6" ng-bind-html="::getEmailString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="7" ng-bind-html="::getFileString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="8" ng-bind-html="::getHtmlString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="9" ng-bind-html="::getImageString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="10" ng-bind-html="::getTextareaString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="11" ng-bind-html="::getMultiselectString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="12" ng-bind-html="::getNumberString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="13" ng-bind-html="::getPasswordString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="14" ng-bind-html="::getPercentString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="15" ng-bind-html="::getPhoneString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="16" ng-bind-html="::getGuidString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="17" ng-bind-html="::getDropdownString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="18" ng-bind-html="::getTextString(recordData[item.dataName],item.meta)"></span>
-											<span ng-switch-when="19" ng-bind-html="::getUrlString(recordData[item.dataName],item.meta)"></span>
+										<div ng-switch-when="target">
+											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
 										<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
 									</div>
@@ -247,7 +121,7 @@
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
-							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns">{{::column.meta.label}}</th>
+							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -260,26 +134,8 @@
 									selected
 								</span>
 							</td>
-							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns" ng-switch="::column.meta.fieldType">
-								<span ng-switch-when="1" ng-bind-html="::popupData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="2" ng-bind-html="::popupData.getCheckboxString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="3" ng-bind-html="::popupData.getCurrencyString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="4" ng-bind-html="::popupData.getDateString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="5" ng-bind-html="::popupData.getDateTimeString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="6" ng-bind-html="::popupData.getEmailString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="7" ng-bind-html="::popupData.getFileString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="8" ng-bind-html="::popupData.getHtmlString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="9" ng-bind-html="::popupData.getImageString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="10" ng-bind-html="::popupData.getTextareaString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="11" ng-bind-html="::popupData.getMultiselectString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="12" ng-bind-html="::popupData.getNumberString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="13" ng-bind-html="::popupData.getPasswordString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="14" ng-bind-html="::popupData.getPercentString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="15" ng-bind-html="::popupData.getPhoneString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="16" ng-bind-html="::popupData.getGuidString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="17" ng-bind-html="::popupData.getDropdownString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="18" ng-bind-html="::popupData.getTextString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="19" ng-bind-html="::popupData.getUrlString(record[column.dataName],column.meta)"></span>
+							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">
+								<span ng-bind-html="::popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
 							</td>
 						</tr>
 					</tbody>

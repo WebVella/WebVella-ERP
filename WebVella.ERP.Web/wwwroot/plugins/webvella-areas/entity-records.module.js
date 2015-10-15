@@ -498,46 +498,8 @@
 
 		//#endregion
 
-		//#region << Columns render>> //////////////////////////////////////
-		//1.Auto increment
-		contentData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
-		//2.Checkbox
-		contentData.getCheckboxString = webvellaAreasService.getCheckboxString;
-		//3.Currency
-		contentData.getCurrencyString = webvellaAreasService.getCurrencyString;
-		//4.Date
-		contentData.getDateString = webvellaAreasService.getDateString;
-		//5.Datetime
-		contentData.getDateTimeString = webvellaAreasService.getDateTimeString;
-		//6.Email
-		contentData.getEmailString = webvellaAreasService.getEmailString;
-		//7.File
-		contentData.getFileString = webvellaAreasService.getFileString;
-		//8.Html
-		contentData.getHtmlString = webvellaAreasService.getHtmlString;
-		//9.Image
-		contentData.getImageString = webvellaAreasService.getImageString;
-		//10.Textarea
-		contentData.getTextareaString = webvellaAreasService.getTextareaString;
-		//11.Multiselect
-		contentData.getMultiselectString = webvellaAreasService.getMultiselectString;
-		//12.Number
-		contentData.getNumberString = webvellaAreasService.getNumberString;
-		//13.Password
-		contentData.getPasswordString = webvellaAreasService.getPasswordString;
-		//14.Percent
-		contentData.getPercentString = webvellaAreasService.getPercentString;
-		//15.Phone
-		contentData.getPhoneString = webvellaAreasService.getPhoneString;
-		//15.Guid
-		contentData.getGuidString = webvellaAreasService.getGuidString;
-		//17.Dropdown
-		contentData.getDropdownString = webvellaAreasService.getDropdownString;
-		//18. Text
-		contentData.getTextString = webvellaAreasService.getTextString;
-		//18.Url
-		contentData.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
+		//Render field value general
+		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		//#region << Modals >> ////////////////////////////////////
 
@@ -1099,47 +1061,8 @@
 
 		//#region << Lookup lists >>
 
-		//#region << Columns render>> //////////////////////////////////////
-
-		//1.Auto increment
-		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
-		//2.Checkbox
-		popupData.getCheckboxString = webvellaAreasService.getCheckboxString;
-		//3.Currency
-		popupData.getCurrencyString = webvellaAreasService.getCurrencyString;
-		//4.Date
-		popupData.getDateString = webvellaAreasService.getDateString;
-		//5.Datetime
-		popupData.getDateTimeString = webvellaAreasService.getDateTimeString;
-		//6.Email
-		popupData.getEmailString = webvellaAreasService.getEmailString;
-		//7.File
-		popupData.getFileString = webvellaAreasService.getFileString;
-		//8.Html
-		popupData.getHtmlString = webvellaAreasService.getHtmlString;
-		//9.Image
-		popupData.getImageString = webvellaAreasService.getImageString;
-		//10.Textarea
-		popupData.getTextareaString = webvellaAreasService.getTextareaString;
-		//11.Multiselect
-		popupData.getMultiselectString = webvellaAreasService.getMultiselectString;
-		//12.Number
-		popupData.getNumberString = webvellaAreasService.getNumberString;
-		//13.Password
-		popupData.getPasswordString = webvellaAreasService.getPasswordString;
-		//14.Percent
-		popupData.getPercentString = webvellaAreasService.getPercentString;
-		//15.Phone
-		popupData.getPhoneString = webvellaAreasService.getPhoneString;
-		//15.Guid
-		popupData.getGuidString = webvellaAreasService.getGuidString;
-		//17.Dropdown
-		popupData.getDropdownString = webvellaAreasService.getDropdownString;
-		//18. Text
-		popupData.getTextString = webvellaAreasService.getTextString;
-		//18.Url
-		popupData.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
+		// << Columns render>> //////////////////////////////////////
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		popupData.rebindLookupList = function (column, page, event) {
 			function getListRecordsErrorCallback(response) {
