@@ -1560,8 +1560,7 @@ namespace WebVella.ERP.Web.Controllers
             {
                 response.Timestamp = DateTime.UtcNow;
                 response.Success = false;
-                response.Message = "";
-                response.Errors.Add(new ErrorModel("", "", ex.Message));
+                response.Message = ex.Message;
                 return DoResponse(response);
             }
 
