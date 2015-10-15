@@ -341,7 +341,27 @@
 				contentData.lastEnabledHtmlFieldData = fastCopy(contentData.selectedSidebarPage.data[item.dataName]);
 			}
 
+			contentData.emptyField = function (item) {
+				var relation = contentData.getRelation(item.relationName);
+				var presentedFieldId = item.meta.id;
+				var currentEntityId = contentData.currentEntity.id;
+				//Currently it is implemented only for 1:N relation type and the current entity should be target and field is required
+				if (relation.relationType == 2 && relation.targetEntityId == currentEntityId) {
+					var itemObject = {};
+					itemObject.meta = null;
+					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+						if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
+							itemObject.meta = contentData.currentEntity.fields[i];
+						}
+					}
+					if (itemObject.meta != null && !itemObject.meta.required) {
+						contentData.fieldUpdate(itemObject, null);
+					}
+				}
 
+				//contentData.fieldUpdate(item, null);
+				var ii = 0;
+			}
 
 			contentData.fieldUpdate = function (item, data) {
 				var defer = $q.defer();
@@ -624,11 +644,13 @@
 		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
 		//Date & DateTime 
 		contentData.getTimeString = function (item) {
-			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-			if (!fieldValue) {
-				return "";
-			} else {
-				return $filter('date')(fieldValue, "HH:mm");
+			if (item && item.dataName && contentData.selectedSidebarPage.data[item.dataName]) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "";
+				} else {
+					return $filter('date')(fieldValue, "HH:mm");
+				}
 			}
 		}
 
@@ -724,7 +746,10 @@
 
 					// Initialize
 					var displayedRecordId = $stateParams.recordId;
-					var oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
+					var oldRelationRecordId = null;
+					if (contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"]) {
+						oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
+					}
 
 					function successCallback(response) {
 						ngToast.create({
@@ -755,7 +780,9 @@
 					var recordsToBeDettached = [];
 					if (returnObject.dataKind == "origin") {
 						recordsToBeAttached.push(returnObject.selectedRecordId);
-						recordsToBeDettached.push(oldRelationRecordId);
+						if (oldRelationRecordId != null) {
+							recordsToBeDettached.push(oldRelationRecordId);
+						}
 						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
 					}
 					else if (returnObject.dataKind == "target") {
@@ -949,6 +976,7 @@
 		}
 
 		//#endregion
+
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
@@ -1036,7 +1064,12 @@
 		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		popupData.isSelectedRecord = function (recordId) {
-			return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+			if (popupData.currentlyAttachedIds) {
+				return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+			}
+			else {
+				return false;
+			}
 		}
 
 		//Single record before save
@@ -1197,22 +1230,22 @@
 		};
 
 		/// Aux
-		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$modalInstance.close('success');
-			popupData.parentData.modalInstance.close('success');
-			//webvellaRootService.GoToState($state, $state.current.name, {});
-		}
+		//function successCallback(response) {
+		//	ngToast.create({
+		//		className: 'success',
+		//		content: '<span class="go-green">Success:</span> ' + response.message
+		//	});
+		//	$modalInstance.close('success');
+		//	popupData.parentData.modalInstance.close('success');
+		//	//webvellaRootService.GoToState($state, $state.current.name, {});
+		//}
 
-		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+		//function errorCallback(response) {
+		//	popupData.hasError = true;
+		//	popupData.errorMessage = response.message;
 
 
-		}
+		//}
 
 
 		//#endregion
