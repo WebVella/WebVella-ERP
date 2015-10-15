@@ -13,14 +13,14 @@
 
 	angular
         .module('webvellaAreas')
-        .directive('recursiveView', directive)
+        .directive('recursiveView', recursiveView)
 		.controller('RVAddExistingModalController', RVAddExistingModalController)
 		.controller('RVManageRelatedRecordModalController', RVManageRelatedRecordModalController);
 
-	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
+	recursiveView.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
 
 	/* @ngInject */
-	function directive($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
+	function recursiveView($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
 		//Text Binding (Prefix: @)
 		//One-way Binding (Prefix: &)
 		//Two-way Binding (Prefix: =)
@@ -67,11 +67,7 @@
 		$scope.canRemove = $scope.canRemove();
 		$scope.canUpdate = $scope.canUpdate();
 
-		if (!$scope.viewData || $scope.viewData.length == 0) {
-			$scope.hasError = true;
-			$scope.errorMessage = "Error: No view data provided!";
-		}
-		else if (!$scope.viewMeta || $scope.viewMeta.length == 0) {
+		if (!$scope.viewMeta || $scope.viewMeta.length == 0) {
 			$scope.hasError = true;
 			$scope.errorMessage = "Error: No view meta provided!";
 		}
