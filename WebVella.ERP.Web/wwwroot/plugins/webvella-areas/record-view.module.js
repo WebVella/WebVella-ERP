@@ -358,9 +358,6 @@
 						contentData.fieldUpdate(itemObject, null);
 					}
 				}
-
-				//contentData.fieldUpdate(item, null);
-				var ii = 0;
 			}
 
 			contentData.fieldUpdate = function (item, data) {
@@ -624,13 +621,76 @@
 
 			contentData.currentUserHasUpdatePermission = function (item) {
 				var result = false;
-				if (!item.meta.enableSecurity || item.meta.permissions == null) {
+				if (!item.meta.enableSecurity) {
 					return true;
 				}
 				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 					for (var k = 0; k < item.meta.permissions.canUpdate.length; k++) {
 						if (item.meta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
 							result = true;
+						}
+					}
+				}
+				return result;
+			}
+
+			contentData.currentUserHasUpdatePermissionRelation = function (item) {
+				var result = false;
+				var relation = contentData.getRelation(item.relationName);
+				var currentEntityId = contentData.currentEntity.id;
+				var checkedFieldMeta = null;
+				//Currently it is implemented only for 1:N & 1:1 relation type as it does not make much sense for N:N
+				if (relation.relationType == 1 || relation.relationType == 2) {
+					var checkedFieldId = null;
+					if (relation.originEntityId != relation.targetEntityId) {
+						//if the presented item from the current entity
+						if (currentEntityId == item.entityId) {
+							//we need to check this item permissions
+							checkedFieldMeta = item.meta;
+						}
+						else {
+							//we need to find the corresponding field from the current entity
+							if (relation.originFieldId == item.meta.id) {
+								//the field from the current entity is than target
+								checkedFieldId = relation.targetFieldId;
+							}
+							else {
+								//the field from the current entity is than origin
+								checkedFieldId = relation.originFieldId;
+							}
+						}
+					}
+					else {
+						var checkedFieldId = null;
+						if (item.relationDirection == "target-origin") {
+							//we need the target field
+							checkedFieldId = relation.targetFieldId;
+						}
+						else {
+							//we need the origin field
+							checkedFieldId = relation.originFieldId;
+						}
+					}
+
+					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+						if (contentData.currentEntity.fields[i].id == checkedFieldId) {
+							checkedFieldMeta = contentData.currentEntity.fields[i];
+						}
+					}
+
+					if (checkedFieldMeta == null) {
+						return false;
+					}
+					else {
+						if (!checkedFieldMeta.enableSecurity) {
+							return true;
+						}
+						for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+							for (var k = 0; k < checkedFieldMeta.permissions.canUpdate.length; k++) {
+								if (checkedFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									return true;
+								}
+							}
 						}
 					}
 				}
