@@ -125,47 +125,8 @@
 
 		//#endregion
 
-		//#region << Columns render>> //////////////////////////////////////
-
-		//1.Auto increment
-		$scope.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
-		//2.Checkbox
-		$scope.getCheckboxString = webvellaAreasService.getCheckboxString;
-		//3.Currency
-		$scope.getCurrencyString = webvellaAreasService.getCurrencyString;
-		//4.Date
-		$scope.getDateString = webvellaAreasService.getDateString;
-		//5.Datetime
-		$scope.getDateTimeString = webvellaAreasService.getDateTimeString;
-		//6.Email
-		$scope.getEmailString = webvellaAreasService.getEmailString;
-		//7.File
-		$scope.getFileString = webvellaAreasService.getFileString;
-		//8.Html
-		$scope.getHtmlString = webvellaAreasService.getHtmlString;
-		//9.Image
-		$scope.getImageString = webvellaAreasService.getImageString;
-		//10.Textarea
-		$scope.getTextareaString = webvellaAreasService.getTextareaString;
-		//11.Multiselect
-		$scope.getMultiselectString = webvellaAreasService.getMultiselectString;
-		//12.Number
-		$scope.getNumberString = webvellaAreasService.getNumberString;
-		//13.Password
-		$scope.getPasswordString = webvellaAreasService.getPasswordString;
-		//14.Percent
-		$scope.getPercentString = webvellaAreasService.getPercentString;
-		//15.Phone
-		$scope.getPhoneString = webvellaAreasService.getPhoneString;
-		//15.Guid
-		$scope.getGuidString = webvellaAreasService.getGuidString;
-		//17.Dropdown
-		$scope.getDropdownString = webvellaAreasService.getDropdownString;
-		//18. Text
-		$scope.getTextString = webvellaAreasService.getTextString;
-		//18.Url
-		$scope.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
+		//Field render
+		$scope.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		//#region << Logic >>
 		$scope.instantDettachRecord = function (record) {
@@ -446,47 +407,8 @@
 		}
 		//#endregion
 
-		//#region << Render Logic >>
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
-		//1.Auto increment
-		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
-		//2.Checkbox
-		popupData.getCheckboxString = webvellaAreasService.getCheckboxString;
-		//3.Currency
-		popupData.getCurrencyString = webvellaAreasService.getCurrencyString;
-		//4.Date
-		popupData.getDateString = webvellaAreasService.getDateString;
-		//5.Datetime
-		popupData.getDateTimeString = webvellaAreasService.getDateTimeString;
-		//6.Email
-		popupData.getEmailString = webvellaAreasService.getEmailString;
-		//7.File
-		popupData.getFileString = webvellaAreasService.getFileString;
-		//8.Html
-		popupData.getHtmlString = webvellaAreasService.getHtmlString;
-		//9.Image
-		popupData.getImageString = webvellaAreasService.getImageString;
-		//10.Textarea
-		popupData.getTextareaString = webvellaAreasService.getTextareaString;
-		//11.Multiselect
-		popupData.getMultiselectString = webvellaAreasService.getMultiselectString;
-		//12.Number
-		popupData.getNumberString = webvellaAreasService.getNumberString;
-		//13.Password
-		popupData.getPasswordString = webvellaAreasService.getPasswordString;
-		//14.Percent
-		popupData.getPercentString = webvellaAreasService.getPercentString;
-		//15.Phone
-		popupData.getPhoneString = webvellaAreasService.getPhoneString;
-		//15.Guid
-		popupData.getGuidString = webvellaAreasService.getGuidString;
-		//17.Dropdown
-		popupData.getDropdownString = webvellaAreasService.getDropdownString;
-		//18. Text
-		popupData.getTextString = webvellaAreasService.getTextString;
-		//18.Url
-		popupData.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
 
 		//#region << Logic >>
 		popupData.instantAttachRecord = function (record) {

@@ -269,6 +269,9 @@
 		}
 		//#endregion
 
+		//#region << Logic >>
+
+		//Is Edit logic
 		if (contentData.selectedSidebarPage.isEdit) {
 
 			//#region << Edit View Rendering Logic fields>>
@@ -469,30 +472,6 @@
 				return defer.promise;
 			}
 
-			//Auto increment
-			contentData.getAutoIncrementString = function (item) {
-				return webvellaAreasService.getAutoIncrementString(contentData.selectedSidebarPage.data[item.dataName],item.meta);
-			};
-			//Checkbox
-			contentData.getCheckboxString = function (item) {
-				return webvellaAreasService.getCheckboxString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-			//Currency
-			contentData.getCurrencyString = function (item) {
-				return webvellaAreasService.getCurrencyString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-			//Date & DateTime 
-			contentData.getDateString = function (item) {
-				return webvellaAreasService.getDateString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-			contentData.getTimeString = function (item) {
-				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-				if (!fieldValue) {
-					return "";
-				} else {
-					return $filter('date')(fieldValue, "HH:mm");
-				}
-			}
 			$scope.picker = { opened: false };
 			$scope.openPicker = function () {
 				$timeout(function () {
@@ -607,24 +586,6 @@
 				]
 			};
 
-			//Checkbox list
-			contentData.getMultiselectString = function (item) {
-				return webvellaAreasService.getMultiselectString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-
-			//Password
-			contentData.dummyPasswordModels = {}; //as the password value is of know use being encrypted, we will assign dummy models
-			//Dropdown
-			contentData.getDropdownString = function (item) {
-				return webvellaAreasService.getDropdownString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-			//Percent
-			$scope.Math = window.Math;
-
-			contentData.getPercentString = function (item) {
-				return webvellaAreasService.getPercentString(contentData.selectedSidebarPage.data[item.dataName], item.meta);
-			};
-
 			contentData.currentUserRoles = fastCopy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {
 				var result = false;
@@ -640,7 +601,6 @@
 				}
 				return result;
 			}
-
 
 			contentData.currentUserHasUpdatePermission = function (item) {
 				var result = false;
@@ -658,8 +618,67 @@
 			}
 
 			//#endregion
-
 		}
+
+		//Render
+		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		//Date & DateTime 
+		contentData.getTimeString = function (item) {
+			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+			if (!fieldValue) {
+				return "";
+			} else {
+				return $filter('date')(fieldValue, "HH:mm");
+			}
+		}
+
+		contentData.recursiveObjectCanDo = function (permissionName, relatedEntityName) {
+			var currentEntityPermissions = {};
+			var relatedEntityPermissions = {};
+			for (var i = 0; i < contentData.currentUserEntityPermissions.length; i++) {
+				if (contentData.currentUserEntityPermissions[i].entityName == contentData.currentEntity.name) {
+					currentEntityPermissions = contentData.currentUserEntityPermissions[i];
+				}
+				else if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
+					relatedEntityPermissions = contentData.currentUserEntityPermissions[i];
+				}
+			}
+			switch (permissionName) {
+				case "can-add-existing":
+					if(currentEntityPermissions.canUpdate){
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-create":
+					if (currentEntityPermissions.canUpdate && relatedEntityPermissions.canCreate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-edit":
+					if (relatedEntityPermissions.canUpdate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+				case "can-remove":
+					if (currentEntityPermissions.canUpdate) {
+						return true;
+					}
+					else {
+						return false;
+					}
+					break;
+			}
+		}
+		//#endregion
 
 		//#region << Modals >>
 
@@ -914,12 +933,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1,null, getListRecordsSuccessCallback, errorCallback);
+							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (contentData.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1,null, getListRecordsSuccessCallback, errorCallback);
+						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -929,55 +948,6 @@
 			return defer.promise;
 		}
 
-		//#endregion
-
-		//#region << Logic >>
-		contentData.recursiveObjectCanDo = function (permissionName, relatedEntityName) {
-			var currentEntityPermissions = {};
-			var relatedEntityPermissions = {};
-			for (var i = 0; i < contentData.currentUserEntityPermissions.length; i++) {
-				if (contentData.currentUserEntityPermissions[i].entityName == contentData.currentEntity.name) {
-					currentEntityPermissions = contentData.currentUserEntityPermissions[i];
-				}
-				else if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
-					relatedEntityPermissions = contentData.currentUserEntityPermissions[i];
-				}
-			}
-			switch (permissionName) {
-				case "can-add-existing":
-					if(currentEntityPermissions.canUpdate){
-						return true;
-					}
-					else {
-						return false;
-					}
-					break;
-				case "can-create":
-					if (currentEntityPermissions.canUpdate && relatedEntityPermissions.canCreate) {
-						return true;
-					}
-					else {
-						return false;
-					}
-					break;
-				case "can-edit":
-					if (relatedEntityPermissions.canUpdate) {
-						return true;
-					}
-					else {
-						return false;
-					}
-					break;
-				case "can-remove":
-					if (currentEntityPermissions.canUpdate) {
-						return true;
-					}
-					else {
-						return false;
-					}
-					break;
-			}
-		}
 		//#endregion
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
@@ -1017,6 +987,26 @@
 			popupData.warningMessage = resolvedLookupRecords.message;
 		}
 
+		//#region << Search >>
+		popupData.checkForSearchEnter = function (e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 13) { //Enter keycode
+				popupData.submitSearchQuery();
+			}
+		}
+		popupData.submitSearchQuery = function () {
+			function successCallback(response) {
+				popupData.relationLookupList = fastCopy(response.object);
+			}
+
+			function errorCallback(response) {
+
+			}
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+
+		}
+		//#endregion
+
 		//#region << Paging >>
 		popupData.selectPage = function (page) {
 			// Process
@@ -1034,47 +1024,10 @@
 
 		//#endregion
 
-		//#region << Render Logic >>
+		//#region << Logic >>
 
-		//1.Auto increment
-		popupData.getAutoIncrementString = webvellaAreasService.getAutoIncrementString;
-		//2.Checkbox
-		popupData.getCheckboxString = webvellaAreasService.getCheckboxString;
-		//3.Currency
-		popupData.getCurrencyString = webvellaAreasService.getCurrencyString;
-		//4.Date
-		popupData.getDateString = webvellaAreasService.getDateString;
-		//5.Datetime
-		popupData.getDateTimeString = webvellaAreasService.getDateTimeString;
-		//6.Email
-		popupData.getEmailString = webvellaAreasService.getEmailString;
-		//7.File
-		popupData.getFileString = webvellaAreasService.getFileString;
-		//8.Html
-		popupData.getHtmlString = webvellaAreasService.getHtmlString;
-		//9.Image
-		popupData.getImageString = webvellaAreasService.getImageString;
-		//10.Textarea
-		popupData.getTextareaString = webvellaAreasService.getTextareaString;
-		//11.Multiselect
-		popupData.getMultiselectString = webvellaAreasService.getMultiselectString;
-		//12.Number
-		popupData.getNumberString = webvellaAreasService.getNumberString;
-		//13.Password
-		popupData.getPasswordString = webvellaAreasService.getPasswordString;
-		//14.Percent
-		popupData.getPercentString = webvellaAreasService.getPercentString;
-		//15.Phone
-		popupData.getPhoneString = webvellaAreasService.getPhoneString;
-		//15.Guid
-		popupData.getGuidString = webvellaAreasService.getGuidString;
-		//17.Dropdown
-		popupData.getDropdownString = webvellaAreasService.getDropdownString;
-		//18. Text
-		popupData.getTextString = webvellaAreasService.getTextString;
-		//18.Url
-		popupData.getUrlString = webvellaAreasService.getUrlString;
-		//#endregion
+		//Render field values
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		popupData.isSelectedRecord = function (recordId) {
 			return popupData.currentlyAttachedIds.indexOf(recordId) > -1
@@ -1229,6 +1182,8 @@
 				popupData.processInstantSelection(returnObject);
 			}
 		};
+
+		//#endregion
 
 
 		popupData.cancel = function () {

@@ -3242,27 +3242,6 @@ table.editable:hover {
 	}
 
 
-/*Textarea*/
-.editable.editable-textarea {
-	overflow-y: scroll;
-	height: 100px !important;
-}
-
-	.editable.editable-textarea:hover:after,
-	.editable.editable-textarea:after {
-		display: none;
-	}
-
-	.editable.editable-textarea pre {
-		font-style: normal;
-		padding: 0;
-		border: none;
-		background: none;
-		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-		font-size: 14px;
-		margin-bottom: 0;
-	}
-
 /*Checkbox*/
 .editable-checkbox {
 	padding-top: 20px !important;

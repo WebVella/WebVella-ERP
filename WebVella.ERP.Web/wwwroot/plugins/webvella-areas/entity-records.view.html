@@ -4,10 +4,10 @@
 			<div class="btn-group" role="group" aria-label="page toolbar">
 				<!--<a class="btn btn-default hidden-xs" 
 					href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}"
-					tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
+					uib-tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
 						<i class="fa fa-pencil"></i> create
 				</a>-->
-				<!--<a class="btn btn-default hidden-xs" ng-click="" tooltip-placement="bottom" tooltip="Bookmark the page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
+				<!--<a class="btn btn-default hidden-xs" ng-click="" uib-tooltip-placement="bottom" tooltip="Bookmark the page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
 			</div>
 		</div>
 		<div class="icon-box">
@@ -71,7 +71,7 @@
 			<div class="input-group">
 				<a class="btn btn-default btn-sm hidden-xs"
 				   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}"
-				   tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
+				   uib-tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
 					<i class="fa fa-pencil"></i> create new
 				</a>
 			</div>
@@ -142,47 +142,11 @@
 					</td>
 					<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
 						<div ng-if="::contentData.currentUserHasReadPermission(column)" ng-switch="::column.type">
-							<div ng-switch="::column.meta.fieldType" ng-switch-when="field">
-								<span ng-switch-when="1" ng-bind-html="::contentData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="2" ng-bind-html="::contentData.getCheckboxString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="3" ng-bind-html="::contentData.getCurrencyString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="4" ng-bind-html="::contentData.getDateString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="5" ng-bind-html="::contentData.getDateTimeString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="6" ng-bind-html="::contentData.getEmailString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="7" ng-bind-html="::contentData.getFileString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="8" ng-bind-html="::contentData.getHtmlString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="9" ng-bind-html="::contentData.getImageString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="10" ng-bind-html="::contentData.getTextareaString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="11" ng-bind-html="::contentData.getMultiselectString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="12" ng-bind-html="::contentData.getNumberString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="13" ng-bind-html="::contentData.getPasswordString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="14" ng-bind-html="::contentData.getPercentString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="15" ng-bind-html="::contentData.getPhoneString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="16" ng-bind-html="::contentData.getGuidString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="17" ng-bind-html="::contentData.getDropdownString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="18" ng-bind-html="::contentData.getTextString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="19" ng-bind-html="::contentData.getUrlString(record[column.dataName],column.meta)"></span>
+							<div ng-switch-when="field">
+								<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
 							</div>
-							<div ng-switch="::column.meta.fieldType" ng-switch-when="fieldFromRelation">
-								<span ng-switch-when="1" ng-bind-html="::contentData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="2" ng-bind-html="::contentData.getCheckboxString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="3" ng-bind-html="::contentData.getCurrencyString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="4" ng-bind-html="::contentData.getDateString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="5" ng-bind-html="::contentData.getDateTimeString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="6" ng-bind-html="::contentData.getEmailString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="7" ng-bind-html="::contentData.getFileString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="8" ng-bind-html="::contentData.getHtmlString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="9" ng-bind-html="::contentData.getImageString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="10" ng-bind-html="::contentData.getTextareaString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="11" ng-bind-html="::contentData.getMultiselectString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="12" ng-bind-html="::contentData.getNumberString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="13" ng-bind-html="::contentData.getPasswordString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="14" ng-bind-html="::contentData.getPercentString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="15" ng-bind-html="::contentData.getPhoneString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="16" ng-bind-html="::contentData.getGuidString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="17" ng-bind-html="::contentData.getDropdownString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="18" ng-bind-html="::contentData.getTextString(record[column.dataName],column.meta)"></span>
-								<span ng-switch-when="19" ng-bind-html="::contentData.getUrlString(record[column.dataName],column.meta)"></span>
+							<div ng-switch-when="fieldFromRelation">
+								<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
 							</div>
 							<div ng-switch-when="view">
 								<recursive-view view-meta="::column" view-data="::record[column.dataName]"></recursive-view>
@@ -1054,26 +1018,8 @@
 														deselect
 													</a>
 												</td>
-												<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}" ng-switch="column.meta.fieldType">
-													<span ng-switch-when="1" ng-bind-html="popupData.getAutoIncrementString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="2" ng-bind-html="popupData.getCheckboxString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="3" ng-bind-html="popupData.getCurrencyString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="4" ng-bind-html="popupData.getDateString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="5" ng-bind-html="popupData.getDateTimeString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="6" ng-bind-html="popupData.getEmailString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="7" ng-bind-html="popupData.getFileString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="8" ng-bind-html="popupData.getHtmlString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="9" ng-bind-html="popupData.getImageString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="10" ng-bind-html="popupData.getTextareaString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="11" ng-bind-html="popupData.getMultiselectString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="12" ng-bind-html="popupData.getNumberString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="13" ng-bind-html="popupData.getPasswordString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="14" ng-bind-html="popupData.getPercentString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="15" ng-bind-html="popupData.getPhoneString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="16" ng-bind-html="popupData.getGuidString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="17" ng-bind-html="popupData.getDropdownString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="18" ng-bind-html="popupData.getTextString(record[column.dataName],column.meta)"></span>
-													<span ng-switch-when="19" ng-bind-html="popupData.getUrlString(record[column.dataName],column.meta)"></span>
+												<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns | filter: {meta:{name:'!id'}}">
+													<span ng-bind-html="popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
 												</td>
 											</tr>
 										</tbody>

@@ -279,7 +279,12 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
-								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">{{::relation.relationName}}</div></td>
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">
+										<span ng-show="::contentData.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+										<span ng-show="::contentData.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+										<span ng-show="::contentData.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>									
+									{{::relation.relationName}}
+									</div></td>
 								<td>
 									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
@@ -343,7 +348,7 @@
 						</td>
 						<td style="width:60px;">
 							<a ng-hide="parent.subQueries.length <= 1" class="btn btn-default go-red" ng-click="contentData.DeleteItem(parent, $index)"><i class="fa fa-fw fa-close"></i></a>
-							<span ng-hide="parent.subQueries.length > 1" class="btn go-red " tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
+							<span ng-hide="parent.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
 						</td>
 					</tr>
 				</table>

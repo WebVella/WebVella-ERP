@@ -682,6 +682,14 @@
 			sortLibrary();
 		}
 
+		contentData.getRelationType = function (relationId) {
+			for (var i = 0; i < contentData.relationsList.length; i++) {
+				if (contentData.relationsList[i].id == relationId) {
+					return contentData.relationsList[i].relationType;
+				}
+			}
+			return 0;
+		}
 
 		//#endregion
 
