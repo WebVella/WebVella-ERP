@@ -8,10 +8,10 @@
     <!--plugin:webvella-root-->
     <link href="~/plugins/webvella-root/lib/bootstrap/dist/css/bootstrap.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/ngtoast/dist/ngtoast.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+	<link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/font-awesome/css/font-awesome.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/offline/themes/offline-theme-default.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/offline/themes/offline-language-english.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
-    @*<link href="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />*@
     <link href="~/plugins/webvella-root/lib/angular-xeditable/dist/css/xeditable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/css/webvella-root.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-root/lib/ng-sortable/dist/ng-sortable.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
@@ -59,6 +59,7 @@
 	<script src="~/plugins/webvella-root/lib/ngstorage/ngstorage.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>
 
 	@* Core Application module definition *@
 	<script>
@@ -71,8 +72,7 @@
                     'ngAnimate', 'ngTouch', 'ngCookies', 'ngSanitize',
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model',
-					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper',
-					//'angular-loading-bar' - disabled due to poor performance
+					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 
