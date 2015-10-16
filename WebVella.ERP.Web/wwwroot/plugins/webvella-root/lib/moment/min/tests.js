@@ -32240,8 +32240,8 @@
         assert.equal(moment('12', 'SS').get('ms'), 120, 'centiseconds');
         // assert.equal(moment('123', 'SS', true).isValid(), false, 'centiseconds with three digits');
         assert.equal(moment('123', 'SSS').get('ms'), 123, 'milliseconds');
-        assert.equal(moment('1234', 'SSSS').get('ms'), 123, 'milliseconds with SSSS'));
-        assert.equal(moment('123456789101112', 'SSSS').get('ms'), 123, 'milliseconds with SSSS'));
+        assert.equal(moment('1234', 'SSSS').get('ms'), 123, 'milliseconds with SSSS');
+        assert.equal(moment('123456789101112', 'SSSS').get('ms'), 123, 'milliseconds with SSSS');
     });
 
     test('string with format no separators', function (assert) {

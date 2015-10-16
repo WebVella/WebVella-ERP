@@ -4614,7 +4614,26 @@ namespace WebVella.ERP.Api
         private List<RecordList> CreateEntityDefaultRecordLists(Entity entity)
         {
             List<RecordList> recordLists = new List<RecordList>();
+			
+			var create = new RecordList();
+			create.Id = Guid.NewGuid();
+			create.Name = "general";
+			create.Label = "General";
+			create.Default = true;
+			create.System = true;
+			create.Type = "general";
+			create.VisibleColumnsCount = 5;
+			recordLists.Add(create);	
 
+			var lookup = new RecordList();
+			lookup.Id = Guid.NewGuid();
+			lookup.Name = "lookup";
+			lookup.Label = "Lookup";
+			lookup.Default = true;
+			lookup.System = true;
+			lookup.Type = "lookup";
+			lookup.VisibleColumnsCount = 5;
+			recordLists.Add(lookup);	
 
             return recordLists;
         }
@@ -4622,6 +4641,43 @@ namespace WebVella.ERP.Api
         private List<RecordView> CreateEntityDefaultRecordViews(Entity entity)
         {
             List<RecordView> recordViewList = new List<RecordView>();
+
+			
+			var create = new RecordView();
+			create.Id = Guid.NewGuid();
+			create.Name = "create";
+			create.Label = "Create";
+			create.Default = true;
+			create.System = true;
+			create.Type = "create";
+			recordViewList.Add(create);			
+			
+			var quickCreate = new RecordView();
+			quickCreate.Id = Guid.NewGuid();
+			quickCreate.Name = "quick_create";
+			quickCreate.Label = "Quick create";
+			quickCreate.Default = true;
+			quickCreate.System = true;
+			quickCreate.Type = "quick_create";
+			recordViewList.Add(quickCreate);
+
+			var quickView = new RecordView();
+			quickView.Id = Guid.NewGuid();
+			quickView.Name = "quick_view";
+			quickView.Label = "Quick view";
+			quickView.Default = true;
+			quickView.System = true;
+			quickView.Type = "quick_view";
+			recordViewList.Add(quickView);			
+
+			var general = new RecordView();
+			general.Id = Guid.NewGuid();
+			general.Name = "general";
+			general.Label = "General";
+			general.Default = true;
+			general.System = true;
+			general.Type = "general";
+			recordViewList.Add(general);		
 
 
             return recordViewList;

@@ -6,8 +6,8 @@ A service which makes it easy possible to have recursive Angular directives.
 When an Angular directive calls itself, Angular gets into an endless loop. This service provides the logic needed to work around this.
 
 ## Installation
-1. `bower install angular-recursion --save` or `npm install angular-recursion --save`.
-2. Include `angular-recursion.min.js`.
+1. `bower install angular-recursion`.
+2. Include `bower_components/angular-recursion/angular-recursion.min.js`.
 3. Add the `RecursionHelper` module as a dependency.
 4. Inject the `RecursionHelper` service and use it.
 

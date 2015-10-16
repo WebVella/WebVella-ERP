@@ -189,7 +189,7 @@
 
         for (var i = 0; i < popupData.roles.length; i++) {
             //Enable all checkboxes for administrators
-            if (popupData.roles[i].name == "Administrator") {
+            if (popupData.roles[i].name == "administrator") {
                 popupData.entity.recordPermissions.canRead.push(popupData.roles[i].id);
                 popupData.entity.recordPermissions.canCreate.push(popupData.roles[i].id);
                 popupData.entity.recordPermissions.canUpdate.push(popupData.roles[i].id);

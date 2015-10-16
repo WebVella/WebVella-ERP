@@ -341,7 +341,24 @@
 				contentData.lastEnabledHtmlFieldData = fastCopy(contentData.selectedSidebarPage.data[item.dataName]);
 			}
 
-
+			contentData.emptyField = function (item) {
+				var relation = contentData.getRelation(item.relationName);
+				var presentedFieldId = item.meta.id;
+				var currentEntityId = contentData.currentEntity.id;
+				//Currently it is implemented only for 1:N relation type and the current entity should be target and field is required
+				if (relation.relationType == 2 && relation.targetEntityId == currentEntityId) {
+					var itemObject = {};
+					itemObject.meta = null;
+					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+						if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
+							itemObject.meta = contentData.currentEntity.fields[i];
+						}
+					}
+					if (itemObject.meta != null && !itemObject.meta.required) {
+						contentData.fieldUpdate(itemObject, null);
+					}
+				}
+			}
 
 			contentData.fieldUpdate = function (item, data) {
 				var defer = $q.defer();
@@ -604,7 +621,7 @@
 
 			contentData.currentUserHasUpdatePermission = function (item) {
 				var result = false;
-				if (!item.meta.enableSecurity || item.meta.permissions == null) {
+				if (!item.meta.enableSecurity) {
 					return true;
 				}
 				for (var i = 0; i < contentData.currentUserRoles.length; i++) {
@@ -617,18 +634,93 @@
 				return result;
 			}
 
+			contentData.currentUserHasUpdatePermissionRelation = function (item) {
+				var result = false;
+				var relation = contentData.getRelation(item.relationName);
+				var currentEntityId = contentData.currentEntity.id;
+				var checkedFieldMeta = null;
+				//Currently it is implemented only for 1:N & 1:1 relation type as it does not make much sense for N:N
+				if (relation.relationType == 1 || relation.relationType == 2) {
+					var checkedFieldId = null;
+					if (relation.originEntityId != relation.targetEntityId) {
+						//if the presented item from the current entity
+						if (currentEntityId == item.entityId) {
+							//we need to check this item permissions
+							checkedFieldMeta = item.meta;
+						}
+						else {
+							//we need to find the corresponding field from the current entity
+							if (relation.originFieldId == item.meta.id) {
+								//the field from the current entity is than target
+								checkedFieldId = relation.targetFieldId;
+							}
+							else {
+								//the field from the current entity is than origin
+								checkedFieldId = relation.originFieldId;
+							}
+						}
+					}
+					else {
+						var checkedFieldId = null;
+						if (item.relationDirection == "target-origin") {
+							//we need the target field
+							checkedFieldId = relation.targetFieldId;
+						}
+						else {
+							//we need the origin field
+							checkedFieldId = relation.originFieldId;
+						}
+					}
+
+					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+						if (contentData.currentEntity.fields[i].id == checkedFieldId) {
+							checkedFieldMeta = contentData.currentEntity.fields[i];
+						}
+					}
+
+					if (checkedFieldMeta == null) {
+						return false;
+					}
+					else {
+						if (!checkedFieldMeta.enableSecurity) {
+							return true;
+						}
+						for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+							for (var k = 0; k < checkedFieldMeta.permissions.canUpdate.length; k++) {
+								if (checkedFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									return true;
+								}
+							}
+						}
+					}
+				}
+				return result;
+			}
+
 			//#endregion
 		}
 
 		//Render
 		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		contentData.getRelationLabel = function (relationName) {
+			var relation = findInArray(contentData.relationsList, "name", relationName);
+			if (relation) {
+				return relation.label;
+			}
+			else {
+				return "";
+			}
+		}
+
 		//Date & DateTime 
 		contentData.getTimeString = function (item) {
-			var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
-			if (!fieldValue) {
-				return "";
-			} else {
-				return $filter('date')(fieldValue, "HH:mm");
+			if (item && item.dataName && contentData.selectedSidebarPage.data[item.dataName]) {
+				var fieldValue = contentData.selectedSidebarPage.data[item.dataName];
+				if (!fieldValue) {
+					return "";
+				} else {
+					return $filter('date')(fieldValue, "HH:mm");
+				}
 			}
 		}
 
@@ -724,7 +816,10 @@
 
 					// Initialize
 					var displayedRecordId = $stateParams.recordId;
-					var oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
+					var oldRelationRecordId = null;
+					if (contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"]) {
+						oldRelationRecordId = contentData.selectedSidebarPage.data["$field$" + returnObject.relationName + "$id"][0];
+					}
 
 					function successCallback(response) {
 						ngToast.create({
@@ -755,7 +850,9 @@
 					var recordsToBeDettached = [];
 					if (returnObject.dataKind == "origin") {
 						recordsToBeAttached.push(returnObject.selectedRecordId);
-						recordsToBeDettached.push(oldRelationRecordId);
+						if (oldRelationRecordId != null) {
+							recordsToBeDettached.push(oldRelationRecordId);
+						}
 						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
 					}
 					else if (returnObject.dataKind == "target") {
@@ -949,6 +1046,7 @@
 		}
 
 		//#endregion
+
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
@@ -974,6 +1072,7 @@
 		//Init
 		popupData.currentlyAttachedIds = fastCopy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
 		popupData.dbAttachedIds = fastCopy(popupData.currentlyAttachedIds);
+		popupData.getRelationLabel = contentData.getRelationLabel;
 		popupData.attachedRecordIdsDelta = [];
 		popupData.detachedRecordIdsDelta = [];
 
@@ -1000,9 +1099,15 @@
 			}
 
 			function errorCallback(response) {
-
+				//ngToast.create({
+				//	className: 'error',
+				//	content: '<span class="go-green">Error:</span> ' + response.message,
+				//	timeout: 7000
+				//});
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+			if(popupData.searchQuery){
+				webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+				}
 
 		}
 		//#endregion
@@ -1030,7 +1135,12 @@
 		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		popupData.isSelectedRecord = function (recordId) {
-			return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+			if (popupData.currentlyAttachedIds) {
+				return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+			}
+			else {
+				return false;
+			}
 		}
 
 		//Single record before save
@@ -1191,22 +1301,22 @@
 		};
 
 		/// Aux
-		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$modalInstance.close('success');
-			popupData.parentData.modalInstance.close('success');
-			//webvellaRootService.GoToState($state, $state.current.name, {});
-		}
+		//function successCallback(response) {
+		//	ngToast.create({
+		//		className: 'success',
+		//		content: '<span class="go-green">Success:</span> ' + response.message
+		//	});
+		//	$modalInstance.close('success');
+		//	popupData.parentData.modalInstance.close('success');
+		//	//webvellaRootService.GoToState($state, $state.current.name, {});
+		//}
 
-		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+		//function errorCallback(response) {
+		//	popupData.hasError = true;
+		//	popupData.errorMessage = response.message;
 
 
-		}
+		//}
 
 
 		//#endregion

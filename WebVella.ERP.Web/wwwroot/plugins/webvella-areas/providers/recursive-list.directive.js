@@ -11,14 +11,14 @@
 
 	angular
         .module('webvellaAreas')
-        .directive('recursiveList', directive)
+        .directive('recursiveList', recursiveList)
 		.controller('RLAddExistingModalController', RLAddExistingModalController)
 		.controller('RLManageRelatedRecordModalController', RLManageRelatedRecordModalController);
 
-	directive.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
+	recursiveList.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
 
 	/* @ngInject */
-	function directive($compile, $templateRequest, RecursionHelper) {
+	function recursiveList($compile, $templateRequest, RecursionHelper) {
 		//Text Binding (Prefix: @)
 		//One-way Binding (Prefix: &)
 		//Two-way Binding (Prefix: =)
@@ -67,11 +67,7 @@
 		$scope.canUpdate = $scope.canUpdate();
 
 		//Validation
-		if (!$scope.listData || $scope.listData.length == 0) {
-			$scope.hasError = true;
-			$scope.errorMessage = "Error: No list data provided!";
-		}
-		else if (!$scope.listMeta || $scope.listMeta.length == 0) {
+		if (!$scope.listMeta || $scope.listMeta.length == 0) {
 			$scope.hasError = true;
 			$scope.errorMessage = "Error: No list meta provided!";
 		}
@@ -400,7 +396,11 @@
 			}
 
 			function errorCallback(response) {
-
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-green">Error:</span> ' + response.message,
+					timeout: 7000
+				});
 			}
 			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.parentEntity.name, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
 
