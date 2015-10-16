@@ -7,34 +7,34 @@ body {
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
+	display: none !important;
 }
 
 .transparent {
-    opacity: 0;  /* Opacity for Modern Browsers */
-    filter: alpha(opacity=0);  /* Opacity for IE8 and lower */
-    zoom: 1;  /* Fix for IE7 */
+	opacity: 0; /* Opacity for Modern Browsers */
+	filter: alpha(opacity=0); /* Opacity for IE8 and lower */
+	zoom: 1; /* Fix for IE7 */
 }
 
 a, a:hover, a:active, a:focus {
 	outline: 0;
-	text-decoration:none;
+	text-decoration: none;
 }
 
 .clickable:hover {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .as-sortable-item-handle:hover {
-	cursor:move;
+	cursor: move;
 }
 
 .as-sortable-placeholder {
-	display:block !important;
+	display: block !important;
 }
 
 h5 small {
-	font-size:12px;
+	font-size: 12px;
 }
 
 .form-signin {
@@ -63,7 +63,7 @@ span.divider {
 }
 
 .navbar-brand {
-	font-size:17px;
+	font-size: 17px;
 }
 
 .panel, .panel-heading {
@@ -98,15 +98,15 @@ span.divider {
 
 .panel-body-actions {
 	margin-top: -5px;
-    margin-left: -5px;
-    margin-right: -5px;
-    margin-bottom: 10px;
-    padding: 5px;
-    background: #f5f5f5;
+	margin-left: -5px;
+	margin-right: -5px;
+	margin-bottom: 10px;
+	padding: 5px;
+	background: #f5f5f5;
 }
 
 .field-list {
-	padding-left:1em;
+	padding-left: 1em;
 }
 
 
@@ -151,7 +151,7 @@ span.divider {
 
 .table-image {
 	max-height: 5em;
-	height:5em;
+	height: 5em;
 }
 
 /*
@@ -452,7 +452,7 @@ ngToast
 	#userbox .avatar {
 		width: 2.5em;
 		height: 2.5em;
-		border-radius:2.5em;
+		border-radius: 2.5em;
 		float: left;
 		margin-right: 10px;
 		display: block;
@@ -465,10 +465,10 @@ ngToast
 		overflow: hidden;
 		/*max-width: 185px;
 		display: inline-block;*/
-		display:block;
+		display: block;
 		height: 2.5em;
 		line-height: 2.5em;
-		text-overflow:ellipsis;
+		text-overflow: ellipsis;
 	}
 
 /*Mini sidebar*/
@@ -1569,7 +1569,7 @@ ngToast
 
 	#page-content #filters {
 		padding: 1em .5em 0 .5em;
-		margin-bottom:-1em;
+		margin-bottom: -1em;
 	}
 
 	#page-content #list {
@@ -1598,13 +1598,13 @@ ngToast
 	/*margin-top: 2em;*/
 	position: relative;
 	padding-bottom: 1em;
-	padding-left:0.5em;
+	padding-left: 0.5em;
 }
 
 
-#filters .pending-removal .field a{
-  text-decoration:line-through;
-  color:#F44336;
+#filters .pending-removal .field a {
+	text-decoration: line-through;
+	color: #F44336;
 }
 
 .filter {
@@ -1806,7 +1806,7 @@ ngToast
 			background: white;
 			z-index: 2;
 			margin-right: -3px;
-			padding-right:30px;
+			padding-right: 30px;
 			padding-left: 15px;
 			padding-top: 10px;
 			padding-bottom: 10px;
@@ -1855,14 +1855,14 @@ ngToast
 	}
 
 .nav-stacked li.active-filter a:after {
-		font-family: 'FontAwesome';
-		content: "\f0b0";
-		position: absolute;
-		right: 7px;
-		top:10px;
-		font-size:12px;
-		color:#F44336;
-	}
+	font-family: 'FontAwesome';
+	content: "\f0b0";
+	position: absolute;
+	right: 7px;
+	top: 10px;
+	font-size: 12px;
+	color: #F44336;
+}
 
 .nav-stacked li.active-filter.active a:after {
 	right: 10px;
@@ -2031,9 +2031,9 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 }
 
 	.form.form-clean, .form-horizontal.form-clean {
-		background:none;
-		border:none;
-		padding:0;
+		background: none;
+		border: none;
+		padding: 0;
 	}
 
 
@@ -2172,7 +2172,7 @@ form .error {
 	}
 
 	.table.hide-header tbody tr:first-child td {
-		border-top:none;
+		border-top: none;
 	}
 
 .table-vertical-align-middle tbody th,
@@ -2181,10 +2181,10 @@ form .error {
 }
 
 .table .img-thumbnail {
-	border:none;
-	border-radius:0;
-	padding:0;
-	max-height:60px;
+	border: none;
+	border-radius: 0;
+	padding: 0;
+	max-height: 60px;
 }
 
 table thead th.actions,
@@ -2540,7 +2540,7 @@ table .btn-xs.btn-link {
 	.tabs-left > .nav-tabs .active > a,
 	.tabs-left > .nav-tabs .active > a:hover,
 	.tabs-left > .nav-tabs .active > a:focus {
-		border:none;
+		border: none;
 	}
 
 .tabs-right > .nav-tabs {
@@ -2671,16 +2671,16 @@ table .btn-xs.btn-link {
 				min-width: 50px;
 				padding: 10px 0;
 				text-align: center;
-				width:50px;
+				width: 50px;
 			}
 
 			#sidebar .tabbable.spilled ul.nav li a {
 				min-width: 50px;
 				padding: 10px 0;
 				text-align: center;
-				border-radius:0;
-				border:none;
-				width:50px;
+				border-radius: 0;
+				border: none;
+				width: 50px;
 			}
 
 
@@ -3192,6 +3192,42 @@ table.editable {
 		color: #fff;
 		background: #FFCC80;
 	}
+
+
+.relation-field-group {
+	display: block;
+	padding-right: 0;
+	position: relative;
+}
+
+	.relation-field-group.remove {
+		padding-right: 30px;
+	}
+
+	.relation-field-group .remove-link {
+		display: none;
+	}
+
+	.relation-field-group.remove .remove-link {
+		position: absolute;
+		right: 0;
+		border: 1px solid #ccc;
+		top: 0;
+		line-height: 20px;
+		width: 32px;
+		min-height: 32px;
+		height: 100%;
+		padding: 6px 0;
+		text-align: center;
+		color: #BDBDBD;
+		background: #eee;
+		display: inline-block;
+		border-radius: 0 3px 3px 0;
+	}
+
+		.relation-field-group.remove .remove-link:hover {
+			color:#F44336;
+		}
 
 a.editable:hover,
 span.editable:hover {
@@ -3893,10 +3929,10 @@ span.not-editable.not-readable {
 	position: relative;
 }
 
-	.drop-zone > div {
-		padding: 0;
-		min-height: 30px;
-	}
+.drop-zone > div {
+	padding: 0;
+	min-height: 30px;
+}
 
 .tab-pane .drop-zone {
 	padding-top: 5px;
@@ -3936,8 +3972,8 @@ span.not-editable.not-readable {
 	}
 
 	.dropped-item .note {
-		font-size:12px;
-		margin-left:5px;
+		font-size: 12px;
+		margin-left: 5px;
 	}
 
 .view-manage-section .dropped-item .title,
@@ -4322,117 +4358,4 @@ a.link-icon.link[href]:before {
 /*#endregion*/
 
 
-/*#region << Loaderbar >>*/
-/*! 
- * angular-loading-bar v0.8.0
- * https://chieffancypants.github.io/angular-loading-bar
- * Copyright (c) 2015 Wes Cruver
- * License: MIT
- */
 
-/* Make clicks pass-through */
-#loading-bar,
-#loading-bar-spinner {
-  pointer-events: none;
-  -webkit-pointer-events: none;
-  -webkit-transition: 350ms linear all;
-  -moz-transition: 350ms linear all;
-  -o-transition: 350ms linear all;
-  transition: 350ms linear all;
-}
-
-#loading-bar.ng-enter,
-#loading-bar.ng-leave.ng-leave-active,
-#loading-bar-spinner.ng-enter,
-#loading-bar-spinner.ng-leave.ng-leave-active {
-  opacity: 0;
-}
-
-#loading-bar.ng-enter.ng-enter-active,
-#loading-bar.ng-leave,
-#loading-bar-spinner.ng-enter.ng-enter-active,
-#loading-bar-spinner.ng-leave {
-  opacity: 1;
-}
-
-#loading-bar .bar {
-  -webkit-transition: width 350ms;
-  -moz-transition: width 350ms;
-  -o-transition: width 350ms;
-  transition: width 350ms;
-
-  background: #29d;
-  position: fixed;
-  z-index: 10002;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  border-bottom-right-radius: 1px;
-  border-top-right-radius: 1px;
-}
-
-/* Fancy blur effect */
-#loading-bar .peg {
-  position: absolute;
-  width: 70px;
-  right: 0;
-  top: 0;
-  height: 2px;
-  opacity: .45;
-  -moz-box-shadow: #29d 1px 0 6px 1px;
-  -ms-box-shadow: #29d 1px 0 6px 1px;
-  -webkit-box-shadow: #29d 1px 0 6px 1px;
-  box-shadow: #29d 1px 0 6px 1px;
-  -moz-border-radius: 100%;
-  -webkit-border-radius: 100%;
-  border-radius: 100%;
-}
-
-#loading-bar-spinner {
-  display: block;
-  position: fixed;
-  z-index: 10002;
-  top: 10px;
-  left: 10px;
-}
-
-#loading-bar-spinner .spinner-icon {
-  width: 14px;
-  height: 14px;
-
-  border:  solid 2px transparent;
-  border-top-color:  #29d;
-  border-left-color: #29d;
-  border-radius: 50%;
-
-  -webkit-animation: loading-bar-spinner 400ms linear infinite;
-  -moz-animation:    loading-bar-spinner 400ms linear infinite;
-  -ms-animation:     loading-bar-spinner 400ms linear infinite;
-  -o-animation:      loading-bar-spinner 400ms linear infinite;
-  animation:         loading-bar-spinner 400ms linear infinite;
-}
-
-@-webkit-keyframes loading-bar-spinner {
-  0%   { -webkit-transform: rotate(0deg);   transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
-}
-@-moz-keyframes loading-bar-spinner {
-  0%   { -moz-transform: rotate(0deg);   transform: rotate(0deg); }
-  100% { -moz-transform: rotate(360deg); transform: rotate(360deg); }
-}
-@-o-keyframes loading-bar-spinner {
-  0%   { -o-transform: rotate(0deg);   transform: rotate(0deg); }
-  100% { -o-transform: rotate(360deg); transform: rotate(360deg); }
-}
-@-ms-keyframes loading-bar-spinner {
-  0%   { -ms-transform: rotate(0deg);   transform: rotate(0deg); }
-  100% { -ms-transform: rotate(360deg); transform: rotate(360deg); }
-}
-@keyframes loading-bar-spinner {
-  0%   { transform: rotate(0deg);   transform: rotate(0deg); }
-  100% { transform: rotate(360deg); transform: rotate(360deg); }
-}
-
-
-/*#endregion*/

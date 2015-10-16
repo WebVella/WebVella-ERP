@@ -57,7 +57,7 @@
     </form>
     
 	<div id="page-text">
-        <div class="alert alert-info" ng-show="contentData.views.length == 0">No records found!</div>
+        <div class="alert alert-info ng-hide" ng-show="contentData.views.length == 0">No records found!</div>
         <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.views.length == 0">
             <thead>
                 <tr>
@@ -66,7 +66,7 @@
                     <th class="type">Type</th>
             </thead>
             <tbody>
-                <tr ng-repeat="view in contentData.views | filter: {label: searchFilter}">
+                <tr ng-repeat="view in contentData.views | filter: {label: searchFilter} track by view.id">
                     <td class="actions">
                         <a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/views/{{::view.name}}/info">
                             <i class="fa fa-eye"></i>

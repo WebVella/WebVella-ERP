@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-ui-datetime-picker",
-  "version": "1.2.1",
+  "version": "1.2.5",
   "homepage": "https://github.com/Gillardo/bootstrap-ui-datetime-picker",
   "authors": [
     "Gillardo <darren.gillard81@gmail.com>"
@@ -31,14 +31,14 @@
   "dependencies": {
     "angular-bootstrap": "~0.13.2"
   },
-  "_release": "1.2.1",
+  "_release": "1.2.5",
   "_resolution": {
     "type": "version",
-    "tag": "1.2.1",
-    "commit": "980493bcc6648c1e372f4d5894311dec55f0e71f"
+    "tag": "1.2.5",
+    "commit": "17d8dd1a24979d5f2fb88fefbe92c3eaad4cb81e"
   },
   "_source": "git://github.com/gillardo/bootstrap-ui-datetime-picker.git",
-  "_target": "~1.2.1",
+  "_target": "~1.2.5",
   "_originalSource": "bootstrap-ui-datetime-picker",
   "_direct": true
 }

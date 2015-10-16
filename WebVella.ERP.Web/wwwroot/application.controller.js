@@ -73,6 +73,7 @@
 						});
 						return $q.reject(errorResponse);
 					}
+					return $q.reject(errorResponse);
 				}
 			}
 		});

@@ -109,19 +109,19 @@
 		////////////////////
 		function getSitemap(successCallback, errorCallback) {
 			$log.debug('webvellaRoot>providers>root.service>getAreaEntities> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'sitemap' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		////////////////////
 		function login(postObject, successCallback, errorCallback) {
 			$log.debug('webvellaRoot>providers>root.service>login> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user/login', data: postObject }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user/login', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		////////////////////
 		function logout(successCallback, errorCallback) {
 			$log.debug('webvellaRoot>providers>root.service>logout> function called' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user/logout', data: {} }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user/logout', data: {} }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		//////////////////
@@ -138,7 +138,7 @@
 		////////////////////
 		function getCurrentUserPermissions(successCallback, errorCallback) {
 			$log.debug('webvellaRoot>providers>root.service>getCurrentUserPermissions> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/permissions' }).success(function (data, status, headers, config) { handleSuccessResult(data, status, successCallback, errorCallback); }).error(function (data, status, headers, config) { handleErrorResult(data, status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/permissions' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			//var response = {};
 			//response.success = true;
 			//response.object = [];

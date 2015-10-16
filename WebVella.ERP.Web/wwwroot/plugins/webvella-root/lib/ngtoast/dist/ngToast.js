@@ -1,5 +1,5 @@
 /*!
- * ngToast v1.5.5 (http://tameraydin.github.io/ngToast)
+ * ngToast v1.5.6 (http://tameraydin.github.io/ngToast)
  * Copyright 2015 Tamer Aydin (http://tamerayd.in)
  * Licensed under MIT (http://tameraydin.mit-license.org/)
  */
@@ -134,20 +134,42 @@
   'use strict';
 
   angular.module('ngToast.directives', ['ngToast.provider'])
+    .run(['$templateCache',
+      function($templateCache) {
+        $templateCache.put('ngToast/toast.html',
+          '<div class="ng-toast ng-toast--{{hPos}} ng-toast--{{vPos}} {{animation ? \'ng-toast--animate-\' + animation : \'\'}}">' +
+            '<ul class="ng-toast__list">' +
+              '<toast-message ng-repeat="message in messages" ' +
+                'message="message" count="message.count">' +
+                '<span ng-bind-html="message.content"></span>' +
+              '</toast-message>' +
+            '</ul>' +
+          '</div>');
+        $templateCache.put('ngToast/toastMessage.html',
+          '<li class="ng-toast__message {{message.additionalClasses}}"' +
+            'ng-mouseenter="onMouseEnter()"' +
+            'ng-mouseleave="onMouseLeave()">' +
+            '<div class="alert alert-{{message.className}}" ' +
+              'ng-class="{\'alert-dismissible\': message.dismissButton}">' +
+              '<button type="button" class="close" ' +
+                'ng-if="message.dismissButton" ' +
+                'ng-bind-html="message.dismissButtonHtml" ' +
+                'ng-click="!message.dismissOnClick && dismiss()">' +
+              '</button>' +
+              '<span ng-if="count" class="ng-toast__message__count">' +
+                '{{count + 1}}' +
+              '</span>' +
+              '<span ng-if="!message.compileContent" ng-transclude></span>' +
+            '</div>' +
+          '</li>');
+      }
+    ])
     .directive('toast', ['ngToast', '$templateCache', '$log',
       function(ngToast, $templateCache, $log) {
         return {
           replace: true,
           restrict: 'EA',
-          template:
-            '<div class="ng-toast ng-toast--{{hPos}} ng-toast--{{vPos}} {{animation ? \'ng-toast--animate-\' + animation : \'\'}}">' +
-              '<ul class="ng-toast__list">' +
-                '<toast-message ng-repeat="message in messages" ' +
-                  'message="message" count="message.count">' +
-                  '<span ng-bind-html="message.content"></span>' +
-                '</toast-message>' +
-              '</ul>' +
-            '</div>',
+          templateUrl: 'ngToast/toast.html',
           compile: function(tElem, tAttrs) {
             if (tAttrs.template) {
               var template = $templateCache.get(tAttrs.template);
@@ -184,23 +206,7 @@
               ngToast.dismiss($scope.message.id);
             };
           }],
-          template:
-            '<li class="ng-toast__message {{message.additionalClasses}}"' +
-              'ng-mouseenter="onMouseEnter()"' +
-              'ng-mouseleave="onMouseLeave()">' +
-              '<div class="alert alert-{{message.className}}" ' +
-                'ng-class="{\'alert-dismissible\': message.dismissButton}">' +
-                '<button type="button" class="close" ' +
-                  'ng-if="message.dismissButton" ' +
-                  'ng-bind-html="message.dismissButtonHtml" ' +
-                  'ng-click="!message.dismissOnClick && dismiss()">' +
-                '</button>' +
-                '<span ng-if="count" class="ng-toast__message__count">' +
-                  '{{count + 1}}' +
-                '</span>' +
-                '<span ng-if="!message.compileContent" ng-transclude></span>' +
-              '</div>' +
-            '</li>',
+          templateUrl: 'ngToast/toastMessage.html',
           link: function(scope, element, attrs, ctrl, transclude) {
             element.attr('data-message-id', scope.message.id);
 

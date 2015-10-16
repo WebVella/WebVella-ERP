@@ -1,12 +1,12 @@
 {
   "name": "angular-recursion",
-  "version": "1.0.5",
-  "description": "An Angular service which helps with creating recursive directives.",
   "main": "angular-recursion.js",
+  "version": "1.0.4",
   "homepage": "https://github.com/marklagendijk/angular-recursion",
   "authors": [
     "Mark Lagendijk <mark@lagendijk.info>"
   ],
+  "description": "An Angular service which helps with creating recursive directives.",
   "keywords": [
     "angular",
     "angular-service",
