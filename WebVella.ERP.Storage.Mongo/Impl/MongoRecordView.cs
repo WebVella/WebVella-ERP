@@ -106,6 +106,24 @@ namespace WebVella.ERP.Storage.Mongo
 
 		[BsonElement("relationId")]
 		public Guid RelationId { get; set; }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[BsonElement("fieldLookupList")]
+		public string FieldLookupList { get; set; }
+
+		[BsonElement("fieldManageView")]
+		public string FieldManageView { get; set; }
 	}
 
 	public class MongoRecordViewSidebarRelationListItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarRelationListItem
@@ -115,6 +133,24 @@ namespace WebVella.ERP.Storage.Mongo
 
 		[BsonElement("relationId")]
 		public Guid RelationId { get; set; }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[BsonElement("fieldLookupList")]
+		public string FieldLookupList { get; set; }
+
+		[BsonElement("fieldManageView")]
+		public string FieldManageView { get; set; }
 	}
 
 	////////////////////////
@@ -265,7 +301,22 @@ namespace WebVella.ERP.Storage.Mongo
 
         [BsonElement("relationId")]
         public Guid RelationId { get; set; }
-    }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[BsonElement("fieldLookupList")]
+		public string FieldLookupList { get; set; }
+	}
 
     public class MongoRecordViewRelationViewItem : MongoRecordViewItemBase, IStorageRecordViewRelationViewItem
     {
@@ -274,7 +325,25 @@ namespace WebVella.ERP.Storage.Mongo
 
         [BsonElement("relationId")]
         public Guid RelationId { get; set; }
-    }
+		
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[BsonElement("fieldLookupList")]
+		public string FieldLookupList { get; set; }
+
+		[BsonElement("fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
     public class MongoRecordViewRelationListItem : MongoRecordViewItemBase, IStorageRecordViewRelationListItem
     {
@@ -283,5 +352,23 @@ namespace WebVella.ERP.Storage.Mongo
 
         [BsonElement("relationId")]
         public Guid RelationId { get; set; }
-    }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[BsonElement("fieldLookupList")]
+		public string FieldLookupList { get; set; }
+
+		[BsonElement("fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 }

@@ -141,7 +141,22 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "fieldName")]
 		public string FieldName { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+    }
 
 	public class InputRecordListViewItem : InputRecordListItemBase
 	{
@@ -165,7 +180,25 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "viewName")]
 		public string ViewName { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+
+        [JsonProperty(PropertyName = "fieldManageView")]
+        public string FieldManageView { get; set; }
+    }
 
 	public class InputRecordListListItem : InputRecordListItemBase
 	{
@@ -189,7 +222,25 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "listName")]
 		public string ListName { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+
+        [JsonProperty(PropertyName = "fieldManageView")]
+        public string FieldManageView { get; set; }
+    }
 
 	#endregion
 
@@ -352,9 +403,24 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "meta")]
 		public Field Meta { get; set; }
-	}
 
-	public class RecordListViewItem : RecordListItemBase
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+    }
+
+    public class RecordListViewItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
 		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.View).ToLower(); } }
@@ -394,7 +460,25 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "meta")]
 		public RecordView Meta { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+
+        [JsonProperty(PropertyName = "fieldManageView")]
+        public string FieldManageView { get; set; }
+    }
 
 	public class RecordListListItem : RecordListItemBase
 	{
@@ -434,10 +518,27 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "relationDirection")]
         public string RelationDirection { get; set; }
 
-
         [JsonProperty(PropertyName = "meta")]
 		public RecordList Meta { get; set; }
-	}
+
+        [JsonProperty(PropertyName = "fieldLabel")]
+        public string FieldLabel { get; set; }
+
+        [JsonProperty(PropertyName = "fieldPlaceholder")]
+        public string FieldPlaceholder { get; set; }
+
+        [JsonProperty(PropertyName = "fieldHelpText")]
+        public string FieldHelpText { get; set; }
+
+        [JsonProperty(PropertyName = "fieldRequired")]
+        public bool FieldRequired { get; set; }
+
+        [JsonProperty(PropertyName = "fieldLookupList")]
+        public string FieldLookupList { get; set; }
+
+        [JsonProperty(PropertyName = "fieldManageView")]
+        public string FieldManageView { get; set; }
+    }
 
 	#endregion
 
