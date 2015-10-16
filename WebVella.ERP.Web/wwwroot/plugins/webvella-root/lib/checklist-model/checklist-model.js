@@ -1,6 +1,8 @@
 /**
  * Checklist-model
  * AngularJS directive for list of checkboxes
+ * https://github.com/vitalets/checklist-model
+ * License: MIT http://opensource.org/licenses/MIT
  */
 
 angular.module('checklist-model', [])
@@ -41,34 +43,48 @@ angular.module('checklist-model', [])
 
   // http://stackoverflow.com/a/19228302/1458162
   function postLinkFn(scope, elem, attrs) {
+     // exclude recursion, but still keep the model
+    var checklistModel = attrs.checklistModel;
+    attrs.$set("checklistModel", null);
     // compile with `ng-model` pointing to `checked`
     $compile(elem)(scope);
+    attrs.$set("checklistModel", checklistModel);
 
     // getter / setter for original model
-    var getter = $parse(attrs.checklistModel);
+    var getter = $parse(checklistModel);
     var setter = getter.assign;
     var checklistChange = $parse(attrs.checklistChange);
 
     // value added to list
-    var value = $parse(attrs.checklistValue)(scope.$parent);
+    var value = attrs.checklistValue ? $parse(attrs.checklistValue)(scope.$parent) : attrs.value;
 
 
-  var comparator = angular.equals;
+    var comparator = angular.equals;
 
-  if (attrs.hasOwnProperty('checklistComparator')){
-    comparator = $parse(attrs.checklistComparator)(scope.$parent);
-  }
+    if (attrs.hasOwnProperty('checklistComparator')){
+      if (attrs.checklistComparator[0] == '.') {
+        var comparatorExpression = attrs.checklistComparator.substring(1);
+        comparator = function (a, b) {
+          return a[comparatorExpression] === b[comparatorExpression];
+        }
+        
+      } else {
+        comparator = $parse(attrs.checklistComparator)(scope.$parent);
+      }
+    }
 
     // watch UI checked change
-    scope.$watch('checked', function(newValue, oldValue) {
+    scope.$watch(attrs.ngModel, function(newValue, oldValue) {
       if (newValue === oldValue) { 
         return;
       } 
       var current = getter(scope.$parent);
-      if (newValue === true) {
-        setter(scope.$parent, add(current, value, comparator));
-      } else {
-        setter(scope.$parent, remove(current, value, comparator));
+      if (angular.isFunction(setter)) {
+        if (newValue === true) {
+          setter(scope.$parent, add(current, value, comparator));
+        } else {
+          setter(scope.$parent, remove(current, value, comparator));
+        }
       }
 
       if (checklistChange) {
@@ -78,15 +94,15 @@ angular.module('checklist-model', [])
     
     // declare one function to be used for both $watch functions
     function setChecked(newArr, oldArr) {
-        scope.checked = contains(newArr, value, comparator);
+        scope[attrs.ngModel] = contains(newArr, value, comparator);
     }
 
     // watch original model change
     // use the faster $watchCollection method if it's available
     if (angular.isFunction(scope.$parent.$watchCollection)) {
-        scope.$parent.$watchCollection(attrs.checklistModel, setChecked);
+        scope.$parent.$watchCollection(checklistModel, setChecked);
     } else {
-        scope.$parent.$watch(attrs.checklistModel, setChecked, true);
+        scope.$parent.$watch(checklistModel, setChecked, true);
     }
   }
 
@@ -96,19 +112,21 @@ angular.module('checklist-model', [])
     terminal: true,
     scope: true,
     compile: function(tElement, tAttrs) {
-      if (tElement[0].tagName !== 'INPUT' || tAttrs.type !== 'checkbox') {
-        throw 'checklist-model should be applied to `input[type="checkbox"]`.';
+      if ((tElement[0].tagName !== 'INPUT' || tAttrs.type !== 'checkbox')
+          && (tElement[0].tagName !== 'MD-CHECKBOX')
+          && (!tAttrs.btnCheckbox)) {
+        throw 'checklist-model should be applied to `input[type="checkbox"]` or `md-checkbox`.';
       }
 
-      if (!tAttrs.checklistValue) {
-        throw 'You should provide `checklist-value`.';
+      if (!tAttrs.checklistValue && !tAttrs.value) {
+        throw 'You should provide `value` or `checklist-value`.';
       }
 
-      // exclude recursion
-      tElement.removeAttr('checklist-model');
-      
-      // local scope var storing individual checkbox model
-      tElement.attr('ng-model', 'checked');
+      // by default ngModel is 'checked', so we set it if not specified
+      if (!tAttrs.ngModel) {
+        // local scope var storing individual checkbox model
+        tAttrs.$set("ngModel", "checked");
+      }
 
       return postLinkFn;
     }

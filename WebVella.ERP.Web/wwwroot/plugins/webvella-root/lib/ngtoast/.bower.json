@@ -1,14 +1,28 @@
 {
   "name": "ngToast",
-  "version": "1.5.5",
+  "version": "1.5.6",
+  "description": "Angular provider for toast notifications",
   "main": [
     "dist/ngToast.js",
     "dist/ngToast.css"
   ],
+  "keywords": [
+    "angular",
+    "toast",
+    "message",
+    "notification",
+    "toastr"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tameraydin/ngToast.git"
+  },
+  "homepage": "http://tameraydin.github.io/ngToast",
   "authors": [
     "Tamer Aydin (http://tamerayd.in)",
     "Levi Thomason (http://www.levithomason.com)"
   ],
+  "license": "MIT",
   "dependencies": {
     "angular": ">=1.2.15 <1.5",
     "angular-animate": ">=1.2.17 <1.5",
@@ -32,15 +46,14 @@
     "package.json",
     "index.html"
   ],
-  "homepage": "https://github.com/tameraydin/ngToast",
-  "_release": "1.5.5",
+  "_release": "1.5.6",
   "_resolution": {
     "type": "version",
-    "tag": "1.5.5",
-    "commit": "1f638ff12db55e85d45be28897843de9395e0c54"
+    "tag": "1.5.6",
+    "commit": "c12196bc2a2da0312795b719175044da9972f0e8"
   },
   "_source": "git://github.com/tameraydin/ngToast.git",
-  "_target": "~1.5.5",
+  "_target": "~1.5.6",
   "_originalSource": "ngtoast",
   "_direct": true
 }
