@@ -13,7 +13,7 @@
         .controller('WebVellaAdminEntityViewManageController', controller)
         .controller('ManageSectionModalController', ManageSectionModalController)
         .controller('ManageRowModalController', ManageRowModalController)
-        .controller('ManageItemModalController', ManageItemModalController);
+		.controller('ManageFromRelationModalController', ManageFromRelationModalController);
 
 	//#region << Configuration >> /////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -445,25 +445,100 @@
 		//#region << Drag & Drop Management >>
 
 		function executeDragViewChange(eventObj) {
-			//#region << 1.Define functions >>
-			var moveSuccess, moveFailure, successCallback, errorCallback, openItemSettingsModal;
 
-			openItemSettingsModal = function () {
-				var modalInstance = $uibModal.open({
-					animation: false,
-					templateUrl: 'manageItemModal.html',
-					controller: 'ManageItemModalController',
-					controllerAs: "popupData",
-					size: "",
-					resolve: {
-						parentData: function () { return contentData; },
-						//row: function () { return rowObj },
-						//section: function () { return sectionObj },
-						//place: function () { return place },
+			var openFromRelationSettingsModal = function () {
+				//Init
+				var droppedItem = fastCopy(eventObj.source.itemScope.modelValue);
+				var relation = null;
+				for (var j = 0; j < contentData.relationsList.length; j++) {
+					if (contentData.relationsList[j].id == droppedItem.relationId) {
+						relation = contentData.relationsList[j];
 					}
-				});
-			}
-			moveSuccess = function () {
+				}
+				if (relation == null) {
+					ngToast.create({
+						className: 'error',
+						content: '<span class="go-red">Error:</span> item relation not found',
+						timeout: 7000
+					});
+					moveFailure();
+					return;
+				}
+
+				//Callbacks
+				function getRelatedEntityMetaSuccessCallback(response) {
+
+					var modalInstance = $uibModal.open({
+						animation: false,
+						templateUrl: 'manageFromRelationModal.html',
+						controller: 'ManageFromRelationModalController',
+						controllerAs: "popupData",
+						size: "",
+						resolve: {
+							parentData: function () { return contentData; },
+							eventObj: eventObj,
+							relatedEntityMeta:response.object
+						}
+					});
+
+					modalInstance.result.then(function (fieldObject) {
+						for (var i = 0; i < contentData.view.regions.length; i++) {
+							for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
+								for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
+									for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
+										for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
+											if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+												if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
+													contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+						contentData.view = fastCopy(contentData.view);
+						////2. Call the service
+						webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+						return;
+					});
+				}
+
+
+
+				function getRelatedEntityMetaErrorCallback(response) {
+					ngToast.create({
+						className: 'error',
+						content: '<span class="go-red">Error:</span> could not get the related entity meta - ' + response.message,
+						timeout: 7000
+					});
+					moveFailure();
+					return;
+				}
+
+				//Get the correct related entityMeta
+
+				if (droppedItem.entityName == contentData.entity.name) {
+					//the dropped item has relation to the current entity so no reason to make http request
+					var response = {};
+					response.success = true;
+					response.object = contentData.entity;
+					getRelatedEntityMetaSuccessCallback(response);
+				}
+				else {
+					var relatedEntityName = null;
+					webvellaAdminService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
+				}
+			};
+
+
+			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id != "library") {
 
@@ -473,9 +548,9 @@
 
 				}
 			};
-			moveFailure = function () {
-				//eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+			var moveFailure = function () {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
 			};
 
 			function successCallback(response) {
@@ -509,7 +584,10 @@
 			}
 			//#endregion
 
-			if (eventObj.source.itemScope.item.type == "html") {
+			if (eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") {
+				openFromRelationSettingsModal();
+			}
+			else if (eventObj.source.itemScope.item.type == "html") {
 				//can be managed
 				openItemSettingsModal();
 			}
@@ -798,9 +876,11 @@
 	};
 
 	//Row Modal
-	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService',
+				'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function ManageRowModalController(parentData, row, section, weight, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+	function ManageRowModalController(parentData, row, section, weight, $modalInstance, $log, webvellaAdminService,
+				ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -940,20 +1020,88 @@
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
-	//TODO - finish the manageable Item Modal and process
-	ManageItemModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+
+	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'relatedEntityMeta'];
 	/* @ngInject */
-	function ManageItemModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, relatedEntityMeta) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
+		popupData.parentData = fastCopy(parentData);
+		popupData.field = fastCopy(eventObj.source.itemScope.item);
+		popupData.entity = fastCopy(relatedEntityMeta);
+		popupData.quickCreateViews = [];
+		popupData.quickCreateDefaultIndex = -1;
+		popupData.lookupLists = [];
+		popupData.lookupDefaultIndex = -1;
+
+		popupData.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		popupData.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+		//Lookup
+		var index = 0;
+		for (var i = 0; i < popupData.entity.recordLists.length; i++) {
+			if (popupData.entity.recordLists[i].type == "lookup") {
+				if (popupData.entity.recordLists[i].default && popupData.lookupDefaultIndex == -1) {
+					popupData.lookupDefaultIndex = index;
+				}
+				popupData.lookupLists.push(popupData.entity.recordLists[i]);
+				index++;
+			}
+		}
+
+		if (popupData.field.fieldLookupList && popupData.field.fieldLookupList != "") {
+			//should stick with the selected value
+		}
+		else if (popupData.quickCreateDefaultIndex > -1 && popupData.lookupLists.length > 0) {
+			//no selected so we should preselect the first default;
+			popupData.field.fieldLookupList = popupData.lookupLists[popupData.quickCreateDefaultIndex].name;
+		}
+		else if (popupData.lookupLists.length > 0) {
+			popupData.field.fieldLookupList = popupData.lookupLists[0].name;
+		}
+		else {
+			//should alert for error
+			popupData.error = true;
+			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'lookup' lists. It should have at least one";
+		}
+
+		//Quick create
+		index = 0;
+		for (var i = 0; i < popupData.entity.recordViews.length; i++) {
+			if (popupData.entity.recordViews[i].type == "quick_create") {
+				if (popupData.entity.recordViews[i].default && popupData.quickCreateDefaultIndex == -1) {
+					popupData.quickCreateDefaultIndex = index;
+				}
+				popupData.quickCreateViews.push(popupData.entity.recordViews[i]);
+				index++;
+			}
+		}
+		if (popupData.field.fieldManageView && popupData.field.fieldManageView != "") {
+			//should stick with the selected value
+		}
+		else if (popupData.lookupDefaultIndex > -1 && popupData.quickCreateViews.length > 0) {
+			//no selected so we should preselect the first default;
+			popupData.field.fieldManageView = popupData.quickCreateViews[popupData.lookupDefaultIndex].name;
+			}
+		else if (popupData.quickCreateViews.length > 0) {
+			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
+		}
+		else if (popupData.field.type == "listFromRelation" || popupData.field.type == "fromFromRelation") {
+
+			//should alert for error if it is list or view
+			popupData.error = true;
+			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'quick_create' views. It should have at least one";
+		}
 
 
 		popupData.ok = function () {
-
+			$modalInstance.close(popupData.field);
 		};
 
 		popupData.cancel = function () {
+			eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+			eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
 			$modalInstance.dismiss('cancel');
 		};
 

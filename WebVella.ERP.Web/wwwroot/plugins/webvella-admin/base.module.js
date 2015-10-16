@@ -62,7 +62,7 @@
             		"nodes": [],
             		"weight": 100.0,
             		"color": "red",
-            		"iconName": "cog",
+            		"iconName": "cogs",
             		"roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
             	};
             	webvellaDesktopBrowsenavFactory.addItem(item);
