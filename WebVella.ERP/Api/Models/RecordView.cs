@@ -148,7 +148,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	public class InputRecordViewSidebarRelationListItem : InputRecordViewSidebarItemBase
 	{
@@ -178,7 +181,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	////////////////////////
 	public class InputRecordViewRegion
@@ -319,7 +325,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldRequired")]
         public bool FieldRequired { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldLookupList")]
+		public string FieldLookupList { get; set; }
+	}
 
 	public class InputRecordViewRelationViewItem : InputRecordViewItemBase
 	{
@@ -349,7 +358,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	public class InputRecordViewRelationListItem : InputRecordViewItemBase
 	{
@@ -379,7 +391,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	public class InputRecordViewHtmlItem : InputRecordViewItemBase
 	{
@@ -556,7 +571,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	public class RecordViewSidebarRelationListItem : RecordViewSidebarItemBase
 	{
@@ -595,7 +613,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "fieldLookupList")]
         public string FieldLookupList { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
+	}
 
 	////////////////////////
 	public class RecordViewRegion
