@@ -233,7 +233,7 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label">{{::item.entityLabel}}</label>
+									<label class="control-label">{{::contentData.getRelationLabel(item.relationName)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
 											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
@@ -466,7 +466,7 @@
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupData.selectedItem.entityLabel}}</span></h3>
+		<h3 class="modal-title">Select <span class="go-green">{{popupData.getRelationLabel(popupData.selectedItem.relationName)}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>

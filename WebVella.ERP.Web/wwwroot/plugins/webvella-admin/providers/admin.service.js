@@ -165,7 +165,7 @@ function guid() {
 				$log.debug('webvellaAdmin>providers>admin.service> result success: get object  ' + moment().format('HH:mm:ss SSSS'));
 				successCallback(data);
 			}
-			
+
 		}
 		//#endregion
 
@@ -195,6 +195,8 @@ function guid() {
 					canDelete: []
 				}
 			};
+
+			
 			return entity;
 		}
 
@@ -434,6 +436,7 @@ function guid() {
 				"weight": 1,
 				"cssClass": "",
 				"type": "general",
+				"iconName":"file-text-o",
 				"regions": [
                     {
                     	"name": "content",
@@ -957,7 +960,7 @@ function guid() {
 			//#endregion
 
 			//#region << Process >>
-	
+
 			function executeRegeneration() {
 				//Cycle entities and generate array of valid subscription for each
 				var validSubscriptionsArray = [];
@@ -1057,7 +1060,7 @@ function guid() {
 						var isEntityViewListExist = {};
 						isEntityViewListExist.view = false;
 						isEntityViewListExist.list = false;
-						isEntityViewListExist = checkIfEntityViewListExists(subscriptions[n].name,subscriptions[n].view.name,subscriptions[n].list.name);
+						isEntityViewListExist = checkIfEntityViewListExists(subscriptions[n].name, subscriptions[n].view.name, subscriptions[n].list.name);
 						if (isEntityViewListExist.view || isEntityViewListExist.list) {
 							for (var j = 0; j < validSubscriptionsArray.length; j++) {
 								if (subscriptions[n].name === validSubscriptionsArray[j].name) {

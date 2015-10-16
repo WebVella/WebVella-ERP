@@ -702,6 +702,16 @@
 
 		//Render
 		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		contentData.getRelationLabel = function (relationName) {
+			var relation = findInArray(contentData.relationsList, "name", relationName);
+			if (relation) {
+				return relation.label;
+			}
+			else {
+				return "";
+			}
+		}
+
 		//Date & DateTime 
 		contentData.getTimeString = function (item) {
 			if (item && item.dataName && contentData.selectedSidebarPage.data[item.dataName]) {
@@ -1062,6 +1072,7 @@
 		//Init
 		popupData.currentlyAttachedIds = fastCopy(popupData.parentData.selectedSidebarPage.data["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
 		popupData.dbAttachedIds = fastCopy(popupData.currentlyAttachedIds);
+		popupData.getRelationLabel = contentData.getRelationLabel;
 		popupData.attachedRecordIdsDelta = [];
 		popupData.detachedRecordIdsDelta = [];
 
