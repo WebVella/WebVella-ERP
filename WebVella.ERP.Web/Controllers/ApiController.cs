@@ -872,19 +872,24 @@ namespace WebVella.ERP.Web.Controllers
 
                 foreach (var field in relatedEntity.Fields)
                 {
-                    itemList.Add(new RecordViewRelationFieldItem
-                    {
-                        RelationId = relation.Id,
-                        RelationName = relation.Name,
-                        EntityId = relatedEntity.Id,
-                        EntityName = relatedEntity.Name,
-                        EntityLabel = relatedEntity.Label,
-                        EntityLabelPlural = relatedEntity.LabelPlural,
-                        FieldId = field.Id,
-                        FieldName = field.Name,
-                        Meta = CleanupFieldForLibrary(field),
-                        DataName = string.Format("$field${0}${1}", relation.Name, field.Name)
-                    });
+					itemList.Add(new RecordViewRelationFieldItem
+					{
+						RelationId = relation.Id,
+						RelationName = relation.Name,
+						EntityId = relatedEntity.Id,
+						EntityName = relatedEntity.Name,
+						EntityLabel = relatedEntity.Label,
+						EntityLabelPlural = relatedEntity.LabelPlural,
+						FieldId = field.Id,
+						FieldName = field.Name,
+						Meta = CleanupFieldForLibrary(field),
+						DataName = string.Format("$field${0}${1}", relation.Name, field.Name),
+						FieldLabel = "",
+						FieldPlaceholder = "",
+						FieldHelpText = "",
+						FieldRequired = false,
+						FieldLookupList = ""
+					});
                 }
 
                 foreach (var view in relatedEntity.RecordViews)
@@ -900,8 +905,14 @@ namespace WebVella.ERP.Web.Controllers
                         ViewId = view.Id,
                         ViewName = view.Name,
                         Meta = view,
-                        DataName = string.Format("$view${0}${1}", relation.Name, view.Name)
-                    });
+                        DataName = string.Format("$view${0}${1}", relation.Name, view.Name),
+						FieldLabel = "",
+						FieldPlaceholder = "",
+						FieldHelpText = "",
+						FieldRequired = false,
+						FieldLookupList = "",
+						FieldManageView = ""
+					});
                 }
 
                 foreach (var list in relatedEntity.RecordLists)
@@ -917,9 +928,15 @@ namespace WebVella.ERP.Web.Controllers
                         ListId = list.Id,
                         ListName = list.Name,
                         Meta = list,
-                        DataName = string.Format("$list${0}${1}", relation.Name, list.Name)
+                        DataName = string.Format("$list${0}${1}", relation.Name, list.Name),
+						FieldLabel = "",
+						FieldPlaceholder = "",
+						FieldHelpText = "",
+						FieldRequired = false,
+						FieldLookupList = "",
+						FieldManageView = ""
 
-                    });
+					});
                 }
             }
 

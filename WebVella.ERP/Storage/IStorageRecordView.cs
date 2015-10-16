@@ -63,6 +63,18 @@ namespace WebVella.ERP.Storage
 		Guid RelationId { get; set; }
 
 		Guid ViewId { get; set; }
+		
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+
+		string FieldLookupList { get; set; }
+
+		string FieldManageView { get; set; }
 	}
 
 	public interface IStorageRecordViewSidebarRelationListItem : IStorageRecordViewSidebarItemBase
@@ -70,6 +82,18 @@ namespace WebVella.ERP.Storage
 		Guid RelationId { get; set; }
 
 		Guid ListId { get; set; }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+
+		string FieldLookupList { get; set; }
+
+		string FieldManageView { get; set; }
 	}
 
 	////////////////////////
@@ -157,21 +181,55 @@ namespace WebVella.ERP.Storage
         Guid RelationId { get; set; }
 
         Guid FieldId { get; set; }
-    }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+
+		string FieldLookupList { get; set; }
+	}
 
     public interface IStorageRecordViewRelationViewItem : IStorageRecordViewItemBase
     {
         Guid RelationId { get; set; }
 
         Guid ViewId { get; set; }
-    }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+
+		string FieldLookupList { get; set; }
+
+		string FieldManageView { get; set; }
+	}
 
     public interface IStorageRecordViewRelationListItem : IStorageRecordViewItemBase
     {
         Guid RelationId { get; set; }
 
         Guid ListId { get; set; }
-    }
+		
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+
+		string FieldLookupList { get; set; }
+
+		string FieldManageView { get; set; }
+	}
 }
 
 
