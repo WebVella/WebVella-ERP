@@ -97,19 +97,19 @@
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 															</div>
 															<div ng-switch-when="fieldFromRelation">
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray"> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray"> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
 															<div ng-switch-when="view">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}}
 															</div>
 															<div ng-switch-when="viewFromRelation">
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
 															<div ng-switch-when="list">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}}
 															</div>
 															<div ng-switch-when="listFromRelation">
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
 															<div ng-switch-when="html">
 																<div ng-if='item.tag == ""'>

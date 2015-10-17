@@ -702,13 +702,19 @@
 
 		//Render
 		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
-		contentData.getRelationLabel = function (relationName) {
-			var relation = findInArray(contentData.relationsList, "name", relationName);
-			if (relation) {
-				return relation.label;
+		contentData.getRelationLabel = function (item) {
+			if (item.fieldLabel) {
+				return item.fieldLabel
 			}
 			else {
-				return "";
+				var relationName = item.relationName;
+				var relation = findInArray(contentData.relationsList, "name", relationName);
+				if (relation) {
+					return relation.label;
+				}
+				else {
+					return "";
+				}
 			}
 		}
 
@@ -971,9 +977,9 @@
 		var resolveLookupRecords = function (item, relationType, dataKind) {
 			// Initialize
 			var defer = $q.defer();
-			contentData.modalSelectedItem = item;
-			contentData.modalRelationType = relationType;
-			contentData.modalDataKind = dataKind;
+			contentData.modalSelectedItem = fastCopy(item);
+			contentData.modalRelationType = fastCopy(relationType);
+			contentData.modalDataKind = fastCopy(dataKind);
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -990,24 +996,32 @@
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
 				var defaultLookupList = null;
-
+				var selectedLookupListName = contentData.modalSelectedItem.fieldLookupList;
+				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
 				for (var i = 0; i < entityMeta.recordLists.length; i++) {
+					//Check if the selected lookupList Exists
+					if (entityMeta.recordLists[i].name == selectedLookupListName) {
+						selectedLookupList = entityMeta.recordLists[i];
+					}
 					if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
 						defaultLookupList = entityMeta.recordLists[i];
-						break;
 					}
 				}
 
-				if (defaultLookupList == null) {
-					response.message = "This entity does not have a default lookup list";
+				if (selectedLookupList == null && defaultLookupList == null) {
+					response.message = "This entity does not have selected or default lookup list";
 					response.success = false;
 					errorCallback(response);
 				}
 				else {
-					var gg = contentData.modalSelectedItem;
+					
+					//var gg = contentData.modalSelectedItem;
 					//contentData.modalRelationType;
 					//contentData.modalDataKind;
+					if (selectedLookupList != null) {
+						defaultLookupList = selectedLookupList;
+					}
 
 					//Current record is Origin
 					if (contentData.modalDataKind == "origin") {

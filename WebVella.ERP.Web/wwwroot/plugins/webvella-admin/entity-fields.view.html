@@ -1238,7 +1238,7 @@
 					</div>
 				</div>
 
-				<div class="row" ng-show="popupData.field.enableSecurity">
+				<div class="row ng-hide" ng-show="popupData.field.enableSecurity">
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label class="control-label">Record permissions</label>
@@ -1280,8 +1280,8 @@
 
 
 	<div class="modal-footer">
-		<p ng-show="popupData.wizard.steps[1].active"><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
-		<div ng-show="popupData.wizard.steps[2].active">
+		<p ng-show="popupData.wizard.steps[1].active" class="ng-hide"><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
+		<div ng-show="popupData.wizard.steps[2].active" class="ng-hide">
 			<button class="btn btn-default pull-left" ng-click="popupData.setActiveStep(1)"><i class="fa fa-fw fa-backward"></i> Back</button>
 			<button class="btn btn-success pull-right" ng-click="popupData.ok()" ng-hide="popupData.hasError"><i class="fa fa-fw fa-plus"></i> Create Field</button>
 		</div>
@@ -2375,7 +2375,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="popupData.field.enableSecurity">
+			<div class="row ng-hide" ng-show="popupData.field.enableSecurity">
 				<div class="col-sm-12">
 					<div class="form-group">
 						<label class="control-label">Record permissions</label>
@@ -2413,11 +2413,11 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<p ng-show="popupData.wizard.steps[1].active">
+		<p ng-show="popupData.wizard.steps[1].active" class="ng-hide">
 			<i class="fa fa-fw fa-info-circle"></i>To proceed, press the Select button of a filed type</>
 			<div>
-				<button ng-show="!popupData.field.system" class="btn btn-link pull-left go-red" ng-click="popupData.deleteFieldModal()">[ Delete field ]</button>
-				<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError"><i class="fa fa-fw fa-save"></i> Save Field</button>
+				<button ng-show="!popupData.field.system" class="btn btn-link pull-left go-red ng-hide" ng-click="popupData.deleteFieldModal()">[ Delete field ]</button>
+				<button class="btn btn-primary ng-hide" ng-click="popupData.ok()" ng-show="!popupData.hasError"><i class="fa fa-fw fa-save"></i> Save Field</button>
 				<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 			</div>
 	</div>

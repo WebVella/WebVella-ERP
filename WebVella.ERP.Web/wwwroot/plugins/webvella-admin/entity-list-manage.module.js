@@ -353,6 +353,7 @@
 			switch (item.type) {
 				case "field":
 					contentData.library.items.push(item);
+					contentData.onlyFieldsLibrary.items.push(item);
 					break;
 				case "relationOptions":
 					item.addedToLibrary = false;

@@ -258,21 +258,28 @@
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
 				var defaultLookupList = null;
-
+				var selectedLookupListName = $scope.viewMeta.fieldLookupList;
+				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
 				for (var i = 0; i < entityMeta.recordLists.length; i++) {
+					//Check if the selected lookupListExists
+					if (entityMeta.recordLists[i].name == selectedLookupListName) {
+						selectedLookupList = entityMeta.recordLists[i];
+					}
 					if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
 						defaultLookupList = entityMeta.recordLists[i];
-						break;
 					}
 				}
 
-				if (defaultLookupList == null) {
-					response.message = "This entity does not have a default lookup list";
+				if (selectedLookupList == null && defaultLookupList == null) {
+					response.message = "This entity does not have selected or default lookup list";
 					response.success = false;
 					errorCallback(response);
 				}
 				else {
+					if (selectedLookupList != null) {
+						defaultLookupList = selectedLookupList;
+					}
 					webvellaAreasService.getListRecords(defaultLookupList.name, $scope.entity.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
 				}
 			}
@@ -330,21 +337,29 @@
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
 				var defaultQuickCreateView = null;
-
+				var selectedQuickCreateViewName = $scope.viewMeta.fieldManageView;
+				var selectedQuickCreateView = null;
 				//Find the default lookup field if none return null.
 				for (var i = 0; i < entityMeta.recordViews.length; i++) {
+					//Check if the selected quick create Exists
+					if (entityMeta.recordViews[i].name == selectedQuickCreateViewName) {
+						selectedQuickCreateView = entityMeta.recordViews[i];
+					}
 					if (entityMeta.recordViews[i].default && entityMeta.recordViews[i].type == "quick_create") {
 						defaultQuickCreateView = entityMeta.recordViews[i];
-						break;
 					}
 				}
 
-				if (defaultQuickCreateView == null) {
-					response.message = "This entity does not have a default quick create view";
+				if (selectedQuickCreateView == null && defaultQuickCreateView == null) {
+					response.message = "This entity does not have selected or default quick create view";
 					response.success = false;
 					errorCallback(response);
 				}
 				else {
+					if (selectedQuickCreateView != null) {
+						defaultQuickCreateView = selectedQuickCreateView;
+					}
+
 					if (managedRecord == null) {
 						webvellaAreasService.getViewByName(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
 					}
