@@ -442,101 +442,153 @@
 
 		//#endregion
 
-		//#region << Drag & Drop Management >>
+		//#region << Manage FromRelationModal >>
+		var openFromRelationSettingsModal = function (fieldItem, eventObj) {
+			//Init
+			var droppedItem = fastCopy(fieldItem);
+			var relation = null;
+			for (var j = 0; j < contentData.relationsList.length; j++) {
+				if (contentData.relationsList[j].id == droppedItem.relationId) {
+					relation = contentData.relationsList[j];
+				}
+			}
+			if (relation == null) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> item relation not found',
+					timeout: 7000
+				});
+				moveFailure();
+				return;
+			}
 
-		function executeDragViewChange(eventObj) {
+			//Callbacks
+			var moveSuccess = function () {
+				// Prevent from dragging back to library use remove link instead
+				if (eventObj.dest.sortableScope.element[0].id != "library") {
 
-			var openFromRelationSettingsModal = function () {
-				//Init
-				var droppedItem = fastCopy(eventObj.source.itemScope.modelValue);
-				var relation = null;
-				for (var j = 0; j < contentData.relationsList.length; j++) {
-					if (contentData.relationsList[j].id == droppedItem.relationId) {
-						relation = contentData.relationsList[j];
+				}
+				else {
+					//we need to destroy the dropped object
+
+				}
+			};
+			var moveFailure = function () {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//we are copying them currently only
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+			};
+
+			function successCallback(response) {
+				if (response.success) {
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> ' + response.message
+					});
+					//contentData.library.items = fastCopy(contentData.originalLibrary);
+					for (var i = 0; i < response.object.regions.length; i++) {
+						if (response.object.regions[i].name === "content") {
+							contentData.viewContentRegion = response.object.regions[i];
+						}
+					}
+					if (eventObj != null) {
+						moveSuccess();
 					}
 				}
-				if (relation == null) {
-					ngToast.create({
-						className: 'error',
-						content: '<span class="go-red">Error:</span> item relation not found',
-						timeout: 7000
-					});
-					moveFailure();
-					return;
+				else {
+					errorCallback(response);
+					if (eventObj != null) {
+						moveFailure();
+					}
 				}
+			}
 
-				//Callbacks
-				function getRelatedEntityMetaSuccessCallback(response) {
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				if (eventObj != null) {
+					moveFailure();
+				}
+			}
 
-					var modalInstance = $uibModal.open({
-						animation: false,
-						templateUrl: 'manageFromRelationModal.html',
-						controller: 'ManageFromRelationModalController',
-						controllerAs: "popupData",
-						size: "",
-						resolve: {
-							parentData: function () { return contentData; },
-							eventObj: eventObj,
-							relatedEntityMeta:response.object
-						}
-					});
+			function getRelatedEntityMetaSuccessCallback(response) {
 
-					modalInstance.result.then(function (fieldObject) {
-						for (var i = 0; i < contentData.view.regions.length; i++) {
-							for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
-								for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
-									for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
-										for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-											if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-												if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
-													contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-												}
+				var modalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'manageFromRelationModal.html',
+					controller: 'ManageFromRelationModalController',
+					controllerAs: "popupData",
+					backdrop: 'static',
+					size: "",
+					resolve: {
+						parentData: function () { return contentData; },
+						eventObj: eventObj,
+						relatedEntityMeta: response.object,
+						fieldObj: fieldItem
+					}
+				});
+
+				modalInstance.result.then(function (fieldObject) {
+					for (var i = 0; i < contentData.view.regions.length; i++) {
+						for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
+							for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
+								for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
+									for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
+										if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+											if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
+												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 											}
 										}
 									}
 								}
 							}
 						}
+					}
 
-						contentData.view = fastCopy(contentData.view);
-						////2. Call the service
-						webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
-						return;
-					});
-				}
-
-
-
-				function getRelatedEntityMetaErrorCallback(response) {
-					ngToast.create({
-						className: 'error',
-						content: '<span class="go-red">Error:</span> could not get the related entity meta - ' + response.message,
-						timeout: 7000
-					});
-					moveFailure();
+					contentData.view = fastCopy(contentData.view);
+					////2. Call the service
+					webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
 					return;
-				}
+				});
+			}
 
-				//Get the correct related entityMeta
+			function getRelatedEntityMetaErrorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> could not get the related entity meta - ' + response.message,
+					timeout: 7000
+				});
+				moveFailure();
+				return;
+			}
 
-				if (droppedItem.entityName == contentData.entity.name) {
-					//the dropped item has relation to the current entity so no reason to make http request
-					var response = {};
-					response.success = true;
-					response.object = contentData.entity;
-					getRelatedEntityMetaSuccessCallback(response);
-				}
-				else {
-					var relatedEntityName = null;
-					webvellaAdminService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
-				}
-			};
+			//Get the correct related entityMeta
 
+			if (droppedItem.entityName == contentData.entity.name) {
+				//the dropped item has relation to the current entity so no reason to make http request
+				var response = {};
+				response.success = true;
+				response.object = contentData.entity;
+				getRelatedEntityMetaSuccessCallback(response);
+			}
+			else {
+				var relatedEntityName = null;
+				webvellaAdminService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
+			}
+		};
+		//#endregion
+
+		//#region << Drag & Drop Management >>
+
+		function executeDragViewChange(eventObj) {
 
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
@@ -559,7 +611,7 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					contentData.library.items = fastCopy(contentData.originalLibrary);
+					//contentData.library.items = fastCopy(contentData.originalLibrary);
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
 							contentData.viewContentRegion = response.object.regions[i];
@@ -585,11 +637,11 @@
 			//#endregion
 
 			if (eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") {
-				openFromRelationSettingsModal();
+				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue,eventObj);
 			}
 			else if (eventObj.source.itemScope.item.type == "html") {
 				//can be managed
-				openItemSettingsModal();
+				
 			}
 			else {
 				//cannot be managed
@@ -769,7 +821,13 @@
 			return 0;
 		}
 
+		contentData.manageFieldFromRelation = function (item) {
+			openFromRelationSettingsModal(item, null);
+		}
+
 		//#endregion
+
+
 
 		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
@@ -1021,14 +1079,14 @@
 	};
 
 
-	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'relatedEntityMeta'];
+	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
 	/* @ngInject */
-	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, relatedEntityMeta) {
+	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.parentData = fastCopy(parentData);
-		popupData.field = fastCopy(eventObj.source.itemScope.item);
+		popupData.field = fastCopy(fieldObj);
 		popupData.entity = fastCopy(relatedEntityMeta);
 		popupData.quickCreateViews = [];
 		popupData.quickCreateDefaultIndex = -1;
@@ -1087,7 +1145,7 @@
 		else if (popupData.quickCreateViews.length > 0) {
 			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
 		}
-		else if (popupData.field.type == "listFromRelation" || popupData.field.type == "fromFromRelation") {
+		else if (popupData.field.type == "listFromRelation" || popupData.field.type == "viewFromRelation") {
 
 			//should alert for error if it is list or view
 			popupData.error = true;
@@ -1100,8 +1158,11 @@
 		};
 
 		popupData.cancel = function () {
-			eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-			eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
+			if (eventObj != null) {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//we are currently copying so no need to return it back
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
+			}
 			$modalInstance.dismiss('cancel');
 		};
 

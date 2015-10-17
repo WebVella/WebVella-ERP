@@ -233,7 +233,7 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item.relationName)}}</label>
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
 											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
@@ -340,6 +340,7 @@
 
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
@@ -355,6 +356,7 @@
 
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<recursive-view view-meta="::item"
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
@@ -373,6 +375,7 @@
 
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
@@ -388,6 +391,7 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
