@@ -21,22 +21,22 @@
 
 	/* @ngInject */
 	function recursiveView($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
-		//Text Binding (Prefix: @)
-		//One-way Binding (Prefix: &)
-		//Two-way Binding (Prefix: =)
+		//Text Binding (Prefix: @) - only strings
+		//One-way Binding (Prefix: &) - $scope functions
+		//Two-way Binding (Prefix: =) -$scope.properties
 		var directive = {
 			controller: DirectiveController,
 			templateUrl: '/plugins/webvella-areas/providers/recursive-view.template.html',
 			restrict: 'E',
 			scope: {
-				viewData: '&',
-				viewMeta: '&',
-				relation: '&',
-				parentId: '&',
-				canAddExisting: '&',
-				canCreate: '&',
-				canRemove: '&',
-				canUpdate: '&'
+				viewData: '=',
+				viewMeta: '=',
+				relation: '=',
+				parentId: '=',
+				canAddExisting: '=',
+				canCreate: '=',
+				canRemove: '=',
+				canUpdate: '='
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -55,17 +55,17 @@
 	/* @ngInject */
 	function DirectiveController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
 		//#region << Init >>
-		$scope.relation = $scope.relation();
-		$scope.viewMeta = $scope.viewMeta();
-		$scope.viewData = $scope.viewData();
+		//$scope.relation = $scope.relation();
+		//$scope.viewMeta = $scope.viewMeta();
+		//$scope.viewData = $scope.viewData();
 		$scope.entity = {};
 		$scope.entity.id = $scope.viewMeta.entityId;
 		$scope.entity.name = $scope.viewMeta.entityName;
-		$scope.parentId = $scope.parentId();
-		$scope.canAddExisting = $scope.canAddExisting();
-		$scope.canCreate = $scope.canCreate();
-		$scope.canRemove = $scope.canRemove();
-		$scope.canUpdate = $scope.canUpdate();
+		//$scope.parentId = $scope.parentId();
+		//$scope.canAddExisting = $scope.canAddExisting();
+		//$scope.canCreate = $scope.canCreate();
+		//$scope.canRemove = $scope.canRemove();
+		//$scope.canUpdate = $scope.canUpdate();
 
 		if (!$scope.viewMeta || $scope.viewMeta.length == 0) {
 			$scope.hasError = true;

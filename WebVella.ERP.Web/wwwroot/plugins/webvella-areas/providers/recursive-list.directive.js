@@ -19,22 +19,22 @@
 
 	/* @ngInject */
 	function recursiveList($compile, $templateRequest, RecursionHelper) {
-		//Text Binding (Prefix: @)
-		//One-way Binding (Prefix: &)
-		//Two-way Binding (Prefix: =)
+		//Text Binding (Prefix: @) - only strings
+		//One-way Binding (Prefix: &) - $scope functions
+		//Two-way Binding (Prefix: =) -$scope.properties
 		var directive = {
 			controller: DirectiveController,
 			templateUrl: '/plugins/webvella-areas/providers/recursive-list.template.html',
 			restrict: 'E',
 			scope: {
-				listData: '&',
-				listMeta: '&',
-				relation: '&',
-				parentId: '&',
-				canAddExisting: '&',
-				canCreate: '&',
-				canRemove: '&',
-				canUpdate: '&'
+				listData: '=',
+				listMeta: '=',
+				relation: '=',
+				parentId: '=',
+				canAddExisting: '=',
+				canCreate: '=',
+				canRemove: '=',
+				canUpdate: '='
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -54,17 +54,17 @@
 	function DirectiveController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
 
 		//#region << Init >>
-		$scope.relation = $scope.relation();
-		$scope.listData = $scope.listData();
-		$scope.listMeta = $scope.listMeta();
+		//$scope.relation = $scope.relation();
+		//$scope.listData = $scope.listData();
+		//$scope.listMeta = $scope.listMeta();
 		$scope.entity = {};
 		$scope.entity.id = $scope.listMeta.entityId;
 		$scope.entity.name = $scope.listMeta.entityName;
-		$scope.parentId = $scope.parentId();
-		$scope.canAddExisting = $scope.canAddExisting();
-		$scope.canCreate = $scope.canCreate();
-		$scope.canRemove = $scope.canRemove();
-		$scope.canUpdate = $scope.canUpdate();
+		//$scope.parentId = $scope.parentId();
+		//$scope.canAddExisting = $scope.canAddExisting();
+		//$scope.canCreate = $scope.canCreate();
+		//$scope.canRemove = $scope.canRemove();
+		//$scope.canUpdate = $scope.canUpdate();
 
 		//Validation
 		if (!$scope.listMeta || $scope.listMeta.length == 0) {
