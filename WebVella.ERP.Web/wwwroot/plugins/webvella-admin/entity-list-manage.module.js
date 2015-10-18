@@ -11,7 +11,9 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityListManageController', controller)
-        .controller('DeleteListModalController', deleteListModalController);
+        .controller('DeleteListModalController', deleteListModalController)
+		.directive('queryItem', queryItem)
+		.directive('queryItemController', queryItemController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -233,18 +235,16 @@
 	//#endregion
 
 	//#region << Controller >> ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
 						'resolvedViewLibrary', 'webvellaAdminService', 'resolvedEntityRelationsList'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
+	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
 						resolvedViewLibrary, webvellaAdminService, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
-		//#region << Initialize the current entity >>
+		//#region << Initialize>>
 		contentData.entity = resolvedCurrentEntityMeta;
-		//#endregion
-
 		//Awesome font icon names array 
 		contentData.icons = getFontAwesomeIconNames();
 
@@ -327,9 +327,11 @@
 		}
 
 		contentData.updateQuery = function () {
-			var postObj = {};
-			postObj.query = contentData.list.query;
-			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+			$timeout(function () {
+				var postObj = {};
+				postObj.query = contentData.list.query;
+				webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+			}, 1);
 		}
 
 		contentData.updateSorts = function () {
@@ -406,7 +408,11 @@
 
 		//#endregion
 
+		//#endregion
+
 		//#region << Logic >>
+		
+		//#region << Drag & Drop >>
 		contentData.moveToColumns = function (item, index) {
 			//Add Item at the end of the columns list
 			contentData.list.columns.push(item);
@@ -427,34 +433,23 @@
 			});
 			contentData.updateColumns();
 		}
-
 		contentData.dragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
-				//for (var i = 0; i < destSortableScope.modelValue.length; i++) {
-				//    if (destSortableScope.modelValue[i].id == sourceItemHandleScope.item.id) {
-				//        return false;
-				//        break;
-				//    }
-				//}
-
 				return true
 			},
 			itemMoved: function (eventObj) {
-				//Item is moved from one column to another
-				//executeDragViewChange(eventObj);
 				contentData.updateColumns();
 			},
 			orderChanged: function (eventObj) {
-				//Item is moved within the same column
-				//executeDragViewChange(eventObj);
 				contentData.updateColumns();
 			}
 		};
 
 		//#endregion
 
-		//#region << Query >>
-		//Attach guid to each area and rule so we can find it when managed
+		//#region << Query & Sort>>
+
+		//Used in the directives
 		function findInTreeById(startElement, matchingId) {
 			if (startElement.id == matchingId) {
 				return startElement;
@@ -673,7 +668,7 @@
 				}
 			});
 		}
-
+		//#endregion
 
 		$log.debug('webvellaAdmin>entity-records-list> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
@@ -721,4 +716,64 @@
 	};
 
 	//#endregion
+
+	//#region << Query Directive >>
+	queryItem.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
+	/* @ngInject */
+	function queryItem($compile, $templateRequest, RecursionHelper) {
+		var directive = {
+			controller: queryItemController,
+			template: '<ng-include src="getTemplateUrl()"/>',
+			restrict: 'E',
+			scope: {
+				currentQuery: '=',
+				rootQuery: '=',
+				parentQuery: '=?',
+				pageScope: '=',
+				queryIndex: '='
+			},
+			compile: function (element) {
+				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
+					// Define your normal link function here.
+					// Alternative: instead of passing a function,
+					// you can also pass an object with 
+					// a 'pre'- and 'post'-link function.
+				});
+			}
+		};
+		return directive;
+	}
+
+	queryItemController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
+	/* @ngInject */
+	function queryItemController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
+		console.log($scope.currentQuery);
+		$scope.contentData = $scope.pageScope;
+		$scope.getTemplateUrl = function () {
+			switch ($scope.currentQuery.queryType) {
+				case "EQ":
+					return 'queryRule.html';
+				case "NOT":
+					return 'queryRule.html';
+				case "LT":
+					return 'queryRule.html';
+				case "LTE":
+					return 'queryRule.html';
+				case "GT":
+					return 'queryRule.html';
+				case "GTE":
+					return 'queryRule.html';
+				case "CONTAINS":
+					return 'queryRule.html';
+				case "STARTSWITH":
+					return 'queryRule.html';
+				case "AND":
+					return 'querySection.html';
+				case "OR":
+					return 'querySection.html';
+			}
+		}
+	}
+	//#endregion
+
 })();
