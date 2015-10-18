@@ -79,7 +79,8 @@
 									</div>
 									<div ng-switch-when="viewFromRelation">
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div ng-switch-when="list">
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
@@ -87,7 +88,8 @@
 									</div>
 									<div ng-switch-when="listFromRelation">
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
-										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 								</div>
 							</div>
@@ -158,98 +160,36 @@
 	</div>
 </div>
 
-<script type="text/ng-template" id="manageSectionModal.html">
+<script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title ng-hide" ng-show="popupData.isUpdate">Manage section</h3>
-		<h3 class="modal-title ng-hide" ng-show="!popupData.isUpdate">Create section</h3>
+		<h3 class="modal-title">Relation Item settings</h3>
 	</div>
 	<div class="modal-body">
-		<form name="manageSection">
+		<div class="alert alert-danger ng-hide" ng-show="popupData.error">{{popupData.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupData.error">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageSection.name.$invalid && !manageSection.name.$pristine}">
-						<label class="required" for="sectionName">Name</label>
-						<input ng-model="popupData.section.name" name="name" type="text" class="form-control" id="sectionName" placeholder="e.g. details"
-							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}" autofocus ng-disabled="popupData.isUpdate">
-						<div class="error" ng-show="manageSection.name.$touched && manageSection.name.$dirty && manageSection.name.$invalid">
-							<small class="error" ng-show="manageSection.name.$error.required">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupData.fieldLabelError}">
+						<label class="control-label required">Label</label>
+						<input class="form-control" ng-model="popupData.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required />
+						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupData.fieldLabelError">
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupData.fieldLabelError">
 								required field
 							</small>
-							<small class="error" ng-show="manageSection.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+							<small class="error" ng-show="popupData.fieldLabelError">
+								{{popupData.fieldLabelMessage}}
 							</small>
-							<small class="error" ng-show="manageSection.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
-							<small class="error" ng-show="manageSection.name.$error.unique">
-								should be unique for this view
-							</small>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageSection.label.$invalid && !manageSection.label.$pristine}">
-						<label class="required" for="title">Label</label>
-						<input ng-model="popupData.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
-							   required maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageSection.label.$touched && manageSection.label.$dirty && manageSection.label.$invalid">
-							<small class="error" ng-show="manageSection.label.$error.required">
-								required field
-							</small>
-							<small class="error" ng-show="manageSection.label.$error.maxlength">
-								must be less than 50 chars
-							</small>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageSection.cssClass.$invalid && !manageSection.cssClass.$pristine}">
-						<label for="cssClass">CSS Class</label>
-						<input ng-model="popupData.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
-							   maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageSection.cssClass.$touched && manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
-							<small class="error" ng-show="manageSection.cssClass.$error.maxlength">
-								must be less than 50 chars
-							</small>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
-						<label for="place">Weight</label>
-						<input ng-model="popupData.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
-							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageSection.weight.$touched && manageSection.weight.$dirty && manageSection.weight.$invalid">
-							<small class="error" ng-show="manageSection.weight.$error.pattern">
-								should be a valid number
-							</small>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="showLabel">Label Visibility</label>
-						<div class="checkbox">
-							<label>
-								<input ng-model="popupData.section.showLabel" type="checkbox" id="showLabel" value="true">
-								show the section label
-							</label>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="collapsed">Section collapsed</label>
+						<label for="requiredStatus" class="control-label">Required</label>
 						<div class="checkbox">
 							<label>
-								<input ng-model="popupData.section.collapsed" type="checkbox" id="collapsed" value="true">
-								section will be collapsed as default
+								<input ng-model="popupData.field.fieldRequired" type="checkbox" value="true">
+								this is a required field
 							</label>
 						</div>
 					</div>
@@ -257,82 +197,46 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="tabOrder">Tab Order</label>
-						<select class="form-control" ng-model="popupData.section.tabOrder">
-							<option value="left-right">Left to Right</option>
-							<option value="top-down">Top to Down</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</form>
-
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Section</button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Section</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
-	</div>
-</script>
-
-<script type="text/ng-template" id="manageRowModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title ng-hide" ng-show="popupData.row.id == null">Add Row</h3>
-		<h3 class="modal-title ng-hide" ng-show="popupData.row.id != null">Manage Row</h3>
-	</div>
-	<div class="modal-body">
-		<form name="manageRow">
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="tabOrder">Row columns</label>
-						<select class="form-control" ng-model="popupData.selectedRowOption" ng-options="option.value for option in popupData.rowOptions"></select>
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldPlaceholder.$invalid && !manageForm.fieldPlaceholder.$pristine || popupData.fieldPlaceholderError}">
+						<label class="control-label">Placeholder text</label>
+						<input class="form-control" ng-model="popupData.field.fieldPlaceholder" name="fieldPlaceholder" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldPlaceholder.$touched && manageForm.fieldPlaceholder.$dirty && manageForm.fieldPlaceholder.$invalid || popupData.fieldPlaceholderError">
+							<small class="error" ng-show="popupData.fieldPlaceholderError">
+								{{popupData.fieldPlaceholderMessage}}
+							</small>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageRow.row.$invalid && !manageRow.row.$pristine}">
-						<label for="place">Weight</label>
-						<input ng-model="popupData.row.weight" name="weight" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
-							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="manageRow.weight.$touched && manageRow.weight.$dirty && manageRow.weight.$invalid">
-							<small class="error" ng-show="manageRow.weight.$error.pattern">
-								should be a valid number
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldHelpText.$invalid && !manageForm.fieldHelpText.$pristine || popupData.fieldHelpTextError}">
+						<label class="control-label">Help text</label>
+						<input class="form-control" ng-model="popupData.field.fieldHelpText" name="fieldHelpText" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldHelpText.$touched && manageForm.fieldHelpText.$dirty && manageForm.fieldHelpText.$invalid || popupData.fieldHelpTextError">
+							<small class="error ng-hide" ng-show="popupData.fieldHelpTextError">
+								{{popupData.fieldHelpTextMessage}}
 							</small>
 						</div>
 					</div>
 				</div>
 			</div>
-
-		</form>
-
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Row</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
-	</div>
-</script>
-
-<script type="text/ng-template" id="manageItemModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Add Item</h3>
-	</div>
-	<div class="modal-body">
-		<div class="go-red">TODO: Implementation needed</div>
-		<form name="addHtmlItem">
-			<div class="form-group">
-				<label>Html content</label>
-				<textarea ng-model="popupData.content" class="form-control"></textarea>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label required">Lookup list</label>
+						<select class="form-control" ng-model="popupData.field.fieldLookupList" ng-options="item.name as item.name for item in popupData.lookupLists"></select>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-if="popupData.field.type == 'viewFromRelation' || popupData.field.type == 'listFromRelation'">
+						<label class="control-label required">Quick create</label>
+						<select class="form-control" ng-model="popupData.field.fieldManageView" ng-options="item.name as item.name for item in popupData.quickCreateViews"></select>
+					</div>
+				</div>
 			</div>
 		</form>
-
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
-		<button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Row</button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupData.error" ng-click="popupData.ok()">Add Item</button>
 		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
