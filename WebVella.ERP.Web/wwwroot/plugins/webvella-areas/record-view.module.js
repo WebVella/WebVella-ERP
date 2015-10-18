@@ -1111,18 +1111,12 @@
 			function successCallback(response) {
 				popupData.relationLookupList = fastCopy(response.object);
 			}
+			function errorCallback(response) { }
 
-			function errorCallback(response) {
-				//ngToast.create({
-				//	className: 'error',
-				//	content: '<span class="go-green">Error:</span> ' + response.message,
-				//	timeout: 7000
-				//});
+			if (popupData.searchQuery) {
+				popupData.searchQuery = popupData.searchQuery.trim();
 			}
-			if(popupData.searchQuery){
-				webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
-				}
-
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", 1, popupData.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
