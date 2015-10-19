@@ -73,6 +73,14 @@ function guid() {
 		serviceInstance.patchEntityList = patchEntityList;
 		serviceInstance.updateEntityList = updateEntityList;
 		serviceInstance.deleteEntityList = deleteEntityList;
+		//Tree
+		serviceInstance.initTree = initTree;
+		serviceInstance.getEntityTrees = getEntityTrees;
+		serviceInstance.getEntityTree = getEntityTree;
+		serviceInstance.createEntityTree = createEntityTree;
+		serviceInstance.patchEntityTree = patchEntityTree;
+		serviceInstance.updateEntityTree = updateEntityTree;
+		serviceInstance.deleteEntityTree = deleteEntityTree;
 		//Record
 		serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
 		serviceInstance.getRecord = getRecord;
@@ -626,7 +634,7 @@ function guid() {
 
 		//#endregion
 
-		//#region <<Records List>>
+		//#region << Records List >>
 		///////////////////////
 		function initList() {
 			$log.debug('webvellaAdmin>providers>admin.service>initList> function called ' + moment().format('HH:mm:ss SSSS'));
@@ -757,6 +765,137 @@ function guid() {
 		function deleteEntityList(listName, entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>deleteEntityList> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		//#endregion
+
+		//#region <<Records Tree>>
+		///////////////////////
+
+		function initTree() {
+			$log.debug('webvellaAdmin>providers>admin.service>initTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			var tree =
+            {
+            	"id": null,
+            	"name": "",
+            	"label": "",
+            	"default": false,
+            	"system": false,
+            	"cssClass": "",
+            	"relationId": null, // Only relations in which both origin and target are the current entity
+            	"selectionType": "single-select", //multi-select, single-branch-select
+            	"selectionTarget": "all", //leaves
+            	"depthLimit": 5,
+            	"nodeParentIdFieldId": null, //Inherited from the relation Target field
+            	"nodeIdFieldId": null, //Inherited from the relation Origin field
+            	"nodeNameFieldId": null, //Only certain types should be allowed here - used for URL generation
+            	"nodeLabelFieldId": null, //Only certain types should be allowed here - human readable node label
+            	"rootNodes": [],
+            	"nodeObjectProperties": []
+            }
+			return tree;
+		}
+
+		function sampleTree() {
+			$log.debug('webvellaAdmin>providers>admin.service>sampleTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			var tree =
+            {
+            	"id": "be607564-8424-4df2-b6ff-16a7a9529c30",
+            	"name": "categories",
+            	"label": "Categories",
+            	"default": false,
+            	"system": false,
+            	"cssClass": "some-css",
+            	"relationId": "460e699c-6624-4238-bb17-12243cf5d56b", // Only relations in which both origin and target are the current entity
+            	"selectionType": "single-select", //multi-select, single-select-for-branch
+            	"selectionTarget": "all", //leaves
+            	"depthLimit": 5,
+            	"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
+            	"nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", //Inherited from the relation Origin field
+            	"nodeNameFieldId": "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", //Only certain types should be allowed here - used for URL generation
+            	"nodeLabelFieldId": "664f2b4a-dd96-4e27-aabd-898e255d9c8e", //Only certain types should be allowed here - human readable node label
+            	"rootNodes": [
+					{
+						"id": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
+						"name": "clothes",
+						"label": "Clothes",
+						"parentId": "b6add018-f9eb-4b60-a724-7d1e2597449c"
+					}
+            	],
+            	"nodeObjectProperties": ["16672229-1694-468e-a363-c80effffe5d1", "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", "664f2b4a-dd96-4e27-aabd-898e255d9c8e"]
+            }
+			return tree;
+		}
+
+		var dummyTreeResponse = {
+			status: 200,
+			data: {
+				success: true,
+				message: "Successfully created",
+				object: sampleTree(),
+				errors: []
+			}
+		}
+		var dummyTreeList = [];
+		dummyTreeList.push(sampleTree());
+		var dummyTreeListResponse = {
+			status: 200,
+			data: {
+				success: true,
+				message: "Successfully returned",
+				object: dummyTreeList,
+				errors: []
+			}
+		}
+
+		///////////////////////
+		function getEntityTrees(entityName, successCallback, errorCallback) {
+			//api/v1/en_US/meta/entity/{Name}/tree
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityTrees> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeListResponse.data, dummyTreeListResponse.status, successCallback, errorCallback)
+			//$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getEntityTree(treeName, entityName, successCallback, errorCallback) {
+			//api/v1/en_US/meta/entity/{Name}/tree/{treeName}"
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			//$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		//////////////////////
+		function createEntityTree(submitObj, entityName, successCallback, errorCallback) {
+			//"api/v1/en_US/meta/entity/{Name}/tree") -> submitObj
+			$log.debug('webvellaAdmin>providers>admin.service>createEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			//$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		//////////////////////
+		function patchEntityTree(submitObj, treeName, entityName, successCallback, errorCallback) {
+			//"api/v1/en_US/meta/entity/{Name}/tree/{ListName}") -> submitObj
+			$log.debug('webvellaAdmin>providers>admin.service>patchEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			//$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeName, data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		//////////////////////
+		function updateEntityTree(treeObj, entityName, successCallback, errorCallback) {
+			//"api/v1/en_US/meta/entity/{Name}/tree/{ListName}") -> submitObj
+			$log.debug('webvellaAdmin>providers>admin.service>updateEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			//$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeObj.name, data: treeObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////////
+		function deleteEntityTree(treeName, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>deleteEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			//$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		//#endregion

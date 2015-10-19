@@ -52,26 +52,37 @@
 		$log.debug('webvellaRoot>login> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var loginData = this;
-		loginData.rememberMe = false;
-		loginData.pageTitle = "Login | " + pageTitle;
-		webvellaRootService.setPageTitle(loginData.pageTitle);
-
-		loginData.ValidationErrors = false;
-
-		webvellaRootService.setPageTitle(loginData.pageTitle);
-
-		loginData.doLogin = function () {
-			webvellaRootService.login(loginData,
-									  function (response) {
-									  	$timeout(function () {
-									  		$state.go('webvella-desktop-browse');
-									  	}, 10);
-									  },
-									  function (response) {
-									  	//show validation
-									  });
+		loginData.loginIsActive = false;
+		var currentUser = webvellaRootService.getCurrentUser();
+		if (currentUser != null) {
+			$timeout(function () {
+				$state.go("webvella-desktop-browse");
+			}, 0);
 		}
+		else {
+			loginData.loginIsActive = true;
 
+
+			loginData.rememberMe = false;
+			loginData.pageTitle = "Login | " + pageTitle;
+			webvellaRootService.setPageTitle(loginData.pageTitle);
+
+			loginData.ValidationErrors = false;
+
+			webvellaRootService.setPageTitle(loginData.pageTitle);
+
+			loginData.doLogin = function () {
+				webvellaRootService.login(loginData,
+										  function (response) {
+										  	$timeout(function () {
+										  		$state.go('webvella-desktop-browse');
+										  	}, 10);
+										  },
+										  function (response) {
+										  	//show validation
+										  });
+			}
+		}
 		$log.debug('webvellaRoot>login> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
