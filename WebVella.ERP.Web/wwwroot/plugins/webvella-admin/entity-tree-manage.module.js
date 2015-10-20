@@ -203,42 +203,6 @@
         }
 		//#endregion
 
-    	//#region << Selection types >>
-        contentData.selectionTypes = [];
-        var singleSelect = {
-        	key: "single-select",
-        	value: "can select only one"
-        };
-        var multiSelect = {
-        	key: "multi-select",
-        	value: "can select many nodes"
-        };
-        var singleBranchSelect = {
-        	key: "single-branch-select",
-        	value: "can select only one node in branch"
-        };
-
-        contentData.selectionTypes.push(singleSelect);
-        if (contentData.selectedRelation.relationType == 3) {
-        	contentData.selectionTypes.push(multiSelect);
-        	contentData.selectionTypes.push(singleBranchSelect);
-        }
-    	//#endregion
-
-    	//#region << Selection targets >>
-        contentData.selectionTargets = [];
-        var allNodesSelect = {
-        	key: "all",
-        	value: "all nodes can be selected"
-        };
-        var multiSelect = {
-        	key: "leaves",
-        	value: "only leaves - nodes with no children"
-        };
-        contentData.selectionTargets.push(allNodesSelect);
-        contentData.selectionTargets.push(multiSelect);
-    	//#endregion
-
     	//#region << Node options >>
         contentData.nodeIdField = {};
         contentData.nodeParentIdField = {};

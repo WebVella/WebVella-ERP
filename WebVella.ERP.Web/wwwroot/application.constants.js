@@ -895,6 +895,12 @@ function getFieldTypes() {
 			"name": "UrlField",
 			"label": "URL",
 			"description": "This field will validate local and static URLs. Will present them accordingly"
+		},
+		{
+			"id": 20,
+			"name": "TreeSelect",
+			"label": "Tree select",
+			"description": "select related records from an entity tree structure. Suitable for categories, organizational charts and etc."
 		}
 	];
 	return types;

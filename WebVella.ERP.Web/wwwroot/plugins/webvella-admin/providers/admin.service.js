@@ -783,8 +783,6 @@ function guid() {
             	"system": false,
             	"cssClass": "",
             	"relationId": null, // Only relations in which both origin and target are the current entity
-            	"selectionType": "single-select", //multi-select, single-branch-select
-            	"selectionTarget": "all", //leaves
             	"depthLimit": 5,
             	"nodeParentIdFieldId": null, //Inherited from the relation Target field
             	"nodeIdFieldId": null, //Inherited from the relation Origin field
@@ -807,8 +805,6 @@ function guid() {
             	"system": false,
             	"cssClass": "some-css",
             	"relationId": "460e699c-6624-4238-bb17-12243cf5d56b", // Only relations in which both origin and target are the current entity
-            	"selectionType": "single-select", //multi-select, single-select-for-branch
-            	"selectionTarget": "all", //leaves
             	"depthLimit": 5,
             	"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
             	"nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", //Inherited from the relation Origin field

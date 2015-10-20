@@ -127,35 +127,6 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label">Selection type</label>
-									<a href="javascript:void(0)" editable-select="contentData.tree.selectionType" e-ng-options="s.key as s.value for s in contentData.selectionTypes"
-									   ng-bind-html="contentData.tree.selectionType"
-									   onbeforesave="contentData.fieldUpdate('selectionType', $data)">
-									</a>
-									<div class="form-description">some types may not be supported by the selected relation type</div>
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label">Eligible selection target</label>
-									<a href="javascript:void(0)" editable-select="contentData.tree.selectionTarget" e-ng-options="s.key as s.value for s in contentData.selectionTargets"
-									   ng-bind-html="contentData.tree.selectionTarget"
-									   onbeforesave="contentData.fieldUpdate('selectionTarget', $data)">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<h4 class="page-header" style="margin-top:2em">Tree node options</h4>
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<div class="form">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
 									<label class="control-label">Node Id field</label>
 									<span class="not-editable">{{::contentData.nodeIdField.name}}</span>
 									<div class="form-description">relation's origin field</div>
