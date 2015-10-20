@@ -43,6 +43,8 @@
 				checkedAccessPermission: checkAccessPermission,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedRolesList: resolveRolesList,
+				resolvedRelationsList: resolveRelationsList,
+				resolvedEntityTreeList: resolveEntityTreeList,
 			},
 			data: {
 
@@ -51,7 +53,7 @@
 	};
 
 
-	// Resolve Function /////////////////////////
+	//#region << Resolve Function /////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
 	/* @ngInject */
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
@@ -143,23 +145,75 @@
 		return defer.promise;
 	}
 
-	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList'];
+	resolveRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$timeout'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList) {
+	function resolveRelationsList($q, $log, webvellaAdminService, $state, $timeout) {
+		$log.debug('webvellaAdmin>entity-relations> BEGIN resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+
+		webvellaAdminService.getRelationsList(successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-relations> END resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		return defer.promise;
+	}
+
+	resolveEntityTreeList.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$timeout', '$stateParams'];
+	/* @ngInject */
+	function resolveEntityTreeList($q, $log, webvellaAdminService, $state, $timeout, $stateParams) {
+		$log.debug('webvellaAdmin>entity-relations> BEGIN resolveEntityTreeList state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			defer.resolve(response.object);
+		}
+
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+
+		webvellaAdminService.getEntityTrees($stateParams.entityName, successCallback, errorCallback);
+
+		// Return
+		$log.debug('webvellaAdmin>entity-relations> END resolveEntityTreeList state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		return defer.promise;
+	}
+
+	//#endregion
+
+	// Controller ///////////////////////////////
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList',
+						'resolvedRelationsList', 'resolvedEntityTreeList'];
+	/* @ngInject */
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList,
+						resolvedRelationsList, resolvedEntityTreeList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
+
+		//#region << Init >>
 		contentData.search = {};
-		contentData.entity = resolvedCurrentEntityMeta;
-		contentData.rolesList = resolvedRolesList;
+		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
+		contentData.rolesList = fastCopy(resolvedRolesList);
 		contentData.entity.fields = contentData.entity.fields.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
-		//Update page title
+		//#region << Update page title>> 
 		contentData.pageTitle = "Entity Fields | " + pageTitle;
 		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		//Hide Sidemenu
@@ -169,6 +223,8 @@
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		});
+		//#endregion
+
 
 		contentData.fieldTypes = getFieldTypes();
 
@@ -1239,6 +1295,10 @@
 			}
 		];
 
+		contentData.relationsList = fastCopy(resolvedRelationsList);
+		contentData.entityTreeList = fastCopy(resolvedEntityTreeList);
+		//#endregion
+
 		//Create new field modal
 		contentData.createFieldModal = function () {
 			var modalInstance = $uibModal.open({
@@ -1276,16 +1336,13 @@
 			});
 		}
 
-
-		activate();
 		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		function activate() { }
 	}
 
 	//// Create Field Controllers
-	CreateFieldModalController.$inject = ['contentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	CreateFieldModalController.$inject = ['contentData', '$scope','$modalInstance', '$log','$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
-	function CreateFieldModalController(contentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function CreateFieldModalController(contentData,$scope, $modalInstance, $log,$sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1339,6 +1396,77 @@
 
 		}
 
+		//#region << Selection Tree field >>
+
+		popupData.entityTreeList = fastCopy(popupData.contentData.entityTreeList);
+		popupData.relationsList = fastCopy(popupData.contentData.relationsList);
+
+		//#region << Selection types >>
+		popupData.selectionTypes = [];
+		var singleSelectType = {
+			key: "single-select",
+			value: "can select only one"
+		};
+		var multiSelectType = {
+			key: "multi-select",
+			value: "can select many nodes"
+		};
+		var singleBranchSelectType = {
+			key: "single-branch-select",
+			value: "can select only one node in branch"
+		};
+
+		//#endregion
+
+		//#region << Selection targets >>
+		popupData.selectionTargets = [];
+		var allNodesSelectTarget = {
+			key: "all",
+			value: "all nodes can be selected"
+		};
+		var multiSelectTarget = {
+			key: "leaves",
+			value: "only leaves - nodes with no children"
+		};
+		popupData.selectionTargets.push(allNodesSelectTarget);
+		popupData.selectionTargets.push(multiSelectTarget);
+		//#endregion
+
+		popupData.getRelationHtml = function (treeId) {
+
+
+			return result;
+		}
+
+		$scope.$watch("popupData.field.selectedTreeId", function (newValue, oldValue) {
+			if (newValue) {
+				popupData.SelectedInTreeRelationHtml = "unknown";
+				var selectedTree = findInArray(popupData.entityTreeList, "id", newValue);
+				var selectedRelation = findInArray(popupData.relationsList, "id", selectedTree.relationId);
+				popupData.selectionTypes = [];
+				popupData.selectionTypes.push(singleSelectType);
+				if (selectedRelation) {
+					if (selectedRelation.relationType == 2) {
+						//Fix type selection if it was a multiselect option
+						popupData.field.selectionType = "single-select";
+						popupData.SelectedInTreeRelationHtml = $sce.trustAsHtml(selectedRelation.name + " <span class=\"badge badge-primary badge-inverse\" title=\"One to Many\" style=\"margin-left:5px;\">1 : N</span>");
+					}
+					else if (selectedRelation.relationType == 3) {
+						popupData.selectionTypes.push(multiSelectType);
+						popupData.selectionTypes.push(singleBranchSelectType);
+						popupData.SelectedInTreeRelationHtml = $sce.trustAsHtml(selectedRelation.name + ' <span class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>');
+					}
+				}
+			}
+		});
+		popupData.onTreeSelectionChange = function () {
+			//Set the proper selection types values before return
+
+			console.log(popupData.field.selectedTreeId);
+		}
+
+
+		//#endregion
 
 		//Wizard
 		popupData.wizard = {};

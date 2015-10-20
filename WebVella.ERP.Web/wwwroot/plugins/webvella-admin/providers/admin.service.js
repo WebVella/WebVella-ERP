@@ -823,6 +823,35 @@ function guid() {
 			return tree;
 		}
 
+		function sampleTree2() {
+			$log.debug('webvellaAdmin>providers>admin.service>sampleTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			var tree =
+            {
+            	"id": "be607564-8424-4df2-b6ff-16a7a9529c31",
+            	"name": "categories-multi",
+            	"label": "Categories multi select",
+            	"default": false,
+            	"system": false,
+            	"cssClass": "some-css",
+            	"relationId": "d3968a2b-84c0-423a-86ba-ebcd2415f791", // Only relations in which both origin and target are the current entity
+            	"depthLimit": 5,
+            	"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
+            	"nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", //Inherited from the relation Origin field
+            	"nodeNameFieldId": "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", //Only certain types should be allowed here - used for URL generation
+            	"nodeLabelFieldId": "664f2b4a-dd96-4e27-aabd-898e255d9c8e", //Only certain types should be allowed here - human readable node label
+            	"rootNodes": [
+					{
+						"id": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
+						"name": "clothes",
+						"label": "Clothes",
+						"parentId": "b6add018-f9eb-4b60-a724-7d1e2597449c"
+					}
+            	],
+            	"nodeObjectProperties": ["16672229-1694-468e-a363-c80effffe5d1", "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", "664f2b4a-dd96-4e27-aabd-898e255d9c8e"]
+            }
+			return tree;
+		}
+
 		var dummyTreeResponse = {
 			status: 200,
 			data: {
@@ -834,6 +863,7 @@ function guid() {
 		}
 		var dummyTreeList = [];
 		dummyTreeList.push(sampleTree());
+		dummyTreeList.push(sampleTree2());
 		var dummyTreeListResponse = {
 			status: 200,
 			data: {
