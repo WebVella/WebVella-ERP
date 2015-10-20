@@ -1225,6 +1225,42 @@
 						</div>
 					</div>
 				</div>
+				<!--Tree select 20 -->
+				<div ng-if="popupData.wizard.selectedType.id == 20">
+					<input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Selected Entity Record tree </label>
+								<select class="form-control" ng-model="popupData.field.selectedTreeId" name="selectedTreeId" type="text"
+										ng-options="s.id as s.name for s in popupData.entityTreeList" 
+										ng-init="popupData.field.selectedTreeId = popupData.entityTreeList[0].id"></select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Used Entity Relation</label>
+								<span class="not-editable" ng-bind-html="popupData.SelectedInTreeRelationHtml"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label required">Selection type</label>
+								<select class="form-control" ng-model="popupData.field.selectionType" name="selectionType" type="text"
+										ng-options="s.key as s.value for s in popupData.selectionTypes" ng-init="popupData.field.selectionType = 'single-select'"></select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label required">Selection target</label>
+								<select class="form-control" ng-model="popupData.field.selectionTarget" name="selectionTarget" type="text"
+										ng-options="s.key as s.value for s in popupData.selectionTargets" ng-init="popupData.field.selectionTarget = 'all'"></select>
+							</div>
+						</div>
+					</div>
+				</div>
 
 				<div class="row">
 					<div class="col-sm-12">
