@@ -782,6 +782,7 @@ function guid() {
             	"default": false,
             	"system": false,
             	"cssClass": "",
+				"iconName":"",
             	"relationId": null, // Only relations in which both origin and target are the current entity
             	"depthLimit": 5,
             	"nodeParentIdFieldId": null, //Inherited from the relation Target field
@@ -804,6 +805,7 @@ function guid() {
             	"default": false,
             	"system": false,
             	"cssClass": "some-css",
+            	"iconName": "sitemap",
             	"relationId": "460e699c-6624-4238-bb17-12243cf5d56b", // Only relations in which both origin and target are the current entity
             	"depthLimit": 5,
             	"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
@@ -833,6 +835,7 @@ function guid() {
             	"default": false,
             	"system": false,
             	"cssClass": "some-css",
+            	"iconName": "",
             	"relationId": "d3968a2b-84c0-423a-86ba-ebcd2415f791", // Only relations in which both origin and target are the current entity
             	"depthLimit": 5,
             	"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
