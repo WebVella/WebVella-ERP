@@ -183,6 +183,8 @@
         contentData.currentEntityRelation = [];
         contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         contentData.tree = fastCopy(resolvedCurrentEntityRecordTree);
+    	//Awesome font icon names array 
+        contentData.icons = getFontAwesomeIconNames();
         //Update page title
         contentData.pageTitle = "Entity Trees | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
