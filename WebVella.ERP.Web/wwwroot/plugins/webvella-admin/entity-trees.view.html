@@ -66,9 +66,7 @@
 					<th class="actions"></th>
 					<th>Name</th>
 					<th>Relation</th>
-					<th>Selection type</th>
-					<th>Selection target</th>
-					<th>branches</th>
+					<th>Root nodes</th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="tree in contentData.trees | filter: contentData.search track by tree.id">
@@ -79,8 +77,6 @@
 					</td>
 					<td>{{::tree.name}}</td>
 					<td ng-bind-html="::contentData.getRelationHtml(tree)"></td>
-					<td>{{::tree.selectionType}}</td>
-					<td>{{::tree.selectionTarget}}</td>
 					<td>{{::tree.rootNodes.length}}</td>
 				</tr>
 			</tbody>
