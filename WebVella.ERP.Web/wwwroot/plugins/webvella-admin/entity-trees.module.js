@@ -182,7 +182,7 @@
         contentData.allRelations = fastCopy(resolvedRelationsList);
         contentData.currentEntityRelation = [];
         contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-        contentData.trees = fastCopy(resolvedEntityRecordTrees);
+        contentData.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
         //Update page title
         contentData.pageTitle = "Entity Trees | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);

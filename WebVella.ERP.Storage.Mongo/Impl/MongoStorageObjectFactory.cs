@@ -237,6 +237,11 @@ namespace WebVella.ERP.Storage.Mongo
         {
             return new MongoEntityRelationOptions();
         }
-        
-    }
+
+		public IStorageRecordTree CreateEmptyRecordTreeObject()
+		{
+			return new MongoRecordTree();
+		}
+
+	}
 }
