@@ -356,17 +356,34 @@
         	}
         }
         contentData.addNewRootNodeById = function () {
-        	var rootNodeObject = {
-				"recordId": null,
-        		"id": null,
-        		"name": null,
-        		"label": null,
-        		"parentId": null
+        	function successGetRecordCallback(response) {
+        		var rootNodeObject = {
+        			"recordId": null,
+        			"id": null,
+        			"name": null,
+        			"label": null,
+        			"parentId": null
+        		}
+        		rootNodeObject.recordId = contentData.addRecordId;
+        		rootNodeObject.id = response.object[contentData.nodeIdField.name];
+        		rootNodeObject.parentId = response.object[contentData.nodeParentIdField.name];
+        		rootNodeObject.name = response.object[contentData.nodeNameField.name];
+        		rootNodeObject.label = response.object[contentData.nodeLabelField.name];
+        		var rootNodes = fastCopy(contentData.tree.rootNodes);
+        		rootNodes.push(rootNodeObject);
+        		contentData.fieldUpdate('rootNodes', rootNodes);
         	}
-        	rootNodeObject.recordId = contentData.addRecordId;
-        	var rootNodes = fastCopy(contentData.tree.rootNodes);
-        	rootNodes.push(rootNodeObject);
-        	contentData.fieldUpdate('rootNodes', rootNodes);
+
+        	function errorGetRecordCallback(response) {
+        		ngToast.create({
+        			className: 'error',
+        			content: '<span class="go-red">Error:</span> ' + response.message,
+        			timeout: 7000
+        		});
+        		contentData.addRecordId = null;
+        	}
+
+        	webvellaAdminService.getRecord(contentData.addRecordId, contentData.entity.name, successGetRecordCallback, errorGetRecordCallback);
         }
 
         contentData.removeRootNode = function (record, $index) {
