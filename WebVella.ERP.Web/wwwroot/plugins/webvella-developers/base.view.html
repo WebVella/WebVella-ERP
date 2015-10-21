@@ -7,18 +7,22 @@
 
 	<div><button ng-click="pluginData.executeSampleRelationRecordUpdate()">execute sample relation record update</button></div>-->
 	
+	<div class="ng-hide">
+		<p>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.collapseAll()">collapse all</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.expandAll()">expand all</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.clearSelection()">clear selection</a>
+		</p>
+		<tree-view class="tree" tree-branches="::pluginData.treeBranches"
+				   selected-tree-records="pluginData.selectedTreeRecords"
+				   collapsed-tree-nodes="pluginData.collapsedTreeNodes"
+				   selectable-node-ids="pluginData.selectableNodeIds"
+				   tree-meta="::pluginData.treeMeta"
+				   field-meta="::pluginData.itemMeta"></tree-view>
+	</div>
 
-	<p>
-	<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.collapseAll()">collapse all</a>
-		<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.expandAll()">expand all</a>
-		<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.clearSelection()">clear selection</a>
-	</p>
-	<tree-view class="tree" tree-branches="::pluginData.treeBranches"
-			   selected-tree-records="pluginData.selectedTreeRecords"
-			   collapsed-tree-nodes="pluginData.collapsedTreeNodes"
-			   selectable-node-ids ="pluginData.selectableNodeIds"
-			   tree-meta="::pluginData.treeMeta"
-			   field-meta="::pluginData.itemMeta"></tree-view>
+<hr class="divider" />
+
 
 </div>
 <script type="text/ng-template" id="treeView.html">

@@ -134,8 +134,12 @@
 			</table>
 		</div>
 		<!-- Step 2-->
-		<div ng-show="popupData.wizard.steps[2].active">
-			<form class="form" name="createFieldStep2">
+		<div ng-show="popupData.wizard.steps[2].active" class="ajax-wrapper">
+			<div ng-class="popupData.createFieldStep2Loading ? '' : 'transparent'" id="loading-bar-spinner">
+				<div class="spinner-icon"></div>
+			</div>
+			<div class="alert alert-danger ng-hide" ng-show="popupData.createFieldStep2Error" ng-bind-html="popupData.createFieldStep2ErrorMessage"></div>
+			<form class="form ng-hide" name="createFieldStep2" ng-show="!popupData.createFieldStep2Error && !popupData.createFieldStep2Loading">
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.name.$invalid && !createFieldStep2.name.$pristine || popupData.nameError}">
@@ -1125,7 +1129,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<br/>
+							<br />
 						</div>
 					</div>
 				</div>
@@ -1231,16 +1235,28 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label" for="name">Selected Entity Record tree </label>
-								<select class="form-control" ng-model="popupData.field.selectedTreeId" name="selectedTreeId" type="text"
-										ng-options="s.id as s.name for s in popupData.entityTreeList" 
+								<label class="control-label" for="name">Related Entity with the tree </label>
+								<select class="form-control" ng-model="popupData.field.relatedEntityId" name="relatedEntityId" 
+										ng-options="s.id as s.name for s in popupData.eligibleEntitiesForTree"></select>
+								<div class="form-description">entities that have 1:N or N:N relations as origin with the current and have existing trees</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label class="control-label" for="name">Record tree </label>
+								<select class="form-control" ng-model="popupData.field.relationId" name="selectedTreeId" 
+										ng-options="s.id as s.name for s in popupData.entityTreeList"
 										ng-init="popupData.field.selectedTreeId = popupData.entityTreeList[0].id"></select>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label" for="name">Used Entity Relation</label>
-								<span class="not-editable" ng-bind-html="popupData.SelectedInTreeRelationHtml"></span>
+								<label class="control-label" for="name">Relation between the current and target entity</label>
+								<select class="form-control" ng-model="popupData.field.selectedTreeId" name="selectedTreeId"
+										ng-options="s.id as s.name for s in popupData.entityTreeList"
+										ng-init="popupData.field.selectedTreeId = popupData.entityTreeList[0].id"></select>
 							</div>
 						</div>
 					</div>
@@ -1248,7 +1264,7 @@
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label required">Selection type</label>
-								<select class="form-control" ng-model="popupData.field.selectionType" name="selectionType" type="text"
+								<select class="form-control" ng-model="popupData.field.selectionType" name="selectionType" 
 										ng-options="s.key as s.value for s in popupData.selectionTypes" ng-init="popupData.field.selectionType = 'single-select'"></select>
 							</div>
 						</div>
@@ -1320,7 +1336,7 @@
 		<p ng-show="popupData.wizard.steps[1].active" class="ng-hide"><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
 		<div ng-show="popupData.wizard.steps[2].active" class="ng-hide">
 			<button class="btn btn-default pull-left" ng-click="popupData.setActiveStep(1)"><i class="fa fa-fw fa-backward"></i> Back</button>
-			<button class="btn btn-success pull-right" ng-click="popupData.ok()" ng-hide="popupData.hasError"><i class="fa fa-fw fa-plus"></i> Create Field</button>
+			<button class="btn btn-success pull-right ng-hide" ng-click="popupData.ok()" ng-hide="popupData.createFieldStep2Error"><i class="fa fa-fw fa-plus"></i> Create Field</button>
 		</div>
 	</div>
 </script>
@@ -1334,8 +1350,6 @@
 		</h3>
 	</div>
 	<div class="modal-body">
-
-
 		<form class="form" name="manageFieldForm">
 			<div class="row">
 				<div class="col-sm-6">
@@ -1930,6 +1944,8 @@
 						<table class="table table-bordered" ng-hide="popupData.field.options.length == 0">
 							<thead>
 								<tr>
+							<thead>
+								<tr>
 									<th>value</th>
 									<th>label</th>
 									<th style="width:60px;">default</th>
@@ -1945,7 +1961,7 @@
 								</tr>
 							</tbody>
 						</table>
-						<br/>
+						<br />
 					</div>
 				</div>
 			</div>
@@ -2298,7 +2314,7 @@
 								</tr>
 							</tbody>
 						</table>
-						<br/>
+						<br />
 					</div>
 				</div>
 			</div>
