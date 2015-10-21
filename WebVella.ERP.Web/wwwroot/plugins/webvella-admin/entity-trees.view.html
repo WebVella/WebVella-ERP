@@ -74,6 +74,9 @@
 						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}">
 							<i class="fa fa-eye"></i>
 						</a>
+						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}/manage">
+							<i class="fa fa-pencil"></i>
+						</a>
 					</td>
 					<td>{{::tree.name}}</td>
 					<td ng-bind-html="::contentData.getRelationHtml(tree)"></td>
@@ -139,7 +142,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.relationId.$invalid && !createFrom.relationId.$pristine || popupData.validation.relationId.state}">
 						<label class="required" for="name">Used Entity Relation</label>
 						<select class="form-control" ng-model="popupData.tree.relationId" ng-options="relation.id as relation.name for relation in popupData.eligibleRelations"></select>
-						<div class="form-description">only 1:N and N:N relations, where the current entity is both origin and target are allowed</div>
+						<div class="form-description">allowed are 1:N relations, where the current entity is both origin and target</div>
 					</div>
 				</div>
 			</div>

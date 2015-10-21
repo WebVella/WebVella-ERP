@@ -1845,7 +1845,8 @@ ngToast
 	position: relative;
 }
 
-	.vertical-tabs-wrapper .tab-content #loading-bar-spinner {
+	.vertical-tabs-wrapper .tab-content #loading-bar-spinner,
+	.ajax-wrapper  #loading-bar-spinner{
 		position: absolute;
 		display: inline-block;
 		margin: auto;
@@ -1856,6 +1857,11 @@ ngToast
 		width: 3em;
 		height: 3em;
 	}
+
+.ajax-wrapper {
+	min-height:80px;
+	position:relative;
+}
 
 .nav-stacked li.active-filter a:after {
 	font-family: 'FontAwesome';

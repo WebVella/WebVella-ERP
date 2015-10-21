@@ -237,7 +237,7 @@
         	function resolveEligibleRelationsList() {
         		var eligibleRelations = [];
         		for (var i = 0; i < contentData.allRelations.length; i++) {
-        			if (contentData.allRelations[i].relationType == 2 || contentData.allRelations[i].relationType == 3) {
+        			if (contentData.allRelations[i].relationType == 2) {
         				if (contentData.allRelations[i].originEntityId == contentData.entity.id && contentData.allRelations[i].targetEntityId == contentData.entity.id) { 
         					eligibleRelations.push(contentData.allRelations[i]);
         				}

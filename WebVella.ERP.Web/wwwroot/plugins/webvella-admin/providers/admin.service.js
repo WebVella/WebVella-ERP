@@ -39,6 +39,7 @@ function guid() {
 		serviceInstance.createEntity = createEntity;
 		serviceInstance.patchEntity = patchEntity;
 		serviceInstance.getEntityMeta = getEntityMeta;
+		serviceInstance.getEntityMetaById = getEntityMetaById;
 		serviceInstance.deleteEntity = deleteEntity;
 		serviceInstance.initField = initField;
 		serviceInstance.createField = createField;
@@ -222,6 +223,12 @@ function guid() {
 		}
 
 		///////////////////////
+		function getEntityMetaById(entityId, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityMetaById> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/id/' + entityId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////////
 		function patchEntity(entityId, patchObject, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>patchEntity> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityId, data: patchObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -349,6 +356,13 @@ function guid() {
 					field.defaultValue = null;
 					field.maxLength = null;
 					field.openTargetInNewWindow = false;
+					break;
+				case 20:
+					field.relatedEntityId = null;
+					field.relationId = null;
+					field.selectedTreeId = null;
+					field.selectionType = "single-select";
+					field.selectionTarget = "all";
 					break;
 				default:
 					break;

@@ -43,8 +43,7 @@
 				checkedAccessPermission: checkAccessPermission,
 				resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
 				resolvedRolesList: resolveRolesList,
-				resolvedRelationsList: resolveRelationsList,
-				resolvedEntityTreeList: resolveEntityTreeList,
+				resolvedRelationsList: resolveRelationsList
 			},
 			data: {
 
@@ -168,37 +167,14 @@
 		return defer.promise;
 	}
 
-	resolveEntityTreeList.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$timeout', '$stateParams'];
-	/* @ngInject */
-	function resolveEntityTreeList($q, $log, webvellaAdminService, $state, $timeout, $stateParams) {
-		$log.debug('webvellaAdmin>entity-relations> BEGIN resolveEntityTreeList state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
-		var defer = $q.defer();
-
-		// Process
-		function successCallback(response) {
-			defer.resolve(response.object);
-		}
-
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-
-		webvellaAdminService.getEntityTrees($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-relations> END resolveEntityTreeList state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		return defer.promise;
-	}
-
 	//#endregion
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList',
-						'resolvedRelationsList', 'resolvedEntityTreeList'];
+						'resolvedRelationsList'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList,
-						resolvedRelationsList, resolvedEntityTreeList) {
+						resolvedRelationsList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -1296,7 +1272,6 @@
 		];
 
 		contentData.relationsList = fastCopy(resolvedRelationsList);
-		contentData.entityTreeList = fastCopy(resolvedEntityTreeList);
 		//#endregion
 
 		//Create new field modal
@@ -1348,7 +1323,7 @@
 		var popupData = this;
 
 		popupData.contentData = contentData;
-
+		popupData.createFieldStep2Loading = false;
 		popupData.field = webvellaAdminService.initField();
 
 		popupData.fieldTypes = contentData.fieldTypes;
@@ -1398,7 +1373,6 @@
 
 		//#region << Selection Tree field >>
 
-		popupData.entityTreeList = fastCopy(popupData.contentData.entityTreeList);
 		popupData.relationsList = fastCopy(popupData.contentData.relationsList);
 
 		//#region << Selection types >>
@@ -1432,6 +1406,7 @@
 		popupData.selectionTargets.push(multiSelectTarget);
 		//#endregion
 
+		//#region << Tree selection >>
 		popupData.getRelationHtml = function (treeId) {
 
 
@@ -1459,12 +1434,7 @@
 				}
 			}
 		});
-		popupData.onTreeSelectionChange = function () {
-			//Set the proper selection types values before return
-
-			console.log(popupData.field.selectedTreeId);
-		}
-
+		//#endregion
 
 		//#endregion
 
@@ -1500,8 +1470,97 @@
 			else if (typeId == 5){// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd HH:mm";
 			}
+			else if (typeId == 20) {
+				popupData.createFieldStep2Loading = true;
+				//Tree select
+				//List of entities eligible to be selected.Conditions:
+				//1.Have 1:N or N:N relation with the current entity as origin, and the target and origin entity are not the same(and equal to the current)
+				//2.Have existing trees
+				popupData.eligibleEntitiesForTreeProcessQueue = null;
+				popupData.eligibleEntitiesForTree = [];
+				for (var i = 0; i < popupData.relationsList.length; i++) {
+					if (popupData.relationsList[i].originEntityId != popupData.relationsList[i].targetEntityId && popupData.relationsList[i].targetEntityId == popupData.contentData.entity.id) {
+
+						if (popupData.eligibleEntitiesForTreeProcessQueue == null) {
+							popupData.eligibleEntitiesForTreeProcessQueue = {};
+						}
+						if (popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId]) {
+							//entity already added we need just to push the new relations
+							popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId].relations.push(popupData.relationsList[i]);
+						}
+						else {
+							//entity not yet registered
+							var processItem = {
+								entityId: popupData.relationsList[i].originEntityId,
+								relations: [],
+								processed: false
+							}
+							processItem.relations.push(popupData.relationsList[i]);
+							popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId] = processItem;
+						}
+						
+					}
+				}
+				function relatedEntitiesWithTreeSuccessCallback(response) {
+					popupData.eligibleEntitiesForTreeProcessQueue[response.object.id].processed = true;
+					var entityTreeMeta = {};
+					entityTreeMeta.id = response.object.id;
+					entityTreeMeta.name = response.object.name;
+					entityTreeMeta.label = response.object.label;
+					entityTreeMeta.recordTrees = response.object.recordTrees;
+					popupData.eligibleEntitiesForTree.push(entityTreeMeta);
+					var allProcessed = true;
+					var nextForProcess = {};
+					for (var entityProperty in popupData.eligibleEntitiesForTreeProcessQueue) {
+						var processedItem = popupData.eligibleEntitiesForTreeProcessQueue[entityProperty];
+						if (!processedItem.processed) {
+							nextForProcess = processedItem;
+							allProcessed = false;
+						}
+					}
+					if (!allProcessed) {
+						webvellaAdminService.getEntityMetaById(nextForProcess.entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
+					}
+					else {
+						//All entities meta received
+						//Add only entities that have trees defined
+						var tempDictionaryOfEligibleEntities = [];
+						for (var m = 0; m < popupData.eligibleEntitiesForTree.length; m++) {
+							if (popupData.eligibleEntitiesForTree[m].recordTrees.length > 0) {
+								tempDictionaryOfEligibleEntities.push(popupData.eligibleEntitiesForTree[m]);
+							}
+						}
+						popupData.eligibleEntitiesForTree = tempDictionaryOfEligibleEntities;
+						if (popupData.eligibleEntitiesForTree.length > 0) {
+							popupData.field.relatedEntityId = popupData.eligibleEntitiesForTree[0].id;
+							//BOZTODO - I need to fill the list of probably relations and trees on entity selection or change. Based on the relation type we need to also manipulate the selection type
+
+							popupData.createFieldStep2Loading = false;
+						}
+						else {
+							popupData.createFieldStep2Error = true;
+							popupData.createFieldStep2ErrorMessage = "There are other entities with proper relations, but they do not have existing trees defined";
+							popupData.createFieldStep2Loading = false;
+						}
+						
+					}
+				}
+				function relatedEntitiesWithTreeErrorCallback(response) {
+
+				}
+
+				if (popupData.eligibleEntitiesForTreeProcessQueue != null) {
+					webvellaAdminService.getEntityMetaById(popupData.eligibleEntitiesForTreeProcessQueue[Object.keys(popupData.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
+				}
+				else {
+					popupData.createFieldStep2Error = true;
+					popupData.createFieldStep2ErrorMessage = "There are no other entities that has 1:N or N:N relation with the current entity";
+				}
+			}
 		}
 		popupData.setActiveStep = function (stepIndex) {
+			popupData.createFieldStep2Error = false;
+			popupData.createFieldStep2ErrorMessage = "";
 			if (popupData.wizard.steps[stepIndex].completed) {
 				for (var i = 1; i < 3; i++) {
 					popupData.wizard.steps[i].active = false;
