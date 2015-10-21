@@ -1187,12 +1187,158 @@ namespace WebVella.ERP.Web.Controllers
             return DoResponse(entityManager.ReadRecordViews(Name));
         }
 
-        #endregion
+		#endregion
 
-        #region << Relation Meta >>
-        // Get all entity relation definitions
-        // GET: api/v1/en_US/meta/relation/list/
-        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
+		#region << Record Trees >>
+
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree")]
+		public IActionResult CreateRecordTreeByName(string entityName, [FromBody]JObject submitObj)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			InputRecordTree tree = new InputRecordTree();
+			try
+			{
+				tree = InputRecordTree.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(entityManager.CreateRecordTree(entityName, tree));
+		}
+
+		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		public IActionResult UpdateRecordTreeByName(string entityName, string treeName, [FromBody]JObject submitObj)
+		{
+			RecordListResponse response = new RecordListResponse();
+
+			InputRecordTree tree = new InputRecordTree();
+
+			Type inputViewType = tree.GetType();
+
+			foreach (var prop in submitObj.Properties())
+			{
+				int count = inputViewType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+				if (count < 1)
+					response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+			}
+
+			if (response.Errors.Count > 0)
+				return DoBadRequestResponse(response);
+
+			try
+			{
+				tree = InputRecordTree.Convert(submitObj);
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(entityManager.UpdateRecordTree(entityName, tree));
+		}
+
+		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		public IActionResult PatchRecordTreeByName(string entityName, string treeName, [FromBody]JObject submitObj)
+		{
+			RecordTreeResponse response = new RecordTreeResponse();
+			Entity entity = new Entity();
+			InputRecordTree tree = new InputRecordTree();
+
+			try
+			{
+				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityName);
+				if (storageEntity == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+				entity = storageEntity.MapTo<Entity>();
+
+				RecordTree treeToUpdate = entity.RecordTrees.FirstOrDefault(l => l.Name == treeName);
+				if (treeToUpdate == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "REcord tree with such Name does not exist!";
+					return DoBadRequestResponse(response);
+				}
+				tree = treeToUpdate.MapTo<InputRecordTree>();
+
+				Type inputListType = tree.GetType();
+
+				foreach (var prop in submitObj.Properties())
+				{
+					int count = inputListType.GetProperties().Where(n => n.Name.ToLower() == prop.Name.ToLower()).Count();
+					if (count < 1)
+						response.Errors.Add(new ErrorModel(prop.Name, prop.Value.ToString(), "Input object contains property that is not part of the object model."));
+				}
+
+				if (response.Errors.Count > 0)
+					return DoBadRequestResponse(response);
+
+				InputRecordTree inputTree = InputRecordTree.Convert(submitObj);
+
+				foreach (var prop in submitObj.Properties())
+				{
+					if (prop.Name.ToLower() == "label")
+						tree.Label = inputTree.Label;
+					if (prop.Name.ToLower() == "default")
+						tree.Default = inputTree.Default;
+					if (prop.Name.ToLower() == "system")
+						tree.System = inputTree.System;
+					if (prop.Name.ToLower() == "depthlimit")
+						tree.DepthLimit = inputTree.DepthLimit;
+					if (prop.Name.ToLower() == "cssclass")
+						tree.CssClass = inputTree.CssClass;
+					if (prop.Name.ToLower() == "iconname")
+						tree.IconName = inputTree.IconName;
+					if (prop.Name.ToLower() == "nodenamefieldid")
+						tree.NodeNameFieldId = inputTree.NodeNameFieldId;
+					if (prop.Name.ToLower() == "nodelabelfieldid")
+						tree.NodeLabelFieldId = inputTree.NodeLabelFieldId;
+					if (prop.Name.ToLower() == "rootnodes")
+						tree.RootNodes = inputTree.RootNodes;
+					if (prop.Name.ToLower() == "nodeproperties")
+						tree.NodeProperties = inputTree.NodeProperties;
+				}
+			}
+			catch (Exception e)
+			{
+				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
+			}
+
+			return DoResponse(entityManager.UpdateRecordTree(entity, tree));
+		}
+
+		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		public IActionResult DeleteRecordTreeByName(string entityName, string treeName)
+		{
+			return DoResponse(entityManager.DeleteRecordTree(entityName, treeName));
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
+		public IActionResult GetRecordTreeByName(string entityName, string treeName)
+		{
+			return DoResponse(entityManager.ReadRecordTree(entityName, treeName));
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree")]
+		public IActionResult GetRecordTreesByEntityName(string entityName)
+		{
+			return DoResponse(entityManager.ReadRecordTrees(entityName));
+		}
+
+		#endregion
+
+		#region << Relation Meta >>
+		// Get all entity relation definitions
+		// GET: api/v1/en_US/meta/relation/list/
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
         public IActionResult GetEntityRelationMetaList()
         {
             return DoResponse(new EntityRelationManager(service.StorageService).Read());

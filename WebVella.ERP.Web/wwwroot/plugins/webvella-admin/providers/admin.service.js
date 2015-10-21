@@ -888,32 +888,32 @@ function guid() {
 			//api/v1/en_US/meta/entity/{Name}/tree
 			$log.debug('webvellaAdmin>providers>admin.service>getEntityTrees> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeListResponse.data, dummyTreeListResponse.status, successCallback, errorCallback)
-			//$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeListResponse.data, dummyTreeListResponse.status, successCallback, errorCallback)
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
 		function getEntityTree(treeName, entityName, successCallback, errorCallback) {
 			//api/v1/en_US/meta/entity/{Name}/tree/{treeName}"
 			$log.debug('webvellaAdmin>providers>admin.service>getEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
-			//$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
 		function createEntityTree(submitObj, entityName, successCallback, errorCallback) {
 			//"api/v1/en_US/meta/entity/{Name}/tree") -> submitObj
 			$log.debug('webvellaAdmin>providers>admin.service>createEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
-			//$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree", data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		//////////////////////
 		function patchEntityTree(submitObj, treeName, entityName, successCallback, errorCallback) {
 			//"api/v1/en_US/meta/entity/{Name}/tree/{ListName}") -> submitObj
 			$log.debug('webvellaAdmin>providers>admin.service>patchEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
-			//$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeName, data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeName, data: submitObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		//////////////////////
@@ -921,16 +921,16 @@ function guid() {
 			//"api/v1/en_US/meta/entity/{Name}/tree/{ListName}") -> submitObj
 			$log.debug('webvellaAdmin>providers>admin.service>updateEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
-			//$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeObj.name, data: treeObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			$http({ method: 'PUT', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + "/tree/" + treeObj.name, data: treeObj }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
 		function deleteEntityTree(treeName, entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>deleteEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
-			handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
-			//$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
+			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		//#endregion

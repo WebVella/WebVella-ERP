@@ -357,12 +357,13 @@
         }
         contentData.addNewRootNodeById = function () {
         	var rootNodeObject = {
+				"recordId": null,
         		"id": null,
         		"name": null,
         		"label": null,
         		"parentId": null
         	}
-        	rootNodeObject.id = contentData.addRecordId;
+        	rootNodeObject.recordId = contentData.addRecordId;
         	var rootNodes = fastCopy(contentData.tree.rootNodes);
         	rootNodes.push(rootNodeObject);
         	contentData.fieldUpdate('rootNodes', rootNodes);

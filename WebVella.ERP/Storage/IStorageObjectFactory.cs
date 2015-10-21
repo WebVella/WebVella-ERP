@@ -49,6 +49,8 @@ namespace WebVella.ERP.Storage
         IStorageRecordViewRelationViewItem CreateEmptyRecordViewRelationViewItemObject();
         IStorageRecordViewRelationListItem CreateEmptyRecordViewRelationListItemObject();
         IStorageRecordViewHtmlItem CreateEmptyRecordViewHtmlItemObject();
-        
-    }
+
+		IStorageRecordTree CreateEmptyRecordTreeObject();
+
+	}
 }
