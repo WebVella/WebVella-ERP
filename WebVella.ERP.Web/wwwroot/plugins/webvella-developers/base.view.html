@@ -20,77 +20,13 @@
 			   tree-meta="::pluginData.treeMeta"
 			   field-meta="::pluginData.itemMeta"></tree-view>
 
-	<!--<div class="tree">
-		<ul role="tree">
-			<li class="parent_li" role="treeitem">
-				<div class="btn-group">
-					<a class="btn btn-default"><i class="fa fa-folder-open"></i></a>
-					<a class="btn btn-default node">Parent <i class="fa fa-fw fa-check go-gray-light"></i></a>
-				</div>
-				<ul role="group">
-					<li class="parent_li" role="treeitem">
-						<div class="btn-group">
-							<a class="btn btn-default"><i class="fa fa-folder-open"></i></a>
-							<a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a>
-						</div>
-						<ul role="group">
-							<li><a class="btn btn-success">Administrators <i class="fa fa-fw fa-check"></i></a></li>
-							<li><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-							<li><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-						</ul>
-					</li>
-					<li class="parent_li" role="treeitem">
-						<div class="btn-group">
-							<a class="btn btn-default"><i class="fa fa-folder-open"></i></a>
-							<a class="btn btn-default node">Parent <i class="fa fa-fw fa-check go-gray-light"></i></a>
-						</div>
-						<ul role="group">
-							<li><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-							<li><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-							<li class="parent_li" role="treeitem">
-								<div class="btn-group">
-									<a class="btn btn-default"><i class="fa fa-folder"></i></a>
-									<a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a>
-								</div>
-								<ul role="group">
-									<li style="display: none;" class="parent_li" role="treeitem">
-										<div class="btn-group">
-											<a class="btn btn-default"><i class="fa fa-folder"></i></a>
-											<a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a>
-										</div>
-										<ul role="group">
-											<li style="display: none;"><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-											<li style="display: none;"><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-										</ul>
-									</li>
-									<li style="display: none;"><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-									<li style="display: none;"><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</li>
-			<li class="parent_li" role="treeitem">
-				<div class="btn-group">
-					<a class="btn btn-default"><i class="fa fa-folder-open"></i></a>
-					<a class="btn btn-default node">Parent <i class="fa fa-fw fa-check go-gray-light"></i></a>
-				</div>
-				<ul role="group">
-					<li><a class="btn btn-default">Administrators <i class="fa fa-fw fa-check go-gray-light"></i></a></li>
-				</ul>
-			</li>
-		</ul>
-	</div>-->
-
 </div>
-
 <script type="text/ng-template" id="treeView.html">
-	<ul role="tree">
+	<ul role="tree" ng-cloak>
 		<li role="treeitem" ng-repeat="node in treeBranches track by node.id" 
 				ng-class="{parent_li: node.nodes.length > 1, hovered: attachHoverEffectClass[node.id], collapsed:isNodeCollapsed(node.id)}" >
 				<div class="btn-group" ng-if="::node.nodes.length == 0">
-					<a class="btn node" 
+					<a class="btn" 
 						ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
 						ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
 						{{::node.label}} 
@@ -105,11 +41,11 @@
 				</div>
 
 				<div class="btn-group"  ng-if="::node.nodes.length > 0">
-					<a class="btn btn-default" ng-mouseenter="attachHoverEffectClass[node.id] = true" ng-mouseleave="attachHoverEffectClass[node.id] = false"
+					<a class="btn btn-default node" ng-mouseenter="attachHoverEffectClass[node.id] = true" ng-mouseleave="attachHoverEffectClass[node.id] = false"
 						ng-click="toggleNodeCollapse(node)" href="javascript:void(0)">
 						<i class="fa fa-minus-circle"></i>
 					</a>
-					<a class="btn node" 
+					<a class="btn" 
 						ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
 						ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
 						{{::node.label}} 

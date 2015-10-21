@@ -344,7 +344,7 @@
 		}
 
 		pluginData.regenerateCanBeSelected = function () {
-			pluginData.collapsedTreeNodes = [];
+			pluginData.selectableNodeIds = [];
 			for (var i = 0; i < pluginData.treeBranches.length; i++) {
 				iterateCanBeSelected(pluginData.treeBranches[i], 0, pluginData.treeBranches[i]);
 			}
@@ -356,14 +356,11 @@
 			if (nodeIndex > -1) {
 				pluginData.selectedTreeRecords.splice(nodeIndex, 1);
 				var nodeRootBranchId = node.branch[0];
-				if (selectedNodesByBranch[nodeRootBranchId]) {
-					selectedNodesByBranch[node.branch[0]].push(node.id);
-				}
-				else {
-					selectedNodesByBranch[node.branch[0]] = [];
-					selectedNodesByBranch[node.branch[0]].push(node.id);
-				}
 
+				if (selectedNodesByBranch[nodeRootBranchId]) {
+					var selectedIndex = selectedNodesByBranch[nodeRootBranchId].indexOf(node.id)
+					selectedNodesByBranch[node.branch[0]].splice(selectedIndex,1);
+				}
 				pluginData.regenerateCanBeSelected();
 			}
 			//Node should be selected

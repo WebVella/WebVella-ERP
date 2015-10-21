@@ -7,7 +7,11 @@ body {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 	display: none !important;
+	visibility:hidden !important;
 }
+
+.ng-enter { visibility:hidden; }
+.ng-enter.ng-enter-active { visibility:visible; }
 
 .transparent {
 	opacity: 0; /* Opacity for Modern Browsers */
@@ -2145,6 +2149,8 @@ form .error {
 			background: #d9534f;
 			color: white;
 		}
+
+/*#endregion*/
 
 /*#region << Tables >> */
 
@@ -4418,13 +4424,24 @@ a.link-icon.link[href]:before {
 		background-color:#fff;
 	}
 
+	.tree li .btn.btn-default:not(.node) {
+		background-color: #daefdb;
+		border-color: #a5d6a7;
+	}
+
+	.tree li .btn.btn-default.disabled {
+		background-color: #ffebee;
+		border-color: #ffcdd2;
+	}
+
 	.tree li .btn.btn-default .fa-check{
-		color:#eee;
+		color:#fff;
 	}
 
 	.tree li .btn.btn-default .fa-lock {
 		color:#F44336;
 	}
+
 
 	.tree li .btn.btn-default:hover {
 		background:#fafafa;
