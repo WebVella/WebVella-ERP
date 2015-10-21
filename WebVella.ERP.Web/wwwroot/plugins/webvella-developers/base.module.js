@@ -254,6 +254,24 @@
 								"parentId": null,
 								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
 								"nodes": []
+							},
+							{
+								"id": guid(),
+								"recordId": guid(),
+								"name": "sport",
+								"label": "Sport",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
+							},
+							{
+								"id": guid(),
+								"recordId": guid(),
+								"name": "sport",
+								"label": "Sport",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
 							}
 
 						]
@@ -292,7 +310,41 @@
 
 		//#endregion
 
+		//#region << Node collapse >>
+		pluginData.collapsedTreeNodes = [];
+		pluginData.toggleNodeCollapse = function (node) {
+			var nodeIndex = pluginData.collapsedTreeNodes.indexOf(node.id);
+			if (nodeIndex > -1) {
+				pluginData.collapsedTreeNodes.splice(nodeIndex, 1);
+			}
+			else {
+				pluginData.collapsedTreeNodes.push(node.id);
+			}
+		}
 
+		pluginData.nodesToBeCollapsed = [];
+
+		function iterateCollapse(current, depth) {
+			var children = current.nodes;
+			if (children.length > 0) {
+				pluginData.collapsedTreeNodes.push(current.id);
+			}
+			for (var i = 0, len = children.length; i < len; i++) {
+				iterateCollapse(children[i], depth + 1);
+			}
+		}
+
+		pluginData.collapseAll = function () {
+			pluginData.collapsedTreeNodes = [];
+			for (var i = 0; i < pluginData.treeBranches.length; i++) {
+				iterateCollapse(pluginData.treeBranches[i], 0);
+			}
+		}
+		pluginData.expandAll = function () {
+			pluginData.collapsedTreeNodes = [];
+		}
+
+		//#endregion
 
 		//#region << Node selection >>
 
@@ -302,10 +354,13 @@
 
 		var selectedNodesByBranch = {};
 
-		function iterateCanBeSelected(current, depth, rootNode) {
+		function iterateCanBeSelected(current, depth, rootNode,isInitial) {
 			var children = current.nodes;
 			var shouldBeSelectable = true;
-
+			//isInitial is added in order to auto collapse nodes that are more than 3 children
+			if (isInitial && children.length > 3) {
+				pluginData.collapsedTreeNodes.push(current.id);
+			}
 			//Case: selection type
 			switch (pluginData.itemMeta.selectionType) {
 				case "single-select":
@@ -339,14 +394,15 @@
 			}
 			
 			for (var i = 0, len = children.length; i < len; i++) {
-				iterateCanBeSelected(children[i], depth + 1, rootNode);
+				iterateCanBeSelected(children[i], depth + 1, rootNode, isInitial);
 			}
 		}
 
-		pluginData.regenerateCanBeSelected = function () {
+		pluginData.regenerateCanBeSelected = function (isInitial) {
+			//isInitial is added in order to auto collapse nodes that are more than 3 children
 			pluginData.selectableNodeIds = [];
 			for (var i = 0; i < pluginData.treeBranches.length; i++) {
-				iterateCanBeSelected(pluginData.treeBranches[i], 0, pluginData.treeBranches[i]);
+				iterateCanBeSelected(pluginData.treeBranches[i], 0, pluginData.treeBranches[i],isInitial);
 			}
 		}
 
@@ -361,7 +417,7 @@
 					var selectedIndex = selectedNodesByBranch[nodeRootBranchId].indexOf(node.id)
 					selectedNodesByBranch[node.branch[0]].splice(selectedIndex,1);
 				}
-				pluginData.regenerateCanBeSelected();
+				pluginData.regenerateCanBeSelected(false);
 			}
 			//Node should be selected
 			else {
@@ -375,51 +431,15 @@
 					selectedNodesByBranch[node.branch[0]] = [];
 					selectedNodesByBranch[node.branch[0]].push(node.id);
 				}
-				pluginData.regenerateCanBeSelected();
+				pluginData.regenerateCanBeSelected(false);
 			}
 		}
 
-		pluginData.regenerateCanBeSelected();
+		pluginData.regenerateCanBeSelected(true);
 
 		pluginData.clearSelection = function () {
 			pluginData.selectedTreeRecords = [];
-			pluginData.regenerateCanBeSelected();
-		}
-
-		//#endregion
-
-		//#region << Node collapse >>
-		pluginData.collapsedTreeNodes = [];
-		pluginData.toggleNodeCollapse = function (node) {
-			var nodeIndex = pluginData.collapsedTreeNodes.indexOf(node.id);
-			if (nodeIndex > -1) {
-				pluginData.collapsedTreeNodes.splice(nodeIndex, 1);
-			}
-			else {
-				pluginData.collapsedTreeNodes.push(node.id);
-			}
-		}
-
-		pluginData.nodesToBeCollapsed = [];
-
-		function iterateCollapse(current, depth) {
-			var children = current.nodes;
-			if (children.length > 0) {
-				pluginData.collapsedTreeNodes.push(current.id);
-			}
-			for (var i = 0, len = children.length; i < len; i++) {
-				iterateCollapse(children[i], depth + 1);
-			}
-		}
-
-		pluginData.collapseAll = function () {
-			pluginData.collapsedTreeNodes = [];
-			for (var i = 0; i < pluginData.treeBranches.length; i++) {
-				iterateCollapse(pluginData.treeBranches[i], 0);
-			}
-		}
-		pluginData.expandAll = function () {
-			pluginData.collapsedTreeNodes = [];
+			pluginData.regenerateCanBeSelected(false);
 		}
 
 		//#endregion
