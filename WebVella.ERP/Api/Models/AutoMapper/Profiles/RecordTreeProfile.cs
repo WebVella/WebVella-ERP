@@ -16,7 +16,9 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 		protected override void Configure()
 		{
-			Mapper.CreateMap<RecordTree, IStorageRecordTree>().ConstructUsing(x => CreateEmptyRecordTreeObject(x));
+			Mapper.CreateMap<RecordTree, IStorageRecordTree>()
+				.ForMember(x => x.RootNodes, opt => opt.MapFrom(y => PopulateRootNodesToStorage(y)))
+				.ConstructUsing(x => CreateEmptyRecordTreeObject(x));
 			Mapper.CreateMap<IStorageRecordTree, RecordTree>()
 				.ForMember(x => x.RootNodes, opt => opt.MapFrom(y => PopulateRootNodes(y)));
 			Mapper.CreateMap<RecordTree, InputRecordTree>();
@@ -40,6 +42,18 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				nodes.Add(new RecordTreeNode { RecordId = id });
 
 			return nodes;
+		}
+
+		protected List<Guid> PopulateRootNodesToStorage(RecordTree tree)
+		{
+			List<Guid> nodeIds = new List<Guid>();
+			if (tree.RootNodes == null)
+				return nodeIds;
+
+			foreach (var node in tree.RootNodes)
+				nodeIds.Add( node.RecordId );
+
+			return nodeIds;
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace WebVella.ERP.Storage.Mongo
 			CssClass = "";
 			IconName = "";
 			RootNodes = new List<Guid>();
-			NodeProperties = new List<Guid>();
+			NodeObjectProperties = new List<Guid>();
         }
 
 		[BsonElement("id")]
@@ -65,7 +65,7 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("rootNodes")]
 		public List<Guid> RootNodes { get; set; }
 
-		[BsonElement("nodeProperties")]
-		public List<Guid> NodeProperties { get; set; }
+		[BsonElement("nodeObjectProperties")]
+		public List<Guid> NodeObjectProperties { get; set; }
 	}
 }

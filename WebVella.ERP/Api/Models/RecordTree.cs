@@ -49,8 +49,8 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "rootNodes")]
 		public List<RecordTreeNode> RootNodes { get; set; }
 
-		[JsonProperty(PropertyName = "nodeProperties")]
-		public List<Guid> NodeProperties { get; set; }
+		[JsonProperty(PropertyName = "nodeObjectProperties")]
+		public List<Guid> NodeObjectProperties { get; set; }
 
 		public static InputRecordTree Convert(JObject inputField)
 		{
@@ -70,7 +70,7 @@ namespace WebVella.ERP.Api.Models
 			CssClass = "";
 			IconName = "";
 			RootNodes = new List<RecordTreeNode>();
-			NodeProperties = new List<Guid>();
+			NodeObjectProperties = new List<Guid>();
 		}
 
 		[JsonProperty(PropertyName = "id")]
@@ -115,15 +115,15 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "rootNodes")]
 		public List<RecordTreeNode> RootNodes { get; set; }
 
-		[JsonProperty(PropertyName = "nodeProperties")]
-		public List<Guid> NodeProperties { get; set; }
+		[JsonProperty(PropertyName = "nodeObjectProperties")]
+		public List<Guid> NodeObjectProperties { get; set; }
 
 	}
 
 	public class RecordTreeNode
 	{
 		[JsonProperty(PropertyName = "id")]
-		public Guid Id { get; set; }
+		public Guid? Id { get; set; }
 
 		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; }
@@ -132,7 +132,7 @@ namespace WebVella.ERP.Api.Models
 		public string Label { get; set; }
 
 		[JsonProperty(PropertyName = "parentId")]
-		public Guid ParentId { get; set; }
+		public Guid? ParentId { get; set; }
 
 		[JsonProperty(PropertyName = "recordId")]
 		public Guid RecordId { get; set; }

@@ -1304,7 +1304,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (prop.Name.ToLower() == "rootnodes")
 						tree.RootNodes = inputTree.RootNodes;
 					if (prop.Name.ToLower() == "nodeproperties")
-						tree.NodeProperties = inputTree.NodeProperties;
+						tree.NodeObjectProperties = inputTree.NodeObjectProperties;
 				}
 			}
 			catch (Exception e)
