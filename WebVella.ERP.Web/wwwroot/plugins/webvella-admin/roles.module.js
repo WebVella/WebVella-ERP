@@ -167,9 +167,9 @@
 
 
     //// Modal Controllers
-    manageRoleController.$inject = ['$modalInstance', '$log', '$sce', '$modal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageRoleController.$inject = ['$modalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
     /* @ngInject */
-    function manageRoleController($modalInstance, $log, $sce, $modal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageRoleController($modalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;

@@ -268,10 +268,10 @@
 
 
     //// Modal Controllers
-    ManageRelationModalController.$inject = ['$modalInstance','$modal', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
+    ManageRelationModalController.$inject = ['$modalInstance','$uibModal', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
 
     /* @ngInject */
-    function ManageRelationModalController($modalInstance,$modal, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
+    function ManageRelationModalController($modalInstance, $uibModal, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
     	$log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;

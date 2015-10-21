@@ -296,9 +296,6 @@
 
 		//#region << Node selection >>
 
-		//pluginData.itemMeta
-		//"selectionType": "single-select", "selectionTarget": "all"
-
 		pluginData.selectedTreeRecords = [];
 
 		pluginData.selectableNodeIds = [];
@@ -310,10 +307,24 @@
 			var shouldBeSelectable = true;
 
 			//Case: selection type
-			//If the selection type is single select for a branch, we should check the root node if it has already a selection
-			//If not - so it is either - single select, which is handled in the select function, or multiselect when we need to make all nodes selectable
-			if (rootNodeHasSelection[rootNode.id] && pluginData.itemMeta.selectionType == "single-branch-select") {
+			switch (pluginData.itemMeta.selectionType) {
+				case "single-select":
+					break;
+				case "multi-select":
+					break;
+				case "single-branch-select":
+					break;
+			}
+
+			if (selectedNodesByBranch[rootNode.id] && pluginData.itemMeta.selectionType == "single-branch-select") {
 				shouldBeSelectable = false;
+			}
+
+			switch (pluginData.itemMeta.selectionTarget) {
+				case "all":
+					break;
+				case "leaves":
+					break;
 			}
 
 			//Case: selection target
@@ -344,11 +355,8 @@
 			if (nodeIndex > -1) {
 				pluginData.selectedTreeRecords.splice(nodeIndex, 1);
 				if (rootNodeHasSelection[node.branch[0]]) {
-					rootNodeHasSelection[node.branch[0]] = [];
-					rootNodeHasSelection[node.branch[0]].push(node.id);
-				}
-				else {
-					rootNodeHasSelection[node.branch[0]].push(node.id);
+					var toggledNodeIndex = rootNodeHasSelection[node.branch[0]].indexOf(node.id);
+					rootNodeHasSelection[node.branch[0]].splice(toggledNodeIndex, 1);
 				}
 				pluginData.regenerateCanBeSelected();
 			}
@@ -363,15 +371,15 @@
 				else {
 					selectedNodesByBranch[node.branch[0]].push(node.id);
 				}
+				pluginData.regenerateCanBeSelected();
 
-
-				if (pluginData.itemMeta.selectionType == "single-select") {
-					pluginData.selectableNodeIds = [];
-					pluginData.selectableNodeIds.push(node.id);
-				}
-				else {
-					pluginData.regenerateCanBeSelected();
-				}
+				//if (pluginData.itemMeta.selectionType == "single-select") {
+				//	pluginData.selectableNodeIds = [];
+				//	pluginData.selectableNodeIds.push(node.id);
+				//}
+				//else {
+					
+				//}
 			}
 		}
 
