@@ -772,6 +772,10 @@ function guid() {
 		//#region <<Records Tree>>
 		///////////////////////
 
+		//Additionally in the field is set
+		//SelectionType - single-select,multi-select,single-branch-select
+		//SelectionTarget - all,leaves
+
 		function initTree() {
 			$log.debug('webvellaAdmin>providers>admin.service>initTree> function called ' + moment().format('HH:mm:ss SSSS'));
 			var tree =
@@ -815,6 +819,7 @@ function guid() {
             	"rootNodes": [
 					{
 						"id": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
+						"recordId":"5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
 						"name": "clothes",
 						"label": "Clothes",
 						"parentId": "b6add018-f9eb-4b60-a724-7d1e2597449c"
@@ -845,6 +850,7 @@ function guid() {
             	"rootNodes": [
 					{
 						"id": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
+						"recordId": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
 						"name": "clothes",
 						"label": "Clothes",
 						"parentId": "b6add018-f9eb-4b60-a724-7d1e2597449c"

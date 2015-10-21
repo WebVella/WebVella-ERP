@@ -13,7 +13,7 @@
         .controller('WebVellaAdminEntityListManageController', controller)
         .controller('DeleteListModalController', deleteListModalController)
 		.directive('queryItem', queryItem)
-		.directive('queryItemController', queryItemController);
+		.controller('queryItemController', queryItemController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -747,7 +747,6 @@
 	queryItemController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
 	function queryItemController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
-		console.log($scope.currentQuery);
 		$scope.contentData = $scope.pageScope;
 		$scope.getTemplateUrl = function () {
 			switch ($scope.currentQuery.queryType) {
