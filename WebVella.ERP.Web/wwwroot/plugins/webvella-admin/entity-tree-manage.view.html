@@ -186,6 +186,7 @@
 				<thead>
 					<tr>
 						<th width="60">action</th>
+						<th>record id</th>
 						<th>id</th>
 						<th>name</th>
 						<th>label</th>
@@ -195,6 +196,7 @@
 				<tbody>
 					<tr ng-repeat="record in contentData.tree.rootNodes track by record.id">
 						<td><a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="contentData.removeRootNode(record, $index)"><i class="fa fa-fw fa-times go-red"></i></a></td>
+						<td>{{::record.recordId}}</td>
 						<td>{{::record.id}}</td>
 						<td>{{::record.name}}</td>
 						<td>{{::record.label}}</td>

@@ -121,7 +121,7 @@
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.label.$invalid && !createFrom.label.$pristine || popupData.validation.label.state }">
 						<label class="required" for="label">Label</label>
-						<input ng-model="popupData.view.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<input ng-model="popupData.tree.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createFrom.label.$touched && createFrom.label.$dirty && createFrom.label.$invalid || popupData.validation.label.state">
 							<small class="error" ng-show="createFrom.label.$error.required && !popupData.validation.label.state">

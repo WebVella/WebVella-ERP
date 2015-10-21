@@ -71,6 +71,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "recordViews")]
 		public List<RecordView> RecordViews { get; set; }
+
+		[JsonProperty(PropertyName = "recordTrees")]
+		public List<RecordTree> RecordTrees { get; set; }
 	}
 
 	public class RecordPermissions
