@@ -4450,6 +4450,16 @@ a.link-icon.link[href]:before {
 		color:#4CAF50 !important;
 	}
 
+	.btn-default:focus, .btn-default.focus {
+		background-color: #fff;
+		border-color: #ccc;
+	}
+
+	.btn-success:focus, .btn-success.focus {
+		background-color: #5cb85c;
+		border-color: #4cae4c;
+	}
+
 		.tree li.parent_li.hovered > .btn-group + tree-view ul li::before {
 			border-left-color: #03A9F4;
 		}
@@ -4471,6 +4481,7 @@ a.link-icon.link[href]:before {
 	}
 	.tree li.parent_li.collapsed > .btn-group > .btn > .fa-minus-circle:before {
 		content:"\f055";
+		color:#03A9F4;
 	}
 
 /*#endregion*/
