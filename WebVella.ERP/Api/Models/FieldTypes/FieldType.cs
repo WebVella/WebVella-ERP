@@ -21,6 +21,7 @@
         SelectField = 17,
         TextField = 18,
         UrlField = 19,
-        RelationField = 20
-    }
+        RelationField = 20,
+		TreeSelectField = 21
+	}
 }
