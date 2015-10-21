@@ -5098,9 +5098,6 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			//List<IStorageEntity> storageEntityList = EntityRepository.Read();
-			//List<Entity> entities = storageEntityList.MapTo<Entity>();
-
 			if (!recordTree.Id.HasValue || recordTree.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
 
@@ -5222,36 +5219,36 @@ namespace WebVella.ERP.Api
 				recordTree.RootNodes = new List<RecordTreeNode>();
 
 			//verify and init node properties bellow
-			if (recordTree.NodeProperties == null)
-				recordTree.NodeProperties = new List<Guid>();
+			if (recordTree.NodeObjectProperties == null)
+				recordTree.NodeObjectProperties = new List<Guid>();
 
 			List<Guid> expiredFields = new List<Guid>();
-			foreach (var fieldId in recordTree.NodeProperties)
+			foreach (var fieldId in recordTree.NodeObjectProperties)
 			{
 				if (!entity.Fields.Any(f => f.Id == fieldId))
 					expiredFields.Add(fieldId);
 			}
 
 			foreach (var expiredId in expiredFields)
-				recordTree.NodeProperties.Remove(expiredId);
+				recordTree.NodeObjectProperties.Remove(expiredId);
 
-			if (!recordTree.NodeProperties.Contains(idField.Id))
-				recordTree.NodeProperties.Add(idField.Id);
+			if (!recordTree.NodeObjectProperties.Contains(idField.Id))
+				recordTree.NodeObjectProperties.Add(idField.Id);
 
-			if (!recordTree.NodeProperties.Contains(recordTree.NodeIdFieldId.Value))
-				recordTree.NodeProperties.Add(recordTree.NodeIdFieldId.Value);
+			if (!recordTree.NodeObjectProperties.Contains(recordTree.NodeIdFieldId.Value))
+				recordTree.NodeObjectProperties.Add(recordTree.NodeIdFieldId.Value);
 
-			if (!recordTree.NodeProperties.Contains(recordTree.NodeIdFieldId.Value))
-				recordTree.NodeProperties.Add(recordTree.NodeIdFieldId.Value);
+			if (!recordTree.NodeObjectProperties.Contains(recordTree.NodeIdFieldId.Value))
+				recordTree.NodeObjectProperties.Add(recordTree.NodeIdFieldId.Value);
 
-			if (!recordTree.NodeProperties.Contains(recordTree.NodeParentIdFieldId.Value))
-				recordTree.NodeProperties.Add(recordTree.NodeParentIdFieldId.Value);
+			if (!recordTree.NodeObjectProperties.Contains(recordTree.NodeParentIdFieldId.Value))
+				recordTree.NodeObjectProperties.Add(recordTree.NodeParentIdFieldId.Value);
 
-			if (!recordTree.NodeProperties.Contains(recordTree.NodeNameFieldId.Value))
-				recordTree.NodeProperties.Add(recordTree.NodeNameFieldId.Value);
+			if (!recordTree.NodeObjectProperties.Contains(recordTree.NodeNameFieldId.Value))
+				recordTree.NodeObjectProperties.Add(recordTree.NodeNameFieldId.Value);
 
-			if (!recordTree.NodeProperties.Contains(recordTree.NodeLabelFieldId.Value))
-				recordTree.NodeProperties.Add(recordTree.NodeLabelFieldId.Value);
+			if (!recordTree.NodeObjectProperties.Contains(recordTree.NodeLabelFieldId.Value))
+				recordTree.NodeObjectProperties.Add(recordTree.NodeLabelFieldId.Value);
 
 			return errorList;
 		}

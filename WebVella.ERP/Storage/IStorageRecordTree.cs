@@ -37,7 +37,7 @@ namespace WebVella.ERP.Storage
 
 		List<Guid> RootNodes { get; set; }
 
-		List<Guid> NodeProperties { get; set; }
+		List<Guid> NodeObjectProperties { get; set; }
 	}
 }
 
