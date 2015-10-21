@@ -1311,7 +1311,7 @@ namespace WebVella.ERP.Web.Controllers
 						tree.NodeLabelFieldId = inputTree.NodeLabelFieldId;
 					if (prop.Name.ToLower() == "rootnodes")
 						tree.RootNodes = inputTree.RootNodes;
-					if (prop.Name.ToLower() == "nodeproperties")
+					if (prop.Name.ToLower() == "nodeobjectproperties")
 						tree.NodeObjectProperties = inputTree.NodeObjectProperties;
 				}
 			}
