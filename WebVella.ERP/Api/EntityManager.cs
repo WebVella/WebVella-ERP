@@ -4702,9 +4702,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordTree;
-				//TODO
-				//response.Errors = ValidateRecordTree(entity, inputRecordTree, true);
-
+				response.Errors = ValidateRecordTree(entity, inputRecordTree);
 				recordTree = inputRecordTree.MapTo<RecordTree>();
 
 				if (response.Errors.Count > 0)
@@ -5144,13 +5142,13 @@ namespace WebVella.ERP.Api
 			}
 
 			if (recordTree.NodeIdFieldId == null)
-				recordTree.NodeIdFieldId = relation.TargetFieldId;
-			else if (recordTree.NodeIdFieldId != relation.TargetFieldId)
+				recordTree.NodeIdFieldId = relation.OriginFieldId;
+			else if (recordTree.NodeIdFieldId != relation.OriginFieldId)
 				errorList.Add(new ErrorModel("nodeIdFieldId", null, "Node field does not correspond to specified relation target field!"));
 
 			if (recordTree.NodeParentIdFieldId == null)
-				recordTree.NodeParentIdFieldId = relation.OriginFieldId;
-			else if (recordTree.NodeParentIdFieldId != relation.OriginFieldId)
+				recordTree.NodeParentIdFieldId = relation.TargetFieldId;
+			else if (recordTree.NodeParentIdFieldId != relation.TargetFieldId)
 				errorList.Add(new ErrorModel("nodeParentIdFieldId", null, "Node parent field does not correspond to specified relation origin field!"));
 
 			var idField = entity.Fields.Single(f => f.Name == "id");
