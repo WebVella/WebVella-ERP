@@ -309,28 +309,29 @@
 			//Case: selection type
 			switch (pluginData.itemMeta.selectionType) {
 				case "single-select":
+					if (pluginData.selectedTreeRecords && pluginData.selectedTreeRecords.length > 0 && pluginData.selectedTreeRecords[0] != current.recordId) {
+						shouldBeSelectable = false;
+					}
 					break;
 				case "multi-select":
 					break;
 				case "single-branch-select":
+					if (selectedNodesByBranch[rootNode.id] && selectedNodesByBranch[rootNode.id].length > 0 && selectedNodesByBranch[rootNode.id][0] != current.id) {
+						shouldBeSelectable = false;
+					}
 					break;
-			}
-
-			if (selectedNodesByBranch[rootNode.id] && pluginData.itemMeta.selectionType == "single-branch-select") {
-				shouldBeSelectable = false;
 			}
 
 			switch (pluginData.itemMeta.selectionTarget) {
 				case "all":
 					break;
 				case "leaves":
+					//Check if the node is not selected
+					var leaveCheckIndex = pluginData.selectedTreeRecords.indexOf(current.recordId);
+					if (children.length > 0 && leaveCheckIndex == -1) {
+						shouldBeSelectable = false;
+					}
 					break;
-			}
-
-			//Case: selection target
-			//If leaves is selected the node should be added only when has zero children nodes
-			if (children.length > 0 && pluginData.itemMeta.selectionTarget == "leaves") {
-				shouldBeSelectable = false;
 			}
 
 			if (shouldBeSelectable) {
@@ -354,32 +355,30 @@
 			//Node should be unselected
 			if (nodeIndex > -1) {
 				pluginData.selectedTreeRecords.splice(nodeIndex, 1);
-				if (rootNodeHasSelection[node.branch[0]]) {
-					var toggledNodeIndex = rootNodeHasSelection[node.branch[0]].indexOf(node.id);
-					rootNodeHasSelection[node.branch[0]].splice(toggledNodeIndex, 1);
+				var nodeRootBranchId = node.branch[0];
+				if (selectedNodesByBranch[nodeRootBranchId]) {
+					selectedNodesByBranch[node.branch[0]].push(node.id);
 				}
+				else {
+					selectedNodesByBranch[node.branch[0]] = [];
+					selectedNodesByBranch[node.branch[0]].push(node.id);
+				}
+
 				pluginData.regenerateCanBeSelected();
 			}
 			//Node should be selected
 			else {
 				pluginData.selectedTreeRecords.push(node.recordId);
 				//Add to the branch selected object
-				if (selectedNodesByBranch[node.branch[0]]) {
-					selectedNodesByBranch[node.branch[0]] = [];
+				var nodeRootBranchId = node.branch[0];
+				if (selectedNodesByBranch[nodeRootBranchId]) {
 					selectedNodesByBranch[node.branch[0]].push(node.id);
 				}
 				else {
+					selectedNodesByBranch[node.branch[0]] = [];
 					selectedNodesByBranch[node.branch[0]].push(node.id);
 				}
 				pluginData.regenerateCanBeSelected();
-
-				//if (pluginData.itemMeta.selectionType == "single-select") {
-				//	pluginData.selectableNodeIds = [];
-				//	pluginData.selectableNodeIds.push(node.id);
-				//}
-				//else {
-					
-				//}
 			}
 		}
 
