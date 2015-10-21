@@ -123,6 +123,14 @@ namespace WebVella.ERP.Web.Controllers
         }
 
         // Get entity meta
+        // GET: api/v1/en_US/meta/entity/id/{entityId}/
+        [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/id/{entityId}")]
+        public IActionResult GetEntityMetaById(Guid entityId)
+        {
+            return DoResponse(entityManager.ReadEntity(entityId));
+        }
+
+        // Get entity meta
         // GET: api/v1/en_US/meta/entity/{name}/
         [AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}")]
         public IActionResult GetEntityMeta(string Name)
