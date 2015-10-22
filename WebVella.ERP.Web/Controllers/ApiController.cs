@@ -828,11 +828,11 @@ namespace WebVella.ERP.Web.Controllers
 				else
 				{
 					TreeSelectField treeField = field as TreeSelectField;
-					var treeRelation = relations.SingleOrDefault(x => x.Id == treeField.RelatedEntityId);
+					var treeRelation = relations.SingleOrDefault(x => x.Id == treeField.RelationId);
 					if (treeRelation == null) //skip if missing rellation is used // simple protection
 						continue;
 
-					Entity relatedEntity = entityManager.ReadEntity(treeRelation.OriginEntityId).Object;
+					Entity relatedEntity = entityManager.ReadEntity(treeField.RelationId).Object;
 					if (relatedEntity == null) //skip if missing related entity // simple protection
 						continue;
 
