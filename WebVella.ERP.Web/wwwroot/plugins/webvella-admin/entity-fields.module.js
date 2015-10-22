@@ -1585,7 +1585,8 @@
 				}
 				else {
 					popupData.createFieldStep2Error = true;
-					popupData.createFieldStep2ErrorMessage = "There are no other entities that has 1:N or N:N relation with the current entity";
+					popupData.createFieldStep2ErrorMessage = "There are no other entities that has 1:N or N:N relation with the current entity being a target";
+					popupData.createFieldStep2Loading = false;
 				}
 			}
 		}
