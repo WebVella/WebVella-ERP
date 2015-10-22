@@ -197,6 +197,11 @@
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
+									<div ng-switch-when="treeFromRelation" class="clearfix">
+										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+									</div>
 									<div ng-switch-when="html" class="clearfix">
 										<div ng-if='item.tag == ""'>
 											<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
@@ -253,6 +258,10 @@
 									<div as-sortable-item-handle ng-switch-when="listFromRelation" class="clearfix">
 										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+									</div>
+									<div as-sortable-item-handle ng-switch-when="treeFromRelation" class="clearfix">
+										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="html" class="clearfix">
 										<div ng-if='item.tag == ""'>

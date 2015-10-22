@@ -608,6 +608,9 @@
         					case "listFromRelation":
         						contentData.library.items.push(item);
         						break;
+        					case "treeFromRelation":
+        						contentData.library.items.push(item);
+        						break;
         				}
         			}
         		});
