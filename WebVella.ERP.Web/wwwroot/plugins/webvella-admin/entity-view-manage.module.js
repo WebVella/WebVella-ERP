@@ -637,11 +637,11 @@
 			//#endregion
 
 			if (eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") {
-				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue,eventObj);
+				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj);
 			}
 			else if (eventObj.source.itemScope.item.type == "html") {
 				//can be managed
-				
+
 			}
 			else {
 				//cannot be managed
@@ -870,6 +870,9 @@
 			// Validate unique username on add. It cannot be managed on update
 			if (!popupData.isUpdate) {
 				popupData.isValid = true;
+				if (!popupData.viewContentRegion.sections) {
+					popupData.viewContentRegion.sections = []; //If the view was newly created the viewContentRegion will be an empty object
+				}
 				for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
 					if (popupData.viewContentRegion.sections[i].name == popupData.section.name) {
 						popupData.isValid = false;
@@ -1141,7 +1144,7 @@
 		else if (popupData.lookupDefaultIndex > -1 && popupData.quickCreateViews.length > 0) {
 			//no selected so we should preselect the first default;
 			popupData.field.fieldManageView = popupData.quickCreateViews[popupData.lookupDefaultIndex].name;
-			}
+		}
 		else if (popupData.quickCreateViews.length > 0) {
 			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
 		}

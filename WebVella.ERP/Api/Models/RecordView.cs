@@ -626,6 +626,7 @@ namespace WebVella.ERP.Api.Models
 			Name = "";
 			Render = true;
 			CssClass = "";
+			Sections = new List<RecordViewSection>();
 		}
 
 		[JsonProperty(PropertyName = "name")]

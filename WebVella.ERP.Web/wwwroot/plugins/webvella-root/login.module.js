@@ -60,8 +60,9 @@
 			}, 0);
 		}
 		else {
-			loginData.loginIsActive = true;
-
+			$timeout(function () { 
+				loginData.loginIsActive = true;
+			});
 
 			loginData.rememberMe = false;
 			loginData.pageTitle = "Login | " + pageTitle;

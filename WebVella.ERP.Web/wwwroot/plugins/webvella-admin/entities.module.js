@@ -293,7 +293,9 @@
                 content: '<span class="go-green">Success:</span> '+ 'The entity was successfully created'
             });
             $modalInstance.close('success');
-            webvellaRootService.GoToState($state, $state.current.name, {});
+            $timeout(function () {
+            	$state.go("webvella-admin-entity-details", { entityName: response.object.name}, { reload: true });
+            }, 0);
         }
 
         function errorCallback(response) {

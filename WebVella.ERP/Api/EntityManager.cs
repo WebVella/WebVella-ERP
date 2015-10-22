@@ -5387,6 +5387,9 @@ namespace WebVella.ERP.Api
 		{
 			List<RecordView> recordViewList = new List<RecordView>();
 
+			var contentRegion = new RecordViewRegion();
+			contentRegion.Name = "content";
+			contentRegion.Sections = new List<RecordViewSection>();
 
 			var create = new RecordView();
 			create.Id = Guid.NewGuid();
@@ -5395,6 +5398,8 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "create";
+			create.Regions = new List<RecordViewRegion>();
+			create.Regions.Add(contentRegion);
 			recordViewList.Add(create);
 
 			var quickCreate = new RecordView();
@@ -5404,6 +5409,8 @@ namespace WebVella.ERP.Api
 			quickCreate.Default = true;
 			quickCreate.System = true;
 			quickCreate.Type = "quick_create";
+			quickCreate.Regions = new List<RecordViewRegion>();
+			quickCreate.Regions.Add(contentRegion);
 			recordViewList.Add(quickCreate);
 
 			var quickView = new RecordView();
@@ -5413,6 +5420,8 @@ namespace WebVella.ERP.Api
 			quickView.Default = true;
 			quickView.System = true;
 			quickView.Type = "quick_view";
+			quickView.Regions = new List<RecordViewRegion>();
+			quickView.Regions.Add(contentRegion);
 			recordViewList.Add(quickView);
 
 			var general = new RecordView();
@@ -5422,6 +5431,8 @@ namespace WebVella.ERP.Api
 			general.Default = true;
 			general.System = true;
 			general.Type = "general";
+			general.Regions = new List<RecordViewRegion>();
+			general.Regions.Add(contentRegion);
 			recordViewList.Add(general);
 
 
