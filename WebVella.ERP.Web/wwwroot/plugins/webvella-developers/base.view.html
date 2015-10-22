@@ -1,4 +1,4 @@
-<div id="developers" ui-view="contentView">
+<div id="developers" ui-view="contentView" style="padding:5em">
 	<!--<div><button ng-click="pluginData.createSampleQueryDataStructure()">create sample query data structure</button></div>
 	<div><button ng-click="pluginData.executeSampleQuery()">execute sample query</button></div>-->
 	<!--<div class="button" ngf-select ng-model="pluginData.files" ngf-multiple="false">Select File</div>
@@ -6,7 +6,7 @@
 	<img ngf-src="pluginData.files[0]" ngf-default-src="'/thumb.jpg'" ngf-accept="'image/*'">
 
 	<div><button ng-click="pluginData.executeSampleRelationRecordUpdate()">execute sample relation record update</button></div>-->
-	
+
 	<div class="ng-hide">
 		<p>
 			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="pluginData.collapseAll()">collapse all</a>
@@ -21,54 +21,80 @@
 				   field-meta="::pluginData.itemMeta"></tree-view>
 	</div>
 
-<hr class="divider" />
+	<hr class="divider" />
 
+	<!-- Nested node template -->
+	<script type="text/ng-template" id="nodes_renderer.html">
+		<div class="btn-group">
+			<span class="btn btn-default" ui-tree-handle
+				  ng-mouseenter="pluginData.attachHoverEffectClass[node.id] = true" ng-mouseleave="pluginData.attachHoverEffectClass[node.id] = false">
+				<i class="fa fa-fw fa-arrows"></i>
+			</span>
+			<span class="btn btn-default disabled">
+				{{node.label}}
+				<span class="btn btn-default btn-xs add-node" ng-click="pluginData.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !pluginData.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': pluginData.addButtonLoadingClass[node.id]}"></i></span>
+				<span class="btn btn-default btn-xs delete-node" ng-click="pluginData.removeNodeModal(node)"><i class="fa fa-fw fa-minus go-red"></i></span>
+			</span>
+		</div>
+		<ol ui-tree-nodes="" ng-model="node.nodes">
+			<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+			</li>
+		</ol>
+	</script>
+
+	<div ui-tree>
+		<ol ui-tree-nodes="" ng-model="pluginData.treeBranches" id="tree-root">
+			<li ng-repeat="node in pluginData.treeBranches track by node.id" ui-tree-node ng-include="'nodes_renderer.html'"
+				ng-class="{parent_li:node.nodes.length > 0, hovered: pluginData.attachHoverEffectClass[node.id]}"></li>
+		</ol>
+	</div>
 
 </div>
+
 <script type="text/ng-template" id="treeView.html">
 	<ul role="tree" ng-cloak>
-		<li role="treeitem" ng-repeat="node in treeBranches track by node.id" 
-				ng-class="{parent_li: node.nodes.length > 1, hovered: attachHoverEffectClass[node.id], collapsed:isNodeCollapsed(node.id)}" >
-				<div class="btn-group" ng-if="::node.nodes.length == 0">
-					<a class="btn" 
-						ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
-						ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
-						{{::node.label}} 
-						<span ng-switch="isRecordSelected(node.recordId)">
-							<i class="fa fa-fw fa-times go-red" ng-switch-when="true"></i>
-							<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
-								<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
-								<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
-							</span>
+		<li role="treeitem" ng-repeat="node in treeBranches track by node.id"
+			ng-class="{parent_li: node.nodes.length > 1, hovered: attachHoverEffectClass[node.id], collapsed:isNodeCollapsed(node.id)}">
+			<div class="btn-group" ng-if="::node.nodes.length == 0">
+				<a class="btn"
+				   ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
+				   ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
+					{{::node.label}}
+					<span ng-switch="isRecordSelected(node.recordId)">
+						<i class="fa fa-fw fa-times go-red" ng-switch-when="true"></i>
+						<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
+							<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
+							<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
 						</span>
-					</a>
-				</div>
+					</span>
+				</a>
+			</div>
 
-				<div class="btn-group"  ng-if="::node.nodes.length > 0">
-					<a class="btn btn-default node" ng-mouseenter="attachHoverEffectClass[node.id] = true" ng-mouseleave="attachHoverEffectClass[node.id] = false"
-						ng-click="toggleNodeCollapse(node)" href="javascript:void(0)">
-						<i class="fa fa-minus-circle"></i>
-					</a>
-					<a class="btn" 
-						ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
-						ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
-						{{::node.label}} 
-						<span ng-switch="isRecordSelected(node.recordId)">
-							<i class="fa fa-fw fa-times go-red" ng-switch-when="true"></i>
-							<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
-								<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
-								<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
-							</span>
+			<div class="btn-group" ng-if="::node.nodes.length > 0">
+				<a class="btn btn-default node" ng-mouseenter="attachHoverEffectClass[node.id] = true" ng-mouseleave="attachHoverEffectClass[node.id] = false"
+				   ng-click="toggleNodeCollapse(node)" href="javascript:void(0)">
+					<i class="fa fa-minus-circle"></i>
+				</a>
+				<a class="btn"
+				   ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
+				   ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
+					{{::node.label}}
+					<span ng-switch="isRecordSelected(node.recordId)">
+						<i class="fa fa-fw fa-times go-red" ng-switch-when="true"></i>
+						<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
+							<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
+							<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
 						</span>
-					</a>
-				</div>
-				<tree-view tree-branches="::node.nodes"
-						   selected-tree-records="selectedTreeRecords"
-						   collapsed-tree-nodes="collapsedTreeNodes"
-						   selectable-node-ids ="selectableNodeIds"
-						   tree-meta="::treeMeta"
-						   field-meta="::fieldMeta"
-						   ng-if="::node.nodes.length > 0"></tree-view>
+					</span>
+				</a>
+			</div>
+			<tree-view tree-branches="::node.nodes"
+					   selected-tree-records="selectedTreeRecords"
+					   collapsed-tree-nodes="collapsedTreeNodes"
+					   selectable-node-ids="selectableNodeIds"
+					   tree-meta="::treeMeta"
+					   field-meta="::fieldMeta"
+					   ng-if="::node.nodes.length > 0"></tree-view>
 		</li>
 	</ul>
 </script>
