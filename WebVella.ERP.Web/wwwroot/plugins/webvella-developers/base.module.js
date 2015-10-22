@@ -308,7 +308,14 @@
 		}
 		];
 
+		pluginData.addButtonLoadingClass = {};
+
+		pluginData.attachHoverEffectClass = {};
+
 		//#endregion
+
+
+		//#region << Read only tree >>
 
 		//#region << Node collapse >>
 		pluginData.collapsedTreeNodes = [];
@@ -465,6 +472,23 @@
 
 
 		//#endregion
+
+		//#endregion 
+
+
+		//#region << Manage tree >>
+
+		pluginData.addNodeModal = function (node) {
+			pluginData.addButtonLoadingClass[node.id] = true;
+		}
+
+		pluginData.removeNodeModal = function (node) {
+			pluginData.addButtonLoadingClass[node.id] = false;
+		}
+
+		//#endregion
+
+
 
 
 	}
