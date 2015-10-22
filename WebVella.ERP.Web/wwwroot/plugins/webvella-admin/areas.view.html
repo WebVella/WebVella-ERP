@@ -143,7 +143,7 @@
 						<div class="input-group clean-addon">
 							<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.area.icon_name}}"></i></span>
 							<input ng-model="popupData.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="e.g. database"
-								   required typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
+								   required uib-typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
 								   ng-model-options="{allowInvalid:true}">
 							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 						</div>
@@ -198,7 +198,7 @@
 									</div>
 									<div class="input-group clean-addon fluid-dropdown ng-hide" ng-show="popupData.cleanEntities.length > 0" style="margin-bottom:0;">
 										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity name"
-											   required typeahead="entity.name for entity in popupData.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
+											   required uib-typeahead="entity.name for entity in popupData.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 									</div>
 									<div class="go-gray form-description">only ones that have at least one default view and list are available</div>
