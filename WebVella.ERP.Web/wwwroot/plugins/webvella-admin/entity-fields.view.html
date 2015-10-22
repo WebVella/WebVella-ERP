@@ -1246,17 +1246,15 @@
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label" for="name">Record tree </label>
-								<select class="form-control" ng-model="popupData.field.relationId" name="selectedTreeId" 
-										ng-options="s.id as s.name for s in popupData.entityTreeList"
-										ng-init="popupData.field.selectedTreeId = popupData.entityTreeList[0].id"></select>
+								<select class="form-control" ng-model="popupData.field.selectedTreeId" name="selectedTreeId" 
+										ng-options="s.id as s.name for s in popupData.selectedEntityTrees"></select>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label" for="name">Relation between the current and target entity</label>
-								<select class="form-control" ng-model="popupData.field.selectedTreeId" name="selectedTreeId"
-										ng-options="s.id as s.name for s in popupData.entityTreeList"
-										ng-init="popupData.field.selectedTreeId = popupData.entityTreeList[0].id"></select>
+								<select class="form-control" ng-model="popupData.field.relationId" name="relationId"
+										ng-options="s.id as s.name for s in popupData.selectedEntityRelations"></select>
 							</div>
 						</div>
 					</div>
@@ -1265,14 +1263,14 @@
 							<div class="form-group">
 								<label class="control-label required">Selection type</label>
 								<select class="form-control" ng-model="popupData.field.selectionType" name="selectionType" 
-										ng-options="s.key as s.value for s in popupData.selectionTypes" ng-init="popupData.field.selectionType = 'single-select'"></select>
+										ng-options="s.key as s.value for s in popupData.selectionTypes"></select>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label class="control-label required">Selection target</label>
 								<select class="form-control" ng-model="popupData.field.selectionTarget" name="selectionTarget" type="text"
-										ng-options="s.key as s.value for s in popupData.selectionTargets" ng-init="popupData.field.selectionTarget = 'all'"></select>
+										ng-options="s.key as s.value for s in popupData.selectionTargets"></select>
 							</div>
 						</div>
 					</div>

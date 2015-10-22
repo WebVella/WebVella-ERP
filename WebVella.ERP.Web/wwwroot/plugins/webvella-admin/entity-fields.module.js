@@ -1413,27 +1413,45 @@
 			return result;
 		}
 
-		$scope.$watch("popupData.field.selectedTreeId", function (newValue, oldValue) {
+		$scope.$watch("popupData.field.relatedEntityId", function (newValue, oldValue) {
 			if (newValue) {
 				popupData.SelectedInTreeRelationHtml = "unknown";
-				var selectedTree = findInArray(popupData.entityTreeList, "id", newValue);
-				var selectedRelation = findInArray(popupData.relationsList, "id", selectedTree.relationId);
+				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", newValue);
+				var selectedTree = selectedEntity.recordTrees[0];
+				var selectedRelation = selectedEntity.relations[0];
+
+				//Reinit dropdowns
+				popupData.selectedEntityRelations = selectedEntity.relations;
+				popupData.field.relationId = selectedRelation.id;
+				
+				popupData.selectedEntityTrees = selectedEntity.recordTrees;
+				popupData.field.selectedTreeId = selectedTree.id;
+			}
+		});
+
+		$scope.$watch("popupData.field.relationId", function (newValue, oldValue) {
+			if (newValue) {
+				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", popupData.field.relatedEntityId);
+				var selectedRelation = findInArray(selectedEntity.relations, "id", newValue);
+
 				popupData.selectionTypes = [];
 				popupData.selectionTypes.push(singleSelectType);
 				if (selectedRelation) {
 					if (selectedRelation.relationType == 2) {
 						//Fix type selection if it was a multiselect option
 						popupData.field.selectionType = "single-select";
-						popupData.SelectedInTreeRelationHtml = $sce.trustAsHtml(selectedRelation.name + " <span class=\"badge badge-primary badge-inverse\" title=\"One to Many\" style=\"margin-left:5px;\">1 : N</span>");
+						popupData.field.selectionTarget = "all";
 					}
 					else if (selectedRelation.relationType == 3) {
 						popupData.selectionTypes.push(multiSelectType);
 						popupData.selectionTypes.push(singleBranchSelectType);
-						popupData.SelectedInTreeRelationHtml = $sce.trustAsHtml(selectedRelation.name + ' <span class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>');
+						popupData.field.selectionType = "single-select";
+						popupData.field.selectionTarget = "all";
 					}
 				}
 			}
 		});
+
 		//#endregion
 
 		//#endregion
@@ -1501,6 +1519,18 @@
 						
 					}
 				}
+
+				popupData.selectedEntityTrees = [];
+				popupData.selectedEntityRelations = [];
+
+				function reInitializeTreeAndRelationListBySelectedEntity(entity) {
+					popupData.selectedEntityTrees = entity.recordTrees;
+					popupData.selectedEntityRelations = entity.relations;
+					popupData.field.selectedTreeId = entity.recordTrees[0].id;
+					popupData.field.relationId = entity.relations[0].id;
+				}
+
+
 				function relatedEntitiesWithTreeSuccessCallback(response) {
 					popupData.eligibleEntitiesForTreeProcessQueue[response.object.id].processed = true;
 					var entityTreeMeta = {};
@@ -1508,6 +1538,7 @@
 					entityTreeMeta.name = response.object.name;
 					entityTreeMeta.label = response.object.label;
 					entityTreeMeta.recordTrees = response.object.recordTrees;
+					entityTreeMeta.relations = popupData.eligibleEntitiesForTreeProcessQueue[response.object.id].relations;
 					popupData.eligibleEntitiesForTree.push(entityTreeMeta);
 					var allProcessed = true;
 					var nextForProcess = {};
@@ -1533,7 +1564,7 @@
 						popupData.eligibleEntitiesForTree = tempDictionaryOfEligibleEntities;
 						if (popupData.eligibleEntitiesForTree.length > 0) {
 							popupData.field.relatedEntityId = popupData.eligibleEntitiesForTree[0].id;
-							//BOZTODO - I need to fill the list of probably relations and trees on entity selection or change. Based on the relation type we need to also manipulate the selection type
+							reInitializeTreeAndRelationListBySelectedEntity(popupData.eligibleEntitiesForTree[0]);
 
 							popupData.createFieldStep2Loading = false;
 						}
