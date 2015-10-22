@@ -832,7 +832,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (treeRelation == null) //skip if missing rellation is used // simple protection
 						continue;
 
-					Entity relatedEntity = entityManager.ReadEntity(treeField.RelationId).Object;
+					Entity relatedEntity = entityManager.ReadEntity(treeField.RelatedEntityId).Object;
 					if (relatedEntity == null) //skip if missing related entity // simple protection
 						continue;
 
