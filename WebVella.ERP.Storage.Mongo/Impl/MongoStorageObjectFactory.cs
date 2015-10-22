@@ -58,6 +58,8 @@ namespace WebVella.ERP.Storage.Mongo
 				return new MongoTextField();
 			if (type == typeof(UrlField))
 				return new MongoUrlField();
+			if (type == typeof(TreeSelectField))
+				return new MongoTreeSelectField();
 
 			throw new Exception("The provided field type is not supported by current storage implementation");
 		}

@@ -1288,6 +1288,15 @@
 			});
 		}
 
+		contentData.findFieldType = function (fieldTypeId) {
+			for (var typeIndex = 0; typeIndex < contentData.fieldTypes.length; typeIndex++) {
+				if (contentData.fieldTypes[typeIndex].id == fieldTypeId) {
+					return contentData.fieldTypes[typeIndex];
+				}
+			}
+			return null;
+		};
+
 		//Manage field modal
 		contentData.manageFieldModal = function (fieldId) {
 			var modalInstance = $uibModal.open({
@@ -1471,10 +1480,19 @@
 		popupData.wizard.selectedType = null;
 
 		popupData.selectType = function (typeId) {
-			var typeIndex = typeId - 1;
-			popupData.wizard.selectedType = popupData.fieldTypes[typeIndex];
-			popupData.field = webvellaAdminService.initField(popupData.wizard.selectedType.id);
+			//find selected type
+			for (var typeIndex = 0; typeIndex < popupData.fieldTypes.length; typeIndex++) {
+				if (popupData.fieldTypes[typeIndex].id == typeId) {
+					popupData.wizard.selectedType = popupData.fieldTypes[typeIndex];
+					break;
+				}
+			}
+			
+			if (popupData.wizard.selectedType == null){
+				$log.debug('The selected field type [' + typeId +'] is missing in collection of field types');
+			}
 
+			popupData.field = webvellaAdminService.initField(popupData.wizard.selectedType.id);
 			popupData.wizard.steps[1].active = false;
 			popupData.wizard.steps[1].completed = true;
 			popupData.wizard.steps[2].active = true;
@@ -1488,7 +1506,7 @@
 			else if (typeId == 5){// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd HH:mm";
 			}
-			else if (typeId == 20) {
+			else if (typeId == 21) { //if tree field
 				popupData.createFieldStep2Loading = true;
 				//Tree select
 				//List of entities eligible to be selected.Conditions:

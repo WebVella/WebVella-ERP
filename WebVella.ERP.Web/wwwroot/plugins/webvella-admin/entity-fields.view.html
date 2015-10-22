@@ -77,7 +77,7 @@
 						<span class="badge badge-danger badge-inverse" ng-show="::field.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
 					</td>
 					<td class="type">
-						{{::contentData.fieldTypes[field.fieldType - 1].label}}
+						{{contentData.findFieldType(field.fieldType).label}}
 					</td>
 					<td class="meta">
 						<span ng-show="::field.required">required, </span>
@@ -1229,8 +1229,8 @@
 						</div>
 					</div>
 				</div>
-				<!--Tree select 20 -->
-				<div ng-if="popupData.wizard.selectedType.id == 20">
+				<!--Tree select 21 -->
+				<div ng-if="popupData.wizard.selectedType.id == 21">
 					<input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
 					<div class="row">
 						<div class="col-sm-6">
