@@ -136,8 +136,60 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "recordId")]
 		public Guid RecordId { get; set; }
+	}
 
+	public class RelationTreeItem
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "treeFromRelation"; } }
 
+		[JsonProperty(PropertyName = "dataName")]
+		public string DataName { get; set; }
+
+		[JsonProperty(PropertyName = "entityId")]
+		public Guid EntityId { get; set; }
+
+		[JsonProperty(PropertyName = "entityLabel")]
+		public string EntityLabel { get; set; }
+
+		[JsonProperty(PropertyName = "entityName")]
+		public string EntityName { get; set; }
+
+		[JsonProperty(PropertyName = "entityLabelPlural")]
+		public string EntityLabelPlural { get; set; }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordTree Meta { get; set; }
+
+		[JsonProperty(PropertyName = "treeId")]
+		public Guid TreeId { get; set; }
+
+		[JsonProperty(PropertyName = "treeName")]
+		public string TreeName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[JsonProperty(PropertyName = "fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[JsonProperty(PropertyName = "fieldRequired")]
+		public bool FieldRequired { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLookupList")]
+		public string FieldLookupList { get; set; }
+
+		[JsonProperty(PropertyName = "fieldManageView")]
+		public string FieldManageView { get; set; }
 	}
 
 	public class RecordTreeCollection
