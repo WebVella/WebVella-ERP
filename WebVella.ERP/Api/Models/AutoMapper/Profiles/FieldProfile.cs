@@ -110,6 +110,12 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<UrlField, InputUrlField>();
 			Mapper.CreateMap<InputUrlField, UrlField>();
 
+			Mapper.CreateMap<TreeSelectField, IStorageTreeSelectField>().ConstructUsing(x => CreateEmptyTreeSelectFieldObject(x));
+			Mapper.CreateMap<IStorageTreeSelectField, TreeSelectField>();
+			Mapper.CreateMap<TreeSelectField, InputTreeSelectField>();
+			Mapper.CreateMap<InputTreeSelectField, TreeSelectField>();
+
+
 			Mapper.CreateMap<SelectFieldOption, IStorageSelectFieldOption>().ConstructUsing(x => CreateEmptySelectFieldOptionObject(x));
 			Mapper.CreateMap<IStorageSelectFieldOption, SelectFieldOption>();
 
@@ -137,7 +143,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<PhoneField, IStoragePhoneField>()
 				.Include<SelectField, IStorageSelectField>()
 				.Include<TextField, IStorageTextField>()
-				.Include<UrlField, IStorageUrlField>();
+				.Include<UrlField, IStorageUrlField>()
+				.Include<TreeSelectField, IStorageTreeSelectField>();
 			Mapper.CreateMap<IStorageField, Field>()
 				.Include<IStorageAutoNumberField, AutoNumberField>()
 				.Include<IStorageCheckboxField, CheckboxField>()
@@ -156,7 +163,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<IStoragePhoneField, PhoneField>()
 				.Include<IStorageSelectField, SelectField>()
 				.Include<IStorageTextField, TextField>()
-				.Include<IStorageUrlField, UrlField>();
+				.Include<IStorageUrlField, UrlField>()
+				.Include<IStorageTreeSelectField, TreeSelectField>();
 
 			Mapper.CreateMap<Field, InputField>()
 				.Include<AutoNumberField, InputAutoNumberField>()
@@ -176,7 +184,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<PhoneField, InputPhoneField>()
 				.Include<SelectField, InputSelectField>()
 				.Include<TextField, InputTextField>()
-				.Include<UrlField, InputUrlField>();
+				.Include<UrlField, InputUrlField>()
+				.Include<TreeSelectField, InputTreeSelectField>();
 			Mapper.CreateMap<InputField, Field>()
 				.Include<InputAutoNumberField, AutoNumberField>()
 				.Include<InputCheckboxField, CheckboxField>()
@@ -196,6 +205,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<InputSelectField, SelectField>()
 				.Include<InputTextField, TextField>()
 				.Include<InputUrlField, UrlField>()
+				.Include<InputTreeSelectField, TreeSelectField>()
 				.ForMember(x => x.Id, opt => opt.MapFrom(y => (y.Id.HasValue) ? y.Id.Value : Guid.Empty))
 				.ForMember(x => x.System, opt => opt.MapFrom(y => (y.System.HasValue) ? y.System.Value : false))
 				.ForMember(x => x.Required, opt => opt.MapFrom(y => (y.Required.HasValue) ? y.Required.Value : false))
@@ -321,6 +331,12 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 		{
 			var storageService = service.StorageService;
 			return (IStorageUrlField)storageService.GetObjectFactory().CreateEmptyFieldObject(field.GetType());
+		}
+
+		protected IStorageTreeSelectField CreateEmptyTreeSelectFieldObject(TreeSelectField field)
+		{
+			var storageService = service.StorageService;
+			return (IStorageTreeSelectField)storageService.GetObjectFactory().CreateEmptyFieldObject(field.GetType());
 		}
 
 		protected IStorageSelectFieldOption CreateEmptySelectFieldOptionObject(SelectFieldOption field)

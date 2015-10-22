@@ -896,8 +896,9 @@ function getFieldTypes() {
 			"label": "URL",
 			"description": "This field will validate local and static URLs. Will present them accordingly"
 		},
+		//20 is missing because it is relation field 
 		{
-			"id": 20,
+			"id": 21,
 			"name": "TreeSelect",
 			"label": "Tree select",
 			"description": "select related records from an entity tree structure. Suitable for categories, organizational charts and etc."

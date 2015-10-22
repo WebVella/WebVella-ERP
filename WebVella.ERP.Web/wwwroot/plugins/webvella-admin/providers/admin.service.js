@@ -357,7 +357,9 @@ function guid() {
 					field.maxLength = null;
 					field.openTargetInNewWindow = false;
 					break;
-				case 20:
+				case 20: //relation field not used in ui
+					break
+				case 21:
 					field.relatedEntityId = null;
 					field.relationId = null;
 					field.selectedTreeId = null;

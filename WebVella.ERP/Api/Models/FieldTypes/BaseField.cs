@@ -139,6 +139,11 @@ namespace WebVella.ERP
                 case FieldType.UrlField:
                     field = inputField.ToObject<InputUrlField>();
                     break;
+				case FieldType.TreeSelectField:
+					field = inputField.ToObject<InputTreeSelectField>();
+					break;
+				default:
+					throw new Exception("Invalid field type.");
             }
 
             return field;
