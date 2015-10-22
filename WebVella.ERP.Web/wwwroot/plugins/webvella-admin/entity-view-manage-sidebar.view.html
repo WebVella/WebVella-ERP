@@ -92,6 +92,12 @@
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">
 										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
+									<div ng-switch-when="treeFromRelation">
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">
+											<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span>
+										</span>{{::item.meta.name}}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -116,6 +122,7 @@
 									<div ng-switch-when="viewFromRelation"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
 									<div ng-switch-when="list"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}</div>
 									<div ng-switch-when="listFromRelation"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
+									<div ng-switch-when="treeFromRelation"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
 								</div>
 							</div>
 						</div>

@@ -112,6 +112,9 @@
 															<div ng-switch-when="listFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 															</div>
+															<div ng-switch-when="treeFromRelation">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+															</div>
 															<div ng-switch-when="html">
 																<div ng-if='item.tag == ""'>
 																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> No tag
@@ -166,6 +169,9 @@
 									</div>
 									<div ng-switch-when="listFromRelation">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="treeFromRelation">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
 									</div>
 									<div ng-switch-when="html">
 										<div ng-if='item.tag == ""'>
