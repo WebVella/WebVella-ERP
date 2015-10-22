@@ -171,10 +171,10 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList',
-						'resolvedRelationsList'];
+						'resolvedRelationsList', '$timeout', '$q', 'webvellaAdminService'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList,
-						resolvedRelationsList) {
+						resolvedRelationsList, $timeout, $q, webvellaAdminService) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -1299,6 +1299,12 @@
 
 		//Manage field modal
 		contentData.manageFieldModal = function (fieldId) {
+			var managedField = null;
+			for (var i = 0; i < contentData.entity.fields.length; i++) {
+				if (contentData.entity.fields[i].id === fieldId) {
+					managedField = contentData.entity.fields[i];
+				}
+			}
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageFieldModal.html',
@@ -1308,25 +1314,59 @@
 				resolve: {
 					contentData: function () { return contentData; },
 					resolvedField: function () {
-						var managedField = null;
-						for (var i = 0; i < contentData.entity.fields.length; i++) {
-							if (contentData.entity.fields[i].id === fieldId) {
-								managedField = contentData.entity.fields[i];
-							}
-						}
 						return managedField;
-					}
+					},
+					resolvedRelatedEntity: resolveRelatedEntity()
 				}
 			});
+
+			function resolveRelatedEntity() {
+				$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+				// Initialize
+				var defer = $q.defer();
+
+				// Process
+				function successCallback(response) {
+					if (response.object == null) {
+						$timeout(function () {
+							$state.go("webvella-root-not-found");
+						}, 0);
+					}
+					else {
+						defer.resolve(response.object);
+					}
+				}
+
+				function errorCallback(response) {
+					if (response.object == null) {
+						$timeout(function () {
+							$state.go("webvella-root-not-found");
+						}, 0);
+					}
+					else {
+						defer.reject(response.message);
+					}
+				}
+
+
+
+				webvellaAdminService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
+
+				// Return
+				$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+				return defer.promise;
+			}
 		}
 
 		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
+
+
 	//// Create Field Controllers
-	CreateFieldModalController.$inject = ['contentData', '$scope','$modalInstance', '$log','$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	CreateFieldModalController.$inject = ['contentData', '$scope', '$modalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
-	function CreateFieldModalController(contentData,$scope, $modalInstance, $log,$sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function CreateFieldModalController(contentData, $scope, $modalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1432,7 +1472,7 @@
 				//Reinit dropdowns
 				popupData.selectedEntityRelations = selectedEntity.relations;
 				popupData.field.relationId = selectedRelation.id;
-				
+
 				popupData.selectedEntityTrees = selectedEntity.recordTrees;
 				popupData.field.selectedTreeId = selectedTree.id;
 			}
@@ -1487,9 +1527,9 @@
 					break;
 				}
 			}
-			
-			if (popupData.wizard.selectedType == null){
-				$log.debug('The selected field type [' + typeId +'] is missing in collection of field types');
+
+			if (popupData.wizard.selectedType == null) {
+				$log.debug('The selected field type [' + typeId + '] is missing in collection of field types');
 			}
 
 			popupData.field = webvellaAdminService.initField(popupData.wizard.selectedType.id);
@@ -1500,10 +1540,10 @@
 			{
 				popupData.field.options = [];
 			}
-			else if (typeId == 4 ) {// If date or datetime
+			else if (typeId == 4) {// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd";
 			}
-			else if (typeId == 5){// If date or datetime
+			else if (typeId == 5) {// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd HH:mm";
 			}
 			else if (typeId == 21) { //if tree field
@@ -1534,7 +1574,7 @@
 							processItem.relations.push(popupData.relationsList[i]);
 							popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId] = processItem;
 						}
-						
+
 					}
 				}
 
@@ -1591,7 +1631,7 @@
 							popupData.createFieldStep2ErrorMessage = "There are other entities with proper relations, but they do not have existing trees defined";
 							popupData.createFieldStep2Loading = false;
 						}
-						
+
 					}
 				}
 				function relatedEntitiesWithTreeErrorCallback(response) {
@@ -1687,12 +1727,12 @@
 					}
 					break;
 				case 4: //Date
-					if(popupData.field.defaultValue!=null) {
+					if (popupData.field.defaultValue != null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if(popupData.field.defaultValue!=null) {
+					if (popupData.field.defaultValue != null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;
@@ -1769,12 +1809,16 @@
 	};
 
 	//// Create Field Controllers
-	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
+						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce'];
 	/* @ngInject */
-	function ManageFieldModalController(contentData, resolvedField, $uibModal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function ManageFieldModalController(contentData, resolvedField, $uibModal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
+						webvellaRootService, $location, resolvedRelatedEntity, $sce) {
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
+
+		//#region << Init >>
 		popupData.modalInstance = $modalInstance;
 		popupData.contentData = contentData;
 
@@ -1782,7 +1826,7 @@
 		if (popupData.field.permissions == null) {
 			popupData.field.permissions = {
 				canRead: [],
-				canUpdate:[]
+				canUpdate: []
 			}
 		}
 
@@ -1795,6 +1839,10 @@
 				popupData.fieldType = popupData.fieldTypes[i];
 			}
 		}
+
+		//#endregion
+
+		//#region << Logic >>
 
 		//Generate roles and checkboxes
 		popupData.fieldPermissions = [];
@@ -1841,8 +1889,6 @@
 
 		}
 
-
-
 		//Currency
 		if (popupData.field.fieldType == 3) {
 			popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
@@ -1888,15 +1934,86 @@
 			}
 		}
 
-
-
-
-		/////
+		// Date and Date time
 		popupData.calendars = {};
 		popupData.openCalendar = function (event, name) {
 			popupData.calendars[name] = true;
 		}
 
+		//Tree select
+		var relationsList = fastCopy(popupData.contentData.relationsList);
+		var selectedRelation = {};
+		for (var i = 0; i < relationsList.length; i++) {
+			if (relationsList[i].id == popupData.field.relationId) {
+				selectedRelation = relationsList[i];
+			}
+		}
+		popupData.getTreeSelectRelatedEntityName = function () {
+			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			return "<i class='fa fa-fw fa-" + relatedEntity.iconName + "'></i> " + relatedEntity.name;
+		}
+		popupData.getTreeSelectRecordTreeName = function () {
+			var relatedEntity = fastCopy(resolvedRelatedEntity);
+			for (var i = 0; i < relatedEntity.recordTrees.length; i++) {
+				if (relatedEntity.recordTrees[i].id == popupData.field.selectedTreeId) {
+					return "<i class='fa fa-fw fa-sitemap'></i> " + relatedEntity.recordTrees[i].name;
+				}
+			}
+			return "";
+		}
+		popupData.getTreeSelectRelationHtml = function () {
+			var result = "unknown";
+			if (selectedRelation) {
+				if (selectedRelation.relationType == 2) {
+					result = $sce.trustAsHtml(selectedRelation.name + " <span class=\"badge badge-primary badge-inverse\" title=\"One to Many\" style=\"margin-left:5px;\">1 : N</span>");
+				}
+				else if (selectedRelation.relationType == 3) {
+					result = $sce.trustAsHtml(selectedRelation.name + ' <span class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>');
+				}
+			}
+			return result;
+
+			return "";
+		}
+
+		//#region << Selection types >>
+		popupData.selectionTypes = [];
+		var singleSelectType = {
+			key: "single-select",
+			value: "can select only one"
+		};
+		var multiSelectType = {
+			key: "multi-select",
+			value: "can select many nodes"
+		};
+		var singleBranchSelectType = {
+			key: "single-branch-select",
+			value: "can select only one node in branch"
+		};
+
+		//#endregion
+
+		//#region << Selection targets >>
+		popupData.selectionTargets = [];
+		var allNodesSelectTarget = {
+			key: "all",
+			value: "all nodes can be selected"
+		};
+		var multiSelectTarget = {
+			key: "leaves",
+			value: "only leaves - nodes with no children"
+		};
+		popupData.selectionTargets.push(allNodesSelectTarget);
+		popupData.selectionTargets.push(multiSelectTarget);
+		//#endregion
+
+		popupData.selectionTypes = [];
+		popupData.selectionTypes.push(singleSelectType);
+		if (selectedRelation && selectedRelation.relationType == 3) {
+			popupData.selectionTypes.push(multiSelectType);
+			popupData.selectionTypes.push(singleBranchSelectType);
+		}
+		//#endregion
 
 		popupData.ok = function () {
 			switch (popupData.field.fieldType) {
@@ -1915,12 +2032,12 @@
 					}
 					break;
 				case 4: //Date
-					if(popupData.field.defaultValue!=null) {
+					if (popupData.field.defaultValue != null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if(popupData.field.defaultValue!=null) {
+					if (popupData.field.defaultValue != null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;

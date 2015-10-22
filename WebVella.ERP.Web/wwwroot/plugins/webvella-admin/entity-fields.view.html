@@ -2358,9 +2358,9 @@
 			</div>
 			<!--URL 19 -->
 			<div ng-if="popupData.fieldType.id == 19">
+				<input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
 				<div class="row">
 					<div class="col-sm-6">
-						<input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupData.defaultValueError}">
 							<label class="control-label" ng-class="{'required':popupData.field.required}">Default value</label>
 							<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
@@ -2411,6 +2411,51 @@
 
 					</div>
 				</div>
+			</div>
+
+			<!--Reserved id 20 -->
+
+			<!--Tree select 21 -->
+			<div ng-if="popupData.fieldType.id == 21">
+				<input type="hidden" value="{{popupData.fieldType.id}}" name="fieldType" />
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="name">Related Entity with the tree </label>
+							<p class="form-control-static" ng-bind-html="popupData.getTreeSelectRelatedEntityName()"></p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="name">Record tree </label>
+							<p class="form-control-static" ng-bind-html="popupData.getTreeSelectRecordTreeName()"></p>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label" for="name">Relation between the current and target entity</label>
+							<p class="form-control-static" ng-bind-html="popupData.getTreeSelectRelationHtml()"></p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label required">Selection type</label>
+							<select class="form-control" ng-model="popupData.field.selectionType" name="selectionType"
+									ng-options="s.key as s.value for s in popupData.selectionTypes"></select>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="control-label required">Selection target</label>
+							<select class="form-control" ng-model="popupData.field.selectionTarget" name="selectionTarget" type="text"
+									ng-options="s.key as s.value for s in popupData.selectionTargets"></select>
+						</div>
+					</div>
+				</div>		
 			</div>
 
 			<div class="row">
