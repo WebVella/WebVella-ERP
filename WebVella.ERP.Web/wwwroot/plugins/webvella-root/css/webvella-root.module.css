@@ -7,11 +7,16 @@ body {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 	display: none !important;
-	visibility:hidden !important;
+	visibility: hidden !important;
 }
 
-.ng-enter { visibility:hidden; }
-.ng-enter.ng-enter-active { visibility:visible; }
+.ng-enter {
+	visibility: hidden;
+}
+
+	.ng-enter.ng-enter-active {
+		visibility: visible;
+	}
 
 .transparent {
 	opacity: 0; /* Opacity for Modern Browsers */
@@ -1846,7 +1851,7 @@ ngToast
 }
 
 	.vertical-tabs-wrapper .tab-content #loading-bar-spinner,
-	.ajax-wrapper  #loading-bar-spinner{
+	.ajax-wrapper #loading-bar-spinner {
 		position: absolute;
 		display: inline-block;
 		margin: auto;
@@ -1859,8 +1864,8 @@ ngToast
 	}
 
 .ajax-wrapper {
-	min-height:80px;
-	position:relative;
+	min-height: 80px;
+	position: relative;
 }
 
 .nav-stacked li.active-filter a:after {
@@ -4421,14 +4426,14 @@ a.link-icon.link[href]:before {
 	}
 
 	.tree li.parent_li > .btn-group > .btn:first-child {
-		color:#999;
+		color: #999;
 	}
 
-	.tree li.parent_li > .btn-group > .btn:first-child:hover {
-		border-color: #03A9F4;
-		color:#03A9F4;
-		background-color:#fff;
-	}
+		.tree li.parent_li > .btn-group > .btn:first-child:hover {
+			border-color: #03A9F4;
+			color: #03A9F4;
+			background-color: #fff;
+		}
 
 	.tree li .btn.btn-default:not(.node) {
 		background-color: #daefdb;
@@ -4440,54 +4445,226 @@ a.link-icon.link[href]:before {
 		border-color: #ffcdd2;
 	}
 
-	.tree li .btn.btn-default .fa-check{
-		color:#fff;
+	.tree li .btn.btn-default .fa-check {
+		color: #fff;
 	}
 
 	.tree li .btn.btn-default .fa-lock {
-		color:#F44336;
+		color: #F44336;
 	}
 
 
 	.tree li .btn.btn-default:hover {
-		background:#fafafa;
-	}
-	.tree li .btn.btn-default:hover .fa-check{
-		color:#4CAF50 !important;
+		background: #fafafa;
 	}
 
-	.btn-default:focus, .btn-default.focus {
-		background-color: #fff;
-		border-color: #ccc;
-	}
-
-	.btn-success:focus, .btn-success.focus {
-		background-color: #5cb85c;
-		border-color: #4cae4c;
-	}
-
-		.tree li.parent_li.hovered > .btn-group + tree-view ul li::before {
-			border-left-color: #03A9F4;
+		.tree li .btn.btn-default:hover .fa-check {
+			color: #4CAF50 !important;
 		}
 
-		.tree li.parent_li.hovered > .btn-group + tree-view  ul li::after {
-			border-top-color: #03A9F4;
-		}
+.btn-default:focus, .btn-default.focus {
+	background-color: #fff;
+	border-color: #ccc;
+}
 
-		.tree li.parent_li.hovered > .btn-group + tree-view  ul li .btn {
-			border: 1px solid #03A9F4;
-		}
+.btn-success:focus, .btn-success.focus {
+	background-color: #5cb85c;
+	border-color: #4cae4c;
+}
 
-	.tree li.parent_li.collapsed ul {
-		display:none;
+.tree li.parent_li.hovered > .btn-group + tree-view ul li::before {
+	border-left-color: #03A9F4;
+}
+
+.tree li.parent_li.hovered > .btn-group + tree-view ul li::after {
+	border-top-color: #03A9F4;
+}
+
+.tree li.parent_li.hovered > .btn-group + tree-view ul li .btn {
+	border: 1px solid #03A9F4;
+}
+
+.tree li.parent_li.collapsed ul {
+	display: none;
+}
+
+.tree li.parent_li.collapsed ul {
+	display: none;
+}
+
+.tree li.parent_li.collapsed > .btn-group > .btn > .fa-minus-circle:before {
+	content: "\f055";
+	color: #03A9F4;
+}
+
+/*#endregion*/
+
+
+/*#region << Angular UI tree */
+
+.angular-ui-tree {
+}
+
+.angular-ui-tree-empty {
+	border: 1px dashed #bbb;
+	min-height: 100px;
+	background-color: #e5e5e5;
+	background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+	background-image: -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+	background-image: linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff), linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+	background-size: 60px 60px;
+	background-position: 0 0, 30px 30px;
+}
+
+.angular-ui-tree-nodes {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+	.angular-ui-tree-nodes .angular-ui-tree-nodes {
+		padding-left: 34px;
 	}
 
-	.tree li.parent_li.collapsed ul {
-		display:none;
+	.angular-ui-tree-node .angular-ui-tree-nodes {
+		padding-top: 10px;
+		padding-left: 34px;
 	}
-	.tree li.parent_li.collapsed > .btn-group > .btn > .fa-minus-circle:before {
-		content:"\f055";
-		color:#03A9F4;
+
+.angular-ui-tree-node,
+.angular-ui-tree-placeholder {
+	position: relative;
+	margin: 0;
+	padding: 5px;
+	min-height: 20px;
+	line-height: 20px;
+}
+
+.angular-ui-tree-hidden {
+	display: none;
+}
+
+.angular-ui-tree-placeholder {
+	margin: -1px;
+	padding: 0;
+	min-height: 20px;
+	border: 1px dashed #FDD835;
+	background: #fffff0;
+}
+
+.angular-ui-tree-handle {
+	cursor: move;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-height: 20px;
+	line-height: 20px;
+	color: #999;
+}
+
+	.angular-ui-tree-handle:hover {
+		color: #03A9F4;
+		background:#fff;
 	}
+
+.angular-ui-tree-drag {
+	position: absolute;
+	pointer-events: none;
+	z-index: 999;
+	opacity: .8;
+}
+
+.angular-ui-tree-node .btn-group > .btn .btn {
+	position: absolute;
+}
+
+	.angular-ui-tree-node .btn-group > .btn .btn.add-node {
+		right: 5px;
+	}
+
+	.angular-ui-tree-node .btn-group > .btn .btn.delete-node {
+		right: 35px;
+	}
+
+.angular-ui-tree .btn.disabled,
+.angular-ui-tree-drag .btn.disabled {
+	background: #e0f2f1;
+	border-color: #b2dfdb;
+	color: #333;
+	padding-right: 80px;
+	position: relative;
+}
+
+	.angular-ui-tree .btn.disabled:hover {
+		cursor:default;
+	}
+
+.angular-ui-tree .btn.disabled .btn-default,
+.angular-ui-tree-drag .btn.disabled  .btn-default{
+	opacity:0.5;
+	border-color:#b2dfdb;
+}
+
+
+.angular-ui-tree .btn.disabled .btn-default:hover{
+	opacity:1;
+	background:#fff;
+}
+
+.angular-ui-tree li:after, .angular-ui-tree li:before {
+	content: '';
+	left: -20px;
+	position: absolute;
+	right: auto;
+}
+
+.angular-ui-tree li:before {
+	border-left: 1px solid #ccc;
+	bottom: 50px;
+	height: 100%;
+	top: -11px;
+	width: 1px;
+}
+
+.angular-ui-tree li:last-child::before {
+    height: 30px;
+}
+
+.angular-ui-tree li:after {
+	border-top: 1px solid #ccc;
+	height: 20px;
+	top: 18px;
+	width: 25px;
+}
+
+.angular-ui-tree li.angular-ui-tree-placeholder:after {
+	width:20px;
+}
+
+.angular-ui-tree li.parent_li.hovered > .btn-group + ol li::before {
+	border-left-color: #03A9F4;
+}
+
+.angular-ui-tree li.parent_li.hovered > .btn-group + ol li::after {
+	border-top-color: #03A9F4;
+}
+
+.angular-ui-tree li.parent_li.hovered > .btn-group + ol li .btn {
+	border: 1px solid #03A9F4;
+}
+
+.angular-ui-tree > ol > li::after, .angular-ui-tree > ol > li:before {
+	border: 0;
+}
+
+.angular-ui-tree li.parent_li.hovered .angular-ui-tree-handle {
+	border-color:#03A9F4;
+}
+
+
+
 
 /*#endregion*/
