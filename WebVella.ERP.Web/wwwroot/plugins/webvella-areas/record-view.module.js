@@ -1560,6 +1560,7 @@
 	function ManageTreeNodesModalController(parentData, $modalInstance, $log, $q, $stateParams, parentInstance,
 			webvellaAdminService, ngToast, $timeout, $state) {
 		var popupData = this;
+		parentInstance.dismiss('cancel');
 
 		popupData.cancel = function () {
 			$modalInstance.dismiss('cancel');
