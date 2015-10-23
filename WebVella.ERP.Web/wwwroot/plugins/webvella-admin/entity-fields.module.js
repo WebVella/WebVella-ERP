@@ -1348,10 +1348,12 @@
 					}
 				}
 
-
-
-				webvellaAdminService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
-
+				if (managedField.fieldType == 21) {
+					webvellaAdminService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
+				}
+				else {
+					defer.resolve(null);
+				}
 				// Return
 				$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 				return defer.promise;
