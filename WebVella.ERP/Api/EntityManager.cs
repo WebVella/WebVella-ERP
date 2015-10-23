@@ -657,6 +657,69 @@ namespace WebVella.ERP.Api
 							}
 						}
 					}
+					else if (column is InputRecordListRelationTreeItem)
+					{
+						EntityRelation relation = null;
+						InputRecordListRelationTreeItem inputColumn = (InputRecordListRelationTreeItem)column;
+						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
+						{
+							errorList.Add(new ErrorModel("columns.relationName", null, "Relation name or id is required!"));
+						}
+						else
+						{
+							if (string.IsNullOrWhiteSpace(inputColumn.RelationName))
+								relation = relationList.SingleOrDefault(x => x.Id == inputColumn.RelationId);
+							else
+								relation = relationList.SingleOrDefault(x => x.Name == inputColumn.RelationName);
+
+							if (relation == null)
+								errorList.Add(new ErrorModel("columns.relationName", null, "Wrong name. There is no relation with such name!"));
+							else
+							{
+								inputColumn.RelationName = relation.Name;
+								inputColumn.RelationId = relation.Id;
+							}
+						}
+
+						if (string.IsNullOrWhiteSpace(inputColumn.TreeName) && inputColumn.TreeId == null)
+						{
+							errorList.Add(new ErrorModel("columns.listName", null, "Tree name or id is required!"));
+						}
+						else if (inputColumn.RelationId.HasValue && inputColumn.RelationId != Guid.Empty)
+						{
+							if (recordlist.Columns.Where(i => i is InputRecordListRelationTreeItem &&
+							   ((InputRecordListRelationTreeItem)i).RelationId == inputColumn.RelationId &&
+							   ((InputRecordListRelationTreeItem)i).TreeName == inputColumn.TreeName).Count() > 1)
+								errorList.Add(new ErrorModel("columns.listName", null, "There is already an item with such tree name!"));
+							else
+							{
+								if (relation != null)
+								{
+
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+									if (relEntity != null)
+									{
+										inputColumn.EntityId = entity.Id;
+										inputColumn.EntityName = entity.Name;
+
+										RecordTree relTree = string.IsNullOrWhiteSpace(inputColumn.TreeName) ?
+											relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputColumn.TreeId) :
+											relEntity.RecordTrees.FirstOrDefault(l => l.Name == inputColumn.TreeName);
+
+										if (relTree != null)
+										{
+											inputColumn.TreeName = relTree.Name;
+											inputColumn.TreeId = relTree.Id;
+										}
+										else
+											errorList.Add(new ErrorModel("columns.listId", null, "Wrong Id. There is no tree with such id or name!"));
+									}
+								}
+							}
+						}
+					}
 					else if (column is InputRecordListRelationListItem)
 					{
 						EntityRelation relation = null;
@@ -1166,6 +1229,63 @@ namespace WebVella.ERP.Api
 														}
 
 													}
+													else if (item is InputRecordViewRelationTreeItem)
+													{
+														EntityRelation relation = null;
+														InputRecordViewRelationTreeItem inputItem = (InputRecordViewRelationTreeItem)item;
+														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
+														{
+															errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Relation name or id is required!"));
+														}
+														else
+														{
+															if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+																relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId);
+															else
+																relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+															if (relation == null)
+																errorList.Add(new ErrorModel("regions.sections.rows.columns.items.relationName", null, "Wrong name or id. There is no relation with such name or id!"));
+															else
+															{
+																inputItem.RelationId = relation.Id;
+																inputItem.RelationName = relation.Name;
+															}
+														}
+
+														if (string.IsNullOrWhiteSpace(inputItem.TreeName) && inputItem.TreeId == null)
+														{
+															errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Tree name or id is required!"));
+														}
+														else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
+														{
+															if (relation != null)
+															{
+																Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+																Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+																if (relEntity != null)
+																{
+																	inputItem.EntityId = entity.Id;
+																	inputItem.EntityName = entity.Name;
+
+																	RecordTree tree = null;
+																	if (string.IsNullOrWhiteSpace(inputItem.TreeName))
+																		tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputItem.TreeId);
+																	else
+																		tree = relEntity.RecordTrees.FirstOrDefault(l => l.Name == inputItem.TreeName);
+
+																	if (tree != null)
+																	{
+																		inputItem.TreeId = tree.Id;
+																		inputItem.TreeName = tree.Name;
+																	}
+																	else
+																		errorList.Add(new ErrorModel("regions.sections.rows.columns.items.listName", null, "Wrong Name. There is no tree with such name or id!"));
+																}
+															}
+														}
+													}
 													else if (item is InputRecordViewRelationListItem)
 													{
 														EntityRelation relation = null;
@@ -1422,6 +1542,70 @@ namespace WebVella.ERP.Api
 									   ((InputRecordViewSidebarRelationListItem)i).ListName == inputItem.ListName &&
 									   ((InputRecordViewSidebarRelationListItem)i).RelationId == inputItem.RelationId).Count() > 1)
 									errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such list name!"));
+
+							}
+
+						}
+						else if (item is InputRecordViewSidebarRelationTreeItem)
+						{
+							EntityRelation relation = null;
+							InputRecordViewSidebarRelationTreeItem inputItem = (InputRecordViewSidebarRelationTreeItem)item;
+							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
+							{
+								errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Relation name or id is required!"));
+							}
+							else
+							{
+								if (string.IsNullOrWhiteSpace(inputItem.RelationName))
+									relation = relationList.SingleOrDefault(r => r.Id == inputItem.RelationId.Value);
+								else
+									relation = relationList.SingleOrDefault(r => r.Name == inputItem.RelationName);
+
+								if (relation == null)
+									errorList.Add(new ErrorModel("sidebar.items.relationName", null, "Wrong name. There is no relation with such name or id!"));
+								else
+								{
+									inputItem.RelationId = relation.Id;
+									inputItem.RelationName = relation.Name;
+								}
+							}
+
+							if (string.IsNullOrWhiteSpace(inputItem.TreeName) && inputItem.TreeId == null)
+							{
+								errorList.Add(new ErrorModel("sidebar.items.treeName", null, "Tree name or id is required!"));
+							}
+							else if (inputItem.RelationId.HasValue && inputItem.RelationId != Guid.Empty)
+							{
+								if (relation != null)
+								{
+									Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+									Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+
+									inputItem.EntityId = relEntity.Id;
+									inputItem.EntityName = relEntity.Name;
+
+									if (relEntity != null)
+									{
+										RecordTree tree = null;
+										if (string.IsNullOrWhiteSpace(inputItem.TreeName))
+											tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == inputItem.TreeId);
+										else
+											tree = relEntity.RecordTrees.FirstOrDefault(l => l.Name == inputItem.TreeName);
+
+										if (tree != null)
+										{
+											inputItem.TreeId = tree.Id;
+											inputItem.TreeName = tree.Name;
+										}
+										else
+											errorList.Add(new ErrorModel("sidebar.items.listName", null, "Wrong name. There is no tree with such name or id!"));
+									}
+								}
+
+								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarRelationTreeItem &&
+									   ((InputRecordViewSidebarRelationTreeItem)i).TreeName == inputItem.TreeName &&
+									   ((InputRecordViewSidebarRelationTreeItem)i).RelationId == inputItem.RelationId).Count() > 1)
+									errorList.Add(new ErrorModel("sidebar.items.listName", null, "There is already an item with such tree name!"));
 
 							}
 
@@ -1939,6 +2123,27 @@ namespace WebVella.ERP.Api
 											((RecordListRelationListItem)column).Meta = list;
 										}
 									}
+									if (column is RecordListRelationTreeItem)
+									{
+										Entity relEntity = GetEntityByTreeId(((RecordListRelationTreeItem)column).TreeId, entities);
+										if (relEntity != null)
+										{
+											((RecordListRelationTreeItem)column).EntityName = relEntity.Name;
+											((RecordListRelationTreeItem)column).EntityLabel = relEntity.Label;
+											((RecordListRelationTreeItem)column).EntityLabelPlural = entity.LabelPlural;
+										}
+
+										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
+										((RecordListRelationTreeItem)column).RelationName = relation != null ? relation.Name : string.Empty;
+
+										RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordListRelationTreeItem)column).TreeId);
+										if (tree != null)
+										{
+											((RecordListRelationTreeItem)column).DataName = string.Format("$tree${0}${1}", ((RecordListRelationTreeItem)column).RelationName, tree.Name);
+											((RecordListRelationTreeItem)column).TreeName = tree.Name;
+											((RecordListRelationTreeItem)column).Meta = tree;
+										}
+									}
 								}
 							}
 						}
@@ -2118,6 +2323,28 @@ namespace WebVella.ERP.Api
 														}
 													}
 												}
+
+												if (item is RecordViewRelationTreeItem)
+												{
+													Entity relEntity = GetEntityByTreeId(((RecordViewRelationTreeItem)item).TreeId, entities);
+													if (relEntity != null)
+													{
+														((RecordViewRelationTreeItem)item).EntityName = relEntity.Name;
+														((RecordViewRelationTreeItem)item).EntityLabel = relEntity.Label;
+														((RecordViewRelationTreeItem)item).EntityLabelPlural = entity.LabelPlural;
+													}
+
+													var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewRelationTreeItem)item).RelationId);
+													((RecordViewRelationTreeItem)item).RelationName = relation != null ? relation.Name : string.Empty;
+
+													RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordViewRelationTreeItem)item).TreeId);
+													if (tree != null)
+													{
+														((RecordViewRelationTreeItem)item).DataName = string.Format("$tree${0}${1}", ((RecordViewRelationTreeItem)item).RelationName, tree.Name);
+														((RecordViewRelationTreeItem)item).TreeName = tree.Name;
+														((RecordViewRelationTreeItem)item).Meta = tree;
+													}
+												}
 											}
 										}
 									}
@@ -2219,6 +2446,28 @@ namespace WebVella.ERP.Api
 												((RecordViewSidebarRelationListItem)item).Meta = list;
 												((RecordViewSidebarRelationListItem)item).ListName = list.Name;
 											}
+										}
+									}
+
+									if (item is RecordViewSidebarRelationTreeItem)
+									{
+										Entity relEntity = GetEntityByTreeId(((RecordViewSidebarRelationTreeItem)item).TreeId, entities);
+										if (relEntity != null)
+										{
+											((RecordViewSidebarRelationTreeItem)item).EntityName = relEntity.Name;
+											((RecordViewSidebarRelationTreeItem)item).EntityLabel = relEntity.Label;
+											((RecordViewSidebarRelationTreeItem)item).EntityLabelPlural = entity.LabelPlural;
+										}
+
+										var relation = relationList.FirstOrDefault(r => r.Id == ((RecordViewSidebarRelationTreeItem)item).RelationId);
+										((RecordViewSidebarRelationTreeItem)item).RelationName = relation != null ? relation.Name : string.Empty;
+
+										RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordViewSidebarRelationTreeItem)item).TreeId);
+										if (tree != null)
+										{
+											((RecordViewSidebarRelationTreeItem)item).DataName = string.Format("$tree${0}${1}", ((RecordViewSidebarRelationTreeItem)item).RelationName, tree.Name);
+											((RecordViewSidebarRelationTreeItem)item).TreeName = tree.Name;
+											((RecordViewSidebarRelationTreeItem)item).Meta = tree;
 										}
 									}
 								}
@@ -5469,6 +5718,20 @@ namespace WebVella.ERP.Api
 			foreach (var entity in entities)
 			{
 				if (entity.RecordLists.Any(l => l.Id == listId))
+					return entity;
+			}
+
+			return null;
+		}
+
+		private static Entity GetEntityByTreeId(Guid treeId, List<Entity> entities)
+		{
+			foreach (var entity in entities)
+			{
+				if (entity.RecordTrees == null)
+					continue;
+
+                if (entity.RecordTrees.Any(l => l.Id == treeId))
 					return entity;
 			}
 

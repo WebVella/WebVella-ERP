@@ -184,4 +184,25 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("fieldManageView")]
 		public string FieldManageView { get; set; }
 	}
+
+	public class MongoRecordListRelationTreeItem : MongoRecordListItemBase, IStorageRecordListRelationTreeItem
+	{
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+
+		[BsonElement("treeId")]
+		public Guid TreeId { get; set; }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+	}
 }

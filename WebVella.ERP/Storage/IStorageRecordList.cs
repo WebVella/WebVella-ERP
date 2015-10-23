@@ -132,4 +132,19 @@ namespace WebVella.ERP.Storage
 
 		string FieldManageView { get; set; }
 	}
+
+	public interface IStorageRecordListRelationTreeItem : IStorageRecordListItemBase
+	{
+		Guid RelationId { get; set; }
+
+		Guid TreeId { get; set; }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+	}
 }

@@ -15,6 +15,13 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 		protected override void Configure()
 		{
+			Mapper.CreateMap<RecordListRelationTreeItem, IStorageRecordListRelationTreeItem>().ConstructUsing(x => CreateEmptyRecordListRelationTreeItemObject(x));
+			Mapper.CreateMap<IStorageRecordListRelationTreeItem, RecordListRelationTreeItem>();
+			Mapper.CreateMap<RecordListRelationTreeItem, InputRecordListRelationTreeItem>();
+			Mapper.CreateMap<InputRecordListRelationTreeItem, RecordListRelationTreeItem>()
+				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty))
+				.ForMember(x => x.TreeId, opt => opt.MapFrom(y => (y.TreeId.HasValue) ? y.TreeId.Value : Guid.Empty));
+
 			Mapper.CreateMap<RecordListRelationListItem, IStorageRecordListRelationListItem>().ConstructUsing(x => CreateEmptyRecordListRelationListItemObject(x));
 			Mapper.CreateMap<IStorageRecordListRelationListItem, RecordListRelationListItem>();
 			Mapper.CreateMap<RecordListRelationListItem, InputRecordListRelationListItem>();
@@ -60,21 +67,24 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<RecordListViewItem, IStorageRecordListViewItem>()
 				.Include<RecordListRelationViewItem, IStorageRecordListRelationViewItem>()
 				.Include<RecordListListItem, IStorageRecordListListItem>()
-				.Include<RecordListRelationListItem, IStorageRecordListRelationListItem>();
-            Mapper.CreateMap<IStorageRecordListItemBase, RecordListItemBase>()
+				.Include<RecordListRelationListItem, IStorageRecordListRelationListItem>()
+				.Include<RecordListRelationTreeItem, IStorageRecordListRelationTreeItem>();
+			Mapper.CreateMap<IStorageRecordListItemBase, RecordListItemBase>()
 				.Include<IStorageRecordListFieldItem, RecordListFieldItem>()
 				.Include<IStorageRecordListRelationFieldItem, RecordListRelationFieldItem>()
 				.Include<IStorageRecordListViewItem, RecordListViewItem>()
 				.Include<IStorageRecordListRelationViewItem, RecordListRelationViewItem>()
 				.Include<IStorageRecordListListItem, RecordListListItem>()
-				.Include<IStorageRecordListRelationListItem, RecordListRelationListItem>();
+				.Include<IStorageRecordListRelationListItem, RecordListRelationListItem>()
+				.Include<IStorageRecordListRelationTreeItem, RecordListRelationTreeItem>();
 			Mapper.CreateMap<RecordListItemBase, InputRecordListItemBase>()
 				.Include<RecordListFieldItem, InputRecordListFieldItem>()
 				.Include<RecordListRelationFieldItem, InputRecordListRelationFieldItem>()
 				.Include<RecordListViewItem, InputRecordListViewItem>()
 				.Include<RecordListRelationViewItem, InputRecordListRelationViewItem>()
 				.Include<RecordListListItem, InputRecordListListItem>()
-				.Include<RecordListRelationListItem, InputRecordListRelationListItem>();
+				.Include<RecordListRelationListItem, InputRecordListRelationListItem>()
+				.Include<RecordListRelationTreeItem, InputRecordListRelationTreeItem>();
 			Mapper.CreateMap<InputRecordListItemBase, RecordListItemBase>()
 				.Include<InputRecordListFieldItem, RecordListFieldItem>()
 				.Include<InputRecordListRelationFieldItem, RecordListRelationFieldItem>()
@@ -82,6 +92,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<InputRecordListRelationViewItem, RecordListRelationViewItem>()
 				.Include<InputRecordListListItem, RecordListListItem>()
 				.Include<InputRecordListRelationListItem, RecordListRelationListItem>()
+				.Include<InputRecordListRelationTreeItem, RecordListRelationTreeItem>()
 				.ForMember(x => x.EntityId, opt => opt.MapFrom(y => (y.EntityId.HasValue) ? y.EntityId.Value : Guid.Empty));
 
 			Mapper.CreateMap<RecordListQuery, IStorageRecordListQuery>().ConstructUsing(x => CreateEmptyRecordListQueryObject(x));
@@ -179,6 +190,12 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 		{
 			var storageService = service.StorageService;
 			return storageService.GetObjectFactory().CreateEmptyRecordListRelationListItemObject();
+		}
+
+		protected IStorageRecordListRelationTreeItem CreateEmptyRecordListRelationTreeItemObject(RecordListRelationTreeItem item)
+		{
+			var storageService = service.StorageService;
+			return storageService.GetObjectFactory().CreateEmptyRecordListRelationTreeItemObject();
 		}
 	}
 }

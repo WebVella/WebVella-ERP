@@ -153,6 +153,27 @@ namespace WebVella.ERP.Storage.Mongo
 		public string FieldManageView { get; set; }
 	}
 
+	public class MongoRecordViewSidebarRelationTreeItem : MongoRecordViewSidebarItemBase, IStorageRecordViewSidebarRelationTreeItem
+	{
+		[BsonElement("treeId")]
+		public Guid TreeId { get; set; }
+
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
+	}
+
 	////////////////////////
 	public class MongoRecordViewRegion : IStorageRecordViewRegion
     {
@@ -370,5 +391,26 @@ namespace WebVella.ERP.Storage.Mongo
 
 		[BsonElement("fieldManageView")]
 		public string FieldManageView { get; set; }
+	}
+
+	public class MongoRecordViewRelationTreeItem : MongoRecordViewItemBase, IStorageRecordViewRelationTreeItem
+	{
+		[BsonElement("treeId")]
+		public Guid TreeId { get; set; }
+
+		[BsonElement("relationId")]
+		public Guid RelationId { get; set; }
+
+		[BsonElement("fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[BsonElement("fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[BsonElement("fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[BsonElement("fieldRequired")]
+		public bool FieldRequired { get; set; }
 	}
 }
