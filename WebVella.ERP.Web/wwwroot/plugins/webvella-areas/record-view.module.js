@@ -135,6 +135,72 @@
 		contentData.selectedSidebarPage.data = null;
 		contentData.stateParams = $stateParams;
 		contentData.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
+
+		//#region << Dummy content for test - Remove afterwards >>
+
+		//#region << Tree meta >>
+		var treeMeta = {
+			dataName: "$tree$item_n_n_category$category_tree",
+			entityId: guid(),
+			entityLabel: "Category",
+			entityLabelPlural: "Categories",
+			entityName: "category",
+			fieldHelpText: null,
+			fieldLabel: "Categories",
+			fieldPlaceholder: null,
+			fieldRequired: false,
+			treeId: guid(),
+			treeName: "category_tree",
+			relationDirection: "origin-target",
+			relationId: guid(),
+			relationName: "item_n_n_category",
+			type: "treeFromRelation"
+		};
+
+		var originalTreeMeta = { "id": "2c93028d-fef5-4763-86e6-df37adc438a8", "name": "test", "label": "tezst", "default": false, "system": false, "cssClass": "", "iconName": "", "relationId": "460e699c-6624-4238-bb17-12243cf5d56b", "depthLimit": 5, "nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", "nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "nodeNameFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "nodeLabelFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "rootNodes": [], "nodeObjectProperties": ["5df6bba4-061b-41ce-bf39-8f6b50fd023d", "16672229-1694-468e-a363-c80effffe5d1"] };
+		treeMeta.meta = originalTreeMeta;
+		//#endregion
+
+		//#region << Tree Data >>
+		var treeData = [];
+		var category1 = {
+			"id": guid(),
+			"recordId": guid(),
+			"name": "clothes",
+			"label": "Clothes",
+			"parentId": guid()
+		};
+		var category2 = {
+			"id": guid(),
+			"recordId": guid(),
+			"name": "shoes",
+			"label": "Shoes",
+			"parentId": guid()
+		};
+
+		treeData.push(category1);
+		treeData.push(category2);
+		//#endregion
+
+		//#region << Insert json in meta view as field >>
+		
+		
+		for (var i = 0; i < resolvedCurrentView.meta.sidebar.items.length; i++) {
+			if (resolvedCurrentView.meta.sidebar.items[i].viewName == "meta") {
+				resolvedCurrentView.meta.sidebar.items[i].meta.regions[0].sections[0].rows[0].columns[0].items.push(treeMeta);
+				resolvedCurrentView.data[0][resolvedCurrentView.meta.sidebar.items[i].dataName][0]["$tree$item_n_n_category$category_tree"] = treeData;
+			}
+		}
+		//#region
+
+		//#region << Insert json in as sidebar item >>
+		//Data should be already pushed from the previous seciton
+		resolvedCurrentView.meta.sidebar.items.push(treeMeta);
+		//#region
+
+
+		//#endregion
+
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);

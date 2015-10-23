@@ -36,9 +36,9 @@
 				<span class="btn btn-default btn-xs delete-node" ng-click="pluginData.removeNodeModal(node)"><i class="fa fa-fw fa-minus go-red"></i></span>
 			</span>
 		</div>
-		<ol ui-tree-nodes="" ng-model="node.nodes">
-			<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-			</li>
+		<ol ui-tree-nodes="" ng-model="node.nodes" ng-if="node.nodes.length > 0" >
+			<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'" 
+			ng-class="{parent_li:node.nodes.length > 0, hovered: pluginData.attachHoverEffectClass[node.id]}"></li>
 		</ol>
 	</script>
 

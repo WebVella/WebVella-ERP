@@ -4528,7 +4528,7 @@ a.link-icon.link[href]:before {
 	}
 
 	.angular-ui-tree-node .angular-ui-tree-nodes {
-		padding-top: 10px;
+		padding-top: 5px;
 		padding-left: 34px;
 	}
 
@@ -4537,8 +4537,8 @@ a.link-icon.link[href]:before {
 	position: relative;
 	margin: 0;
 	padding: 5px;
-	min-height: 20px;
-	line-height: 20px;
+	/*min-height: 20px;
+	line-height: 20px;*/
 }
 
 .angular-ui-tree-hidden {
@@ -4563,6 +4563,7 @@ a.link-icon.link[href]:before {
 	min-height: 20px;
 	line-height: 20px;
 	color: #999;
+	border-right-color:#b2dfdb;
 }
 
 	.angular-ui-tree-handle:hover {
@@ -4625,12 +4626,12 @@ a.link-icon.link[href]:before {
 	border-left: 1px solid #ccc;
 	bottom: 50px;
 	height: 100%;
-	top: -11px;
+	top: -5px;
 	width: 1px;
 }
 
 .angular-ui-tree li:last-child::before {
-    height: 30px;
+    height: 24px;
 }
 
 .angular-ui-tree li:after {

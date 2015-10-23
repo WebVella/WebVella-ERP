@@ -137,7 +137,7 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 
@@ -564,6 +564,6 @@
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="!popupData.isEdit">Create & Add</button>
 		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="popupData.isEdit">Save change</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
