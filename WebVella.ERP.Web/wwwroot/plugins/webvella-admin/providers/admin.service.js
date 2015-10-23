@@ -76,12 +76,13 @@ function guid() {
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Tree
 		serviceInstance.initTree = initTree;
-		serviceInstance.getEntityTrees = getEntityTrees;
-		serviceInstance.getEntityTree = getEntityTree;
+		serviceInstance.getEntityTreesMeta = getEntityTreesMeta;
+		serviceInstance.getEntityTreeMeta = getEntityTreeMeta;
 		serviceInstance.createEntityTree = createEntityTree;
 		serviceInstance.patchEntityTree = patchEntityTree;
 		serviceInstance.updateEntityTree = updateEntityTree;
 		serviceInstance.deleteEntityTree = deleteEntityTree;
+		serviceInstance.getRecordsByTreeName = getRecordsByTreeName;
 		//Record
 		serviceInstance.getRecordsByEntityName = getRecordsByEntityName;
 		serviceInstance.getRecord = getRecord;
@@ -899,18 +900,161 @@ function guid() {
 			}
 		}
 
+		var dummyTreeDataMeta = {
+			"id": "be607564-8424-4df2-b6ff-16a7a9529c30",
+			"name": "categories",
+			"label": "Categories",
+			"default": false,
+			"system": false,
+			"cssClass": "some-css",
+			"iconName": "sitemap",
+			"relationId": "460e699c-6624-4238-bb17-12243cf5d56b", // Only relations in which both origin and target are the current entity
+			"depthLimit": 5,
+			"nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", //Inherited from the relation Target field
+			"nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", //Inherited from the relation Origin field
+			"nodeNameFieldId": "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", //Only certain types should be allowed here - used for URL generation
+			"nodeLabelFieldId": "664f2b4a-dd96-4e27-aabd-898e255d9c8e", //Only certain types should be allowed here - human readable node label
+			"rootNodes": [
+				{
+					"id": "0ccae7b9-890b-41e5-a144-50e98046f68b",
+					"recordId": "da2207d2-3be2-4f8c-b2ae-cec727600e19",
+					"name": "women",
+					"label": "Women",
+					"parentId": null
+				},
+				{
+					"id": "96efda97-11e8-49fa-b075-6e32ebef04f9",
+					"recordId": "f934478a-a955-455a-b3e1-13d40379ace6",
+					"name": "men",
+					"label": "Men",
+					"parentId": null
+				}
+			],
+			"nodeObjectProperties": ["16672229-1694-468e-a363-c80effffe5d1", "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "c80e1e20-71e2-4de1-8b3b-5a63c6740cea", "664f2b4a-dd96-4e27-aabd-898e255d9c8e"]
+		};
+
+		var dummyTreeDataData = [
+		{
+			"id": "0ccae7b9-890b-41e5-a144-50e98046f68b",
+			"recordId": "da2207d2-3be2-4f8c-b2ae-cec727600e19",
+			"name": "women",
+			"label": "Women",
+			"parentId": null,
+			"branch": [],
+			"nodes": [
+					{
+						"id": "6720e75c-3ecd-4144-899a-c1430ae13c21",
+						"recordId": "ae1552e0-43d6-4999-a8e0-a2e1605aef66",
+						"name": "dresses",
+						"label": "Dresses",
+						"parentId": null,
+						"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b"],
+						"nodes": []
+					},
+					{
+						"id": "73728e22-4402-4c55-a726-8d7dac4d1459",
+						"recordId": "135d4f88-b480-492a-b893-f1038d29dea7",
+						"name": "shoes",
+						"label": "Shoes",
+						"parentId": null,
+						"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b"],
+						"nodes": [
+							{
+								"id": "89e38911-b75d-418a-89cb-382ac5819e68",
+								"recordId": "f24841d8-98e6-4b47-b0d5-38887eb9b5e7",
+								"name": "sport",
+								"label": "Sport",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
+							},
+							{
+								"id": "eb3e87ce-6136-4f6d-9404-e91c38149edb",
+								"recordId": "a691ccfe-cd4e-4cc2-a160-e5e095bebb50",
+								"name": "official",
+								"label": "Official",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
+							},
+							{
+								"id": guid(),
+								"recordId": guid(),
+								"name": "sport",
+								"label": "Sport",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
+							},
+							{
+								"id": guid(),
+								"recordId": guid(),
+								"name": "sport",
+								"label": "Sport",
+								"parentId": null,
+								"branch": ["0ccae7b9-890b-41e5-a144-50e98046f68b", "73728e22-4402-4c55-a726-8d7dac4d1459"],
+								"nodes": []
+							}
+
+						]
+					}
+			]
+		},
+		{
+			"id": "96efda97-11e8-49fa-b075-6e32ebef04f9",
+			"recordId": "f934478a-a955-455a-b3e1-13d40379ace6",
+			"name": "men",
+			"label": "Men",
+			"parentId": null,
+			"branch": [],
+			"nodes": [
+							{
+								"id": "3079f7e4-5eb7-4ef9-87fa-802abeb3b6a4",
+								"recordId": "fa516ed5-7eb4-45d2-b6c3-d141e321c9f3",
+								"name": "pants",
+								"label": "Pants",
+								"parentId": null,
+								"branch": ["96efda97-11e8-49fa-b075-6e32ebef04f9"],
+								"nodes": [],
+							},
+							{
+								"id": "23cf9649-0f7e-4c7e-b5f3-f267dea0a789",
+								"recordId": "968e7455-01fe-4b64-8f21-180b92351395",
+								"name": "shirts",
+								"label": "Shirts",
+								"parentId": null,
+								"branch": ["96efda97-11e8-49fa-b075-6e32ebef04f9"],
+								"nodes": []
+							}
+			]
+		}
+		];
+
+		var dummyTreeWithData = {
+			status: 200,
+			data: {
+				success: true,
+				message: "Successfully created",
+				object: {
+					meta: dummyTreeDataMeta,
+					data: dummyTreeDataData
+				},
+				errors: []
+			}
+		};
+
 		///////////////////////
-		function getEntityTrees(entityName, successCallback, errorCallback) {
+		function getEntityTreesMeta(entityName, successCallback, errorCallback) {
 			//api/v1/en_US/meta/entity/{Name}/tree
-			$log.debug('webvellaAdmin>providers>admin.service>getEntityTrees> function called ' + moment().format('HH:mm:ss SSSS'));
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityTreesMeta> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
 			//handleSuccessResult(dummyTreeListResponse.data, dummyTreeListResponse.status, successCallback, errorCallback)
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getEntityTree(treeName, entityName, successCallback, errorCallback) {
+		function getEntityTreeMeta(treeName, entityName, successCallback, errorCallback) {
 			//api/v1/en_US/meta/entity/{Name}/tree/{treeName}"
-			$log.debug('webvellaAdmin>providers>admin.service>getEntityTree> function called ' + moment().format('HH:mm:ss SSSS'));
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityTreeMeta> function called ' + moment().format('HH:mm:ss SSSS'));
 			//TODO tree - remove the dummy function
 			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -947,6 +1091,14 @@ function guid() {
 			//TODO tree - remove the dummy function
 			//handleSuccessResult(dummyTreeResponse.data, dummyTreeResponse.status, successCallback, errorCallback)
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////////
+		function getRecordsByTreeName(treeName, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>getEntityTreeData> function called ' + moment().format('HH:mm:ss SSSS'));
+			//TODO tree - remove the dummy function
+			handleSuccessResult(dummyTreeWithData.data, dummyTreeWithData.status, successCallback, errorCallback)
+			//$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/tree/' + treeName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		//#endregion

@@ -96,7 +96,7 @@
         function successCallback(response) {
             if (response.object == null) {
                 $timeout(function () {
-                    $state.go("webvella-root-not-found");
+                    alert("error in response!")
                 }, 0);
             }
             else {
@@ -107,7 +107,7 @@
         function errorCallback(response) {
             if (response.object == null) {
                 $timeout(function () {
-                    $state.go("webvella-root-not-found");
+                    alert("error in response!")
                 }, 0);
             }
             else {

@@ -410,8 +410,10 @@
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
 									<label class="control-label">{{::item.fieldLabel}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
-										<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative">
+										<span class="editable editable-click tree" ng-click="contentData.openSelectTreeNodesModal(item)">
+											<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
+										</span>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -555,8 +557,35 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
+		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save changes</button>
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 
+<script type="text/ng-template" id="selectTreeNodesModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">XXX</span></h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<button ng-click="popupData.openManageTreeNodesModal()">click</button>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="manageTreeNodesModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">XXX</span></h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>

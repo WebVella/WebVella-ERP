@@ -3200,6 +3200,10 @@ table.editable {
 		content: "\f03c";
 	}
 
+	a.editable.tree::after, span.editable.tree::after, table.editable.tree::after {
+		content: "\f0e8";
+	}
+
 	a.editable:hover:after,
 	span.editable:hover:after,
 	table.editable:hover:after {
@@ -4527,10 +4531,10 @@ a.link-icon.link[href]:before {
 		padding-left: 34px;
 	}
 
-	.angular-ui-tree-node .angular-ui-tree-nodes {
-		padding-top: 5px;
-		padding-left: 34px;
-	}
+.angular-ui-tree-node .angular-ui-tree-nodes {
+	padding-top: 5px;
+	padding-left: 34px;
+}
 
 .angular-ui-tree-node,
 .angular-ui-tree-placeholder {
@@ -4563,12 +4567,12 @@ a.link-icon.link[href]:before {
 	min-height: 20px;
 	line-height: 20px;
 	color: #999;
-	border-right-color:#b2dfdb;
+	border-right-color: #b2dfdb;
 }
 
 	.angular-ui-tree-handle:hover {
 		color: #03A9F4;
-		background:#fff;
+		background: #fff;
 	}
 
 .angular-ui-tree-drag {
@@ -4600,20 +4604,20 @@ a.link-icon.link[href]:before {
 }
 
 	.angular-ui-tree .btn.disabled:hover {
-		cursor:default;
+		cursor: default;
 	}
 
-.angular-ui-tree .btn.disabled .btn-default,
-.angular-ui-tree-drag .btn.disabled  .btn-default{
-	opacity:0.5;
-	border-color:#b2dfdb;
-}
+	.angular-ui-tree .btn.disabled .btn-default,
+	.angular-ui-tree-drag .btn.disabled .btn-default {
+		opacity: 0.5;
+		border-color: #b2dfdb;
+	}
 
 
-.angular-ui-tree .btn.disabled .btn-default:hover{
-	opacity:1;
-	background:#fff;
-}
+		.angular-ui-tree .btn.disabled .btn-default:hover {
+			opacity: 1;
+			background: #fff;
+		}
 
 .angular-ui-tree li:after, .angular-ui-tree li:before {
 	content: '';
@@ -4631,7 +4635,7 @@ a.link-icon.link[href]:before {
 }
 
 .angular-ui-tree li:last-child::before {
-    height: 24px;
+	height: 24px;
 }
 
 .angular-ui-tree li:after {
@@ -4642,7 +4646,7 @@ a.link-icon.link[href]:before {
 }
 
 .angular-ui-tree li.angular-ui-tree-placeholder:after {
-	width:20px;
+	width: 20px;
 }
 
 .angular-ui-tree li.parent_li.hovered > .btn-group + ol li::before {
@@ -4662,7 +4666,7 @@ a.link-icon.link[href]:before {
 }
 
 .angular-ui-tree li.parent_li.hovered .angular-ui-tree-handle {
-	border-color:#03A9F4;
+	border-color: #03A9F4;
 }
 
 
