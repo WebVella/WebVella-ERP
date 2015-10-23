@@ -186,6 +186,33 @@ namespace WebVella.ERP.Api.Models
 		public string FieldManageView { get; set; }
 	}
 
+	public class InputRecordViewSidebarRelationTreeItem : InputRecordViewSidebarItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "treeId")]
+		public Guid? TreeId { get; set; }
+
+		[JsonProperty(PropertyName = "treeName")]
+		public string TreeName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[JsonProperty(PropertyName = "fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[JsonProperty(PropertyName = "fieldRequired")]
+		public bool FieldRequired { get; set; }
+	}
+
 	////////////////////////
 	public class InputRecordViewRegion
 	{
@@ -394,6 +421,33 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "fieldManageView")]
 		public string FieldManageView { get; set; }
+	}
+
+	public class InputRecordViewRelationTreeItem : InputRecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "treeId")]
+		public Guid? TreeId { get; set; }
+
+		[JsonProperty(PropertyName = "treeName")]
+		public string TreeName { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[JsonProperty(PropertyName = "fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[JsonProperty(PropertyName = "fieldRequired")]
+		public bool FieldRequired { get; set; }
 	}
 
 	public class InputRecordViewHtmlItem : InputRecordViewItemBase
@@ -618,6 +672,39 @@ namespace WebVella.ERP.Api.Models
 		public string FieldManageView { get; set; }
 	}
 
+	public class RecordViewSidebarRelationTreeItem : RecordViewSidebarItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "treeFromRelation"; } }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "treeId")]
+		public Guid TreeId { get; set; }
+
+		[JsonProperty(PropertyName = "treeName")]
+		public string TreeName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordTree Meta { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[JsonProperty(PropertyName = "fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[JsonProperty(PropertyName = "fieldRequired")]
+		public bool FieldRequired { get; set; }
+	}
+
 	////////////////////////
 	public class RecordViewRegion
 	{
@@ -792,7 +879,7 @@ namespace WebVella.ERP.Api.Models
 	public class RecordViewRelationFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
-		public static string ItemType { get { return "fieldFromRelation"; /*Enum.GetName(typeof(RecordViewItemType), RecordViewItemType.FieldFromRelation).ToLower();*/ } }
+		public static string ItemType { get { return "fieldFromRelation"; } }
 
 		[JsonProperty(PropertyName = "relationId")]
 		public Guid RelationId { get; set; }
@@ -912,6 +999,39 @@ namespace WebVella.ERP.Api.Models
         public string FieldManageView { get; set; }
     }
 
+	public class RecordViewRelationTreeItem : RecordViewItemBase
+	{
+		[JsonProperty(PropertyName = "type")]
+		public static string ItemType { get { return "treeFromRelation"; } }
+
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "treeId")]
+		public Guid TreeId { get; set; }
+
+		[JsonProperty(PropertyName = "treeName")]
+		public string TreeName { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordTree Meta { get; set; }
+
+		[JsonProperty(PropertyName = "fieldLabel")]
+		public string FieldLabel { get; set; }
+
+		[JsonProperty(PropertyName = "fieldPlaceholder")]
+		public string FieldPlaceholder { get; set; }
+
+		[JsonProperty(PropertyName = "fieldHelpText")]
+		public string FieldHelpText { get; set; }
+
+		[JsonProperty(PropertyName = "fieldRequired")]
+		public bool FieldRequired { get; set; }
+	}
+
 	public class RecordViewHtmlItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -975,6 +1095,8 @@ namespace WebVella.ERP.Api.Models
 				return new InputRecordViewRelationViewItem();
 			if (type == "listfromrelation")
 				return new InputRecordViewRelationListItem();
+			if (type == "treefromrelation")
+				return new InputRecordViewRelationTreeItem();
 			if (type == "html")
 				return new InputRecordViewHtmlItem();
 
@@ -994,6 +1116,8 @@ namespace WebVella.ERP.Api.Models
 				return new InputRecordViewSidebarRelationViewItem();
 			if (type == "listfromrelation")
 				return new InputRecordViewSidebarRelationListItem();
+			if (type == "treefromrelation")
+				return new InputRecordViewSidebarRelationTreeItem();
 
 			return new InputRecordViewSidebarListItem();
 		}

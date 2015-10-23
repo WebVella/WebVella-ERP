@@ -96,6 +96,21 @@ namespace WebVella.ERP.Storage
 		string FieldManageView { get; set; }
 	}
 
+	public interface IStorageRecordViewSidebarRelationTreeItem : IStorageRecordViewSidebarItemBase
+	{
+		Guid RelationId { get; set; }
+
+		Guid TreeId { get; set; }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
+	}
+
 	////////////////////////
 	public interface IStorageRecordViewRegion
     {
@@ -229,6 +244,21 @@ namespace WebVella.ERP.Storage
 		string FieldLookupList { get; set; }
 
 		string FieldManageView { get; set; }
+	}
+
+	public interface IStorageRecordViewRelationTreeItem : IStorageRecordViewItemBase
+	{
+		Guid RelationId { get; set; }
+
+		Guid TreeId { get; set; }
+
+		string FieldLabel { get; set; }
+
+		string FieldPlaceholder { get; set; }
+
+		string FieldHelpText { get; set; }
+
+		bool FieldRequired { get; set; }
 	}
 }
 

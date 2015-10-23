@@ -1000,6 +1000,17 @@ namespace WebVella.ERP.Api
                     return pair.Value as string;
                 else if (field is UrlField)
                     return pair.Value as string;
+				else if (field is TreeSelectField)
+				{
+					if (pair.Value == null)
+						return null;
+					else if (pair.Value is JArray)
+						return ((JArray)pair.Value).Select(x => new Guid( ((JToken)x).Value<string>() ) ).ToList<Guid>();
+					else if (pair.Value is List<object>)
+						return ((List<object>)pair.Value).Select(x => ((Guid)x)).ToList<Guid>();
+					else
+						return pair.Value as IEnumerable<Guid>;
+				}
             }
             else
             {

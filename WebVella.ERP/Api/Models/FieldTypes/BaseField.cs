@@ -212,7 +212,12 @@ namespace WebVella.ERP
                 case FieldType.UrlField:
                     type = typeof(InputUrlField);
                     break;
-            }
+				case FieldType.TreeSelectField:
+					type = typeof(InputTreeSelectField);
+					break;
+				default:
+					throw new Exception("Invalid field type.");
+			}
 
             return type;
         }
