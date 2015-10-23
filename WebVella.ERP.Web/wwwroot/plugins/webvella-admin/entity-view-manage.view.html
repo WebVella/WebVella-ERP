@@ -335,7 +335,7 @@
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Section</button>
 		<button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Section</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 <script type="text/ng-template" id="manageRowModal.html">
@@ -371,7 +371,7 @@
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="popupData.isUpdate" ng-click="popupData.ok()">Save Row</button>
 		<button class="btn btn-primary ng-hide" ng-show="!popupData.isUpdate" ng-click="popupData.ok()">Add Row</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 
@@ -452,6 +452,6 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary ng-hide" ng-show="!popupData.error" ng-click="popupData.ok()">Add Item</button>
-		<button class="btn btn-default btn-link" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
