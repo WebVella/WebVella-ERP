@@ -116,7 +116,7 @@
         function successCallback(response) {
             if (response.object == null) {
                 $timeout(function () {
-                    $state.go("webvella-root-not-found");
+                    alert("error in response!")
                 }, 0);
             }
             else {
@@ -127,7 +127,7 @@
         function errorCallback(response) {
             if (response.object == null) {
                 $timeout(function () {
-                    $state.go("webvella-root-not-found");
+                    alert("error in response!")
                 }, 0);
             }
             else {
@@ -158,7 +158,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaAdminService.getEntityTrees($stateParams.entityName,successCallback, errorCallback);
+    	webvellaAdminService.getEntityTreesMeta($stateParams.entityName,successCallback, errorCallback);
 
     	// Return
     	$log.debug('webvellaAdmin>entity-relations> END resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));

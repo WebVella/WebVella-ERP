@@ -11,7 +11,9 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
-        .controller('ManageRelationFieldModalController', ManageRelationFieldModalController);
+        .controller('ManageRelationFieldModalController', ManageRelationFieldModalController)
+		.controller('SelectTreeNodesModalController', SelectTreeNodesModalController)
+		.controller('ManageTreeNodesModalController', ManageTreeNodesModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -47,8 +49,6 @@
 			}
 		});
 	};
-	
-
 
 	//#region << Run >> //////////////////////////////////////
 	run.$inject = ['$log'];
@@ -73,7 +73,7 @@
 		function successCallback(response) {
 			if (response.object == null) {
 				$timeout(function () {
-					$state.go("webvella-root-not-found");
+					alert("error in response!")
 				}, 0);
 			}
 			else {
@@ -84,7 +84,7 @@
 		function errorCallback(response) {
 			if (response.object == null) {
 				$timeout(function () {
-					$state.go("webvella-root-not-found");
+					alert("error in response!")
 				}, 0);
 			}
 			else {
@@ -191,12 +191,13 @@
 				resolvedCurrentView.data[0][resolvedCurrentView.meta.sidebar.items[i].dataName][0]["$tree$item_n_n_category$category_tree"] = treeData;
 			}
 		}
-		//#region
+		//#endregion
 
 		//#region << Insert json in as sidebar item >>
 		//Data should be already pushed from the previous seciton
+		resolvedCurrentView.data[0]["$tree$item_n_n_category$category_tree"] = treeData;
 		resolvedCurrentView.meta.sidebar.items.push(treeMeta);
-		//#region
+		//#endregion
 
 
 		//#endregion
@@ -846,7 +847,7 @@
 
 		//#region << Modals >>
 
-		////Relation field
+		//#region << Relation field >>
 
 		////////////////////
 		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
@@ -1127,11 +1128,106 @@
 
 		//#endregion
 
+
+		//#region << Tree select field >>
+
+		contentData.openSelectTreeNodesModal = function (item) {
+
+			var treeSelectModalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'selectTreeNodesModal.html',
+					controller: 'SelectTreeNodesModalController',
+					controllerAs: "popupData",
+					size: "lg",
+					resolve: {
+						contentData: function () {
+							return contentData;
+						},
+						selectedItem: function () {
+							return item;
+						},
+						selectedItemData: function () {
+							return contentData.selectedSidebarPage.data[item.dataName];
+						},
+						resolvedTree: function () {
+							return resolveTree(item);
+						},
+						resolvedTreeRelation: function () {
+							return resolveTreeRelation(item);
+						}
+					}
+				});
+				//On modal exit
+			treeSelectModalInstance.result.then(function (returnObject) {
+
+					// Initialize
+
+					function successCallback(response) {
+						ngToast.create({
+							className: 'success',
+							content: '<span class="go-green">Success:</span> Change applied'
+						});
+						webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+					}
+
+					function errorCallback(response) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> ' + response.message,
+							timeout: 7000
+						});
+					}
+					webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				});
+		}
+
+		//Resolve function tree
+		var resolveTree = function (item) {
+			// Initialize
+			var defer = $q.defer();
+
+			// Process
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.reject();
+			}
+			function successCallback(response) {
+				defer.resolve(response.object);
+			}
+
+			webvellaAdminService.getRecordsByTreeName(item.treeName, item.entityName, successCallback, errorCallback);
+
+			return defer.promise;
+		}
+
+		var resolveTreeRelation = function (item) {
+			// Initialize
+			var response = null;
+
+			for (var i = 0; i < contentData.relationsList.length; i++) {
+				if (contentData.relationsList[i].id == item.relationId) {
+					response = contentData.relationsList[i];
+					break;
+				}
+			}
+
+			return response;
+
+		}
+		//#endregion
+
+		//#endregion
+
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 
 	//#region < Modal Controllers >
+	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
 	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
@@ -1397,8 +1493,80 @@
 
 		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
+	//#endregion 
 
+	//#region << Select Tree >>
+	SelectTreeNodesModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedTree',
+        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$uibModal'];
+	function SelectTreeNodesModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedTree,
+			selectedItem, resolvedTreeRelation, selectedItemData, webvellaAdminService, ngToast, $timeout, $state, $uibModal) {
+		var popupData = this;
 
+		popupData.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+		//#region << Manage tree modal >>
+		//#region << Tree select field >>
+
+		popupData.openManageTreeNodesModal = function () {
+
+			var treeManageModalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageTreeNodesModal.html',
+				controller: 'ManageTreeNodesModalController',
+				controllerAs: "popupData",
+				size: "lg",
+				resolve: {
+					parentData: function () {
+						return popupData;
+					},
+					parentInstance: function () {
+						return $modalInstance;
+					}
+				}
+			});
+			//On modal exit
+			treeManageModalInstance.result.then(function (returnObject) {
+
+				// Initialize
+
+				function successCallback(response) {
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> Change applied'
+					});
+					webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+				}
+
+				function errorCallback(response) {
+					ngToast.create({
+						className: 'error',
+						content: '<span class="go-red">Error:</span> ' + response.message,
+						timeout: 7000
+					});
+				}
+				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+			});
+		}
+		//#endregion
+
+	};
+	//#endregion
+
+	//#region << Manage Tree >>
+	ManageTreeNodesModalController.$inject = ['parentData', '$modalInstance', '$log', '$q', '$stateParams', 'parentInstance',
+        'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	function ManageTreeNodesModalController(parentData, $modalInstance, $log, $q, $stateParams, parentInstance,
+			webvellaAdminService, ngToast, $timeout, $state) {
+		var popupData = this;
+
+		popupData.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+
+	};
+	//#endregion
 
 	//#endregion
 
