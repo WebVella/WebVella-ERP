@@ -72,10 +72,10 @@
 				<tr ng-repeat="tree in contentData.trees | filter: contentData.search track by tree.id">
 					<td class="actions">
 						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}">
-							<i class="fa fa-eye"></i>
+							<i class="fa fa-pencil"></i>
 						</a>
 						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}/manage">
-							<i class="fa fa-pencil"></i>
+							<i class="fa fa-sitemap"></i>
 						</a>
 					</td>
 					<td>{{::tree.name}}</td>

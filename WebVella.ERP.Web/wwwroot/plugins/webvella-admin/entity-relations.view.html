@@ -115,7 +115,8 @@
                     <div class="form-group">
                         <label for="type">Relation type</label>
                         <select class="form-control" ng-model="popupData.relation.relationType" name="relationType" ng-disabled="popupData.relation.id != null"
-                                ng-options="relation.key as relation.name for relation in popupData.relationTypeDict"></select>
+                                ng-options="relation.key as relation.name for relation in popupData.relationTypeDict"
+								ng-change="popupData.relationTypeChanged()"></select>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -128,7 +129,7 @@
                         <label class="required" for="entityName">Name</label>
                         <input ng-model="popupData.relation.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-disabled="popupData.relation.id != null" ng-model-options="{allowInvalid:true}">
-                        <div class="error" ng-show="createRelation.name.$touched && createRelation.name.$dirty && createRelation.name.$invalid || popupData.nameError">
+                        <div class="error ng-hide" ng-show="createRelation.name.$touched && createRelation.name.$dirty && createRelation.name.$invalid || popupData.nameError">
                             <small class="error" ng-show="createRelation.name.$error.required && !popupData.nameError">
                                 required field
                             </small>
@@ -162,7 +163,7 @@
                         <label class="required" for="label">Label</label>
                         <input ng-model="popupData.relation.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
                                required ng-model-options="{allowInvalid:true}">
-                        <div class="error" ng-show="createRelation.label.$touched && createRelation.label.$dirty && createRelation.label.$invalid || popupData.labelError">
+                        <div class="error ng-hide" ng-show="createRelation.label.$touched && createRelation.label.$dirty && createRelation.label.$invalid || popupData.labelError">
                             <small class="error" ng-show="createRelation.label.$error.required && !popupData.labelError">
                                 Entity label is required.
                             </small>
@@ -176,7 +177,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : popupData.descriptionError }">
                         <label for="description">Description</label>
                         <input ng-model="popupData.relation.description" type="text" class="form-control" id="description" name="description" placeholder="note to self or other admins" ng-model-options="{allowInvalid:true}"/>
-                        <div class="error" ng-show="createRelation.description.$touched && createRelation.description.$dirty && createRelation.description.$invalid || popupData.descriptionError">
+                        <div class="error ng-hide" ng-show="createRelation.description.$touched && createRelation.description.$dirty && createRelation.description.$invalid || popupData.descriptionError">
                             <small class="error" ng-show="popupData.descriptionError">
                                 {{popupData.descriptionMessage}}
                             </small>
@@ -204,7 +205,7 @@
                                 ng-model="popupData.selectedOriginField"
                                 ng-options="field as field.name for field in popupData.selectedOriginEntity.fields"
                                 ng-change="popupData.changeField()" ng-show="popupData.relation.id == null"></select>
-                        <small class="error" ng-show="popupData.fieldsDuplicatedError">
+                        <small class="error ng-hide" ng-show="popupData.fieldsDuplicatedError">
                             Target and Origin fields cannot match
                         </small>
                         <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedOriginFieldLabel}}</p>
@@ -230,10 +231,10 @@
                                 ng-model="popupData.selectedTargetField"
                                 ng-options="field as field.name for field in popupData.selectedTargetEntity.fields"
                                 ng-change="popupData.changeField()" ng-show="popupData.relation.id == null"></select>
-                        <small class="error" ng-show="popupData.fieldsDuplicatedError">
+                        <small class="error ng-hide" ng-show="popupData.fieldsDuplicatedError">
                             Target and Origin fields cannot match
                         </small>
-                        <small class="error" ng-show="(popupData.relation.relationType == 1 || popupData.relation.relationType == 2) && popupData.selectedTargetField.name ==  'id'">
+                        <small class="error ng-hide" ng-show="(popupData.relation.relationType == 1 || popupData.relation.relationType == 2) && popupData.selectedTargetField.name ==  'id'">
                             The Id cannot be a target field, when the relation type is "One to one" or "One to many"
                         </small>
                         <p class="form-control-static ng-hide" ng-show="popupData.relation.id != null">{{popupData.selectedTargetFieldLabel}}</p>
@@ -245,7 +246,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button ng-show="!popupData.relation.system && popupData.relation.id != null" class="btn btn-link pull-left go-red" ng-click="popupData.deleteRelationModal()">[ Delete relation ]</button>
+        <button ng-show="!popupData.relation.system && popupData.relation.id != null" class="btn btn-link pull-left go-red  ng-hide" ng-click="popupData.deleteRelationModal()">[ Delete relation ]</button>
         <button class="btn btn-primary ng-hide" ng-show="popupData.relation.id != null" ng-click="popupData.ok()"><i class="fa fa-fw fa-save"></i>Save Relation</button>
         <button class="btn btn-success ng-hide" ng-show="popupData.relation.id == null" ng-click="popupData.ok()"><i class="fa fa-fw fa-plus"></i>Create Relation</button>
         <button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>

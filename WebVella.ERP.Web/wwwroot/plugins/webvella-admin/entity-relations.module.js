@@ -277,7 +277,7 @@
         var popupData = this;
         popupData.modalInstance = $modalInstance;
         if (managedRelation === null) {
-            popupData.relation = webvellaAdminService.initRelation();
+        	popupData.relation = webvellaAdminService.initRelation();
         }
         else {
             popupData.relation = fastCopy(managedRelation);
@@ -367,23 +367,58 @@
             entity.name = popupData.entities[i].name;
             entity.label = popupData.entities[i].label;
             entity.enabled = true;
-            entity.fields = [];
+            entity.fields11 = [];
+            entity.fields1n = [];
+            entity.fieldsnn = [];
             for (var j = 0; j < popupData.entities[i].fields.length; j++) {
                 if (popupData.entities[i].fields[j].fieldType === 16) {
-                    var field = {};
-                    //Add the field only if it is not already a target for a relation
-                    if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) === -1) {
-                        field.id = popupData.entities[i].fields[j].id;
-                        field.name = popupData.entities[i].fields[j].name;
-                        field.label = popupData.entities[i].fields[j].label;
-                        field.required = popupData.entities[i].fields[j].required;
-                        field.unique = popupData.entities[i].fields[j].unique;
-                        entity.fields.push(field);
+                	var field = {};
+                	field.id = popupData.entities[i].fields[j].id;
+                	field.name = popupData.entities[i].fields[j].name;
+                	field.label = popupData.entities[i].fields[j].label;
+                	field.required = popupData.entities[i].fields[j].required;
+                	field.unique = popupData.entities[i].fields[j].unique;
+
+                	//Eligible for 1:1 relation. Conditions:
+                	//** - target should not be used by another 
+					//** - id field cannot be target
+                	if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) === -1 &&
+						popupData.entities[i].fields[j].name != "id") {
+                		entity.fields11.push(field);
+                	}
+
+                	//Eligible for 1:N relation. Conditions:
+                	//** - target should not be used by another 
+                	//** - id field cannot be target
+                	if (popupData.targetedFields.indexOf(popupData.entities[i].fields[j].id) === -1 &&
+						popupData.entities[i].fields[j].name != "id") {
+                        entity.fields1n.push(field);
                     }
+
+                	//Eligible for 1:N relation. Conditions:
+                	//** - target should be unique and required 
+                	if (field.required && field.unique) {
+                		entity.fieldsnn.push(field);
+                	}
                 }
             }
             //Add entity only if it has more than one field 
-            if (entity.fields.length > 0) {
+            if (entity.fields11.length > 0 || entity.fields1n.length > 0 || entity.fieldsnn.length > 0) {
+            	entity.fields11 = entity.fields11.sort(function (a, b) {
+            		if (a.name < b.name) return -1;
+            		if (a.name > b.name) return 1;
+            		return 0;
+            	});
+            	entity.fields1n = entity.fields1n.sort(function (a, b) {
+            		if (a.name < b.name) return -1;
+            		if (a.name > b.name) return 1;
+            		return 0;
+            	});
+            	entity.fieldsnn = entity.fieldsnn.sort(function (a, b) {
+            		if (a.name < b.name) return -1;
+            		if (a.name > b.name) return 1;
+            		return 0;
+            	});
                 popupData.eligibleTargetEntities.push(entity);
             }
         }
@@ -393,6 +428,16 @@
             if (a.name > b.name) return 1;
             return 0;
         });
+
+
+    	/////// Relation type changed
+        popupData.relationTypeChanged = function () {
+			// Null the entity selections as on the relation type depend what kind of fields can be selected, and this is calculated on entity select change
+        	popupData.selectedOriginEntity = null;
+        	popupData.selectedOriginField = null;
+        	popupData.selectedTargetEntity = null;
+        	popupData.selectedTargetField = null;
+        }
 
         ///////
         popupData.changeOriginEntity = function (newEntityModel) {
@@ -421,21 +466,28 @@
 
         //////
         popupData.changeTargetEntity = function (newEntityModel) {
-            newEntityModel.fields = newEntityModel.fields.sort(function (a, b) {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-                return 0;
-            });
-
-            popupData.selectedTargetField = newEntityModel.fields[0];
-            if (newEntityModel.fields[0].name == "id" && (popupData.relation.relationType == 1 || popupData.relation.relationType == 2)) {
-                if (newEntityModel.fields.length > 1) { // if there are more fields than just the id
-                    popupData.selectedTargetField = newEntityModel.fields[1];
-                }
-                else {
-                    popupData.selectedTargetField = null;
-                }
-            }
+        	popupData.selectedTargetField = null;
+        	popupData.selectedTargetEntity.fields = [];
+        	switch (popupData.relation.relationType) {
+        		case 1: //1:1 relation
+        			if (newEntityModel.fields11.length > 0) {
+        				popupData.selectedTargetField = newEntityModel.fields11[0];
+        				popupData.selectedTargetEntity.fields = newEntityModel.fields11;
+        			}
+        			break;
+        		case 2: //1:N relation
+        			if (newEntityModel.fields1n.length > 0) {
+        				popupData.selectedTargetField = newEntityModel.fields1n[0];
+        				popupData.selectedTargetEntity.fields = newEntityModel.fields1n;
+        			}
+        			break;
+        		case 3: //N:N relation
+        			if (newEntityModel.fieldsnn.length > 0) {
+        				popupData.selectedTargetField = newEntityModel.fieldsnn[0];
+        				popupData.selectedTargetEntity.fields = newEntityModel.fieldsnn;
+        			}
+        			break;
+        	}
 
             popupData.selectedTargetFieldEnabled = true;
             if ((popupData.relation.relationType != 3) && popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
