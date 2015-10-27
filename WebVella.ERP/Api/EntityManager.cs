@@ -2329,6 +2329,7 @@ namespace WebVella.ERP.Api
 													Entity relEntity = GetEntityByTreeId(((RecordViewRelationTreeItem)item).TreeId, entities);
 													if (relEntity != null)
 													{
+														((RecordViewRelationTreeItem)item).EntityId = relEntity.Id;
 														((RecordViewRelationTreeItem)item).EntityName = relEntity.Name;
 														((RecordViewRelationTreeItem)item).EntityLabel = relEntity.Label;
 														((RecordViewRelationTreeItem)item).EntityLabelPlural = entity.LabelPlural;
@@ -2340,6 +2341,7 @@ namespace WebVella.ERP.Api
 													RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordViewRelationTreeItem)item).TreeId);
 													if (tree != null)
 													{
+														
 														((RecordViewRelationTreeItem)item).DataName = string.Format("$tree${0}${1}", ((RecordViewRelationTreeItem)item).RelationName, tree.Name);
 														((RecordViewRelationTreeItem)item).TreeName = tree.Name;
 														((RecordViewRelationTreeItem)item).Meta = tree;
@@ -2510,7 +2512,7 @@ namespace WebVella.ERP.Api
 									node.Id = (valuePair.Value as Guid?) ?? Guid.Empty;
 
 									valuePair = recData.SingleOrDefault(x => x.Key == parentIdField.Name);
-									node.ParentId = (valuePair.Value as Guid?) ?? Guid.Empty;
+									node.ParentId = valuePair.Value as Guid?;
 
 									valuePair = recData.SingleOrDefault(x => x.Key == nameField.Name);
 									node.Name = (valuePair.Value ?? string.Empty).ToString();
