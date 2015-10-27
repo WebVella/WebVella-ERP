@@ -2378,7 +2378,7 @@ namespace WebVella.ERP.Web.Controllers
 					}
 				}
 
-				foreach (var item in items) 
+				foreach (var item in items)
 				{
 					if (item is RecordViewFieldItem)
 					{
@@ -2425,10 +2425,36 @@ namespace WebVella.ERP.Web.Controllers
 						Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
 						Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
-						string qFieldName = string.Format("{0}{1},", relName, relField.Name);
+						var treeId = (item as RecordViewRelationTreeItem).TreeId;
+						RecordTree tree = relEntity.RecordTrees.Single(x => x.Id == treeId);
 
-						if (!queryFields.Contains(qFieldName))
-							queryFields += qFieldName;
+						var relIdField = relEntity.Fields.Single(x => x.Name == "id");
+
+						List<Guid> fieldIdsToInclude = new List<Guid>();
+						fieldIdsToInclude.AddRange(tree.NodeObjectProperties);
+
+						if (!fieldIdsToInclude.Contains(relIdField.Id))
+							fieldIdsToInclude.Add(relIdField.Id);
+
+						if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
+							fieldIdsToInclude.Add(tree.NodeNameFieldId);
+
+						if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
+							fieldIdsToInclude.Add(tree.NodeLabelFieldId);
+
+						if (!fieldIdsToInclude.Contains(relField.Id))
+							fieldIdsToInclude.Add(relField.Id);
+
+						foreach (var fieldId in fieldIdsToInclude)
+						{
+							var f = relEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
+							if (f != null)
+							{
+								string qFieldName = string.Format("{0}{1},", relName, f.Name);
+								if (!queryFields.Contains(qFieldName))
+									queryFields += qFieldName;
+							}
+						}
 
 						//always add target field in query, its value may be required for relative view and list
 						Field field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
@@ -2666,19 +2692,6 @@ namespace WebVella.ERP.Web.Controllers
 
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							dataRecord[((RecordViewRelationTreeItem)item).DataName] = relatedRecords;
-							//TODO implement
-							//List<QueryObject> queries = new List<QueryObject>();
-							//foreach (var relatedRecord in relatedRecords)
-							//	queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
-
-							//if (queries.Count > 0)
-							//{
-							//	QueryObject subQueryObj = EntityQuery.QueryOR(queries.ToArray());
-							//	List<EntityRecord> subResult = GetTreeRecords(entities, relEntity, ((RecordViewRelationTreeItem)item).TreeName, queryObj: subQueryObj);
-							//	dataRecord[((RecordViewRelationTreeItem)item).DataName] = subResult;
-							//}
-							//else
-							//	dataRecord[((RecordViewRelationListItem)item).DataName] = new List<object>();
 						}
 						else if (item is RecordViewRelationListItem)
 						{
@@ -3469,6 +3482,15 @@ namespace WebVella.ERP.Web.Controllers
 
 		#endregion
 
+
+		//[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/create_sample_item_category_test")]
+		//public IActionResult Rumen()
+		//{
+		//	QueryResponse result = recMan.CreateRelationManyToManyRecord( new Guid("20f46732-d602-4e43-83cd-f59ba90e49f8"),
+		//			 new Guid("23e5e1c5-bfb5-45a3-b7bf-7999967582e0"),
+		//			 new Guid("18729619-c90b-43b7-a74b-a0589df6edbc") );
+		//	return Json(new { resut = "ok" } );
+		//}
 	}
 }
 
