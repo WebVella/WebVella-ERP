@@ -3013,7 +3013,7 @@ namespace WebVella.ERP.Web.Controllers
 			queryFields += "id";
 
 			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
-			foreach (var rootNode in tree.RootNodes)
+			foreach (var rootNode in tree.RootNodes.OrderBy(x=>x.Name))
 			{
 				List<ResponseTreeNode> children = GetTreeNodeChildren(treeEntity.Name, queryFields, treeIdField.Name,
 									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit );
@@ -3057,7 +3057,7 @@ namespace WebVella.ERP.Web.Controllers
 				});
 			}
 
-			return nodes;
+			return nodes.OrderBy(x => x.Name).ToList();
 		}
 
 		#endregion
