@@ -2354,9 +2354,8 @@ namespace WebVella.ERP.Web.Controllers
 			return resultDataList;
 		}
 
-
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
-		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
+		public  IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
@@ -2826,7 +2825,7 @@ namespace WebVella.ERP.Web.Controllers
 							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords; 
+							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords;
 							//TODO implement
 							//List<QueryObject> queries = new List<QueryObject>();
 							//foreach (var relatedRecord in relatedRecords)
@@ -2910,6 +2909,155 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			return resultDataList;
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/tree/{treeName}")]
+		public IActionResult GetTreeRecords(string entityName, string treeName)
+		{
+			List<Entity> entities = entityManager.ReadEntities().Object.Entities;
+
+			RecordTreeRecordResponse response = new RecordTreeRecordResponse();
+			response.Message = "Success";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = new RecordTreeRecord();
+
+			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+
+			if (entity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such name does not exist!";
+				response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+				return DoResponse(response);
+			}
+
+			RecordTree tree = entity.RecordTrees.SingleOrDefault(x => x.Name == treeName);
+			if (tree == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Tree with such name does not exist!";
+				response.Errors.Add(new ErrorModel("treeName", treeName, "Tree with such name does not exist!"));
+				return DoResponse(response);
+			}
+
+
+		
+
+			bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+			if (!hasPermisstion)
+			{
+				response.Success = false;
+				response.Message = "Trying to read records from entity '" + entity.Name + "' with no read access.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return DoResponse(response);
+			}
+			try
+			{
+				List<EntityRelation> relationList = new EntityRelationManager(Storage).Read().Object ?? new List<EntityRelation>();
+				response.Object.Data = GetTreeRecords( entities,relationList,tree);
+				response.Object.Meta = tree;
+			}
+			catch (Exception ex)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
+		
+			return DoResponse(response);
+		}
+
+		private List<ResponseTreeNode> GetTreeRecords(List<Entity> entities, List<EntityRelation> relationList, RecordTree tree)
+		{
+			EntityRelation relation = relationList.FirstOrDefault(r => r.Id == tree.RelationId);
+
+			Guid treeEntityId = relation.OriginEntityId;
+			Guid treeRelFieldId = relation.OriginFieldId;
+
+			Entity treeEntity = entities.FirstOrDefault(e => e.Id == treeEntityId);
+			Field treeIdField = treeEntity.Fields.FirstOrDefault(f => f.Id == treeRelFieldId);
+			Field treeParrentField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeParentIdFieldId);
+			Field nameField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeNameFieldId);
+			Field labelField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeLabelFieldId);
+
+			var relIdField = treeEntity.Fields.Single(x => x.Name == "id");
+
+			List<Guid> fieldIdsToInclude = new List<Guid>();
+
+			if (!fieldIdsToInclude.Contains(treeIdField.Id))
+				fieldIdsToInclude.Add(treeIdField.Id);
+
+			if (!fieldIdsToInclude.Contains(treeParrentField.Id))
+				fieldIdsToInclude.Add(treeParrentField.Id);
+
+			if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
+				fieldIdsToInclude.Add(tree.NodeNameFieldId);
+
+			if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
+				fieldIdsToInclude.Add(tree.NodeLabelFieldId);
+
+			string queryFields = string.Empty;
+			foreach (var fieldId in fieldIdsToInclude)
+			{
+				var f = treeEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
+				if (f != null)
+				{
+					if (!queryFields.Contains(f.Name))
+						queryFields += (f.Name + ",");
+				}
+			}
+			queryFields += "id";
+
+			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
+			foreach (var rootNode in tree.RootNodes)
+			{
+				List<ResponseTreeNode> children = GetTreeNodeChildren(treeEntity.Name, queryFields, treeIdField.Name,
+									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit );
+
+				rootNodes.Add(new ResponseTreeNode
+				{
+					RecordId = rootNode.RecordId,
+					Id = rootNode.Id.Value,
+					ParentId = rootNode.ParentId,
+					Name = rootNode.Name,
+					Label = rootNode.Label,
+					Nodes = children
+				});
+
+			}
+
+			return rootNodes;
+		}
+
+		private List<ResponseTreeNode> GetTreeNodeChildren(string entityName, string fields, string idFieldName, string parentIdFieldName,
+				string nameFieldName, string labelFieldName, Guid? nodeId, int depth = 1 , int maxDepth = 20 )
+		{
+			if (depth >= maxDepth)
+				return new List<ResponseTreeNode>();
+
+			var query = EntityQuery.QueryEQ(parentIdFieldName, nodeId);
+			EntityQuery eq = new EntityQuery(entityName, fields, query);
+			RecordManager recMan = new RecordManager(service);
+			var records = recMan.Find(eq).Object.Data;
+			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
+			foreach (var record in records)
+			{
+				nodes.Add(new ResponseTreeNode
+				{
+					RecordId = (Guid)record["id"],
+					Id = (Guid)record[idFieldName],
+					ParentId = (Guid?)record[parentIdFieldName],
+					Name = record[nameFieldName]?.ToString(),
+					Label = record[labelFieldName]?.ToString(),
+					Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName, (Guid)record[idFieldName], ++depth, maxDepth)
+				});
+			}
+
+			return nodes;
 		}
 
 		#endregion
@@ -3543,16 +3691,6 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		#endregion
-
-
-		//[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/create_sample_item_category_test")]
-		//public IActionResult Rumen()
-		//{
-		//	QueryResponse result = recMan.CreateRelationManyToManyRecord( new Guid("20f46732-d602-4e43-83cd-f59ba90e49f8"),
-		//			 new Guid("23e5e1c5-bfb5-45a3-b7bf-7999967582e0"),
-		//			 new Guid("18729619-c90b-43b7-a74b-a0589df6edbc") );
-		//	return Json(new { resut = "ok" } );
-		//}
 	}
 }
 

@@ -73,7 +73,7 @@ namespace WebVella.ERP.Api.Models
 			NodeObjectProperties = new List<Guid>();
 		}
 
-		[JsonProperty(PropertyName = "id")]
+		[JsonProperty(PropertyName = "id")] 
 		public Guid Id { get; set; }
 
 		[JsonProperty(PropertyName = "name")]
@@ -136,6 +136,42 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "recordId")]
 		public Guid RecordId { get; set; }
+	}
+
+	public class RecordTreeRecordResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public RecordTreeRecord Object { get; set; }
+	}
+
+	public class RecordTreeRecord
+	{
+		[JsonProperty(PropertyName = "data")]
+		public List<ResponseTreeNode> Data { get; set; }
+
+		[JsonProperty(PropertyName = "meta")]
+		public RecordTree Meta { get; set; }
+	}
+
+	public class ResponseTreeNode
+	{
+		[JsonProperty(PropertyName = "recordId")]
+		public Guid RecordId { get; set; }
+
+		[JsonProperty(PropertyName = "id")]
+		public Guid Id { get; set; }
+
+		[JsonProperty(PropertyName = "name")]
+		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "parentId")]
+		public Guid? ParentId { get; set; }
+
+		[JsonProperty(PropertyName = "nodes")]
+		public List<ResponseTreeNode> Nodes{ get; set; }
 	}
 
 	public class RelationTreeItem

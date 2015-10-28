@@ -248,7 +248,7 @@ namespace WebVella.ERP.Api
                 //fixes issue with ID comming from webapi request 
                 if (record["id"] is string)
                     recordId = new Guid(record["id"] as string);
-                else if (record["id"] is Guid)
+                else if (record["id"] is Guid) 
                     recordId = (Guid)record["id"];
                 else
                     throw new Exception("Invalid record id");
@@ -257,7 +257,7 @@ namespace WebVella.ERP.Api
                     throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 
                 var recRepo = erpService.StorageService.GetRecordRepository();
-                recRepo.Create(entity.Name, storageRecordData);
+                recRepo.Create(entity.Name, storageRecordData); 
 
 
                 var query = EntityQuery.QueryEQ("id", recordId);
