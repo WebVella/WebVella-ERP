@@ -12,8 +12,7 @@
         .config(config)
         .controller('WebVellaAreasRecordViewController', controller)
         .controller('ManageRelationFieldModalController', ManageRelationFieldModalController)
-		.controller('SelectTreeNodesModalController', SelectTreeNodesModalController)
-		.controller('ManageTreeNodesModalController', ManageTreeNodesModalController);
+		.controller('SelectTreeNodesModalController', SelectTreeNodesModalController);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -185,18 +184,18 @@
 		//#region << Insert json in meta view as field >>
 		
 		
-		for (var i = 0; i < resolvedCurrentView.meta.sidebar.items.length; i++) {
-			if (resolvedCurrentView.meta.sidebar.items[i].viewName == "meta") {
-				resolvedCurrentView.meta.sidebar.items[i].meta.regions[0].sections[0].rows[0].columns[0].items.push(treeMeta);
-				resolvedCurrentView.data[0][resolvedCurrentView.meta.sidebar.items[i].dataName][0]["$tree$item_n_n_category$category_tree"] = treeData;
-			}
-		}
+		//for (var i = 0; i < resolvedCurrentView.meta.sidebar.items.length; i++) {
+		//	if (resolvedCurrentView.meta.sidebar.items[i].viewName == "meta") {
+		//		resolvedCurrentView.meta.sidebar.items[i].meta.regions[0].sections[0].rows[0].columns[0].items.push(treeMeta);
+		//		resolvedCurrentView.data[0][resolvedCurrentView.meta.sidebar.items[i].dataName][0]["$tree$item_n_n_category$category_tree"] = treeData;
+		//	}
+		//}
 		//#endregion
 
 		//#region << Insert json in as sidebar item >>
 		//Data should be already pushed from the previous seciton
-		resolvedCurrentView.data[0]["$tree$item_n_n_category$category_tree"] = treeData;
-		resolvedCurrentView.meta.sidebar.items.push(treeMeta);
+		//resolvedCurrentView.data[0]["$tree$item_n_n_category$category_tree"] = treeData;
+		//resolvedCurrentView.meta.sidebar.items.push(treeMeta);
 		//#endregion
 
 
@@ -1128,7 +1127,6 @@
 
 		//#endregion
 
-
 		//#region << Tree select field >>
 
 		contentData.openSelectTreeNodesModal = function (item) {
@@ -1138,7 +1136,7 @@
 					templateUrl: 'selectTreeNodesModal.html',
 					controller: 'SelectTreeNodesModalController',
 					controllerAs: "popupData",
-					size: "lg",
+					size: "width-100p",
 					resolve: {
 						contentData: function () {
 							return contentData;
@@ -1149,11 +1147,10 @@
 						selectedItemData: function () {
 							return contentData.selectedSidebarPage.data[item.dataName];
 						},
-						resolvedTree: function () {
-							return resolveTree(item);
-						},
-						resolvedTreeRelation: function () {
-							return resolveTreeRelation(item);
+						resolvedTree: resolveTree(item),
+						resolvedTreeRelation: resolveTreeRelation(item),
+						resolvedCurrentUserPermissions: function () {
+							return resolvedCurrentUserEntityPermissions;
 						}
 					}
 				});
@@ -1227,6 +1224,7 @@
 
 
 	//#region < Modal Controllers >
+
 	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
 	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
@@ -1496,75 +1494,215 @@
 	//#endregion 
 
 	//#region << Select Tree >>
-	SelectTreeNodesModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedTree',
-        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$uibModal'];
-	function SelectTreeNodesModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedTree,
-			selectedItem, resolvedTreeRelation, selectedItemData, webvellaAdminService, ngToast, $timeout, $state, $uibModal) {
+	SelectTreeNodesModalController.$inject = ['contentData', '$modalInstance', '$rootScope','$scope', '$log', '$q', '$stateParams', 'resolvedTree',
+        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$uibModal',
+		'resolvedCurrentUserPermissions'];
+	function SelectTreeNodesModalController(contentData, $modalInstance,$rootScope,$scope, $log, $q, $stateParams, resolvedTree,
+			selectedItem, resolvedTreeRelation, selectedItemData, webvellaAdminService, ngToast, $timeout, $state, $uibModal, 
+			resolvedCurrentUserPermissions) {
 		var popupData = this;
+
+		//#region << Init >>
+		popupData.relation = fastCopy(resolvedTreeRelation);
+		popupData.currentEntity = fastCopy(contentData.currentEntity);
+		popupData.currentField = {};
+		for (var i = 0; i < popupData.currentEntity.fields.length; i++) {
+			if (popupData.currentEntity.fields[i].selectedTreeId == selectedItem.treeId) {
+				popupData.currentField = popupData.currentEntity.fields[i];
+			}
+		}
+		popupData.tree = fastCopy(resolvedTree);
+		popupData.itemMeta = fastCopy(selectedItem);
+		popupData.addButtonLoadingClass = {};
+		popupData.attachHoverEffectClass = {};
+
+		popupData.userPermissionsForTreeEntity = {};
+		for (var i = 0; i < resolvedCurrentUserPermissions.length; i++) {
+			if (resolvedCurrentUserPermissions[i].entityId == selectedItem.entityId) {
+				popupData.userPermissionsForTreeEntity = fastCopy(resolvedCurrentUserPermissions[i]);
+			}
+		}
+
+		//#endregion 
 
 		popupData.cancel = function () {
 			$modalInstance.dismiss('cancel');
 		};
 
-		//#region << Manage tree modal >>
-		//#region << Tree select field >>
 
-		popupData.openManageTreeNodesModal = function () {
+		//#region << Read only tree >>
 
-			var treeManageModalInstance = $uibModal.open({
-				animation: false,
-				templateUrl: 'manageTreeNodesModal.html',
-				controller: 'ManageTreeNodesModalController',
-				controllerAs: "popupData",
-				size: "lg",
-				resolve: {
-					parentData: function () {
-						return popupData;
-					},
-					parentInstance: function () {
-						return $modalInstance;
-					}
-				}
-			});
-			//On modal exit
-			treeManageModalInstance.result.then(function (returnObject) {
-
-				// Initialize
-
-				function successCallback(response) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> Change applied'
-					});
-					webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
-				}
-
-				function errorCallback(response) {
-					ngToast.create({
-						className: 'error',
-						content: '<span class="go-red">Error:</span> ' + response.message,
-						timeout: 7000
-					});
-				}
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
-			});
+		//#region << Node collapse >>
+		popupData.collapsedTreeNodes = [];
+		popupData.toggleNodeCollapse = function (node) {
+			var nodeIndex = popupData.collapsedTreeNodes.indexOf(node.id);
+			if (nodeIndex > -1) {
+				popupData.collapsedTreeNodes.splice(nodeIndex, 1);
+			}
+			else {
+				popupData.collapsedTreeNodes.push(node.id);
+			}
 		}
+
+		popupData.nodesToBeCollapsed = [];
+
+		function iterateCollapse(current, depth) {
+			var children = current.nodes;
+			if (children.length > 0) {
+				popupData.collapsedTreeNodes.push(current.id);
+			}
+			for (var i = 0, len = children.length; i < len; i++) {
+				iterateCollapse(children[i], depth + 1);
+			}
+		}
+
+		popupData.collapseAll = function () {
+			popupData.collapsedTreeNodes = [];
+			for (var i = 0; i < popupData.tree.data.length; i++) {
+				iterateCollapse(popupData.tree.data[i], 0);
+			}
+		}
+		popupData.expandAll = function () {
+			popupData.collapsedTreeNodes = [];
+		}
+
 		//#endregion
 
-	};
-	//#endregion
+		//#region << Node selection >>
 
-	//#region << Manage Tree >>
-	ManageTreeNodesModalController.$inject = ['parentData', '$modalInstance', '$log', '$q', '$stateParams', 'parentInstance',
-        'webvellaAdminService', 'ngToast', '$timeout', '$state'];
-	function ManageTreeNodesModalController(parentData, $modalInstance, $log, $q, $stateParams, parentInstance,
-			webvellaAdminService, ngToast, $timeout, $state) {
-		var popupData = this;
-		parentInstance.dismiss('cancel');
+		popupData.selectedTreeRecords = [];
 
-		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
-		};
+		popupData.selectableNodeIds = [];
+
+		var selectedNodesByBranch = {};
+
+		function iterateCanBeSelected(current, depth, rootNode, isInitial) {
+			var children = current.nodes;
+			var shouldBeSelectable = true;
+			//isInitial is added in order to auto collapse nodes that are more than 3 children
+			if (isInitial && children.length > 3) {
+				popupData.collapsedTreeNodes.push(current.id);
+			}
+			//Case: selection type
+			switch (popupData.currentField.selectionType) {
+				case "single-select":
+					if (popupData.selectedTreeRecords && popupData.selectedTreeRecords.length > 0 && popupData.selectedTreeRecords[0] != current.recordId) {
+						shouldBeSelectable = false;
+					}
+					break;
+				case "multi-select":
+					break;
+				case "single-branch-select":
+					if (selectedNodesByBranch[rootNode.id] && selectedNodesByBranch[rootNode.id].length > 0 && selectedNodesByBranch[rootNode.id][0] != current.id) {
+						shouldBeSelectable = false;
+					}
+					break;
+			}
+
+			switch (popupData.currentField.selectionTarget) {
+				case "all":
+					break;
+				case "leaves":
+					//Check if the node is not selected
+					var leaveCheckIndex = popupData.selectedTreeRecords.indexOf(current.recordId);
+					if (children.length > 0 && leaveCheckIndex == -1) {
+						shouldBeSelectable = false;
+					}
+					break;
+			}
+
+			if (shouldBeSelectable) {
+				popupData.selectableNodeIds.push(current.id);
+			}
+
+			for (var i = 0, len = children.length; i < len; i++) {
+				iterateCanBeSelected(children[i], depth + 1, rootNode, isInitial);
+			}
+		}
+
+		popupData.regenerateCanBeSelected = function (isInitial) {
+			//isInitial is added in order to auto collapse nodes that are more than 3 children
+			popupData.selectableNodeIds = [];
+			for (var i = 0; i < popupData.tree.data.length; i++) {
+				iterateCanBeSelected(popupData.tree.data[i], 0, popupData.tree.data[i], isInitial);
+			}
+		}
+
+
+
+		popupData.toggleNodeSelection = function (node) {
+			var nodeIndex = popupData.selectedTreeRecords.indexOf(node.recordId);
+			var recordsToBeAttached = [];
+			var recordsToBeDettached = [];			
+			function createRelationChangeSuccessCallback(response) {
+				popupData.selectedTreeRecords.push(node.recordId);
+				//Add to the branch selected object
+				var nodeRootBranchId = node.branch[0];
+				if (selectedNodesByBranch[nodeRootBranchId]) {
+					selectedNodesByBranch[node.branch[0]].push(node.id);
+				}
+				else {
+					selectedNodesByBranch[node.branch[0]] = [];
+					selectedNodesByBranch[node.branch[0]].push(node.id);
+				}
+				popupData.regenerateCanBeSelected(false);
+			}
+			function removeRelationChangeSuccessCallback(response) {
+				popupData.selectedTreeRecords.splice(nodeIndex, 1);
+				var nodeRootBranchId = node.branch[0];
+
+				if (selectedNodesByBranch[nodeRootBranchId]) {
+					var selectedIndex = selectedNodesByBranch[nodeRootBranchId].indexOf(node.id)
+					selectedNodesByBranch[node.branch[0]].splice(selectedIndex, 1);
+				}
+				popupData.regenerateCanBeSelected(false);
+			}
+			function applyRelationChangeErrorCallback(response) { }
+			//Node should be unselected. Relations should be severed
+			if (nodeIndex > -1) {
+				recordsToBeDettached.push($stateParams.recordId);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+			}
+				//Node should be selected. Relations should be created
+			else {
+				recordsToBeAttached.push($stateParams.recordId);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+			}
+		}
+
+		popupData.regenerateCanBeSelected(true);
+
+		popupData.clearSelection = function () {
+			popupData.selectedTreeRecords = [];
+			popupData.regenerateCanBeSelected(false);
+		}
+
+		//#endregion
+
+		//#region << Register toggle node events >>
+
+		//This event is later used by the recursive directive that follows
+		////READY hook listeners
+		var toggleTreeNodeSelectedDestructor = $rootScope.$on("webvellaAdmin-toggleTreeNode-selected", function (event, data) {
+			popupData.toggleNodeSelection(data);
+		})
+
+		var toggleTreeNodeCollapsedDestructor = $rootScope.$on("webvellaAdmin-toggleTreeNode-collapsed", function (event, data) {
+			popupData.toggleNodeCollapse(data);
+		})
+
+		////DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
+		$scope.$on("$destroy", function () {
+			toggleTreeNodeSelectedDestructor();
+			toggleTreeNodeCollapsedDestructor();
+		});
+
+
+
+		//#endregion
+
+		//#endregion 
+
 
 	};
 	//#endregion
