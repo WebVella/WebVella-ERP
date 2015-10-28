@@ -135,72 +135,6 @@
 		contentData.stateParams = $stateParams;
 		contentData.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
 
-		//#region << Dummy content for test - Remove afterwards >>
-
-		//#region << Tree meta >>
-		var treeMeta = {
-			dataName: "$tree$item_n_n_category$category_tree",
-			entityId: guid(),
-			entityLabel: "Category",
-			entityLabelPlural: "Categories",
-			entityName: "category",
-			fieldHelpText: null,
-			fieldLabel: "Categories",
-			fieldPlaceholder: null,
-			fieldRequired: false,
-			treeId: guid(),
-			treeName: "category_tree",
-			relationDirection: "origin-target",
-			relationId: guid(),
-			relationName: "item_n_n_category",
-			type: "treeFromRelation"
-		};
-
-		var originalTreeMeta = { "id": "2c93028d-fef5-4763-86e6-df37adc438a8", "name": "test", "label": "tezst", "default": false, "system": false, "cssClass": "", "iconName": "", "relationId": "460e699c-6624-4238-bb17-12243cf5d56b", "depthLimit": 5, "nodeParentIdFieldId": "16672229-1694-468e-a363-c80effffe5d1", "nodeIdFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "nodeNameFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "nodeLabelFieldId": "5df6bba4-061b-41ce-bf39-8f6b50fd023d", "rootNodes": [], "nodeObjectProperties": ["5df6bba4-061b-41ce-bf39-8f6b50fd023d", "16672229-1694-468e-a363-c80effffe5d1"] };
-		treeMeta.meta = originalTreeMeta;
-		//#endregion
-
-		//#region << Tree Data >>
-		var treeData = [];
-		var category1 = {
-			"id": guid(),
-			"recordId": guid(),
-			"name": "clothes",
-			"label": "Clothes",
-			"parentId": guid()
-		};
-		var category2 = {
-			"id": guid(),
-			"recordId": guid(),
-			"name": "shoes",
-			"label": "Shoes",
-			"parentId": guid()
-		};
-
-		treeData.push(category1);
-		treeData.push(category2);
-		//#endregion
-
-		//#region << Insert json in meta view as field >>
-		
-		
-		//for (var i = 0; i < resolvedCurrentView.meta.sidebar.items.length; i++) {
-		//	if (resolvedCurrentView.meta.sidebar.items[i].viewName == "meta") {
-		//		resolvedCurrentView.meta.sidebar.items[i].meta.regions[0].sections[0].rows[0].columns[0].items.push(treeMeta);
-		//		resolvedCurrentView.data[0][resolvedCurrentView.meta.sidebar.items[i].dataName][0]["$tree$item_n_n_category$category_tree"] = treeData;
-		//	}
-		//}
-		//#endregion
-
-		//#region << Insert json in as sidebar item >>
-		//Data should be already pushed from the previous seciton
-		//resolvedCurrentView.data[0]["$tree$item_n_n_category$category_tree"] = treeData;
-		//resolvedCurrentView.meta.sidebar.items.push(treeMeta);
-		//#endregion
-
-
-		//#endregion
-
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -1128,9 +1062,7 @@
 		//#endregion
 
 		//#region << Tree select field >>
-
 		contentData.openSelectTreeNodesModal = function (item) {
-
 			var treeSelectModalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'selectTreeNodesModal.html',
@@ -1155,26 +1087,8 @@
 					}
 				});
 				//On modal exit
-			treeSelectModalInstance.result.then(function (returnObject) {
-
-					// Initialize
-
-					function successCallback(response) {
-						ngToast.create({
-							className: 'success',
-							content: '<span class="go-green">Success:</span> Change applied'
-						});
-						webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
-					}
-
-					function errorCallback(response) {
-						ngToast.create({
-							className: 'error',
-							content: '<span class="go-red">Error:</span> ' + response.message,
-							timeout: 7000
-						});
-					}
-					webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				treeSelectModalInstance.result.then(function () {
+					$state.reload();
 				});
 		}
 
@@ -1523,10 +1437,20 @@
 			}
 		}
 
+		//#region << Select the already selected nodes >>
+		popupData.selectedTreeRecords = [];
+		for (var i = 0; i < selectedItemData.length; i++) {
+			popupData.selectedTreeRecords.push(selectedItemData[i].id);
+		}
+
+
+		//#region
+
+
 		//#endregion 
 
-		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+		popupData.close = function () {
+			$modalInstance.close();
 		};
 
 
@@ -1569,8 +1493,6 @@
 		//#endregion
 
 		//#region << Node selection >>
-
-		popupData.selectedTreeRecords = [];
 
 		popupData.selectableNodeIds = [];
 
@@ -1637,23 +1559,23 @@
 			function createRelationChangeSuccessCallback(response) {
 				popupData.selectedTreeRecords.push(node.recordId);
 				//Add to the branch selected object
-				var nodeRootBranchId = node.branch[0];
+				var nodeRootBranchId = node.nodes[0];
 				if (selectedNodesByBranch[nodeRootBranchId]) {
-					selectedNodesByBranch[node.branch[0]].push(node.id);
+					selectedNodesByBranch[node.nodes[0]].push(node.id);
 				}
 				else {
-					selectedNodesByBranch[node.branch[0]] = [];
-					selectedNodesByBranch[node.branch[0]].push(node.id);
+					selectedNodesByBranch[node.nodes[0]] = [];
+					selectedNodesByBranch[node.nodes[0]].push(node.id);
 				}
 				popupData.regenerateCanBeSelected(false);
 			}
 			function removeRelationChangeSuccessCallback(response) {
 				popupData.selectedTreeRecords.splice(nodeIndex, 1);
-				var nodeRootBranchId = node.branch[0];
+				var nodeRootBranchId = node.nodes[0];
 
 				if (selectedNodesByBranch[nodeRootBranchId]) {
 					var selectedIndex = selectedNodesByBranch[nodeRootBranchId].indexOf(node.id)
-					selectedNodesByBranch[node.branch[0]].splice(selectedIndex, 1);
+					selectedNodesByBranch[node.nodes[0]].splice(selectedIndex, 1);
 				}
 				popupData.regenerateCanBeSelected(false);
 			}
@@ -1671,11 +1593,6 @@
 		}
 
 		popupData.regenerateCanBeSelected(true);
-
-		popupData.clearSelection = function () {
-			popupData.selectedTreeRecords = [];
-			popupData.regenerateCanBeSelected(false);
-		}
 
 		//#endregion
 
