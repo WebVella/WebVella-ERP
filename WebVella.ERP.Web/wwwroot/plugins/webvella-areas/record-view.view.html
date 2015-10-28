@@ -565,25 +565,26 @@
 <script type="text/ng-template" id="selectTreeNodesModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">XXX</span></h3>
+		<h3 class="modal-title">Select <span class="go-green">{{popupData.itemMeta.entityLabel}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<button ng-click="popupData.openManageTreeNodesModal()">click</button>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
-	</div>
-</script>
+		
+		<p>
+			<a ng-show="popupData.userPermissionsForTreeEntity.canUpdate" class="btn btn-default btn-sm pull-right ng-hide" href="#/admin/entities/{{::popupData.itemMeta.entityName}}/trees/{{::popupData.itemMeta.treeName}}/nodes" target="_blank"><i class="fa fa-cog go-orange"></i> manage tree</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.collapseAll()">collapse all</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.expandAll()">expand all</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.clearSelection()">clear selection</a>
+		</p>
 
-<script type="text/ng-template" id="manageTreeNodesModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Manage <span class="go-green">XXX</span></h3>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-
+		<view-tree-select class="tree"
+				   field-meta="::popupData.itemMeta"
+				   tree-meta="::popupData.tree.meta"
+				   tree-data="::popupData.tree.data"
+				   selected-tree-records="popupData.selectedTreeRecords"
+				   collapsed-tree-nodes="popupData.collapsedTreeNodes"
+				   selectable-node-ids="popupData.selectableNodeIds">
+	   </view-tree-select>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
