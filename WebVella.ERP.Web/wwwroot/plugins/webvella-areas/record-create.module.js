@@ -96,11 +96,11 @@
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 		//#endregion
 
-		//#region << Intialize current entity >>
+		//#region << Initialize current entity >>
 		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
 		//#endregion
 
-		//#region << Set enironment >> /////////////////////
+		//#region << Set environment >> /////////////////////
 
 		contentData.createViewRegion = null;
 		contentData.createView = null;

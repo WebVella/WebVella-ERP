@@ -1588,7 +1588,7 @@ ngToast
 
 	#page-content #page-text {
 		min-height: 50px;
-		padding: 1em;
+		padding: 15px;
 		position: relative;
 	}
 
@@ -2033,6 +2033,12 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .theme-brown .modal .modal-header {
 	border-bottom-color: #795548;
+}
+
+@media (min-width: 992px) {
+  .modal-width-100p {
+    width: 98%;
+  }
 }
 /*#endregion */
 
@@ -4440,21 +4446,28 @@ a.link-icon.link[href]:before {
 		}
 
 	.tree li .btn.btn-default:not(.node) {
-		background-color: #daefdb;
+		background-color: #fff;
 		border-color: #a5d6a7;
 	}
 
+	.tree li .btn.btn-success:not(.node) {
+		background-color: #daefdb;
+		color:#333;
+	}
+
 	.tree li .btn.btn-default.disabled {
-		background-color: #ffebee;
-		border-color: #ffcdd2;
+		background-color: #fff;
+		border-color:#ffcdd2;
+		color:#333;
+		opacity:1;
 	}
 
 	.tree li .btn.btn-default .fa-check {
-		color: #fff;
+		color: #ddd;
 	}
 
 	.tree li .btn.btn-default .fa-lock {
-		color: #F44336;
+		color: #ffcdd2;
 	}
 
 
@@ -4476,15 +4489,15 @@ a.link-icon.link[href]:before {
 	border-color: #4cae4c;
 }
 
-.tree li.parent_li.hovered > .btn-group + tree-view ul li::before {
+.tree li.parent_li.hovered ul li::before {
 	border-left-color: #03A9F4;
 }
 
-.tree li.parent_li.hovered > .btn-group + tree-view ul li::after {
+.tree li.parent_li.hovered ul li::after {
 	border-top-color: #03A9F4;
 }
 
-.tree li.parent_li.hovered > .btn-group + tree-view ul li .btn {
+.tree li.parent_li.hovered ul li .btn.node {
 	border: 1px solid #03A9F4;
 }
 
