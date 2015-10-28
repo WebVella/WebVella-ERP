@@ -2060,6 +2060,53 @@ namespace WebVella.ERP.Web.Controllers
 							if (((RecordListFieldItem)column).Meta.Name != "id")
 								queryFields += ((RecordListFieldItem)column).Meta.Name + ", ";
 						}
+						else if (column is RecordListRelationTreeItem)
+						{
+							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
+
+							string relName = relation != null ? string.Format("${0}.", relation.Name) : "";
+
+							Guid relEntityId = relation.OriginEntityId;
+							Guid relFieldId = relation.OriginFieldId;
+
+							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
+
+							var treeId = (column as RecordListRelationTreeItem).TreeId;
+							RecordTree tree = relEntity.RecordTrees.Single(x => x.Id == treeId);
+
+							var relIdField = relEntity.Fields.Single(x => x.Name == "id");
+
+							List<Guid> fieldIdsToInclude = new List<Guid>();
+							fieldIdsToInclude.AddRange(tree.NodeObjectProperties);
+
+							if (!fieldIdsToInclude.Contains(relIdField.Id))
+								fieldIdsToInclude.Add(relIdField.Id);
+
+							if (!fieldIdsToInclude.Contains(tree.NodeNameFieldId))
+								fieldIdsToInclude.Add(tree.NodeNameFieldId);
+
+							if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
+								fieldIdsToInclude.Add(tree.NodeLabelFieldId);
+
+							if (!fieldIdsToInclude.Contains(relField.Id))
+								fieldIdsToInclude.Add(relField.Id);
+
+							foreach (var fieldId in fieldIdsToInclude)
+							{
+								var f = relEntity.Fields.SingleOrDefault(x => x.Id == fieldId);
+								if (f != null)
+								{
+									string qFieldName = string.Format("{0}{1},", relName, f.Name);
+									if (!queryFields.Contains(qFieldName))
+										queryFields += qFieldName;
+								}
+							}
+
+							//always add target field in query, its value may be required for relative view and list
+							Field field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+							queryFields += field.Name + ", ";
+						}
 						else if (column is RecordListRelationFieldItem)
 						{
 							string targetOriginPrefix = "";
@@ -2247,6 +2294,21 @@ namespace WebVella.ERP.Web.Controllers
 						else if (column is RecordListViewItem)
 						{
 							dataRecord[column.DataName] = GetViewRecords(entities, entity, ((RecordListViewItem)column).ViewName, "id", record["id"]);
+						}
+						else if (column is RecordListRelationTreeItem)
+						{
+							EntityRelation relation = relationList.FirstOrDefault(r => r.Id == ((RecordListRelationTreeItem)column).RelationId);
+							string relName = string.Format("${0}", relation.Name);
+
+							Guid fieldId = entity.Id == relation.OriginEntityId ? relation.OriginFieldId : relation.TargetFieldId;
+							Field field = entity.Fields.FirstOrDefault(f => f.Id == fieldId);
+							Guid relEntityId = entity.Id == relation.OriginEntityId ? relation.TargetEntityId : relation.OriginEntityId;
+							Guid relFieldId = entity.Id == relation.OriginEntityId ? relation.TargetFieldId : relation.OriginFieldId;
+							Entity relEntity = entities.FirstOrDefault(e => e.Id == relEntityId);
+							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
+
+							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
+							dataRecord[((RecordListRelationTreeItem)column).DataName] = relatedRecords;
 						}
 						else if (column is RecordListRelationViewItem)
 						{
@@ -2764,7 +2826,7 @@ namespace WebVella.ERP.Web.Controllers
 							Field relField = relEntity.Fields.FirstOrDefault(f => f.Id == relFieldId);
 
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
-							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords;
+							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords; 
 							//TODO implement
 							//List<QueryObject> queries = new List<QueryObject>();
 							//foreach (var relatedRecord in relatedRecords)
