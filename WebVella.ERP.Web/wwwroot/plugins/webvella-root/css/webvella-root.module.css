@@ -4479,14 +4479,9 @@ a.link-icon.link[href]:before {
 			color: #4CAF50 !important;
 		}
 
-.btn-default:focus, .btn-default.focus {
+.tree .btn-default:focus, .tree .btn-default.focus {
 	background-color: #fff;
 	border-color: #ccc;
-}
-
-.btn-success:focus, .btn-success.focus {
-	background-color: #5cb85c;
-	border-color: #4cae4c;
 }
 
 .tree li.parent_li.hovered ul li::before {
@@ -4504,6 +4499,22 @@ a.link-icon.link[href]:before {
 .tree li.parent_li.collapsed ul {
 	display: none;
 }
+
+.tree .btn-success:focus, .tree .btn-success.focus {
+	background-color: #5cb85c;
+	border-color: #4cae4c;
+}
+
+	.tree .btn-success .delete {
+		color:#4CAF50;
+	}
+
+	.tree .btn-success:hover .delete::before {
+		content:"\f00d";
+		color:#F44336 !important;
+	}
+
+
 
 .tree li.parent_li.collapsed ul {
 	display: none;

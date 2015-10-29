@@ -574,7 +574,6 @@
 			<a ng-show="popupData.userPermissionsForTreeEntity.canUpdate" class="btn btn-default btn-sm pull-right ng-hide" href="#/admin/entities/{{::popupData.itemMeta.entityName}}/trees/{{::popupData.itemMeta.treeName}}/nodes" target="_blank"><i class="fa fa-cog go-orange"></i> manage tree</a>
 			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.collapseAll()">collapse all</a>
 			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.expandAll()">expand all</a>
-			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.clearSelection()">clear selection</a>
 		</p>
 
 		<view-tree-select class="tree"
@@ -587,6 +586,6 @@
 	   </view-tree-select>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupData.close()">Close</button>
 	</div>
 </script>

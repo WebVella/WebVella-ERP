@@ -63,8 +63,6 @@
 		}
 
 		$scope.attachHoverEffectClass = {};
-		//$scope.forceSingleSelectLock = false;
-		//$scope.forceSingleBranchSelectLock = []; //array of the root node id's of the locked branches
 
 		$scope.toggleNodeSelected = function (node) {
 			if ($scope.isNodeSelectable(node.id) || $scope.isRecordSelected(node.recordId)) {

@@ -1,13 +1,13 @@
 ﻿<ul role="tree">
 	<li role="treeitem" ng-repeat="node in treeData track by node.id"
-		ng-class="{parent_li: node.nodes.length > 1, hovered: attachHoverEffectClass[node.id], collapsed:isNodeCollapsed(node.id)}">
+		ng-class="{parent_li: node.nodes.length > 0, hovered: attachHoverEffectClass[node.id], collapsed:isNodeCollapsed(node.id)}">
 		<div class="btn-group" ng-if="::node.nodes.length == 0">
 			<a class="btn"
 			   ng-class="{'btn-success': isRecordSelected(node.recordId),'btn-default': !isRecordSelected(node.recordId),'disabled':!isNodeSelectable(node.id)}"
 			   ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
 				{{::node.label}}
 				<span ng-switch="isRecordSelected(node.recordId)">
-					<i class="fa fa-fw fa-times go-gray" ng-switch-when="true"></i>
+					<i class="fa fa-fw fa-check delete" ng-switch-when="true"></i>
 					<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
 						<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
 						<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
@@ -26,7 +26,7 @@
 			   ng-click="toggleNodeSelected(node)" href="javascript:void(0)">
 				{{::node.label}}
 				<span ng-switch="isRecordSelected(node.recordId)">
-					<i class="fa fa-fw fa-times go-gray" ng-switch-when="true"></i>
+					<i class="fa fa-fw fa-check delete" ng-switch-when="true"></i>
 					<span ng-switch="isNodeSelectable(node.id)" ng-switch-when="false">
 						<i class="fa fa-fw fa-check" ng-switch-when="true"></i>
 						<i class="fa fa-fw fa-lock" ng-switch-when="false"></i>
