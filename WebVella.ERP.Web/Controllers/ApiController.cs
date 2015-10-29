@@ -3052,7 +3052,8 @@ namespace WebVella.ERP.Web.Controllers
 			RecordManager recMan = new RecordManager(service);
 			var records = recMan.Find(eq).Object.Data;
 			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
-			foreach (var record in records)
+			depth++;
+            foreach (var record in records)
 			{
 				nodes.Add(new ResponseTreeNode
 				{
@@ -3061,7 +3062,7 @@ namespace WebVella.ERP.Web.Controllers
 					ParentId = (Guid?)record[parentIdFieldName],
 					Name = record[nameFieldName]?.ToString(),
 					Label = record[labelFieldName]?.ToString(),
-					Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName, (Guid)record[idFieldName], ++depth, maxDepth)
+					Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName, (Guid)record[idFieldName], depth, maxDepth)
 				});
 			}
 
