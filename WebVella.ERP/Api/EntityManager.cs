@@ -67,22 +67,20 @@ namespace WebVella.ERP.Api
 
 			errorList.AddRange(ValidationUtility.ValidateLabelPlural(entity.LabelPlural));
 
-			if (entity.RecordPermissions != null)
-			{
-				if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
-					errorList.Add(new ErrorModel("permissions.canRead", null, "CanRead is required! It must contains at least one item!"));
+			if (entity.RecordPermissions == null)
+				entity.RecordPermissions = new RecordPermissions();
 
-				if (entity.RecordPermissions.CanRead == null || entity.RecordPermissions.CanRead.Count == 0)
-					errorList.Add(new ErrorModel("permissions.canCreate", null, "CanCreate is required! It must contains at least one item!"));
+			if (entity.RecordPermissions.CanRead == null)
+				entity.RecordPermissions.CanRead = new List<Guid>();
 
-				if (entity.RecordPermissions.CanUpdate == null || entity.RecordPermissions.CanUpdate.Count == 0)
-					errorList.Add(new ErrorModel("permissions.canUpdate", null, "CanUpdate is required! It must contains at least one item!"));
+			if (entity.RecordPermissions.CanCreate == null)
+				entity.RecordPermissions.CanCreate = new List<Guid>();
 
-				if (entity.RecordPermissions.CanDelete == null || entity.RecordPermissions.CanDelete.Count == 0)
-					errorList.Add(new ErrorModel("permissions.canDelete", null, "CanDelete is required! It must contains at least one item!"));
-			}
-			else
-				errorList.Add(new ErrorModel("permissions", null, "Permissions is required!"));
+			if (entity.RecordPermissions.CanUpdate == null)
+				entity.RecordPermissions.CanUpdate = new List<Guid>();
+
+			if (entity.RecordPermissions.CanDelete == null)
+				entity.RecordPermissions.CanDelete = new List<Guid>();
 
 			if (string.IsNullOrWhiteSpace(entity.IconName))
 				entity.IconName = "database";
@@ -2341,7 +2339,7 @@ namespace WebVella.ERP.Api
 													RecordTree tree = relEntity.RecordTrees.FirstOrDefault(l => l.Id == ((RecordViewRelationTreeItem)item).TreeId);
 													if (tree != null)
 													{
-														
+
 														((RecordViewRelationTreeItem)item).DataName = string.Format("$tree${0}${1}", ((RecordViewRelationTreeItem)item).RelationName, tree.Name);
 														((RecordViewRelationTreeItem)item).TreeName = tree.Name;
 														((RecordViewRelationTreeItem)item).Meta = tree;
@@ -5733,7 +5731,7 @@ namespace WebVella.ERP.Api
 				if (entity.RecordTrees == null)
 					continue;
 
-                if (entity.RecordTrees.Any(l => l.Id == treeId))
+				if (entity.RecordTrees.Any(l => l.Id == treeId))
 					return entity;
 			}
 
