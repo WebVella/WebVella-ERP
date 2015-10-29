@@ -171,16 +171,14 @@
 		<div class="alert alert-info" ng-show="::contentData.records.length == 0">
 			There are no records matching your query
 		</div>
-		<ul class="pager" ng-hide="::contentData.currentPage == 1 && contentData.currentListView.pageSize > contentData.records.length">
-			<li ng-if="::contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+		<ul class="pager ng-hide" ng-hide="::contentData.currentPage == 1 && contentData.currentListView.pageSize > contentData.records.length" ng-if="::contentData.currentListView.pageSize != 0">
+			<!--<li ng-if="::contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
 			<li ng-if="::contentData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
 			<li ng-if="::contentData.currentListView.pageSize <= contentData.records.length" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 			<!--<li ng-if="::contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 		</ul>
 	</div>
 </div> 
-
-
 <script type="text/ng-template" id="setFiltersModalContent.html">
 	<div class="modal-header">
 		<h4 class="modal-title">Available filters</h4>

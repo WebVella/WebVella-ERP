@@ -224,25 +224,19 @@
         		case 1: //Auto-increment
         			if (contentData.entity.fields[i].required) {
         				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-        				if (contentData.entity.fields[i].unique) {
-        					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
-        				}
+       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
         			}
         			break;
         		case 16: //Guid
         			if (contentData.entity.fields[i].required) {
         				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-        				if (contentData.entity.fields[i].unique) {
-        					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
-        				}
+       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
         			}
         			break;
         		case 18: // Text
         			if (contentData.entity.fields[i].required) {
         				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-        				if (contentData.entity.fields[i].unique) {
-        					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
-        				}
+       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
         			}
         			break;
         	}

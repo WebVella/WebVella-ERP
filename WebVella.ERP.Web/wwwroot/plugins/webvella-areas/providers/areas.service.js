@@ -186,7 +186,7 @@
 		}
 		//1.Auto increment
 		function getAutoIncrementString(data, fieldMeta) {
-			if (!data) {
+			if (!data && data != 0) {
 				return "";
 			}
 			else if (data instanceof Array) {
@@ -260,7 +260,7 @@
 		}
 		//3.Currency
 		function getCurrencyString(data, fieldMeta) {
-			if (!data) {
+			if (!data && data != 0) {
 				return "";
 			}
 			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
@@ -457,7 +457,7 @@
 		//11.Multiselect
 		function getMultiselectString(data, fieldMeta) {
 			var generatedStringArray = [];
-			if (!data) {
+			if (!data && data != 0) {
 				return "";
 			}
 			else if (data instanceof Array) {
@@ -490,7 +490,7 @@
 		}
 		//12. Number
 		function getNumberString(data, fieldMeta) {
-			if (!data) {
+			if (!data && data != 0) {
 				return "";
 			}
 			else if (data instanceof Array) {
@@ -540,7 +540,7 @@
 		}
 		//14.Percent
 		function getPercentString(data, fieldMeta) {
-			if (!data) {
+			if (!data && data != 0) {
 				return "";
 			}
 			else if (data instanceof Array) {
