@@ -1672,6 +1672,14 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(result);
 		}
 
+		// Get an entity record list
+		// GET: api/v1/en_US/record/{entityName}/list
+		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
+		public IActionResult DeleteRecord(Guid recordId, string entityName)
+		{
+			return DoResponse(recMan.DeleteRecord(entityName, recordId));
+		}
+
 		// Get an entity records by field and regex
 		// GET: api/v1/en_US/record/{entityName}/regex
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/regex/{fieldName}")]
