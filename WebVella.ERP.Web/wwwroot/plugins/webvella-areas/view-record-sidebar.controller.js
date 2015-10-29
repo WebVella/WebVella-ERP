@@ -37,10 +37,6 @@
 			    }
 		    }
 	    }
-    	//convert stringified subscriptions to object and cycle and find the current entity
-
-		//get the selected list name
-
     	//#endregion
 
     	//Generate menu items list

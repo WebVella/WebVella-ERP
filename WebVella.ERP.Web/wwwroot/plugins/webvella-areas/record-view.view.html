@@ -17,7 +17,8 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="{{::contentData.defaultRecordView.label}}">{{::contentData.defaultRecordView.label}}</h4>
+			<h4 title="{{::contentData.defaultRecordView.label}}">{{::contentData.defaultRecordView.label}}</h4>
+			<a class="go-red" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash"></i> Delete Record</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
