@@ -89,6 +89,7 @@ function guid() {
 		serviceInstance.createRecord = createRecord;
 		serviceInstance.updateRecord = updateRecord;
 		serviceInstance.patchRecord = patchRecord;
+		serviceInstance.deleteRecord = deleteRecord;
 		serviceInstance.patchRecordDefault = patchRecordDefault;
 		serviceInstance.uploadFileToTemp = uploadFileToTemp;
 		serviceInstance.moveFileFromTempToFS = moveFileFromTempToFS;
@@ -943,6 +944,12 @@ function guid() {
 				patchRecordDefault(recordId, entityName, patchObject, successCallback, errorCallback);
 			}
 
+		}
+
+		function deleteRecord(recordId, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>deleteRecord> function called ' + moment().format('HH:mm:ss SSSS'));
+			//Make the service method pluggable
+			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 
