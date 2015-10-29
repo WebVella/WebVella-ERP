@@ -2834,19 +2834,6 @@ namespace WebVella.ERP.Web.Controllers
 
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							dataRecord[((RecordViewSidebarRelationTreeItem)item).DataName] = relatedRecords;
-							//TODO implement
-							//List<QueryObject> queries = new List<QueryObject>();
-							//foreach (var relatedRecord in relatedRecords)
-							//	queries.Add(EntityQuery.QueryEQ(relField.Name, relatedRecord[relField.Name]));
-
-							//if (queries.Count > 0)
-							//{
-							//	QueryObject subQueryObj = EntityQuery.QueryOR(queries.ToArray());
-							//	List<EntityRecord> subResult = GetTreeRecords(entities, relEntity, ((RecordViewRelationTreeItem)item).TreeName, queryObj: subQueryObj);
-							//	dataRecord[((RecordViewRelationTreeItem)item).DataName] = subResult;
-							//}
-							//else
-							//	dataRecord[((RecordViewRelationListItem)item).DataName] = new List<object>();
 						}
 						else if (item is RecordViewSidebarRelationListItem)
 						{
@@ -3020,11 +3007,18 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			queryFields += "id";
 
+			EntityQuery eq = new EntityQuery(treeEntity.Name, queryFields);
+			RecordManager recMan = new RecordManager(service);
+			var allRecords = recMan.Find(eq).Object.Data;
+
 			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
 			foreach (var rootNode in tree.RootNodes.OrderBy(x=>x.Name))
 			{
-				List<ResponseTreeNode> children = GetTreeNodeChildren(treeEntity.Name, queryFields, treeIdField.Name,
-									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit );
+				//List<ResponseTreeNode> children = GetTreeNodeChildren(treeEntity.Name, queryFields, treeIdField.Name,
+				//					 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit );
+
+				List<ResponseTreeNode> children = GetTreeNodeChildren(allRecords, treeIdField.Name,
+									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit);
 
 				rootNodes.Add(new ResponseTreeNode
 				{
@@ -3063,6 +3057,31 @@ namespace WebVella.ERP.Web.Controllers
 					Name = record[nameFieldName]?.ToString(),
 					Label = record[labelFieldName]?.ToString(),
 					Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName, (Guid)record[idFieldName], depth, maxDepth)
+				});
+			}
+
+			return nodes.OrderBy(x => x.Name).ToList();
+		}
+
+		private List<ResponseTreeNode> GetTreeNodeChildren(List<EntityRecord> allRecords, string idFieldName, string parentIdFieldName,
+				string nameFieldName, string labelFieldName, Guid? nodeId, int depth = 1, int maxDepth = 20)
+		{
+			if (depth >= maxDepth)
+				return new List<ResponseTreeNode>();
+
+			var records = allRecords.Where(x => (Guid?)x[parentIdFieldName] == nodeId).ToList();
+			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
+			depth++;
+			foreach (var record in records)
+			{
+				nodes.Add(new ResponseTreeNode
+				{
+					RecordId = (Guid)record["id"],
+					Id = (Guid)record[idFieldName],
+					ParentId = (Guid?)record[parentIdFieldName],
+					Name = record[nameFieldName]?.ToString(),
+					Label = record[labelFieldName]?.ToString(),
+					Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], depth, maxDepth)
 				});
 			}
 
