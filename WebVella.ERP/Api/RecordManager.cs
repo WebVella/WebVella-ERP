@@ -1209,10 +1209,16 @@ namespace WebVella.ERP.Api
                 }
                 else if (field is GuidField)
                 {
-                    if (obj.FieldValue != null && obj.FieldValue is string)
-                        obj.FieldValue = new Guid(obj.FieldValue as string);
+					if (obj.FieldValue != null && obj.FieldValue is string)
+					{
+						var stringGuid = obj.FieldValue as string;
+						if (!string.IsNullOrWhiteSpace(stringGuid))
+							obj.FieldValue = new Guid(stringGuid);
+						else
+							obj.FieldValue = null;
+                    }
                 }
-                else if (field is CheckboxField)
+				else if (field is CheckboxField)
                 {
                     if (obj.FieldValue != null && obj.FieldValue is string)
                         obj.FieldValue = bool.Parse(obj.FieldValue as string);

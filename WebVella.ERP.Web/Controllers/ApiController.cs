@@ -2224,7 +2224,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			QueryResponse result = recMan.Find(resultQuery);
 			if (!result.Success)
-				return resultDataList;
+				throw new Exception(result.Message);
 
 			if (list != null)
 			{
