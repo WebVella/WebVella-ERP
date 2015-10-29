@@ -56,34 +56,93 @@
 	<div id="page-text">
 
 		<!-- Nested node template -->
-		<script type="text/ng-template" id="nodes_renderer.html">
-			<div class="btn-group">
-				<span class="btn btn-default" ui-tree-handle
-					  ng-mouseenter="contentData.attachHoverEffectClass[node.id] = true" ng-mouseleave="contentData.attachHoverEffectClass[node.id] = false">
-					<i class="fa fa-fw fa-arrows"></i>
-				</span>
-				<span class="btn btn-default disabled">
-					{{node.label}}
-					<span class="btn btn-default btn-xs add-node" ng-click="contentData.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !contentData.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': contentData.addButtonLoadingClass[node.id]}"></i></span>
-					<span class="btn btn-default btn-xs delete-node" ng-click="contentData.removeNodeModal(node)"><i class="fa fa-fw fa-minus go-red"></i></span>
-				</span>
-			</div>
-			<ol ui-tree-nodes="" ng-model="node.nodes" ng-if="node.nodes.length > 0">
-				<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"
-					ng-class="{parent_li:node.nodes.length > 0, hovered: contentData.attachHoverEffectClass[node.id]}"></li>
-			</ol>
-		</script>
-
-		<div ui-tree>
-			<ol ui-tree-nodes="" ng-model="contentData.tree.data" id="tree-root">
-				<li ng-repeat="node in pluginData.tree.data track by node.id" ui-tree-node ng-include="'nodes_renderer.html'"
+		<div ui-tree ="contentData.treeOptions">
+			<ol ui-tree-nodes ng-model="contentData.tree.data" id="tree-root">
+				<li ng-repeat="node in contentData.tree.data track by node.id" ui-tree-node ng-include="'nodes_renderer.html'"
 					ng-class="{parent_li:node.nodes.length > 0, hovered: contentData.attachHoverEffectClass[node.id]}"></li>
 			</ol>
 		</div>
-
-
 	</div>
-
-
 </div>
+<script type="text/ng-template" id="nodes_renderer.html">
+	<div class="btn-group">
+		<span class="btn btn-default" ui-tree-handle 
+			  ng-mouseenter="contentData.attachHoverEffectClass[node.id] = true" ng-mouseleave="contentData.attachHoverEffectClass[node.id] = false">
+			<i class="fa fa-fw fa-arrows"></i>
+		</span>
+		<span class="btn btn-default disabled">
+			{{node.label}}
+			<span class="btn btn-default btn-xs add-node" ng-click="contentData.addNodeModal(node)"><i class="fa fa-fw" ng-class="{'fa-plus go-green': !contentData.addButtonLoadingClass[node.id], 'fa-cog fa-spin go-orange': contentData.addButtonLoadingClass[node.id]}"></i></span>
+			<span class="btn btn-default btn-xs delete-node" ng-click="contentData.removeNodeModal(node)"><i class="fa fa-fw fa-minus go-red"></i></span>
+		</span>
+	</div>
+	<ol ui-tree-nodes ng-model="node.nodes">
+		<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'"
+			ng-class="{parent_li:node.nodes.length > 0, hovered: contentData.attachHoverEffectClass[node.id]}"></li>
+	</ol>
+</script>
 
+
+<script type="text/ng-template" id="addNewTreeNodeModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">{{popupData.getRelationLabel(popupData.selectedItem.relationName)}}</span></h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div ng-hide="popupData.hasError">
+			<div ng-if="popupData.hasWarning">
+				<div class="alert alert-warning">{{popupData.warningMessage}}</div>
+			</div>
+			<div ng-if="!popupData.hasWarning">
+				<form id="filters" class="form-inline">
+					<div class="form-group">
+						<div class="input-group">
+							<input ng-model="popupData.searchQuery" type="text" class="form-control" placeholder="{{::popupData.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupData.checkForSearchEnter($event)">
+							<span class="input-group-btn">
+								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupData.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
+							</span>
+						</div>
+					</div>
+				</form>
+
+				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
+					<thead>
+						<tr>
+							<th class="actions" style="width:110px;"></th>
+							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="record in popupData.relationLookupList.data">
+							<td ng-switch="popupData.canSelectRecord(record)">
+								<a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-switch-when="true">
+									select
+								</a>
+								<span class="go-gray"  ng-switch-when="false">
+									n/a
+								</span>
+							</td>
+							<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">
+								<span ng-bind-html="::popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="alert alert-info" ng-show="popupData.relationLookupList.data.length == 0">
+					No records found
+				</div>
+				<ul class="pager" ng-if="popupData.relationLookupList.meta.pageSize > 0">
+					<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+					<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+					<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<!--<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save changes</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>

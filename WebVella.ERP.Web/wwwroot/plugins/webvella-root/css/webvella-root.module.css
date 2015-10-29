@@ -4620,8 +4620,9 @@ a.link-icon.link[href]:before {
 
 .angular-ui-tree .btn.disabled,
 .angular-ui-tree-drag .btn.disabled {
-	background: #e0f2f1;
-	border-color: #b2dfdb;
+	/*background: #e0f2f1;
+	border-color: #b2dfdb;*/
+	opacity:1;
 	color: #333;
 	padding-right: 80px;
 	position: relative;
@@ -4634,7 +4635,7 @@ a.link-icon.link[href]:before {
 	.angular-ui-tree .btn.disabled .btn-default,
 	.angular-ui-tree-drag .btn.disabled .btn-default {
 		opacity: 0.5;
-		border-color: #b2dfdb;
+		border-color: #fff;
 	}
 
 
@@ -4669,6 +4670,11 @@ a.link-icon.link[href]:before {
 	width: 25px;
 }
 
+.angular-ui-tree .btn.angular-ui-tree-handle:hover {
+	border: 1px solid #03A9F4;
+	z-index:1;
+}
+
 .angular-ui-tree li.angular-ui-tree-placeholder:after {
 	width: 20px;
 }
@@ -4681,8 +4687,9 @@ a.link-icon.link[href]:before {
 	border-top-color: #03A9F4;
 }
 
-.angular-ui-tree li.parent_li.hovered > .btn-group + ol li .btn {
+.angular-ui-tree li.parent_li.hovered > .btn-group + ol li .btn.angular-ui-tree-handle {
 	border: 1px solid #03A9F4;
+	z-index:1;
 }
 
 .angular-ui-tree > ol > li::after, .angular-ui-tree > ol > li:before {

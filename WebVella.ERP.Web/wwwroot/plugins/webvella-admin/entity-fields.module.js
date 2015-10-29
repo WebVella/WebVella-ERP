@@ -1769,7 +1769,9 @@
 					}
 				}
 			}
-			popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+			if (popupData.field.defaultValue) {
+				popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+			}
 			popupData.field.options.splice(index, 1); // remove from options
 		}
 
@@ -1789,7 +1791,8 @@
 		}
 
 		popupData.isKeyDefault = function (key) {
-			if (popupData.field.defaultValue.indexOf(key) > -1) {
+			
+			if (popupData.field.defaultValue && popupData.field.defaultValue.indexOf(key) > -1) {
 				return true;
 			} else {
 				return false;
@@ -1928,15 +1931,17 @@
 		}
 
 		popupData.uniqueGuidPropertyChecked = function (newValue) {
-			if (newValue) {
-				popupData.field.generateNewId = true;
-				popupData.uniqueGuidGenerateCheckboxEnabled = false;
-				popupData.uniqueGuidGenerateToggle(true);
-			}
-			else {
-				popupData.field.generateNewId = false;
-				popupData.uniqueGuidGenerateCheckboxEnabled = true;
-				popupData.uniqueGuidGenerateToggle(false);
+			if (popupData.field.fieldType == 16) {
+				if (newValue) {
+					popupData.field.generateNewId = true;
+					popupData.uniqueGuidGenerateCheckboxEnabled = false;
+					popupData.uniqueGuidGenerateToggle(true);
+				}
+				else {
+					popupData.field.generateNewId = false;
+					popupData.uniqueGuidGenerateCheckboxEnabled = true;
+					popupData.uniqueGuidGenerateToggle(false);
+				}
 			}
 		}
 
@@ -2089,7 +2094,9 @@
 					}
 				}
 			}
-			popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+			if (popupData.field.defaultValue) {
+				popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+			}
 			popupData.field.options.splice(index, 1); // remove from options
 		}
 
@@ -2109,7 +2116,7 @@
 		}
 
 		popupData.isKeyDefault = function (key) {
-			if (popupData.field.defaultValue.indexOf(key) > -1) {
+			if (popupData.field.defaultValue && popupData.field.defaultValue.indexOf(key) > -1) {
 				return true;
 			} else {
 				return false;
