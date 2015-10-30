@@ -4494,6 +4494,7 @@ a.link-icon.link[href]:before {
 
 .tree li.parent_li.hovered ul li .btn.node {
 	border: 1px solid #03A9F4;
+	z-index:9;
 }
 
 .tree li.parent_li.collapsed ul {
