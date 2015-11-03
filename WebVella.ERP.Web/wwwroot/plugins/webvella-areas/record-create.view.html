@@ -382,7 +382,8 @@
 										</div>
 										<!-- 17. Dropdown -->
 										<div ng-switch-when="17">
-											<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="contentData.entityData[item.dataName]"></select>
+											<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="contentData.entityData[item.dataName]"
+												ng-init="contentData.entityData[item.dataName] = item.meta.defaultValue"></select>
 											<div class="form-description" ng-hide="contentData[item.meta.name + 'Error']">
 												{{item.meta.helpText}}
 											</div>

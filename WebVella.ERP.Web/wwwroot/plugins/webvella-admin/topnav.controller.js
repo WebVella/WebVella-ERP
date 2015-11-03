@@ -20,11 +20,6 @@
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = null;
-        topnavData.navigateToDekstopBrowse = function () {
-            $timeout(function () {
-                $state.go('webvella-desktop-browse');
-            }, 0);
-        }
 
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {

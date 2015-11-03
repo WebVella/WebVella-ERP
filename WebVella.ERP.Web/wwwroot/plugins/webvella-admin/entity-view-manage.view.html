@@ -92,7 +92,7 @@
 											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 												<div class="drop-zone">
 													<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
-														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items"
+														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by $index"
 															ng-switch="::item.type">
 															<div ng-switch-when="field">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
@@ -142,7 +142,7 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search" class="form-control" style="width:100%;">
+								<input type="text" ng-model="contentData.search.name" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
@@ -374,7 +374,34 @@
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
-
+<script type="text/ng-template" id="manageHtmlStringModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">HTML string contents</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupData.error">{{popupData.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupData.error">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.content.$invalid && !manageForm.content.$pristine || popupData.contentError}">
+						<label class="control-label">HTML contents</label>
+						<textarea class="form-control" ng-model="popupData.field.content" name="content" ng-model-options="{allowInvalid:true}"></textarea>
+						<div class="error ng-hide" ng-show="manageForm.content.$touched && manageForm.content.$dirty && manageForm.content.$invalid || popupData.contentError">
+							<small class="error" ng-show="popupData.contentError">
+								{{popupData.contentErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Add Item</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
 <script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
