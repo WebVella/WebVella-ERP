@@ -435,8 +435,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.close(popupData.relationLookupList.data[6]);
-			//$modalInstance.dismiss('cancel');
+			$modalInstance.dismiss('cancel');
 		};
 		//#endregion
 

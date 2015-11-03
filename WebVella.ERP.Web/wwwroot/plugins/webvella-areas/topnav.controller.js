@@ -21,11 +21,6 @@
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
-        topnavData.navigateToHome = function () {
-            $timeout(function () {
-                $state.go("webvella-desktop-browse");
-            }, 0);
-        }
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {
         	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;
