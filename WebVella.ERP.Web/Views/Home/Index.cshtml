@@ -74,9 +74,10 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
+
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
-
+					
                     //plugins
                     'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
 
@@ -176,11 +177,14 @@
 
 	<!-- external-plugin:shop -->
 	@*<script src="http://localhost:2201/plugins/shop-base/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="http://localhost:2201/plugins/shop-base/sidebar.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="http://localhost:2201/plugins/shop-base/topnav.controller.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/application.constants.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/plugins/shop-base/price-options.module.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="http://localhost:2201/plugins/shop-base/providers/shop.service.js?v=@ViewBag.CacheBreaker"></script>*@
-
-
+	<script src="http://localhost:2201/plugins/shop-base/providers/shop.service.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="http://localhost:2201/plugins/shop-base/migration-index.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="http://localhost:2201/plugins/shop-base/migration-women-category.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="http://localhost:2201/plugins/shop-base/migration-material-category.module.js?v=@ViewBag.CacheBreaker"></script>*@
 
 
 	@ViewBag.PluginModulesJsFileStringArray

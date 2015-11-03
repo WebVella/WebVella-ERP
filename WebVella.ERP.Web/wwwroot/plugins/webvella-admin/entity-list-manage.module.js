@@ -304,6 +304,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			contentData.list = response.object;
+			contentData.generateAlreadyUsed();
 		}
 		function patchErrorCallback(response) {
 			ngToast.create({
@@ -319,7 +320,7 @@
 			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchFieldSuccessCallback, patchErrorCallback)
 		}
 
-		contentData.updateColumns = function () {
+		contentData.updateColumns = function (orderChangedOnly) {
 			var postObj = {};
 			postObj.columns = contentData.list.columns;
 			calculateDefaultSearchFieldName();
@@ -343,6 +344,17 @@
 		//#endregion
 
 		//#region << Initialize the library >>
+
+		//Generate already used
+		var alreadyUsedItemIds = [];
+		contentData.generateAlreadyUsed = function () {
+			for (var i = 0; i < contentData.list.columns.length; i++) {
+				if (contentData.list.columns[i].meta) {
+					alreadyUsedItemIds.push(contentData.list.columns[i].meta.id);
+				}
+			}
+		}
+		contentData.generateAlreadyUsed();
 		contentData.tempLibrary = {};
 		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
 		//Fields list eligable to be options in the sort and query dropdowns
@@ -352,31 +364,32 @@
 		contentData.library.relations = [];
 		contentData.library.items = [];
 		contentData.tempLibrary.items.forEach(function (item) {
-			switch (item.type) {
-				case "field":
-					contentData.library.items.push(item);
-					contentData.onlyFieldsLibrary.items.push(item);
-					break;
-				case "relationOptions":
-					item.addedToLibrary = false;
-					item.sameOriginTargetEntity = false;
-					for (var r = 0; r < contentData.relationsList.length; r++) {
-						if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
-							item.sameOriginTargetEntity = true;
-						}
-					}
-					contentData.library.relations.push(item);
-					break;
-				case "view":
-					contentData.library.items.push(item);
-					break;
-				case "list":
-					if (item.listId != contentData.list.id) {
+			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) || !item.meta) {
+				switch (item.type) {
+					case "field":
 						contentData.library.items.push(item);
-					}
-					break;
+						contentData.onlyFieldsLibrary.items.push(item);
+						break;
+					case "relationOptions":
+						item.addedToLibrary = false;
+						item.sameOriginTargetEntity = false;
+						for (var r = 0; r < contentData.relationsList.length; r++) {
+							if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+								item.sameOriginTargetEntity = true;
+							}
+						}
+						contentData.library.relations.push(item);
+						break;
+					case "view":
+						contentData.library.items.push(item);
+						break;
+					case "list":
+						if (item.listId != contentData.list.id) {
+							contentData.library.items.push(item);
+						}
+						break;
+				}
 			}
-
 		});
 		function sortLibrary() {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
@@ -411,14 +424,14 @@
 		//#endregion
 
 		//#region << Logic >>
-		
+
 		//#region << Drag & Drop >>
 		contentData.moveToColumns = function (item, index) {
 			//Add Item at the end of the columns list
 			contentData.list.columns.push(item);
 			//Remove from library
 			contentData.library.items.splice(index, 1);
-			contentData.updateColumns();
+			contentData.updateColumns(true);
 		}
 		contentData.moveToLibrary = function (item, index) {
 			//Add Item at the end of the columns list
@@ -431,17 +444,29 @@
 				if (a.type > b.type) return 1;
 				return 0;
 			});
-			contentData.updateColumns();
+			contentData.updateColumns(false);
 		}
 		contentData.dragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				return true
 			},
 			itemMoved: function (eventObj) {
-				contentData.updateColumns();
+				contentData.updateColumns(true);
 			},
 			orderChanged: function (eventObj) {
-				contentData.updateColumns();
+				contentData.updateColumns(true);
+			}
+		};
+
+		contentData.dragLibraryListeners = {
+			accept: function (sourceItemHandleScope, destSortableScope) {
+				return true
+			},
+			itemMoved: function (eventObj) {
+				contentData.updateColumns(false);
+			},
+			orderChanged: function (eventObj) {
+				contentData.updateColumns(true);
 			}
 		};
 
@@ -611,21 +636,23 @@
 			if (!relation.addedToLibrary) {
 				contentData.tempLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
-						switch (item.type) {
-							case "fieldFromRelation":
-								contentData.library.items.push(item);
-								break;
-							case "viewFromRelation":
-								contentData.library.items.push(item);
-								break;
-							case "listFromRelation":
-								if (item.listId != contentData.list.id) {
+						if (item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) {
+							switch (item.type) {
+								case "fieldFromRelation":
 									contentData.library.items.push(item);
-								}
-								break;
-							case "treeFromRelation":
-								contentData.library.items.push(item);
-								break;
+									break;
+								case "viewFromRelation":
+									contentData.library.items.push(item);
+									break;
+								case "listFromRelation":
+									if (item.listId != contentData.list.id) {
+										contentData.library.items.push(item);
+									}
+									break;
+								case "treeFromRelation":
+									contentData.library.items.push(item);
+									break;
+							}
 						}
 					}
 				});

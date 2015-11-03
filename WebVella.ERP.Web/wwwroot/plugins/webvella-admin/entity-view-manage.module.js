@@ -13,6 +13,7 @@
         .controller('WebVellaAdminEntityViewManageController', controller)
         .controller('ManageSectionModalController', ManageSectionModalController)
         .controller('ManageRowModalController', ManageRowModalController)
+		.controller('ManageHtmlStringModalController', ManageHtmlStringModalController)
 		.controller('ManageFromRelationModalController', ManageFromRelationModalController);
 
 	//#region << Configuration >> /////////////////////////
@@ -213,6 +214,7 @@
 	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $uibModal,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+
 		/* jshint validthis:true */
 		var contentData = this;
 		//#region << Initialize Current Entity >>
@@ -244,39 +246,59 @@
 				contentData.viewContentRegion = contentData.view.regions[i];
 			}
 		}
+
+		var alreadyUsedItemIds = [];
+		contentData.generateAlreadyUsed = function () {
+			for (var i = 0; i < contentData.viewContentRegion.sections.length; i++) {
+				for (var j = 0; j < contentData.viewContentRegion.sections[i].rows.length; j++) {
+					for (var k = 0; k < contentData.viewContentRegion.sections[i].rows[j].columns.length; k++) {
+						for (var m = 0; m < contentData.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
+							if (contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
+								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta.id);
+							}
+						}
+					}
+				}
+			}
+		}
+		contentData.generateAlreadyUsed();
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.tempLibrary = {};
 		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
-
 		contentData.library = {};
 		contentData.library.relations = [];
 		contentData.library.items = [];
+
 		contentData.tempLibrary.items.forEach(function (item) {
 			//Initially remove all items that are from relation or relationOptions
-			switch (item.type) {
-				case "field":
-					contentData.library.items.push(item);
-					break;
-				case "view":
-					if (item.viewId != contentData.view.id) {
+			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) || !item.meta) {
+				switch (item.type) {
+					case "field":
 						contentData.library.items.push(item);
-					}
-					break;
-				case "list":
-					contentData.library.items.push(item);
-					break;
-				case "relationOptions":
-					item.addedToLibrary = false;
-					item.sameOriginTargetEntity = false;
-					for (var r = 0; r < contentData.relationsList.length; r++) {
-						if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
-							item.sameOriginTargetEntity = true;
+						break;
+					case "view":
+						if (item.viewId != contentData.view.id) {
+							contentData.library.items.push(item);
 						}
-					}
-					contentData.library.relations.push(item);
-					break;
+						break;
+					case "list":
+						contentData.library.items.push(item);
+						break;
+					case "relationOptions":
+						item.addedToLibrary = false;
+						item.sameOriginTargetEntity = false;
+						for (var r = 0; r < contentData.relationsList.length; r++) {
+							if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+								item.sameOriginTargetEntity = true;
+							}
+						}
+						contentData.library.relations.push(item);
+						break;
+					case "html":
+						contentData.library.items.push(item);
+						break;
+				}
 			}
-
 		});
 		function sortLibrary() {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
@@ -442,8 +464,111 @@
 
 		//#endregion
 
+		//#region << Manage HtmlContentModal >>
+		var openHtmlContentModal = function (fieldItem, eventObj, orderChangedOnly) {
+			//Init
+			var droppedItem = fastCopy(fieldItem);
+
+			//Callbacks
+			var moveSuccess = function () {
+				// Prevent from dragging back to library use remove link instead
+				if (eventObj.dest.sortableScope.element[0].id != "library") {
+
+				}
+				else {
+					//we need to destroy the dropped object
+
+				}
+			};
+			var moveFailure = function () {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//we are copying them currently only
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+			};
+
+			function successCallback(response) {
+				if (response.success) {
+					ngToast.create({
+						className: 'success',
+						content: '<span class="go-green">Success:</span> ' + response.message
+					});
+					contentData.library.items = fastCopy(contentData.originalLibrary);
+					for (var i = 0; i < response.object.regions.length; i++) {
+						if (response.object.regions[i].name === "content") {
+							contentData.viewContentRegion = response.object.regions[i];
+						}
+					}
+					if (eventObj != null) {
+						moveSuccess();
+					}
+				}
+				else {
+					errorCallback(response);
+					if (eventObj != null) {
+						moveFailure();
+					}
+				}
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				if (eventObj != null) {
+					moveFailure();
+				}
+			}
+
+
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageHtmlStringModal.html',
+				controller: 'ManageHtmlStringModalController',
+				controllerAs: "popupData",
+				backdrop: 'static',
+				size: "",
+				resolve: {
+					parentData: function () { return contentData; },
+					eventObj: eventObj,
+					fieldObj: fieldItem,
+					orderChangedOnly: orderChangedOnly
+				}
+			});
+
+			modalInstance.result.then(function (fieldObject) {
+				for (var i = 0; i < contentData.view.regions.length; i++) {
+					for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
+						for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
+							for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
+								for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
+									if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
+											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				contentData.view = fastCopy(contentData.view);
+				////2. Call the service
+				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+				return;
+			});
+		};
+		//#endregion
+
 		//#region << Manage FromRelationModal >>
-		var openFromRelationSettingsModal = function (fieldItem, eventObj) {
+		var openFromRelationSettingsModal = function (fieldItem, eventObj, orderChangedOnly) {
 			//Init
 			var droppedItem = fastCopy(fieldItem);
 			var relation = null;
@@ -527,7 +652,8 @@
 						parentData: function () { return contentData; },
 						eventObj: eventObj,
 						relatedEntityMeta: response.object,
-						fieldObj: fieldItem
+						fieldObj: fieldItem,
+						orderChangedOnly: orderChangedOnly
 					}
 				});
 
@@ -588,7 +714,7 @@
 
 		//#region << Drag & Drop Management >>
 
-		function executeDragViewChange(eventObj) {
+		function executeDragViewChange(eventObj, orderChangedOnly) {
 
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
@@ -617,7 +743,7 @@
 							contentData.viewContentRegion = response.object.regions[i];
 						}
 					}
-
+					contentData.generateAlreadyUsed();
 					moveSuccess();
 				}
 				else {
@@ -636,24 +762,19 @@
 			}
 			//#endregion
 
-			if (eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") {
-				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj);
+			if ((eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") && !orderChangedOnly) {
+				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 			}
-			else if (eventObj.source.itemScope.item.type == "html") {
-				//can be managed
-
+			else if (eventObj.source.itemScope.item.type == "html" && !orderChangedOnly) {
+				openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 			}
 			else {
 				//cannot be managed
-				//1. Clean contentData.view from system properties like $$hashKey
-
 				for (var i = 0; i < contentData.view.regions.length; i++) {
 					if (contentData.view.regions[i].name === "content") {
 						contentData.view.regions[i] = fastCopy(contentData.viewContentRegion);
 					}
 				}
-				//contentData.view = angular.fromJson(angular.toJson(contentData.view));
-				////2. Call the service
 				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
 
 			}
@@ -673,11 +794,11 @@
 			},
 			itemMoved: function (eventObj) {
 				//Item is moved from one column to another
-				executeDragViewChange(eventObj);
+				executeDragViewChange(eventObj, true);
 			},
 			orderChanged: function (eventObj) {
 				//Item is moved within the same column
-				executeDragViewChange(eventObj);
+				executeDragViewChange(eventObj, true);
 			}
 		};
 
@@ -691,21 +812,31 @@
 			},
 			itemMoved: function (eventObj) {
 				//Item is moved from one column to another
-				executeDragViewChange(eventObj);
+				executeDragViewChange(eventObj, false);
 			},
 			orderChanged: function (eventObj) {
 				//Item is moved within the same column
-				executeDragViewChange(eventObj);
-			}
+				executeDragViewChange(eventObj, true);
+			},
+			clone: false
 		};
 
 		contentData.dragItemRemove = function (column, index) {
-
+			contentData.itemScheduledForRemoval = column.items[index];
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> ' + response.message
 				});
+
+				contentData.library.items.push(contentData.itemScheduledForRemoval);
+				sortLibrary();
+				if(contentData.itemScheduledForRemoval.meta){
+					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.meta.id);
+					if (itemIndexInUsed > -1) {
+						alreadyUsedItemIds.slice(itemIndexInUsed, 1);
+					}
+				}
 			}
 
 			function errorCallback(response) {
@@ -779,21 +910,23 @@
 			if (!relation.addedToLibrary) {
 				contentData.tempLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
-						switch (item.type) {
-							case "fieldFromRelation":
-								contentData.library.items.push(item);
-								break;
-							case "viewFromRelation":
-								if (item.viewId != contentData.view.id) {
+						if(item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1){
+							switch (item.type) {
+								case "fieldFromRelation":
 									contentData.library.items.push(item);
-								}
-								break;
-							case "listFromRelation":
-								contentData.library.items.push(item);
-								break;
-							case "treeFromRelation":
-								contentData.library.items.push(item);
-								break;
+									break;
+								case "viewFromRelation":
+									if (item.viewId != contentData.view.id) {
+										contentData.library.items.push(item);
+									}
+									break;
+								case "listFromRelation":
+									contentData.library.items.push(item);
+									break;
+								case "treeFromRelation":
+									contentData.library.items.push(item);
+									break;
+							}
 						}
 					}
 				});
@@ -1085,9 +1218,36 @@
 	};
 
 
-	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
+	ManageHtmlStringModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj'];
 	/* @ngInject */
-	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
+	function ManageHtmlStringModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj) {
+		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		/* jshint validthis:true */
+		var popupData = this;
+		popupData.parentData = fastCopy(parentData);
+		popupData.field = fastCopy(fieldObj);
+		console.log(popupData.parentData.view);
+		popupData.ok = function () {
+			$modalInstance.close(popupData.field);
+		};
+
+		popupData.cancel = function () {
+			if (eventObj != null) {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//we are currently copying so no need to return it back
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
+			}
+			$modalInstance.dismiss('cancel');
+		};
+
+		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	};
+
+	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj',
+			'fieldObj', 'relatedEntityMeta', 'orderChangedOnly'];
+	/* @ngInject */
+	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj,
+			fieldObj, relatedEntityMeta, orderChangedOnly) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1098,7 +1258,6 @@
 		popupData.quickCreateDefaultIndex = -1;
 		popupData.lookupLists = [];
 		popupData.lookupDefaultIndex = -1;
-
 		popupData.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 		popupData.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
@@ -1164,7 +1323,7 @@
 		};
 
 		popupData.cancel = function () {
-			if (eventObj != null) {
+			if (eventObj != null && !orderChangedOnly) {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
