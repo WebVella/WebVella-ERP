@@ -844,6 +844,8 @@ namespace WebVella.ERP
 				transaction.Rollback();
 				throw;
 			}
+
+			//recMan.ConvertNtoNRelations();
 		}
 
 		#region << tests >>

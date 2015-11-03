@@ -1268,5 +1268,12 @@ namespace WebVella.ERP.Api
 
             }
         }
+
+		public void ConvertNtoNRelations()
+		{
+			IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
+
+			entityRelationRepository.ConvertNtoNRelations();
+		}
     }
 }

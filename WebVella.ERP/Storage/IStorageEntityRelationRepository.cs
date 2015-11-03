@@ -17,5 +17,7 @@ namespace WebVella.ERP.Storage
         List<Guid> ReadManyToManyRecordByTarget(Guid relationId, Guid targetId);
         void CreateManyToManyRecord(Guid relationId, Guid originId, Guid targetId);
         void DeleteManyToManyRecord(Guid relationId, Guid originId, Guid targetId);
+
+		void ConvertNtoNRelations();
     }
 }
