@@ -1102,6 +1102,7 @@
 					controller: 'SelectTreeNodesModalController',
 					controllerAs: "popupData",
 					size: "width-100p",
+					backdrop:"static",
 					resolve: {
 						contentData: function () {
 							return contentData;
@@ -1519,6 +1520,11 @@
 				iterateCollapse(popupData.tree.data[i], 0);
 			}
 		}
+		//Initially collapse all
+		$timeout(function () {
+			popupData.collapseAll();
+		}, 0);
+
 		popupData.expandAll = function () {
 			popupData.collapsedTreeNodes = [];
 		}

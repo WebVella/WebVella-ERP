@@ -807,7 +807,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			List<object> itemList = new List<object>();
 
-			itemList.Add(new { type = "html", tag = "", content = "" });
+			//itemList.Add(new { type = "html", tag = "HTML string", content = "" });
 
 			foreach (var field in entity.Fields)
 			{
