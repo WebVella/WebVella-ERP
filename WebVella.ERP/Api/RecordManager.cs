@@ -56,9 +56,9 @@ namespace WebVella.ERP.Api
                 if (relation == null)
                     response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
 
-                var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
-                if (targetValues.Contains(targetValue))
-                    response.Errors.Add(new ErrorModel { Message = "The relation record already exists." });
+                //var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
+                //if (targetValues.Contains(targetValue))
+                //    response.Errors.Add(new ErrorModel { Message = "The relation record already exists." });
 
                 if (response.Errors.Count > 0)
                 {
@@ -100,9 +100,9 @@ namespace WebVella.ERP.Api
                 if (relation == null)
                     response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
 
-                var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
-                if (!targetValues.Contains(targetValue))
-                    response.Errors.Add(new ErrorModel { Message = "The relation record do not exists." });
+                //var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
+                //if (!targetValues.Contains(targetValue))
+                //    response.Errors.Add(new ErrorModel { Message = "The relation record do not exists." });
 
 
                 if (response.Errors.Count > 0)
@@ -673,8 +673,6 @@ namespace WebVella.ERP.Api
                             else if (relationField.Relation.RelationType == EntityRelationType.OneToMany)
                             {
                                 IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
-                                //when the relation is origin -> target entity
-
                                 if (relationField.Relation.OriginEntityId != relationField.Relation.TargetEntityId)
                                 {
                                     if (relationField.Relation.OriginEntityId == entity.Id)
@@ -737,40 +735,115 @@ namespace WebVella.ERP.Api
                             else if (relationField.Relation.RelationType == EntityRelationType.ManyToMany)
                             {
                                 List<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
-                                //when the relation is origin -> target entity
-                                if (relationField.Relation.OriginEntityId == entity.Id)
+
+								if(relationField.Relation.OriginEntityId == relationField.Relation.TargetEntityId) 
+								{
+									if (relationField.Direction == "target-origin")
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+										if (recValue.Value != null)
+										{
+											var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
+											var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
+											var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
+											if (relatedRecord.Count() > 1)
+												throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
+
+											if (relatedRecord.Count() == 1)
+											{
+												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
+												List<object> relatedRecordIds = relationData.Value as List<object>;
+												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+												if (relatedRecordIds != null)
+												{
+													foreach (Guid id in relatedRecordIds)
+													{
+														var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
+														var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
+														if (relatedStorageRecord != null)
+															relatedStorageRecords.Add(relatedStorageRecord);
+													}
+												}
+											}
+										}
+									}
+									else
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+										if (recValue.Value != null)
+										{
+											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
+											if (relationData.Key != null)
+											{
+												List<object> relatedRecordIds = relationData.Value as List<object>;
+												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+												if (relatedRecordIds != null)
+												{
+													foreach (Guid id in relatedRecordIds)
+													{
+														var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
+														var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
+														if (relatedStorageRecord != null)
+															relatedStorageRecords.Add(relatedStorageRecord);
+													}
+												}
+											}
+										}
+									}
+								}
+								else if (relationField.Relation.OriginEntityId == entity.Id)
                                 {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
                                     if (recValue.Value != null)
-                                    {
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByOrigin(relationField.Relation.Id, (Guid)recValue.Value);
-                                        relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-                                        foreach (Guid id in relatedRecordIds)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
-                                            var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
-                                            if (relatedStorageRecord != null)
-                                                relatedStorageRecords.Add(relatedStorageRecord);
-                                        }
-                                    }
+									{
+										var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
+										if (relationData.Key != null )
+										{
+											List<object> relatedRecordIds = relationData.Value as List<object>;
+											relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+											if (relatedRecordIds != null)
+											{
+												foreach (Guid id in relatedRecordIds)
+												{
+													var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
+													var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
+													if (relatedStorageRecord != null)
+														relatedStorageRecords.Add(relatedStorageRecord);
+												}
+											}
+										}
+									}
                                 }
                                 else //when the relation is target -> origin, we have to query origin entity
                                 {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-                                    if (recValue.Value != null)
-                                    {
-
-                                        List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
-                                        relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-                                        foreach (Guid id in relatedRecordIds)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
-                                            var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
-                                            if (relatedStorageRecord != null)
-                                                relatedStorageRecords.Add(relatedStorageRecord);
-                                        }
-                                    }
-                                }
+									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+									if (recValue.Value != null)
+									{
+										var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
+										var targetField = targetEntity.Fields.Single(x=>x.Id == relationField.Relation.TargetFieldId);
+										var relatedRecord = recRepo.Find( targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
+										if (relatedRecord.Count() > 1)
+											throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
+                                         
+										if (relatedRecord.Count() == 1)
+										{
+											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
+											List<object> relatedRecordIds = relationData.Value as List<object>;
+											//List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
+											relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+											if (relatedRecordIds != null)
+											{
+												foreach (Guid id in relatedRecordIds)
+												{
+													var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
+													var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
+													if (relatedStorageRecord != null)
+														relatedStorageRecords.Add(relatedStorageRecord);
+												}
+											}
+										}
+									}
+								}
 
                                 var dataArrayRecord = new List<EntityRecord>();
                                 if (relatedStorageRecords != null)
