@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebVella.ERP.Storage
 {
-    public interface IStorageTransaction
+    public interface IStorageTransaction : IDisposable
     {
         bool Begin();
         bool Commit();

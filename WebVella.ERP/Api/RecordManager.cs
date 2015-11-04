@@ -21,6 +21,7 @@ namespace WebVella.ERP.Api
         private List<Entity> entityCache;
         private EntityManager entityManager;
         private EntityRelationManager entityRelationManager;
+		private IStorageEntityRelationRepository relationRepository;
         private List<EntityRelation> relations = null;
         private bool ignoreSecurity = false; 
 
@@ -38,7 +39,8 @@ namespace WebVella.ERP.Api
             entityCache = new List<Entity>();
             entityManager = new EntityManager(erpService.StorageService);
             entityRelationManager = new EntityRelationManager(erpService.StorageService);
-            this.ignoreSecurity = ignoreSecurity;
+			relationRepository = erpService.StorageService.GetEntityRelationRepository();
+			this.ignoreSecurity = ignoreSecurity;
         }
 
         public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
@@ -50,15 +52,10 @@ namespace WebVella.ERP.Api
 
             try
             {
-                var relRep = erpService.StorageService.GetEntityRelationRepository();
-                var relation = relRep.Read(relationId);
+                var relation = relationRepository.Read(relationId);
 
                 if (relation == null)
                     response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
-
-                //var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
-                //if (targetValues.Contains(targetValue))
-                //    response.Errors.Add(new ErrorModel { Message = "The relation record already exists." });
 
                 if (response.Errors.Count > 0)
                 {
@@ -68,7 +65,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                relRep.CreateManyToManyRecord(relationId, originValue, targetValue);
+				relationRepository.CreateManyToManyRecord(relationId, originValue, targetValue);
                 return response;
             }
             catch (Exception e)
@@ -94,16 +91,10 @@ namespace WebVella.ERP.Api
 
             try
             {
-                var relRep = erpService.StorageService.GetEntityRelationRepository();
-                var relation = relRep.Read(relationId);
+                var relation = relationRepository.Read(relationId);
 
                 if (relation == null)
                     response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
-
-                //var targetValues = relRep.ReadManyToManyRecordByOrigin(relationId, originValue);
-                //if (!targetValues.Contains(targetValue))
-                //    response.Errors.Add(new ErrorModel { Message = "The relation record do not exists." });
-
 
                 if (response.Errors.Count > 0)
                 {
@@ -113,7 +104,7 @@ namespace WebVella.ERP.Api
                     return response;
                 }
 
-                relRep.DeleteManyToManyRecord(relationId, originValue, targetValue);
+				relationRepository.DeleteManyToManyRecord(relationId, originValue, targetValue);
                 return response;
             }
             catch (Exception e)
