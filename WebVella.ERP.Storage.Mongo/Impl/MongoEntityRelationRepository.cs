@@ -77,7 +77,7 @@ namespace WebVella.ERP.Storage.Mongo
 			MongoTransaction transaction = null;
 			if (!MongoStaticContext.Context.TransactionInProgress)
 				transaction = MongoStaticContext.Context.CreateTransaction( true, new MongoTransactionOptions { Isolation= MongoTransactionIsolation.ReadUncommitted});
-			
+
 			lock (lockObject)
 			{
 				try
@@ -97,7 +97,7 @@ namespace WebVella.ERP.Storage.Mongo
 					InvalidateRelationIndex(relation);
 
 					if (transaction != null)
-						transaction.Commit();
+                    transaction.Commit();
 
 					cachedRelations = null;
 					return created;
@@ -105,7 +105,7 @@ namespace WebVella.ERP.Storage.Mongo
 				catch
 				{
 					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 
 					throw;
 				}
@@ -168,7 +168,7 @@ namespace WebVella.ERP.Storage.Mongo
 					var result = MongoStaticContext.Context.EntityRelations.Delete(Query.EQ("_id", id));
 
 					if (transaction != null)
-						transaction.Commit();
+					transaction.Commit();
 
 					cachedRelations = null;
 					return result;
@@ -176,7 +176,7 @@ namespace WebVella.ERP.Storage.Mongo
 				catch
 				{
 					if (transaction != null)
-						transaction.Rollback();
+					transaction.Rollback();
 
 					throw;
 				}
@@ -305,8 +305,8 @@ namespace WebVella.ERP.Storage.Mongo
 				transaction = MongoStaticContext.Context.CreateTransaction();
 			
 			try {
-				originColletion.Save(originRecord);
-				targetColletion.Save(targetRecord);
+			originColletion.Save(originRecord);
+			targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
@@ -317,8 +317,8 @@ namespace WebVella.ERP.Storage.Mongo
 					transaction.Rollback();
 
 				throw;
-            }
-			
+		}
+
 		}
 
 		/// <summary>
@@ -405,8 +405,8 @@ namespace WebVella.ERP.Storage.Mongo
 
 			try
 			{
-				originColletion.Save(originRecord);
-				targetColletion.Save(targetRecord);
+			originColletion.Save(originRecord);
+			targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
@@ -474,7 +474,7 @@ namespace WebVella.ERP.Storage.Mongo
 					}
 				}
 			}
-			else 
+			else
 			{
 				//at the moment many to many relation do not need any endexes
 				/*
@@ -515,5 +515,82 @@ namespace WebVella.ERP.Storage.Mongo
 			}
 
 		}
+
+		public void ConvertNtoNRelations()
+		{
+			List<IStorageEntityRelation> relations = Read();
+
+
+			foreach (var relation in relations)
+			{
+				if (relation.RelationType != Api.Models.EntityRelationType.ManyToMany)
+					continue;
+
+				MongoEntity originEntity = MongoStaticContext.Context.Entities.GetById(relation.OriginEntityId);
+				MongoEntity targetEntity = MongoStaticContext.Context.Entities.GetById(relation.TargetEntityId);
+				IStorageField originField = originEntity.Fields.SingleOrDefault(x => x.Id == relation.OriginFieldId);
+				IStorageField targetField = targetEntity.Fields.SingleOrDefault(x => x.Id == relation.TargetFieldId);
+
+				string originRelationFieldName = $"#{relation.Name}_origins";
+				string targetRelationFieldName = $"#{relation.Name}_targets";
+
+				var relationEntityRecordCollections = MongoStaticContext.Context.GetBsonCollection(RELATION_COLLECTION_PREFIX + relation.Name);
+				var relationEntityRecords = relationEntityRecordCollections.FindAll().ToList();
+
+				if (relationEntityRecords != null && relationEntityRecords.Count() > 0)
+				{
+					var transaction = MongoStaticContext.Context.CreateTransaction();
+
+					try
+					{
+						var originEntityRecordCollection = MongoStaticContext.Context.GetBsonCollection(MongoRecordRepository.RECORD_COLLECTION_PREFIX + originEntity.Name);
+						var originEntityRecords = originEntityRecordCollection.FindAll().ToList();
+
+						if (originEntityRecords != null && originEntityRecords.Count() > 0)
+						{
+							foreach (var originRecord in originEntityRecords)
+							{
+								string originFieldName = originField.Name == "id" ? $"_id" : originField.Name;
+								List<Guid> targetRecordsToCopy = relationEntityRecords.Where(r => (Guid)r["originId"] == (Guid)originRecord[originFieldName]).Select(r => (Guid)r["targetId"]).ToList();
+
+								originRecord[targetRelationFieldName] = targetRecordsToCopy == null || targetRecordsToCopy.Count() == 0 ? BsonNull.Value : BsonValue.Create(targetRecordsToCopy);
+								var updateSuccess = originEntityRecordCollection.Save(originRecord).DocumentsAffected > 0;
+								//if (!updateSuccess)
+								//	throw new StorageException("Failed to update record.");
+							}
+						}
+
+						var targetEntityRecordCollection = MongoStaticContext.Context.GetBsonCollection(MongoRecordRepository.RECORD_COLLECTION_PREFIX + targetEntity.Name);
+						var targetEntityRecords = targetEntityRecordCollection.FindAll().ToList();
+
+						if (targetEntityRecords != null && targetEntityRecords.Count() > 0)
+						{
+							foreach (var targetRecord in targetEntityRecords)
+							{
+								string targetFieldName = targetField.Name == "id" ? $"_id" : targetField.Name;
+								List<Guid> originRecordsToCopy = relationEntityRecords.Where(r => (Guid)r["targetId"] == (Guid)targetRecord[targetFieldName]).Select(r => (Guid)r["originId"]).ToList();
+
+								targetRecord[originRelationFieldName] = originRecordsToCopy == null || originRecordsToCopy.Count() == 0 ? BsonNull.Value : BsonValue.Create(originRecordsToCopy); ;
+								var updateSuccess = targetEntityRecordCollection.Save(targetRecord).DocumentsAffected > 0;
+								//if (!updateSuccess)
+								//	throw new StorageException("Failed to update record.");
+							}
+						}
+
+						transaction.Commit();
+
+						IndexOptionsBuilder originOptions = IndexOptions.SetUnique(false).SetDropDups(false).SetName(targetRelationFieldName).SetBackground(true);
+						originEntityRecordCollection.CreateIndex(new IndexKeysBuilder().Ascending(targetRelationFieldName), originOptions);
+
+						IndexOptionsBuilder targetOptions = IndexOptions.SetUnique(false).SetDropDups(false).SetName(originRelationFieldName).SetBackground(true);
+						targetEntityRecordCollection.CreateIndex(new IndexKeysBuilder().Ascending(originRelationFieldName), targetOptions);
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+					}
+				}
+			}
+        }
 	}
 }
