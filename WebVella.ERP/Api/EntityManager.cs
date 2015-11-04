@@ -2673,7 +2673,9 @@ namespace WebVella.ERP.Api
 				IStorageEntity editedEntity = entity.MapTo<IStorageEntity>();
 
 				var recRep = Storage.GetRecordRepository();
-				var transaction = recRep.CreateTransaction();
+				IStorageTransaction transaction = null;
+                if ( transactional )
+					transaction = recRep.CreateTransaction();
 				try
 				{
 					if (transactional)
@@ -3286,7 +3288,9 @@ namespace WebVella.ERP.Api
 				entity.Fields.Remove(field);
 
 				var recRep = Storage.GetRecordRepository();
-				var transaction = recRep.CreateTransaction();
+				IStorageTransaction transaction = null;
+				if (transactional)
+					transaction = recRep.CreateTransaction();
 				try
 				{
 					if (transactional)

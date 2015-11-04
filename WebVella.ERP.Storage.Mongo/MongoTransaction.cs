@@ -3,6 +3,7 @@
 using System;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Threading;
 
 #endregion
 
@@ -11,6 +12,8 @@ namespace WebVella.ERP.Storage.Mongo
     internal class MongoTransaction : IStorageTransaction, IDisposable
 	{
 		#region <--- Fields and Properties --->
+
+		internal static AsyncLocal<bool> TransactionInProgress { get; set; } = new AsyncLocal<bool>();
 
 		private readonly IDisposable connectionDisposable;
 
@@ -41,6 +44,7 @@ namespace WebVella.ERP.Storage.Mongo
 			: this(true, new MongoTransactionOptions {Isolation = MongoTransactionIsolation.Mvcc})
 		{
 			connectionDisposable = MongoStaticContext.Context.Server.RequestStart(MongoStaticContext.Context.Database);
+			TransactionInProgress.Value = true;
 		}
 
 		/// <summary>
@@ -51,15 +55,19 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <exception cref="System.ArgumentNullException">options</exception>
 		internal MongoTransaction(bool beginImmediately, MongoTransactionOptions options)
 		{
-            if (options == null)
-                Options = new MongoTransactionOptions();
+			if (options == null)
+				Options = new MongoTransactionOptions();
+			else
+				Options = options;
 
 			Status = MongoTransactionStatus.Ready;
 			connectionDisposable = MongoStaticContext.Context.Server.RequestStart(MongoStaticContext.Context.Database);
 
 			if (beginImmediately)
 				Begin();
-		}
+
+			TransactionInProgress.Value = true;
+        }
 
 		/// <summary>
 		///     Begins this instance.
@@ -108,21 +116,26 @@ namespace WebVella.ERP.Storage.Mongo
 		/// </exception>
 		public bool Commit()
 		{
-			switch (Status)
-			{
-				case MongoTransactionStatus.Committed:
-					throw new MongoTransactionException("Cannot commit already committed transaction.");
-				case MongoTransactionStatus.Failed:
-					throw new MongoTransactionException("Cannot commit transaction in failed state.");
-				case MongoTransactionStatus.Rollbacked:
-					throw new MongoTransactionException("Cannot commit transaction which is already rollbacked.");
-				case MongoTransactionStatus.Ready:
-					throw new MongoTransactionException("Cannot commit transaction which is not started.");
-			}
+			try {
+				switch (Status)
+				{
+					case MongoTransactionStatus.Committed:
+						throw new MongoTransactionException("Cannot commit already committed transaction.");
+					case MongoTransactionStatus.Failed:
+						throw new MongoTransactionException("Cannot commit transaction in failed state.");
+					case MongoTransactionStatus.Rollbacked:
+						throw new MongoTransactionException("Cannot commit transaction which is already rollbacked.");
+					case MongoTransactionStatus.Ready:
+						throw new MongoTransactionException("Cannot commit transaction which is not started.");
+				}
 
-			CommandResult result = MongoStaticContext.Context.Database.RunCommand(CreateCommitTransactionCommandDocument());
-			Status = result.Ok ? MongoTransactionStatus.Committed : MongoTransactionStatus.Failed;
-			return result.Ok;
+				CommandResult result = MongoStaticContext.Context.Database.RunCommand(CreateCommitTransactionCommandDocument());
+				Status = result.Ok ? MongoTransactionStatus.Committed : MongoTransactionStatus.Failed;
+				return result.Ok;
+			}
+			finally {
+				TransactionInProgress.Value = false;
+			}
 		}
 
 		/// <summary>
@@ -161,13 +174,18 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <returns></returns>
 		private bool RollbackInternal()
 		{
-			if (Status == MongoTransactionStatus.Started)
-			{
-				CommandResult result = MongoStaticContext.Context.Database.RunCommand(CreateRollbackTransactionCommandDocument());
-				Status = result.Ok ? MongoTransactionStatus.Rollbacked : MongoTransactionStatus.Failed;
-				return result.Ok;
+			try {
+				if (Status == MongoTransactionStatus.Started)
+				{
+					CommandResult result = MongoStaticContext.Context.Database.RunCommand(CreateRollbackTransactionCommandDocument());
+					Status = result.Ok ? MongoTransactionStatus.Rollbacked : MongoTransactionStatus.Failed;
+					return result.Ok;
+				}
+				return false;
 			}
-			return false;
+			finally {
+				TransactionInProgress.Value = false;
+			}
 		}
 
 

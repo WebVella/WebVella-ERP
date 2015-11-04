@@ -129,9 +129,9 @@
           "lib/net45/_._": {}
         }
       },
-      "Microsoft.Framework.Configuration/1.0.0-beta7": {
+      "Microsoft.Framework.Configuration/1.0.0-beta8": {
         "dependencies": {
-          "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta7"
+          "Microsoft.Framework.Configuration.Abstractions": "1.0.0-beta8"
         },
         "frameworkAssemblies": [
           "Microsoft.CSharp",
@@ -146,7 +146,7 @@
           "lib/dnx451/Microsoft.Framework.Configuration.dll": {}
         }
       },
-      "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta7": {
+      "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta8": {
         "frameworkAssemblies": [
           "Microsoft.CSharp",
           "mscorlib",
@@ -467,36 +467,38 @@
         "ref/win8/_._"
       ]
     },
-    "Microsoft.Framework.Configuration/1.0.0-beta7": {
+    "Microsoft.Framework.Configuration/1.0.0-beta8": {
       "serviceable": true,
-      "sha512": "l2kMGvDGmLrpWwQz90pKHxuCPA4C5Ds3zWT/bNmt6M/PCM5wxEns/orKHH2m9Cx5H08WZy0FVyQMNQmED126cA==",
+      "sha512": "M2Fg4gBigELMjFow/w44eGZe7VICY6naOe8R6jKbtsXpDTKFsfCuXxpZcUfIgI791hs7Ney88IjxZ3XudsgJeg==",
       "files": [
         "lib/dnx451/Microsoft.Framework.Configuration.dll",
         "lib/dnx451/Microsoft.Framework.Configuration.xml",
+        "lib/dnxcore50/Microsoft.Framework.Configuration.dll",
+        "lib/dnxcore50/Microsoft.Framework.Configuration.xml",
         "lib/dotnet/Microsoft.Framework.Configuration.dll",
         "lib/dotnet/Microsoft.Framework.Configuration.xml",
         "lib/net45/Microsoft.Framework.Configuration.dll",
         "lib/net45/Microsoft.Framework.Configuration.xml",
-        "Microsoft.Framework.Configuration.1.0.0-beta7.nupkg",
-        "Microsoft.Framework.Configuration.1.0.0-beta7.nupkg.sha512",
-        "Microsoft.Framework.Configuration.nuspec",
-        "repo.json"
+        "Microsoft.Framework.Configuration.1.0.0-beta8.nupkg",
+        "Microsoft.Framework.Configuration.1.0.0-beta8.nupkg.sha512",
+        "Microsoft.Framework.Configuration.nuspec"
       ]
     },
-    "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta7": {
+    "Microsoft.Framework.Configuration.Abstractions/1.0.0-beta8": {
       "serviceable": true,
-      "sha512": "bLVb0cfwlpIhFmJ2jJzMaOjoG3BGcyP6dtMU1NNzfs3mo1lr2Om5FKWFlYVou3uClM0yNdMtGzu5rQDb2UGxZA==",
+      "sha512": "WH5zC6AkShx6VZzZT37tl0QPROkR6zdffACEIPiDyPyqyf+DtWN5Z6v1q9OD5q6CfAij18EwqWaF1eWtYBigNw==",
       "files": [
         "lib/dnx451/Microsoft.Framework.Configuration.Abstractions.dll",
         "lib/dnx451/Microsoft.Framework.Configuration.Abstractions.xml",
+        "lib/dnxcore50/Microsoft.Framework.Configuration.Abstractions.dll",
+        "lib/dnxcore50/Microsoft.Framework.Configuration.Abstractions.xml",
         "lib/dotnet/Microsoft.Framework.Configuration.Abstractions.dll",
         "lib/dotnet/Microsoft.Framework.Configuration.Abstractions.xml",
         "lib/net45/Microsoft.Framework.Configuration.Abstractions.dll",
         "lib/net45/Microsoft.Framework.Configuration.Abstractions.xml",
-        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta7.nupkg",
-        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta7.nupkg.sha512",
-        "Microsoft.Framework.Configuration.Abstractions.nuspec",
-        "repo.json"
+        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta8.nupkg",
+        "Microsoft.Framework.Configuration.Abstractions.1.0.0-beta8.nupkg.sha512",
+        "Microsoft.Framework.Configuration.Abstractions.nuspec"
       ]
     },
     "Microsoft.Framework.Configuration.Binder/1.0.0-beta6": {
