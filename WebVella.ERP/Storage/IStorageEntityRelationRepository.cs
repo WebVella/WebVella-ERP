@@ -15,5 +15,7 @@ namespace WebVella.ERP.Storage
 
         void CreateManyToManyRecord(Guid relationId, Guid originId, Guid targetId);
         void DeleteManyToManyRecord(Guid relationId, Guid originId, Guid targetId);
+
+		void ConvertNtoNRelations();
     }
 }
