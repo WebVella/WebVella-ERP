@@ -36,7 +36,6 @@ namespace WebVella.ERP.Web.Controllers
 			recMan = new RecordManager(service);
 			secMan = new SecurityManager(service);
 			entityManager = new EntityManager(storage);
-
 		}
 
 		[AllowAnonymous]

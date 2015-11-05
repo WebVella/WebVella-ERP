@@ -10,724 +10,723 @@ using System.Net;
 
 namespace WebVella.ERP.Api
 {
-    public class RecordManager
-    {
-        private IErpService erpService;
+	public class RecordManager
+	{
+		private IErpService erpService;
 
-        private const string WILDCARD_SYMBOL = "*";
-        private const char FIELDS_SEPARATOR = ',';
-        private const char RELATION_SEPARATOR = '.';
-        private const char RELATION_NAME_RESULT_SEPARATOR = '$';
-        private List<Entity> entityCache;
-        private EntityManager entityManager;
-        private EntityRelationManager entityRelationManager;
+		private const string WILDCARD_SYMBOL = "*";
+		private const char FIELDS_SEPARATOR = ',';
+		private const char RELATION_SEPARATOR = '.';
+		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
+		private List<Entity> entityCache;
+		private EntityManager entityManager;
+		private EntityRelationManager entityRelationManager;
 		private IStorageEntityRelationRepository relationRepository;
-        private List<EntityRelation> relations = null;
-        private bool ignoreSecurity = false; 
+		private List<EntityRelation> relations = null;
+		private bool ignoreSecurity = false;
 
-        /// <summary>
-        /// The contructor
-        /// </summary>
-        /// <param name="service"></param>
-        public RecordManager(IErpService service) : this(service, false)
-        {
-        }
+		/// <summary>
+		/// The contructor
+		/// </summary>
+		/// <param name="service"></param>
+		public RecordManager(IErpService service) : this(service, false)
+		{
+		}
 
-        internal RecordManager(IErpService service, bool ignoreSecurity = false)
-        {
-            erpService = service;
-            entityCache = new List<Entity>();
-            entityManager = new EntityManager(erpService.StorageService);
-            entityRelationManager = new EntityRelationManager(erpService.StorageService);
+		internal RecordManager(IErpService service, bool ignoreSecurity = false)
+		{
+			erpService = service;
+			entityCache = new List<Entity>();
+			entityManager = new EntityManager(erpService.StorageService);
+			entityRelationManager = new EntityRelationManager(erpService.StorageService);
 			relationRepository = erpService.StorageService.GetEntityRelationRepository();
 			this.ignoreSecurity = ignoreSecurity;
-        }
+		}
 
-        public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
-        {
-            QueryResponse response = new QueryResponse();
-            response.Object = null;
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
+		public QueryResponse CreateRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
+		{
+			QueryResponse response = new QueryResponse();
+			response.Object = null;
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
 
-            try
-            {
-                var relation = relationRepository.Read(relationId);
+			try
+			{
+				var relation = relationRepository.Read(relationId);
 
-                if (relation == null)
-                    response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
+				if (relation == null)
+					response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
 
-                if (response.Errors.Count > 0)
-                {
-                    response.Object = null;
-                    response.Success = false;
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
+				if (response.Errors.Count > 0)
+				{
+					response.Object = null;
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
 				relationRepository.CreateManyToManyRecord(relationId, originValue, targetValue);
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-                response.Object = null;
-                response.Timestamp = DateTime.UtcNow;
+				return response;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Object = null;
+				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-                response.Message = e.Message + e.StackTrace;
+				response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity relation record was not created. An internal error occurred!";
 #endif
-                return response;
-            }
-        }
+				return response;
+			}
+		}
 
-        public QueryResponse RemoveRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
-        {
-            QueryResponse response = new QueryResponse();
-            response.Object = null;
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
+		public QueryResponse RemoveRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
+		{
+			QueryResponse response = new QueryResponse();
+			response.Object = null;
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
 
-            try
-            {
-                var relation = relationRepository.Read(relationId);
+			try
+			{
+				var relation = relationRepository.Read(relationId);
 
-                if (relation == null)
-                    response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
+				if (relation == null)
+					response.Errors.Add(new ErrorModel { Message = "Relation does not exists." });
 
-                if (response.Errors.Count > 0)
-                {
-                    response.Object = null;
-                    response.Success = false;
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
+				if (response.Errors.Count > 0)
+				{
+					response.Object = null;
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
 				relationRepository.DeleteManyToManyRecord(relationId, originValue, targetValue);
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-                response.Object = null;
-                response.Timestamp = DateTime.UtcNow;
+				return response;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Object = null;
+				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-                response.Message = e.Message + e.StackTrace;
+				response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity relation record was not created. An internal error occurred!";
 #endif
-                return response;
-            }
-        }
+				return response;
+			}
+		}
 
-        public QueryResponse CreateRecord(string entityName, EntityRecord record)
-        {
-            if (string.IsNullOrWhiteSpace(entityName))
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
-                return response;
-            }
+		public QueryResponse CreateRecord(string entityName, EntityRecord record)
+		{
+			if (string.IsNullOrWhiteSpace(entityName))
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+				return response;
+			}
 
-            Entity entity = GetEntity(entityName);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+			Entity entity = GetEntity(entityName);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return CreateRecord(entity, record);
-        }
+			return CreateRecord(entity, record);
+		}
 
-        public QueryResponse CreateRecord(Guid entityId, EntityRecord record)
-        {
-            Entity entity = GetEntity(entityId);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+		public QueryResponse CreateRecord(Guid entityId, EntityRecord record)
+		{
+			Entity entity = GetEntity(entityId);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return CreateRecord(entity, record);
-        }
+			return CreateRecord(entity, record);
+		}
 
-        public QueryResponse CreateRecord(Entity entity, EntityRecord record)
-        {
+		public QueryResponse CreateRecord(Entity entity, EntityRecord record)
+		{
 
-            QueryResponse response = new QueryResponse();
-            response.Object = null;
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
+			QueryResponse response = new QueryResponse();
+			response.Object = null;
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
 
-            try
-            {
-                if (entity == null)
-                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+			try
+			{
+				if (entity == null)
+					response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
 
-                if (record == null)
-                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+				if (record == null)
+					response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
 
-                if (response.Errors.Count > 0)
-                {
-                    response.Object = null;
-                    response.Success = false;
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
+				if (response.Errors.Count > 0)
+				{
+					response.Object = null;
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
-                if (!ignoreSecurity)
-                {
-                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
-                    if (!hasPermisstion)
-                    {
-                        response.StatusCode = HttpStatusCode.Forbidden;
-                        response.Success = false;
-                        response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
-                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
-                        return response;
-                    }
-                }
+				if (!ignoreSecurity)
+				{
+					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
+					if (!hasPermisstion)
+					{
+						response.StatusCode = HttpStatusCode.Forbidden;
+						response.Success = false;
+						response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
+						response.Errors.Add(new ErrorModel { Message = "Access denied." });
+						return response;
+					}
+				}
 
-                SetRecordServiceInformation(record, true);
+				SetRecordServiceInformation(record, true);
 
-                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
-                var recordFields = record.GetProperties();
-                foreach (var field in entity.Fields)
-                {
-                    var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                    try
-                    {
-                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
-                    }
-                    catch (Exception ex)
-                    {
-                        if (pair.Key == null)
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
-                        else
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
-                    }
-                }
-
-
-
-                Guid recordId = Guid.Empty;
-                if (!record.Properties.ContainsKey("id"))
-                {
-                    recordId = Guid.NewGuid();
-                    storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
-                }
-
-                //fixes issue with ID comming from webapi request 
-                if (record["id"] is string)
-                    recordId = new Guid(record["id"] as string);
-                else if (record["id"] is Guid) 
-                    recordId = (Guid)record["id"];
-                else
-                    throw new Exception("Invalid record id");
-
-                if (recordId == Guid.Empty)
-                    throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
-
-                var recRepo = erpService.StorageService.GetRecordRepository();
-                recRepo.Create(entity.Name, storageRecordData); 
+				var recordFields = record.GetProperties();
+				foreach (var field in entity.Fields)
+				{
+					var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
+					try
+					{
+						storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+					}
+					catch (Exception ex)
+					{
+						if (pair.Key == null)
+							throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
+						else
+							throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
+					}
+				}
 
 
-                var query = EntityQuery.QueryEQ("id", recordId);
-                var entityQuery = new EntityQuery(entity.Name, "*", query);
 
-                response = Find(entityQuery);
-                if (response.Object != null && response.Object.Data.Count > 0)
-                    response.Message = "Record was created successfully";
-                else
-                {
-                    response.Success = false;
-                    response.Message = "Record was not created successfully";
-                }
+				Guid recordId = Guid.Empty;
+				if (!record.Properties.ContainsKey("id"))
+				{
+					recordId = Guid.NewGuid();
+					storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
+				}
 
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-                response.Object = null;
-                response.Timestamp = DateTime.UtcNow;
+				//fixes issue with ID comming from webapi request 
+				if (record["id"] is string)
+					recordId = new Guid(record["id"] as string);
+				else if (record["id"] is Guid)
+					recordId = (Guid)record["id"];
+				else
+					throw new Exception("Invalid record id");
+
+				if (recordId == Guid.Empty)
+					throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
+
+				var recRepo = erpService.StorageService.GetRecordRepository();
+				recRepo.Create(entity.Name, storageRecordData);
+
+
+				var query = EntityQuery.QueryEQ("id", recordId);
+				var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+				response = Find(entityQuery);
+				if (response.Object != null && response.Object.Data.Count > 0)
+					response.Message = "Record was created successfully";
+				else
+				{
+					response.Success = false;
+					response.Message = "Record was not created successfully";
+				}
+
+				return response;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Object = null;
+				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-                response.Message = e.Message + e.StackTrace;
+				response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity record was not created. An internal error occurred!";
 #endif
-                return response;
-            }
+				return response;
+			}
 
-        }
+		}
 
-        public QueryResponse UpdateRecord(string entityName, EntityRecord record)
-        {
-            if (string.IsNullOrWhiteSpace(entityName))
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
-                return response;
-            }
+		public QueryResponse UpdateRecord(string entityName, EntityRecord record)
+		{
+			if (string.IsNullOrWhiteSpace(entityName))
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+				return response;
+			}
 
-            Entity entity = GetEntity(entityName);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+			Entity entity = GetEntity(entityName);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return UpdateRecord(entity, record);
-        }
+			return UpdateRecord(entity, record);
+		}
 
-        public QueryResponse UpdateRecord(Guid entityId, EntityRecord record)
-        {
-            Entity entity = GetEntity(entityId);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+		public QueryResponse UpdateRecord(Guid entityId, EntityRecord record)
+		{
+			Entity entity = GetEntity(entityId);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return UpdateRecord(entity, record);
-        }
+			return UpdateRecord(entity, record);
+		}
 
-        public QueryResponse UpdateRecord(Entity entity, EntityRecord record)
-        {
+		public QueryResponse UpdateRecord(Entity entity, EntityRecord record)
+		{
 
-            QueryResponse response = new QueryResponse();
-            response.Object = null;
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
+			QueryResponse response = new QueryResponse();
+			response.Object = null;
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
 
-            try
-            {
-                if (entity == null)
-                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+			try
+			{
+				if (entity == null)
+					response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
 
-                if (record == null)
-                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
-                else if (!record.Properties.ContainsKey("id"))
-                    response.Errors.Add(new ErrorModel { Message = "Invalid record. Missing ID field." });
+				if (record == null)
+					response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+				else if (!record.Properties.ContainsKey("id"))
+					response.Errors.Add(new ErrorModel { Message = "Invalid record. Missing ID field." });
 
-                if (response.Errors.Count > 0)
-                {
-                    response.Object = null;
-                    response.Success = false;
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
-
-
-                if (!ignoreSecurity)
-                {
-                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Update, entity);
-                    if (!hasPermisstion)
-                    {
-                        response.StatusCode = HttpStatusCode.Forbidden;
-                        response.Success = false;
-                        response.Message = "Trying to update record in entity '" + entity.Name + "'  with no update access.";
-                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
-                        return response;
-                    }
-                }
-
-                SetRecordServiceInformation(record, false);
-
-                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
-
-                var recordFields = record.GetProperties();
-                foreach (var field in entity.Fields)
-                {
-                    var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
-                    try
-                    {
-                        if (pair.Key == null)
-                            continue;
-
-                        if (field is PasswordField && pair.Value == null)
-                            continue;
+				if (response.Errors.Count > 0)
+				{
+					response.Object = null;
+					response.Success = false;
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
 
+				if (!ignoreSecurity)
+				{
+					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Update, entity);
+					if (!hasPermisstion)
+					{
+						response.StatusCode = HttpStatusCode.Forbidden;
+						response.Success = false;
+						response.Message = "Trying to update record in entity '" + entity.Name + "'  with no update access.";
+						response.Errors.Add(new ErrorModel { Message = "Access denied." });
+						return response;
+					}
+				}
 
-                        storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
-                    }
-                    catch (Exception ex)
-                    {
-                        if (pair.Key == null)
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
-                        else
-                            throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
-                    }
-                }
+				SetRecordServiceInformation(record, false);
 
-                var recRepo = erpService.StorageService.GetRecordRepository();
-                recRepo.Update(entity.Name, storageRecordData);
+				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
-                //fixes issue with ID comming from webapi request 
-                Guid recordId = Guid.Empty;
-                if (record["id"] is string)
-                    recordId = new Guid(record["id"] as string);
-                else if (record["id"] is Guid)
-                    recordId = (Guid)record["id"];
-                else
-                    throw new Exception("Invalid record id");
+				var recordFields = record.GetProperties();
+				foreach (var field in entity.Fields)
+				{
+					var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
+					try
+					{
+						if (pair.Key == null)
+							continue;
 
-                var query = EntityQuery.QueryEQ("id", recordId);
-                var entityQuery = new EntityQuery(entity.Name, "*", query);
+						if (field is PasswordField && pair.Value == null)
+							continue;
 
-                response = Find(entityQuery);
-                if (response.Object != null && response.Object.Data.Count > 0)
-                    response.Message = "Record was updated successfully";
-                else
-                {
-                    response.Success = false;
-                    response.Message = "Record was not updated successfully";
-                }
 
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-                response.Object = null;
-                response.Timestamp = DateTime.UtcNow;
+
+						storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+					}
+					catch (Exception ex)
+					{
+						if (pair.Key == null)
+							throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
+						else
+							throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
+					}
+				}
+
+				var recRepo = erpService.StorageService.GetRecordRepository();
+				recRepo.Update(entity.Name, storageRecordData);
+
+				//fixes issue with ID comming from webapi request 
+				Guid recordId = Guid.Empty;
+				if (record["id"] is string)
+					recordId = new Guid(record["id"] as string);
+				else if (record["id"] is Guid)
+					recordId = (Guid)record["id"];
+				else
+					throw new Exception("Invalid record id");
+
+				var query = EntityQuery.QueryEQ("id", recordId);
+				var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+				response = Find(entityQuery);
+				if (response.Object != null && response.Object.Data.Count > 0)
+					response.Message = "Record was updated successfully";
+				else
+				{
+					response.Success = false;
+					response.Message = "Record was not updated successfully";
+				}
+
+				return response;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Object = null;
+				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-                response.Message = e.Message + e.StackTrace;
+				response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity record was not update. An internal error occurred!";
 #endif
-                return response;
-            }
+				return response;
+			}
 
-        }
+		}
 
-        public QueryResponse DeleteRecord(string entityName, Guid id)
-        {
-            if (string.IsNullOrWhiteSpace(entityName))
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
-                return response;
-            }
+		public QueryResponse DeleteRecord(string entityName, Guid id)
+		{
+			if (string.IsNullOrWhiteSpace(entityName))
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+				return response;
+			}
 
-            Entity entity = GetEntity(entityName);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+			Entity entity = GetEntity(entityName);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return DeleteRecord(entity, id);
-        }
+			return DeleteRecord(entity, id);
+		}
 
-        public QueryResponse DeleteRecord(Guid entityId, Guid id)
-        {
-            Entity entity = GetEntity(entityId);
-            if (entity == null)
-            {
-                QueryResponse response = new QueryResponse
-                {
-                    Success = false,
-                    Object = null,
-                    Timestamp = DateTime.UtcNow
-                };
-                response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
-                return response;
-            }
+		public QueryResponse DeleteRecord(Guid entityId, Guid id)
+		{
+			Entity entity = GetEntity(entityId);
+			if (entity == null)
+			{
+				QueryResponse response = new QueryResponse
+				{
+					Success = false,
+					Object = null,
+					Timestamp = DateTime.UtcNow
+				};
+				response.Errors.Add(new ErrorModel { Message = "Entity cannot be found." });
+				return response;
+			}
 
-            return DeleteRecord(entity, id);
-        }
+			return DeleteRecord(entity, id);
+		}
 
-        public QueryResponse DeleteRecord(Entity entity, Guid id)
-        {
+		public QueryResponse DeleteRecord(Entity entity, Guid id)
+		{
 
-            QueryResponse response = new QueryResponse();
-            response.Object = null;
-            response.Success = true;
-            response.Timestamp = DateTime.UtcNow;
+			QueryResponse response = new QueryResponse();
+			response.Object = null;
+			response.Success = true;
+			response.Timestamp = DateTime.UtcNow;
 
-            try
-            {
-                if (entity == null)
-                {
-                    response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
-                    response.Success = false;
-                    return response;
-                }
-
-
-                if (!ignoreSecurity)
-                {
-                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Delete, entity);
-                    if (!hasPermisstion)
-                    {
-                        response.StatusCode = HttpStatusCode.Forbidden;
-                        response.Success = false;
-                        response.Message = "Trying to delete record in entity '" + entity.Name + "' with no delete access.";
-                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
-                        return response;
-                    }
-                }
-
-                List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
-
-                var query = EntityQuery.QueryEQ("id", id);
-                var entityQuery = new EntityQuery(entity.Name, "*", query);
-
-                response = Find(entityQuery);
-                if (response.Object != null && response.Object.Data.Count == 1)
-                {
-                    var recRepo = erpService.StorageService.GetRecordRepository();
-                    recRepo.Delete(entity.Name, id);
-                }
-                else
-                {
-                    response.Success = false;
-                    response.Message = "Record was not found.";
-                    return response;
-                }
+			try
+			{
+				if (entity == null)
+				{
+					response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
+					response.Success = false;
+					return response;
+				}
 
 
-                return response;
-            }
-            catch (Exception e)
-            {
-                response.Success = false;
-                response.Object = null;
-                response.Timestamp = DateTime.UtcNow;
+				if (!ignoreSecurity)
+				{
+					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Delete, entity);
+					if (!hasPermisstion)
+					{
+						response.StatusCode = HttpStatusCode.Forbidden;
+						response.Success = false;
+						response.Message = "Trying to delete record in entity '" + entity.Name + "' with no delete access.";
+						response.Errors.Add(new ErrorModel { Message = "Access denied." });
+						return response;
+					}
+				}
+
+				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+
+				var query = EntityQuery.QueryEQ("id", id);
+				var entityQuery = new EntityQuery(entity.Name, "*", query);
+
+				response = Find(entityQuery);
+				if (response.Object != null && response.Object.Data.Count == 1)
+				{
+					var recRepo = erpService.StorageService.GetRecordRepository();
+					recRepo.Delete(entity.Name, id);
+				}
+				else
+				{
+					response.Success = false;
+					response.Message = "Record was not found.";
+					return response;
+				}
+
+
+				return response;
+			}
+			catch (Exception e)
+			{
+				response.Success = false;
+				response.Object = null;
+				response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-                response.Message = e.Message + e.StackTrace;
+				response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity record was not update. An internal error occurred!";
 #endif
-                return response;
-            }
+				return response;
+			}
 
-        }
+		}
 
-        public QueryResponse Find(EntityQuery query)
-        {
-            QueryResponse response = new QueryResponse
-            {
-                Success = true,
-                Message = "The query was successfully executed.",
-                Timestamp = DateTime.UtcNow
-            };
+		public QueryResponse Find(EntityQuery query)
+		{
+			QueryResponse response = new QueryResponse
+			{
+				Success = true,
+				Message = "The query was successfully executed.",
+				Timestamp = DateTime.UtcNow
+			};
 
-            try
-            {
-                var entity = GetEntity(query.EntityName);
-                if (entity == null)
-                {
-                    response.Success = false;
-                    response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
-                    response.Object = null;
-                    response.Errors.Add(new ErrorModel { Message = response.Message });
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
-
-
-                if (!ignoreSecurity)
-                {
-                    bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
-                    if (!hasPermisstion)
-                    {
-                        response.StatusCode = HttpStatusCode.Forbidden;
-                        response.Success = false;
-                        response.Message = "Trying to read records from entity '" + entity.Name + "'  with no read access.";
-                        response.Errors.Add(new ErrorModel { Message = "Access denied." });
-                        return response;
-                    }
-                }
-
-                try
-                {
-                    if (query.Query != null)
-                        ProcessQueryObject(entity, query.Query);
-                }
-                catch (Exception ex)
-                {
-                    response.Success = false;
-                    response.Message = "The query is incorrect and cannot be executed.";
-                    response.Object = null;
-                    response.Errors.Add(new ErrorModel { Message = ex.Message });
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
-
-                IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
-                List<Field> fields = ExtractQueryFieldsMeta(query);
-                var recRepo = erpService.StorageService.GetRecordRepository();
-                var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
+			try
+			{
+				var entity = GetEntity(query.EntityName);
+				if (entity == null)
+				{
+					response.Success = false;
+					response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
+					response.Object = null;
+					response.Errors.Add(new ErrorModel { Message = response.Message });
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
 
-                List<EntityRecord> data = new List<EntityRecord>();
-                foreach (var record in storageRecords)
-                {
-                    var dataRecord = new EntityRecord();
-                    foreach (var field in fields)
-                    {
-                        var recValue = record.SingleOrDefault(x => x.Key == field.Name);
-                        if (!(field is RelationFieldMeta))
-                        {
-                            dataRecord[field.Name] = ExtractFieldValue(recValue, field);
-                        }
-                        else //relation field
-                        {
-                            RelationFieldMeta relationField = (RelationFieldMeta)field;
+				if (!ignoreSecurity)
+				{
+					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+					if (!hasPermisstion)
+					{
+						response.StatusCode = HttpStatusCode.Forbidden;
+						response.Success = false;
+						response.Message = "Trying to read records from entity '" + entity.Name + "'  with no read access.";
+						response.Errors.Add(new ErrorModel { Message = "Access denied." });
+						return response;
+					}
+				}
 
-                            if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
-                            {
-                                IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
-                                //when the relation is origin -> target entity
-                                if (relationField.Relation.OriginEntityId == entity.Id)
-                                {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-                                    if (recValue.Value != null)
-                                    {
-                                        var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-                                        relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-                                    }
-                                }
-                                else //when the relation is target -> origin, we have to query origin entity
-                                {
-                                    recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-                                    if (recValue.Value != null)
-                                    {
-                                        var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-                                        relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-                                    }
-                                }
+				try
+				{
+					if (query.Query != null)
+						ProcessQueryObject(entity, query.Query);
+				}
+				catch (Exception ex)
+				{
+					response.Success = false;
+					response.Message = "The query is incorrect and cannot be executed.";
+					response.Object = null;
+					response.Errors.Add(new ErrorModel { Message = ex.Message });
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
-                                var dataArrayRecord = new List<EntityRecord>();
-                                if (relatedStorageRecord != null)
-                                {
-                                    var relatedObject = new EntityRecord();
-                                    foreach (var relField in relationField.Fields)
-                                    {
-                                        var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                        relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-                                    }
-                                    dataArrayRecord.Add(relatedObject);
-                                }
-                                dataRecord[field.Name] = dataArrayRecord;
-                            }
-                            else if (relationField.Relation.RelationType == EntityRelationType.OneToMany)
-                            {
-                                IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
-                                if (relationField.Relation.OriginEntityId != relationField.Relation.TargetEntityId)
-                                {
-                                    if (relationField.Relation.OriginEntityId == entity.Id)
-                                    {
-                                        recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-                                        if (recValue.Value != null)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-                                            relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
-                                        }
-                                    }
-                                    else //when the relation is target -> origin, we have to query origin entity
-                                    {
-                                        recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-                                        if (recValue.Value != null)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-                                            relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if( relationField.Direction == "target-origin")
-                                    {
-                                        recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-                                        if (recValue.Value != null)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-                                            relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-                                        if (recValue.Value != null)
-                                        {
-                                            var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-                                            relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
-                                        }
-                                    }
-                                }
+				List<Field> fields = ExtractQueryFieldsMeta(query);
+				var recRepo = erpService.StorageService.GetRecordRepository();
+				var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
 
-                                var dataArrayRecord = new List<EntityRecord>();
-                                if (relatedStorageRecords != null)
-                                {
-                                    foreach (var relatedStorageRecord in relatedStorageRecords)
-                                    {
-                                        var relatedObject = new EntityRecord();
-                                        foreach (var relField in relationField.Fields)
-                                        {
-                                            var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                            relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-                                        }
-                                        dataArrayRecord.Add(relatedObject);
-                                    }
-                                }
-                                dataRecord[field.Name] = dataArrayRecord;
-                            }
-                            else if (relationField.Relation.RelationType == EntityRelationType.ManyToMany)
-                            {
-                                List<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
 
-								if(relationField.Relation.OriginEntityId == relationField.Relation.TargetEntityId) 
+				List<EntityRecord> data = new List<EntityRecord>();
+				foreach (var record in storageRecords)
+				{
+					var dataRecord = new EntityRecord();
+					foreach (var field in fields)
+					{
+						var recValue = record.SingleOrDefault(x => x.Key == field.Name);
+						if (!(field is RelationFieldMeta))
+						{
+							dataRecord[field.Name] = ExtractFieldValue(recValue, field);
+						}
+						else //relation field
+						{
+							RelationFieldMeta relationField = (RelationFieldMeta)field;
+
+							if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
+							{
+								IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
+								//when the relation is origin -> target entity
+								if (relationField.Relation.OriginEntityId == entity.Id)
+								{
+									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+									if (recValue.Value != null)
+									{
+										var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+										relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+									}
+								}
+								else //when the relation is target -> origin, we have to query origin entity
+								{
+									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+									if (recValue.Value != null)
+									{
+										var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+										relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+									}
+								}
+
+								var dataArrayRecord = new List<EntityRecord>();
+								if (relatedStorageRecord != null)
+								{
+									var relatedObject = new EntityRecord();
+									foreach (var relField in relationField.Fields)
+									{
+										var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
+										relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
+									}
+									dataArrayRecord.Add(relatedObject);
+								}
+								dataRecord[field.Name] = dataArrayRecord;
+							}
+							else if (relationField.Relation.RelationType == EntityRelationType.OneToMany)
+							{
+								IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
+								if (relationField.Relation.OriginEntityId != relationField.Relation.TargetEntityId)
+								{
+									if (relationField.Relation.OriginEntityId == entity.Id)
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+										if (recValue.Value != null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+											relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+										}
+									}
+									else //when the relation is target -> origin, we have to query origin entity
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+										if (recValue.Value != null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+											relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+										}
+									}
+								}
+								else
+								{
+									if (relationField.Direction == "target-origin")
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
+										if (recValue.Value != null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+											relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+										}
+									}
+									else
+									{
+										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+										if (recValue.Value != null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+											relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+										}
+									}
+								}
+
+								var dataArrayRecord = new List<EntityRecord>();
+								if (relatedStorageRecords != null)
+								{
+									foreach (var relatedStorageRecord in relatedStorageRecords)
+									{
+										var relatedObject = new EntityRecord();
+										foreach (var relField in relationField.Fields)
+										{
+											var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
+											relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
+										}
+										dataArrayRecord.Add(relatedObject);
+									}
+								}
+								dataRecord[field.Name] = dataArrayRecord;
+							}
+							else if (relationField.Relation.RelationType == EntityRelationType.ManyToMany)
+							{
+								List<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
+
+								if (relationField.Relation.OriginEntityId == relationField.Relation.TargetEntityId)
 								{
 									if (relationField.Direction == "target-origin")
 									{
@@ -783,12 +782,12 @@ namespace WebVella.ERP.Api
 									}
 								}
 								else if (relationField.Relation.OriginEntityId == entity.Id)
-                                {
+								{
 									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-                                    if (recValue.Value != null)
+									if (recValue.Value != null)
 									{
 										var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
-										if (relationData.Key != null )
+										if (relationData.Key != null)
 										{
 											List<object> relatedRecordIds = relationData.Value as List<object>;
 											relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
@@ -804,18 +803,18 @@ namespace WebVella.ERP.Api
 											}
 										}
 									}
-                                }
-                                else //when the relation is target -> origin, we have to query origin entity
-                                {
+								}
+								else //when the relation is target -> origin, we have to query origin entity
+								{
 									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 									if (recValue.Value != null)
 									{
 										var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
-										var targetField = targetEntity.Fields.Single(x=>x.Id == relationField.Relation.TargetFieldId);
-										var relatedRecord = recRepo.Find( targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
+										var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
+										var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
 										if (relatedRecord.Count() > 1)
 											throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
-                                         
+
 										if (relatedRecord.Count() == 1)
 										{
 											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
@@ -836,443 +835,448 @@ namespace WebVella.ERP.Api
 									}
 								}
 
-                                var dataArrayRecord = new List<EntityRecord>();
-                                if (relatedStorageRecords != null)
-                                {
-                                    foreach (var relatedStorageRecord in relatedStorageRecords)
-                                    {
-                                        var relatedObject = new EntityRecord();
-                                        foreach (var relField in relationField.Fields)
-                                        {
-                                            var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-                                            relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-                                        }
-                                        dataArrayRecord.Add(relatedObject);
-                                    }
-                                }
-                                dataRecord[field.Name] = dataArrayRecord;
-                            }
-                        }
-                    }
-                    data.Add(dataRecord);
-                }
+								var dataArrayRecord = new List<EntityRecord>();
+								if (relatedStorageRecords != null)
+								{
+									foreach (var relatedStorageRecord in relatedStorageRecords)
+									{
+										var relatedObject = new EntityRecord();
+										foreach (var relField in relationField.Fields)
+										{
+											var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
+											relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
+										}
+										dataArrayRecord.Add(relatedObject);
+									}
+								}
+								dataRecord[field.Name] = dataArrayRecord;
+							}
+						}
+					}
+					data.Add(dataRecord);
+				}
 
-                response.Object = new QueryResult { FieldsMeta = fields, Data = data };
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = "The query is incorrect and cannot be executed";
-                response.Object = null;
-                response.Errors.Add(new ErrorModel { Message = ex.Message });
-                response.Timestamp = DateTime.UtcNow;
-                return response;
-            }
+				response.Object = new QueryResult { FieldsMeta = fields, Data = data };
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = "The query is incorrect and cannot be executed";
+				response.Object = null;
+				response.Errors.Add(new ErrorModel { Message = ex.Message });
+				response.Timestamp = DateTime.UtcNow;
+				return response;
+			}
 
-            return response;
-        }
+			return response;
+		}
 
-        public QueryCountResponse Count(EntityQuery query)
-        {
-            QueryCountResponse response = new QueryCountResponse
-            {
-                Success = true,
-                Message = "The query was successfully executed.",
-                Timestamp = DateTime.UtcNow
-            };
+		public QueryCountResponse Count(EntityQuery query)
+		{
+			QueryCountResponse response = new QueryCountResponse
+			{
+				Success = true,
+				Message = "The query was successfully executed.",
+				Timestamp = DateTime.UtcNow
+			};
 
-            try
-            {
-                var entity = GetEntity(query.EntityName);
-                if (entity == null)
-                {
-                    response.Success = false;
-                    response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
-                    response.Object = 0;
-                    response.Errors.Add(new ErrorModel { Message = response.Message });
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
+			try
+			{
+				var entity = GetEntity(query.EntityName);
+				if (entity == null)
+				{
+					response.Success = false;
+					response.Message = string.Format("The query is incorrect. Specified entity '{0}' does not exist.", query.EntityName);
+					response.Object = 0;
+					response.Errors.Add(new ErrorModel { Message = response.Message });
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
-                try
-                {
-                    if (query.Query != null)
-                        ProcessQueryObject(entity, query.Query);
-                }
-                catch (Exception ex)
-                {
-                    response.Success = false;
-                    response.Message = "The query is incorrect and cannot be executed";
-                    response.Object = 0;
-                    response.Errors.Add(new ErrorModel { Message = ex.Message });
-                    response.Timestamp = DateTime.UtcNow;
-                    return response;
-                }
+				try
+				{
+					if (query.Query != null)
+						ProcessQueryObject(entity, query.Query);
+				}
+				catch (Exception ex)
+				{
+					response.Success = false;
+					response.Message = "The query is incorrect and cannot be executed";
+					response.Object = 0;
+					response.Errors.Add(new ErrorModel { Message = ex.Message });
+					response.Timestamp = DateTime.UtcNow;
+					return response;
+				}
 
-                IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
-                List<Field> fields = ExtractQueryFieldsMeta(query);
-                var recRepo = erpService.StorageService.GetRecordRepository();
-                response.Object = recRepo.Count(query.EntityName, query.Query);
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = "The query is incorrect and cannot be executed";
-                response.Object = 0;
-                response.Errors.Add(new ErrorModel { Message = ex.Message });
-                response.Timestamp = DateTime.UtcNow;
-                return response;
-            }
+				IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
+				List<Field> fields = ExtractQueryFieldsMeta(query);
+				var recRepo = erpService.StorageService.GetRecordRepository();
+				response.Object = recRepo.Count(query.EntityName, query.Query);
+			}
+			catch (Exception ex)
+			{
+				response.Success = false;
+				response.Message = "The query is incorrect and cannot be executed";
+				response.Object = 0;
+				response.Errors.Add(new ErrorModel { Message = ex.Message });
+				response.Timestamp = DateTime.UtcNow;
+				return response;
+			}
 
-            return response;
-        }
+			return response;
+		}
 
-        public IStorageTransaction CreateTransaction()
-        {
-            return erpService.StorageService.GetRecordRepository().CreateTransaction();
-        }
+		public IStorageTransaction CreateTransaction()
+		{
+			return erpService.StorageService.GetRecordRepository().CreateTransaction();
+		}
 
-        private object ExtractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
-        {
-            if (fieldValue != null && fieldValue.Value.Key != null)
-            {
-                var pair = fieldValue.Value;
+		private object ExtractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
+		{
+			if (fieldValue != null && fieldValue.Value.Key != null)
+			{
+				var pair = fieldValue.Value;
 
-                if (field is AutoNumberField)
-                {
-                    if (pair.Value == null)
-                        return null;
-                    if (pair.Value is string)
-                        return decimal.Parse(pair.Value as string);
+				if (field is AutoNumberField)
+				{
+					if (pair.Value == null)
+						return null;
+					if (pair.Value is string)
+						return decimal.Parse(pair.Value as string);
 
-                    return Convert.ToDecimal(pair.Value);
-                }
-                else if (field is CheckboxField)
-                    return pair.Value as bool?;
-                else if (field is CurrencyField)
-                {
-                    if (pair.Value == null)
-                        return null;
-                    if (pair.Value is string)
-                        return decimal.Parse(pair.Value as string);
+					return Convert.ToDecimal(pair.Value);
+				}
+				else if (field is CheckboxField)
+					return pair.Value as bool?;
+				else if (field is CurrencyField)
+				{
+					if (pair.Value == null)
+						return null;
+					if (pair.Value is string)
+						return decimal.Parse(pair.Value as string);
 
-                    return Convert.ToDecimal(pair.Value);
-                }
-                else if (field is DateField)
-                {
-                    if (pair.Value == null)
-                        return null;
+					return Convert.ToDecimal(pair.Value);
+				}
+				else if (field is DateField)
+				{
+					if (pair.Value == null)
+						return null;
 
-                    DateTime? date = null;
-                    if (pair.Value is string)
-                        date = DateTime.Parse(pair.Value as string);
-                    else
-                        date = pair.Value as DateTime?;
+					DateTime? date = null;
+					if (pair.Value is string)
+						date = DateTime.Parse(pair.Value as string);
+					else
+						date = pair.Value as DateTime?;
 
-                    if (date != null)
-                        return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
-                }
-                else if (field is DateTimeField)
-                {
+					if (date != null)
+						return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+				}
+				else if (field is DateTimeField)
+				{
 
-                    if (pair.Value == null)
-                        return null;
+					if (pair.Value == null)
+						return null;
 
-                    if (pair.Value is string)
-                        return DateTime.Parse(pair.Value as string);
+					if (pair.Value is string)
+						return DateTime.Parse(pair.Value as string);
 
-                    return pair.Value as DateTime?;
-                }
-                else if (field is EmailField)
-                    return pair.Value as string;
-                else if (field is FileField)
-                    //TODO convert file path to url path
-                    return pair.Value as string;
-                else if (field is ImageField)
-                    //TODO convert image path to url path
-                    return pair.Value as string;
-                else if (field is HtmlField)
-                    return pair.Value as string;
-                else if (field is MultiLineTextField)
-                    return pair.Value as string;
-                else if (field is MultiSelectField)
-                {
-                    if (pair.Value == null)
-                        return null;
-                    else if (pair.Value is JArray)
-                        return ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
-                    else if (pair.Value is List<object>)
-                        return ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
-                    else
-                        return pair.Value as IEnumerable<string>;
-                }
-                else if (field is NumberField)
-                {
-                    if (pair.Value == null)
-                        return null;
-                    if (pair.Value is string)
-                        return decimal.Parse(pair.Value as string);
+					return pair.Value as DateTime?;
+				}
+				else if (field is EmailField)
+					return pair.Value as string;
+				else if (field is FileField)
+					//TODO convert file path to url path
+					return pair.Value as string;
+				else if (field is ImageField)
+					//TODO convert image path to url path
+					return pair.Value as string;
+				else if (field is HtmlField)
+					return pair.Value as string;
+				else if (field is MultiLineTextField)
+					return pair.Value as string;
+				else if (field is MultiSelectField)
+				{
+					if (pair.Value == null)
+						return null;
+					else if (pair.Value is JArray)
+						return ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+					else if (pair.Value is List<object>)
+						return ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
+					else
+						return pair.Value as IEnumerable<string>;
+				}
+				else if (field is NumberField)
+				{
+					if (pair.Value == null)
+						return null;
+					if (pair.Value is string)
+						return decimal.Parse(pair.Value as string);
 
-                    return Convert.ToDecimal(pair.Value);
-                }
-                else if (field is PasswordField)
-                {
-                    if (encryptPasswordFields)
-                    {
-                        if (((PasswordField)field).Encrypted == true)
-                        {
-                            if (string.IsNullOrWhiteSpace(pair.Value as string))
-                                return null;
+					return Convert.ToDecimal(pair.Value);
+				}
+				else if (field is PasswordField)
+				{
+					if (encryptPasswordFields)
+					{
+						if (((PasswordField)field).Encrypted == true)
+						{
+							if (string.IsNullOrWhiteSpace(pair.Value as string))
+								return null;
 
-                            return PasswordUtil.GetMd5Hash(pair.Value as string);
-                        }
-                    }
-                    return pair.Value;
-                }
-                else if (field is PercentField)
-                {
-                    if (pair.Value == null)
-                        return null;
-                    if (pair.Value is string)
-                        return decimal.Parse(pair.Value as string);
+							return PasswordUtil.GetMd5Hash(pair.Value as string);
+						}
+					}
+					return pair.Value;
+				}
+				else if (field is PercentField)
+				{
+					if (pair.Value == null)
+						return null;
+					if (pair.Value is string)
+						return decimal.Parse(pair.Value as string);
 
-                    return Convert.ToDecimal(pair.Value);
-                }
-                else if (field is PhoneField)
-                    return pair.Value as string;
-                else if (field is GuidField)
-                {
-                    if (pair.Value is string)
-                    {
-                        if (string.IsNullOrWhiteSpace(pair.Value as string))
-                            return null;
+					return Convert.ToDecimal(pair.Value);
+				}
+				else if (field is PhoneField)
+					return pair.Value as string;
+				else if (field is GuidField)
+				{
+					if (pair.Value is string)
+					{
+						if (string.IsNullOrWhiteSpace(pair.Value as string))
+							return null;
 
-                        return new Guid(pair.Value as string);
-                    }
+						return new Guid(pair.Value as string);
+					}
 
-                    if (pair.Value is Guid)
-                        return (Guid?)pair.Value;
+					if (pair.Value is Guid)
+						return (Guid?)pair.Value;
 
-                    if (pair.Value == null)
-                        return (Guid?)null;
+					if (pair.Value == null)
+						return (Guid?)null;
 
-                    throw new Exception("Invalid Guid field value.");
-                }
-                else if (field is SelectField)
-                    return pair.Value as string;
-                else if (field is TextField)
-                    return pair.Value as string;
-                else if (field is UrlField)
-                    return pair.Value as string;
+					throw new Exception("Invalid Guid field value.");
+				}
+				else if (field is SelectField)
+					return pair.Value as string;
+				else if (field is TextField)
+					return pair.Value as string;
+				else if (field is UrlField)
+					return pair.Value as string;
 				else if (field is TreeSelectField)
 				{
 					if (pair.Value == null)
 						return null;
 					else if (pair.Value is JArray)
-						return ((JArray)pair.Value).Select(x => new Guid( ((JToken)x).Value<string>() ) ).ToList<Guid>();
+						return ((JArray)pair.Value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
 					else if (pair.Value is List<object>)
 						return ((List<object>)pair.Value).Select(x => ((Guid)x)).ToList<Guid>();
 					else
 						return pair.Value as IEnumerable<Guid>;
 				}
-            }
-            else
-            {
-                return field.GetDefaultValue();
-            }
+			}
+			else
+			{
+				return field.GetDefaultValue();
+			}
 
-            throw new Exception("System Error. A field type is not supported in field value extraction process.");
-        }
+			throw new Exception("System Error. A field type is not supported in field value extraction process.");
+		}
 
-        private List<Field> ExtractQueryFieldsMeta(EntityQuery query)
-        {
-            List<Field> result = new List<Field>();
+		private List<Field> ExtractQueryFieldsMeta(EntityQuery query)
+		{
+			List<Field> result = new List<Field>();
 
-            //split field string into tokens speparated by FIELDS_SEPARATOR
-            List<string> tokens = query.Fields.Split(FIELDS_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+			//split field string into tokens speparated by FIELDS_SEPARATOR
+			List<string> tokens = query.Fields.Split(FIELDS_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
-            //check the query tokens for widcard symbol and validate it is only that symbol
-            if (tokens.Count > 1 && tokens.Any(x => x == WILDCARD_SYMBOL))
-                throw new Exception("Invalid query syntax. Wildcard symbol can be used only with no other fields.");
+			//check the query tokens for widcard symbol and validate it is only that symbol
+			if (tokens.Count > 1 && tokens.Any(x => x == WILDCARD_SYMBOL))
+				throw new Exception("Invalid query syntax. Wildcard symbol can be used only with no other fields.");
 
-            //get entity by name
-            Entity entity = GetEntity(query.EntityName);
+			//get entity by name
+			Entity entity = GetEntity(query.EntityName);
 
-            if (entity == null)
-                throw new Exception(string.Format("The entity '{0}' does not exists.", query.EntityName));
+			if (entity == null)
+				throw new Exception(string.Format("The entity '{0}' does not exists.", query.EntityName));
 
-            //We check for wildcard symbol and if present include all fields of the queried entity 
-            bool wildcardSelectionEnabled = tokens.Any(x => x == WILDCARD_SYMBOL);
-            if (wildcardSelectionEnabled)
-            {
-                result.AddRange(entity.Fields);
-                return result;
-            }
+			//We check for wildcard symbol and if present include all fields of the queried entity 
+			bool wildcardSelectionEnabled = tokens.Any(x => x == WILDCARD_SYMBOL);
+			if (wildcardSelectionEnabled)
+			{
+				result.AddRange(entity.Fields);
+				return result;
+			}
 
-            //process only tokens do not contain RELATION_SEPARATOR 
-            foreach (var token in tokens)
-            {
-                if (!token.Contains(RELATION_SEPARATOR))
-                {
-                    //locate the field
-                    var field = entity.Fields.SingleOrDefault(x => x.Name == token);
+			//process only tokens do not contain RELATION_SEPARATOR 
+			foreach (var token in tokens)
+			{
+				if (!token.Contains(RELATION_SEPARATOR))
+				{
+					//locate the field
+					var field = entity.Fields.SingleOrDefault(x => x.Name == token);
 
-                    //found no field for specified token
-                    if (field == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. The field name is incorrect.", token));
+					//found no field for specified token
+					if (field == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. The field name is incorrect.", token));
 
-                    //check for duplicated field tokens and ignore them
-                    if (!result.Any(x => x.Id == field.Id))
-                        result.Add(field);
-                }
-                else
-                {
-                    var relationData = token.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-                    if (relationData.Count > 2)
-                        throw new Exception(string.Format("The specified query result  field '{0}' is incorrect. Only first level relation can be specified.", token));
+					//check for duplicated field tokens and ignore them
+					if (!result.Any(x => x.Id == field.Id))
+						result.Add(field);
+				}
+				else
+				{
+					var relationData = token.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+					if (relationData.Count > 2)
+						throw new Exception(string.Format("The specified query result  field '{0}' is incorrect. Only first level relation can be specified.", token));
 
-                    string relationName = relationData[0];
-                    string relationFieldName = relationData[1];
-                    string direction = "origin-target";
-                     
-                    if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$" )
-                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
-                    else if (!relationName.StartsWith("$"))
-                        throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
-                    else
-                        relationName = relationName.Substring(1);
+					string relationName = relationData[0];
+					string relationFieldName = relationData[1];
+					string direction = "origin-target";
 
-                    //check for target priority mark $$
-                    if( relationName.StartsWith("$") )
-                    {
-                        direction = "target-origin";
-                        relationName = relationName.Substring(1);
-                    }
+					if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
+						throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
+					else if (!relationName.StartsWith("$"))
+						throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
+					else
+						relationName = relationName.Substring(1);
 
-                    if (string.IsNullOrWhiteSpace(relationFieldName))
-                        throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
+					//check for target priority mark $$
+					if (relationName.StartsWith("$"))
+					{
+						direction = "target-origin";
+						relationName = relationName.Substring(1);
+					}
+
+					if (string.IsNullOrWhiteSpace(relationFieldName))
+						throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
 
 
 
-                    Field field = result.SingleOrDefault(x => x.Name == "$" + relationName);
-                    RelationFieldMeta relationFieldMeta = null;
-                    if (field == null)
-                    {
-                        relationFieldMeta = new RelationFieldMeta();
-                        relationFieldMeta.Name = "$" + relationName;
-                        relationFieldMeta.Direction = direction;
-                        result.Add(relationFieldMeta); 
-                    }
-                    else
-                        relationFieldMeta = (RelationFieldMeta)field;
-                    
-                     relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
-                    if (relationFieldMeta.Relation == null)
-                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
+					Field field = result.SingleOrDefault(x => x.Name == "$" + relationName);
+					RelationFieldMeta relationFieldMeta = null;
+					if (field == null)
+					{
+						relationFieldMeta = new RelationFieldMeta();
+						relationFieldMeta.Name = "$" + relationName;
+						relationFieldMeta.Direction = direction;
+						result.Add(relationFieldMeta);
+					}
+					else
+						relationFieldMeta = (RelationFieldMeta)field;
 
-                    if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
-                        throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token));
+					relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
+					if (relationFieldMeta.Relation == null)
+						throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
 
-                    if (relationFieldMeta.Direction != direction )
-                        throw new Exception(string.Format("You are trying to query relation '{0}' from origin->target and target->origin direction in single query. This is not allowed.", token));
+					if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
+						throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token));
 
-                    relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
-                    relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);
+					if (relationFieldMeta.Direction != direction)
+						throw new Exception(string.Format("You are trying to query relation '{0}' from origin->target and target->origin direction in single query. This is not allowed.", token));
 
-                    //this should not happen in a perfect (no bugs) world
-                    if (relationFieldMeta.OriginEntity == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)entity is missing.", token));
-                    if (relationFieldMeta.TargetEntity == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", token));
+					relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
+					relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);
 
-                    relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.TargetFieldId);
-                    relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
+					//this should not happen in a perfect (no bugs) world
+					if (relationFieldMeta.OriginEntity == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)entity is missing.", token));
+					if (relationFieldMeta.TargetEntity == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", token));
 
-                    //this should not happen in a perfect (no bugs) world
-                    if (relationFieldMeta.OriginField == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)field is missing.", token));
-                    if (relationFieldMeta.TargetField == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)field is missing.", token));
+					relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.TargetFieldId);
+					relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
 
-                    Entity joinToEntity = null;
-                    if (relationFieldMeta.TargetEntity.Id == entity.Id)
-                        joinToEntity = relationFieldMeta.OriginEntity;
-                    else
-                        joinToEntity = relationFieldMeta.TargetEntity;
+					//this should not happen in a perfect (no bugs) world
+					if (relationFieldMeta.OriginField == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)field is missing.", token));
+					if (relationFieldMeta.TargetField == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)field is missing.", token));
 
-                    relationFieldMeta.Entity = joinToEntity;
+					Entity joinToEntity = null;
+					if (relationFieldMeta.TargetEntity.Id == entity.Id)
+						joinToEntity = relationFieldMeta.OriginEntity;
+					else
+						joinToEntity = relationFieldMeta.TargetEntity;
 
-                    var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
-                    if (relatedField == null)
-                        throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
+					relationFieldMeta.Entity = joinToEntity;
 
-                    //if field already added
-                    if (relationFieldMeta.Fields.Any(x => x.Id == relatedField.Id))
-                        continue;
+					var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
+					if (relatedField == null)
+						throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
 
-                    relationFieldMeta.Fields.Add(relatedField);
-                }
-            }
+					//if field already added
+					if (relationFieldMeta.Fields.Any(x => x.Id == relatedField.Id))
+						continue;
 
-            return result;
-        }
+					relationFieldMeta.Fields.Add(relatedField);
+				}
+			}
 
-        private Entity GetEntity(string entityName)
-        {
-            var entity = entityCache.SingleOrDefault(x => x.Name == entityName);
-            if (entity == null)
-            {
-                entity = entityManager.ReadEntity(entityName).Object;
+			return result;
+		}
 
-                if (entity != null)
-                    entityCache.Add(entity);
-            }
+		private Entity GetEntity(string entityName)
+		{
+			var entity = entityCache.SingleOrDefault(x => x.Name == entityName);
+			if (entity == null)
+			{
+				entity = entityManager.ReadEntity(entityName).Object;
 
-            return entity;
-        }
+				if (entity != null)
+					entityCache.Add(entity);
+			}
 
-        private Entity GetEntity(Guid entityId)
-        {
-            var entity = entityCache.SingleOrDefault(x => x.Id == entityId);
-            if (entity == null)
-            {
-                entity = entityManager.ReadEntity(entityId).Object;
+			return entity;
+		}
 
-                if (entity != null)
-                    entityCache.Add(entity);
-            }
+		private Entity GetEntity(Guid entityId)
+		{
+			var entity = entityCache.SingleOrDefault(x => x.Id == entityId);
+			if (entity == null)
+			{
+				entity = entityManager.ReadEntity(entityId).Object;
 
-            return entity;
-        }
+				if (entity != null)
+					entityCache.Add(entity);
+			}
 
-        private List<EntityRelation> GetRelations()
-        {
-            if (relations == null)
-                relations = entityRelationManager.Read().Object;
+			return entity;
+		}
 
-            if (relations == null)
-                return new List<EntityRelation>();
+		private List<EntityRelation> GetRelations()
+		{
+			if (relations == null)
+				relations = entityRelationManager.Read().Object;
 
-            return relations;
-        }
+			if (relations == null)
+				return new List<EntityRelation>();
 
-        private void ProcessQueryObject(Entity entity, QueryObject obj)
-        {
-            if (obj == null)
-                return;
+			return relations;
+		}
 
-            if (obj.QueryType != QueryType.AND && obj.QueryType != QueryType.OR)
-            {
-                var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
-                if (field == null)
-                    throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
-                if (field is NumberField || field is AutoNumberField)
-                {
-                    if (obj.FieldValue != null)
-                        obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
-                }
-                else if (field is GuidField)
-                {
+		private void ProcessQueryObject(Entity entity, QueryObject obj)
+		{
+			if (obj == null)
+				return;
+
+			if (obj.QueryType != QueryType.AND && obj.QueryType != QueryType.OR &&
+				obj.QueryType != QueryType.RELATED && obj.QueryType != QueryType.NOTRELATED)
+			{
+				var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
+				if (! ( obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED ) )
+				{
+					if (field == null)
+						throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
+				}
+				
+				if (field is NumberField || field is AutoNumberField)
+				{
+					if (obj.FieldValue != null)
+						obj.FieldValue = Convert.ToDecimal(obj.FieldValue);
+				}
+				else if (field is GuidField)
+				{
 					if (obj.FieldValue != null && obj.FieldValue is string)
 					{
 						var stringGuid = obj.FieldValue as string;
@@ -1280,58 +1284,87 @@ namespace WebVella.ERP.Api
 							obj.FieldValue = new Guid(stringGuid);
 						else
 							obj.FieldValue = null;
-                    }
-                }
+					}
+				}
 				else if (field is CheckboxField)
-                {
-                    if (obj.FieldValue != null && obj.FieldValue is string)
-                        obj.FieldValue = bool.Parse(obj.FieldValue as string);
-                }
-                else if (field is PasswordField && obj.FieldValue != null)
-                    obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
+				{
+					if (obj.FieldValue != null && obj.FieldValue is string)
+						obj.FieldValue = bool.Parse(obj.FieldValue as string);
+				}
+				else if (field is PasswordField && obj.FieldValue != null)
+					obj.FieldValue = PasswordUtil.GetMd5Hash(obj.FieldValue as string);
+			}
 
-            }
+			if (obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED)
+			{
+				var relation = relationRepository.Read(obj.FieldName);
+				if( relation == null )
+					throw new Exception(string.Format("There is not relation with name '{0}' used in your query.", obj.FieldName));
 
-            if (obj.SubQueries != null && obj.SubQueries.Count > 0)
-                foreach (var subObj in obj.SubQueries)
-                {
-                    ProcessQueryObject(entity, subObj);
-                }
-        }
+				if( relation.RelationType != EntityRelationType.ManyToMany )
+					throw new Exception(string.Format("Only many to many relations can used in Related and NotRelated query operators.", obj.FieldName));
+
+				var direction = obj.FieldValue as string ?? "origin-target";
+                if ( relation.OriginEntityId == relation.TargetEntityId )
+				{
+					if (direction == "target-origin")
+						obj.FieldName = $"#{obj.FieldName}_origins";
+					else
+						obj.FieldName = $"#{obj.FieldName}_targets";
+
+				}
+				else 
+				{
+					if (entity.Id == relation.OriginEntityId)
+						obj.FieldName = $"#{obj.FieldName}_targets";
+					else
+						obj.FieldName = $"#{obj.FieldName}_origins";
+				}
+			}
+
+			if (obj.QueryType == QueryType.AND || obj.QueryType == QueryType.OR)
+			{
+				if (obj.SubQueries != null && obj.SubQueries.Count > 0)
+					foreach (var subObj in obj.SubQueries)
+					{
+						ProcessQueryObject(entity, subObj);
+					}
+			}
+		}
 
 
-        private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true)
-        {
-            if (record == null)
-                return;
+		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true)
+		{
+			if (record == null)
+				return;
 
-            if (newRecord)
-            {
+			if (newRecord)
+			{
 
-                record["created_on"] = DateTime.UtcNow;
-                record["last_modified_on"] = DateTime.UtcNow;
-                if (SecurityContext.CurrentUser != null)
-                {
-                    record["created_by"] = SecurityContext.CurrentUser.Id;
-                    record["last_modified_by"] = SecurityContext.CurrentUser.Id;
-                }
-                else
-                {
-                    record["created_by"] = null;
-                    record["last_modified_by"] = null;
-                }
-            }
-            else
-            {
-                record["last_modified_on"] = DateTime.UtcNow;
+				record["created_on"] = DateTime.UtcNow;
+				record["last_modified_on"] = DateTime.UtcNow;
+				if (SecurityContext.CurrentUser != null)
+				{
+					record["created_by"] = SecurityContext.CurrentUser.Id;
+					record["last_modified_by"] = SecurityContext.CurrentUser.Id;
+				}
+				else
+				{
+					record["created_by"] = null;
+					record["last_modified_by"] = null;
+				}
+			}
+			else
+			{
+				record["last_modified_on"] = DateTime.UtcNow;
 
-                if (SecurityContext.CurrentUser != null)
-                    record["last_modified_by"] = SecurityContext.CurrentUser.Id;
-                else
-                    record["last_modified_by"] = null;
+				if (SecurityContext.CurrentUser != null)
+					record["last_modified_by"] = SecurityContext.CurrentUser.Id;
+				else
+					record["last_modified_by"] = null;
 
-            }
-        }
+			}
+		}
 
 		public void ConvertNtoNRelations()
 		{
@@ -1339,5 +1372,5 @@ namespace WebVella.ERP.Api
 
 			entityRelationRepository.ConvertNtoNRelations();
 		}
-    }
+	}
 }
