@@ -213,7 +213,15 @@ namespace WebVella.ERP.Storage.Mongo
                         var regex = new BsonRegularExpression(string.Format("{0}", value));
                         return Query.Matches(ProcessQueryIDFieldName(query.FieldName), regex);
                     }
-                case QueryType.AND:
+				case QueryType.RELATED:
+					{
+						return  Query.And( Query.Not( Query.Size(query.FieldName, 0) ), Query.Not( Query.EQ( query.FieldName, BsonNull.Value ) ));
+					}
+				case QueryType.NOTRELATED:
+					{
+						return Query.Or( Query.Size(query.FieldName, 0), Query.EQ(query.FieldName, BsonNull.Value));
+					}
+				case QueryType.AND:
                     {
                         List<IMongoQuery> queries = new List<IMongoQuery>();
                         if (query.SubQueries.Count == 1)

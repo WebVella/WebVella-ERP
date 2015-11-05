@@ -101,6 +101,16 @@ namespace WebVella.ERP.Api.Models
             return new QueryObject { QueryType = QueryType.REGEX, FieldName = fieldName, FieldValue = value };
         }
 
-        #endregion
-    }
+		public static QueryObject Related(string relationName, string direction = "origin-target")
+		{
+			return new QueryObject { QueryType = QueryType.RELATED, FieldName = relationName, FieldValue = direction };
+		}
+
+		public static QueryObject NotRelated(string relationName, string direction = "origin-target")
+		{
+			return new QueryObject { QueryType = QueryType.NOTRELATED, FieldName = relationName, FieldValue = direction };
+		}
+
+		#endregion
+	}
 }

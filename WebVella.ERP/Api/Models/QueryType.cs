@@ -14,6 +14,8 @@ namespace WebVella.ERP.Api.Models
         OR,
         CONTAINS,
         STARTSWITH,
-        REGEX
-    }
+        REGEX,
+		RELATED,
+		NOTRELATED		
+	}
 }
