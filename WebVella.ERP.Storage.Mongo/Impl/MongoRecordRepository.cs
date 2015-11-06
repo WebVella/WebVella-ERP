@@ -215,11 +215,14 @@ namespace WebVella.ERP.Storage.Mongo
                     }
 				case QueryType.RELATED:
 					{
-						return  Query.And( Query.Not( Query.Size(query.FieldName, 0) ), Query.Not( Query.EQ( query.FieldName, BsonNull.Value ) ));
+						return  Query.And( Query.Not( Query.Size(query.FieldName, 0) ), 
+											Query.Not( Query.EQ( query.FieldName, BsonNull.Value ) ));
 					}
 				case QueryType.NOTRELATED:
 					{
-						return Query.Or( Query.Size(query.FieldName, 0), Query.EQ(query.FieldName, BsonNull.Value));
+						return Query.Or( Query.Size(query.FieldName, 0), 
+										Query.EQ(query.FieldName, BsonNull.Value), 
+										Query.Not( Query.Exists( query.FieldName)) );
 					}
 				case QueryType.AND:
                     {
