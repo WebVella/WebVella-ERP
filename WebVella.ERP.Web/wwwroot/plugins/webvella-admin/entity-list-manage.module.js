@@ -368,7 +368,6 @@
 				switch (item.type) {
 					case "field":
 						contentData.library.items.push(item);
-						contentData.onlyFieldsLibrary.items.push(item);
 						break;
 					case "relationOptions":
 						item.addedToLibrary = false;
@@ -389,6 +388,9 @@
 						}
 						break;
 				}
+			}
+			if (item.type == "field") {
+				contentData.onlyFieldsLibrary.items.push(item);
 			}
 		});
 		function sortLibrary() {
