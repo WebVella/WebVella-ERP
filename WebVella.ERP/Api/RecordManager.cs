@@ -176,6 +176,7 @@ namespace WebVella.ERP.Api
 			response.Object = null;
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
+			var recRepo = erpService.StorageService.GetRecordRepository();
 
 			try
 			{
@@ -216,7 +217,13 @@ namespace WebVella.ERP.Api
 					var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
 					try
 					{
-						storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+						if( field is AutoNumberField )
+						{
+							var maxValue = recRepo.GetAutoNumberRecordFieldMaxValue(entity.Name, field.Name);
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, maxValue+1));
+						}
+						else
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 					}
 					catch (Exception ex)
 					{
@@ -247,7 +254,7 @@ namespace WebVella.ERP.Api
 				if (recordId == Guid.Empty)
 					throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 
-				var recRepo = erpService.StorageService.GetRecordRepository();
+				
 				recRepo.Create(entity.Name, storageRecordData);
 
 

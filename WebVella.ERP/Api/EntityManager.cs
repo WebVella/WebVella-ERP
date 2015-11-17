@@ -2681,7 +2681,10 @@ namespace WebVella.ERP.Api
 					if (transactional)
 						transaction.Begin();
 
-					recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+						if( field is AutoNumberField )
+							recRep.CreateAutoNumberRecordField(entity.Name, field.Name, 1);
+						else
+							recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
 
 
 					bool result = EntityRepository.Update(editedEntity);
