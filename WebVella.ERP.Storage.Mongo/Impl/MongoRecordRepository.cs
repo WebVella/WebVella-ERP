@@ -4,6 +4,7 @@ using MongoDB.Driver.Builders;
 using System.Collections.Generic;
 using WebVella.ERP.Api.Models;
 using System;
+using System.Linq;
 
 namespace WebVella.ERP.Storage.Mongo
 {
@@ -291,11 +292,50 @@ namespace WebVella.ERP.Storage.Mongo
             mongoCollection.Update(Query.Null, MongoDB.Driver.Builders.Update.Set(fieldName, ConvertObjectToBsonValue(value)), UpdateFlags.Multi);
         }
 
-        public void RemoveRecordField(string entityName, string fieldName)
+		public void RemoveRecordField(string entityName, string fieldName)
         {
             var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
             mongoCollection.Update(Query.Null, MongoDB.Driver.Builders.Update.Unset(fieldName), UpdateFlags.Multi);
         }
 
+		public void CreateAutoNumberRecordField(string entityName, string fieldName, decimal initialValue)
+		{
+			int currentPage = 1;
+			int pageSize = 10;
+			decimal counter = initialValue;
+
+			var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+			var updateCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+			var cursor = mongoCollection.Find(Query.Null);
+			cursor.SetSkip((currentPage - 1) * pageSize);
+			cursor.SetLimit(pageSize);
+			var documentsCount = cursor.Count(); //count ignore limit and skip and will return all documents count
+
+			while (documentsCount > 0)
+			{
+				foreach (BsonDocument doc in cursor)
+				{
+					updateCollection.Update(Query.EQ("_id", doc["_id"]), MongoDB.Driver.Builders.Update.Set(fieldName, ConvertObjectToBsonValue(counter)), UpdateFlags.Multi);
+					documentsCount--;
+					counter++;
+				}
+
+				currentPage++;
+				cursor = mongoCollection.Find(Query.Null);
+				cursor.SetSkip((currentPage - 1) * pageSize);
+				cursor.SetLimit(pageSize);
+			}
+		}
+
+		public decimal GetAutoNumberRecordFieldMaxValue(string entityName, string fieldName)
+		{
+			var mongoCollection = MongoStaticContext.Context.GetBsonCollection(RECORD_COLLECTION_PREFIX + entityName);
+			var max = mongoCollection.FindAll().SetSortOrder(SortBy.Descending(fieldName)).SetLimit(1).FirstOrDefault();
+			if (max == null || max[fieldName] == null || max[fieldName] == BsonNull.Value )
+				return 0;
+			else
+				return (decimal)ConvertBsonValueToObject(max[fieldName]);
+
+		}
     }
 }

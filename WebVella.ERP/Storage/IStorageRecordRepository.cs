@@ -22,6 +22,10 @@ namespace WebVella.ERP.Storage
 
         void CreateRecordField(string entityName, string fieldName, object value);
 
-        void RemoveRecordField(string entityName, string fieldName);
-    }
+		void RemoveRecordField(string entityName, string fieldName);
+
+		void CreateAutoNumberRecordField(string entityName, string fieldName, decimal initialValue);
+
+		decimal GetAutoNumberRecordFieldMaxValue(string entityName, string fieldName);
+	}
 }
