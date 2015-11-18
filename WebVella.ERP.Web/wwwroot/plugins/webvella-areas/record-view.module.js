@@ -70,20 +70,24 @@
 
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
-			else {
+			else if(response.object.meta === null ) {
+				$timeout(function () {
+					alert("The view with name: " + $stateParams.viewName + " does not exist");
+				}, 0);
+			} else {
 				defer.resolve(response.object);
 			}
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -146,6 +150,12 @@
 			};
 		}
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
+		//#endregion
+
+		//#region << Initialize current entity >>
+		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+		contentData.viewSection = {};
+		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Initialize view and regions>>
@@ -235,12 +245,6 @@
 			contentData.selectedSidebarPage.data = returnedObject.data;
 		}
 
-		//#endregion
-
-		//#region << Initialize current entity >>
-		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.viewSection = {};
-		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Entity relations functions >>

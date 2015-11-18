@@ -5,7 +5,7 @@
 */
 
 (function () {
-	'use strict';
+	//'use strict';
 
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
@@ -61,7 +61,7 @@
 		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
 		var accessPermission = false;
 		for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-			if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+			if (resolvedCurrentUser.roles[i] === "bdc56420-caf0-4030-8a0e-d264938e0cda") {
 				accessPermission = true;
 			}
 		}
@@ -92,9 +92,9 @@
 
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -103,9 +103,9 @@
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -146,7 +146,7 @@
 
 	resolveRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$timeout'];
 	/* @ngInject */
-	function resolveRelationsList($q, $log, webvellaAdminService, $state, $timeout) {
+	function resolveRelationsList($q, $log, webvellaAdminService) {
 		$log.debug('webvellaAdmin>entity-relations> BEGIN resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
@@ -1276,6 +1276,7 @@
 
 		//Create new field modal
 		contentData.createFieldModal = function () {
+			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createFieldModal.html',
@@ -1290,7 +1291,7 @@
 
 		contentData.findFieldType = function (fieldTypeId) {
 			for (var typeIndex = 0; typeIndex < contentData.fieldTypes.length; typeIndex++) {
-				if (contentData.fieldTypes[typeIndex].id == fieldTypeId) {
+				if (contentData.fieldTypes[typeIndex].id === fieldTypeId) {
 					return contentData.fieldTypes[typeIndex];
 				}
 			}
@@ -1305,6 +1306,7 @@
 					managedField = contentData.entity.fields[i];
 				}
 			}
+			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageFieldModal.html',
@@ -1327,9 +1329,9 @@
 
 				// Process
 				function successCallback(response) {
-					if (response.object == null) {
+					if (response.object === null) {
 						$timeout(function () {
-							alert("error in response!")
+							alert("error in response!");
 						}, 0);
 					}
 					else {
@@ -1338,9 +1340,9 @@
 				}
 
 				function errorCallback(response) {
-					if (response.object == null) {
+					if (response.object === null) {
 						$timeout(function () {
-							alert("error in response!")
+							alert("error in response!");
 						}, 0);
 					}
 					else {
@@ -1348,7 +1350,7 @@
 					}
 				}
 
-				if (managedField.fieldType == 21) {
+				if (managedField.fieldType === 21) {
 					webvellaAdminService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
 				}
 				else {
@@ -1400,7 +1402,7 @@
 			//Get the current state
 
 			var permissionArrayRoleIndex = -1;
-			if (popupData.field.permissions != null) {
+			if (popupData.field.permissions !== null) {
 				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
 					if (popupData.field.permissions[permission][k] === roleId) {
 						permissionArrayRoleIndex = k;
@@ -1408,11 +1410,11 @@
 				}
 			}
 
-			if (permissionArrayRoleIndex != -1) {
+			if (permissionArrayRoleIndex !== -1) {
 				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
 			}
 			else {
-				if (popupData.field.permissions == null) {
+				if (popupData.field.permissions === null) {
 					popupData.field.permissions = {};
 					popupData.field.permissions.canRead = [];
 					popupData.field.permissions.canUpdate = [];
@@ -1458,13 +1460,14 @@
 		//#endregion
 
 		//#region << Tree selection >>
+		// ReSharper disable once UnusedParameter
 		popupData.getRelationHtml = function (treeId) {
 
 
 			return result;
 		}
 
-		$scope.$watch("popupData.field.relatedEntityId", function (newValue, oldValue) {
+		$scope.$watch("popupData.field.relatedEntityId", function (newValue) {
 			if (newValue) {
 				popupData.SelectedInTreeRelationHtml = "unknown";
 				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", newValue);
@@ -1480,7 +1483,7 @@
 			}
 		});
 
-		$scope.$watch("popupData.field.relationId", function (newValue, oldValue) {
+		$scope.$watch("popupData.field.relationId", function (newValue) {
 			if (newValue) {
 				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", popupData.field.relatedEntityId);
 				var selectedRelation = findInArray(selectedEntity.relations, "id", newValue);
@@ -1488,12 +1491,12 @@
 				popupData.selectionTypes = [];
 				popupData.selectionTypes.push(singleSelectType);
 				if (selectedRelation) {
-					if (selectedRelation.relationType == 2) {
+					if (selectedRelation.relationType === 2) {
 						//Fix type selection if it was a multiselect option
 						popupData.field.selectionType = "single-select";
 						popupData.field.selectionTarget = "all";
 					}
-					else if (selectedRelation.relationType == 3) {
+					else if (selectedRelation.relationType === 3) {
 						popupData.selectionTypes.push(multiSelectType);
 						popupData.selectionTypes.push(singleBranchSelectType);
 						popupData.field.selectionType = "single-select";
@@ -1524,13 +1527,13 @@
 		popupData.selectType = function (typeId) {
 			//find selected type
 			for (var typeIndex = 0; typeIndex < popupData.fieldTypes.length; typeIndex++) {
-				if (popupData.fieldTypes[typeIndex].id == typeId) {
+				if (popupData.fieldTypes[typeIndex].id === typeId) {
 					popupData.wizard.selectedType = popupData.fieldTypes[typeIndex];
 					break;
 				}
 			}
 
-			if (popupData.wizard.selectedType == null) {
+			if (popupData.wizard.selectedType === null) {
 				$log.debug('The selected field type [' + typeId + '] is missing in collection of field types');
 			}
 
@@ -1538,17 +1541,17 @@
 			popupData.wizard.steps[1].active = false;
 			popupData.wizard.steps[1].completed = true;
 			popupData.wizard.steps[2].active = true;
-			if (typeId == 17 || typeId == 11) //If dropdown || multiselect
+			if (typeId === 17 || typeId === 11) //If dropdown || multiselect
 			{
 				popupData.field.options = [];
 			}
-			else if (typeId == 4) {// If date or datetime
+			else if (typeId === 4) {// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd";
 			}
-			else if (typeId == 5) {// If date or datetime
+			else if (typeId === 5) {// If date or datetime
 				popupData.field.format = "yyyy-MMM-dd HH:mm";
 			}
-			else if (typeId == 21) { //if tree field
+			else if (typeId === 21) { //if tree field
 				popupData.createFieldStep2Loading = true;
 				//Tree select
 				//List of entities eligible to be selected.Conditions:
@@ -1557,9 +1560,9 @@
 				popupData.eligibleEntitiesForTreeProcessQueue = null;
 				popupData.eligibleEntitiesForTree = [];
 				for (var i = 0; i < popupData.relationsList.length; i++) {
-					if (popupData.relationsList[i].originEntityId != popupData.relationsList[i].targetEntityId && popupData.relationsList[i].targetEntityId == popupData.contentData.entity.id) {
+					if (popupData.relationsList[i].originEntityId !== popupData.relationsList[i].targetEntityId && popupData.relationsList[i].targetEntityId === popupData.contentData.entity.id) {
 
-						if (popupData.eligibleEntitiesForTreeProcessQueue == null) {
+						if (popupData.eligibleEntitiesForTreeProcessQueue === null) {
 							popupData.eligibleEntitiesForTreeProcessQueue = {};
 						}
 						if (popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId]) {
@@ -1603,10 +1606,12 @@
 					var allProcessed = true;
 					var nextForProcess = {};
 					for (var entityProperty in popupData.eligibleEntitiesForTreeProcessQueue) {
-						var processedItem = popupData.eligibleEntitiesForTreeProcessQueue[entityProperty];
-						if (!processedItem.processed) {
-							nextForProcess = processedItem;
-							allProcessed = false;
+						if (popupData.eligibleEntitiesForTreeProcessQueue.hasOwnProperty(entityProperty)) {
+							var processedItem = popupData.eligibleEntitiesForTreeProcessQueue[entityProperty];
+							if (!processedItem.processed) {
+								nextForProcess = processedItem;
+								allProcessed = false;
+							}
 						}
 					}
 					if (!allProcessed) {
@@ -1636,11 +1641,11 @@
 
 					}
 				}
-				function relatedEntitiesWithTreeErrorCallback(response) {
+				function relatedEntitiesWithTreeErrorCallback() {
 
 				}
 
-				if (popupData.eligibleEntitiesForTreeProcessQueue != null) {
+				if (popupData.eligibleEntitiesForTreeProcessQueue !== null) {
 					webvellaAdminService.getEntityMetaById(popupData.eligibleEntitiesForTreeProcessQueue[Object.keys(popupData.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
 				}
 				else {
@@ -1683,7 +1688,7 @@
 		popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
 		popupData.defaultValueTextboxValue = null;
 		popupData.uniqueGuidGenerateToggle = function (newValue) {
-			if (popupData.field.fieldTypeId == 16) {
+			if (popupData.field.fieldTypeId === 16) {
 				if (newValue) { // if it is checked
 					popupData.defaultValueTextboxEnabled = false;
 					popupData.defaultValueTextboxPlaceholder = "will be auto-generated";
@@ -1699,7 +1704,7 @@
 			}
 		}
 		popupData.uniqueGuidPropertyChecked = function (newValue) {
-			if (popupData.field.fieldTypeId == 16) {
+			if (popupData.field.fieldTypeId === 16) {
 				if (newValue) {
 					popupData.field.generateNewId = true;
 					popupData.uniqueGuidGenerateCheckboxEnabled = false;
@@ -1733,12 +1738,12 @@
 					}
 					break;
 				case 4: //Date
-					if (popupData.field.defaultValue != null) {
+					if (popupData.field.defaultValue !== null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if (popupData.field.defaultValue != null) {
+					if (popupData.field.defaultValue !== null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;
@@ -1832,7 +1837,7 @@
 		popupData.contentData = contentData;
 
 		popupData.field = fastCopy(resolvedField);
-		if (popupData.field.permissions == null) {
+		if (popupData.field.permissions === null) {
 			popupData.field.permissions = {
 				canRead: [],
 				canUpdate: []
@@ -1862,11 +1867,11 @@
 			role.id = popupData.contentData.rolesList.data[i].id;
 			role.label = popupData.contentData.rolesList.data[i].name;
 			role.canRead = false;
-			if (popupData.field.permissions != null && popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupData.field.permissions !== null && popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
 				role.canRead = true;
 			}
 			role.canUpdate = false;
-			if (popupData.field.permissions != null && popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupData.field.permissions !== null && popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
 				role.canUpdate = true;
 			}
 			popupData.fieldPermissions.push(role);
@@ -1876,7 +1881,7 @@
 			//Get the current state
 
 			var permissionArrayRoleIndex = -1;
-			if (popupData.field.permissions != null) {
+			if (popupData.field.permissions !== null) {
 				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
 					if (popupData.field.permissions[permission][k] === roleId) {
 						permissionArrayRoleIndex = k;
@@ -1884,11 +1889,11 @@
 				}
 			}
 
-			if (permissionArrayRoleIndex != -1) {
+			if (permissionArrayRoleIndex !== -1) {
 				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
 			}
 			else {
-				if (popupData.field.permissions == null) {
+				if (popupData.field.permissions === null) {
 					popupData.field.permissions = {};
 					popupData.field.permissions.canRead = [];
 					popupData.field.permissions.canUpdate = [];
@@ -1899,11 +1904,11 @@
 		}
 
 		//Currency
-		if (popupData.field.fieldType == 3) {
+		if (popupData.field.fieldType === 3) {
 			popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
-			if (popupData.field.currency != null && popupData.field.currency != {} && popupData.field.currency.code) {
+			if (popupData.field.currency !== null && popupData.field.currency !== {} && popupData.field.currency.code) {
 				for (var i = 0; i < contentData.currencyMetas.length; i++) {
-					if (popupData.field.currency.code == contentData.currencyMetas[i].code) {
+					if (popupData.field.currency.code === contentData.currencyMetas[i].code) {
 						popupData.selectedCurrencyMeta = contentData.currencyMetas[i].code;
 					}
 				}
@@ -1931,7 +1936,7 @@
 		}
 
 		popupData.uniqueGuidPropertyChecked = function (newValue) {
-			if (popupData.field.fieldType == 16) {
+			if (popupData.field.fieldType === 16) {
 				if (newValue) {
 					popupData.field.generateNewId = true;
 					popupData.uniqueGuidGenerateCheckboxEnabled = false;
@@ -1955,7 +1960,7 @@
 		var relationsList = fastCopy(popupData.contentData.relationsList);
 		var selectedRelation = {};
 		for (var i = 0; i < relationsList.length; i++) {
-			if (relationsList[i].id == popupData.field.relationId) {
+			if (relationsList[i].id === popupData.field.relationId) {
 				selectedRelation = relationsList[i];
 			}
 		}
@@ -1966,7 +1971,7 @@
 		popupData.getTreeSelectRecordTreeName = function () {
 			var relatedEntity = fastCopy(resolvedRelatedEntity);
 			for (var i = 0; i < relatedEntity.recordTrees.length; i++) {
-				if (relatedEntity.recordTrees[i].id == popupData.field.selectedTreeId) {
+				if (relatedEntity.recordTrees[i].id === popupData.field.selectedTreeId) {
 					return "<i class='fa fa-fw fa-sitemap'></i> " + relatedEntity.recordTrees[i].name;
 				}
 			}
@@ -1975,16 +1980,14 @@
 		popupData.getTreeSelectRelationHtml = function () {
 			var result = "unknown";
 			if (selectedRelation) {
-				if (selectedRelation.relationType == 2) {
+				if (selectedRelation.relationType === 2) {
 					result = $sce.trustAsHtml(selectedRelation.name + " <span class=\"badge badge-primary badge-inverse\" title=\"One to Many\" style=\"margin-left:5px;\">1 : N</span>");
 				}
-				else if (selectedRelation.relationType == 3) {
+				else if (selectedRelation.relationType === 3) {
 					result = $sce.trustAsHtml(selectedRelation.name + ' <span class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>');
 				}
 			}
 			return result;
-
-			return "";
 		}
 
 		//#region << Selection types >>
@@ -2020,7 +2023,7 @@
 
 		popupData.selectionTypes = [];
 		popupData.selectionTypes.push(singleSelectType);
-		if (selectedRelation && selectedRelation.relationType == 3) {
+		if (selectedRelation && selectedRelation.relationType === 3) {
 			popupData.selectionTypes.push(multiSelectType);
 			popupData.selectionTypes.push(singleBranchSelectType);
 		}
@@ -2043,12 +2046,12 @@
 					}
 					break;
 				case 4: //Date
-					if (popupData.field.defaultValue != null) {
+					if (popupData.field.defaultValue !== null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if (popupData.field.defaultValue != null) {
+					if (popupData.field.defaultValue !== null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;
@@ -2063,6 +2066,7 @@
 		//Delete field
 		//Create new field modal
 		popupData.deleteFieldModal = function () {
+			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'deleteFieldModal.html',

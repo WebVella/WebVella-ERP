@@ -66,7 +66,7 @@
 				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/sidebar">Sidebar</a>
 			</li>
 		</ul>
-		<hr class="divider" />
+		<hr class="divider"/>
 		<div class="view-manage-section">
 			<div class="row">
 				<div class="col-sm-8">
@@ -92,8 +92,8 @@
 											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
 												<div class="drop-zone">
 													<div as-sortable="contentData.dragControlListeners" ng-model="column.items">
-														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by $index"
-															ng-switch="::item.type">
+														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by item.dataName"
+														     ng-switch="::item.type">
 															<div ng-switch-when="field">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,$index)"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 															</div>
@@ -142,7 +142,7 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.name" class="form-control" style="width:100%;">
+								<input type="text" ng-model="contentData.search.dataName" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
@@ -150,8 +150,8 @@
 						<div class="drop-zone-disabled" id="library-items-list">
 							<div as-sortable="contentData.libraryDragControlListeners" ng-model="contentData.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item" 
-									ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search}"
-									ng-switch="::item.type">
+									ng-repeat="item in contentData.library.items | filter: contentData.search track by item.dataName"
+									ng-switch="item.type">
 									<div ng-switch-when="field">
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 									</div>
@@ -186,7 +186,7 @@
 						</div>
 					</div>
 					<br />
-					<table class="table table-border">
+					<table class="table table-border ng-hide" ng-show="contentData.library.relations.length > 0">
 						<thead>
 							<tr>
 								<th class="go-bkg-white">relations</th>
