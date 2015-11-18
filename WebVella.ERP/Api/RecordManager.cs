@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using WebVella.ERP.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Collections;
 
 namespace WebVella.ERP.Api
 {
@@ -615,7 +616,7 @@ namespace WebVella.ERP.Api
 				var recRepo = erpService.StorageService.GetRecordRepository();
 				var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
 
-
+				Hashtable relationDataCache = new Hashtable();
 				List<EntityRecord> data = new List<EntityRecord>();
 				foreach (var record in storageRecords)
 				{
@@ -640,8 +641,14 @@ namespace WebVella.ERP.Api
 									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
 									if (recValue.Value != null)
 									{
-										var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-										relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
+										relatedStorageRecord = relationDataCache[cacheKey] as IEnumerable<KeyValuePair<string, object>>;
+										if (relatedStorageRecord == null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+											relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+											relationDataCache[cacheKey] = relatedStorageRecord;
+                                        }
 									}
 								}
 								else //when the relation is target -> origin, we have to query origin entity
@@ -649,8 +656,14 @@ namespace WebVella.ERP.Api
 									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 									if (recValue.Value != null)
 									{
-										var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-										relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
+										relatedStorageRecord = relationDataCache[cacheKey] as IEnumerable<KeyValuePair<string, object>>;
+										if (relatedStorageRecord == null)
+										{
+											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+											relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
+											relationDataCache[cacheKey] = relatedStorageRecord;
+										}
 									}
 								}
 
@@ -677,8 +690,14 @@ namespace WebVella.ERP.Api
 										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
 										if (recValue.Value != null)
 										{
-											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-											relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
+											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
+											{
+												var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+												relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+												relationDataCache[cacheKey] = relatedStorageRecords;
+                                            }
 										}
 									}
 									else //when the relation is target -> origin, we have to query origin entity
@@ -686,8 +705,14 @@ namespace WebVella.ERP.Api
 										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 										if (recValue.Value != null)
 										{
-											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-											relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
+											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
+											{
+												var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+												relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+												relationDataCache[cacheKey] = relatedStorageRecords;
+											}
 										}
 									}
 								}
@@ -698,8 +723,14 @@ namespace WebVella.ERP.Api
 										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 										if (recValue.Value != null)
 										{
-											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-											relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
+											{
+												var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
+												relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
+												relationDataCache[cacheKey] = relatedStorageRecords;
+											}
 										}
 									}
 									else
@@ -707,8 +738,14 @@ namespace WebVella.ERP.Api
 										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
 										if (recValue.Value != null)
 										{
-											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-											relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
+											{
+												var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
+												relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
+												relationDataCache[cacheKey] = relatedStorageRecords;
+											}
 										}
 									}
 								}
@@ -740,34 +777,74 @@ namespace WebVella.ERP.Api
 										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 										if (recValue.Value != null)
 										{
-											var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
-											var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
-											var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
-											if (relatedRecord.Count() > 1)
-												throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
-
-											if (relatedRecord.Count() == 1)
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+											relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
 											{
-												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
-												List<object> relatedRecordIds = relationData.Value as List<object>;
-												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-												if (relatedRecordIds != null)
+												var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
+												var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
+												var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
+												if (relatedRecord.Count() > 1)
+													throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
+
+												if (relatedRecord.Count() == 1)
 												{
-													foreach (Guid id in relatedRecordIds)
+													var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
+													List<object> relatedRecordIds = relationData.Value as List<object>;
+													relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+													if (relatedRecordIds != null)
 													{
-														var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
-														var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
-														if (relatedStorageRecord != null)
-															relatedStorageRecords.Add(relatedStorageRecord);
+														foreach (Guid id in relatedRecordIds)
+														{
+															var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
+															var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
+															if (relatedStorageRecord != null)
+																relatedStorageRecords.Add(relatedStorageRecord);
+														}
 													}
 												}
-											}
+												relationDataCache[cacheKey] = relatedStorageRecords;
+                                            }
 										}
 									}
 									else
 									{
 										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
 										if (recValue.Value != null)
+										{
+											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+											relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
+											if (relatedStorageRecords == null)
+											{
+												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
+												if (relationData.Key != null)
+												{
+													List<object> relatedRecordIds = relationData.Value as List<object>;
+													relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+													if (relatedRecordIds != null)
+													{
+														foreach (Guid id in relatedRecordIds)
+														{
+															var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
+															var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
+															if (relatedStorageRecord != null)
+																relatedStorageRecords.Add(relatedStorageRecord);
+														}
+													}
+												}
+												relationDataCache[cacheKey] = relatedStorageRecords;
+											}
+										}
+									}
+								}
+								else if (relationField.Relation.OriginEntityId == entity.Id)
+								{
+									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
+									if (recValue.Value != null)
+									{
+										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+										relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
+										if (relatedStorageRecords == null)
 										{
 											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
 											if (relationData.Key != null)
@@ -785,29 +862,7 @@ namespace WebVella.ERP.Api
 													}
 												}
 											}
-										}
-									}
-								}
-								else if (relationField.Relation.OriginEntityId == entity.Id)
-								{
-									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-									if (recValue.Value != null)
-									{
-										var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
-										if (relationData.Key != null)
-										{
-											List<object> relatedRecordIds = relationData.Value as List<object>;
-											relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-											if (relatedRecordIds != null)
-											{
-												foreach (Guid id in relatedRecordIds)
-												{
-													var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
-													var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
-													if (relatedStorageRecord != null)
-														relatedStorageRecords.Add(relatedStorageRecord);
-												}
-											}
+											relationDataCache[cacheKey] = relatedStorageRecords;
 										}
 									}
 								}
@@ -816,28 +871,34 @@ namespace WebVella.ERP.Api
 									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
 									if (recValue.Value != null)
 									{
-										var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
-										var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
-										var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
-										if (relatedRecord.Count() > 1)
-											throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
-
-										if (relatedRecord.Count() == 1)
+										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
+										relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
+										if (relatedStorageRecords == null)
 										{
-											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
-											List<object> relatedRecordIds = relationData.Value as List<object>;
-											//List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
-											relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-											if (relatedRecordIds != null)
+											var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
+											var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
+											var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
+											if (relatedRecord.Count() > 1)
+												throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
+
+											if (relatedRecord.Count() == 1)
 											{
-												foreach (Guid id in relatedRecordIds)
+												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
+												List<object> relatedRecordIds = relationData.Value as List<object>;
+												//List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
+												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
+												if (relatedRecordIds != null)
 												{
-													var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
-													var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
-													if (relatedStorageRecord != null)
-														relatedStorageRecords.Add(relatedStorageRecord);
+													foreach (Guid id in relatedRecordIds)
+													{
+														var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
+														var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
+														if (relatedStorageRecord != null)
+															relatedStorageRecords.Add(relatedStorageRecord);
+													}
 												}
 											}
+											relationDataCache[cacheKey] = relatedStorageRecords;
 										}
 									}
 								}
