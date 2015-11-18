@@ -127,9 +127,15 @@
         var contentData = this;
         contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         contentData.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
-        if (contentData.views == null) {
+        if (contentData.views === null) {
         	contentData.views = [];
         }
+        contentData.views.sort(function (a, b) {
+        	if (a.name < b.name) return -1;
+        	if (a.name > b.name) return 1;
+        	return 0;
+        });
+
         //Update page title
         contentData.pageTitle = "Entity Views | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);

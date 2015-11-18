@@ -182,6 +182,11 @@
 
         //#region << Initialize the lists >>
         contentData.lists = fastCopy(resolvedEntityRecordsList.recordLists);
+        contentData.lists.sort(function (a, b) {
+        	if (a.name < b.name) return -1;
+        	if (a.name > b.name) return 1;
+        	return 0;
+        });
         //#endregion
 
     	//Create new list modal

@@ -72,7 +72,7 @@
 					<div class="panel panel-default wrapper">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items"
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by item.dataName"
 									ng-switch="::item.type">
 									<div ng-switch-when="view">
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>
@@ -108,7 +108,7 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.name" class="form-control" style="width:100%;">
+								<input type="text" ng-model="contentData.search.dataName" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
@@ -116,7 +116,7 @@
 						<div class="drop-zone-disabled" id="library-items-list">
 							<div as-sortable="contentData.libraryDragControlListeners" ng-model="contentData.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item" 
-									ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search}"
+									ng-repeat="item in contentData.library.items | filter: contentData.search track by item.dataName"
 									ng-switch="::item.type">
 									<div ng-switch-when="view"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}</div>
 									<div ng-switch-when="viewFromRelation"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
