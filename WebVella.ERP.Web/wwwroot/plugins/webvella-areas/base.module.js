@@ -23,7 +23,7 @@
             views: {
                 "rootView": {
                     controller: 'WebVellaAreasBaseController',
-                    templateUrl: '/plugins/webvella-areas/base.view.html',
+                    templateUrl: '/plugins/webvella-areas/base.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'pluginData'
                 }
             },
