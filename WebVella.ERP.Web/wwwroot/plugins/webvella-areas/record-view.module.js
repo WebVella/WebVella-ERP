@@ -25,17 +25,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasRecordViewSidebarController',
-					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
+					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordViewController',
-					templateUrl: '/plugins/webvella-areas/record-view.view.html',
+					templateUrl: '/plugins/webvella-areas/record-view.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'contentData'
 				}
 			},
@@ -155,7 +155,6 @@
 		//#region << Initialize current entity >>
 		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
 		contentData.viewSection = {};
-		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Initialize view and regions>>
@@ -236,6 +235,7 @@
 			//The default view meta is active
 			returnedObject = getViewOrListMetaAndData("");
 			contentData.selectedSidebarPage = returnedObject;
+			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 		else {
 			//One of the sidebar view or lists is active
@@ -243,6 +243,7 @@
 			returnedObject = getViewOrListMetaAndData($stateParams.auxPageName);
 			contentData.selectedSidebarPage = returnedObject;
 			contentData.selectedSidebarPage.data = returnedObject.data;
+			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 
 		//#endregion

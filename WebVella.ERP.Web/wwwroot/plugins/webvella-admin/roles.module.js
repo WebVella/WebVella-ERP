@@ -27,17 +27,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                 	controller: 'WebVellaAdminRolesController',
-                    templateUrl: '/plugins/webvella-admin/roles.view.html',
+                	templateUrl: '/plugins/webvella-admin/roles.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'contentData'
                 }
             },

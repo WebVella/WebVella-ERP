@@ -24,7 +24,7 @@
 			views: {
 				"contentView": {
 					controller: 'WebVellaDesktopBrowseController',
-					templateUrl: '/plugins/webvella-desktop/browse.view.html',
+					templateUrl: '/plugins/webvella-desktop/browse.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'contentData'
 				}
 			},
