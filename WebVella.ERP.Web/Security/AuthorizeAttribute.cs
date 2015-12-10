@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace WebVella.ERP.Web.Security
             var action = context.ActionDescriptor;
 
             //check for allow anonymous and if found skip other checks
-            var allowAnonymousFound = action.FilterDescriptors.Any(x => x.Filter is AllowAnonymousAttribute);
+            var allowAnonymousFound = action.FilterDescriptors.Any(x => x.Filter is AllowAnonymousFilter);
             if (allowAnonymousFound)
             {
                 base.OnActionExecuting(context);

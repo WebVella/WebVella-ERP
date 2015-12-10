@@ -6,7 +6,7 @@ using WebVella.ERP.Web.Security;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    [AuthorizeAttribute]
+    [Authorize]
     public class ApiControllerBase : Controller
     {
         protected IErpService service;
@@ -21,9 +21,9 @@ namespace WebVella.ERP.Web.Controllers
             if (response.Errors.Count > 0 || !response.Success)
             {
                 if( response.StatusCode == HttpStatusCode.OK )
-                    Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 else
-                    Context.Response.StatusCode = (int)response.StatusCode;
+                    HttpContext.Response.StatusCode = (int)response.StatusCode;
             }
 
             return Json(response);
@@ -31,7 +31,7 @@ namespace WebVella.ERP.Web.Controllers
 
         public IActionResult DoPageNotFoundResponse()
         {
-            Context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
             return Json(new { });
         }
 
@@ -48,7 +48,7 @@ namespace WebVella.ERP.Web.Controllers
             if (string.IsNullOrEmpty( message ))
                 response.Message = "An internal error occurred!";
 #endif
-            Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(response);
         }
     }
