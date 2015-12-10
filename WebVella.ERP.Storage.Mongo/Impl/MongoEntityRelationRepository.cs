@@ -383,7 +383,7 @@ namespace WebVella.ERP.Storage.Mongo
 				targetRecord = targetRecords.First();
 				var originsElementName = $"#{ relation.Name}_origins";
 				BsonElement bsonElement = null;
-				try { bsonElement = originRecord.GetElement(originsElementName); } catch { }
+				try { bsonElement = targetRecord.GetElement(originsElementName); } catch { }
 				if (bsonElement != null)
 				{
 					var origins = BsonTypeMapper.MapToDotNetValue(bsonElement.Value) as List<object>;
