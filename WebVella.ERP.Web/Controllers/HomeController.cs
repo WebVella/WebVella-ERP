@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Mvc;
 
 namespace WebVella.ERP.Web.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : ApiControllerBase
     {
         public HomeController(IErpService service) : base(service)
         {
         }
 
+		[AllowAnonymous]
         // GET: /<controller>/
         public IActionResult Index()
         {
