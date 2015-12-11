@@ -14,6 +14,15 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "CsvHelper/2.13.0": {
+        "type": "package",
+        "compile": {
+          "lib/net20/CsvHelper.dll": {}
+        },
+        "runtime": {
+          "lib/net20/CsvHelper.dll": {}
+        }
+      },
       "EntityFramework.Core/7.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -75,6 +84,15 @@
         },
         "runtime": {
           "lib/net451/EntityFramework.Relational.dll": {}
+        }
+      },
+      "iTextSharp/5.5.6": {
+        "type": "package",
+        "compile": {
+          "lib/itextsharp.dll": {}
+        },
+        "runtime": {
+          "lib/itextsharp.dll": {}
         }
       },
       "Ix-Async/1.2.5": {
@@ -962,6 +980,26 @@
           "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta7"
         }
       },
+      "Microsoft.AspNet.Server.Kestrel/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "System.Numerics.Vectors": "4.1.1-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        }
+      },
       "Microsoft.AspNet.Server.WebListener/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -1709,6 +1747,15 @@
           "lib/net35/MongoDB.Driver.dll": {}
         }
       },
+      "morelinq/2.0.0-alpha01": {
+        "type": "package",
+        "compile": {
+          "lib/net35/MoreLinq.dll": {}
+        },
+        "runtime": {
+          "lib/net35/MoreLinq.dll": {}
+        }
+      },
       "Newtonsoft.Json/8.0.1-beta3": {
         "type": "package",
         "compile": {
@@ -1814,6 +1861,21 @@
           "lib/net45/_._": {}
         }
       },
+      "System.Numerics.Vectors/4.1.1-beta-23516": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System.Numerics"
+        ],
+        "compile": {
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
+        },
+        "runtime": {
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
+        }
+      },
       "System.Reflection/4.0.0": {
         "type": "package",
         "compile": {
@@ -1884,7 +1946,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Runtime.Extensions/4.0.11-beta-23516": {
+      "System.Runtime.Extensions/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -1927,6 +1989,27 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "WebVella.Email/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
+        },
+        "runtime": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
         }
       },
       "WebVella.ERP/1.0.0": {
@@ -1968,6 +2051,15 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "CsvHelper/2.13.0": {
+        "type": "package",
+        "compile": {
+          "lib/net20/CsvHelper.dll": {}
+        },
+        "runtime": {
+          "lib/net20/CsvHelper.dll": {}
+        }
+      },
       "EntityFramework.Core/7.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -2029,6 +2121,15 @@
         },
         "runtime": {
           "lib/net451/EntityFramework.Relational.dll": {}
+        }
+      },
+      "iTextSharp/5.5.6": {
+        "type": "package",
+        "compile": {
+          "lib/itextsharp.dll": {}
+        },
+        "runtime": {
+          "lib/itextsharp.dll": {}
         }
       },
       "Ix-Async/1.2.5": {
@@ -2916,6 +3017,29 @@
           "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta7"
         }
       },
+      "Microsoft.AspNet.Server.Kestrel/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "System.Numerics.Vectors": "4.1.1-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        },
+        "native": {
+          "runtimes/win7-x86/native/libuv.dll": {}
+        }
+      },
       "Microsoft.AspNet.Server.WebListener/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -3663,6 +3787,15 @@
           "lib/net35/MongoDB.Driver.dll": {}
         }
       },
+      "morelinq/2.0.0-alpha01": {
+        "type": "package",
+        "compile": {
+          "lib/net35/MoreLinq.dll": {}
+        },
+        "runtime": {
+          "lib/net35/MoreLinq.dll": {}
+        }
+      },
       "Newtonsoft.Json/8.0.1-beta3": {
         "type": "package",
         "compile": {
@@ -3679,12 +3812,6 @@
         },
         "runtime": {
           "lib/net45/Remotion.Linq.dll": {}
-        }
-      },
-      "runtime.win7.System.Runtime.Extensions/4.0.11-beta-23516": {
-        "type": "package",
-        "compile": {
-          "ref/dotnet/_._": {}
         }
       },
       "runtime.win7.System.Threading/4.0.11-beta-23516": {
@@ -3780,6 +3907,21 @@
           "lib/net45/_._": {}
         }
       },
+      "System.Numerics.Vectors/4.1.1-beta-23516": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System.Numerics"
+        ],
+        "compile": {
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
+        },
+        "runtime": {
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
+        }
+      },
       "System.Reflection/4.0.0": {
         "type": "package",
         "compile": {
@@ -3850,7 +3992,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Runtime.Extensions/4.0.11-beta-23516": {
+      "System.Runtime.Extensions/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -3893,6 +4035,27 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "WebVella.Email/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
+        },
+        "runtime": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
         }
       },
       "WebVella.ERP/1.0.0": {
@@ -3934,6 +4097,15 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "CsvHelper/2.13.0": {
+        "type": "package",
+        "compile": {
+          "lib/net20/CsvHelper.dll": {}
+        },
+        "runtime": {
+          "lib/net20/CsvHelper.dll": {}
+        }
+      },
       "EntityFramework.Core/7.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -3995,6 +4167,15 @@
         },
         "runtime": {
           "lib/net451/EntityFramework.Relational.dll": {}
+        }
+      },
+      "iTextSharp/5.5.6": {
+        "type": "package",
+        "compile": {
+          "lib/itextsharp.dll": {}
+        },
+        "runtime": {
+          "lib/itextsharp.dll": {}
         }
       },
       "Ix-Async/1.2.5": {
@@ -4882,6 +5063,29 @@
           "Microsoft.AspNet.Loader.IIS.Interop": "1.0.0-beta7"
         }
       },
+      "Microsoft.AspNet.Server.Kestrel/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "System.Numerics.Vectors": "4.1.1-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        },
+        "runtime": {
+          "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll": {}
+        },
+        "native": {
+          "runtimes/win7-x64/native/libuv.dll": {}
+        }
+      },
       "Microsoft.AspNet.Server.WebListener/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -5629,6 +5833,15 @@
           "lib/net35/MongoDB.Driver.dll": {}
         }
       },
+      "morelinq/2.0.0-alpha01": {
+        "type": "package",
+        "compile": {
+          "lib/net35/MoreLinq.dll": {}
+        },
+        "runtime": {
+          "lib/net35/MoreLinq.dll": {}
+        }
+      },
       "Newtonsoft.Json/8.0.1-beta3": {
         "type": "package",
         "compile": {
@@ -5645,12 +5858,6 @@
         },
         "runtime": {
           "lib/net45/Remotion.Linq.dll": {}
-        }
-      },
-      "runtime.win7.System.Runtime.Extensions/4.0.11-beta-23516": {
-        "type": "package",
-        "compile": {
-          "ref/dotnet/_._": {}
         }
       },
       "runtime.win7.System.Threading/4.0.11-beta-23516": {
@@ -5746,6 +5953,21 @@
           "lib/net45/_._": {}
         }
       },
+      "System.Numerics.Vectors/4.1.1-beta-23516": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "mscorlib",
+          "System.Numerics"
+        ],
+        "compile": {
+          "ref/net46/System.Numerics.Vectors.dll": {},
+          "ref/net46/_._": {}
+        },
+        "runtime": {
+          "lib/net46/System.Numerics.Vectors.dll": {},
+          "lib/net46/_._": {}
+        }
+      },
       "System.Reflection/4.0.0": {
         "type": "package",
         "compile": {
@@ -5816,7 +6038,7 @@
           "lib/net45/_._": {}
         }
       },
-      "System.Runtime.Extensions/4.0.11-beta-23516": {
+      "System.Runtime.Extensions/4.0.0": {
         "type": "package",
         "compile": {
           "ref/net45/_._": {}
@@ -5859,6 +6081,27 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "WebVella.Email/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
+        },
+        "runtime": {
+          "lib/Rebex.Mail.dll": {},
+          "lib/Rebex.Net.Imap.dll": {},
+          "lib/Rebex.Net.Pop3.dll": {},
+          "lib/Rebex.Net.ProxySocket.dll": {},
+          "lib/Rebex.Net.SecureSocket.dll": {},
+          "lib/Rebex.Net.Smtp.dll": {},
+          "lib/Rebex.Security.dll": {}
         }
       },
       "WebVella.ERP/1.0.0": {
@@ -5963,6 +6206,27 @@
         "tools/wpa81/uninstall.ps1"
       ]
     },
+    "CsvHelper/2.13.0": {
+      "type": "package",
+      "sha512": "89T0wPCsnQroUSkdsnCGsohInXaqx4J3lEQJ5Ed+6B6hGSKTYtbww4JAFaumDPa2p2Iyb29as5yahV5dATi0RA==",
+      "files": [
+        "CsvHelper.2.13.0.nupkg",
+        "CsvHelper.2.13.0.nupkg.sha512",
+        "CsvHelper.nuspec",
+        "lib/net20/CsvHelper.dll",
+        "lib/net20/CsvHelper.pdb",
+        "lib/net20/CsvHelper.xml",
+        "lib/net35-client/CsvHelper.dll",
+        "lib/net35-client/CsvHelper.pdb",
+        "lib/net35-client/CsvHelper.xml",
+        "lib/net40-client/CsvHelper.dll",
+        "lib/net40-client/CsvHelper.pdb",
+        "lib/net40-client/CsvHelper.xml",
+        "lib/portable-net40+sl5+win8+wpa+wp8/CsvHelper.dll",
+        "lib/portable-net40+sl5+win8+wpa+wp8/CsvHelper.pdb",
+        "lib/portable-net40+sl5+win8+wpa+wp8/CsvHelper.xml"
+      ]
+    },
     "EntityFramework.Core/7.0.0-rc1-final": {
       "type": "package",
       "serviceable": true,
@@ -5995,6 +6259,19 @@
         "lib/net451/EntityFramework.Relational.xml",
         "lib/netcore50/EntityFramework.Relational.dll",
         "lib/netcore50/EntityFramework.Relational.xml"
+      ]
+    },
+    "iTextSharp/5.5.6": {
+      "type": "package",
+      "sha512": "wQ7jqK+6gTgdrcMylKRUN6W6FGgS6JDiw7vrgN9eklnXyX/g5DIVhumcRWNLLZ1vIolo2h2N4dPh2T1LqJBmfQ==",
+      "files": [
+        "AGPL.txt",
+        "iTextSharp.5.5.6.nupkg",
+        "iTextSharp.5.5.6.nupkg.sha512",
+        "iTextSharp.nuspec",
+        "lib/itextsharp.dll",
+        "lib/iTextSharp.xml",
+        "notice.txt"
       ]
     },
     "Ix-Async/1.2.5": {
@@ -6623,6 +6900,29 @@
         "Microsoft.AspNet.Server.IIS.1.0.0-beta7.nupkg",
         "Microsoft.AspNet.Server.IIS.1.0.0-beta7.nupkg.sha512",
         "Microsoft.AspNet.Server.IIS.nuspec"
+      ]
+    },
+    "Microsoft.AspNet.Server.Kestrel/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "4fuGqW9K2PaxLwQsyRZaoO2Eu+GT5nv8WeYWpD8EqHLzY9GVEW25jy1iW2+1Tf5BwQJLN2e9QxY2K7OPlM9iRg==",
+      "files": [
+        "lib/dnx451/Microsoft.AspNet.Server.Kestrel.dll",
+        "lib/dnx451/Microsoft.AspNet.Server.Kestrel.xml",
+        "lib/dnxcore50/Microsoft.AspNet.Server.Kestrel.dll",
+        "lib/dnxcore50/Microsoft.AspNet.Server.Kestrel.xml",
+        "lib/dotnet5.4/Microsoft.AspNet.Server.Kestrel.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Server.Kestrel.xml",
+        "lib/net451/Microsoft.AspNet.Server.Kestrel.dll",
+        "lib/net451/Microsoft.AspNet.Server.Kestrel.xml",
+        "Microsoft.AspNet.Server.Kestrel.1.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Server.Kestrel.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Server.Kestrel.nuspec",
+        "runtimes/osx/native/libuv.dylib",
+        "runtimes/win10-arm/native/libuv.dll",
+        "runtimes/win7-x64/native/libuv.dll",
+        "runtimes/win7-x86/native/libuv.dll",
+        "thirdpartynotices.txt"
       ]
     },
     "Microsoft.AspNet.Server.WebListener/1.0.0-rc1-final": {
@@ -7333,6 +7633,18 @@
         "mongocsharpdriver.nuspec"
       ]
     },
+    "morelinq/2.0.0-alpha01": {
+      "type": "package",
+      "sha512": "UQW+KycyDn7WvTxDshVCt8OY3eeHjYkdufFNayuohZK/HK9VbJyKRIsKHEAijf2YxoP6ozWwu0K1k3P4/a0Qvg==",
+      "files": [
+        "COPYING.txt",
+        "lib/net35/MoreLinq.dll",
+        "lib/net35/MoreLinq.xml",
+        "morelinq.2.0.0-alpha01.nupkg",
+        "morelinq.2.0.0-alpha01.nupkg.sha512",
+        "morelinq.nuspec"
+      ]
+    },
     "Newtonsoft.Json/8.0.1-beta3": {
       "type": "package",
       "sha512": "fTozGxIUbseQrW3qXJcM5mDj/uenSJYu3WfwTsgc0alG8FqXwG5TY9aQLag+9Gt2bFtt/Y2e0Yy8J4p1fGtc9Q==",
@@ -7370,20 +7682,6 @@
         "Remotion.Linq.2.0.1.nupkg",
         "Remotion.Linq.2.0.1.nupkg.sha512",
         "Remotion.Linq.nuspec"
-      ]
-    },
-    "runtime.win7.System.Runtime.Extensions/4.0.11-beta-23516": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "Jm+LAzN7CZl1BZSxz4TsMBNy1rHNqyY/1+jxZf3BpF7vkPlWRXa/vSfY0lZJZdy4Doxa893bmcCf9pZNsJU16Q==",
-      "files": [
-        "lib/DNXCore50/System.Runtime.Extensions.dll",
-        "lib/netcore50/System.Runtime.Extensions.dll",
-        "ref/dotnet/_._",
-        "runtime.win7.System.Runtime.Extensions.4.0.11-beta-23516.nupkg",
-        "runtime.win7.System.Runtime.Extensions.4.0.11-beta-23516.nupkg.sha512",
-        "runtime.win7.System.Runtime.Extensions.nuspec",
-        "runtimes/win8-aot/lib/netcore50/System.Runtime.Extensions.dll"
       ]
     },
     "runtime.win7.System.Threading/4.0.11-beta-23516": {
@@ -7708,6 +8006,31 @@
         "System.Linq.nuspec"
       ]
     },
+    "System.Numerics.Vectors/4.1.1-beta-23516": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "jphbCfQB30LZBC/8kNQtAaaCcKzCFIFnRyUvYapNOozvleUvwI6sYG9d3/WamMcalnNcHDgIlQ713QOv9aweVA==",
+      "files": [
+        "lib/dotnet5.4/System.Numerics.Vectors.dll",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/_._",
+        "lib/net46/System.Numerics.Vectors.dll",
+        "lib/portable-net45+win8/System.Numerics.Vectors.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/dotnet5.4/System.Numerics.Vectors.dll",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/_._",
+        "ref/net46/System.Numerics.Vectors.dll",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "System.Numerics.Vectors.4.1.1-beta-23516.nupkg",
+        "System.Numerics.Vectors.4.1.1-beta-23516.nupkg.sha512",
+        "System.Numerics.Vectors.nuspec"
+      ]
+    },
     "System.Reflection/4.0.0": {
       "type": "package",
       "sha512": "g96Rn8XuG7y4VfxPj/jnXroRJdQ8L3iN3k3zqsuzk4k3Nq4KMXARYiIO4BLW4GwX06uQpuYwRMcAC/aF117knQ==",
@@ -7920,10 +8243,9 @@
         "System.Runtime.nuspec"
       ]
     },
-    "System.Runtime.Extensions/4.0.11-beta-23516": {
+    "System.Runtime.Extensions/4.0.0": {
       "type": "package",
-      "serviceable": true,
-      "sha512": "HX4wNPrcCV9D+jpbsJCRPuVJbcDM+JobSotQWKq40lCq0WJbJi+0lNQ/T1zHEdWcf4W2PmtMkug1rW7yKW9PiQ==",
+      "sha512": "zPzwoJcA7qar/b5Ihhzfcdr3vBOR8FIg7u//Qc5mqyAriasXuMFVraBZ5vOQq5asfun9ryNEL8Z2BOlUK5QRqA==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -7933,28 +8255,18 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/dotnet5.1/de/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/es/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/fr/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/it/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/ja/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/ko/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/ru/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/System.Runtime.Extensions.dll",
-        "ref/dotnet5.1/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/zh-hans/System.Runtime.Extensions.xml",
-        "ref/dotnet5.1/zh-hant/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/de/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/es/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/fr/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/it/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/ja/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/ko/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/ru/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/System.Runtime.Extensions.dll",
-        "ref/dotnet5.4/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/zh-hans/System.Runtime.Extensions.xml",
-        "ref/dotnet5.4/zh-hant/System.Runtime.Extensions.xml",
+        "License.rtf",
+        "ref/dotnet/de/System.Runtime.Extensions.xml",
+        "ref/dotnet/es/System.Runtime.Extensions.xml",
+        "ref/dotnet/fr/System.Runtime.Extensions.xml",
+        "ref/dotnet/it/System.Runtime.Extensions.xml",
+        "ref/dotnet/ja/System.Runtime.Extensions.xml",
+        "ref/dotnet/ko/System.Runtime.Extensions.xml",
+        "ref/dotnet/ru/System.Runtime.Extensions.xml",
+        "ref/dotnet/System.Runtime.Extensions.dll",
+        "ref/dotnet/System.Runtime.Extensions.xml",
+        "ref/dotnet/zh-hans/System.Runtime.Extensions.xml",
+        "ref/dotnet/zh-hant/System.Runtime.Extensions.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net45/_._",
@@ -7974,9 +8286,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtime.json",
-        "System.Runtime.Extensions.4.0.11-beta-23516.nupkg",
-        "System.Runtime.Extensions.4.0.11-beta-23516.nupkg.sha512",
+        "System.Runtime.Extensions.4.0.0.nupkg",
+        "System.Runtime.Extensions.4.0.0.nupkg.sha512",
         "System.Runtime.Extensions.nuspec"
       ]
     },
@@ -8181,15 +8492,34 @@
         "System.Threading.4.0.11-beta-23516.nupkg.sha512",
         "System.Threading.nuspec"
       ]
+    },
+    "WebVella.Email/1.0.0": {
+      "type": "package",
+      "sha512": "eZDO7xVr6MWvb5m/tUqiG10EXXcTQPcxHZzjJtOMTHGeoE1XJkVnPq87LQBakZnJfLF5yZK5bmk7sYoW30o+Nw==",
+      "files": [
+        "lib/Rebex.Mail.dll",
+        "lib/Rebex.Net.Imap.dll",
+        "lib/Rebex.Net.Pop3.dll",
+        "lib/Rebex.Net.ProxySocket.dll",
+        "lib/Rebex.Net.SecureSocket.dll",
+        "lib/Rebex.Net.Smtp.dll",
+        "lib/Rebex.Security.dll",
+        "WebVella.Email.1.0.0.nupkg",
+        "WebVella.Email.1.0.0.nupkg.sha512",
+        "WebVella.Email.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
       "AutoMapper >= 3.3.1",
+      "CsvHelper >= 2.13.0",
+      "iTextSharp >= 5.5.6",
       "Microsoft.AspNet.Authentication.Cookies >= 1.0.0-rc1-final",
       "Microsoft.AspNet.Diagnostics >= 1.0.0-rc1-final",
       "Microsoft.AspNet.Diagnostics.Entity >= 7.0.0-rc1-final",
       "Microsoft.AspNet.IISPlatformHandler >= 1.0.0-rc1-final",
+      "Microsoft.AspNet.Server.Kestrel >= 1.0.0-rc1-final",
       "Microsoft.AspNet.Mvc >= 6.0.0-rc1-final",
       "Microsoft.AspNet.Mvc.TagHelpers >= 6.0.0-rc1-final",
       "Microsoft.AspNet.Server.IIS >= 1.0.0-*",
@@ -8204,10 +8534,11 @@
       "Microsoft.Extensions.Logging.Console >= 1.0.0-rc1-final",
       "Microsoft.Extensions.PlatformAbstractions >= 1.0.0-rc1-final",
       "mongocsharpdriver >= 1.9.2",
+      "morelinq >= 2.0.0-alpha01",
       "Newtonsoft.Json >= 8.0.1-beta3",
       "System.Linq >= 4.0.1-beta-23516",
-      "System.Runtime.Extensions >= 4.0.11-beta-23516",
       "System.Threading >= 4.0.11-beta-23516",
+      "WebVella.Email >= 1.0.0",
       "WebVella.ERP >= 1.0.0-*",
       "WebVella.ERP.Storage.Mongo >= 1.0.0-*"
     ],
