@@ -1,14 +1,19 @@
 ﻿{
 	"webroot": "wwwroot",
-	"userSecretsId": "aspnet5-test-b1d41802-4ace-435b-a2c7-0c45e8533e9d",
 	"version": "1.0.0-*",
+	"compilationOptions": {
+		"emitEntryPoint": true
+	},
 
 	"dependencies": {
 		"AutoMapper": "3.3.1",
+		"CsvHelper": "2.13.0",
+		"iTextSharp": "5.5.6",
 		"Microsoft.AspNet.Authentication.Cookies": "1.0.0-rc1-final",
 		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
 		"Microsoft.AspNet.Diagnostics.Entity": "7.0.0-rc1-final",
 		"Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
 		"Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
 		"Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
 		"Microsoft.AspNet.Server.IIS": "1.0.0-*",
@@ -23,17 +28,17 @@
 		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
 		"Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
 		"mongocsharpdriver": "1.9.2",
+		"morelinq": "2.0.0-alpha01",
 		"Newtonsoft.Json": "8.0.1-beta3",
 		"System.Linq": "4.0.1-beta-23516",
-		"System.Runtime.Extensions": "4.0.11-beta-23516",
 		"System.Threading": "4.0.11-beta-23516",
+		"WebVella.Email": "1.0.0",
 		"WebVella.ERP": "1.0.0-*",
 		"WebVella.ERP.Storage.Mongo": "1.0.0-*"
 	},
 
 	"commands": {
-		"web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000",
-		"gen": "Microsoft.Extensions.CodeGeneration"
+		"web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel"
 	},
 
 	"frameworks": {
@@ -50,11 +55,8 @@
 		"bower_components"
 	],
 	"publishExclude": [
-		"node_modules",
-		"bower_components",
 		"**.xproj",
 		"**.user",
 		"**.vspscc"
-	],
-	"scripts": { }
+	]
 }
