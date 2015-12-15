@@ -26,7 +26,7 @@
 			views: {
 				"rootView": {
 					controller: 'WebVellaDevelopersBaseController',
-					templateUrl: '/plugins/webvella-developers/base.view.html',
+					templateUrl: '/plugins/webvella-developers/base.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'pluginData'
 				}
 			},

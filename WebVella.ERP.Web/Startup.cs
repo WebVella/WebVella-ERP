@@ -2,13 +2,13 @@
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
-using Microsoft.Framework.Configuration;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Storage.Mongo;
 using WebVella.ERP.Api.Models.AutoMapper;
 using System.Globalization;
-using Microsoft.Framework.Runtime;
+using Microsoft.Extensions.PlatformAbstractions;
 using WebVella.ERP.Web.Security;
 
 namespace WebVella.ERP.Web
@@ -19,13 +19,11 @@ namespace WebVella.ERP.Web
 
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            var configurationBuilder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+            var configurationBuilder = new ConfigurationBuilder()
+			   .SetBasePath(appEnv.ApplicationBasePath)
                .AddJsonFile("config.json")
                .AddEnvironmentVariables();
             Configuration = configurationBuilder.Build();
-
-            //beta 4 configuration change
-            //Configuration = new Configuration().AddJsonFile("config.json");
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -71,19 +69,19 @@ namespace WebVella.ERP.Web
 			// Add the following to the request pipeline only in development environment.
 			if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
             {
-                app.UseErrorPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
                 // Add Error handling middleware which catches all application specific errors and
                 // send the request to the following path or controller action.
-                app.UseErrorHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
             }
+
+			app.UseIISPlatformHandler(options => options.AutomaticAuthentication = false);
 
             // Add static files to the request pipeline.
             app.UseStaticFiles();
-
-       
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

@@ -24,17 +24,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminEntityListsController',
-                    templateUrl: '/plugins/webvella-admin/entity-lists.view.html',
+                    templateUrl: '/plugins/webvella-admin/entity-lists.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'contentData'
                 }
             },
@@ -182,6 +182,11 @@
 
         //#region << Initialize the lists >>
         contentData.lists = fastCopy(resolvedEntityRecordsList.recordLists);
+        contentData.lists.sort(function (a, b) {
+        	if (a.name < b.name) return -1;
+        	if (a.name > b.name) return 1;
+        	return 0;
+        });
         //#endregion
 
     	//Create new list modal

@@ -24,17 +24,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminEntityViewsController',
-                    templateUrl: '/plugins/webvella-admin/entity-views.view.html',
+                    templateUrl: '/plugins/webvella-admin/entity-views.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'contentData'
                 }
             },
@@ -127,9 +127,15 @@
         var contentData = this;
         contentData.entity = fastCopy(resolvedCurrentEntityMeta);
         contentData.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
-        if (contentData.views == null) {
+        if (contentData.views === null) {
         	contentData.views = [];
         }
+        contentData.views.sort(function (a, b) {
+        	if (a.name < b.name) return -1;
+        	if (a.name > b.name) return 1;
+        	return 0;
+        });
+
         //Update page title
         contentData.pageTitle = "Entity Views | " + pageTitle;
         $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);

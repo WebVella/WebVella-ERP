@@ -22,7 +22,7 @@
             views: {
                 "rootView": {
                     controller: 'WebVellaRootErrorController',
-                    templateUrl: '/plugins/webvella-root/error.view.html',
+                    templateUrl: '/plugins/webvella-root/error.view.html?v=' + htmlCacheBreaker,
                     controllerAs: 'errorData'
                 }
             },

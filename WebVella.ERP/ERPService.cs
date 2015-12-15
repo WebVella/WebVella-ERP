@@ -843,6 +843,7 @@ namespace WebVella.ERP
 				}
 				catch (Exception ex)
 				{
+					var exception = ex;
 					transaction.Rollback();
 					throw;
 				}
