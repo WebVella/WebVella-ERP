@@ -262,8 +262,12 @@ namespace WebVella.ERP.Api
 				var query = EntityQuery.QueryEQ("id", recordId);
 				var entityQuery = new EntityQuery(entity.Name, "*", query);
 
+				// when user create record, it is get returned ignoring create permissions
+				bool oldIgnoreSecurity = ignoreSecurity;
 				response = Find(entityQuery);
-				if (response.Object != null && response.Object.Data.Count > 0)
+				ignoreSecurity = oldIgnoreSecurity;
+
+                if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
 					response.Message = "Record was created successfully";
 				else
 				{
