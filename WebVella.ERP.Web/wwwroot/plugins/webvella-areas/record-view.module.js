@@ -25,17 +25,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasRecordViewSidebarController',
-					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
+					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordViewController',
-					templateUrl: '/plugins/webvella-areas/record-view.view.html',
+					templateUrl: '/plugins/webvella-areas/record-view.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'contentData'
 				}
 			},
@@ -70,20 +70,24 @@
 
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
-			else {
+			else if(response.object.meta === null ) {
+				$timeout(function () {
+					alert("The view with name: " + $stateParams.viewName + " does not exist");
+				}, 0);
+			} else {
 				defer.resolve(response.object);
 			}
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -146,6 +150,11 @@
 			};
 		}
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
+		//#endregion
+
+		//#region << Initialize current entity >>
+		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+		contentData.viewSection = {};
 		//#endregion
 
 		//#region << Initialize view and regions>>
@@ -226,6 +235,7 @@
 			//The default view meta is active
 			returnedObject = getViewOrListMetaAndData("");
 			contentData.selectedSidebarPage = returnedObject;
+			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 		else {
 			//One of the sidebar view or lists is active
@@ -233,14 +243,9 @@
 			returnedObject = getViewOrListMetaAndData($stateParams.auxPageName);
 			contentData.selectedSidebarPage = returnedObject;
 			contentData.selectedSidebarPage.data = returnedObject.data;
+			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 
-		//#endregion
-
-		//#region << Initialize current entity >>
-		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.viewSection = {};
-		contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		//#endregion
 
 		//#region << Entity relations functions >>

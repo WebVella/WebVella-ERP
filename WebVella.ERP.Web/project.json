@@ -1,60 +1,62 @@
 ﻿{
-  "webroot": "wwwroot",
-  "userSecretsId": "aspnet5-test-b1d41802-4ace-435b-a2c7-0c45e8533e9d",
-  "version": "1.0.0-*",
+	"webroot": "wwwroot",
+	"version": "1.0.0-*",
+	"compilationOptions": {
+		"emitEntryPoint": true
+	},
 
-  "dependencies": {
-    "Microsoft.AspNet.Mvc": "6.0.0-beta6",
-    "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta6",
-    "Microsoft.AspNet.Authentication.Cookies": "1.0.0-beta6",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
-    "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta6",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta6",
-    "Microsoft.AspNet.Tooling.Razor": "1.0.0-beta6",
-    "Microsoft.Framework.Logging": "1.0.0-beta6",
-    "Microsoft.Framework.Logging.Console": "1.0.0-beta6",
-    "Microsoft.Framework.Caching.Memory": "1.0.0-beta6",
-    "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
-    "Microsoft.Framework.Configuration": "1.0.0-beta6",
-    "Microsoft.Framework.Configuration.Json": "1.0.0-beta6",
-    "System.Runtime.Extensions": "4.0.11-beta-23225",
+	"dependencies": {
+		"AutoMapper": "3.3.1",
+		"CsvHelper": "2.13.0",
+		"iTextSharp": "5.5.6",
+		"Microsoft.AspNet.Authentication.Cookies": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Diagnostics.Entity": "7.0.0-rc1-final",
+		"Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+		"Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final",
+		"Microsoft.AspNet.Server.IIS": "1.0.0-*",
+		"Microsoft.AspNet.Server.WebListener": "1.0.0-rc1-final",
+		"Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
+		"Microsoft.AspNet.Tooling.Razor": "1.0.0-rc1-final",
+		"Microsoft.CSharp": "4.0.1-beta-23516",
+		"Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
+		"Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
+		"Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
+		"Microsoft.Extensions.Logging": "1.0.0-rc1-final",
+		"Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
+		"Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+		"mongocsharpdriver": "1.9.2",
+		"morelinq": "2.0.0-alpha01",
+		"Newtonsoft.Json": "8.0.1-beta3",
+		"System.Linq": "4.0.1-beta-23516",
+		"System.Threading": "4.0.11-beta-23516",
+		"WebVella.Email": "1.0.0",
+		"WebVella.ERP": "1.0.0-*",
+		"WebVella.ERP.Storage.Mongo": "1.0.0-*"
+	},
 
-    "AutoMapper": "3.3.1",
-    "mongocsharpdriver": "1.9.2",
-    "System.Threading": "4.0.10-beta-23019",
-    "Microsoft.CSharp": "4.0.0-beta-23019",
-    "Newtonsoft.Json": "7.0.1",
-    "WebVella.ERP.Storage.Mongo": "1.0.0-*",
-    "WebVella.ERP": "1.0.0-*",
-    "System.Linq": "4.0.0"
-  },
+	"commands": {
+		"web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel"
+	},
 
-  "commands": {
-    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000",
-    "gen": "Microsoft.Framework.CodeGeneration"
-  },
+	"frameworks": {
+		"dnx46": {
+			"frameworkAssemblies": {
+				"System.Drawing": "4.0.0.0"
+			}
+		}
+	},
 
-  "frameworks": {
-    "dnx46": {
-      "frameworkAssemblies": {
-        "System.Drawing": "4.0.0.0"
-      }
-    }
-  },
-
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "scripts": { }
+	"exclude": [
+		"wwwroot",
+		"node_modules",
+		"bower_components"
+	],
+	"publishExclude": [
+		"**.xproj",
+		"**.user",
+		"**.vspscc"
+	]
 }

@@ -14,6 +14,7 @@ using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNet.Authorization;
 
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -69,7 +70,7 @@ namespace WebVella.ERP.Web.Controllers
 					responseObj.Object = null;
 					responseObj.Success = true;
 					responseObj.Timestamp = DateTime.UtcNow;
-					responseObj.Object = new { token = WebSecurityUtil.Login(Context, user.Id, user.ModifiedOn, rememberMe, service) };
+					responseObj.Object = new { token = WebSecurityUtil.Login(HttpContext, user.Id, user.ModifiedOn, rememberMe, service) };
 				}
 
 			}
@@ -91,7 +92,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/logout")]
 		public IActionResult Logout()
 		{
-			WebSecurityUtil.Logout(Context);
+			WebSecurityUtil.Logout(HttpContext);
 			var responseObj = new ResponseModel();
 			responseObj.Object = null;
 			responseObj.Success = true;
@@ -104,7 +105,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult CurrentUserPermissions()
 		{
 			var responseObj = new ResponseModel();
-			responseObj.Object = WebSecurityUtil.GetCurrentUserPermissions(Context, service);
+			responseObj.Object = WebSecurityUtil.GetCurrentUserPermissions(HttpContext, service);
 			responseObj.Success = true;
 			responseObj.Timestamp = DateTime.UtcNow;
 			return DoResponse(responseObj);
@@ -230,7 +231,7 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				response.Success = false;
 				response.Message = "The entity Id should be a valid Guid";
-				Context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+				HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 			}
 			return DoResponse(response);
 		}

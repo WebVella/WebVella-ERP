@@ -165,7 +165,7 @@
 					<div class="list-field-selection-box" style="height:400px;">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragLibraryListeners" ng-model="contentData.list.columns">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns"
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns track by item.dataName"
 									 ng-switch="::item.type">
 									<div ng-switch-when="field" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
@@ -226,7 +226,7 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.name" class="form-control" style="width:100%;">
+								<input type="text" ng-model="contentData.search.dataName" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
@@ -234,7 +234,7 @@
 						<div class="drop-zone-disabled">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
 								<div class="dropped-item" ng-model="item" data-as-sortable-item
-									 ng-repeat="item in contentData.library.items | filter: {dataName: contentData.search}"
+									 ng-repeat="item in contentData.library.items | filter: contentData.search track by item.dataName"
 									 ng-switch="::item.type">
 									<div as-sortable-item-handle ng-switch-when="field" class="clearfix">
 										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>

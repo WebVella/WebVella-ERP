@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNet.Http;
-using Microsoft.Framework.Caching.Memory;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
+using Microsoft.AspNet.Authentication.Cookies;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -63,11 +64,14 @@ namespace WebVella.ERP.Web.Security
 
         public static void Authenticate(HttpContext context, IErpService service)
         {
-            var tokenString = context.Request.Headers[AUTH_TOKEN_KEY];
-            if (string.IsNullOrEmpty(tokenString))
-                tokenString = context.Request.Cookies.Get(AUTH_TOKEN_KEY);
+            string tokenString = context.Request.Headers[AUTH_TOKEN_KEY];
+			if (String.IsNullOrEmpty(tokenString)) 
+			{
+				var cookie = context.Request.Cookies.FirstOrDefault(c => c.Key == AUTH_TOKEN_KEY); 
+				tokenString = cookie.Value.FirstOrDefault();
+			}
 
-            if (tokenString != null)
+			if (tokenString != null)
             {
                 AuthToken token = AuthToken.Decrypt(tokenString);
                 if (token != null && token.Verify())

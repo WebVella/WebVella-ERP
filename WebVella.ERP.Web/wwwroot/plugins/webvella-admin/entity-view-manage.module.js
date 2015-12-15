@@ -26,17 +26,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
-					templateUrl: '/plugins/webvella-admin/topnav.view.html',
+					templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAdminEntityViewManageController',
-					templateUrl: '/plugins/webvella-admin/entity-view-manage.view.html',
+					templateUrl: '/plugins/webvella-admin/entity-view-manage.view.html?v=' + htmlCacheBreaker,
 					controllerAs: 'contentData'
 				}
 			},
@@ -62,7 +62,7 @@
 		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
 		var accessPermission = false;
 		for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-			if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+			if (resolvedCurrentUser.roles[i] === "bdc56420-caf0-4030-8a0e-d264938e0cda") {
 				accessPermission = true;
 			}
 		}
@@ -93,9 +93,9 @@
 
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -104,9 +104,9 @@
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -129,9 +129,9 @@
 		var defer = $q.defer();
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -139,10 +139,10 @@
 				var libraryWithoutTheCurrentView = [];
 
 				for (var i = 0; i < response.object.length; i++) {
-					if (response.object[i].type != "view") {
+					if (response.object[i].type !== "view") {
 						libraryWithoutTheCurrentView.push(response.object[i]);
 					}
-					else if (response.object[i].type == "view" && response.object[i].viewName != $stateParams.viewName) {
+					else if (response.object[i].type === "view" && response.object[i].viewName !== $stateParams.viewName) {
 						libraryWithoutTheCurrentView.push(response.object[i]);
 					}
 				}
@@ -151,9 +151,9 @@
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -177,9 +177,9 @@
 
 		// Process
 		function successCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -188,9 +188,9 @@
 		}
 
 		function errorCallback(response) {
-			if (response.object == null) {
+			if (response.object === null) {
 				$timeout(function () {
-					alert("error in response!")
+					alert("error in response!");
 				}, 0);
 			}
 			else {
@@ -236,7 +236,7 @@
 		//#region << Initialize View and Content Region >>
 		contentData.view = {};
 		for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-			if (contentData.entity.recordViews[i].name == $stateParams.viewName) {
+			if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
 				contentData.view = fastCopy(contentData.entity.recordViews[i]);
 			}
 		}
@@ -271,13 +271,13 @@
 
 		contentData.tempLibrary.items.forEach(function (item) {
 			//Initially remove all items that are from relation or relationOptions
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) || !item.meta) {
+			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1) || !item.meta) {
 				switch (item.type) {
 					case "field":
 						contentData.library.items.push(item);
 						break;
 					case "view":
-						if (item.viewId != contentData.view.id) {
+						if (item.viewId !== contentData.view.id) {
 							contentData.library.items.push(item);
 						}
 						break;
@@ -288,7 +288,7 @@
 						item.addedToLibrary = false;
 						item.sameOriginTargetEntity = false;
 						for (var r = 0; r < contentData.relationsList.length; r++) {
-							if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+							if (item.relationName === contentData.relationsList[r].name && contentData.relationsList[r].originEntityId === contentData.relationsList[r].targetEntityId) {
 								item.sameOriginTargetEntity = true;
 							}
 						}
@@ -313,7 +313,7 @@
 		//Extract the direction change information from the view if present
 		for (var k = 0; k < contentData.view.relationOptions.length; k++) {
 			for (var m = 0; m < contentData.library.relations.length; m++) {
-				if (contentData.view.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
+				if (contentData.view.relationOptions[k].relationName === contentData.library.relations[m].relationName) {
 					contentData.library.relations[m].direction = contentData.view.relationOptions[k].direction;
 				}
 
@@ -337,6 +337,7 @@
 
 		//Create or Update view section
 		contentData.manageSectionModalOpen = function (sectionObj, weight) {
+			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageSectionModal.html',
@@ -346,7 +347,7 @@
 				resolve: {
 					parentData: function () { return contentData; },
 					section: function () { return sectionObj },
-					weight: function () { return weight },
+					weight: function () { return weight }
 				}
 			});
 
@@ -357,12 +358,12 @@
 		var tempCopyViewRegion = {}
 		contentData.removeSection = function (id) {
 			var isConfirmed = confirm("Are you sure that you need to remove this section?");
-			if (isConfirmed == true) {
+			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
 				tempCopyView = fastCopy(contentData.view);
 				tempCopyViewRegion = fastCopy(contentData.viewContentRegion);
 				// 2. Apply the change to the temp object
-				tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id)
+				tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id);
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
 				for (var i = 0; i < tempCopyView.regions.length; i++) {
 					if (tempCopyView.regions[i].name === "content") {
@@ -399,6 +400,7 @@
 
 		//Create view row
 		contentData.manageRowModalOpen = function (rowObj, sectionObj, weight) {
+			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageRowModal.html',
@@ -409,7 +411,7 @@
 					parentData: function () { return contentData; },
 					row: function () { return rowObj },
 					section: function () { return sectionObj },
-					weight: function () { return weight },
+					weight: function () { return weight }
 				}
 			});
 
@@ -418,14 +420,14 @@
 		//Remove row
 		contentData.removeRow = function (id, sectionId) {
 			var isConfirmed = confirm("Are you sure that you need to remove this row?");
-			if (isConfirmed == true) {
+			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
 				var tempCopyView = fastCopy(contentData.view);
 				var tempCopyViewRegion = fastCopy(contentData.viewContentRegion);
 				// 2. Apply the change to the temp object
 				for (var m = 0; m < tempCopyViewRegion.sections.length; m++) {
-					if (tempCopyViewRegion.sections[m].id == sectionId) {
-						tempCopyViewRegion.sections[m].rows = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, id)
+					if (tempCopyViewRegion.sections[m].id === sectionId) {
+						tempCopyViewRegion.sections[m].rows = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, id);
 					}
 				}
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
@@ -467,16 +469,10 @@
 		//#region << Manage HtmlContentModal >>
 		var openHtmlContentModal = function (fieldItem, eventObj, orderChangedOnly) {
 			//Init
-			var droppedItem = fastCopy(fieldItem);
-
 			//Callbacks
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
-				if (eventObj.dest.sortableScope.element[0].id != "library") {
-
-				}
-				else {
-					//we need to destroy the dropped object
+				if (eventObj.dest.sortableScope.element[0].id !== "library") {
 
 				}
 			};
@@ -498,13 +494,13 @@
 							contentData.viewContentRegion = response.object.regions[i];
 						}
 					}
-					if (eventObj != null) {
+					if (eventObj !== null) {
 						moveSuccess();
 					}
 				}
 				else {
 					errorCallback(response);
-					if (eventObj != null) {
+					if (eventObj !== null) {
 						moveFailure();
 					}
 				}
@@ -516,7 +512,7 @@
 					content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout: 7000
 				});
-				if (eventObj != null) {
+				if (eventObj !== null) {
 					moveFailure();
 				}
 			}
@@ -549,7 +545,7 @@
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
+										if (fieldObject.type === "listFromRelation" || fieldObject.type === "viewFromRelation") {
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 										}
 									}
@@ -570,14 +566,20 @@
 		//#region << Manage FromRelationModal >>
 		var openFromRelationSettingsModal = function (fieldItem, eventObj, orderChangedOnly) {
 			//Init
+			var moveFailure = function () {
+				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+				//we are copying them currently only
+				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+			};
+
 			var droppedItem = fastCopy(fieldItem);
 			var relation = null;
 			for (var j = 0; j < contentData.relationsList.length; j++) {
-				if (contentData.relationsList[j].id == droppedItem.relationId) {
+				if (contentData.relationsList[j].id === droppedItem.relationId) {
 					relation = contentData.relationsList[j];
 				}
 			}
-			if (relation == null) {
+			if (relation === null) {
 				ngToast.create({
 					className: 'error',
 					content: '<span class="go-red">Error:</span> item relation not found',
@@ -590,18 +592,9 @@
 			//Callbacks
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
-				if (eventObj.dest.sortableScope.element[0].id != "library") {
-
+				if (eventObj.dest.sortableScope.element[0].id !== "library") {
 				}
-				else {
-					//we need to destroy the dropped object
 
-				}
-			};
-			var moveFailure = function () {
-				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are copying them currently only
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
 			};
 
 			function successCallback(response) {
@@ -610,19 +603,19 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					//contentData.library.items = fastCopy(contentData.originalLibrary);
-					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "content") {
-							contentData.viewContentRegion = response.object.regions[i];
-						}
-					}
-					if (eventObj != null) {
+					//Creates error - Unbinds the contentData.ViewContentRegion from the drop zone so it needs to be commented until fixed
+					//for (var i = 0; i < response.object.regions.length; i++) {
+					//	if (response.object.regions[i].name === "content") {
+					//		contentData.viewContentRegion = response.object.regions[i];
+					//	}
+					//}
+					if (eventObj !== null) {
 						moveSuccess();
 					}
 				}
 				else {
 					errorCallback(response);
-					if (eventObj != null) {
+					if (eventObj !== null) {
 						moveFailure();
 					}
 				}
@@ -634,13 +627,12 @@
 					content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout: 7000
 				});
-				if (eventObj != null) {
+				if (eventObj !== null) {
 					moveFailure();
 				}
 			}
 
-			function getRelatedEntityMetaSuccessCallback(response) {
-
+			function openModal(response) {
 				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageFromRelationModal.html',
@@ -649,7 +641,7 @@
 					backdrop: 'static',
 					size: "",
 					resolve: {
-						parentData: function () { return contentData; },
+						parentData: function() { return contentData; },
 						eventObj: eventObj,
 						relatedEntityMeta: response.object,
 						fieldObj: fieldItem,
@@ -657,7 +649,7 @@
 					}
 				});
 
-				modalInstance.result.then(function (fieldObject) {
+				modalInstance.result.then(function(fieldObject) {
 					for (var i = 0; i < contentData.view.regions.length; i++) {
 						for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
 							for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
@@ -669,7 +661,7 @@
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-											if (fieldObject.type == "listFromRelation" || fieldObject.type == "viewFromRelation") {
+											if (fieldObject.type === "listFromRelation" || fieldObject.type === "viewFromRelation") {
 												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 											}
 										}
@@ -679,11 +671,16 @@
 						}
 					}
 
-					contentData.view = fastCopy(contentData.view);
+					var tempView = fastCopy(contentData.view);
 					////2. Call the service
-					webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
-					return;
+					webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
+					//return;
 				});
+
+			}
+
+			function getRelatedEntityMetaSuccessCallback(response) {
+				openModal(response);
 			}
 
 			function getRelatedEntityMetaErrorCallback(response) {
@@ -698,7 +695,7 @@
 
 			//Get the correct related entityMeta
 
-			if (droppedItem.entityName == contentData.entity.name) {
+			if (droppedItem.entityName === contentData.entity.name) {
 				//the dropped item has relation to the current entity so no reason to make http request
 				var response = {};
 				response.success = true;
@@ -706,7 +703,6 @@
 				getRelatedEntityMetaSuccessCallback(response);
 			}
 			else {
-				var relatedEntityName = null;
 				webvellaAdminService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
 			}
 		};
@@ -718,11 +714,7 @@
 
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
-				if (eventObj.dest.sortableScope.element[0].id != "library") {
-
-				}
-				else {
-					//we need to destroy the dropped object
+				if (eventObj.dest.sortableScope.element[0].id !== "library") {
 
 				}
 			};
@@ -762,10 +754,10 @@
 			}
 			//#endregion
 
-			if ((eventObj.source.itemScope.item.type == "fieldFromRelation" || eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") && !orderChangedOnly) {
+			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation") && !orderChangedOnly) {
 				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 			}
-			else if (eventObj.source.itemScope.item.type == "html" && !orderChangedOnly) {
+			else if (eventObj.source.itemScope.item.type === "html" && !orderChangedOnly) {
 				openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 			}
 			else {
@@ -781,7 +773,7 @@
 		}
 
 		contentData.dragControlListeners = {
-			accept: function (sourceItemHandleScope, destSortableScope) {
+			accept: function () {
 				//// Prevent from the same field in the same column
 				//var draggedDataName = sourceItemHandleScope.itemScope.modelValue.dataName;
 				//for(var k = 0; k< destSortableScope.modelValue.length;k++){
@@ -805,7 +797,7 @@
 
 		contentData.libraryDragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
-				if (sourceItemHandleScope.itemScope.element[0].id != "library" && destSortableScope.element[0].id == "library") {
+				if (sourceItemHandleScope.itemScope.element[0].id !== "library" && destSortableScope.element[0].id === "library") {
 					return false;
 				}
 				return true;
@@ -862,7 +854,7 @@
 		//#region << Relations >>
 
 		contentData.changeRelationDirection = function (relation) {
-			if (relation.direction == "origin-target") {
+			if (relation.direction === "origin-target") {
 				relation.direction = "target-origin";
 			}
 			else {
@@ -892,8 +884,8 @@
 				});
 				//Undo change
 				for (var j = 0; j < contentData.library.relations.length; j++) {
-					if (contentData.library.relations[j].relationName == relation.relationName) {
-						if (contentData.library.relations[j].direction == "origin-target") {
+					if (contentData.library.relations[j].relationName === relation.relationName) {
+						if (contentData.library.relations[j].direction === "origin-target") {
 							contentData.library.relations[j].direction = "target-origin";
 						}
 						else {
@@ -909,14 +901,14 @@
 		contentData.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
 				contentData.tempLibrary.items.forEach(function (item) {
-					if (item.relationName && item.relationName == relation.relationName) {
-						if(item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1){
+					if (item.relationName && item.relationName === relation.relationName) {
+						if(item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1){
 							switch (item.type) {
 								case "fieldFromRelation":
 									contentData.library.items.push(item);
 									break;
 								case "viewFromRelation":
-									if (item.viewId != contentData.view.id) {
+									if (item.viewId !== contentData.view.id) {
 										contentData.library.items.push(item);
 									}
 									break;
@@ -938,7 +930,7 @@
 					if (!item.relationName) {
 						tempRelationChangeLibrary.push(item);
 					}
-					else if (item.relationName != relation.relationName) {
+					else if (item.relationName !== relation.relationName) {
 						tempRelationChangeLibrary.push(item);
 					}
 				});
@@ -950,7 +942,7 @@
 
 		contentData.getRelationType = function (relationId) {
 			for (var i = 0; i < contentData.relationsList.length; i++) {
-				if (contentData.relationsList[i].id == relationId) {
+				if (contentData.relationsList[i].id === relationId) {
 					return contentData.relationsList[i].relationType;
 				}
 			}
@@ -984,7 +976,7 @@
 		popupData.section = null;
 		popupData.isUpdate = true;
 		popupData.isValid = true;
-		if (section == null) {
+		if (section === null) {
 			popupData.isUpdate = false;
 			popupData.section = fastCopy(webvellaAdminService.initViewSection());
 			popupData.section.weight = weight;
@@ -1010,7 +1002,7 @@
 					popupData.viewContentRegion.sections = []; //If the view was newly created the viewContentRegion will be an empty object
 				}
 				for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
-					if (popupData.viewContentRegion.sections[i].name == popupData.section.name) {
+					if (popupData.viewContentRegion.sections[i].name === popupData.section.name) {
 						popupData.isValid = false;
 					}
 				}
@@ -1074,10 +1066,10 @@
 
 	//Row Modal
 	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService',
-				'ngToast', '$timeout', '$state'];
+				'ngToast'];
 	/* @ngInject */
 	function ManageRowModalController(parentData, row, section, weight, $modalInstance, $log, webvellaAdminService,
-				ngToast, $timeout, $state) {
+				ngToast) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1102,7 +1094,7 @@
 
 		];
 		popupData.isUpdate = true;
-		if (row == null) {
+		if (row === null) {
 			popupData.isUpdate = false;
 			popupData.row = fastCopy(webvellaAdminService.initViewRow(1));
 			popupData.row.weight = fastCopy(weight);
@@ -1111,7 +1103,7 @@
 		else {
 			popupData.row = fastCopy(row);
 			for (var i = 0; i < popupData.rowOptions.length; i++) {
-				if (popupData.row.columns.length == popupData.rowOptions[i].key) {
+				if (popupData.row.columns.length === popupData.rowOptions[i].key) {
 					popupData.selectedRowOption = popupData.rowOptions[i];
 				}
 			}
@@ -1134,9 +1126,9 @@
 				var originalRowColumns = 0;
 				var newRowColumns = fastCopy(popupData.selectedRowOption.key);
 				for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
-					if (parentData.viewContentRegion.sections[i].name == popupData.section.name) {
+					if (parentData.viewContentRegion.sections[i].name === popupData.section.name) {
 						for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
-							if (parseInt(parentData.viewContentRegion.sections[i].rows[j].weight) == parseInt(row.weight)) {
+							if (parseInt(parentData.viewContentRegion.sections[i].rows[j].weight) === parseInt(row.weight)) {
 								originalRowColumns = parentData.viewContentRegion.sections[i].rows[j].columns.length;
 							}
 						}
@@ -1173,7 +1165,7 @@
 			//#endregion
 			//#region << 3. Update the contentRegion & Feed in the updated ContentRegion in the view>>
 			for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
-				if (popupData.viewContentRegion.sections[i].id == popupData.section.id) {
+				if (popupData.viewContentRegion.sections[i].id === popupData.section.id) {
 					popupData.viewContentRegion.sections[i] = popupData.section;
 				}
 			}
@@ -1232,7 +1224,7 @@
 		};
 
 		popupData.cancel = function () {
-			if (eventObj != null) {
+			if (eventObj !== null) {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
@@ -1264,8 +1256,8 @@
 		//Lookup
 		var index = 0;
 		for (var i = 0; i < popupData.entity.recordLists.length; i++) {
-			if (popupData.entity.recordLists[i].type == "lookup") {
-				if (popupData.entity.recordLists[i].default && popupData.lookupDefaultIndex == -1) {
+			if (popupData.entity.recordLists[i].type === "lookup") {
+				if (popupData.entity.recordLists[i].default && popupData.lookupDefaultIndex === -1) {
 					popupData.lookupDefaultIndex = index;
 				}
 				popupData.lookupLists.push(popupData.entity.recordLists[i]);
@@ -1273,7 +1265,7 @@
 			}
 		}
 
-		if (popupData.field.fieldLookupList && popupData.field.fieldLookupList != "") {
+		if (popupData.field.fieldLookupList && popupData.field.fieldLookupList !== "") {
 			//should stick with the selected value
 		}
 		else if (popupData.quickCreateDefaultIndex > -1 && popupData.lookupLists.length > 0) {
@@ -1292,15 +1284,15 @@
 		//Quick create
 		index = 0;
 		for (var i = 0; i < popupData.entity.recordViews.length; i++) {
-			if (popupData.entity.recordViews[i].type == "quick_create") {
-				if (popupData.entity.recordViews[i].default && popupData.quickCreateDefaultIndex == -1) {
+			if (popupData.entity.recordViews[i].type === "quick_create") {
+				if (popupData.entity.recordViews[i].default && popupData.quickCreateDefaultIndex === -1) {
 					popupData.quickCreateDefaultIndex = index;
 				}
 				popupData.quickCreateViews.push(popupData.entity.recordViews[i]);
 				index++;
 			}
 		}
-		if (popupData.field.fieldManageView && popupData.field.fieldManageView != "") {
+		if (popupData.field.fieldManageView && popupData.field.fieldManageView !== "") {
 			//should stick with the selected value
 		}
 		else if (popupData.lookupDefaultIndex > -1 && popupData.quickCreateViews.length > 0) {
@@ -1310,7 +1302,7 @@
 		else if (popupData.quickCreateViews.length > 0) {
 			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
 		}
-		else if (popupData.field.type == "listFromRelation" || popupData.field.type == "viewFromRelation") {
+		else if (popupData.field.type === "listFromRelation" || popupData.field.type === "viewFromRelation") {
 
 			//should alert for error if it is list or view
 			popupData.error = true;
@@ -1323,7 +1315,7 @@
 		};
 
 		popupData.cancel = function () {
-			if (eventObj != null && !orderChangedOnly) {
+			if (eventObj !== null && !orderChangedOnly) {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
@@ -1331,20 +1323,20 @@
 			$modalInstance.dismiss('cancel');
 		};
 
-		/// Aux
-		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$modalInstance.close('success');
-		}
+		///// Aux
+		//function successCallback(response) {
+		//	ngToast.create({
+		//		className: 'success',
+		//		content: '<span class="go-green">Success:</span> ' + response.message
+		//	});
+		//	$modalInstance.close('success');
+		//}
 
-		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+		//function errorCallback(response) {
+		//	popupData.hasError = true;
+		//	popupData.errorMessage = response.message;
 
-		}
+		//}
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 

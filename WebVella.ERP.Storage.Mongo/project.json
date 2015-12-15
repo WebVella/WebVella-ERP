@@ -7,12 +7,12 @@
     "licenseUrl": "",
 
     "dependencies": {
-        "Microsoft.Framework.Configuration": "1.0.0-*",
+        "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
         "mongocsharpdriver": "1.9.2",
         "WebVella.ERP": "1.0.0-*"
     },
 
-    "frameworks": {
-         "dnx46": { }
-    }
+	"frameworks": {
+		"dnx46": { }
+	}
 }

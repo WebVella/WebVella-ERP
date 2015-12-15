@@ -6,22 +6,22 @@
   "projectUrl": "",
   "licenseUrl": "",
 
-  "dependencies": {
-    "System.Linq": "4.0.0-beta-23019",
-    "System.Threading": "4.0.10-beta-23019",
-     "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
-    "Microsoft.CSharp": "4.0.0-beta-23019",
-    "AutoMapper": "3.3.1",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta6",
-    "Newtonsoft.Json": "6.0.6",
-    "Microsoft.Framework.Configuration": "1.0.0-beta6"
-  },
+	"dependencies": {
+		"AutoMapper": "3.3.1",
+		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+		"Microsoft.CSharp": "4.0.1-beta-23516",
+		"Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
+		"Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+		"Newtonsoft.Json": "8.0.1-beta3",
+		"System.Linq": "4.0.1-beta-23516",
+		"System.Threading": "4.0.11-beta-23516"
+	},
 
-  "frameworks": {
-    "dnx46": {
-      "frameworkAssemblies": {
-        "System.XML": "4.0.0.0"
-      }
-    }
-  }
+	"frameworks": {
+		"dnx46": {
+			"frameworkAssemblies": {
+				"System.XML": "4.0.0.0"
+			}
+		}
+	}
 }
