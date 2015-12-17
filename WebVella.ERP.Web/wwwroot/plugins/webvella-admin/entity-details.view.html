@@ -115,15 +115,15 @@
 								<tr ng-repeat="role in contentData.entity.roles track by role.id">
 									<td>{{::role.label}}</td>
 									<td class="position-relative">
-										<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
-											<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
-											<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
-										</a>
-									</td>
-									<td class="position-relative">
 										<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
 											<span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
 											<span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
+										</a>
+									</td>
+									<td class="position-relative">
+										<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
+											<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
+											<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
 										</a>
 									</td>
 									<td class="position-relative">
