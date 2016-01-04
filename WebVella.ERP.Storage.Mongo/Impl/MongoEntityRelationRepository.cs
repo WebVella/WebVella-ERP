@@ -229,7 +229,7 @@ namespace WebVella.ERP.Storage.Mongo
 			var originFieldName = originField.Name;
 			if (originFieldName == "id")
 				originFieldName = "_id";
-            var originRecords = originColletion.Find(Query.EQ( originFieldName, originId)).ToList();
+			var originRecords = originColletion.Find(Query.EQ(originFieldName, originId)).ToList();
 			var originRecordsCount = originRecords.Count();
 			BsonDocument originRecord = null;
 			if (originRecordsCount == 0)
@@ -240,9 +240,11 @@ namespace WebVella.ERP.Storage.Mongo
 			{
 				originRecord = originRecords[0];
 				var targetsElementName = $"#{ relation.Name}_targets";
-				
+
 				BsonElement bsonElement = null;
-				try{ bsonElement = originRecord.GetElement(targetsElementName); }catch{}
+				if (originRecord.Elements.Any(x => x.Name == targetsElementName))
+					bsonElement = originRecord.GetElement(targetsElementName);
+				//try{ bsonElement = originRecord.GetElement(targetsElementName); }catch{}
 
 				if (bsonElement != null)
 				{
@@ -280,7 +282,9 @@ namespace WebVella.ERP.Storage.Mongo
 				var originsElementName = $"#{ relation.Name}_origins";
 
 				BsonElement bsonElement = null;
-				try{ bsonElement = targetRecord.GetElement(originsElementName); }catch{}
+				if (targetRecord.Elements.Any(x => x.Name == originsElementName))
+					bsonElement = targetRecord.GetElement(originsElementName);
+				//try{ bsonElement = targetRecord.GetElement(originsElementName); }catch{}
 
 				if (bsonElement != null)
 				{
@@ -304,10 +308,11 @@ namespace WebVella.ERP.Storage.Mongo
 			MongoTransaction transaction = null;
 			if (!MongoStaticContext.Context.TransactionInProgress)
 				transaction = MongoStaticContext.Context.CreateTransaction();
-			
-			try {
-			originColletion.Save(originRecord);
-			targetColletion.Save(targetRecord);
+
+			try
+			{
+				originColletion.Save(originRecord);
+				targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
@@ -318,7 +323,7 @@ namespace WebVella.ERP.Storage.Mongo
 					transaction.Rollback();
 
 				throw;
-		}
+			}
 
 		}
 
@@ -353,7 +358,9 @@ namespace WebVella.ERP.Storage.Mongo
 				originRecord = originRecords[0];
 				var targetsElementName = $"#{ relation.Name}_targets";
 				BsonElement bsonElement = null;
-				try { bsonElement = originRecord.GetElement(targetsElementName); } catch { }
+				if (originRecord.Elements.Any(x => x.Name == targetsElementName))
+					bsonElement = originRecord.GetElement(targetsElementName);
+				//try { bsonElement = originRecord.GetElement(targetsElementName); } catch { }
 				if (bsonElement != null)
 				{
 					var targets = BsonTypeMapper.MapToDotNetValue(bsonElement.Value) as List<object>;
@@ -385,7 +392,9 @@ namespace WebVella.ERP.Storage.Mongo
 				targetRecord = targetRecords[0];
 				var originsElementName = $"#{ relation.Name}_origins";
 				BsonElement bsonElement = null;
-				try { bsonElement = targetRecord.GetElement(originsElementName); } catch { }
+				if (targetRecord.Elements.Any(x => x.Name == originsElementName))
+					bsonElement = targetRecord.GetElement(originsElementName);
+				//try { bsonElement = targetRecord.GetElement(originsElementName); } catch { }
 				if (bsonElement != null)
 				{
 					var origins = BsonTypeMapper.MapToDotNetValue(bsonElement.Value) as List<object>;
@@ -407,8 +416,8 @@ namespace WebVella.ERP.Storage.Mongo
 
 			try
 			{
-			originColletion.Save(originRecord);
-			targetColletion.Save(targetRecord);
+				originColletion.Save(originRecord);
+				targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
