@@ -142,7 +142,7 @@
 								<div class="form-group">
 									<label class="control-label" for="weight">View name override</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride}}</a>
-									<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}"</div>
+									<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
 								</div>
 							</div>
 						</div>
