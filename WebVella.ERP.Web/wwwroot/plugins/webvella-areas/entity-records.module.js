@@ -214,7 +214,8 @@
 			var result = fastCopy(contentData.selectedView.name);
 
 			if (contentData.recordsMeta.viewNameOverride && contentData.recordsMeta.viewNameOverride.length > 0) {
-				var arrayOfTemplateKeys = contentData.recordsMeta.viewNameOverride.match(/\{(\w+)\}/g);
+				//var arrayOfTemplateKeys = contentData.recordsMeta.viewNameOverride.match(/\{(\w+)\}/g); 
+				var arrayOfTemplateKeys = contentData.recordsMeta.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
 				var resultStringStorage = fastCopy(contentData.recordsMeta.viewNameOverride);
 
 				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
@@ -243,7 +244,15 @@
 						//Check template has corresponding list data value
 						if (record[dataName] != undefined) {
 							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
-							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
+							//Case 1 - data is not from relation (not starting with $)
+							if(!dataName.startsWith('$')){
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
+							}
+							else {
+							//Case 2 - relation field
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
+							}
+
 						}
 						else {
 							//NO -> substitute the template key with the dataName only, as no value could be extracted
