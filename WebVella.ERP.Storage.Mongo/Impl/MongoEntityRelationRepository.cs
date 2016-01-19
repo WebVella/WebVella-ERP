@@ -218,17 +218,18 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <param name="targetId"></param>
 		public void CreateManyToManyRecord(Guid relationId, Guid originId, Guid targetId)
 		{
+			var entityRepository = new MongoEntityRepository();
 			var relation = Read(relationId);
-			var originEntity = MongoStaticContext.Context.Entities.GetById(relation.OriginEntityId);
+			var originEntity = entityRepository.Read(relation.OriginEntityId);
 			var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
-			var targetEntity = MongoStaticContext.Context.Entities.GetById(relation.TargetEntityId);
+			var targetEntity = entityRepository.Read(relation.TargetEntityId);
 			var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
 
 			var originColletion = MongoStaticContext.Context.GetBsonCollection("rec_" + originEntity.Name);
 			var originFieldName = originField.Name;
 			if (originFieldName == "id")
 				originFieldName = "_id";
-            var originRecords = originColletion.Find(Query.EQ( originFieldName, originId));
+			var originRecords = originColletion.Find(Query.EQ(originFieldName, originId)).ToList();
 			var originRecordsCount = originRecords.Count();
 			BsonDocument originRecord = null;
 			if (originRecordsCount == 0)
@@ -237,11 +238,13 @@ namespace WebVella.ERP.Storage.Mongo
 				throw new StorageException("There are more than 1 record with same origin id.");
 			else
 			{
-				originRecord = originRecords.First();
+				originRecord = originRecords[0];
 				var targetsElementName = $"#{ relation.Name}_targets";
-				
+
 				BsonElement bsonElement = null;
-				try{ bsonElement = originRecord.GetElement(targetsElementName); }catch{}
+				if (originRecord.Elements.Any(x => x.Name == targetsElementName))
+					bsonElement = originRecord.GetElement(targetsElementName);
+				//try{ bsonElement = originRecord.GetElement(targetsElementName); }catch{}
 
 				if (bsonElement != null)
 				{
@@ -266,7 +269,7 @@ namespace WebVella.ERP.Storage.Mongo
 			var targetFieldName = targetField.Name;
 			if (targetFieldName == "id")
 				targetFieldName = "_id";
-			var targetRecords = targetColletion.Find(Query.EQ(targetFieldName, targetId));
+			var targetRecords = targetColletion.Find(Query.EQ(targetFieldName, targetId)).ToList();
 			var targetRecordsCount = targetRecords.Count();
 			BsonDocument targetRecord = null;
 			if (targetRecordsCount == 0)
@@ -275,11 +278,13 @@ namespace WebVella.ERP.Storage.Mongo
 				throw new StorageException("There are more than 1 record with same target id.");
 			else
 			{
-				targetRecord = targetRecords.First();
+				targetRecord = targetRecords[0];
 				var originsElementName = $"#{ relation.Name}_origins";
 
 				BsonElement bsonElement = null;
-				try{ bsonElement = targetRecord.GetElement(originsElementName); }catch{}
+				if (targetRecord.Elements.Any(x => x.Name == originsElementName))
+					bsonElement = targetRecord.GetElement(originsElementName);
+				//try{ bsonElement = targetRecord.GetElement(originsElementName); }catch{}
 
 				if (bsonElement != null)
 				{
@@ -303,10 +308,11 @@ namespace WebVella.ERP.Storage.Mongo
 			MongoTransaction transaction = null;
 			if (!MongoStaticContext.Context.TransactionInProgress)
 				transaction = MongoStaticContext.Context.CreateTransaction();
-			
-			try {
-			originColletion.Save(originRecord);
-			targetColletion.Save(targetRecord);
+
+			try
+			{
+				originColletion.Save(originRecord);
+				targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
@@ -317,7 +323,7 @@ namespace WebVella.ERP.Storage.Mongo
 					transaction.Rollback();
 
 				throw;
-		}
+			}
 
 		}
 
@@ -329,17 +335,18 @@ namespace WebVella.ERP.Storage.Mongo
 		/// <param name="targetId"></param>
 		public void DeleteManyToManyRecord(Guid relationId, Guid originId, Guid targetId)
 		{
+			var entityRepository = new MongoEntityRepository();
 			var relation = Read(relationId);
-			var originEntity = MongoStaticContext.Context.Entities.GetById(relation.OriginEntityId);
+			var originEntity = entityRepository.Read(relation.OriginEntityId);
 			var originField = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId);
-			var targetEntity = MongoStaticContext.Context.Entities.GetById(relation.TargetEntityId);
+			var targetEntity = entityRepository.Read(relation.TargetEntityId);
 			var targetField = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId);
 
 			var originColletion = MongoStaticContext.Context.GetBsonCollection("rec_" + originEntity.Name);
 			var originFieldName = originField.Name;
 			if (originFieldName == "id")
 				originFieldName = "_id";
-			var originRecords = originColletion.Find(Query.EQ(originFieldName, originId));
+			var originRecords = originColletion.Find(Query.EQ(originFieldName, originId)).ToList();
 			var originRecordsCount = originRecords.Count();
 			BsonDocument originRecord = null;
 			if (originRecordsCount == 0)
@@ -348,10 +355,12 @@ namespace WebVella.ERP.Storage.Mongo
 				throw new StorageException("There are more than 1 record with same origin id.");
 			else
 			{
-				originRecord = originRecords.First();
+				originRecord = originRecords[0];
 				var targetsElementName = $"#{ relation.Name}_targets";
 				BsonElement bsonElement = null;
-				try { bsonElement = originRecord.GetElement(targetsElementName); } catch { }
+				if (originRecord.Elements.Any(x => x.Name == targetsElementName))
+					bsonElement = originRecord.GetElement(targetsElementName);
+				//try { bsonElement = originRecord.GetElement(targetsElementName); } catch { }
 				if (bsonElement != null)
 				{
 					var targets = BsonTypeMapper.MapToDotNetValue(bsonElement.Value) as List<object>;
@@ -371,7 +380,7 @@ namespace WebVella.ERP.Storage.Mongo
 			var targetFieldName = targetField.Name;
 			if (targetFieldName == "id")
 				targetFieldName = "_id";
-			var targetRecords = targetColletion.Find(Query.EQ(targetFieldName, targetId));
+			var targetRecords = targetColletion.Find(Query.EQ(targetFieldName, targetId)).ToList();
 			var targetRecordsCount = targetRecords.Count();
 			BsonDocument targetRecord = null;
 			if (targetRecordsCount == 0)
@@ -380,10 +389,12 @@ namespace WebVella.ERP.Storage.Mongo
 				throw new StorageException("There are more than 1 record with same target id.");
 			else
 			{
-				targetRecord = targetRecords.First();
+				targetRecord = targetRecords[0];
 				var originsElementName = $"#{ relation.Name}_origins";
 				BsonElement bsonElement = null;
-				try { bsonElement = targetRecord.GetElement(originsElementName); } catch { }
+				if (targetRecord.Elements.Any(x => x.Name == originsElementName))
+					bsonElement = targetRecord.GetElement(originsElementName);
+				//try { bsonElement = targetRecord.GetElement(originsElementName); } catch { }
 				if (bsonElement != null)
 				{
 					var origins = BsonTypeMapper.MapToDotNetValue(bsonElement.Value) as List<object>;
@@ -405,8 +416,8 @@ namespace WebVella.ERP.Storage.Mongo
 
 			try
 			{
-			originColletion.Save(originRecord);
-			targetColletion.Save(targetRecord);
+				originColletion.Save(originRecord);
+				targetColletion.Save(targetRecord);
 
 				if (transaction != null)
 					transaction.Commit();
@@ -422,8 +433,11 @@ namespace WebVella.ERP.Storage.Mongo
 
 		private void InvalidateRelationIndex(IStorageEntityRelation entityRelation, bool dropIndexes = false )
 		{
-			MongoEntity originEntity = MongoStaticContext.Context.Entities.GetById(entityRelation.OriginEntityId);
-			MongoEntity targetEntity = MongoStaticContext.Context.Entities.GetById(entityRelation.TargetEntityId);
+
+			var entityRepository = new MongoEntityRepository();
+
+			var originEntity = entityRepository.Read(entityRelation.OriginEntityId);
+			var targetEntity = entityRepository.Read(entityRelation.TargetEntityId);
 
 			if (originEntity == null || targetEntity == null)
 				return;
