@@ -2175,6 +2175,10 @@ form .error {
 	background-color: white;
 }
 
+.table td .table{
+	margin-bottom:0;
+}
+
 	.table thead th,
 	.table thead td {
 		background: #f8f8f8;
