@@ -655,7 +655,7 @@
 						}
 						else {
 							//we need to find the corresponding field from the current entity
-							if (relation.originFieldId == item.meta.id) {
+							if (relation.originEntityId == item.entityId) {
 								//the field from the current entity is than target
 								checkedFieldId = relation.targetFieldId;
 							}

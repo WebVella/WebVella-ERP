@@ -53,7 +53,7 @@
 				<hr class="divider ng-hide" />
 				<ul class="list-inline">
 					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active">
-						<a href="#/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1})">
+						<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">
 							<i class="fa fa-fw fa-bars"></i> {{::list.label}}
 						</a>
 					</li>
