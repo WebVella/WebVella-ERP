@@ -657,7 +657,7 @@
 
 				//Case 0: the current entity is both item and origin. 
 				//		  User should have permission to update both fields in the current entity
-				if(currentEntityIsRelationStatus == 3){
+				if (currentEntityIsRelationStatus == 3) {
 					var originFieldMeta = null;
 					var userCanUpdateOrigin = false;
 					var targetFieldMeta = null;
@@ -675,13 +675,13 @@
 						userCanUpdateOrigin = true;
 					}
 
- 					if (!targetFieldMeta.enableSecurity) {
+					if (!targetFieldMeta.enableSecurity) {
 						userCanUpdateTarget = true;
 					}
 
 					for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 						//Check if origin has this role
-						if(!userCanUpdateOrigin){
+						if (!userCanUpdateOrigin) {
 							for (var k = 0; k < originFieldMeta.permissions.canUpdate.length; k++) {
 								if (originFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
 									userCanUpdateOrigin = true;
@@ -690,7 +690,7 @@
 							}
 						}
 						//Check if target has this role
-						if(!userCanUpdateTarget){
+						if (!userCanUpdateTarget) {
 							for (var k = 0; k < targetFieldMeta.permissions.canUpdate.length; k++) {
 								if (targetFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
 									userCanUpdateTarget = true;
@@ -699,50 +699,51 @@
 							}
 						}
 					}
-					if(userCanUpdateOrigin && userCanUpdateTarget){
+					if (userCanUpdateOrigin && userCanUpdateTarget) {
 						userHasUpdatePermission = true;
 					}
-						else {
-							//we need to find the corresponding field from the current entity
-							if (relation.originFieldId == item.meta.id) {
-								//the field from the current entity is than target
-								checkedFieldId = relation.targetFieldId;
-							}
-				}			
+					else {
+						//we need to find the corresponding field from the current entity
+						if (relation.originFieldId == item.meta.id) {
+							//the field from the current entity is than target
+							checkedFieldId = relation.targetFieldId;
+						}
+					}
+				}
 				//Case 1: (1:1 or 1:N) and the current entity is target
 				//						the user should have permission to change the current Entity's field
-				else if(currentEntityIsRelationStatus == 2 && (relation.relationType == 1 || relation.relationType == 2)){
+				else if(currentEntityIsRelationStatus == 2 && (relation.relationType == 1 || relation.relationType == 2)) {
 					var currentEntityFieldMeta = null;
 					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
 						if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
 							currentEntityFieldMeta = contentData.currentEntity.fields[i];
-						}
-					}	
-					if(currentEntityFieldMeta != null){
-						if(!currentEntityFieldMeta.enableSecurity){
+					}
+				}
+				if(currentEntityFieldMeta != null) {
+						if(!currentEntityFieldMeta.enableSecurity) {
 							userHasUpdatePermission = true;
 						}
-							else {
+						else {
 							for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 								for (var k = 0; k < currentEntityFieldMeta.permissions.canUpdate.length; k++) {
-									if (currentEntityFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									if (currentEntityFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
 										userHasUpdatePermission = true;
 										break;
 									}
 								}
-							}	
-						}
 							}
 						}
-				//Case 2: (1:1 or 1:N) and the current entity is origin
-				else if(currentEntityIsRelationStatus == 1 && (relation.relationType == 1 || relation.relationType == 2)){
+					}
+				}
+					//Case 2: (1:1 or 1:N) and the current entity is origin
+				else if(currentEntityIsRelationStatus == 1 && (relation.relationType == 1 || relation.relationType == 2)) {
 						if (!item.meta.enableSecurity) {
 							userHasUpdatePermission = true;
-					}
-					else {
+						}
+						else {
 							for (var i = 0; i < contentData.currentUserRoles.length; i++) {
 								for (var k = 0; k < item.meta.permissions.canUpdate.length; k++) {
-									if (item.meta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									if (item.meta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
 										userHasUpdatePermission = true;
 										break;
 									}
@@ -752,21 +753,21 @@
 				}
 				//Case 3: (N:N) 	no matter if the current entity is origin or target
 				//					user should have permission to update both fields in both entities 
-				else if(relation.relationType == 3){
+				else if(relation.relationType == 3) {
 					var originFieldMeta = null;
 					var userCanUpdateOrigin = false;
 					var targetFieldMeta = null;
 					var userCanUpdateTarget = false;
 					//get origin field meta
-					if(currentEntityIsRelationStatus == 1){
+					if(currentEntityIsRelationStatus == 1) {
 						for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
 							if (contentData.currentEntity.fields[i].id == relation.originFieldId) {
 								originFieldMeta = contentData.currentEntity.fields[i];
-							}
-						}	
-						targetFieldMeta = item.meta;
 						}
-						else {
+					}
+						targetFieldMeta = item.meta;
+					}
+					else {
 						originFieldMeta = item.meta;
 						for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
 							if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
@@ -778,37 +779,37 @@
 					//Check basic security
 					if (!originFieldMeta.enableSecurity) {
 						userCanUpdateOrigin = true;
-						}
+					}
 
  					if (!targetFieldMeta.enableSecurity) {
 						userCanUpdateTarget = true;
 					}
 
 					for (var i = 0; i < contentData.currentUserRoles.length; i++) {
-						//Check if origin has this role
-						if(!userCanUpdateOrigin){
+					//Check if origin has this role
+						if(!userCanUpdateOrigin) {
 							for (var k = 0; k < originFieldMeta.permissions.canUpdate.length; k++) {
-								if (originFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+								if (originFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
 									userCanUpdateOrigin = true;
 									break;
 								}
 							}
 						}
 						//Check if target has this role
-						if(!userCanUpdateTarget){
+						if(!userCanUpdateTarget) {
 							for (var k = 0; k < targetFieldMeta.permissions.canUpdate.length; k++) {
-								if (targetFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+								if (targetFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
 									userCanUpdateTarget = true;
 									break;
-					}
-						}
 								}
 							}
-					if(userCanUpdateOrigin && userCanUpdateTarget){
-						userHasUpdatePermission = true;
 						}
+					}
+					if(userCanUpdateOrigin && userCanUpdateTarget) {
+						userHasUpdatePermission = true;
+					}
 					else {
-						userHasUpdatePermission = false;					
+						userHasUpdatePermission = false;
 					}
 				}
 
