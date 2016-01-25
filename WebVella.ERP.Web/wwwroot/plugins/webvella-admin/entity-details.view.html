@@ -86,6 +86,7 @@
 					<div class="form-group">
 						<label class="control-label" for="iconName">Icon name</label>
 						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName }}</a>
+						<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 					</div>
 				</div>
 				<div class="col-sm-6">
