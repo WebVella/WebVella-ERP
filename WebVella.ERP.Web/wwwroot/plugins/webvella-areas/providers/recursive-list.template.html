@@ -29,25 +29,7 @@
 					<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 				</div>
 				<div ng-switch="::column.meta.fieldType" ng-switch-when="fieldFromRelation">
-					<div ng-switch-when="1" ng-switch="::dataKind">
-						<div ng-switch-when="origin">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="target">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
-					</div>
-					<div ng-switch-when="2" ng-switch="::dataKind">
-						<div ng-switch-when="origin">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="target">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
-					</div>
-					<div ng-switch-when="3" ng-switch="::dataKind">
+					<div ng-switch="::dataKind">
 						<div ng-switch-when="origin">
 							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 						</div>
