@@ -39,8 +39,8 @@
 							<!-- If item is field WITH relation -->
 							<div class="field" ng-switch-when="fieldFromRelation">
 								<label class="control-label">{{::item.meta.label}}</label>
-								<div ng-switch="::relation.relationType">
-									<div ng-switch-when="1" ng-switch="::dataKind">
+								<div>
+									<div ng-switch="::dataKind">
 										<div ng-switch-when="origin">
 											<span ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></span>
 										</div>
