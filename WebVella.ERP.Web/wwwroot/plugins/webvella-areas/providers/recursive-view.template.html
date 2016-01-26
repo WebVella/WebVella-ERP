@@ -1,5 +1,4 @@
-﻿<div ng-if="::viewData.length == 0">No items</div>
-<p ng-if="::(canAddExisting || canCreate) && !hasError && viewData.length > 0">
+﻿<p ng-if="::(canAddExisting || canCreate) && !hasError">
 	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 		<i class="fa fa-download"></i> Add existing
 	</a>
@@ -7,6 +6,7 @@
 		<i class="fa fa-plus"></i> Create & Add
 	</a>
 </p>
+<!--<div ng-if="::viewData.length == 0">No items</div>-->
 <div ng-repeat="recordData in viewData" ng-if="::viewData.length > 0">
 	<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in selectedRegion.sections track by section.id">
 		<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel" ng-click="toggleSectionCollapse(section.id,recordData.id)">

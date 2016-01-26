@@ -1,4 +1,4 @@
-﻿<p ng-if="::(canAddExisting || canCreate) && !hasError && listData.length > 0">
+﻿<p ng-if="::(canAddExisting || canCreate) && !hasError>
 	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 		<i class="fa fa-download"></i> Add existing
 	</a>
@@ -55,7 +55,9 @@
 		</tr>
 	</tbody>
 </table>
-<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>
+
+<!--<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>-->
+
 <div ng-if="::hasError" ng-bind="errorMessage" class="go-red"></div>
 
 
