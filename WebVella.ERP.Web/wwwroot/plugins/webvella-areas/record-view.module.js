@@ -855,7 +855,7 @@
 				if (contentData.currentUserEntityPermissions[i].entityName == contentData.currentEntity.name) {
 					currentEntityPermissions = contentData.currentUserEntityPermissions[i];
 				}
-				else if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
+				if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
 					relatedEntityPermissions = contentData.currentUserEntityPermissions[i];
 				}
 			}
