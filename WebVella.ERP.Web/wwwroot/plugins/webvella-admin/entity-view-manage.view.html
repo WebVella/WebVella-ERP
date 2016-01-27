@@ -79,7 +79,7 @@
 										<a href="javascript:void(0)" ng-click="contentData.removeSection(section.id)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
 										<a href="javascript:void(0)" ng-click="contentData.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
 									</span>
-									<span class="go-gray">({{section.weight}})</span> {{section.label}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
+									<span class="go-gray">({{section.weight}})</span> {{section.label}} <span class="text-muted">({{section.name}})</span> <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
 								</div>
 								<div class="panel-body">
 									<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
