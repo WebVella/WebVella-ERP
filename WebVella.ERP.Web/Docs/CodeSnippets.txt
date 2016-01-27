@@ -781,3 +781,18 @@ TREE SELECT
 }
 #endregion
 
+
+////////////////////////////////////////////////////////////////////////////////
+//	AREA SUBSCRIPTIONS ADD
+////////////////////////////////////////////////////////////////////////////////
+
+#region << area add subsription: AreaName -> EntityName >>
+{
+	var updatedAreaId = new Guid("area_guid");
+	var updateAreaResult = UpsetAreaSubscription(entMan, recMan, updatedAreaId, "entity_name", "view_name", "list_name");
+	if (!updateAreaResult.Success)
+	{
+		throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+	}
+}
+#endregion

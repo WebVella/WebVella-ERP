@@ -278,11 +278,11 @@
 
 		contentData.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = contentData.selectedSidebarPage.data[fieldName];
+			var filePath = contentData.entityData[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					contentData.selectedSidebarPage.data[fieldName] = null;
+					contentData.entityData[fieldName] = null;
 					contentData.progress[fieldName] = 0;
 					contentData.fieldUpdate(item, null);
 				}, 0);
