@@ -1021,7 +1021,7 @@
 					popupData.viewContentRegion = popupData.view.regions[i];
 				}
 			}
-			// Validate unique username on add. It cannot be managed on update
+			// Validate unique section name on add. It cannot be managed on update
 			if (!popupData.isUpdate) {
 				popupData.isValid = true;
 				if (!popupData.viewContentRegion.sections) {

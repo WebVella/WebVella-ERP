@@ -207,7 +207,7 @@ function guid() {
 				}
 			};
 
-			
+
 			return entity;
 		}
 
@@ -462,7 +462,7 @@ function guid() {
 				"weight": 1,
 				"cssClass": "",
 				"type": "general",
-				"iconName":"file-text-o",
+				"iconName": "file-text-o",
 				"regions": [
                     {
                     	"name": "content",
@@ -606,29 +606,90 @@ function guid() {
 		}
 		/////////////////////
 		function safeUpdateArrayPlace(updateObject, array) {
+			var resultArray = [];
 			//If the place is empty or null give it a very high number which will be made correct later
 			if (updateObject.weight === "" || updateObject.weight === null) {
 				updateObject.weight = 99999;
 			}
-			for (var i = 0; i < array.length; i++) {
-				//If this is an element that has the same place as the newly updated one increment its place
-				if (parseInt(array[i].weight) >= parseInt(updateObject.weight) && array[i].id != updateObject.id) {
-					array[i].weight = parseInt(array[i].weight) + 1;
+			//Check if the element is new, or already existing, by matching the ID.
+			//If new, than the other sections with the same or more weight should be moved back with one place
+			//If existing, than only the section with matching weight should be move one place ahead so the updated could take its place. All the rest should preserve their places
+			var alreadyExistingElement = false;
+			var originalWeight = -1;
+			if (updateObject.id && updateObject.id != null) {
+				for (var i = 0; i < array.length; i++) {
+					if (updateObject.id === array[i].id) {
+						alreadyExistingElement = true;
+						originalWeight = array[i].weight;
+					}
 				}
-				//Find the element and update it
-				if (array[i].id == updateObject.id) {
-					array[i] = updateObject;
-				}
-
-			}
-			//Sort again
-			array.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-			//Recalculate the places to remove gaps
-			for (var i = 0; i < array.length; i++) {
-				array[i].weight = i + 1;
 			}
 
-			return array;
+			//There is a change in the place
+			if (parseInt(originalWeight) != parseInt(updateObject.weight)) {
+				for (var i = 0; i < array.length; i++) {
+					var currentElement = array[i];
+					//Case 1: New element is pushed
+					if (!alreadyExistingElement) {
+						//If this is an element that has the same place as the newly updated one increment its place
+						if (parseInt(currentElement.weight) >= parseInt(updateObject.weight) && currentElement.id != updateObject.id) {
+							currentElement.weight = parseInt(currentElement.weight) + 1;
+							resultArray.push(currentElement);
+						}
+						//Find the element and update it
+						if (array[i].id == updateObject.id) {
+							resultArray.push(updateObject);
+						}
+					}
+						//Case 2: existing element is moved
+					else {
+						//case 2.1 - elements with smaller weight from  both the old and new weight should preserve theirs. elements with weight bigger than both the old and new weight should preserve weight
+						if (currentElement.id != updateObject.id && (parseInt(currentElement.weight) < parseInt(updateObject.weight) && parseInt(currentElement.weight) < parseInt(originalWeight)) ||
+							(parseInt(currentElement.weight) > parseInt(updateObject.weight) && parseInt(currentElement.weight) > parseInt(originalWeight))) {
+							resultArray.push(currentElement);
+						}
+							//case 2.2 - this is the same element
+						else if (currentElement.id === updateObject.id) {
+							resultArray.push(updateObject);
+						}
+							//case 2.3 - elements with weight between the new and the old one should either gain or lose weight
+						else {
+							//case 2.3.1 - if the new weight is biger the the old -> element is pushed back, the between elements should lose weight
+							if (parseInt(updateObject.weight) > parseInt(originalWeight)) {
+								currentElement.weight = parseInt(currentElement.weight) - 1;
+								resultArray.push(currentElement);
+							}
+								//case 2.3.1 - if the new weight is smaller the the old -> element is pushed forward, the between elements should gain weight
+							else {
+								currentElement.weight = parseInt(currentElement.weight) + 1;
+								resultArray.push(currentElement);
+							}
+
+						}
+
+					}
+
+				}
+				//Sort again
+				resultArray.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+				//Recalculate the places to remove gaps
+				for (var i = 0; i < array.length; i++) {
+					resultArray[i].weight = i + 1;
+				}
+			}
+			//There is no place change
+			else{
+				for (var i = 0; i < array.length; i++){
+				  var currentElement = array[i];
+				  if(currentElement.id === 	updateObject.id){
+					  resultArray.push(updateObject);
+				  }
+				  else {
+					  resultArray.push(currentElement);
+				  }
+				}
+			}
+			return resultArray;
 		}
 		/////////////////////
 		function safeRemoveArrayPlace(array, id) {
@@ -804,7 +865,7 @@ function guid() {
             	"default": false,
             	"system": false,
             	"cssClass": "",
-				"iconName":"",
+            	"iconName": "",
             	"relationId": null, // Only relations in which both origin and target are the current entity
             	"depthLimit": 5,
             	"nodeParentIdFieldId": null, //Inherited from the relation Target field
@@ -837,7 +898,7 @@ function guid() {
             	"rootNodes": [
 					{
 						"id": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
-						"recordId":"5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
+						"recordId": "5548bbc7-eda3-45e7-b0ee-253f4eaf2785",
 						"name": "clothes",
 						"label": "Clothes",
 						"parentId": "b6add018-f9eb-4b60-a724-7d1e2597449c"
