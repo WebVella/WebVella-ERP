@@ -5633,6 +5633,7 @@ namespace WebVella.ERP.Api
 			lookup.Default = true;
 			lookup.System = true;
 			lookup.Type = "lookup";
+			lookup.PageSize = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
 

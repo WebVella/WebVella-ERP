@@ -254,7 +254,7 @@
 					for (var k = 0; k < contentData.viewContentRegion.sections[i].rows[j].columns.length; k++) {
 						for (var m = 0; m < contentData.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
 							if (contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
-								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta.id);
+								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
 							}
 						}
 					}
@@ -271,7 +271,7 @@
 
 		contentData.tempLibrary.items.forEach(function (item) {
 			//Initially remove all items that are from relation or relationOptions
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1) || !item.meta) {
+			if ((item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1) || !item.meta) {
 				switch (item.type) {
 					case "field":
 						contentData.library.items.push(item);
@@ -850,7 +850,7 @@
 				contentData.library.items.push(contentData.itemScheduledForRemoval);
 				sortLibrary();
 				if(contentData.itemScheduledForRemoval.meta){
-					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.meta.id);
+					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.dataName);
 					if (itemIndexInUsed > -1) {
 						alreadyUsedItemIds.slice(itemIndexInUsed, 1);
 					}
@@ -928,7 +928,7 @@
 			if (!relation.addedToLibrary) {
 				contentData.tempLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName === relation.relationName) {
-						if(item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1){
+						if(item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1){
 							switch (item.type) {
 								case "fieldFromRelation":
 									contentData.library.items.push(item);
