@@ -4111,6 +4111,13 @@ span.not-editable.not-readable {
 		cursor: pointer;
 	}
 
+	.record-details .panel-heading {
+		color: #f5f5f5;
+		background-color: #555;
+		border-color: #555;
+	}
+
+
 .editable-field {
 	line-height: 20px;
 	min-height: 34px;

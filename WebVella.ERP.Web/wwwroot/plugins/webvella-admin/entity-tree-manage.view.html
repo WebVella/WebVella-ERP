@@ -152,8 +152,8 @@
 									   ng-bind-html="contentData.nodeNameField.name"
 									   onbeforesave="contentData.nodeNameUpdate($data)" class="ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">
 									</a>
-									<div class="form-description ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">only unique and required "auto increment", "unique identifier" and "text" fields are eligible. only unique text fields are eligible. Used for URL generation</div>
-									<div class="alert alert-danger ng-hide" ng-show="::contentData.nodeNameEligibleFields.length == 0">There </div>
+									<div class="form-description ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
+									<div class="alert alert-danger ng-hide" ng-show="::contentData.nodeNameEligibleFields.length == 0">There are no eligible field.  only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
@@ -161,10 +161,25 @@
 									<label class="control-label">Node label field</label>
 									<a href="javascript:void(0)" editable-select="contentData.nodeLabelField" e-ng-options="s as s.name for s in contentData.nodeLabelEligibleFields"
 									   ng-bind-html="contentData.nodeLabelField.name"
-									   onbeforesave="contentData.nodeLabelUpdate($data)">
+									   onbeforesave="contentData.nodeLabelUpdate($data)" class="ng-hide" ng-show="::contentData.nodeLabelEligibleFields.length > 0">
 									</a>
-									<div class="form-description ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields are eligible. Human readable representation of the node</div>
+									<div class="form-description ng-hide" ng-show="::contentData.nodeLabelEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields.</div>
 								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="control-label">Node weight field</label>
+									<a href="javascript:void(0)" editable-select="contentData.nodeWeightField" e-ng-options="s as s.name for s in contentData.nodeWeightEligibleFields"
+									   ng-bind-html="contentData.nodeWeightField.name"
+									   onbeforesave="contentData.nodeWeightUpdate($data)" class="ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length > 0">
+									</a>
+									<div class="form-description ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length > 0">only required "auto increment" and "number" fields. Sort is ascending</div>
+									<div class="alert alert-danger ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length == 0">There are no eligible field.  Only required "auto increment" and "number" fields. Sort is ascending</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
 							</div>
 						</div>
 					</div>
