@@ -229,6 +229,9 @@
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
+									</div>
 								</div>
 
 								<!--If item is field WITH relation-->
@@ -343,6 +346,9 @@
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
+									</div>
 								</div>
 
 								<!--If item is view WITH NO relation-->
@@ -358,6 +364,9 @@
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
+									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
 									</div>
 								</div>
 
@@ -378,6 +387,9 @@
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
+									</div>
 								</div>
 
 								<!--If item is list WITH NO relation-->
@@ -393,6 +405,9 @@
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
+									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
 									</div>
 								</div>
 
@@ -413,6 +428,9 @@
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
+									</div>
 								</div>
 
 								<!--If item is tree WITH relation-->
@@ -425,6 +443,9 @@
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
+									</div>
+									<div ng-if="::item.meta.helpText" class="form-description">
+										{{item.meta.helpText}}
 									</div>
 								</div>
 
