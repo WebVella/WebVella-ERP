@@ -539,14 +539,14 @@
 						for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
 							for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
 								for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-									if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+									if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 									}
-									else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].viewId === fieldObject.viewId) {
+									else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
@@ -554,7 +554,7 @@
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
-									else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].listId === fieldObject.listId) {
+									else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
@@ -668,14 +668,14 @@
 							for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
 								for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
 									for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-										if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+										if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 										}
-										else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].viewId === fieldObject.viewId) {
+										else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
@@ -683,7 +683,7 @@
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 										}
-										else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].listId === fieldObject.listId) {
+										else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
@@ -1021,7 +1021,7 @@
 					popupData.viewContentRegion = popupData.view.regions[i];
 				}
 			}
-			// Validate unique section name on add. It cannot be managed on update
+			// Validate unique username on add. It cannot be managed on update
 			if (!popupData.isUpdate) {
 				popupData.isValid = true;
 				if (!popupData.viewContentRegion.sections) {
