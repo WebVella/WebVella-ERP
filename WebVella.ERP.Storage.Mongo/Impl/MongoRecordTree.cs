@@ -62,6 +62,9 @@ namespace WebVella.ERP.Storage.Mongo
 		[BsonElement("nodeLabelFieldId")]
 		public Guid NodeLabelFieldId { get; set; }
 
+		[BsonElement("nodeWeightFieldId")]
+		public Guid? NodeWeightFieldId { get; set; }
+
 		[BsonElement("rootNodes")]
 		public List<Guid> RootNodes { get; set; }
 

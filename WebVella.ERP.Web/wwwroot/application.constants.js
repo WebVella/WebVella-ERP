@@ -17,6 +17,13 @@
 		});
 })();
 
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
 
 function findInArray(arr, propName, propValue) {
 	for (var i = 0; i < arr.length; i++)
