@@ -476,6 +476,18 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
+
+
+					//we need to add a cache breaker for the browser to get the new version of files and images
+					switch (item.meta.fieldType) {
+					   case 7: //file
+						  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						break;
+					   case 9: //image
+						response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						break;
+					}
+
 					contentData.selectedSidebarPage.data = fastCopy(response.object.data[0]);
 					defer.resolve();
 				}
@@ -535,6 +547,36 @@
 					contentData.moveSuccessCallback = function (response) {
 						$timeout(function () {
 							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
+							contentData.fieldUpdate(item, response.object.url );
+						}, 1);
+					}
+
+					contentData.uploadSuccessCallback = function (response) {
+						var tempPath = response.object.url;
+						var fileName = response.object.filename;
+						var targetPath = "/fs/" + contentData.currentEntity.name + "/" + newGuid() + "/" + fileName;
+						var overwrite = false;
+						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
+					}
+					contentData.uploadErrorCallback = function (response) {
+						alert(response.message);
+					}
+					contentData.uploadProgressCallback = function (response) {
+						$timeout(function () {
+							contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
+						}, 1);
+					}
+					webvellaAdminService.uploadFileToTemp(file, item.meta.name, contentData.uploadProgressCallback, contentData.uploadSuccessCallback, contentData.uploadErrorCallback);
+				}
+			};
+
+			contentData.updateFileUpload = function (file, item) {
+				if (file != null) {
+					contentData.uploadedFileName = item.dataName;
+					var oldFileName = contentData.selectedSidebarPage.data[contentData.uploadedFileName];
+					contentData.moveSuccessCallback = function (response) {
+						$timeout(function () {
+							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
 							contentData.fieldUpdate(item, response.object.url);
 						}, 1);
 					}
@@ -542,7 +584,7 @@
 					contentData.uploadSuccessCallback = function (response) {
 						var tempPath = response.object.url;
 						var fileName = response.object.filename;
-						var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+						var targetPath = oldFileName;
 						var overwrite = true;
 						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 					}

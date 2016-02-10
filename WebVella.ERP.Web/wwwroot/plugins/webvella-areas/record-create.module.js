@@ -120,7 +120,6 @@
 		for (var l = 0; l < contentData.currentEntity.fields.length; l++) {
 			contentData.entityData[contentData.currentEntity.fields[l].name] = null;
 		}
-
 		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		contentData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
@@ -260,8 +259,8 @@
 				contentData.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
-					var overwrite = true;
+					var targetPath = "/fs/" + contentData.currentEntity.name + "/" + newGuid() + "/" + fileName;
+					var overwrite = false;
 					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 				}
 				contentData.uploadErrorCallback = function (response) {
@@ -284,7 +283,6 @@
 				$timeout(function () {
 					contentData.entityData[fieldName] = null;
 					contentData.progress[fieldName] = 0;
-					contentData.fieldUpdate(item, null);
 				}, 0);
 				return true;
 			}
