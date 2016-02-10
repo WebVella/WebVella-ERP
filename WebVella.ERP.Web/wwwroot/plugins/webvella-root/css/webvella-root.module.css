@@ -2168,6 +2168,25 @@ form .error {
 			color: white;
 		}
 
+
+	.form .image-upload .update-link,
+	.form-horizontal .image-upload .update-link {
+		position: absolute;
+		left: 50px;
+		top: 5px;
+		padding: 10px;
+		border-radius: 30px;
+		background: #000000;
+		background: rgba(0,0,0,0.2);
+		color: #FF9800;
+	}
+
+		.form .image-upload .update-link:hover,
+		.form-horizontal .image-upload .update-link:hover {
+			background: #FF9800;
+			color: white;
+		}
+
 /*#endregion*/
 
 /*#region << Tables >> */
@@ -3437,8 +3456,16 @@ span.not-editable.not-readable {
 	text-align: center;
 }
 
-	.input-group.file-upload .input-group-addon:hover {
-		color: #F44336;
+	.input-group.file-upload .input-group-addon.delete:hover {
+		background-color: #F44336;
+		border-color: #F44336;
+		color: #fff;
+	}
+
+	.input-group.file-upload .input-group-addon.update:hover {
+		background-color: #FFCC80;
+		border-color:#FFCC80;
+		color: #fff;
 	}
 
 /*#endregion */
