@@ -158,12 +158,12 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
+	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService','webvellaAdminService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
 
 	/* @ngInject */
-	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
+	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,	webvellaAdminService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
 		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -178,7 +178,8 @@
 		contentData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
 		contentData.stateParams = $stateParams;
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
-
+		contentData.moreListsOpened = false;
+		contentData.moreListsInputFocused = false;
 		//Get the current meta
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 
@@ -283,6 +284,10 @@
 				contentData.currentListView = contentData.entity.recordLists[i];
 			}
 		}
+
+		 contentData.entity.recordLists = contentData.entity.recordLists.sort(function(a, b) {
+			 return parseFloat(a.weight) - parseFloat(b.weight);
+		});
 
 		//#endregion
 
@@ -503,6 +508,71 @@
 				}
 				webvellaAreasService.createListFilter(filterArray, $stateParams.entityName, $stateParams.listName, successCallback, errorCallback);
 			}
+		}
+
+		contentData.openMoreLists = function(){
+			contentData.moreListsOpened = !contentData.moreListsOpened;
+			if(contentData.moreListsOpened){
+				$timeout(function(){
+					 contentData.moreListsInputFocused = true;
+				},100);			
+			}
+			else{
+				$timeout(function(){
+					contentData.moreListsInputFocused = false;
+					contentData.listFilter = "";		
+				},100);			
+			}
+		}
+
+		contentData.isCurrentListAreaDefault = function(){
+			for (var i = 0; i < contentData.area.subscriptions.length; i++) {
+				if(contentData.area.subscriptions[i].name == contentData.entity.name){
+					if(contentData.area.subscriptions[i].list.name == contentData.currentListView.name){
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			}
+		}
+
+		contentData.setCurrentListAsDefault = function(){
+			var currentAreaCopy = fastCopy(contentData.area);
+			currentAreaCopy.subscriptions = angular.fromJson(currentAreaCopy.subscriptions);
+			//console.log(contentData.area);
+			//console.log(contentData.entity);
+			//console.log(contentData.currentListView);
+			//console.log(contentData.area.subscriptions);
+			//contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
+			//1. Cycle true subscriptions and find the current entity
+			for (var i = 0; i < currentAreaCopy.subscriptions.length; i++) {
+				if(currentAreaCopy.subscriptions[i].name == contentData.entity.name){
+					//2. Change the subscription list
+					currentAreaCopy.subscriptions[i].list.name = contentData.currentListView.name;					
+					currentAreaCopy.subscriptions[i].list.label = contentData.currentListView.label;
+				}
+			}
+			//3. Stringify back the subscription field
+			currentAreaCopy.subscriptions = angular.toJson(currentAreaCopy.subscriptions);
+			//4. Update the area
+			function updateAreaSuccessCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
+				});
+				$state.reload();
+			}
+
+			function updateAreaErrorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + 'Error occurred while updating the area record!'
+				});				
+			}
+
+			webvellaAdminService.updateRecord(currentAreaCopy.id, "area", currentAreaCopy, updateAreaSuccessCallback, updateAreaErrorCallback);
 		}
 
 		//#endregion

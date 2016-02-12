@@ -481,10 +481,14 @@
 					//we need to add a cache breaker for the browser to get the new version of files and images
 					switch (item.meta.fieldType) {
 					   case 7: //file
+						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
 						  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						}
 						break;
 					   case 9: //image
-						response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+							response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						}
 						break;
 					}
 
