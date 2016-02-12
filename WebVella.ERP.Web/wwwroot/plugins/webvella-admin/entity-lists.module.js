@@ -20,7 +20,7 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-lists', {
             parent: 'webvella-admin-base',
-            url: '/entities/:entityName/lists', //  /desktop/areas after the parent state is prepended
+            url: '/entities/:entityName/lists?createNew', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -190,8 +190,9 @@
         //#endregion
 
     	//Create new list modal
+		contentData.createListModalInstance = undefined;
         contentData.createListModal = function () {
-        	var modalInstance = $uibModal.open({
+        	contentData.createListModalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'createListModal.html',
         		controller: 'createListModalController',
@@ -202,6 +203,18 @@
         		}
         	});
         }
+		//Close the modal on state change
+		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
+		  if (contentData.createListModalInstance) {
+			contentData.createListModalInstance.dismiss();
+		  }
+		})
+
+
+		//Check if the param createNewList is true if yes - open the modal
+		if($state.params.createNew){
+		   contentData.createListModal();
+		}
 
         $log.debug('webvellaAdmin>entity-records-list> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }

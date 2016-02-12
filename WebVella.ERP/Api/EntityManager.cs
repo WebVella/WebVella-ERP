@@ -5623,6 +5623,8 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "general";
+			create.Weight = 10;
+			create.PageSize = 10;
 			create.VisibleColumnsCount = 5;
 			recordLists.Add(create);
 
@@ -5633,6 +5635,7 @@ namespace WebVella.ERP.Api
 			lookup.Default = true;
 			lookup.System = true;
 			lookup.Type = "lookup";
+			lookup.Weight = 10;
 			lookup.PageSize = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
@@ -5654,6 +5657,7 @@ namespace WebVella.ERP.Api
 			create.Label = "Create";
 			create.Default = true;
 			create.System = true;
+			create.Weight = 10;
 			create.Type = "create";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
@@ -5665,6 +5669,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Label = "Quick create";
 			quickCreate.Default = true;
 			quickCreate.System = true;
+			quickCreate.Weight = 10;
 			quickCreate.Type = "quick_create";
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
@@ -5676,6 +5681,7 @@ namespace WebVella.ERP.Api
 			quickView.Label = "Quick view";
 			quickView.Default = true;
 			quickView.System = true;
+			quickView.Weight = 10;
 			quickView.Type = "quick_view";
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
@@ -5687,6 +5693,7 @@ namespace WebVella.ERP.Api
 			general.Label = "General";
 			general.Default = true;
 			general.System = true;
+			general.Weight = 10;
 			general.Type = "general";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);

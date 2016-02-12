@@ -937,11 +937,11 @@ ngToast
 	padding: 10px 10px 10px 20px;
 }
 
+#page-meta uib-accordion {
+}
+
 #page-meta uib-accordion .panel-group {
-	margin-left: -20px;
-	margin-right: -10px;
-	margin-top: 10px;
-	margin-bottom: -10px;
+	margin: 10px -10px -10px -20px;
 }
 
 	#page-meta uib-accordion .panel-group .panel {
@@ -959,6 +959,9 @@ ngToast
 			border: none !important;
 			background: #555;
 			color: #9E9E9E;
+			padding-left:15px;
+			padding-bottom:20px;
+			padding-top:10px;
 		}
 
 			#page-meta uib-accordion .panel-group .panel .panel-body a {
@@ -966,16 +969,51 @@ ngToast
 			}
 
 			#page-meta uib-accordion .panel-group .panel .panel-body .filter {
-				border-left: none;
+				border:none;
+				background:transparent;
+				padding-bottom: 0;
+				padding-top:0;
 			}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .filter .field {
+					padding-bottom:2px;
+				}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .filter a {
+					color:#9E9E9E;
+				}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .filter .fa {
+					color:#9E9E9E;
+					opacity:1;
+					font-size:16px;
+				}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .filter a:hover {
+					color:#eee;
+				}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .filter a:hover .fa {
+					color:#F44336;
+				}
 
 			#page-meta uib-accordion .panel-group .panel .panel-body .divider {
 				border-top: 1px dashed #888;
+				margin-bottom: 20px;
+			}
+
+			#page-meta uib-accordion .panel-group .panel .panel-body .list-inline.criterias {
+				margin:0;
 			}
 
 			#page-meta uib-accordion .panel-group .panel .panel-body .list-inline {
 				margin-left: -10px;
+				margin-bottom:0;
 			}
+
+				#page-meta uib-accordion .panel-group .panel .panel-body .criterias.list-inline > li {
+					padding:0 15px 0 0;
+				}
 
 				#page-meta uib-accordion .panel-group .panel .panel-body .list-inline > li {
 					padding: 5px 10px;

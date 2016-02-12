@@ -23,17 +23,17 @@
 		</div>
 		<div class="lists-box">
 			<h4 title="Newest active offers">{{::contentData.currentListView.label}}</h4>
-			<a href="javascript:void(0)" ng-click="moreListsOpened = !moreListsOpened"><i class="fa fa-table"></i> Other Lists and Charts</a>
+			<a href="javascript:void(0)" ng-click="contentData.openMoreLists()"><i class="fa fa-fw" ng-class="{'fa-table':!contentData.moreListsOpened, 'fa-caret-down go-red':contentData.moreListsOpened}"></i> Lists and Charts</a>
 		</div>
 		<uib-accordion>
-			<uib-accordion-group is-open="moreListsOpened">
-				<form class="form-inline ng-hide">
+			<uib-accordion-group is-open="contentData.moreListsOpened">
+				<form class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon" id="basic-addon1">
 								<i class="fa fa-search"></i>
 							</span>
-							<input ng-model="listFilter" type="text" class="form-control" placeholder="list label">
+							<input ng-model="contentData.listFilter" type="text" class="form-control" placeholder="list or chart label" focus-me="contentData.moreListsInputFocused">
 						</div>
 					</div>
 					<div class="form-group hidden-xs hidden-sm">
@@ -41,18 +41,21 @@
 							<div class="field">Actions</div>
 							<ul class="criterias list-inline">
 								<li>
-									<a href=""><i class="fa fa-plus"></i> Create new list</a>
+									<a href="#/admin/entities/{{::contentData.entity.name}}/lists?createNew=true"><i class="fa fa-plus"></i> Create new list</a>
 								</li>
 								<li>
-									<a href=""><i class="fa fa-thumb-tack"></i> Set as default</a>
+									<a href="#/admin/entities/{{::contentData.entity.name}}/lists/{{contentData.currentListView.name}}"><i class="fa fa-pencil"></i> Edit this list</a>
+								</li>
+								<li class="ng-hide" ng-show="!contentData.isCurrentListAreaDefault()">
+									<a href="javascript:void(0)" ng-click="contentData.setCurrentListAsDefault()"><i class="fa fa-thumb-tack"></i> Set as default</a>
 								</li>
 							</ul>
 						</div>
 					</div>
 				</form>
-				<hr class="divider ng-hide" />
+				<hr class="divider" />
 				<ul class="list-inline">
-					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:listFilter}" ui-sref-active="active">
+					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:contentData.listFilter}" ui-sref-active="active">
 						<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">
 							<i class="fa fa-fw fa-bars"></i> {{::list.label}}
 						</a>
