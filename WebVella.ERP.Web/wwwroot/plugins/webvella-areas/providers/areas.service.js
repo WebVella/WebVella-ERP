@@ -28,6 +28,11 @@
 		serviceInstance.getListFilter = getListFilter;
 		serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
 		serviceInstance.getViewRecord = getViewRecord;
+		//Import & Export
+		serviceInstance.importEntityRecords = importEntityRecords;
+		serviceInstance.exportListRecords = exportListRecords;
+
+		serviceInstance.getViewRecord = getViewRecord;
 		//// Record data presenting
 		serviceInstance.renderFieldValue = renderFieldValue;
 
@@ -694,6 +699,24 @@
 		}
 		//#endregion
 
+		//#region << Import Export >>
+
+		///////////////////////
+		function importEntityRecords(entityName, fileTempPath, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>importEntityRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			var postObject = {};
+			postObject.fileTempPath = fileTempPath;
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////////
+		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>exportListRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		//#endregion	
+		
 		//// Aux methods //////////////////////////////////////////////////////
 
 		// Global functions for result handling for all methods of this service
