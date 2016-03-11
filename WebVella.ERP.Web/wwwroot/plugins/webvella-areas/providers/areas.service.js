@@ -486,11 +486,8 @@
 				}
 			}
 			else {
-				for (var i = 0; i < data.length; i++) {
-					var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
-					generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
-				}
-				return generatedStringArray.join(', ');
+				var selected = $filter('filter')(fieldMeta.options, { key: data });
+				return selected[0].value;
 			}
 		}
 		//12. Number

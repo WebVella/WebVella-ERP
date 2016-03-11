@@ -96,6 +96,7 @@ span.divider {
 	padding: 5px;
 }
 
+
 .panel .panel .form-group {
 	margin-bottom: 0;
 }
@@ -126,6 +127,7 @@ span.divider {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+
 
 .position-relative {
 	position: relative !important;
@@ -161,6 +163,8 @@ span.divider {
 	max-height: 5em;
 	height: 5em;
 }
+
+
 
 /*
 ngToast
@@ -1029,88 +1033,88 @@ ngToast
 
 /*Theming*/
 .theme-red #page-title #page-meta {
-	background: #FFF4F4;
-	border-bottom: 1px solid #FFCDD2;
+	background: #FFEBEE;
+	border-bottom: 2px solid #FFCDD2;
 }
 
 .theme-pink #page-title #page-meta {
-	background: #FFF5F8;
-	border-bottom: 1px solid #F8BBD0;
+	background: #FCE4EC;
+	border-bottom: 2px solid #F8BBD0;
 }
 
 .theme-purple #page-title #page-meta {
-	background: #FDF2FF;
-	border-bottom: 1px solid #E1BEE7;
+	background: #F3E5F5;
+	border-bottom: 2px solid #E1BEE7;
 }
 
 .theme-deep-purple #page-title #page-meta {
-	background: #F8F3FF;
-	border-bottom: 1px solid #D1C4E9;
+	background: #EDE7F6;
+	border-bottom: 2px solid #D1C4E9;
 }
 
 .theme-indigo #page-title #page-meta {
-	background: #F8F9FF;
-	border-bottom: 1px solid #C5CAE9;
+	background: #E8EAF6;
+	border-bottom: 2px solid #C5CAE9;
 }
 
 .theme-blue #page-title #page-meta {
-	background: #F3FAFF;
-	border-bottom: 1px solid #BBDEFB;
+	background: #E3F2FD;
+	border-bottom: 2px solid #BBDEFB;
 }
 
 .theme-light-blue #page-title #page-meta {
-	background: #F5FCFF;
-	border-bottom: 1px solid #B3E5FC;
+	background: #E1F5FE;
+	border-bottom: 2px solid #B3E5FC;
 }
 
 .theme-cyan #page-title #page-meta {
-	background: #F3FAFF;
-	border-bottom: 1px solid #B2EBF2;
+	background: #E0F7FA;
+	border-bottom: 2px solid #B2EBF2;
 }
 
 .theme-teal #page-title #page-meta {
-	background: #F5FFFE;
-	border-bottom: 1px solid #B2DFDB;
+	background: #E0F2F1;
+	border-bottom: 2px solid #B2DFDB;
 }
 
 .theme-green #page-title #page-meta {
-	background: #F2FFF3;
-	border-bottom: 1px solid #C8E6C9;
+	background: #E8F5E9;
+	border-bottom: 2px solid #C8E6C9;
 }
 
 .theme-light-green #page-title #page-meta {
-	background: #F4FFE6;
-	border-bottom: 1px solid #DCEDC8;
+	background: #F1F8E9;
+	border-bottom: 2px solid #DCEDC8;
 }
 
 .theme-lime #page-title #page-meta {
 	background: #F9FBE7;
-	border-bottom: 1px solid #F0F4C3;
+	border-bottom: 2px solid #F0F4C3;
 }
 
 .theme-yellow #page-title #page-meta {
-	background: #FFFCDE;
-	border-bottom: 1px solid #FFF9C4;
+	background: #FFFDE7;
+	border-bottom: 2px solid #FFF9C4;
 }
 
 .theme-amber #page-title #page-meta {
-	background: #FDF9EA;
-	border-bottom: 1px solid #FFECB3;
+	background: #FFF8E1;
+	border-bottom: 2px solid #FFECB3;
 }
 
 .theme-orange #page-title #page-meta {
-	background: #FFFAFA;
-	border-bottom: 1px solid #FFE0B2;
+	background: #FFF3E0;
+	border-bottom: 2px solid #FFE0B2;
 }
 
 .theme-deep-orange #page-title #page-meta {
-	background: #FFFAFA;
-	border-bottom: 1px solid #FFCCBC;
+	background: #FBE9E7;
+	border-bottom: 2px solid #FFCCBC;
 }
 
 .theme-brown #page-title #page-meta {
-	background: #FFFAF8;
-	border-bottom: 1px solid #D7CCC8;
+	background: #EFEBE9;
+	border-bottom: 2px solid #D7CCC8;
 }
 
 
@@ -1132,7 +1136,7 @@ ngToast
 	#page-title .entity-box h4 {
 		margin: 0;
 		white-space: nowrap;
-		max-width: 150px;
+		max-width: 200px;
 		-ms-text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
@@ -2099,6 +2103,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	.form-horizontal .form-control {
 		background-color: #fafafa;
 		border-color: #ccc;
+		border-radius:0;
 	}
 
 .control-label {
@@ -2119,6 +2124,10 @@ div.form-control {
 	div.form-control .checkbox-inline {
 		padding-top: 0;
 	}
+
+.form-group {
+    margin-bottom: 30px;
+}
 
 .form-horizontal .form-group {
 	margin-left: 0;
@@ -3208,12 +3217,12 @@ span.editable {
 	padding-right: 40px;
 	border: 1px solid #ddd;
 	min-height: 34px;
-	border-radius: 3px;
+	border-radius: 0;
 	position: relative;
 }
 
 table.editable {
-	border-radius: 3px;
+	border-radius: 0;
 	border: 1px solid #ccc;
 	overflow: scroll !important;
 	padding: 0;
@@ -3247,7 +3256,7 @@ table.editable {
 		color: #BDBDBD;
 		background: #eee;
 		display: inline-block;
-		border-radius: 0 3px 3px 0;
+		border-radius: 0;
 	}
 
 	table.editable:after {
@@ -3388,6 +3397,10 @@ table.editable:hover {
 /* Checkbox list */
 .editable-checklist label:hover {
 	cursor: pointer;
+}
+
+.editable-checklist.editable-wrap .editable-input {
+	white-space:normal;
 }
 
 /*Date picker*/
@@ -4781,4 +4794,82 @@ a.link-icon.link[href]:before {
 
 
 
+/*#endregion*/
+
+
+/*#region << Introducing clean panel style for testing >> */
+#content {
+	background-color:#f1f1f1;
+}
+
+#page-topnav,
+#page-content {
+	background-color:transparent;
+}
+
+
+.panel {
+	border:none;
+	box-shadow:none;
+	background:transparent;
+}
+
+	.panel .panel-heading {
+		background-color:#e0e0e0 !important;
+		padding-left: 10px !important;
+	}
+	.panel .panel-body {
+		padding-left:0;
+		padding-right:0;
+	}
+	
+	.panel .form {
+		background:none;
+	}
+
+	.form, .form-horizontal {
+		padding:0;
+		background-color:transparent;
+	}
+
+		.panel .form .control-label,
+		.control-label {
+			color:#333;
+			font-weight:bold;
+		}
+
+
+	.record-details .panel-heading,
+	.panel .panel-heading {
+		color: #333;
+		background-color: #fff;
+		border-bottom: 1px solid #ccc;
+		padding-left: 0;
+		padding-right: 0;
+		font-size: 14px;
+		text-transform:uppercase;
+		margin-bottom: 15px;
+	}
+
+.form .not-editable, .form-horizontal .not-editable, .form .editable, .form-horizontal .editable,
+.form .form-control, .form-horizontal .form-control {
+	background-color:#fff;
+}
+
+.view-manage-section .wrapper {
+	border:1px solid #e0e0e0;
+	background-color:#fff;
+}
+
+.view-divider.section span {
+	background-color:#fff;
+}
+
+.view-manage-section a:not(.btn):not(.editable) {
+	color:#808080 !important;
+}
+
+.view-manage-section .section .panel-heading {
+	padding-right:10px;
+}
 /*#endregion*/
