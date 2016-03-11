@@ -15,7 +15,9 @@
     display:inline-block;
     padding-top:9px;
     width:120px;
-    height:90px;
+    height:110px;
+	position:relative;
+	overflow:hidden;
 }
 
     #home-tiles .thumbnail:hover,
@@ -27,12 +29,18 @@
     }
 
     #home-tiles .thumbnail .caption {
-        color: #bdbdbd;
-        overflow: hidden;
-        white-space: nowrap;
-        -ms-text-overflow: ellipsis;
+		color: #bdbdbd;
+		overflow: visible;
+		white-space: normal;
+		position: absolute;
+		bottom: 5px;
+		height: 50px;
+		left: 0;
+		width: 100%;
+		text-align: center;
+        /*-ms-text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
+        text-overflow: ellipsis;*/
     }
 
     #home-tiles .thumbnail .icon-wrapper {
@@ -41,6 +49,10 @@
         display:inline-block;
         width:48px;
         height:48px;
+		position:absolute;
+		top:10px;
+		left:0;
+		margin-left:36px;
     }
 
     #home-tiles .thumbnail .icon-wrapper .fa{
