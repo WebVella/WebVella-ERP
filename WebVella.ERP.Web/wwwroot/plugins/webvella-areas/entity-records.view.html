@@ -73,12 +73,12 @@
 		<div class="form-group form-group-sm">
 			<div class="input-group">
 				<div class="btn-group">
-					<a class="btn btn-default btn-sm hidden-xs"
+					<a class="btn btn-default btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
 					   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}"
 					   uib-tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
 						<i class="fa fa-pencil"></i> create new
 					</a>
-					<a class="btn btn-default btn-sm hidden-xs"
+					<a class="btn btn-default btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate,canUpdate')"
 					   ng-click="contentData.openImportModal()"
 					   uib-tooltip="Import records from CSV by matching the column names as field names. Requires 'id' column." tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
 						<i class="fa fa-upload"></i> import CSV
@@ -1122,7 +1122,7 @@
 		<div class="alert alert-danger ng-hide" ng-show="popupData.hasError" ng-bind="popupData.errorMessage"></div>
 		<h4>Import CSV</h4>
 		<p class="text-muted">The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-		If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.</p>
+		If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised</p>
 		<div class="form">
 			<div class="editable-field field">
 				<label class="control-label">Uploaded CSV file</label>
