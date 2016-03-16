@@ -13,15 +13,15 @@
 			</a>
 		</div>
 		<div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
-			<!--<ul class="nav navbar-nav">
-				<li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
-			</ul>-->
+			<ul class="nav navbar-nav">
+				<li ng-repeat="item in pluginData.topnav"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
+			</ul>
 			<ul class="nav navbar-nav navbar-right"  ng-cloak>
 				<li class="hidden-xs hidden-sm">
 					<p class="navbar-text">
-						<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
-						<img class="avatar" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
-						{{pluginData.user.first_name}} {{pluginData.user.last_name}}
+						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
+						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
+						
 					</p>
 				</li>
 				<!--<li><a href="javascript:void(0)">Account</a></li>-->
