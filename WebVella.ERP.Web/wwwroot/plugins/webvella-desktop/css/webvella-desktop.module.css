@@ -135,9 +135,9 @@
 
 
 .desktop .avatar {
-	width:24px;
-	max-height:24px;
-	margin-right:5px;
+	max-width: 18px;
+    max-height: 18px;
+	/*margin-right:5px;*/
 }
 
 /*#endregion */

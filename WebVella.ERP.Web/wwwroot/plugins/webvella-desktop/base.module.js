@@ -105,15 +105,24 @@
         });
         ////5. Bootstrap the pluggable element and cast the Ready hook
         //Push the Browse area menu
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-desktop-browse",
-            "stateParams": {},
-            "parentName": "",
-            "nodes": [],
-            "weight": 1.0
-        };
-        webvellaDesktopTopnavFactory.addItem(item);
+        //var item = {
+        //    "label": "TTG",
+        //    "stateName": "webvella-desktop-browse",
+        //    "stateParams": {},
+        //    "parentName": "",
+        //    "nodes": [],
+        //    "weight": 1.0
+        //};
+        //webvellaDesktopTopnavFactory.addItem(item);
+        //item = {
+        //    "label": "CRM",
+        //    "stateName": "webvella-desktop-browse",
+        //    "stateParams": {},
+        //    "parentName": "",
+        //    "nodes": [],
+        //    "weight": 1.0
+        //};
+        //webvellaDesktopTopnavFactory.addItem(item);
         $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
