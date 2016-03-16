@@ -61,9 +61,9 @@
 
 	//#region << Resolve Function >> /////////////////////////
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentView.$inject = ['$q', '$log','webvellaRootService', 'webvellaAreasService', '$stateParams', '$state', '$timeout','resolvedCurrentEntityMeta'];
 	/* @ngInject */
-	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
+	function resolveCurrentView($q, $log,webvellaRootService, webvellaAreasService, $stateParams, $state, $timeout,resolvedCurrentEntityMeta) {
 		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
@@ -71,14 +71,10 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				$timeout(function () {
-					alert("error in response!");
-				}, 0);
+				alert("error in response!");
 			}
 			else if(response.object.meta === null ) {
-				$timeout(function () {
-					alert("The view with name: " + $stateParams.viewName + " does not exist");
-				}, 0);
+				alert("The view with name: " + $stateParams.viewName + " does not exist");
 			} else {
 				defer.resolve(response.object);
 			}
@@ -86,13 +82,17 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				$timeout(function () {
-					alert("error in response!");
-				}, 0);
+				alert("error in response!");
 			}
 			else {
 				defer.reject(response.message);
 			}
+		}
+
+		var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(resolvedCurrentEntityMeta,"canRead");
+		if(!userHasUpdateEntityPermission){
+			alert("you do not have permissions to view records from this entity!");
+			defer.reject("you do not have permissions to view records from this entity");
 		}
 
 		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
@@ -273,6 +273,13 @@
 			return null;
 		}
 		//#endregion
+
+		//#region << Render >>
+		contentData.userHasRecordDeletePermission = function(){
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,"canDelete"));
+		}
+		//#endregion
+
 
 		//#region << Logic >>
 
@@ -672,6 +679,11 @@
 
 			contentData.currentUserHasUpdatePermission = function (item) {
 				var result = false;
+				//Check first if the entity allows it
+				var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(contentData.currentEntity,"canUpdate");
+				if(!userHasUpdateEntityPermission){
+					return false;
+				}
 				if (!item.meta.enableSecurity) {
 					return true;
 				}

@@ -343,6 +343,11 @@
 
 
 		//#region << Render >>
+		contentData.checkUserEntityPermissions = function(permissionsCsv){
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,permissionsCsv));
+		}
+
+
 		contentData.getRelationLabel = function (item) {
 			if (item.fieldLabel) {
 				return item.fieldLabel

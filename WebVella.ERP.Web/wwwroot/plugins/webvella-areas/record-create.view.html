@@ -33,8 +33,10 @@
 </div>
 
 <div class="record-details">
-	<div class="alert alert-warning" ng-if="contentData.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
-	<form name="createRecord">
+	<div class="alert alert-warning" ng-if="::contentData.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
+	<div class="alert alert-warning" ng-if="::!contentData.checkUserEntityPermissions('canCreate')">You are not allowed to create records in this entity</div>
+	
+	<form name="createRecord" ng-if="::contentData.createViewRegion != null && contentData.checkUserEntityPermissions('canCreate')">
 		<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.createViewRegion.sections track by section.id" ng-if="contentData.createViewRegion != null">
 			<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
 				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
@@ -489,7 +491,7 @@
 			</div>
 		</div>
 	</form>
-	<div class="page-buttons">
+	<div class="page-buttons"  ng-if="::contentData.createViewRegion != null && contentData.checkUserEntityPermissions('canCreate')">
 		<button class="btn btn-primary" ng-click='contentData.create("list")' ng-if="contentData.createViewRegion != null">Create & List</button>
 		<button class="btn btn-default" ng-click='contentData.create("details")' ng-if="contentData.createViewRegion != null">Create & Details</button>
 		<button class="btn btn-default" ng-click="contentData.cancel()">Cancel</button>
