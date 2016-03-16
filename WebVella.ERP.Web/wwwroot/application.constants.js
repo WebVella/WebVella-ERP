@@ -1,925 +1,139 @@
-﻿/* application.constants.js */
+﻿/* application.controller.js */
 
 /**
-* @desc the configuration constants for working with API methods
+* @desc the main application controller
 */
 
 (function () {
 	'use strict';
+
 	angular
-		.module('wvApp')
-		.constant('wvAppConstants', {
-			"debugEnabled": false,
-			"apiBaseUrl": "/api/v1/en_US/",
-			"locale": "en_US",
-			"authTokenKey": "erp-auth",
-			"htmlCacheBreaker": 20150920
+        .module('wvApp')
+        .config(config)
+        .controller('ApplicationController', controller);
+
+
+	// Configuration ///////////////////////////////////
+	config.$inject = ['$httpProvider', 'wvAppConstants'];
+
+	/* @ngInject */
+	function config($httpProvider, wvAppConstants) {
+
+		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope) {
+			return {
+				'request': function (request) {
+					if (request.url.indexOf(wvAppConstants.apiBaseUrl) > -1) {
+						if (request.url.indexOf("?") > -1) {
+							//there are query string params in the request
+							request.url = request.url + "&v=" + moment().format("YYYYMMDDHHmmssSSS");
+						}
+						else {
+							//there are no query strings in the params
+							request.url = request.url + "?v=" + moment().format("YYYYMMDDHHmmssSSS");
+						}
+					}
+					else if (request.url.indexOf("/plugins/") > -1) {
+						if (request.url.indexOf("?") > -1) {
+							//there are query string params in the request
+							request.url = request.url + "&v=" + wvAppConstants.htmlCacheBreaker;
+						}
+						else {
+							//there are no query strings in the params
+							request.url = request.url + "?v=" + wvAppConstants.htmlCacheBreaker;
+						}
+					}
+
+					return $q.resolve(request);
+				},
+				'responseError': function (errorResponse) {
+					if (errorResponse.status === 401) {
+						//Check if already called if yes do not call redirect or show message
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
+						});
+						var cookieValue = $cookies.remove("erp-auth");
+						$location.path("/login");//.search({ returnUrl: angular.toJson(document.URL) });
+						return $q.reject(errorResponse);
+					}
+					else if (errorResponse.status === 403) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
+						});
+						return $q.reject(errorResponse);
+					}
+					else if (errorResponse.status === 500) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error code ' + errorResponse.status + '</span> ' + errorResponse.statusText,
+							timeout: 7000
+						});
+						return $q.reject(errorResponse);
+					}
+					return $q.reject(errorResponse);
+				}
+			}
 		});
-})();
-
-function isEmpty(obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
-
-function findInArray(arr, propName, propValue) {
-	for (var i = 0; i < arr.length; i++)
-		if (arr[i][propName] == propValue)
-			return arr[i];
-
-	// will return undefined if not found; you could return a default instead
-}
-
-function checkInt(data) {
-	var response = {
-		success: true,
-		message: "It is integer"
-	}
-	if (!data) {
-		response.message = "Empty value is OK";
-		return response;
-	}
-	if (!isNumeric(data)) {
-		response.success = false;
-		response.message = "Only integer is accepted";
-		return response;
-	}
-
-	if (data.toString().indexOf(",") > -1 || data.toString().indexOf(".") > -1) {
-		response.success = false;
-		response.message = "Only integer is accepted";
-		return response;
-	}
-
-	if (data == parseInt(data, 10)) {
-		return response;
-	}
-	else {
-		response.success = false;
-		response.message = "Only integer is accepted";
-		return response;
-	}
-
-}
-
-
-function checkDecimal(data) {
-	var response = {
-		success: true,
-		message: "It is decimal"
-	}
-	if (!data) {
-		response.message = "Empty value is OK";
-		return response;
-	}
-	if (data.toString().indexOf(",") > -1) {
-		response.success = false;
-		response.message = "Comma is not allowed. Use '.' for decimal separator";
-		return response;
-	}
-
-	if (!isNumeric(data)) {
-		response.success = false;
-		response.message = "Only decimal is accepted";
-		return response;
-	}
-
-	return response;
-}
-
-function isNumeric(n) {
-	return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-function decimalPlaces(num) {
-	var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-	if (!match) { return 0; }
-	return Math.max(
-		 0,
-		 // Number of digits right of decimal point.
-		 (match[1] ? match[1].length : 0)
-		 // Adjust for scientific notation.
-		 - (match[2] ? +match[2] : 0));
-}
-
-function checkPercent(data) {
-	var response = {
-		success: true,
-		message: "It is decimal"
-	}
-	if (!data) {
-		response.message = "Empty value is OK";
-		return response;
-	}
-	if (data.toString().indexOf(",") > -1) {
-		response.success = false;
-		response.message = "Comma is not allowed. Use '.' for decimal separator";
-		return response;
-	}
-	if (!isNumeric(data)) {
-		response.success = false;
-		response.message = "Only decimal is accepted";
-		return response;
-	}
-
-	if (data > 1) {
-		response.success = false;
-		response.message = "Only decimal values between 0 and 1 are accepted";
-		return response;
-	}
-
-	return response;
-}
-
-function checkPhone(data) {
-	var response = {
-		success: true,
-		message: "It is decimal"
-	}
-	if (!phoneUtils.isValidNumber(data)) {
-		response.success = false,
-		response.message = "Not a valid phone. Should start with + followed by the country code digits";
-		return response;
+		delete $httpProvider.defaults.headers.common["X-Requested-With"];
 	}
 
 
-	return response;
-}
+	// Controller ///////////////////////////////
+	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaRootService'];
 
-function checkEmail(data) {
-	var response = {
-		success: true,
-		message: "It is email"
-	}
-	if (!data) {
-		response.message = "Empty value is OK";
-		return response;
-	}
-	var regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
-	if (!regex.test(data.toString())) {
-		response.success = false;
-		response.message = "Invalid email format";
-		return response;
-	}
-
-
-	return response;
-}
-
-function getFontAwesomeIconNames() {
-	//Extracting the font-awesome icon names from rawJSON
-	//1. Get the raw json from the amazing work here https://github.com/Smartik89/SMK-Font-Awesome-PHP-JSON/blob/master/font-awesome/json/font-awesome-data.json
-
-	//2. Paste the raw json in the object below
-	//pluginData.faRaw = {}
-
-	//3. Execute the following script
-	//var iconNames = [];
-	//for (var name in pluginData.faRaw) {
-	//	iconNames.push(name);
-	//}
-	//$log.info(iconNames);
-
-	//4. Copy the json from the console following this steps
-	////// 1 - Right-click the object and select "Store as global variable"
-	////// 2 - The console will print the new variable's name, for example: temp1
-	////// 3 - Type: copy(temp1)  
-	////// The object is now available in your clipboard.
-	////// Tested in Chrome
-
-	//5. Remove the "" to get the icon name
-
-
-	var iconNames = [
-	  "500px",
-	  "adjust",
-	  "adn",
-	  "align-center",
-	  "align-justify",
-	  "align-left",
-	  "align-right",
-	  "amazon",
-	  "ambulance",
-	  "anchor",
-	  "android",
-	  "angellist",
-	  "angle-double-down",
-	  "angle-double-left",
-	  "angle-double-right",
-	  "angle-double-up",
-	  "angle-down",
-	  "angle-left",
-	  "angle-right",
-	  "angle-up",
-	  "apple",
-	  "archive",
-	  "area-chart",
-	  "arrow-circle-down",
-	  "arrow-circle-left",
-	  "arrow-circle-o-down",
-	  "arrow-circle-o-left",
-	  "arrow-circle-o-right",
-	  "arrow-circle-o-up",
-	  "arrow-circle-right",
-	  "arrow-circle-up",
-	  "arrow-down",
-	  "arrow-left",
-	  "arrow-right",
-	  "arrow-up",
-	  "arrows",
-	  "arrows-alt",
-	  "arrows-h",
-	  "arrows-v",
-	  "asterisk",
-	  "at",
-	  "backward",
-	  "balance-scale",
-	  "ban",
-	  "bar-chart",
-	  "barcode",
-	  "bars",
-	  "battery-empty",
-	  "battery-full",
-	  "battery-half",
-	  "battery-quarter",
-	  "battery-three-quarters",
-	  "bed",
-	  "beer",
-	  "behance",
-	  "behance-square",
-	  "bell",
-	  "bell-o",
-	  "bell-slash",
-	  "bell-slash-o",
-	  "bicycle",
-	  "binoculars",
-	  "birthday-cake",
-	  "bitbucket",
-	  "bitbucket-square",
-	  "black-tie",
-	  "bold",
-	  "bolt",
-	  "bomb",
-	  "book",
-	  "bookmark",
-	  "bookmark-o",
-	  "briefcase",
-	  "btc",
-	  "bug",
-	  "building",
-	  "building-o",
-	  "bullhorn",
-	  "bullseye",
-	  "bus",
-	  "buysellads",
-	  "calculator",
-	  "calendar",
-	  "calendar-check-o",
-	  "calendar-minus-o",
-	  "calendar-o",
-	  "calendar-plus-o",
-	  "calendar-times-o",
-	  "camera",
-	  "camera-retro",
-	  "car",
-	  "caret-down",
-	  "caret-left",
-	  "caret-right",
-	  "caret-square-o-down",
-	  "caret-square-o-left",
-	  "caret-square-o-right",
-	  "caret-square-o-up",
-	  "caret-up",
-	  "cart-arrow-down",
-	  "cart-plus",
-	  "cc",
-	  "cc-amex",
-	  "cc-diners-club",
-	  "cc-discover",
-	  "cc-jcb",
-	  "cc-mastercard",
-	  "cc-paypal",
-	  "cc-stripe",
-	  "cc-visa",
-	  "certificate",
-	  "chain-broken",
-	  "check",
-	  "check-circle",
-	  "check-circle-o",
-	  "check-square",
-	  "check-square-o",
-	  "chevron-circle-down",
-	  "chevron-circle-left",
-	  "chevron-circle-right",
-	  "chevron-circle-up",
-	  "chevron-down",
-	  "chevron-left",
-	  "chevron-right",
-	  "chevron-up",
-	  "child",
-	  "chrome",
-	  "circle",
-	  "circle-o",
-	  "circle-o-notch",
-	  "circle-thin",
-	  "clipboard",
-	  "clock-o",
-	  "clone",
-	  "cloud",
-	  "cloud-download",
-	  "cloud-upload",
-	  "code",
-	  "code-fork",
-	  "codepen",
-	  "coffee",
-	  "cog",
-	  "cogs",
-	  "columns",
-	  "comment",
-	  "comment-o",
-	  "commenting",
-	  "commenting-o",
-	  "comments",
-	  "comments-o",
-	  "compass",
-	  "compress",
-	  "connectdevelop",
-	  "contao",
-	  "copyright",
-	  "creative-commons",
-	  "credit-card",
-	  "crop",
-	  "crosshairs",
-	  "css3",
-	  "cube",
-	  "cubes",
-	  "cutlery",
-	  "dashcube",
-	  "database",
-	  "delicious",
-	  "desktop",
-	  "deviantart",
-	  "diamond",
-	  "digg",
-	  "dot-circle-o",
-	  "download",
-	  "dribbble",
-	  "dropbox",
-	  "drupal",
-	  "eject",
-	  "ellipsis-h",
-	  "ellipsis-v",
-	  "empire",
-	  "envelope",
-	  "envelope-o",
-	  "envelope-square",
-	  "eraser",
-	  "eur",
-	  "exchange",
-	  "exclamation",
-	  "exclamation-circle",
-	  "exclamation-triangle",
-	  "expand",
-	  "expeditedssl",
-	  "external-link",
-	  "external-link-square",
-	  "eye",
-	  "eye-slash",
-	  "eyedropper",
-	  "facebook",
-	  "facebook-official",
-	  "facebook-square",
-	  "fast-backward",
-	  "fast-forward",
-	  "fax",
-	  "female",
-	  "fighter-jet",
-	  "file",
-	  "file-archive-o",
-	  "file-audio-o",
-	  "file-code-o",
-	  "file-excel-o",
-	  "file-image-o",
-	  "file-o",
-	  "file-pdf-o",
-	  "file-powerpoint-o",
-	  "file-text",
-	  "file-text-o",
-	  "file-video-o",
-	  "file-word-o",
-	  "files-o",
-	  "film",
-	  "filter",
-	  "fire",
-	  "fire-extinguisher",
-	  "firefox",
-	  "flag",
-	  "flag-checkered",
-	  "flag-o",
-	  "flask",
-	  "flickr",
-	  "floppy-o",
-	  "folder",
-	  "folder-o",
-	  "folder-open",
-	  "folder-open-o",
-	  "font",
-	  "fonticons",
-	  "forumbee",
-	  "forward",
-	  "foursquare",
-	  "frown-o",
-	  "futbol-o",
-	  "gamepad",
-	  "gavel",
-	  "gbp",
-	  "genderless",
-	  "get-pocket",
-	  "gg",
-	  "gg-circle",
-	  "gift",
-	  "git",
-	  "git-square",
-	  "github",
-	  "github-alt",
-	  "github-square",
-	  "glass",
-	  "globe",
-	  "google",
-	  "google-plus",
-	  "google-plus-square",
-	  "google-wallet",
-	  "graduation-cap",
-	  "gratipay",
-	  "h-square",
-	  "hacker-news",
-	  "hand-lizard-o",
-	  "hand-o-down",
-	  "hand-o-left",
-	  "hand-o-right",
-	  "hand-o-up",
-	  "hand-paper-o",
-	  "hand-peace-o",
-	  "hand-pointer-o",
-	  "hand-rock-o",
-	  "hand-scissors-o",
-	  "hand-spock-o",
-	  "hdd-o",
-	  "header",
-	  "headphones",
-	  "heart",
-	  "heart-o",
-	  "heartbeat",
-	  "history",
-	  "home",
-	  "hospital-o",
-	  "hourglass",
-	  "hourglass-end",
-	  "hourglass-half",
-	  "hourglass-o",
-	  "hourglass-start",
-	  "houzz",
-	  "html5",
-	  "i-cursor",
-	  "ils",
-	  "inbox",
-	  "indent",
-	  "industry",
-	  "info",
-	  "info-circle",
-	  "inr",
-	  "instagram",
-	  "internet-explorer",
-	  "ioxhost",
-	  "italic",
-	  "joomla",
-	  "jpy",
-	  "jsfiddle",
-	  "key",
-	  "keyboard-o",
-	  "krw",
-	  "language",
-	  "laptop",
-	  "lastfm",
-	  "lastfm-square",
-	  "leaf",
-	  "leanpub",
-	  "lemon-o",
-	  "level-down",
-	  "level-up",
-	  "life-ring",
-	  "lightbulb-o",
-	  "line-chart",
-	  "link",
-	  "linkedin",
-	  "linkedin-square",
-	  "linux",
-	  "list",
-	  "list-alt",
-	  "list-ol",
-	  "list-ul",
-	  "location-arrow",
-	  "lock",
-	  "long-arrow-down",
-	  "long-arrow-left",
-	  "long-arrow-right",
-	  "long-arrow-up",
-	  "magic",
-	  "magnet",
-	  "male",
-	  "map",
-	  "map-marker",
-	  "map-o",
-	  "map-pin",
-	  "map-signs",
-	  "mars",
-	  "mars-double",
-	  "mars-stroke",
-	  "mars-stroke-h",
-	  "mars-stroke-v",
-	  "maxcdn",
-	  "meanpath",
-	  "medium",
-	  "medkit",
-	  "meh-o",
-	  "mercury",
-	  "microphone",
-	  "microphone-slash",
-	  "minus",
-	  "minus-circle",
-	  "minus-square",
-	  "minus-square-o",
-	  "mobile",
-	  "money",
-	  "moon-o",
-	  "motorcycle",
-	  "mouse-pointer",
-	  "music",
-	  "neuter",
-	  "newspaper-o",
-	  "object-group",
-	  "object-ungroup",
-	  "odnoklassniki",
-	  "odnoklassniki-square",
-	  "opencart",
-	  "openid",
-	  "opera",
-	  "optin-monster",
-	  "outdent",
-	  "pagelines",
-	  "paint-brush",
-	  "paper-plane",
-	  "paper-plane-o",
-	  "paperclip",
-	  "paragraph",
-	  "pause",
-	  "paw",
-	  "paypal",
-	  "pencil",
-	  "pencil-square",
-	  "pencil-square-o",
-	  "phone",
-	  "phone-square",
-	  "picture-o",
-	  "pie-chart",
-	  "pied-piper",
-	  "pied-piper-alt",
-	  "pinterest",
-	  "pinterest-p",
-	  "pinterest-square",
-	  "plane",
-	  "play",
-	  "play-circle",
-	  "play-circle-o",
-	  "plug",
-	  "plus",
-	  "plus-circle",
-	  "plus-square",
-	  "plus-square-o",
-	  "power-off",
-	  "print",
-	  "puzzle-piece",
-	  "qq",
-	  "qrcode",
-	  "question",
-	  "question-circle",
-	  "quote-left",
-	  "quote-right",
-	  "random",
-	  "rebel",
-	  "recycle",
-	  "reddit",
-	  "reddit-square",
-	  "refresh",
-	  "registered",
-	  "renren",
-	  "repeat",
-	  "reply",
-	  "reply-all",
-	  "retweet",
-	  "road",
-	  "rocket",
-	  "rss",
-	  "rss-square",
-	  "rub",
-	  "safari",
-	  "scissors",
-	  "search",
-	  "search-minus",
-	  "search-plus",
-	  "sellsy",
-	  "server",
-	  "share",
-	  "share-alt",
-	  "share-alt-square",
-	  "share-square",
-	  "share-square-o",
-	  "shield",
-	  "ship",
-	  "shirtsinbulk",
-	  "shopping-cart",
-	  "sign-in",
-	  "sign-out",
-	  "signal",
-	  "simplybuilt",
-	  "sitemap",
-	  "skyatlas",
-	  "skype",
-	  "slack",
-	  "sliders",
-	  "slideshare",
-	  "smile-o",
-	  "sort",
-	  "sort-alpha-asc",
-	  "sort-alpha-desc",
-	  "sort-amount-asc",
-	  "sort-amount-desc",
-	  "sort-asc",
-	  "sort-desc",
-	  "sort-numeric-asc",
-	  "sort-numeric-desc",
-	  "soundcloud",
-	  "space-shuttle",
-	  "spinner",
-	  "spoon",
-	  "spotify",
-	  "square",
-	  "square-o",
-	  "stack-exchange",
-	  "stack-overflow",
-	  "star",
-	  "star-half",
-	  "star-half-o",
-	  "star-o",
-	  "steam",
-	  "steam-square",
-	  "step-backward",
-	  "step-forward",
-	  "stethoscope",
-	  "sticky-note",
-	  "sticky-note-o",
-	  "stop",
-	  "street-view",
-	  "strikethrough",
-	  "stumbleupon",
-	  "stumbleupon-circle",
-	  "subscript",
-	  "subway",
-	  "suitcase",
-	  "sun-o",
-	  "superscript",
-	  "table",
-	  "tablet",
-	  "tachometer",
-	  "tag",
-	  "tags",
-	  "tasks",
-	  "taxi",
-	  "television",
-	  "tencent-weibo",
-	  "terminal",
-	  "text-height",
-	  "text-width",
-	  "th",
-	  "th-large",
-	  "th-list",
-	  "thumb-tack",
-	  "thumbs-down",
-	  "thumbs-o-down",
-	  "thumbs-o-up",
-	  "thumbs-up",
-	  "ticket",
-	  "times",
-	  "times-circle",
-	  "times-circle-o",
-	  "tint",
-	  "toggle-off",
-	  "toggle-on",
-	  "trademark",
-	  "train",
-	  "transgender",
-	  "transgender-alt",
-	  "trash",
-	  "trash-o",
-	  "tree",
-	  "trello",
-	  "tripadvisor",
-	  "trophy",
-	  "truck",
-	  "try",
-	  "tty",
-	  "tumblr",
-	  "tumblr-square",
-	  "twitch",
-	  "twitter",
-	  "twitter-square",
-	  "umbrella",
-	  "underline",
-	  "undo",
-	  "university",
-	  "unlock",
-	  "unlock-alt",
-	  "upload",
-	  "usd",
-	  "user",
-	  "user-md",
-	  "user-plus",
-	  "user-secret",
-	  "user-times",
-	  "users",
-	  "venus",
-	  "venus-double",
-	  "venus-mars",
-	  "viacoin",
-	  "video-camera",
-	  "vimeo",
-	  "vimeo-square",
-	  "vine",
-	  "vk",
-	  "volume-down",
-	  "volume-off",
-	  "volume-up",
-	  "weibo",
-	  "weixin",
-	  "whatsapp",
-	  "wheelchair",
-	  "wifi",
-	  "wikipedia-w",
-	  "windows",
-	  "wordpress",
-	  "wrench",
-	  "xing",
-	  "xing-square",
-	  "y-combinator",
-	  "yahoo",
-	  "yelp",
-	  "youtube",
-	  "youtube-play",
-	  "youtube-square"
-	]
-	return iconNames;
-}
-
-function fastCopy(object) {
-	return angular.fromJson(angular.toJson(object))
-}
-
-function getFieldTypes() {
-	var types = [
-		{
-			"id": 1,
-			"name": "AutoNumberField",
-			"label": "Auto increment number",
-			"description": "If you need a automatically incremented number with each new record, this is the field you need. You can customize the display format also."
-		},
-		{
-			"id": 2,
-			"name": "CheckboxField",
-			"label": "Checkbox",
-			"description": "The simple on and off switch. This field allows you to get a True (checked) or False (unchecked) value."
-		},
-		{
-			"id": 3,
-			"name": "CurrencyField",
-			"label": "Currency",
-			"description": "A currency amount can be entered and will be represented in a suitable formatted way"
-		},
-		{
-			"id": 4,
-			"name": "DateField",
-			"label": "Date",
-			"description": "A data pickup field, that can be later converting according to a provided pattern"
-		},
-		{
-			"id": 5,
-			"name": "DateTimeField",
-			"label": "Date & Time",
-			"description": "A date and time can be picked up and later presented according to a provided pattern"
-		},
-		{
-			"id": 6,
-			"name": "EmailField",
-			"label": "Email",
-			"description": "An email can be entered by the user, which will be validated and presented accordingly"
-		},
-		{
-			"id": 7,
-			"name": "FileField",
-			"label": "File",
-			"description": "File upload field. Files will be stored within the system."
-		},
-		{
-			"id": 8,
-			"name": "HtmlField",
-			"label": "HTML",
-			"description": "Provides the ability of entering and presenting an HTML code. Supports multiple input languages."
-		},
-		{
-			"id": 9,
-			"name": "ImageField",
-			"label": "Image",
-			"description": "Image upload field. Images will be stored within the system"
-		},
-		{
-			"id": 10,
-			"name": "MultiLineTextField",
-			"label": "Textarea",
-			"description": "A textarea for plain text input. Will be cleaned and stripped from any web unsafe content"
-		},
-		{
-			"id": 11,
-			"name": "MultiSelectField",
-			"label": "Multiple select",
-			"description": "Multiple values can be selected from a provided list"
-		},
-		{
-			"id": 12,
-			"name": "NumberField",
-			"label": "Number",
-			"description": "Only numbers are allowed. Leading zeros will be stripped."
-		},
-		{
-			"id": 13,
-			"name": "PasswordField",
-			"label": "Password",
-			"description": "This field is suitable for submitting passwords or other data that needs to stay encrypted in the database"
-		},
-		{
-			"id": 14,
-			"name": "PercentField",
-			"label": "Percent",
-			"description": "This will automatically present any number you enter as a percent value"
-		},
-		{
-			"id": 15,
-			"name": "PhoneField",
-			"label": "Phone",
-			"description": "Will allow only valid phone numbers to be submitted"
-		},
-		{
-			"id": 16,
-			"name": "GuidField",
-			"label": "Identifier GUID",
-			"description": "Very important field for any entity to entity relation and required by it"
-		},
-		{
-			"id": 17,
-			"name": "SelectField",
-			"label": "Dropdown",
-			"description": "One value can be selected from a provided list"
-		},
-		{
-			"id": 18,
-			"name": "TextField",
-			"label": "Text",
-			"description": "A simple text field. One of the most needed field nevertheless"
-		},
-		{
-			"id": 19,
-			"name": "UrlField",
-			"label": "URL",
-			"description": "This field will validate local and static URLs. Will present them accordingly"
-		},
-		//20 is missing because it is relation field 
-		{
-			"id": 21,
-			"name": "TreeSelect",
-			"label": "Tree select",
-			"description": "select related records from an entity tree structure. Suitable for categories, organizational charts and etc."
+	/* @ngInject */
+	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaRootService) {
+		$log.debug('vwApp> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		/* jshint validthis:true */
+		var appData = this;
+		//Set page title
+		appData.pageTitle = 'WebVella ERP';
+		$rootScope.$on("application-pageTitle-update", function (event, newValue) {
+			appData.pageTitle = newValue;
+		});
+		//Set the body color
+		appData.bodyColor = "no-color";
+		$rootScope.$on("application-body-color-update", function (event, color) {
+			appData.bodyColor = color;
+		});
+		//Side menu toggle
+		appData.$storage = $localStorage;
+		if (!appData.$storage.isMiniSidebar) {
+			appData.$storage.isMiniSidebar = false;
 		}
-	];
-	return types;
-}
+		//appData.isMiniSidebar = false;
+		//$rootScope.isMiniSidebar = false;
+		//if ($cookies.get("isMiniSidebar") == "true") {
+		//	appData.isMiniSidebar = true;
+		//	$rootScope.isMiniSidebar = true;
+		//}
 
-function newGuid() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-};
+		//$rootScope.$on("application-sidebar-mini-toggle", function (event) {
+		//	appData.isMiniSidebar = !appData.isMiniSidebar;
+		//	$rootScope.isMiniSidebar = appData.isMiniSidebar;
+		//	$cookies.put("isMiniSidebar", appData.isMiniSidebar);
+		//});
+		//Side menu visibility
+		appData.sideMenuIsVisible = true;
+		$rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {
+			appData.sideMenuIsVisible = isVisible;
+		});
+
+		//Redirect State (usefull when you need to redirect from resolve)
+		$rootScope.$on("state-change-needed", function (event, stateName, stateParams) {
+			$timeout(function () {
+				$state.go(stateName, stateParams, { reload: true });
+			}, 0);
+		});
+
+		$rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){ 
+			
+		})
+
+		$log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	}
+
+})();

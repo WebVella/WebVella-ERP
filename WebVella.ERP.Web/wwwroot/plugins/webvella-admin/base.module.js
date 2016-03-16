@@ -45,10 +45,10 @@
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory', 'webvellaRootService'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory','webvellaDesktopTopnavFactory', 'webvellaRootService'];
 
     /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory, webvellaRootService) {
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory,webvellaDesktopTopnavFactory, webvellaRootService) {
     	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
 			//Allow visible only to admins
@@ -59,6 +59,7 @@
             		"stateName": "webvella-admin-entities",
             		"stateParams": {},
             		"parentName": "",
+					"folder":"Admin",
             		"nodes": [],
             		"weight": 100.0,
             		"color": "red",
@@ -66,6 +67,17 @@
             		"roles": "[\"bdc56420-caf0-4030-8a0e-d264938e0cda\"]"
             	};
             	webvellaDesktopBrowsenavFactory.addItem(item);
+
+				var topNavItem = {
+					"label": "Admin",
+					"stateName": "webvella-desktop-browse",
+					"stateParams": {folder:"Admin"},
+					"parentName": "",
+					"nodes": [],
+					"weight": 999					
+				}
+
+				webvellaDesktopTopnavFactory.addItem(topNavItem);
             }
         });
 

@@ -108,6 +108,24 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageArea.icon_name.$invalid && !manageArea.icon_name.$pristine || popupData.icon_nameError }">
+						<label class="required" for="label">Icon name</label>
+						<div class="input-group clean-addon">
+							<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.area.icon_name}}"></i></span>
+							<input ng-model="popupData.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="e.g. database"
+								   required uib-typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
+								   ng-model-options="{allowInvalid:true}">
+							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
+						</div>
+						<ng-messages for="manageArea.icon_name.$error" ng-if="manageArea.icon_name.$touched && manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
+							<ng-message when="required" class="error">required field</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupData.icon_nameError">
+							{{popupData.icon_nameMessage}}
+						</small>
+					</div>
+				</div>
+				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageArea.color.$invalid && !manageArea.color.$pristine || popupData.labelError }">
 						<label class="required" for="color">Color</label>
 						<div class="input-group">
@@ -135,23 +153,20 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageArea.icon_name.$invalid && !manageArea.icon_name.$pristine || popupData.icon_nameError }">
-						<label class="required" for="label">Icon name</label>
-						<div class="input-group clean-addon">
-							<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.area.icon_name}}"></i></span>
-							<input ng-model="popupData.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="e.g. database"
-								   required uib-typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
-								   ng-model-options="{allowInvalid:true}">
-							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
-						</div>
-						<ng-messages for="manageArea.icon_name.$error" ng-if="manageArea.icon_name.$touched && manageArea.icon_name.$dirty && createEntity.icon_name.$invalid || popupData.icon_nameError">
+					<div class="form-group" ng-class="{ 'has-error' : manageArea.folder.$invalid && !manageArea.folder.$pristine || popupData.folderError }">
+						<label class="required" for="folder">Folder name</label>
+						<input ng-model="popupData.area.folder" type="text" class="form-control" id="folder" name="folder" placeholder="e.g. CRM"
+							   required ng-model-options="{allowInvalid:true}">
+						<div class="form-description">areas with the same folder label will be grouped</div>
+						<ng-messages for="manageArea.folder.$error" ng-if="manageArea.folder.$touched && manageArea.folder.$dirty && manageArea.folder.$invalid || popupData.folderError">
 							<ng-message when="required" class="error">required field</ng-message>
 						</ng-messages>
-						<small class="error ng-hide" ng-show="popupData.icon_nameError">
-							{{popupData.icon_nameMessage}}
+						<small class="error ng-hide" ng-show="popupData.folderError">
+							{{popupData.folderMessage}}
 						</small>
 					</div>
 				</div>

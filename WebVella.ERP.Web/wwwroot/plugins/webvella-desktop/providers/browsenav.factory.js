@@ -37,6 +37,7 @@
             menuItem.weight = area.weight;
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
+			menuItem.folder = area.folder;
             menuItem.stateName = "webvella-entity-records";
             var entitySubscriptions = angular.fromJson(area.subscriptions);
 

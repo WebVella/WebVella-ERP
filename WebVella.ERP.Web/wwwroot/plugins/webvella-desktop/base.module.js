@@ -86,6 +86,7 @@
         var pluginData = this;
         pluginData.topnav = [];
         pluginData.user = fastCopy(resolvedCurrentUser);
+		
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaDesktopTopnavFactory.initTopnav();
@@ -103,6 +104,7 @@
             readyTopnavDestructor();
             updateTopnavDestructor();
         });
+
         ////5. Bootstrap the pluggable element and cast the Ready hook
         //Push the Browse area menu
         //var item = {
@@ -126,7 +128,6 @@
         $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
-
         pluginData.logout = function () {
         	webvellaAdminService.logout(
                     function (response) {
@@ -138,13 +139,23 @@
                     function (response) { });
         }
 
+		pluginData.isNavActive = function(item){
+			if(item.label == $state.params.folder){
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
         $log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         function activate() {
             if (pluginData.topnav.length > 0) {
                 $timeout(function () {
-                    $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+					if(!$state.params.folder){
+						$state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+					}
                 }, 0);
                
             }

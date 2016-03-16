@@ -56,6 +56,7 @@
 					"stateName": "webvella-developers-base",
 					"stateParams": {},
 					"parentName": "",
+					"folder":"Admin",
 					"nodes": [],
 					"weight": 101.0,
 					"color": "purple",
