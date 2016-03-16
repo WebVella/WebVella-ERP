@@ -3175,7 +3175,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath) {
 		
 			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
+			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised.
 			var response = new ResponseModel();
 			response.Success = true;
 			response.Message = "Records successfully imported";

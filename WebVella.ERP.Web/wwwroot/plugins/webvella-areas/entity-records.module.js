@@ -620,6 +620,11 @@
 			contentData.importModal.dismiss();
 		  }
 		})
+
+		contentData.checkEntityPermissions = function(permissionsCsv){
+			return 	webvellaRootService.userHasEntityPermissions(contentData.entity,permissionsCsv);
+		}
+
 		//#endregion
 
 		//Render field value general
