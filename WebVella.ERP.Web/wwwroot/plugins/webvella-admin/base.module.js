@@ -24,7 +24,7 @@
             'views': {
                 "rootView": {
                     'controller': 'WebVellaAdminBaseController',
-                    'templateUrl': '/plugins/webvella-admin/base.view.html?v=' + htmlCacheBreaker,
+                    'templateUrl': '/plugins/webvella-admin/base.view.html',
                     'controllerAs': 'pluginData'
                 }
             },
