@@ -74,7 +74,7 @@
 					"stateParams": {folder:"Admin"},
 					"parentName": "",
 					"nodes": [],
-					"weight": 999					
+					"weight": 9999					
 				}
 
 				webvellaDesktopTopnavFactory.addItem(topNavItem);
