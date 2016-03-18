@@ -98,7 +98,7 @@ span.divider {
 		margin-bottom: 15px;
 	}
 
-		.panel .panel-heading:hover .fa {
+		.panel .panel-heading a:hover .fa {
 			color:#F44336;
 		}
 
@@ -162,7 +162,7 @@ span.divider {
 }
 
 #content .btn-default {
-	border-color:#ddd;
+	border-color:#ccc;
 }
 
 .display-block {
@@ -950,7 +950,7 @@ ngToast
 
 #content {
 	margin-left: 180px;
-	background-color:#f8f8f8;
+	background-color:#f1f1f1;
 }
 
 .no-sidebar #content {
@@ -2194,7 +2194,7 @@ div.form-control {
 	.form-horizontal .table thead th {
 		color: #999 !important;
 		font-weight: normal !important;
-		background-color: #f8f8f8;
+		background-color: #f1f1f1;
 	}
 
 .form .radio, .form .checkbox {
@@ -2305,7 +2305,7 @@ form .error,
 
 	.table thead th,
 	.table thead td {
-		background: #f8f8f8;
+		background: #f1f1f1;
 	}
 
 	.table .table {
@@ -2769,8 +2769,8 @@ table .btn-xs.btn-link {
 	}
 
 	.tabbable.spilled ul li.active a {
-		background-color:#f8f8f8;
-		border-color: #f8f8f8;
+		background-color:#f1f1f1;
+		border-color: #f1f1f1;
 		border-color: rgba(255,255,255,0.7);
 		color: #333;
 	}
@@ -3117,11 +3117,12 @@ table .btn-xs.btn-link {
 .form-horizontal .editable {
 	width: 100%;
 	background-color:#fff;
-	border: 1px solid #ddd;
+	border: 1px solid #ccc;
 	padding-right: 40px;
 	color: #333;
 	overflow: hidden;
 }
+
 
 /*.editable-wrap {
 	padding: 20px;
@@ -3272,7 +3273,7 @@ span.editable {
 	padding: 6px 12px;
 	background-color: #fafafa;
 	padding-right: 40px;
-	border: 1px solid #ddd;
+	border: 1px solid #ccc;
 	min-height: 34px;
 	border-radius: 0;
 	position: relative;
@@ -4027,9 +4028,9 @@ span.not-editable.not-readable {
 
 /*#region << Tabs >> */
 .tab-content {
-	border-left: 1px solid #ddd;
-	border-right: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 	padding: 10px;
 }
 
@@ -4062,7 +4063,7 @@ span.not-editable.not-readable {
 
 .view-manage-section .wrapper {
 	padding: 10px;
-	border:1px solid #ddd;
+	border:1px solid #ccc;
 	background-color:#fff !important;
 }
 
@@ -4090,7 +4091,7 @@ span.not-editable.not-readable {
 }
 
 .drop-zone-disabled {
-	border: 1px dashed #ddd;
+	border: 1px dashed #ccc;
 	background: #fafafa;
 	padding: 0;
 	position: relative;
@@ -4243,13 +4244,8 @@ span.not-editable.not-readable {
 	padding: 1em;
 }
 
-	.record-details .panel-heading.collapsable:hover {
-		cursor: pointer;
-	}
-
 	.record-details .panel-heading {
 		color: #333;
-		background-color: #fff;
 		border-bottom: 1px solid #ccc;
 		padding-left: 0;
 		padding-right: 0;
@@ -4257,6 +4253,9 @@ span.not-editable.not-readable {
 		text-transform:uppercase;
 		margin-bottom: 15px;
 	}
+		.record-details .panel-heading a {
+			color:#333;
+		}
 
 
 .editable-field {
