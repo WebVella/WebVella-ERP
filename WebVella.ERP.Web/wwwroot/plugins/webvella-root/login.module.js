@@ -22,7 +22,7 @@
 			views: {
 				"rootView": {
 					controller: 'WebVellaRootLoginController',
-					templateUrl: '/plugins/webvella-root/login.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-root/login.view.html',
 					controllerAs: 'loginData'
 				}
 			},

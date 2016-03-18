@@ -25,17 +25,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasRecordViewSidebarController',
-					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordViewController',
-					templateUrl: '/plugins/webvella-areas/record-view.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/record-view.view.html',
 					controllerAs: 'contentData'
 				}
 			},
