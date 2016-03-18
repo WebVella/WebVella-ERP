@@ -42,14 +42,14 @@
 				{{::section.label}}
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-				<div class="form">
+				<div class="form-horizontal">
 					<div class="row" ng-repeat="row in section.rows track by row.id">
 						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
 							<div class="form-group" ng-repeat="item in column.items" ng-switch="::item.type">
 								<!--If item is field WITH NO relation-->
 								<div class="editable-field field" ng-switch-when="field">
-									<label class="control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="col-lg-{{::12/column.gridColCount}} control-label">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<div ng-switch="::item.meta.fieldType">
 											<!-- If type 1 - auto-increment -->
 											<div ng-switch-when="1" class="form-control-static" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></div>
@@ -238,8 +238,8 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
 											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
@@ -355,8 +355,8 @@
 
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
@@ -374,8 +374,8 @@
 
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<recursive-view view-meta="::item"
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
@@ -396,8 +396,8 @@
 
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
@@ -415,8 +415,8 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{::12 - 12/column.gridColCount}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
@@ -437,8 +437,8 @@
 
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
-									<label class="control-label">{{::item.fieldLabel}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.fieldLabel}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative col-lg-{{::12 - 12/column.gridColCount}}">
 										<span class="editable editable-click tree" ng-click="contentData.openSelectTreeNodesModal(item)">
 											<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
 										</span>

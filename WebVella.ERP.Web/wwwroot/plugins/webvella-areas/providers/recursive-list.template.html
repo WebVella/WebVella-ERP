@@ -17,10 +17,10 @@
 	<tbody>
 		<tr ng-repeat="record in listData track by record.id">
 			<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;">
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
+				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 					<i class="fa fa-pencil"></i>
 				</a>
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
+				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
 					<i class="fa fa-times go-red"></i>
 				</a>
 			</td>
