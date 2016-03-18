@@ -87,6 +87,7 @@
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
 		contentData.siteMap = fastCopy(resolvedSitemap);
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.currentArea = null;
 		for (var i = 0; i < contentData.siteMap.data.length; i++) {
 			if (contentData.siteMap.data[i].name == $state.params.areaName) {

@@ -149,10 +149,7 @@
 			<tbody>
 				<tr ng-repeat="record in contentData.records">
 					<td class="actions">
-						<!--<a ui-sref='webvella-areas-record-view({areaName:contentData.currentArea.name,entityName:contentData.entity.name,recordId:record.id,viewName:contentData.generateViewName(record),auxPageName:"*",filter:"*",page:"*"})' class="btn btn-default btn-sm">
-							<i class="fa fa-eye"></i>
-						</a>-->
-						<a href='#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::record.id}}/{{::contentData.generateViewName(record)}}/*/*/*' class="btn btn-default btn-sm">
+						<a ng-click="contentData.saveStateParamsToSessionStorage()" href='#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::record.id}}/{{::contentData.generateViewName(record)}}/*/*/*' class="btn btn-default btn-sm">
 							<i class="fa fa-eye"></i>
 						</a>
 					</td>

@@ -162,18 +162,19 @@
 	// Controller ///////////////////////////////
 	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService','webvellaAdminService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast','$sessionStorage'];
 
 	/* @ngInject */
 	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,	webvellaAdminService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
-		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
+		resolvedEntityRelationsList, resolvedCurrentUser, ngToast, $sessionStorage) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.records = fastCopy(resolvedListRecords.data);
 		contentData.recordsMeta = fastCopy(resolvedListRecords.meta);
-		contentData.relationsMeta = resolvedEntityRelationsList;
+		contentData.relationsMeta = fastCopy(resolvedEntityRelationsList);
+		contentData.$sessionStorage = $sessionStorage;
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -624,6 +625,11 @@
 		contentData.checkEntityPermissions = function(permissionsCsv){
 			return 	webvellaRootService.userHasEntityPermissions(contentData.entity,permissionsCsv);
 		}
+
+		contentData.saveStateParamsToSessionStorage = function(){
+		   contentData.$sessionStorage["last-list-params"] = $stateParams;
+		}
+
 
 		//#endregion
 
