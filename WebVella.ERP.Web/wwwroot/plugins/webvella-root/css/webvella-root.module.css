@@ -45,10 +45,12 @@ h5 small {
 	font-size: 12px;
 }
 
-.form-signin {
+form.form-signin {
 	max-width: 330px;
 	padding: 15px;
 	margin: 40px auto;
+	background-color: #f2f2f2;
+	border: 1px solid #e5e5e5;
 }
 
 .page-header {
@@ -2091,6 +2093,8 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	background-color: #f2f2f2;
 	/*border: 1px solid #e5e5e5;*/
 }
+
+
 
 	.form.form-clean, .form-horizontal.form-clean {
 		background: none;

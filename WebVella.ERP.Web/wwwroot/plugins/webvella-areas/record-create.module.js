@@ -445,10 +445,14 @@
 				if (availableViewFields[k].type === "field") {
 					switch (availableViewFields[k].meta.fieldType) {
 						case 4: //Date
-							contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
+							if(contentData.entityData[availableViewFields[k].meta.name] != null){
+								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
+							}
 							break;
 						case 5: //Date & Time
-							contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
+							if(contentData.entityData[availableViewFields[k].meta.name] != null){
+								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
+							}
 							break;
 						case 14: //Percent
 							//need to convert to decimal 0 <= val <= 100 Divide by 100
