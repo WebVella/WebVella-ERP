@@ -63,12 +63,16 @@
                     <th class="actions"></th>
                     <th class="name">Name</th>
                     <th class="type">Type</th>
+					<th class="stats" style="width:100px;">Stats</th>
             </thead>
             <tbody>
                 <tr ng-repeat="list in contentData.lists | filter: {label: searchFilter} track by list.id">
                     <td class="actions">
                         <a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/lists/{{::list.name}}">
                             <i class="fa fa-eye"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="contentData.copyList(list)">
+                            <i class="fa fa-files-o"></i>
                         </a>
                     </td>
                     <td class="name">
@@ -77,6 +81,7 @@
                         <span class="badge badge-primary badge-inverse" ng-show="::list.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
                     </td>
                     <td>{{::list.type}}</td>
+					<td class="stats" ng-bind-html="contentData.calculateStats(list)"></td>
                 </tr>
             </tbody>
         </table>
@@ -138,6 +143,56 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()">Create List</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="copyModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Copy list</h3>
+	</div>
+	<div class="modal-body">
+		<table class="form" style="width:100%">
+			<tr>
+				<td style="width:200px">
+					<div class="form-group">
+					  <div class="radio checkbox">
+						<label>
+						  <input type="radio" name="alternative" value="new" ng-model="popupData.alternative"> Clone as new
+						</label>
+					  </div>
+					</div>
+				</td>
+				<td>
+					<div class="form-group"  ng-class="{ 'has-error' : popupData.listNameValidationError}">
+					  <input type="text" class="form-control" placeholder="List name" ng-model="popupData.listName">
+					  <div class="error ng-hide" ng-show="popupData.listNameValidationError">
+							required
+					  </div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+					  <div class="radio checkbox">
+						<label>
+						  <input type="radio" name="alternative" value="copy" ng-model="popupData.alternative"> Clone in existing
+						</label>
+					  </div>
+					</div>
+				</td>
+				<td>
+					<div class="form-group">
+					  <select class="form-control" ng-model="popupData.selectedList" ng-options="list as list.name for list in popupData.entityLists"></select>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Copy list</button>
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
