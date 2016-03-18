@@ -36,10 +36,12 @@
 <div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
 	<div id="page-text" class="record-details" ng-if="::contentData.selectedSidebarPage.isEdit">
 		<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
-			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
-				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
-				<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
-				{{::section.label}}
+			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
+				<a href="javascript:void(0)" ng-click="contentData.toggleSectionCollapse(section)">
+					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+					{{::section.label}}
+				</a>
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
 				<div class="form-horizontal">
