@@ -76,16 +76,19 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout','webvellaAdminService','resolvedCurrentUser'];
+    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams','$localStorage', 
+			'webvellaDesktopTopnavFactory', '$timeout','webvellaAdminService','resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout,webvellaAdminService,resolvedCurrentUser) {
+    function controller($scope,$log, $rootScope, $state, $stateParams,$localStorage, 
+			webvellaDesktopTopnavFactory, $timeout,webvellaAdminService,resolvedCurrentUser) {
     	$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.topnav = [];
         pluginData.user = fastCopy(resolvedCurrentUser);
+		pluginData.$storage = $localStorage;
 		
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
@@ -128,6 +131,9 @@
         $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
+
+
+		//#region << Logic >>
         pluginData.logout = function () {
         	webvellaAdminService.logout(
                     function (response) {
@@ -148,13 +154,34 @@
 			}
 		}
 
+
+		pluginData.redirectToFolder = function(menuItem){
+			pluginData.$storage.folder =  menuItem.label;
+			$state.go("webvella-desktop-browse", menuItem.stateParams)
+		}
+		//#endregion
+
         $log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         function activate() {
             if (pluginData.topnav.length > 0) {
                 $timeout(function () {
 					if(!$state.params.folder){
-						$state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+						if(pluginData.$storage.folder){
+							var redirected = false;
+							for (var i = 0; i < pluginData.topnav.length; i++) {
+								if(pluginData.topnav[i].label == pluginData.$storage.folder){
+									$state.go(pluginData.topnav[i].stateName, pluginData.topnav[i].stateParams)	
+									redirected = true;
+								}
+							}
+							if(!redirected){
+							   $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+							}
+						}
+						else {
+							$state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+						}
 					}
                 }, 0);
                

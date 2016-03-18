@@ -80,10 +80,12 @@
 
 
 	//#region << Controller >>
-	controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', 'webvellaDesktopTopnavFactory','webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
+	controller.$inject = ['$log', '$rootScope', '$scope', '$state','pageTitle', 
+					'webvellaDesktopTopnavFactory','webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
 
 	/* @ngInject */
-	function controller($log, $rootScope, $scope, $state, pageTitle, webvellaDesktopTopnavFactory,webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
+	function controller($log, $rootScope, $scope, $state, pageTitle, 
+					webvellaDesktopTopnavFactory,webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
 		$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -182,9 +184,6 @@
 		////5. Bootstrap the pluggable Browsenav
 		$rootScope.$emit("webvellaDesktop-browsenav-ready");
 		//#endregion
-
-
-
 
 		$log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}

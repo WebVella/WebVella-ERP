@@ -14,7 +14,7 @@
 		</div>
 		<div class="collapse navbar-collapse" ng-class="{'display-block':pluginData.collapsedNav}">
 			<ul class="nav navbar-nav">
-				<li ng-repeat="item in pluginData.topnav" ng-class="{'active':pluginData.isNavActive(item)}"><a title="{{item.weight}}" href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
+				<li ng-repeat="item in pluginData.topnav" ng-class="{'active':pluginData.isNavActive(item)}"><a title="{{item.weight}}" href="javascript:void(0)" ng-click="pluginData.redirectToFolder(item)">{{item.label}}</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right"  ng-cloak>
 				<li class="hidden-xs hidden-sm">
