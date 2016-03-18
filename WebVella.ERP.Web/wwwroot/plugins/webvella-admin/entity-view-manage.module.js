@@ -663,34 +663,32 @@
 				});
 
 				modalInstance.result.then(function(fieldObject) {
-					for (var i = 0; i < contentData.view.regions.length; i++) {
-						for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
-							for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
-								for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
-									for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-										if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										}
-										else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-										}
-										else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-										}
+					for (var k = 0; k < contentData.viewContentRegion.sections.length; k++) {
+						for (var l = 0; l < contentData.viewContentRegion.sections[k].rows.length; l++) {
+							for (var m = 0; m < contentData.viewContentRegion.sections[k].rows[l].columns.length; m++) {
+								for (var n = 0; n < contentData.viewContentRegion.sections[k].rows[l].columns[m].items.length; n++) {
+									if (fieldObject.type === "fieldFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+									}
+									else if (fieldObject.type === "viewFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									}
+									else if (fieldObject.type === "listFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
 								}
 							}
@@ -781,10 +779,14 @@
 			//#endregion
 
 			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation") && !orderChangedOnly) {
-				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				$timeout(function(){
+					openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				},0);
 			}
 			else if (eventObj.source.itemScope.item.type === "html" && !orderChangedOnly) {
-				openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				$timeout(function(){
+					openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				},0);
 			}
 			else {
 				//cannot be managed
@@ -976,7 +978,7 @@
 		}
 
 		contentData.manageFieldFromRelation = function (item) {
-			openFromRelationSettingsModal(item, null);
+			openFromRelationSettingsModal(item, null,false);
 		}
 
 		//#endregion
