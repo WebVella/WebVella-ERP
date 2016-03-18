@@ -76,9 +76,33 @@ span.divider {
 	font-size: 17px;
 }
 
+.panel {
+	border:none;
+	box-shadow:none;
+	background:transparent;
+}
+
 .panel, .panel-heading {
 	border-radius: 0;
+	background-color:transparent !important;
+	
 }
+
+	.panel .panel-heading {
+		color: #333;
+		border-bottom: 1px solid #ccc;
+		padding-right: 0;
+		padding-left: 10px !important;
+		font-size: 14px;
+		text-transform:uppercase;
+		margin-bottom: 15px;
+	}
+
+		.panel .panel-heading:hover .fa {
+			color:#F44336;
+		}
+
+
 
 	.panel .panel {
 		margin: 0 0 5px 0;
@@ -86,12 +110,13 @@ span.divider {
 	}
 
 .panel-body {
-	padding: 5px;
+	padding: 5px 0;
 }
 
 	.panel-body > .form,
 	.panel-body > .form-horizontal {
 		padding: 10px;
+		background:none;
 	}
 
 .panel .panel .panel-body {
@@ -134,6 +159,10 @@ span.divider {
 .btn-outline:hover {
 	background:rgba(0,0,0,0.05);
 	color:#333;
+}
+
+#content .btn-default {
+	border-color:#ddd;
 }
 
 .display-block {
@@ -179,7 +208,7 @@ span.divider {
 .panel-body-actions {
 	margin: -5px -5px 10px -5px;
 	padding: 5px;
-	background: #f8f8f8;
+	background: #fff;
 	border-bottom:1px solid #ddd;
 }
 
@@ -557,6 +586,7 @@ ngToast
 	position: relative;
 	padding: 12px 20px 12px 30px;
 	overflow: hidden;
+	background-color:transparent;
 }
 
 	#page-topnav:after {
@@ -920,7 +950,7 @@ ngToast
 
 #content {
 	margin-left: 180px;
-	background: white;
+	background-color:#f8f8f8;
 }
 
 .no-sidebar #content {
@@ -1628,7 +1658,7 @@ ngToast
 #page-content {
 	position: relative;
 	min-height: 900px;
-	background-color: #fff;
+	background-color:transparent;
 }
 
 	#page-content:empty {
@@ -2105,8 +2135,8 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 /*#region << Forms >> */
 
 .form, .form-horizontal {
-	padding: 15px;
-	background-color: #f2f2f2;
+	padding:0;
+	background-color:transparent;
 	/*border: 1px solid #e5e5e5;*/
 }
 
@@ -2121,7 +2151,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 	.form .form-control,
 	.form-horizontal .form-control {
-		background-color: #fafafa;
+		background-color: #fff;
 		border-color: #ccc;
 		border-radius:0;
 	}
@@ -2133,7 +2163,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .panel-body .form,
 .panel-body .form-horizontal {
-	margin: -5px;
+	margin: -5px -15px;
 	border: none;
 }
 
@@ -2162,9 +2192,9 @@ div.form-control {
 
 	.form .table thead th,
 	.form-horizontal .table thead th {
-		color: #333 !important;
-		font-weight: bold !important;
-		background-color: #fff;
+		color: #999 !important;
+		font-weight: normal !important;
+		background-color: #f8f8f8;
 	}
 
 .form .radio, .form .checkbox {
@@ -2179,7 +2209,8 @@ label.required:after {
 	margin-left: 5px;
 }
 
-form .error {
+form .error,
+.form .error {
 	color: #F44336;
 }
 
@@ -2252,6 +2283,12 @@ form .error {
 		.form-horizontal .image-upload .update-link:hover {
 			background: #FF9800;
 			color: white;
+		}
+
+		.panel .form .control-label,
+		.control-label {
+			color: #9e9e9e;
+			font-weight: normal;
 		}
 
 /*#endregion*/
@@ -2732,8 +2769,8 @@ table .btn-xs.btn-link {
 	}
 
 	.tabbable.spilled ul li.active a {
-		background: #fff;
-		border-color: #ffffff;
+		background-color:#f8f8f8;
+		border-color: #f8f8f8;
 		border-color: rgba(255,255,255,0.7);
 		color: #333;
 	}
@@ -3079,8 +3116,8 @@ table .btn-xs.btn-link {
 .form .editable,
 .form-horizontal .editable {
 	width: 100%;
-	background-color: #fafafa;
-	border: 1px solid #ccc;
+	background-color:#fff;
+	border: 1px solid #ddd;
 	padding-right: 40px;
 	color: #333;
 	overflow: hidden;
@@ -4007,7 +4044,7 @@ span.not-editable.not-readable {
 
 
 .view-manage-section a:not(.btn):not(.editable) {
-	color: #ccc !important;
+	color: #808080 !important;
 }
 
 	.view-manage-section a:not(.btn):not(.editable):hover {
@@ -4025,14 +4062,15 @@ span.not-editable.not-readable {
 
 .view-manage-section .wrapper {
 	padding: 10px;
-	background: #fafafa;
-	border-color: #ddd;
+	border:1px solid #ddd;
+	background-color:#fff !important;
 }
 
 .view-manage-section .section .panel-heading {
 	background: #fff;
 	color: #333;
 	border-radius: 0;
+	padding-right:10px;
 }
 
 .view-manage-section .section {
@@ -4127,7 +4165,7 @@ span.not-editable.not-readable {
 }
 
 	.view-divider.section span {
-		background: #fafafa;
+		background-color:#fff;
 	}
 
 	.view-divider:hover {
@@ -4210,9 +4248,14 @@ span.not-editable.not-readable {
 	}
 
 	.record-details .panel-heading {
-		color: #f5f5f5;
-		background-color: #555;
-		border-color: #555;
+		color: #333;
+		background-color: #fff;
+		border-bottom: 1px solid #ccc;
+		padding-left: 0;
+		padding-right: 0;
+		font-size: 14px;
+		text-transform:uppercase;
+		margin-bottom: 15px;
 	}
 
 
@@ -4816,106 +4859,4 @@ a.link-icon.link[href]:before {
 
 /*#endregion*/
 
-
-/*#region << Introducing clean panel style for testing >> */
-#content,
-.tabbable.spilled ul li.active a {
-	background-color:#f1f1f1;
-	background-color:#f8f8f8;
-}
-
-	#content .btn-default {
-		border-color:#ddd;
-	}
-
-#page-topnav,
-#page-content {
-	background-color:transparent;
-}
-
-
-.panel {
-	border:none;
-	box-shadow:none;
-	background:transparent;
-}
-
-	.panel .panel-heading {
-		background-color:transparent !important;
-		padding-left: 10px !important;
-	}
-
-		.panel .panel-heading:hover .fa {
-			color:#F44336;
-		}
-
-	.panel .panel-body {
-		padding-left:0;
-		padding-right:0;
-	}
-	
-	.panel .form {
-		background:none;
-	}
-
-	.form, .form-horizontal {
-		padding:0;
-		background-color:transparent;
-	}
-
-		.panel .form .control-label,
-		.control-label {
-			color: #9e9e9e;
-			font-weight: normal;
-		}
-
-
-	.record-details .panel-heading,
-	.panel .panel-heading {
-		color: #333;
-		background-color: #fff;
-		border-bottom: 1px solid #ccc;
-		padding-left: 0;
-		padding-right: 0;
-		font-size: 14px;
-		text-transform:uppercase;
-		margin-bottom: 15px;
-	}
-
-.form .not-editable, .form-horizontal .not-editable, .form .editable, .form-horizontal .editable,
-.form .form-control, .form-horizontal .form-control {
-	background-color:#fff;
-	border-color:#ddd;
-}
-
-.view-manage-section .wrapper {
-	border:1px solid #ddd;
-	background-color:#fff;
-}
-
-.view-divider.section span {
-	background-color:#fff;
-}
-
-.view-manage-section a:not(.btn):not(.editable) {
-	color:#808080 !important;
-}
-
-.view-manage-section .section .panel-heading {
-	padding-right:10px;
-}
-
-.panel-body .form-horizontal {
-	margin-left:-15px;
-	margin-right:-15px;
-}
-
-
-.form .table thead th, .form-horizontal .table thead th {
-    color: #999 !important;
-    font-weight: normal !important;
-    background-color: #f8f8f8;
-}
-
-/*#endregion*/
 

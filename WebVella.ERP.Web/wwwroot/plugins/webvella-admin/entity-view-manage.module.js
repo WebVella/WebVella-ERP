@@ -534,8 +534,8 @@
 			});
 
 			modalInstance.result.then(function (fieldObject) {
-				for (var i = 0; i < contentData.view.regions.length; i++) {
-					for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
+
+				for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
 						for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
 							for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
 								for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
@@ -566,11 +566,15 @@
 							}
 						}
 					}
-				}
 
-				contentData.view = fastCopy(contentData.view);
+				var tempView = fastCopy(contentData.view);
+				for (var i = 0; i < tempView.regions.length; i++) {
+					if(tempView.regions[i].name == "content"){
+						tempView.regions[i]	= contentData.viewContentRegion;
+					}
+				}
 				////2. Call the service
-				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
 				return;
 			});
 		};
@@ -696,6 +700,11 @@
 					}
 
 					var tempView = fastCopy(contentData.view);
+					for (var i = 0; i < tempView.regions.length; i++) {
+						if(tempView.regions[i].name == "content"){
+							tempView.regions[i]	= contentData.viewContentRegion;
+						}
+					}
 					////2. Call the service
 					webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
 					//return;

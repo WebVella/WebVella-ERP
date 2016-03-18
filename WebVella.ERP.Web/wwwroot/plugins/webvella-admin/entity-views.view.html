@@ -65,12 +65,16 @@
                     <th class="actions"></th>
                     <th class="name">Name</th>
                     <th class="type">Type</th>
+					<th class="stats" style="width:200px;">Stats</th>
             </thead>
             <tbody>
                 <tr ng-repeat="view in contentData.views | filter: {label: searchFilter} track by view.id">
                     <td class="actions">
                         <a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/views/{{::view.name}}/info">
                             <i class="fa fa-eye"></i>
+                        </a>
+                        <a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="contentData.copyView(view)">
+                            <i class="fa fa-files-o"></i>
                         </a>
                     </td>
                     <td class="name">
@@ -81,6 +85,7 @@
                     <td class="type">
                         {{::view.type}}
                     </td>
+                    <td class="stats" ng-bind-html="contentData.calculateStats(view)"></td>
                 </tr>
             </tbody>
         </table>
@@ -104,7 +109,7 @@
 						<label class="required" for="name">Name</label>
 						<input ng-model="popupData.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupData.nameError">
+						<div class="error ng-hide" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupData.nameError">
 							<small class="error" ng-show="createView.name.$error.required && !popupData.nameError">
 								required field
 							</small>
@@ -144,3 +149,52 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="copyModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Copy view</h3>
+	</div>
+	<div class="modal-body">
+		<table class="form" style="width:100%">
+			<tr>
+				<td style="width:200px">
+					<div class="form-group">
+					  <div class="radio checkbox">
+						<label>
+						  <input type="radio" name="alternative" value="new" ng-model="popupData.alternative"> Clone as new
+						</label>
+					  </div>
+					</div>
+				</td>
+				<td>
+					<div class="form-group"  ng-class="{ 'has-error' : popupData.viewNameValidationError}">
+					  <input type="text" class="form-control" placeholder="View name" ng-model="popupData.viewName">
+					  <div class="error ng-hide" ng-show="popupData.viewNameValidationError">
+							required
+					  </div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-group">
+					  <div class="radio checkbox">
+						<label>
+						  <input type="radio" name="alternative" value="copy" ng-model="popupData.alternative"> Clone in existing
+						</label>
+					  </div>
+					</div>
+				</td>
+				<td>
+					<div class="form-group">
+					  <select class="form-control" ng-model="popupData.selectedView" ng-options="view as view.name for view in popupData.entityViews"></select>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()">Copy view</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
