@@ -107,15 +107,6 @@ span.divider {
 		padding-left: 15px;
 	}
 
-.panel-body-actions {
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-right: -5px;
-	margin-bottom: 10px;
-	padding: 5px;
-	background: #fff;
-}
-
 .field-list {
 	padding-left: 1em;
 }
@@ -177,8 +168,21 @@ span.divider {
 }
 
 .recursive-view-wrapper {
-	border:1px solid #ccc;
+	border:1px solid #ddd;
 }
+
+	.recursive-view-wrapper .panel {
+		background:white;
+		margin:0;
+	}
+
+.panel-body-actions {
+	margin: -5px -5px 10px -5px;
+	padding: 5px;
+	background: #f8f8f8;
+	border-bottom:1px solid #ddd;
+}
+
 
 /*
 ngToast
@@ -4906,6 +4910,12 @@ a.link-icon.link[href]:before {
 	margin-right:-15px;
 }
 
+
+.form .table thead th, .form-horizontal .table thead th {
+    color: #999 !important;
+    font-weight: normal !important;
+    background-color: #f8f8f8;
+}
 
 /*#endregion*/
 
