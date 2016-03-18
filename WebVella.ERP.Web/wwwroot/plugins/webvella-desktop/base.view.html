@@ -7,23 +7,23 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="" title="WebVella ERP" style="margin-right:30px;">
+			<span class="navbar-brand" title="WebVella ERP">
 				<img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="width:20px;display:inline-block;margin-right:10px; position: relative; top: -2px;" />
-				<span class="hidden-xs hidden-sm">WebVella ERP</span>
-			</a>
+				<!--<span class="hidden-xs hidden-sm">WebVella ERP</span>-->
+			</span>
 		</div>
 		<div class="collapse navbar-collapse" ng-class="{'display-block':pluginData.collapsedNav}">
 			<ul class="nav navbar-nav">
-				<li ng-repeat="item in pluginData.topnav" ng-class="{'active':pluginData.isNavActive(item)}"><a title="{{item.weight}}" href="javascript:void(0)" ng-click="pluginData.redirectToFolder(item)">{{item.label}}</a></li>
+				<li ng-repeat="item in pluginData.topnav" ng-class="{'active':pluginData.isNavActive(item)}"><a title="{{item.weight}}" href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right"  ng-cloak>
-				<li class="hidden-xs hidden-sm">
+				<!--<li class="hidden-xs hidden-sm">
 					<p class="navbar-text">
 						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
 						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
 						
 					</p>
-				</li>
+				</li>-->
 				<!--<li><a href="javascript:void(0)">Account</a></li>-->
 				<li><a href="javascript:void(0)" ng-click="pluginData.logout()"><i class="fa fa-sign-out"></i> logout</a></li>
 			</ul>
