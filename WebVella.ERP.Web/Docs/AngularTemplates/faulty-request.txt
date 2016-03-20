@@ -1,0 +1,699 @@
+﻿{
+	"id": "f3f0a453-7530-464a-9e8c-c7723ecb5397",
+	"name": "prices",
+	"label": "Prices",
+	"default": false,
+	"system": true,
+	"weight": 11,
+	"cssClass": "",
+	"iconName": "money",
+	"type": "general",
+	"regions": [{
+		"name": "content",
+		"render": true,
+		"cssClass": "",
+		"sections": [{
+			"id": "434ecc67-275a-a7e4-dc22-c43d280d5d35",
+			"name": "vcard",
+			"label": "Vcard",
+			"cssClass": "",
+			"showLabel": false,
+			"collapsed": false,
+			"weight": 1,
+			"tabOrder": "left-right",
+			"rows": [{
+				"id": "7dac0f81-86ea-17a4-8deb-3631b2c01337",
+				"weight": 1,
+				"columns": [{
+					"items": [{
+						"type": "fieldFromRelation",
+						"relationId": "e1ed7eb2-a00e-4932-971a-a5012b84969f",
+						"relationName": "item_n_n_media",
+						"relationDirection": "origin-target",
+						"fieldId": "3b60f441-28af-4228-a875-138f2c68cf69",
+						"fieldName": "image",
+						"meta": {
+							"fieldType": 9,
+							"defaultValue": "",
+							"id": "3b60f441-28af-4228-a875-138f2c68cf69",
+							"name": "image",
+							"label": "Image",
+							"placeholderText": "",
+							"description": "Filenames should include  keyword-rich-text",
+							"helpText": "Filenames should include  keyword-rich-text",
+							"required": true,
+							"unique": false,
+							"searchable": true,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["987148b1-afa8-4b33-8616-55861e5fd065", "f16ec6db-626d-4c27-8de0-3e7ce542c55f", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "de615991-6076-4dd3-a4b5-168845df8509", "009b2ee7-1d86-49d9-b836-37f534cb8cc8"]
+							},
+							"enableSecurity": true
+						},
+						"fieldLabel": "image",
+						"fieldPlaceholder": "",
+						"fieldHelpText": "",
+						"fieldRequired": false,
+						"fieldLookupList": "lookup",
+						"dataName": "$field$item_n_n_media$image",
+						"entityId": "b7271a8e-c953-4261-b8ca-25b67c03a2e9",
+						"entityLabel": "Item media",
+						"entityName": "item_media",
+						"entityLabelPlural": null
+					}, {
+						"type": "view",
+						"viewId": "980ee682-e97c-442c-99d8-1a3eac543ffd",
+						"viewName": "product_header",
+						"meta": {
+							"id": "980ee682-e97c-442c-99d8-1a3eac543ffd",
+							"name": "product_header",
+							"label": "product_header",
+							"default": false,
+							"system": false,
+							"weight": 1,
+							"cssClass": "",
+							"iconName": "file-text-o",
+							"type": "general",
+							"regions": [{
+								"name": "content",
+								"render": false,
+								"cssClass": "",
+								"sections": [{
+									"id": "6d0cd87f-e2d9-f7da-90b5-6d645fffdfba",
+									"name": "section",
+									"label": "Section name",
+									"cssClass": "",
+									"showLabel": false,
+									"collapsed": false,
+									"weight": 1,
+									"tabOrder": "left-right",
+									"rows": [{
+										"id": "5c77e252-5b42-9946-33ac-9ecdf741f476",
+										"weight": 1,
+										"columns": [{
+											"items": [{
+												"type": "listFromRelation",
+												"relationId": "e1ed7eb2-a00e-4932-971a-a5012b84969f",
+												"relationName": "item_n_n_media",
+												"relationDirection": "origin-target",
+												"listId": "9e75c3c9-f3c4-48ca-87b3-26079fca45d6",
+												"listName": "thumb",
+												"meta": {
+													"id": "9e75c3c9-f3c4-48ca-87b3-26079fca45d6",
+													"name": "thumb",
+													"label": "thumb",
+													"default": false,
+													"system": false,
+													"weight": 1,
+													"cssClass": "hide-header",
+													"iconName": null,
+													"viewNameOverride": null,
+													"visibleColumnsCount": 1,
+													"type": "general",
+													"pageSize": 1,
+													"columns": [{
+														"type": "view",
+														"viewName": "thumb1",
+														"meta": {
+															"id": "6b60b6ad-bdd5-44ec-8c3c-9df9e7aad3bf",
+															"name": "thumb1",
+															"label": "thumb",
+															"default": false,
+															"system": false,
+															"weight": 1,
+															"cssClass": "",
+															"iconName": "file-text-o",
+															"type": "general",
+															"regions": [{
+																"name": "content",
+																"render": false,
+																"cssClass": "",
+																"sections": [{
+																	"id": "e5aca4dd-3d50-c21e-a81a-30848de1cc1b",
+																	"name": "section",
+																	"label": "Section name",
+																	"cssClass": "",
+																	"showLabel": false,
+																	"collapsed": false,
+																	"weight": 1,
+																	"tabOrder": "left-right",
+																	"rows": [{
+																		"id": "edd2d76d-949b-2ca2-55f5-7117694d2c23",
+																		"weight": 1,
+																		"columns": [{
+																			"items": [{
+																				"type": "field",
+																				"fieldId": "3b60f441-28af-4228-a875-138f2c68cf69",
+																				"fieldName": "image",
+																				"meta": {
+																					"fieldType": 9,
+																					"defaultValue": "",
+																					"id": "3b60f441-28af-4228-a875-138f2c68cf69",
+																					"name": "image",
+																					"label": "Image",
+																					"placeholderText": "",
+																					"description": "Filenames should include  keyword-rich-text",
+																					"helpText": "Filenames should include  keyword-rich-text",
+																					"required": true,
+																					"unique": false,
+																					"searchable": true,
+																					"auditable": false,
+																					"system": true,
+																					"permissions": {
+																						"canRead": ["987148b1-afa8-4b33-8616-55861e5fd065", "f16ec6db-626d-4c27-8de0-3e7ce542c55f", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+																						"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "de615991-6076-4dd3-a4b5-168845df8509", "009b2ee7-1d86-49d9-b836-37f534cb8cc8"]
+																					},
+																					"enableSecurity": true
+																				},
+																				"dataName": "image",
+																				"entityId": "b7271a8e-c953-4261-b8ca-25b67c03a2e9",
+																				"entityLabel": "Item media",
+																				"entityName": "item_media",
+																				"entityLabelPlural": "Item medias"
+																			}],
+																			"gridColCount": 12
+																		}]
+																	}]
+																}]
+															}],
+															"relationOptions": [],
+															"sidebar": {
+																"render": false,
+																"cssClass": "",
+																"items": []
+															}
+														},
+														"dataName": "$view$thumb1",
+														"entityId": "b7271a8e-c953-4261-b8ca-25b67c03a2e9",
+														"entityName": "item_media",
+														"entityLabel": "Item media",
+														"entityLabelPlural": "Item medias"
+													}],
+													"query": null,
+													"sorts": [],
+													"relationOptions": []
+												},
+												"fieldLabel": "test",
+												"fieldPlaceholder": "",
+												"fieldHelpText": "",
+												"fieldRequired": false,
+												"fieldLookupList": "lookup",
+												"fieldManageView": "quick_create",
+												"dataName": "$list$item_n_n_media$thumb",
+												"entityId": "b7271a8e-c953-4261-b8ca-25b67c03a2e9",
+												"entityLabel": "Item media",
+												"entityName": "item_media",
+												"entityLabelPlural": "Item medias"
+											}],
+											"gridColCount": 4
+										}, {
+											"items": [{
+												"type": "field",
+												"fieldId": "664f2b4a-dd96-4e27-aabd-898e255d9c8e",
+												"fieldName": "label",
+												"meta": {
+													"fieldType": 18,
+													"defaultValue": "",
+													"maxLength": null,
+													"id": "664f2b4a-dd96-4e27-aabd-898e255d9c8e",
+													"name": "label",
+													"label": "Title",
+													"placeholderText": "",
+													"description": "String used as item title",
+													"helpText": "",
+													"required": true,
+													"unique": false,
+													"searchable": true,
+													"auditable": false,
+													"system": true,
+													"permissions": {
+														"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+														"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+													},
+													"enableSecurity": true
+												},
+												"dataName": "label",
+												"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+												"entityLabel": "Item",
+												"entityName": "item",
+												"entityLabelPlural": "Items"
+											}, {
+												"type": "field",
+												"fieldId": "ecd3f25a-d443-440e-a90a-5b30c15a5f58",
+												"fieldName": "art_no",
+												"meta": {
+													"fieldType": 18,
+													"defaultValue": "",
+													"maxLength": null,
+													"id": "ecd3f25a-d443-440e-a90a-5b30c15a5f58",
+													"name": "art_no",
+													"label": "Article number",
+													"placeholderText": "",
+													"description": "The item's article number or SKU",
+													"helpText": "The item's article number or SKU",
+													"required": true,
+													"unique": false,
+													"searchable": true,
+													"auditable": false,
+													"system": true,
+													"permissions": {
+														"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+														"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+													},
+													"enableSecurity": true
+												},
+												"dataName": "art_no",
+												"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+												"entityLabel": "Item",
+												"entityName": "item",
+												"entityLabelPlural": "Items"
+											}],
+											"gridColCount": 4
+										}, {
+											"items": [{
+												"type": "field",
+												"fieldId": "bb4b5f68-e67d-4ff2-9b81-c2d95d2cf371",
+												"fieldName": "brand",
+												"meta": {
+													"fieldType": 17,
+													"defaultValue": "nb",
+													"options": [{
+														"key": "nb",
+														"value": "no brand"
+													}, {
+														"key": "aa",
+														"value": "Feylin"
+													}, {
+														"key": "er",
+														"value": "eiRis"
+													}, {
+														"key": "bd",
+														"value": "Bound"
+													}, {
+														"key": "vyn",
+														"value": "Vayana"
+													}],
+													"id": "bb4b5f68-e67d-4ff2-9b81-c2d95d2cf371",
+													"name": "brand",
+													"label": "Brand",
+													"placeholderText": "",
+													"description": "",
+													"helpText": "",
+													"required": false,
+													"unique": false,
+													"searchable": false,
+													"auditable": false,
+													"system": true,
+													"permissions": {
+														"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+														"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+													},
+													"enableSecurity": true
+												},
+												"dataName": "brand",
+												"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+												"entityLabel": "Item",
+												"entityName": "item",
+												"entityLabelPlural": "Items"
+											}, {
+												"type": "field",
+												"fieldId": "225e11a3-f542-4b3f-ad6c-04cd92236dce",
+												"fieldName": "barcode",
+												"meta": {
+													"fieldType": 18,
+													"defaultValue": "",
+													"maxLength": null,
+													"id": "225e11a3-f542-4b3f-ad6c-04cd92236dce",
+													"name": "barcode",
+													"label": "Barcode",
+													"placeholderText": "",
+													"description": "",
+													"helpText": "",
+													"required": false,
+													"unique": false,
+													"searchable": true,
+													"auditable": false,
+													"system": true,
+													"permissions": {
+														"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+														"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+													},
+													"enableSecurity": true
+												},
+												"dataName": "barcode",
+												"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+												"entityLabel": "Item",
+												"entityName": "item",
+												"entityLabelPlural": "Items"
+											}],
+											"gridColCount": 4
+										}]
+									}]
+								}]
+							}],
+							"relationOptions": [],
+							"sidebar": {
+								"render": false,
+								"cssClass": "",
+								"items": []
+							}
+						},
+						"dataName": "$view$product_header",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}],
+					"gridColCount": 12
+				}]
+			}]
+		}, {
+			"id": "7339365d-89bc-4186-9112-6825d74e10a0",
+			"name": "details",
+			"label": "Prices",
+			"cssClass": "",
+			"showLabel": true,
+			"collapsed": false,
+			"weight": 2,
+			"tabOrder": "left-right",
+			"rows": [{
+				"id": "b838f95e-c06b-4aaf-b8af-7d965a60a607",
+				"weight": 1,
+				"columns": [{
+					"items": [{
+						"type": "field",
+						"fieldId": "090bae08-7a56-44f7-aa2d-7f9bfe05c1de",
+						"fieldName": "sell_price",
+						"meta": {
+							"fieldType": 3,
+							"defaultValue": 99999,
+							"minValue": 0,
+							"maxValue": null,
+							"currency": {
+								"symbol": "BGN",
+								"symbolNative": "лв.",
+								"name": "Bulgarian Lev",
+								"namePlural": "Bulgarian leva",
+								"code": "BGN",
+								"decimalDigits": 2,
+								"rounding": 0,
+								"symbolPlacement": 2
+							},
+							"id": "090bae08-7a56-44f7-aa2d-7f9bfe05c1de",
+							"name": "sell_price",
+							"label": "Selling Price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": true,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "sell_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "9397713f-d93e-43d7-9a8d-300485062a85",
+						"fieldName": "promo_price_from",
+						"meta": {
+							"fieldType": 5,
+							"defaultValue": null,
+							"format": "dd MMM yyyy HH:mm",
+							"useCurrentTimeAsDefaultValue": false,
+							"id": "9397713f-d93e-43d7-9a8d-300485062a85",
+							"name": "promo_price_from",
+							"label": "Promotional price from",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": false,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "promo_price_from",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "79bf26e2-2f93-4349-b342-4427a833958b",
+						"fieldName": "cost_price",
+						"meta": {
+							"fieldType": 3,
+							"defaultValue": 99999,
+							"minValue": 0,
+							"maxValue": null,
+							"currency": {
+								"symbol": "BGN",
+								"symbolNative": "лв.",
+								"name": "Bulgarian Lev",
+								"namePlural": "Bulgarian leva",
+								"code": "BGN",
+								"decimalDigits": 2,
+								"rounding": 0,
+								"symbolPlacement": 2
+							},
+							"id": "79bf26e2-2f93-4349-b342-4427a833958b",
+							"name": "cost_price",
+							"label": "Cost Price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": true,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "cost_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "f335ea3e-7904-499b-b57f-a39707b56625",
+						"fieldName": "average_sell_price",
+						"meta": {
+							"fieldType": 3,
+							"defaultValue": 0,
+							"minValue": 0,
+							"maxValue": null,
+							"currency": {
+								"symbol": "BGN",
+								"symbolNative": "лв.",
+								"name": "Bulgarian Lev",
+								"namePlural": "Bulgarian leva",
+								"code": "BGN",
+								"decimalDigits": 2,
+								"rounding": 0,
+								"symbolPlacement": 2
+							},
+							"id": "f335ea3e-7904-499b-b57f-a39707b56625",
+							"name": "average_sell_price",
+							"label": "Average sell price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": false,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "average_sell_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}],
+					"gridColCount": 6
+				}, {
+					"items": [{
+						"type": "field",
+						"fieldId": "0820c77a-f083-4efe-a8df-b7f7243de502",
+						"fieldName": "promo_price",
+						"meta": {
+							"fieldType": 3,
+							"defaultValue": 99999,
+							"minValue": 0,
+							"maxValue": null,
+							"currency": {
+								"symbol": "BGN",
+								"symbolNative": "лв.",
+								"name": "Bulgarian Lev",
+								"namePlural": "Bulgarian leva",
+								"code": "BGN",
+								"decimalDigits": 2,
+								"rounding": 0,
+								"symbolPlacement": 2
+							},
+							"id": "0820c77a-f083-4efe-a8df-b7f7243de502",
+							"name": "promo_price",
+							"label": "Promotional price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": true,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "promo_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "0b61e929-2861-4036-8aa3-6b692ec0c483",
+						"fieldName": "promo_price_until",
+						"meta": {
+							"fieldType": 5,
+							"defaultValue": null,
+							"format": "dd MMM yyyy HH:mm",
+							"useCurrentTimeAsDefaultValue": false,
+							"id": "0b61e929-2861-4036-8aa3-6b692ec0c483",
+							"name": "promo_price_until",
+							"label": "Promotional price until",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": false,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "promo_price_until",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "380a6813-c1c0-496f-a6bb-80fbb8a5590d",
+						"fieldName": "average_cost_price",
+						"meta": {
+							"fieldType": 3,
+							"defaultValue": 99999,
+							"minValue": 0,
+							"maxValue": null,
+							"currency": {
+								"symbol": "BGN",
+								"symbolNative": "лв.",
+								"name": "Bulgarian Lev",
+								"namePlural": "Bulgarian leva",
+								"code": "BGN",
+								"decimalDigits": 2,
+								"rounding": 0,
+								"symbolPlacement": 2
+							},
+							"id": "380a6813-c1c0-496f-a6bb-80fbb8a5590d",
+							"name": "average_cost_price",
+							"label": "Average cost price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "",
+							"required": false,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "average_cost_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}, {
+						"type": "field",
+						"fieldId": "7ae92c29-45cc-438a-b786-c217db3e73ed",
+						"fieldName": "point_price",
+						"meta": {
+							"fieldType": 12,
+							"defaultValue": 0,
+							"minValue": 0,
+							"maxValue": null,
+							"decimalPlaces": 0,
+							"id": "7ae92c29-45cc-438a-b786-c217db3e73ed",
+							"name": "point_price",
+							"label": "Point price",
+							"placeholderText": "",
+							"description": "",
+							"helpText": "year of production",
+							"required": false,
+							"unique": false,
+							"searchable": false,
+							"auditable": false,
+							"system": true,
+							"permissions": {
+								"canRead": ["f16ec6db-626d-4c27-8de0-3e7ce542c55f", "987148b1-afa8-4b33-8616-55861e5fd065", "bdc56420-caf0-4030-8a0e-d264938e0cda"],
+								"canUpdate": ["bdc56420-caf0-4030-8a0e-d264938e0cda", "d8804eaf-c6ad-4b71-acdd-36c505ed9f11", "20ae32fd-d90a-46f6-a5f7-1bbb4950a249", "e3a555ea-d08a-4548-848b-56c50ae9dcb0"]
+							},
+							"enableSecurity": true
+						},
+						"dataName": "point_price",
+						"entityId": "3c1d6781-fb37-4acc-8fce-bd62029bb2ca",
+						"entityLabel": "Item",
+						"entityName": "item",
+						"entityLabelPlural": "Items"
+					}],
+					"gridColCount": 6
+				}]
+			}]
+		}]
+	}],
+	"relationOptions": [],
+	"sidebar": {
+		"render": false,
+		"cssClass": null,
+		"items": []
+	}
+}
