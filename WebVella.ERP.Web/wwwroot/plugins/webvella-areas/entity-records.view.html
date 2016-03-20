@@ -199,7 +199,7 @@
 	<div class="modal-body" ng-class="{'go-bkg-gray-light': popupData.filterColumns.length > 0}">
 		<div class="row">
 			<div class="col-sm-12">
-				<div name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
+				<form name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
 					<uib-tabset vertical="true" type="pills">
 						<uib-tab heading="{{::column.meta.label}}" select="popupData.tabSelected(column)" ng-repeat="column in popupData.filterColumns" class="{{popupData.getTabExtraCssClass(column)}}">
 							<div ng-hide="popupData.tabError" ng-switch="column.type" ng-class="popupData.tabLoading ? 'transparent' : ''">
@@ -1060,7 +1060,7 @@
 							</div>
 						</uib-tab>
 					</uib-tabset>
-				</div>
+				</form>
 				<div class="alert alert-warning" ng-if="popupData.filterColumns.length == 0">There are no searchable columns for this list</div>
 			</div>
 		</div>
