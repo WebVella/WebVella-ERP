@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
+			<!--<a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>-->
 		</div>
 		<!--<div class="icon-box">
 			<i class="fa fa-database  fa-fw"></i>
@@ -47,12 +47,19 @@
 	</div>
 
 	<form id="filters" class="form-inline">
-		<div class="form-group">
+		<div class="form-group form-group-sm">
 			<div class="input-group">
+				<div class="btn-group">
+					<a class="btn btn-default btn-sm" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
+				</div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<div class="input-group">
+				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search field names">
 				<span class="input-group-addon" id="basic-addon1">
 					<i class="fa fa-search"></i>
 				</span>
-				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search field names">
 			</div>
 		</div>
 	</form>
