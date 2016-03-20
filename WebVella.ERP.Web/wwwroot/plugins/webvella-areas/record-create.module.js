@@ -344,6 +344,7 @@
 
 
 		//#region << Render >>
+		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
 		contentData.checkUserEntityPermissions = function(permissionsCsv){
 			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,permissionsCsv));
 		}

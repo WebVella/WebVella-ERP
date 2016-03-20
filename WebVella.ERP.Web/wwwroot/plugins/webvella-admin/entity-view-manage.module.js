@@ -1111,25 +1111,9 @@
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.section = fastCopy(section);
-		popupData.rowOptions = [
-		{
-			key: 1,
-			value: "One column"
-		},
-		{
-			key: 2,
-			value: "Two columns"
-		},
-		{
-			key: 3,
-			value: "Three columns"
-		},
-		{
-			key: 4,
-			value: "Four columns"
-		}
-
-		];
+		popupData.rowOptions = 	webvellaAdminService.getRowColumnCountVariationsArray();
+		
+	
 		popupData.isUpdate = true;
 		if (row === null) {
 			popupData.isUpdate = false;
@@ -1139,8 +1123,9 @@
 		}
 		else {
 			popupData.row = fastCopy(row);
+			var selectedColVariationKey = webvellaAdminService.getRowColumnCountVariationKey(row)
 			for (var i = 0; i < popupData.rowOptions.length; i++) {
-				if (popupData.row.columns.length === popupData.rowOptions[i].key) {
+				if (selectedColVariationKey === popupData.rowOptions[i].key) {
 					popupData.selectedRowOption = popupData.rowOptions[i];
 				}
 			}
@@ -1161,7 +1146,6 @@
 			if (popupData.isUpdate) {
 				//A. Check if the row's column differ from the original number
 				var originalRowColumns = 0;
-				var newRowColumns = fastCopy(popupData.selectedRowOption.key);
 				for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
 					if (parentData.viewContentRegion.sections[i].name === popupData.section.name) {
 						for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
@@ -1171,26 +1155,27 @@
 						}
 					}
 				}
+
 				//B. If columns differ add to the end or remove from the end
-				if (originalRowColumns > newRowColumns) {
+				if (originalRowColumns > popupData.selectedRowOption.columns) {
 					//Columns need to be removed
-					var columnsToRemove = originalRowColumns - newRowColumns;
+					var columnsToRemove = originalRowColumns - popupData.selectedRowOption.columns;
 					popupData.row.columns.splice(columnsToRemove * -1);
 
 				}
-				else if (originalRowColumns < newRowColumns) {
+				else if (originalRowColumns < popupData.selectedRowOption.columns) {
 					//Columns need to be added
-					var columnsToAdd = newRowColumns - originalRowColumns;
+					var columnsToAdd = popupData.selectedRowOption.columns - originalRowColumns;
 
 					for (var m = 0; m < columnsToAdd; m++) {
-						var column = webvellaAdminService.initViewRowColumn(newRowColumns);
+						var column = webvellaAdminService.initViewRowColumn(popupData.selectedRowOption.columns);
 						popupData.row.columns.push(column);
 					}
 				}
 				//C. Fix the gridColCount for each column
-				var newGridColCount = 12 / newRowColumns;
+				var columnsCountArray = webvellaAdminService.convertRowColumnCountVariationKeyToArray(popupData.selectedRowOption.key);
 				for (var i = 0; i < popupData.row.columns.length; i++) {
-					popupData.row.columns[i].gridColCount = newGridColCount;
+					popupData.row.columns[i].gridColCount = columnsCountArray[i];
 				}
 				//D. Update
 				popupData.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupData.row, popupData.section.rows);

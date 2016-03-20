@@ -38,10 +38,12 @@
 	
 	<form name="createRecord" ng-if="::contentData.createViewRegion != null && contentData.checkUserEntityPermissions('canCreate')">
 		<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in contentData.createViewRegion.sections track by section.id" ng-if="contentData.createViewRegion != null">
-			<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
+			<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel">
+				<a href="javascript:void(0)"  ng-click="contentData.toggleSectionCollapse(section)">
 				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
 				<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
 				{{section.label}}
+				</a>
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
 				<div class="form-horizontal">
@@ -52,8 +54,8 @@
 								ng-switch="::item.type">
 								<!--If item is field WITH NO relation-->
 								<div class="field" ng-switch-when="field">
-									<label class="col-lg-{{::12/column.gridColCount}} control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
-									<div ng-switch="item.meta.fieldType" class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}} control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
+									<div ng-switch="item.meta.fieldType" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<!-- 1. Autoincrement -->
 										<div ng-switch-when="1">
 											<div class="form-control-static">{{item.meta.displayFormat}}</div>
@@ -444,43 +446,43 @@
 								</div>
 								<!--If item is field WITH relation-->
 								<div class="field" ng-switch-when="fieldFromRelation">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{item.meta.label}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{item.meta.label}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.fieldLabel}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.fieldLabel}}</label>
+									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="not-editable not-readable">can be set this after the record is created</span>
 									</div>
 								</div>

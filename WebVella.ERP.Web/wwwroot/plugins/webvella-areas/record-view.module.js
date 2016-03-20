@@ -139,6 +139,7 @@
 		contentData.stateParams = $stateParams;
 		contentData.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
 
+
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -278,6 +279,9 @@
 		contentData.userHasRecordDeletePermission = function(){
 			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,"canDelete"));
 		}
+
+		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
+
 		//#endregion
 
 
@@ -499,7 +503,10 @@
 						break;
 					}
 
-					contentData.selectedSidebarPage.data = fastCopy(response.object.data[0]);
+					
+					//We cannot reload the data from the response object as there is missing data for any 
+					//view or list or trees, or viewFromRelation etc.
+
 					defer.resolve();
 				}
 
