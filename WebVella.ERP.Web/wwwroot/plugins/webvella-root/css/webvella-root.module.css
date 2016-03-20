@@ -4296,6 +4296,11 @@ span.not-editable.not-readable {
     min-height: 1px;
 }
 
+.record-details .no-labels .control-label {
+	display:none;
+}
+
+
 
 @media (min-width: 1200px){
 
@@ -4337,6 +4342,13 @@ span.not-editable.not-readable {
 		padding-left: 0;
 		width: auto;
 		float: none;
+	}
+
+	.record-details  .no-labels .col-lg-erp,
+	.record-details  .no-labels .col-lg-1, .record-details  .no-labels .col-lg-2, .record-details  .no-labels .col-lg-3, .record-details  .no-labels .col-lg-4, .record-details  .no-labels .col-lg-5,
+	.record-details  .no-labels .col-lg-6, .record-details  .no-labels .col-lg-7, .record-details  .no-labels .col-lg-8, .record-details .no-labels  .col-lg-9, .record-details  .no-labels .col-lg-10,
+	.record-details .no-labels  .col-lg-11, .record-details  .no-labels .col-lg-12 {
+		margin-left:15px;
 	}
 }
 

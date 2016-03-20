@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout', 'webvellaAreasService', 'webvellaAdminService'];
+    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout','webvellaRootService', 'webvellaAreasService', 'webvellaAdminService'];
 
     /* @ngInject */
-    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout, webvellaAreasService, webvellaAdminService) {
+    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout,webvellaRootService, webvellaAreasService, webvellaAdminService) {
     	$log.debug('webvellaAreas>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var topnavData = this;
@@ -27,7 +27,7 @@
         }
 
         topnavData.logout = function () {
-        	webvellaAdminService.logout(
+        	webvellaRootService.logout(
                     function (response) {
                     	//  $window.location = '#/login';
                     	$timeout(function () {
