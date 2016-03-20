@@ -169,6 +169,11 @@ span.divider {
 
 #content .btn-default {
 	border-color:#ccc;
+	background:transparent;
+}
+
+#content .btn-default:hover {
+	background:#fafafa;
 }
 
 .display-block {

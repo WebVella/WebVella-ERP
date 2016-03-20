@@ -33,7 +33,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record views">manage</h4>
+			<h4 class="no-link" title="Manage a Record views">{{contentData.view.name}}</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -285,7 +285,7 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
-						<label for="place">Weight</label>
+						<label for="place">Place</label>
 						<input ng-model="popupData.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">
