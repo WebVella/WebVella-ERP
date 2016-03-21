@@ -1,6 +1,6 @@
 WebVella ERP
 ======
-**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET 5, MVC6 and AngularJS. Supports multiple databases, but the initial release will be for TokuMX (mongodb with transactions). The support for MS SQL and MySQL databases will be available until the end of 2016. Targets Linux or Windows as host OS.
+**WebVella ERP** is a free and open-source web software, that targets extreme customization and plugability in service of any business data management needs. It is build upon our experience, best practices and the newest available technologies. Currently it targets ASP.NET 5, MVC6 and AngularJS. Our database of choice is PostgreSQL. Targets Linux or Windows as host OS. Currently tested only on Windows.
 
 We will greatly appriciate your support of the project by: 
 * giving it a "star" 
@@ -14,7 +14,7 @@ We will greatly appriciate your support of the project by:
 
 ## How-to use this code
 1. Download or Clone the source ($ git clone https://github.com/WebVella/WebVella-ERP.git)
-2. Install or Get a connection string to a TokuMX database. You can get the database from [HERE](https://www.percona.com/downloads/percona-tokumx-community-edition). Currently tested on version 1.4.0, so feedback if there are problems with the newest version.
+2. Install or Get a connection string to a PostgreSQL database. You can get the database from [HERE](http://www.postgresql.org/). Currently tested on version 9.5.1, so feedback if there are problems with the newest version.
 3. Set the /WebVella.ERP.Web/Config.json with the proper connection string settings. There is example configuration there. The EncriptionKey is optional and if not provided will use a default hardcoded one. For test purposes you can leave it as it is.
 4. Set up the site 
 5. Browse :)
