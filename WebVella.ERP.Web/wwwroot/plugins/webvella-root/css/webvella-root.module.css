@@ -168,7 +168,7 @@ span.divider {
 }
 
 #content .btn-default {
-	border-color:#ccc;
+	border-color:#bbb;
 	background:transparent;
 }
 
@@ -1177,7 +1177,6 @@ ngToast
 	background: #EFEBE9;
 	border-bottom: 2px solid #D7CCC8;
 }
-
 
 #page-title .icon-box {
 	display: table-cell;
