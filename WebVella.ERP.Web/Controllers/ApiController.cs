@@ -5,7 +5,7 @@ using WebVella.ERP.Api.Models;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using WebVella.ERP.Api;
-using WebVella.ERP.Storage;
+using WebVella.ERP.Database;
 using System.Collections.Generic;
 using Microsoft.AspNet.Http;
 using Microsoft.Net.Http.Headers;
@@ -17,26 +17,23 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNet.Authorization;
 
 
+
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebVella.ERP.Web.Controllers
 {
 	public class ApiController : ApiControllerBase
 	{
-
 		//TODO - add created_by and modified_by fields where needed, when the login is done
 		RecordManager recMan;
 		EntityManager entityManager;
 		SecurityManager secMan;
 
-		public IStorageService Storage { get; set; }
-
-		public ApiController(IErpService service, IStorageService storage) : base(service)
+		public ApiController()
 		{
-			Storage = storage;
-			recMan = new RecordManager(service);
-			secMan = new SecurityManager(service);
-			entityManager = new EntityManager(storage);
+			recMan = new RecordManager();
+			secMan = new SecurityManager();
+			entityManager = new EntityManager();
 		}
 
 		[AllowAnonymous]
@@ -47,7 +44,7 @@ namespace WebVella.ERP.Web.Controllers
 			string password = (string)submitObj["password"];
 			bool rememberMe = (bool)submitObj["rememberMe"];
 
-			SecurityManager secMan = new SecurityManager(service);
+			SecurityManager secMan = new SecurityManager();
 			var user = secMan.GetUser(email, password);
 			var responseObj = new ResponseModel();
 
@@ -70,7 +67,7 @@ namespace WebVella.ERP.Web.Controllers
 					responseObj.Object = null;
 					responseObj.Success = true;
 					responseObj.Timestamp = DateTime.UtcNow;
-					responseObj.Object = new { token = WebSecurityUtil.Login(HttpContext, user.Id, user.ModifiedOn, rememberMe, service) };
+					responseObj.Object = new { token = WebSecurityUtil.Login(HttpContext, user.Id, user.ModifiedOn, rememberMe ) };
 				}
 
 			}
@@ -105,7 +102,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult CurrentUserPermissions()
 		{
 			var responseObj = new ResponseModel();
-			responseObj.Object = WebSecurityUtil.GetCurrentUserPermissions(HttpContext, service);
+			responseObj.Object = WebSecurityUtil.GetCurrentUserPermissions(HttpContext);
 			responseObj.Success = true;
 			responseObj.Timestamp = DateTime.UtcNow;
 			return DoResponse(responseObj);
@@ -164,7 +161,7 @@ namespace WebVella.ERP.Web.Controllers
 					return DoResponse(response);
 				}
 
-				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 				if (storageEntity == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -340,7 +337,7 @@ namespace WebVella.ERP.Web.Controllers
 					return DoBadRequestResponse(response, "Field was not updated!");
 				}
 
-				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 				if (storageEntity == null)
 				{
 					response.Errors.Add(new ErrorModel("Id", Id, "Entity with such Id does not exist!"));
@@ -688,7 +685,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(Name);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(Name);
 				if (storageEntity == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -787,7 +784,7 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult GetEntityLibrary(string entityName)
 		{
 			var result = new EntityLibraryItemsResponse() { Success = true, Timestamp = DateTime.UtcNow };
-			var relMan = new EntityRelationManager(service.StorageService);
+			var relMan = new EntityRelationManager();
 			var relations = relMan.Read().Object;
 
 			if (string.IsNullOrWhiteSpace(entityName))
@@ -1136,7 +1133,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(Name);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(Name);
 				if (storageEntity == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -1293,7 +1290,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				IStorageEntity storageEntity = Storage.GetEntityRepository().Read(entityName);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 				if (storageEntity == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -1387,7 +1384,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/list")]
 		public IActionResult GetEntityRelationMetaList()
 		{
-			return DoResponse(new EntityRelationManager(service.StorageService).Read());
+			return DoResponse(new EntityRelationManager().Read());
 		}
 
 		// Get entity relation meta
@@ -1395,7 +1392,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/relation/{name}")]
 		public IActionResult GetEntityRelationMeta(string name)
 		{
-			return DoResponse(new EntityRelationManager(service.StorageService).Read(name));
+			return DoResponse(new EntityRelationManager().Read(name));
 		}
 
 
@@ -1409,7 +1406,7 @@ namespace WebVella.ERP.Web.Controllers
 				if (submitObj["id"].IsNullOrEmpty())
 					submitObj["id"] = Guid.NewGuid();
 				var relation = submitObj.ToObject<EntityRelation>();
-				return DoResponse(new EntityRelationManager(service.StorageService).Create(relation));
+				return DoResponse(new EntityRelationManager().Create(relation));
 			}
 			catch (Exception e)
 			{
@@ -1434,7 +1431,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				var relation = submitObj.ToObject<EntityRelation>();
-				return DoResponse(new EntityRelationManager(service.StorageService).Update(relation));
+				return DoResponse(new EntityRelationManager().Update(relation));
 			}
 			catch (Exception e)
 			{
@@ -1451,7 +1448,7 @@ namespace WebVella.ERP.Web.Controllers
 			Guid id = Guid.Empty;
 			if (Guid.TryParse(idToken, out newGuid))
 			{
-				return DoResponse(new EntityRelationManager(service.StorageService).Delete(newGuid));
+				return DoResponse(new EntityRelationManager().Delete(newGuid));
 			}
 			else
 			{
@@ -1469,8 +1466,8 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/relation")]
 		public IActionResult UpdateEntityRelationRecord([FromBody]InputEntityRelationRecordUpdateModel model)
 		{
-			var recMan = new RecordManager(service);
-			var entMan = new EntityManager(service.StorageService);
+			var recMan = new RecordManager();
+			var entMan = new EntityManager();
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 
 			if (model == null)
@@ -1489,7 +1486,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			else
 			{
-				relation = new EntityRelationManager(service.StorageService).Read(model.RelationName).Object;
+				relation = new EntityRelationManager().Read(model.RelationName).Object;
 				if (relation == null)
 				{
 					response.Errors.Add(new ErrorModel { Message = "Invalid relation name. No relation with that name.", Key = "relationName" });
@@ -1563,98 +1560,97 @@ namespace WebVella.ERP.Web.Controllers
 				detachTargetRecords.Add(result.Object.Data[0]);
 			}
 
-			var transaction = recMan.CreateTransaction();
-			try
+			using (var connection = DbContext.Current.CreateConnection())
 			{
+				connection.BeginTransaction();
 
-				transaction.Begin();
-
-				switch (relation.RelationType)
+				try
 				{
-					case EntityRelationType.OneToOne:
-					case EntityRelationType.OneToMany:
-						{
-							foreach (var record in detachTargetRecords)
+					switch (relation.RelationType)
+					{
+						case EntityRelationType.OneToOne:
+						case EntityRelationType.OneToMany:
 							{
-								record[targetField.Name] = null;
-
-								var updResult = recMan.UpdateRecord(targetEntity, record);
-								if (!updResult.Success)
+								foreach (var record in detachTargetRecords)
 								{
-									transaction.Rollback();
-									response.Errors = updResult.Errors;
-									response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
-									response.Success = false;
-									return DoResponse(response);
+									record[targetField.Name] = null;
+
+									var updResult = recMan.UpdateRecord(targetEntity, record);
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+
+								foreach (var record in attachTargetRecords)
+								{
+									record[targetField.Name] = originValue;
+
+									var updResult = recMan.UpdateRecord(targetEntity, record);
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Target record id=[" + record["id"] + "] attach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
 								}
 							}
-
-							foreach (var record in attachTargetRecords)
+							break;
+						case EntityRelationType.ManyToMany:
 							{
-								record[targetField.Name] = originValue;
-
-								var updResult = recMan.UpdateRecord(targetEntity, record);
-								if (!updResult.Success)
+								foreach (var record in detachTargetRecords)
 								{
-									transaction.Rollback();
-									response.Errors = updResult.Errors;
-									response.Message = "Target record id=[" + record["id"] + "] attach operation failed.";
-									response.Success = false;
-									return DoResponse(response);
+									QueryResponse updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
+								}
+
+								foreach (var record in attachTargetRecords)
+								{
+									QueryResponse updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
+
+									if (!updResult.Success)
+									{
+										connection.RollbackTransaction();
+										response.Errors = updResult.Errors;
+										response.Message = "Target record id=[" + record["id"] + "] attach  operation failed.";
+										response.Success = false;
+										return DoResponse(response);
+									}
 								}
 							}
-						}
-						break;
-					case EntityRelationType.ManyToMany:
-						{
-							foreach (var record in detachTargetRecords)
+							break;
+						default:
 							{
-								QueryResponse updResult = recMan.RemoveRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
-
-								if (!updResult.Success)
-								{
-									transaction.Rollback();
-									response.Errors = updResult.Errors;
-									response.Message = "Target record id=[" + record["id"] + "] detach operation failed.";
-									response.Success = false;
-									return DoResponse(response);
-								}
+								connection.RollbackTransaction();
+								throw new Exception("Not supported relation type");
 							}
+					}
 
-							foreach (var record in attachTargetRecords)
-							{
-								QueryResponse updResult = recMan.CreateRelationManyToManyRecord(relation.Id, (Guid)originValue, (Guid)record[targetField.Name]);
-
-								if (!updResult.Success)
-								{
-									transaction.Rollback();
-									response.Errors = updResult.Errors;
-									response.Message = "Target record id=[" + record["id"] + "] attach  operation failed.";
-									response.Success = false;
-									return DoResponse(response);
-								}
-							}
-						}
-						break;
-					default:
-						{
-							transaction.Rollback();
-							throw new Exception("Not supported relation type");
-						}
+					connection.CommitTransaction();
 				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
 
-				transaction.Commit();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
 			}
-			catch (Exception ex)
-			{
-				if (transaction != null)
-					transaction.Rollback();
-
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
-			}
-
 			return DoResponse(response);
 		}
 
@@ -2019,7 +2015,7 @@ namespace WebVella.ERP.Web.Controllers
 
 
 			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
-			EntityRelationManager relManager = new EntityRelationManager(Storage);
+			EntityRelationManager relManager = new EntityRelationManager();
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
 			if (relListResponse.Object != null)
@@ -2402,7 +2398,7 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", EntityQuery.QueryEQ(queryFieldName, queryFieldValue));
 
-			EntityRelationManager relManager = new EntityRelationManager(Storage);
+			EntityRelationManager relManager = new EntityRelationManager();
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
 			if (relListResponse.Object != null)
@@ -2953,7 +2949,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				List<EntityRelation> relationList = new EntityRelationManager(Storage).Read().Object ?? new List<EntityRelation>();
+				List<EntityRelation> relationList = new EntityRelationManager().Read().Object ?? new List<EntityRelation>();
 				response.Object.Data = GetTreeRecords( entities,relationList,tree);
 				response.Object.Meta = tree;
 			}
@@ -3018,7 +3014,7 @@ namespace WebVella.ERP.Web.Controllers
 			queryFields += "id";
 
 			EntityQuery eq = new EntityQuery(treeEntity.Name, queryFields);
-			RecordManager recMan = new RecordManager(service);
+			RecordManager recMan = new RecordManager();
 			var allRecords = recMan.Find(eq).Object.Data;
 
 			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
@@ -3059,7 +3055,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			var query = EntityQuery.QueryEQ(parentIdFieldName, nodeId);
 			EntityQuery eq = new EntityQuery(entityName, fields, query);
-			RecordManager recMan = new RecordManager(service);
+			RecordManager recMan = new RecordManager();
 			var records = recMan.Find(eq).Object.Data;
 			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
 			depth++;
@@ -3143,47 +3139,6 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
-
-		// Export list records to csv
-		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
-		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10) {
-			if(count == -1) {
-				//return all records 
-			}
-			else if(count > 0) {
-				//returh the defined count of records
-			}
-			else {
-				//return empty list
-			}
-		
-			//Just for test
-			var theExportFilePathInTempGridFs = "/fs/entityGuid/listGuid/timestamp/boz-export-path.csv";
-			
-				
-			var response = new ResponseModel();
-			response.Success = true;
-			response.Message = "Records successfully exported";
-			response.Object = theExportFilePathInTempGridFs;
-			return DoResponse(response);
-		}
-
-		// Import list records to csv
-		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
-		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath) {
-		
-			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised.
-			var response = new ResponseModel();
-			response.Success = true;
-			response.Message = "Records successfully imported";
-			response.Object = null;
-			return DoResponse(response);
-		}
-
-
 		#endregion
 
 		#region << Area Specific >>
@@ -3210,29 +3165,30 @@ namespace WebVella.ERP.Web.Controllers
 		public IActionResult DeleteAreaRecord(Guid recordId)
 		{
 			QueryResponse response = new QueryResponse();
-			//Begin transaction
-			var recRep = Storage.GetRecordRepository();
-			var transaction = recRep.CreateTransaction();
-			try
-			{
-				transaction.Begin();
-				//Delete the area
-				var areaDeleteResult = recMan.DeleteRecord("area", recordId);
-				if (!areaDeleteResult.Success)
-				{
-					response.Timestamp = DateTime.UtcNow;
-					response.Success = false;
-					response.Message = areaDeleteResult.Message;
-					transaction.Rollback();
-					return Json(response);
-				}
 
-				transaction.Commit();
-			}
-			catch
+			using (var connection = DbContext.Current.CreateConnection())
 			{
-				transaction.Rollback();
-				throw;
+				connection.BeginTransaction();
+				try
+				{
+					//Delete the area
+					var areaDeleteResult = recMan.DeleteRecord("area", recordId);
+					if (!areaDeleteResult.Success)
+					{
+						response.Timestamp = DateTime.UtcNow;
+						response.Success = false;
+						response.Message = areaDeleteResult.Message;
+						connection.RollbackTransaction();
+						return Json(response);
+					}
+
+					connection.CommitTransaction();
+				}
+				catch
+				{
+					connection.RollbackTransaction();
+					throw;
+				}
 			}
 
 			response.Timestamp = DateTime.UtcNow;
@@ -3246,7 +3202,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/sitemap")]
 		public IActionResult GetSitemap()
 		{
-			var columnsNeeded = "id,name,label,color,icon_name,folder,weight,roles,subscriptions";
+			var columnsNeeded = "id,name,label,color,icon_name,weight,roles,subscriptions";
 			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
 			QueryResponse resultAreas = recMan.Find(queryAreas);
 			if (!resultAreas.Success)
@@ -3324,115 +3280,114 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "User successfully created";
 			var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
 			userObj.Properties.Remove("roles");
-			var transaction = recMan.CreateTransaction();
-			try
+			using (var connection = DbContext.Current.CreateConnection())
 			{
-
-				transaction.Begin();
-
-				//Create user
-				if (userObj["id"] == null)
+				connection.BeginTransaction();
+				try
 				{
-					userObj["id"] = Guid.NewGuid();
-				}
-				Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
-				//Validation required fields
-				response.Success = true;
-				if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
-				{
-					response.Success = false;
-					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
-				}
-				else if (!emailRgx.IsMatch((string)userObj["email"]))
-				{
-					response.Success = false;
-					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
-				}
-
-				if (!userObj.Properties.ContainsKey("password") || String.IsNullOrEmpty((string)userObj["password"]))
-				{
-					response.Success = false;
-					response.Errors.Add(new ErrorModel("password", (string)userObj["password"], "password is required"));
-				}
-
-				if (!response.Success)
-				{
-					response.Message = "Validation error occurred";
-					transaction.Rollback();
-					return DoResponse(response);
-				}
-
-				if (!userObj.Properties.ContainsKey("created_on"))
-				{
-					userObj.Properties.Add("created_on", DateTime.Now);
-				}
-				else
-				{
-					userObj["created_on"] = DateTime.Now;
-				}
-
-				if (!userObj.Properties.ContainsKey("created_by"))
-				{
-					userObj.Properties.Add("created_by", SecurityContext.CurrentUser.Id);
-				}
-				else
-				{
-					userObj["created_by"] = SecurityContext.CurrentUser.Id;
-				}
-
-				if (!userObj.Properties.ContainsKey("last_modified_on"))
-				{
-					userObj.Properties.Add("last_modified_on", DateTime.Now);
-				}
-				else
-				{
-					userObj["last_modified_on"] = DateTime.Now;
-				}
-
-				if (!userObj.Properties.ContainsKey("last_modified_by"))
-				{
-					userObj.Properties.Add("last_modified_by", SecurityContext.CurrentUser.Id);
-				}
-				else
-				{
-					userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
-				}
-
-				var createResult = recMan.CreateRecord("user", userObj);
-
-				if (!createResult.Success)
-				{
-					response.Errors = createResult.Errors;
-					response.Message = createResult.Message;
-					response.Success = false;
-					transaction.Rollback();
-					return DoResponse(response);
-				}
-
-				//Create user role relations
-				foreach (var roleId in rolesArray)
-				{
-					QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, new Guid((string)userObj["id"]));
-					if (!relationResult.Success)
+					//Create user
+					if (userObj["id"] == null)
 					{
-						response.Errors = relationResult.Errors;
-						response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+						userObj["id"] = Guid.NewGuid();
+					}
+					Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+					//Validation required fields
+					response.Success = true;
+					if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
+					{
 						response.Success = false;
-						transaction.Rollback();
+						response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
+					}
+					else if (!emailRgx.IsMatch((string)userObj["email"]))
+					{
+						response.Success = false;
+						response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
+					}
+
+					if (!userObj.Properties.ContainsKey("password") || String.IsNullOrEmpty((string)userObj["password"]))
+					{
+						response.Success = false;
+						response.Errors.Add(new ErrorModel("password", (string)userObj["password"], "password is required"));
+					}
+
+					if (!response.Success)
+					{
+						response.Message = "Validation error occurred";
+						connection.RollbackTransaction();
 						return DoResponse(response);
 					}
+
+					if (!userObj.Properties.ContainsKey("created_on"))
+					{
+						userObj.Properties.Add("created_on", DateTime.Now);
+					}
+					else
+					{
+						userObj["created_on"] = DateTime.Now;
+					}
+
+					if (!userObj.Properties.ContainsKey("created_by"))
+					{
+						userObj.Properties.Add("created_by", SecurityContext.CurrentUser.Id);
+					}
+					else
+					{
+						userObj["created_by"] = SecurityContext.CurrentUser.Id;
+					}
+
+					if (!userObj.Properties.ContainsKey("last_modified_on"))
+					{
+						userObj.Properties.Add("last_modified_on", DateTime.Now);
+					}
+					else
+					{
+						userObj["last_modified_on"] = DateTime.Now;
+					}
+
+					if (!userObj.Properties.ContainsKey("last_modified_by"))
+					{
+						userObj.Properties.Add("last_modified_by", SecurityContext.CurrentUser.Id);
+					}
+					else
+					{
+						userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
+					}
+
+					var createResult = recMan.CreateRecord("user", userObj);
+
+					if (!createResult.Success)
+					{
+						response.Errors = createResult.Errors;
+						response.Message = createResult.Message;
+						response.Success = false;
+						connection.RollbackTransaction();
+						return DoResponse(response);
+					}
+
+					//Create user role relations
+					foreach (var roleId in rolesArray)
+					{
+						QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, new Guid((string)userObj["id"]));
+						if (!relationResult.Success)
+						{
+							response.Errors = relationResult.Errors;
+							response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+							response.Success = false;
+							connection.RollbackTransaction();
+							return DoResponse(response);
+						}
+					}
+
+					connection.CommitTransaction();
 				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
 
-				transaction.Commit();
-			}
-			catch (Exception ex)
-			{
-				if (transaction != null)
-					transaction.Rollback();
-
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
 			}
 
 			return DoResponse(response);
@@ -3448,151 +3403,150 @@ namespace WebVella.ERP.Web.Controllers
 			response.Message = "User successfully updated";
 			var rolesArray = ((JArray)userObj["roles"]).Select(x => new Guid(x.ToString()));
 			userObj.Properties.Remove("roles");
-			var transaction = recMan.CreateTransaction();
-			try
+			using (var connection = DbContext.Current.CreateConnection())
 			{
+				connection.BeginTransaction();
+				try
+				{
+					//Get oldUserObject
+					var oldUserRoles = new List<EntityRecord>();
+					QueryObject oldUserRolesFilterObj = EntityQuery.QueryEQ("id", userId);
+					var oldUserRolesColumns = "$user_role.id";
+					EntityQuery oldUserRolesQuery = new EntityQuery("user", oldUserRolesColumns, oldUserRolesFilterObj, null, null, null);
+					QueryResponse oldUserRolesResult = recMan.Find(oldUserRolesQuery);
 
-				transaction.Begin();
-				//Get oldUserObject
-				var oldUserRoles = new List<EntityRecord>();
-				QueryObject oldUserRolesFilterObj = EntityQuery.QueryEQ("id", userId);
-				var oldUserRolesColumns = "$user_role.id";
-				EntityQuery oldUserRolesQuery = new EntityQuery("user", oldUserRolesColumns, oldUserRolesFilterObj, null, null, null);
-				QueryResponse oldUserRolesResult = recMan.Find(oldUserRolesQuery);
-
-				if (!oldUserRolesResult.Success)
-				{
-					response.Success = false;
-					response.Message = "Cannot get old user roles";
-					transaction.Rollback();
-					return DoResponse(oldUserRolesResult);
-				}
-				else
-				{
-					oldUserRoles = (List<EntityRecord>)oldUserRolesResult.Object.Data[0]["$user_role"];
-				}
-
-				if (!userObj.Properties.ContainsKey("id"))
-				{
-					userObj.Properties.Add("id", userId);
-				}
-				else
-				{
-					userObj["id"] = userId;
-				}
-
-				Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
-				//Validation required fields
-				response.Success = true;
-
-				if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
-				{
-					response.Success = false;
-					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
-				}
-				else if (!emailRgx.IsMatch((string)userObj["email"]))
-				{
-					response.Success = false;
-					response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
-				}
-
-				if (!response.Success)
-				{
-					response.Message = "Validation error occurred";
-					transaction.Rollback();
-					return DoResponse(response);
-				}
-
-				if (!userObj.Properties.ContainsKey("last_modified_on"))
-				{
-					userObj.Properties.Add("last_modified_on", DateTime.Now);
-				}
-				else
-				{
-					userObj["last_modified_on"] = DateTime.Now;
-				}
-
-				if (!userObj.Properties.ContainsKey("last_modified_by"))
-				{
-					userObj.Properties.Add("last_modified_by", SecurityContext.CurrentUser.Id);
-				}
-				else
-				{
-					userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
-				}
-
-				var updateResult = recMan.UpdateRecord("user", userObj);
-
-				if (!updateResult.Success)
-				{
-					response.Errors = updateResult.Errors;
-					response.Message = updateResult.Message;
-					response.Success = false;
-					transaction.Rollback();
-					return DoResponse(response);
-				}
-
-				//Create new user role relations
-				foreach (var roleId in rolesArray)
-				{
-					var roleIdIsNew = true;
-					foreach (var oldRole in oldUserRoles)
+					if (!oldUserRolesResult.Success)
 					{
-						if ((Guid)roleId == (Guid)oldRole["id"])
-						{
-							roleIdIsNew = false;
-						}
-
+						response.Success = false;
+						response.Message = "Cannot get old user roles";
+						connection.RollbackTransaction();
+						return DoResponse(oldUserRolesResult);
 					}
-					if (roleIdIsNew)
+					else
 					{
-						QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, (Guid)userObj["id"]);
-						if (!relationResult.Success)
-						{
-							response.Errors = relationResult.Errors;
-							response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
-							response.Success = false;
-							transaction.Rollback();
-							return DoResponse(response);
-						}
+						oldUserRoles = (List<EntityRecord>)oldUserRolesResult.Object.Data[0]["$user_role"];
 					}
-				}
 
-				//Remove outdated user role relations
-				foreach (var oldRole in oldUserRoles)
-				{
-					var oldRoleIsKept = false;
+					if (!userObj.Properties.ContainsKey("id"))
+					{
+						userObj.Properties.Add("id", userId);
+					}
+					else
+					{
+						userObj["id"] = userId;
+					}
+
+					Regex emailRgx = new Regex(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+					//Validation required fields
+					response.Success = true;
+
+					if (!userObj.Properties.ContainsKey("email") || String.IsNullOrEmpty((string)userObj["email"]))
+					{
+						response.Success = false;
+						response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "email is required"));
+					}
+					else if (!emailRgx.IsMatch((string)userObj["email"]))
+					{
+						response.Success = false;
+						response.Errors.Add(new ErrorModel("email", (string)userObj["email"], "is not a valid email"));
+					}
+
+					if (!response.Success)
+					{
+						response.Message = "Validation error occurred";
+						connection.RollbackTransaction();
+						return DoResponse(response);
+					}
+
+					if (!userObj.Properties.ContainsKey("last_modified_on"))
+					{
+						userObj.Properties.Add("last_modified_on", DateTime.Now);
+					}
+					else
+					{
+						userObj["last_modified_on"] = DateTime.Now;
+					}
+
+					if (!userObj.Properties.ContainsKey("last_modified_by"))
+					{
+						userObj.Properties.Add("last_modified_by", SecurityContext.CurrentUser.Id);
+					}
+					else
+					{
+						userObj["last_modified_by"] = SecurityContext.CurrentUser.Id;
+					}
+
+					var updateResult = recMan.UpdateRecord("user", userObj);
+
+					if (!updateResult.Success)
+					{
+						response.Errors = updateResult.Errors;
+						response.Message = updateResult.Message;
+						response.Success = false;
+						connection.RollbackTransaction();
+						return DoResponse(response);
+					}
+
+					//Create new user role relations
 					foreach (var roleId in rolesArray)
 					{
-						if ((Guid)roleId == (Guid)oldRole["id"])
+						var roleIdIsNew = true;
+						foreach (var oldRole in oldUserRoles)
 						{
-							oldRoleIsKept = true;
-						}
-					}
-					if (!oldRoleIsKept)
-					{
-						QueryResponse relationResult = recMan.RemoveRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)oldRole["id"], (Guid)userObj["id"]);
-						if (!relationResult.Success)
-						{
-							response.Errors = relationResult.Errors;
-							response.Message = "Removing old user role relation failed. Reason: " + relationResult.Message;
-							response.Success = false;
-							transaction.Rollback();
-							return DoResponse(response);
-						}
-					}
-				}
-				transaction.Commit();
-				WebSecurityUtil.RemoveIdentityFromCache(userId);
-			}
-			catch (Exception ex)
-			{
-				if (transaction != null)
-					transaction.Rollback();
+							if ((Guid)roleId == (Guid)oldRole["id"])
+							{
+								roleIdIsNew = false;
+							}
 
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
+						}
+						if (roleIdIsNew)
+						{
+							QueryResponse relationResult = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)roleId, (Guid)userObj["id"]);
+							if (!relationResult.Success)
+							{
+								response.Errors = relationResult.Errors;
+								response.Message = "Creating user role relation failed. Reason: " + relationResult.Message;
+								response.Success = false;
+								connection.RollbackTransaction();
+								return DoResponse(response);
+							}
+						}
+					}
+
+					//Remove outdated user role relations
+					foreach (var oldRole in oldUserRoles)
+					{
+						var oldRoleIsKept = false;
+						foreach (var roleId in rolesArray)
+						{
+							if ((Guid)roleId == (Guid)oldRole["id"])
+							{
+								oldRoleIsKept = true;
+							}
+						}
+						if (!oldRoleIsKept)
+						{
+							QueryResponse relationResult = recMan.RemoveRelationManyToManyRecord(SystemIds.UserRoleRelationId, (Guid)oldRole["id"], (Guid)userObj["id"]);
+							if (!relationResult.Success)
+							{
+								response.Errors = relationResult.Errors;
+								response.Message = "Removing old user role relation failed. Reason: " + relationResult.Message;
+								response.Success = false;
+								connection.RollbackTransaction();
+								return DoResponse(response);
+							}
+						}
+					}
+					connection.CommitTransaction();
+					WebSecurityUtil.RemoveIdentityFromCache(userId);
+				}
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
 			}
 
 			return DoResponse(response);
@@ -3607,6 +3561,8 @@ namespace WebVella.ERP.Web.Controllers
 		[Route("/fs/{*filepath}")]
 		public IActionResult Download([FromRoute] string filepath)
 		{
+			return DoPageNotFoundResponse();
+			/*
 			//TODO  authorize
 			if (string.IsNullOrWhiteSpace(filepath))
 				return DoPageNotFoundResponse();
@@ -3623,55 +3579,63 @@ namespace WebVella.ERP.Web.Controllers
 				return DoPageNotFoundResponse();
 
 			return File(file.GetBytes(), System.Net.Mime.MediaTypeNames.Application.Octet);
+			*/
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
 		public IActionResult UploadFile([FromForm] IFormFile file)
 		{
+			return DoPageNotFoundResponse();
+			/*
 			var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
 			var fs = service.StorageService.GetFS();
 			var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
 
 			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + createdFile.FilePath, Filename = fileName }));
+			*/
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
 		public IActionResult MoveFile([FromBody]JObject submitObj)
 		{
-			string source = submitObj["source"].Value<string>();
-			string target = submitObj["target"].Value<string>();
-			bool overwrite = false;
-			if (submitObj["overwrite"] != null)
-				overwrite = submitObj["overwrite"].Value<bool>();
+			return DoPageNotFoundResponse();
+			/*
+				string source = submitObj["source"].Value<string>();
+				string target = submitObj["target"].Value<string>();
+				bool overwrite = false;
+				if (submitObj["overwrite"] != null)
+					overwrite = submitObj["overwrite"].Value<bool>();
 
-			source = source.ToLowerInvariant();
-			target = target.ToLowerInvariant();
+				source = source.ToLowerInvariant();
+				target = target.ToLowerInvariant();
 
-			if (source.StartsWith("/fs/"))
-				source = source.Substring(3);
+				if (source.StartsWith("/fs/"))
+					source = source.Substring(3);
 
-			if (source.StartsWith("fs/"))
-				source = source.Substring(2);
+				if (source.StartsWith("fs/"))
+					source = source.Substring(2);
 
-			if (target.StartsWith("/fs/"))
-				target = target.Substring(3);
+				if (target.StartsWith("/fs/"))
+					target = target.Substring(3);
 
-			if (target.StartsWith("fs/"))
-				target = target.Substring(2);
+				if (target.StartsWith("fs/"))
+					target = target.Substring(2);
 
-			var fileName = target.Split(new char[] { '/' }).LastOrDefault();
+				var fileName = target.Split(new char[] { '/' }).LastOrDefault();
 
-			var fs = service.StorageService.GetFS();
-			var sourceFile = fs.Find(source);
+				var fs = service.StorageService.GetFS();
+				var sourceFile = fs.Find(source);
 
-			var movedFile = fs.Move(source, target, overwrite);
-			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
+				var movedFile = fs.Move(source, target, overwrite);
+				return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
+				*/
 		}
 
-		[AcceptVerbs(new[] { "DELETE" }, Route = "/fs/{*filepath}")]
+		[AcceptVerbs(new[] { "DELETE" }, Route = "{*filepath}")]
 		public IActionResult DeleteFile([FromRoute] string filepath)
 		{
-
+			return DoPageNotFoundResponse();
+			/*
 			filepath = filepath.ToLowerInvariant();
 
 			if (filepath.StartsWith("/fs/"))
@@ -3687,6 +3651,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			fs.Delete(filepath);
 			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + filepath, Filename = fileName }));
+			*/
 		}
 
 		private static byte[] ReadFully(Stream input)
@@ -3713,38 +3678,37 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			response.Message = "Filter successfully created";
-			var transaction = recMan.CreateTransaction();
-			try
+			using (var connection = DbContext.Current.CreateConnection())
 			{
-
-				transaction.Begin();
-				foreach (var record in postObj)
+				connection.BeginTransaction();
+				try
 				{
-					if (record["id"] == null)
+					foreach (var record in postObj)
 					{
-						record["id"] = Guid.NewGuid();
+						if (record["id"] == null)
+						{
+							record["id"] = Guid.NewGuid();
+						}
+						var createResult = recMan.CreateRecord("filter", record);
+						if (!createResult.Success)
+						{
+							response.Errors = createResult.Errors;
+							response.Message = "Creating filter record for field " + record["field_name"] + " failed. Reason: " + createResult.Message;
+							response.Success = false;
+							connection.RollbackTransaction();
+							return DoResponse(response);
+						}
 					}
-					var createResult = recMan.CreateRecord("filter", record);
-					if (!createResult.Success)
-					{
-						response.Errors = createResult.Errors;
-						response.Message = "Creating filter record for field " + record["field_name"] + " failed. Reason: " + createResult.Message;
-						response.Success = false;
-						transaction.Rollback();
-						return DoResponse(response);
-					}
+
+					connection.CommitTransaction();
 				}
-
-				transaction.Commit();
-			}
-			catch (Exception ex)
-			{
-				if (transaction != null)
-					transaction.Rollback();
-
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
 			}
 
 			return DoResponse(response);
@@ -3781,34 +3745,33 @@ namespace WebVella.ERP.Web.Controllers
 		{
 			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
 			response.Message = "Filter successfully deleted";
-			var transaction = recMan.CreateTransaction();
-			try
+			using (var connection = DbContext.Current.CreateConnection())
 			{
-
-				transaction.Begin();
-				foreach (var recordId in postObj)
+				connection.BeginTransaction();
+				try
 				{
-					var queryResult = recMan.DeleteRecord("filter", recordId);
-					if (!queryResult.Success)
+					foreach (var recordId in postObj)
 					{
-						response.Errors = queryResult.Errors;
-						response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
-						response.Success = false;
-						transaction.Rollback();
-						return DoResponse(response);
+						var queryResult = recMan.DeleteRecord("filter", recordId);
+						if (!queryResult.Success)
+						{
+							response.Errors = queryResult.Errors;
+							response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
+							response.Success = false;
+							connection.RollbackTransaction();
+							return DoResponse(response);
+						}
 					}
+
+					connection.CommitTransaction();
 				}
-
-				transaction.Commit();
-			}
-			catch (Exception ex)
-			{
-				if (transaction != null)
-					transaction.Rollback();
-
-				response.Success = false;
-				response.Message = ex.Message;
-				return DoResponse(response);
+				catch (Exception ex)
+				{
+					connection.RollbackTransaction();
+					response.Success = false;
+					response.Message = ex.Message;
+					return DoResponse(response);
+				}
 			}
 
 			return DoResponse(response);

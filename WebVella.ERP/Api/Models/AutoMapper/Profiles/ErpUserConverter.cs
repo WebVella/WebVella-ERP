@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using System.Collections.Generic;
-using WebVella.ERP.Api.Models;
 
 namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 {

@@ -9,11 +9,8 @@ namespace WebVella.ERP.Web.Controllers
     [Authorize]
     public class ApiControllerBase : Controller
     {
-        protected IErpService service;
-
-        public ApiControllerBase(IErpService service)
+        public ApiControllerBase()
         {
-            this.service = service;
         }
 
         public IActionResult DoResponse( BaseResponseModel response )

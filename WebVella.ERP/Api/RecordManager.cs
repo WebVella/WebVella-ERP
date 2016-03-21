@@ -2,45 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebVella.ERP.Api.Models;
-using WebVella.ERP.Storage;
-using System.Security.Cryptography;
 using WebVella.ERP.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using System.Collections;
+using WebVella.ERP.Database;
 
 namespace WebVella.ERP.Api
 {
 	public class RecordManager
 	{
-		private IErpService erpService;
-
-		private const string WILDCARD_SYMBOL = "*";
-		private const char FIELDS_SEPARATOR = ',';
-		private const char RELATION_SEPARATOR = '.';
-		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
 		private List<Entity> entityCache;
 		private EntityManager entityManager;
 		private EntityRelationManager entityRelationManager;
-		private IStorageEntityRelationRepository relationRepository;
+		private DbRelationRepository relationRepository;
 		private List<EntityRelation> relations = null;
 		private bool ignoreSecurity = false;
 
-		/// <summary>
-		/// The contructor
-		/// </summary>
-		/// <param name="service"></param>
-		public RecordManager(IErpService service) : this(service, false)
+		public RecordManager() : this(false)
 		{
 		}
 
-		internal RecordManager(IErpService service, bool ignoreSecurity = false)
+		internal RecordManager(bool ignoreSecurity = false)
 		{
-			erpService = service;
 			entityCache = new List<Entity>();
-			entityManager = new EntityManager(erpService.StorageService);
-			entityRelationManager = new EntityRelationManager(erpService.StorageService);
-			relationRepository = erpService.StorageService.GetEntityRelationRepository();
+			entityManager = new EntityManager();
+			entityRelationManager = new EntityRelationManager();
+			relationRepository = DbContext.Current.RelationRepository;
 			this.ignoreSecurity = ignoreSecurity;
 		}
 
@@ -177,7 +164,7 @@ namespace WebVella.ERP.Api
 			response.Object = null;
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
-			var recRepo = erpService.StorageService.GetRecordRepository();
+			var recRepo = DbContext.Current.RecordRepository;
 
 			try
 			{
@@ -218,12 +205,8 @@ namespace WebVella.ERP.Api
 					var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
 					try
 					{
-						if( field is AutoNumberField )
-						{
-							var maxValue = recRepo.GetAutoNumberRecordFieldMaxValue(entity.Name, field.Name);
-							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, maxValue+1));
-						}
-						else
+						//autonumber field is handled at database level, so we don't process data here
+						if (!(field is AutoNumberField))
 							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
 					}
 					catch (Exception ex)
@@ -255,7 +238,7 @@ namespace WebVella.ERP.Api
 				if (recordId == Guid.Empty)
 					throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 
-				
+
 				recRepo.Create(entity.Name, storageRecordData);
 
 
@@ -267,7 +250,7 @@ namespace WebVella.ERP.Api
 				response = Find(entityQuery);
 				ignoreSecurity = oldIgnoreSecurity;
 
-                if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
+				if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
 					response.Message = "Record was created successfully";
 				else
 				{
@@ -409,7 +392,7 @@ namespace WebVella.ERP.Api
 					}
 				}
 
-				var recRepo = erpService.StorageService.GetRecordRepository();
+				var recRepo = DbContext.Current.RecordRepository;
 				recRepo.Update(entity.Name, storageRecordData);
 
 				//fixes issue with ID comming from webapi request 
@@ -537,8 +520,7 @@ namespace WebVella.ERP.Api
 				response = Find(entityQuery);
 				if (response.Object != null && response.Object.Data.Count == 1)
 				{
-					var recRepo = erpService.StorageService.GetRecordRepository();
-					recRepo.Delete(entity.Name, id);
+					DbContext.Current.RecordRepository.Delete(entity.Name, id);
 				}
 				else
 				{
@@ -616,318 +598,8 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				List<Field> fields = ExtractQueryFieldsMeta(query);
-				var recRepo = erpService.StorageService.GetRecordRepository();
-				var storageRecords = recRepo.Find(query.EntityName, query.Query, query.Sort, query.Skip, query.Limit);
-
-				Hashtable relationDataCache = new Hashtable();
-				List<EntityRecord> data = new List<EntityRecord>();
-				foreach (var record in storageRecords)
-				{
-					var dataRecord = new EntityRecord();
-					foreach (var field in fields)
-					{
-						var recValue = record.SingleOrDefault(x => x.Key == field.Name);
-						if (!(field is RelationFieldMeta))
-						{
-							dataRecord[field.Name] = ExtractFieldValue(recValue, field);
-						}
-						else //relation field
-						{
-							RelationFieldMeta relationField = (RelationFieldMeta)field;
-
-							if (relationField.Relation.RelationType == EntityRelationType.OneToOne)
-							{
-								IEnumerable<KeyValuePair<string, object>> relatedStorageRecord = null;
-								//when the relation is origin -> target entity
-								if (relationField.Relation.OriginEntityId == entity.Id)
-								{
-									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-									if (recValue.Value != null)
-									{
-										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
-										relatedStorageRecord = relationDataCache[cacheKey] as IEnumerable<KeyValuePair<string, object>>;
-										if (relatedStorageRecord == null)
-										{
-											var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-											relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-											relationDataCache[cacheKey] = relatedStorageRecord;
-                                        }
-									}
-								}
-								else //when the relation is target -> origin, we have to query origin entity
-								{
-									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-									if (recValue.Value != null)
-									{
-										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
-										relatedStorageRecord = relationDataCache[cacheKey] as IEnumerable<KeyValuePair<string, object>>;
-										if (relatedStorageRecord == null)
-										{
-											var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-											relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, 0, 1).SingleOrDefault();
-											relationDataCache[cacheKey] = relatedStorageRecord;
-										}
-									}
-								}
-
-								var dataArrayRecord = new List<EntityRecord>();
-								if (relatedStorageRecord != null)
-								{
-									var relatedObject = new EntityRecord();
-									foreach (var relField in relationField.Fields)
-									{
-										var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-										relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-									}
-									dataArrayRecord.Add(relatedObject);
-								}
-								dataRecord[field.Name] = dataArrayRecord;
-							}
-							else if (relationField.Relation.RelationType == EntityRelationType.OneToMany)
-							{
-								IEnumerable<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
-								if (relationField.Relation.OriginEntityId != relationField.Relation.TargetEntityId)
-								{
-									if (relationField.Relation.OriginEntityId == entity.Id)
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
-											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-												relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
-												relationDataCache[cacheKey] = relatedStorageRecords;
-                                            }
-										}
-									}
-									else //when the relation is target -> origin, we have to query origin entity
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value;
-											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-												relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
-												relationDataCache[cacheKey] = relatedStorageRecords;
-											}
-										}
-									}
-								}
-								else
-								{
-									if (relationField.Direction == "target-origin")
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, recValue.Value);
-												relatedStorageRecords = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null);
-												relationDataCache[cacheKey] = relatedStorageRecords;
-											}
-										}
-									}
-									else
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-											relatedStorageRecords = relationDataCache[cacheKey] as IEnumerable<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, recValue.Value);
-												relatedStorageRecords = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null);
-												relationDataCache[cacheKey] = relatedStorageRecords;
-											}
-										}
-									}
-								}
-
-								var dataArrayRecord = new List<EntityRecord>();
-								if (relatedStorageRecords != null)
-								{
-									foreach (var relatedStorageRecord in relatedStorageRecords)
-									{
-										var relatedObject = new EntityRecord();
-										foreach (var relField in relationField.Fields)
-										{
-											var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-											relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-										}
-										dataArrayRecord.Add(relatedObject);
-									}
-								}
-								dataRecord[field.Name] = dataArrayRecord;
-							}
-							else if (relationField.Relation.RelationType == EntityRelationType.ManyToMany)
-							{
-								List<IEnumerable<KeyValuePair<string, object>>> relatedStorageRecords = null;
-
-								if (relationField.Relation.OriginEntityId == relationField.Relation.TargetEntityId)
-								{
-									if (relationField.Direction == "target-origin")
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-											relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
-												var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
-												var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
-												if (relatedRecord.Count() > 1)
-													throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
-
-												if (relatedRecord.Count() == 1)
-												{
-													var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
-													List<object> relatedRecordIds = relationData.Value as List<object>;
-													relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-													if (relatedRecordIds != null)
-													{
-														foreach (Guid id in relatedRecordIds)
-														{
-															var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
-															var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
-															if (relatedStorageRecord != null)
-																relatedStorageRecords.Add(relatedStorageRecord);
-														}
-													}
-												}
-												relationDataCache[cacheKey] = relatedStorageRecords;
-                                            }
-										}
-									}
-									else
-									{
-										recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-										if (recValue.Value != null)
-										{
-											var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-											relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
-											if (relatedStorageRecords == null)
-											{
-												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
-												if (relationData.Key != null)
-												{
-													List<object> relatedRecordIds = relationData.Value as List<object>;
-													relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-													if (relatedRecordIds != null)
-													{
-														foreach (Guid id in relatedRecordIds)
-														{
-															var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
-															var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
-															if (relatedStorageRecord != null)
-																relatedStorageRecords.Add(relatedStorageRecord);
-														}
-													}
-												}
-												relationDataCache[cacheKey] = relatedStorageRecords;
-											}
-										}
-									}
-								}
-								else if (relationField.Relation.OriginEntityId == entity.Id)
-								{
-									recValue = record.SingleOrDefault(x => x.Key == relationField.OriginField.Name);
-									if (recValue.Value != null)
-									{
-										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-										relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
-										if (relatedStorageRecords == null)
-										{
-											var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_targets");
-											if (relationData.Key != null)
-											{
-												List<object> relatedRecordIds = relationData.Value as List<object>;
-												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-												if (relatedRecordIds != null)
-												{
-													foreach (Guid id in relatedRecordIds)
-													{
-														var relQuery = EntityQuery.QueryEQ(relationField.TargetField.Name, id);
-														var relatedStorageRecord = recRepo.Find(relationField.TargetEntity.Name, relQuery, null, null, null).FirstOrDefault();
-														if (relatedStorageRecord != null)
-															relatedStorageRecords.Add(relatedStorageRecord);
-													}
-												}
-											}
-											relationDataCache[cacheKey] = relatedStorageRecords;
-										}
-									}
-								}
-								else //when the relation is target -> origin, we have to query origin entity
-								{
-									recValue = record.SingleOrDefault(x => x.Key == relationField.TargetField.Name);
-									if (recValue.Value != null)
-									{
-										var cacheKey = relationField.Relation.Name + ":" +  recValue.Value + ":" + relationField.Direction;
-										relatedStorageRecords = relationDataCache[cacheKey] as List<IEnumerable<KeyValuePair<string, object>>>;
-										if (relatedStorageRecords == null)
-										{
-											var targetEntity = GetEntity(relationField.Relation.TargetEntityId);
-											var targetField = targetEntity.Fields.Single(x => x.Id == relationField.Relation.TargetFieldId);
-											var relatedRecord = recRepo.Find(targetEntity.Name, EntityQuery.QueryEQ(targetField.Name, (Guid)recValue.Value), null, null, null);
-											if (relatedRecord.Count() > 1)
-												throw new Exception("There are more than 1 record in entity field that should be unique and used for relation.");
-
-											if (relatedRecord.Count() == 1)
-											{
-												var relationData = record.SingleOrDefault(x => x.Key == $"#{relationField.Relation.Name}_origins");
-												List<object> relatedRecordIds = relationData.Value as List<object>;
-												//List<Guid> relatedRecordIds = entityRelationRepository.ReadManyToManyRecordByTarget(relationField.Relation.Id, (Guid)recValue.Value);
-												relatedStorageRecords = new List<IEnumerable<KeyValuePair<string, object>>>();
-												if (relatedRecordIds != null)
-												{
-													foreach (Guid id in relatedRecordIds)
-													{
-														var relQuery = EntityQuery.QueryEQ(relationField.OriginField.Name, id);
-														var relatedStorageRecord = recRepo.Find(relationField.OriginEntity.Name, relQuery, null, null, null).FirstOrDefault();
-														if (relatedStorageRecord != null)
-															relatedStorageRecords.Add(relatedStorageRecord);
-													}
-												}
-											}
-											relationDataCache[cacheKey] = relatedStorageRecords;
-										}
-									}
-								}
-
-								var dataArrayRecord = new List<EntityRecord>();
-								if (relatedStorageRecords != null)
-								{
-									foreach (var relatedStorageRecord in relatedStorageRecords)
-									{
-										var relatedObject = new EntityRecord();
-										foreach (var relField in relationField.Fields)
-										{
-											var relValue = relatedStorageRecord.SingleOrDefault(x => x.Key == relField.Name);
-											relatedObject[relField.Name] = ExtractFieldValue(relValue, relField);
-										}
-										dataArrayRecord.Add(relatedObject);
-									}
-								}
-								dataRecord[field.Name] = dataArrayRecord;
-							}
-						}
-					}
-					data.Add(dataRecord);
-				}
-
+				var fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
+				var data = DbContext.Current.RecordRepository.Find(query);
 				response.Object = new QueryResult { FieldsMeta = fields, Data = data };
 			}
 			catch (Exception ex)
@@ -980,10 +652,8 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
-				List<Field> fields = ExtractQueryFieldsMeta(query);
-				var recRepo = erpService.StorageService.GetRecordRepository();
-				response.Object = recRepo.Count(query.EntityName, query.Query);
+				List<Field> fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
+				response.Object = DbContext.Current.RecordRepository.Count(query.EntityName, query.Query);
 			}
 			catch (Exception ex)
 			{
@@ -996,11 +666,6 @@ namespace WebVella.ERP.Api
 			}
 
 			return response;
-		}
-
-		public IStorageTransaction CreateTransaction()
-		{
-			return erpService.StorageService.GetRecordRepository().CreateTransaction();
 		}
 
 		private object ExtractFieldValue(KeyValuePair<string, object>? fieldValue, Field field, bool encryptPasswordFields = false)
@@ -1155,139 +820,6 @@ namespace WebVella.ERP.Api
 			throw new Exception("System Error. A field type is not supported in field value extraction process.");
 		}
 
-		private List<Field> ExtractQueryFieldsMeta(EntityQuery query)
-		{
-			List<Field> result = new List<Field>();
-
-			//split field string into tokens speparated by FIELDS_SEPARATOR
-			List<string> tokens = query.Fields.Split(FIELDS_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-
-			//check the query tokens for widcard symbol and validate it is only that symbol
-			if (tokens.Count > 1 && tokens.Any(x => x == WILDCARD_SYMBOL))
-				throw new Exception("Invalid query syntax. Wildcard symbol can be used only with no other fields.");
-
-			//get entity by name
-			Entity entity = GetEntity(query.EntityName);
-
-			if (entity == null)
-				throw new Exception(string.Format("The entity '{0}' does not exists.", query.EntityName));
-
-			//We check for wildcard symbol and if present include all fields of the queried entity 
-			bool wildcardSelectionEnabled = tokens.Any(x => x == WILDCARD_SYMBOL);
-			if (wildcardSelectionEnabled)
-			{
-				result.AddRange(entity.Fields);
-				return result;
-			}
-
-			//process only tokens do not contain RELATION_SEPARATOR 
-			foreach (var token in tokens)
-			{
-				if (!token.Contains(RELATION_SEPARATOR))
-				{
-					//locate the field
-					var field = entity.Fields.SingleOrDefault(x => x.Name == token);
-
-					//found no field for specified token
-					if (field == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. The field name is incorrect.", token));
-
-					//check for duplicated field tokens and ignore them
-					if (!result.Any(x => x.Id == field.Id))
-						result.Add(field);
-				}
-				else
-				{
-					var relationData = token.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-					if (relationData.Count > 2)
-						throw new Exception(string.Format("The specified query result  field '{0}' is incorrect. Only first level relation can be specified.", token));
-
-					string relationName = relationData[0];
-					string relationFieldName = relationData[1];
-					string direction = "origin-target";
-
-					if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
-						throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
-					else if (!relationName.StartsWith("$"))
-						throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
-					else
-						relationName = relationName.Substring(1);
-
-					//check for target priority mark $$
-					if (relationName.StartsWith("$"))
-					{
-						direction = "target-origin";
-						relationName = relationName.Substring(1);
-					}
-
-					if (string.IsNullOrWhiteSpace(relationFieldName))
-						throw new Exception(string.Format("Invalid query result field '{0}'. The relation field name is not specified.", token));
-
-
-
-					Field field = result.SingleOrDefault(x => x.Name == "$" + relationName);
-					RelationFieldMeta relationFieldMeta = null;
-					if (field == null)
-					{
-						relationFieldMeta = new RelationFieldMeta();
-						relationFieldMeta.Name = "$" + relationName;
-						relationFieldMeta.Direction = direction;
-						result.Add(relationFieldMeta);
-					}
-					else
-						relationFieldMeta = (RelationFieldMeta)field;
-
-					relationFieldMeta.Relation = GetRelations().SingleOrDefault(x => x.Name == relationName);
-					if (relationFieldMeta.Relation == null)
-						throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
-
-					if (relationFieldMeta.Relation.TargetEntityId != entity.Id && relationFieldMeta.Relation.OriginEntityId != entity.Id)
-						throw new Exception(string.Format("Invalid relation '{0}'. The relation does relate to queries entity.", token));
-
-					if (relationFieldMeta.Direction != direction)
-						throw new Exception(string.Format("You are trying to query relation '{0}' from origin->target and target->origin direction in single query. This is not allowed.", token));
-
-					relationFieldMeta.TargetEntity = GetEntity(relationFieldMeta.Relation.TargetEntityId);
-					relationFieldMeta.OriginEntity = GetEntity(relationFieldMeta.Relation.OriginEntityId);
-
-					//this should not happen in a perfect (no bugs) world
-					if (relationFieldMeta.OriginEntity == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)entity is missing.", token));
-					if (relationFieldMeta.TargetEntity == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)entity is missing.", token));
-
-					relationFieldMeta.TargetField = relationFieldMeta.TargetEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.TargetFieldId);
-					relationFieldMeta.OriginField = relationFieldMeta.OriginEntity.Fields.Single(x => x.Id == relationFieldMeta.Relation.OriginFieldId);
-
-					//this should not happen in a perfect (no bugs) world
-					if (relationFieldMeta.OriginField == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. Related (origin)field is missing.", token));
-					if (relationFieldMeta.TargetField == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. Related (target)field is missing.", token));
-
-					Entity joinToEntity = null;
-					if (relationFieldMeta.TargetEntity.Id == entity.Id)
-						joinToEntity = relationFieldMeta.OriginEntity;
-					else
-						joinToEntity = relationFieldMeta.TargetEntity;
-
-					relationFieldMeta.Entity = joinToEntity;
-
-					var relatedField = joinToEntity.Fields.SingleOrDefault(x => x.Name == relationFieldName);
-					if (relatedField == null)
-						throw new Exception(string.Format("Invalid query result field '{0}'. The relation field does not exist.", token));
-
-					//if field already added
-					if (relationFieldMeta.Fields.Any(x => x.Id == relatedField.Id))
-						continue;
-
-					relationFieldMeta.Fields.Add(relatedField);
-				}
-			}
-
-			return result;
-		}
-
 		private Entity GetEntity(string entityName)
 		{
 			var entity = entityCache.SingleOrDefault(x => x.Name == entityName);
@@ -1336,12 +868,12 @@ namespace WebVella.ERP.Api
 				obj.QueryType != QueryType.RELATED && obj.QueryType != QueryType.NOTRELATED)
 			{
 				var field = entity.Fields.SingleOrDefault(x => x.Name == obj.FieldName);
-				if (! ( obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED ) )
+				if (!(obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED))
 				{
 					if (field == null)
 						throw new Exception(string.Format("There is not entity field '{0}' you try to query by.", obj.FieldName));
 				}
-				
+
 				if (field is NumberField || field is AutoNumberField)
 				{
 					if (obj.FieldValue != null)
@@ -1370,14 +902,14 @@ namespace WebVella.ERP.Api
 			if (obj.QueryType == QueryType.RELATED || obj.QueryType == QueryType.NOTRELATED)
 			{
 				var relation = relationRepository.Read(obj.FieldName);
-				if( relation == null )
+				if (relation == null)
 					throw new Exception(string.Format("There is not relation with name '{0}' used in your query.", obj.FieldName));
 
-				if( relation.RelationType != EntityRelationType.ManyToMany )
+				if (relation.RelationType != EntityRelationType.ManyToMany)
 					throw new Exception(string.Format("Only many to many relations can used in Related and NotRelated query operators.", obj.FieldName));
 
 				var direction = obj.FieldValue as string ?? "origin-target";
-                if ( relation.OriginEntityId == relation.TargetEntityId )
+				if (relation.OriginEntityId == relation.TargetEntityId)
 				{
 					if (direction == "target-origin")
 						obj.FieldName = $"#{obj.FieldName}_origins";
@@ -1385,7 +917,7 @@ namespace WebVella.ERP.Api
 						obj.FieldName = $"#{obj.FieldName}_targets";
 
 				}
-				else 
+				else
 				{
 					if (entity.Id == relation.OriginEntityId)
 						obj.FieldName = $"#{obj.FieldName}_targets";
@@ -1403,7 +935,6 @@ namespace WebVella.ERP.Api
 					}
 			}
 		}
-
 
 		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true)
 		{
@@ -1436,13 +967,6 @@ namespace WebVella.ERP.Api
 					record["last_modified_by"] = null;
 
 			}
-		}
-
-		public void ConvertNtoNRelations()
-		{
-			IStorageEntityRelationRepository entityRelationRepository = erpService.StorageService.GetEntityRelationRepository();
-
-			entityRelationRepository.ConvertNtoNRelations();
 		}
 	}
 }

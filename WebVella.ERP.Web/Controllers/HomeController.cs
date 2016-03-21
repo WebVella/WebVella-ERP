@@ -5,10 +5,6 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class HomeController : ApiControllerBase
     {
-        public HomeController(IErpService service) : base(service)
-        {
-        }
-
 		[AllowAnonymous]
         // GET: /<controller>/
         public IActionResult Index()

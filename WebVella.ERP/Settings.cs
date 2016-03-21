@@ -8,13 +8,13 @@ namespace WebVella.ERP
 {
     public static class Settings
     {
-        public static string ConnectionString { get; private set; }
         public static string EncriptionKey { get; private set; }
+		public static string ConnectionString { get; private set; }
 
-        public static void Initialize(IConfiguration configuration)
+		public static void Initialize(IConfiguration configuration)
         {
-            ConnectionString = configuration["Settings:ConnectionString"];
             EncriptionKey = configuration["Settings:EncriptionKey"];
-        }
+			ConnectionString = configuration["Settings:ConnectionString"];
+		}
     }
 }
