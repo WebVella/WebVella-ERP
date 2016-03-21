@@ -29,6 +29,7 @@
 		serviceInstance.getCurrentUser = getCurrentUser;
 		serviceInstance.getCurrentUserPermissions = getCurrentUserPermissions;
 		serviceInstance.applyAreaAccessPolicy = applyAreaAccessPolicy;
+		serviceInstance.userHasEntityPermissions = userHasEntityPermissions;
 
 		///////////////////////
 		function registerHookListener(eventHookName, currentScope, executeOnHookFunction) {
@@ -196,6 +197,39 @@
 			else {
 				return false;
 			}
+		}
+
+
+		////////////////////////
+		function userHasEntityPermissions(entityMeta,permissionsCsv){
+			var requestedPermissionsArray = permissionsCsv.split(',');
+			var permissionChecks = {};
+			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
+		
+			var userRoles = fastCopy(getCurrentUser().roles);
+			
+			for (var i = 0; i < requestedPermissionsArray.length; i++) {
+				var permissionName = requestedPermissionsArray[i];
+				permissionChecks[permissionName] = false;
+				var entityAllowedRoles =  fastCopy(entityMeta.recordPermissions[permissionName]);
+				for (var j = 0; j < entityAllowedRoles.length; j++) {
+					var roleId = entityAllowedRoles[j];
+					if(userRoles.indexOf(roleId) > -1){
+						permissionChecks[permissionName] = true;
+						break;
+					}
+				}
+			}
+			
+			var userHasAllPermissions = true;
+			for(var permission in permissionChecks){
+				if(!permissionChecks[permission]){
+				  userHasAllPermissions = false;
+				  break;
+				}
+			}
+
+			return 	userHasAllPermissions;
 		}
 
 

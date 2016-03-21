@@ -4,7 +4,7 @@
 
 		</div>
 		<!--<div class="icon-box">
-			<i class="fa fa-database"></i>
+			<i class="fa fa-database  fa-fw"></i>
 		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="Entities">entities</h4>
@@ -15,7 +15,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-{{::contentData.entity.iconName}}"></i>
+			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
 		</div>
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
@@ -33,7 +33,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record views">manage</h4>
+			<h4 class="no-link" title="Manage a Record views">{{contentData.view.name}}</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -79,7 +79,7 @@
 										<a href="javascript:void(0)" ng-click="contentData.removeSection(section.id)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
 										<a href="javascript:void(0)" ng-click="contentData.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
 									</span>
-									<span class="go-gray">({{section.weight}})</span> {{section.label}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
+									<span class="go-gray">({{section.weight}})</span> {{section.label}} <span class="text-muted">({{section.name}})</span> <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
 								</div>
 								<div class="panel-body">
 									<div title="click to add row" class="view-divider" ng-click="contentData.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
@@ -186,7 +186,7 @@
 						</div>
 					</div>
 					<br />
-					<table class="table table-border ng-hide" ng-show="contentData.library.relations.length > 0">
+					<table class="table table-bordered ng-hide" ng-show="contentData.library.relations.length > 0">
 						<thead>
 							<tr>
 								<th class="go-bkg-white">relations</th>
@@ -280,11 +280,12 @@
 								must be less than 50 chars
 							</small>
 						</div>
+						<div class="form-description">e.g. "no-labels"</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
-						<label for="place">Weight</label>
+						<label for="place">Place</label>
 						<input ng-model="popupData.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
 							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">

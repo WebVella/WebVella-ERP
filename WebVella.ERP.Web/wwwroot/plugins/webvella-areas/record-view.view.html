@@ -6,7 +6,7 @@
 			</div>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-users"></i>
+			<i class="fa fa-{{::contentData.currentEntity.iconName}} fa-fw"></i>
 		</div>
 		<div class="entity-box">
 			<h4>{{::contentData.currentEntity.label}}</h4>
@@ -17,8 +17,8 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 title="{{::contentData.defaultRecordView.label}}">{{::contentData.defaultRecordView.label}}</h4>
-			<a class="go-red" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash"></i> Delete Record</a>
+			<h4 title="{{::contentData.defaultRecordView.label}}" ng-class="{'no-link':!contentData.userHasRecordDeletePermission()}">{{::contentData.defaultRecordView.label}}</h4>
+			<a class="go-red" ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash"></i> Delete Record</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -34,22 +34,24 @@
 </div>
 
 <div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
-	<div id="page-text" class="record-details" ng-if="::contentData.selectedSidebarPage.isEdit">
+	<div id="page-text" class="record-details" ng-if='::contentData.selectedSidebarPage.isEdit && (contentData.selectedSidebarPage.meta.cssClass == null || contentData.selectedSidebarPage.meta.cssClass == "")'>
 		<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
-			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel" ng-click="contentData.toggleSectionCollapse(section)">
-				<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
-				<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
-				{{::section.label}}
+			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
+				<a href="javascript:void(0)" ng-click="contentData.toggleSectionCollapse(section)">
+					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+					{{::section.label}}
+				</a>
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-				<div class="form">
+				<div class="form-horizontal">
 					<div class="row" ng-repeat="row in section.rows track by row.id">
 						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
 							<div class="form-group" ng-repeat="item in column.items" ng-switch="::item.type">
 								<!--If item is field WITH NO relation-->
 								<div class="editable-field field" ng-switch-when="field">
-									<label class="control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}} control-label">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<div ng-switch="::item.meta.fieldType">
 											<!-- If type 1 - auto-increment -->
 											<div ng-switch-when="1" class="form-control-static" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></div>
@@ -129,7 +131,8 @@
 												</div>
 												<div class="input-group file-upload" ng-show='contentData.selectedSidebarPage.data[item.dataName]'>
 													<span class="form-control" ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
-													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left: 1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+													<a class="input-group-addon update" href='javascript:void(0)' ngf-select="contentData.updateFileUpload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
+													<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 											</div>
 											<span ng-switch-when="7" class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
@@ -152,6 +155,7 @@
 												</div>
 												<div class="image-upload" ng-show='contentData.selectedSidebarPage.data[item.dataName]'>
 													<img class="img-thumbnail" ng-src="{{contentData.selectedSidebarPage.data[item.dataName]}}" />
+													<a class="update-link" href='javascript:void(0)' ngf-select="contentData.updateFileUpload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 											</div>
@@ -225,6 +229,9 @@
 											   onbeforesave="contentData.fieldUpdate(item, $data)"></a>
 											<span ng-switch-when="19" class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 										</div>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+									</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -233,8 +240,8 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
 											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
@@ -267,7 +274,6 @@
 														</tr>
 													</table>
 												</div>
-
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
 													<span class="relation-field-group" ng-class="{remove: contentData.selectedSidebarPage.data[item.dataName].length > 0}" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
@@ -277,9 +283,17 @@
 													<span class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 												</div>
 												<!-- Case 3 - Current Entity is both Origin and Target -->
-												<div ng-switch-when="3">
+												<div ng-switch-when="3" class="position-relative">
 													<div ng-if="item.relationDirection == 'origin-target' && contentData.currentUserHasUpdatePermissionRelation(item)">
-														<span ng-bind-html="contentData.selectedSidebarPage.data[item.dataName][0]"></span>
+														<!--<span ng-bind-html="contentData.selectedSidebarPage.data[item.dataName][0]"></span>-->
+														<table class="table table-bordered editable editable-click origin lookup" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
 													</div>
 													<div ng-if="item.relationDirection == 'target-origin' && contentData.currentUserHasUpdatePermissionRelation(item)">
 														<span class="relation-field-group" ng-class="{remove: contentData.selectedSidebarPage.data[item.dataName].length > 0}">
@@ -332,22 +346,29 @@
 												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 											</div>
 										</div>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+			
 								</div>
 
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
-														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
+														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)">
 										</recursive-view>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -356,17 +377,20 @@
 
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-view view-meta="::item"
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
-														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
-														can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
+														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
+														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)"
+														can-remove="contentData.recursiveObjectCanDo('can-remove',item.entityName)">
 										</recursive-view>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -375,14 +399,17 @@
 
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
-														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
+														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)">
 										</recursive-list>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
@@ -391,34 +418,42 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
-														can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
-														can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
+														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
+														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)"
+														can-remove="contentData.recursiveObjectCanDo('can-remove',item.entityName)">
 										</recursive-list>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+
 								</div>
 
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
-									<label class="control-label">{{::item.fieldLabel}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative">
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.fieldLabel}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<span class="editable editable-click tree" ng-click="contentData.openSelectTreeNodesModal(item)">
 											<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
 										</span>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
+
 								</div>
 
 							</div>
@@ -430,7 +465,7 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if="::!contentData.selectedSidebarPage.isEdit">
+	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && (contentData.selectedSidebarPage.meta.cssClass == null || contentData.selectedSidebarPage.meta.cssClass == "")'>
 		<div class="records-details" ng-if="::contentData.selectedSidebarPage.isView">
 			<div ng-switch="::contentData.selectedSidebarPage.type">
 				<div ng-switch-when="view">
@@ -479,6 +514,9 @@
 		</div>
 	</div>
 
+	<div id="page-text" ng-if='::contentData.selectedSidebarPage.meta.cssClass != null && contentData.selectedSidebarPage.meta.cssClass != ""'>
+		<div ng-include="contentData.selectedSidebarPage.meta.cssClass"></div>
+	</div>
 </div>
 
 <script type="text/ng-template" id="manageRelationFieldModal.html">

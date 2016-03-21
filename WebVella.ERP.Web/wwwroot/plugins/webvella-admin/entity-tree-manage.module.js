@@ -24,17 +24,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                 	controller: 'WebVellaAdminManageEntityTreeController',
-                	templateUrl: '/plugins/webvella-admin/entity-tree-manage.view.html?v=' + htmlCacheBreaker,
+                	templateUrl: '/plugins/webvella-admin/entity-tree-manage.view.html',
                     controllerAs: 'contentData'
                 }
             },
@@ -210,6 +210,7 @@
         contentData.nodeParentIdField = {};
         contentData.nodeNameEligibleFields = [];
         contentData.nodeLabelEligibleFields = [];
+		contentData.nodeWeightEligibleFields = [];
 
         for (var i = 0; i < contentData.entity.fields.length; i++) {
         	if (contentData.entity.fields[i].id == contentData.selectedRelation.originFieldId) {
@@ -225,6 +226,12 @@
         			if (contentData.entity.fields[i].required) {
         				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
        					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
+						contentData.nodeWeightEligibleFields.push(contentData.entity.fields[i]);
+        			}
+        			break;
+        		case 12: //Guid
+        			if (contentData.entity.fields[i].required) {
+       					contentData.nodeWeightEligibleFields.push(contentData.entity.fields[i]);
         			}
         			break;
         		case 16: //Guid
@@ -294,6 +301,24 @@
     	//#endregion
 
 
+    	//#region << nodeWeightField >> - auxiliary object
+        contentData.nodeWeightField = null;
+        if (!contentData.tree.nodeWeightFieldId) {
+        	contentData.nodeWeightField = contentData.nodeWeightEligibleFields[0];
+        }
+        else {
+        	for (var i = 0; i < contentData.nodeWeightEligibleFields.length; i++) {
+        		if (contentData.nodeWeightEligibleFields[i].id == contentData.tree.nodeWeightFieldId) {
+        			contentData.nodeWeightField = contentData.nodeWeightEligibleFields[i];
+        		}
+        	}
+        	//if old field id not found in the dictionary, it is probably changed or deleted. 
+        	if (contentData.nodeWeightField == null) {
+        		contentData.tree.nodeWeightFieldId = null;
+        		contentData.nodeWeightField = contentData.nodeWeightEligibleFields[0];
+        	}
+        }
+    	//#endregion
 
 		//#endregion
 
@@ -341,6 +366,10 @@
 
         contentData.nodeLabelUpdate = function (fieldObject) {
         	contentData.fieldUpdate('nodeLabelFieldId', fieldObject.id);
+        }
+
+        contentData.nodeWeightUpdate = function (fieldObject) {
+        	contentData.fieldUpdate('nodeWeightFieldId', fieldObject.id);
         }
 
         contentData.checkForAddEnter = function (e) {

@@ -28,6 +28,11 @@
 		serviceInstance.getListFilter = getListFilter;
 		serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
 		serviceInstance.getViewRecord = getViewRecord;
+		//Import & Export
+		serviceInstance.importEntityRecords = importEntityRecords;
+		serviceInstance.exportListRecords = exportListRecords;
+
+		serviceInstance.getViewRecord = getViewRecord;
 		//// Record data presenting
 		serviceInstance.renderFieldValue = renderFieldValue;
 
@@ -481,11 +486,8 @@
 				}
 			}
 			else {
-				for (var i = 0; i < data.length; i++) {
-					var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
-					generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
-				}
-				return generatedStringArray.join(', ');
+				var selected = $filter('filter')(fieldMeta.options, { key: data });
+				return selected[0].value;
 			}
 		}
 		//12. Number
@@ -694,6 +696,24 @@
 		}
 		//#endregion
 
+		//#region << Import Export >>
+
+		///////////////////////
+		function importEntityRecords(entityName, fileTempPath, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>importEntityRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			var postObject = {};
+			postObject.fileTempPath = fileTempPath;
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		///////////////////////
+		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>exportListRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		//#endregion	
+		
 		//// Aux methods //////////////////////////////////////////////////////
 
 		// Global functions for result handling for all methods of this service

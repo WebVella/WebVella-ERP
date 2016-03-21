@@ -26,17 +26,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
-					templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAdminEntityViewManageController',
-					templateUrl: '/plugins/webvella-admin/entity-view-manage.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/entity-view-manage.view.html',
 					controllerAs: 'contentData'
 				}
 			},
@@ -254,7 +254,7 @@
 					for (var k = 0; k < contentData.viewContentRegion.sections[i].rows[j].columns.length; k++) {
 						for (var m = 0; m < contentData.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
 							if (contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
-								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta.id);
+								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
 							}
 						}
 					}
@@ -271,7 +271,7 @@
 
 		contentData.tempLibrary.items.forEach(function (item) {
 			//Initially remove all items that are from relation or relationOptions
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1) || !item.meta) {
+			if ((item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1) || !item.meta) {
 				switch (item.type) {
 					case "field":
 						contentData.library.items.push(item);
@@ -534,30 +534,47 @@
 			});
 
 			modalInstance.result.then(function (fieldObject) {
-				for (var i = 0; i < contentData.view.regions.length; i++) {
-					for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
+
+				for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
 						for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
 							for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
 								for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-									if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
+									if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
 										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										if (fieldObject.type === "listFromRelation" || fieldObject.type === "viewFromRelation") {
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-										}
+									}
+									else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									}
+									else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
 								}
 							}
 						}
 					}
-				}
 
-				contentData.view = fastCopy(contentData.view);
+				var tempView = fastCopy(contentData.view);
+				for (var i = 0; i < tempView.regions.length; i++) {
+					if(tempView.regions[i].name == "content"){
+						tempView.regions[i]	= contentData.viewContentRegion;
+					}
+				}
 				////2. Call the service
-				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
 				return;
 			});
 		};
@@ -650,21 +667,32 @@
 				});
 
 				modalInstance.result.then(function(fieldObject) {
-					for (var i = 0; i < contentData.view.regions.length; i++) {
-						for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
-							for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
-								for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
-									for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-										if (contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldId === fieldObject.fieldId) {
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-											contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-											if (fieldObject.type === "listFromRelation" || fieldObject.type === "viewFromRelation") {
-												contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-											}
-										}
+					for (var k = 0; k < contentData.viewContentRegion.sections.length; k++) {
+						for (var l = 0; l < contentData.viewContentRegion.sections[k].rows.length; l++) {
+							for (var m = 0; m < contentData.viewContentRegion.sections[k].rows[l].columns.length; m++) {
+								for (var n = 0; n < contentData.viewContentRegion.sections[k].rows[l].columns[m].items.length; n++) {
+									if (fieldObject.type === "fieldFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+									}
+									else if (fieldObject.type === "viewFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									}
+									else if (fieldObject.type === "listFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
 								}
 							}
@@ -672,6 +700,11 @@
 					}
 
 					var tempView = fastCopy(contentData.view);
+					for (var i = 0; i < tempView.regions.length; i++) {
+						if(tempView.regions[i].name == "content"){
+							tempView.regions[i]	= contentData.viewContentRegion;
+						}
+					}
 					////2. Call the service
 					webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
 					//return;
@@ -755,10 +788,14 @@
 			//#endregion
 
 			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation") && !orderChangedOnly) {
-				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				$timeout(function(){
+					openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				},0);
 			}
 			else if (eventObj.source.itemScope.item.type === "html" && !orderChangedOnly) {
-				openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				$timeout(function(){
+					openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+				},0);
 			}
 			else {
 				//cannot be managed
@@ -824,7 +861,7 @@
 				contentData.library.items.push(contentData.itemScheduledForRemoval);
 				sortLibrary();
 				if(contentData.itemScheduledForRemoval.meta){
-					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.meta.id);
+					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.dataName);
 					if (itemIndexInUsed > -1) {
 						alreadyUsedItemIds.slice(itemIndexInUsed, 1);
 					}
@@ -902,7 +939,7 @@
 			if (!relation.addedToLibrary) {
 				contentData.tempLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName === relation.relationName) {
-						if(item.meta && alreadyUsedItemIds.indexOf(item.meta.id) === -1){
+						if(item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1){
 							switch (item.type) {
 								case "fieldFromRelation":
 									contentData.library.items.push(item);
@@ -950,7 +987,7 @@
 		}
 
 		contentData.manageFieldFromRelation = function (item) {
-			openFromRelationSettingsModal(item, null);
+			openFromRelationSettingsModal(item, null,false);
 		}
 
 		//#endregion
@@ -1074,25 +1111,9 @@
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.section = fastCopy(section);
-		popupData.rowOptions = [
-		{
-			key: 1,
-			value: "One column"
-		},
-		{
-			key: 2,
-			value: "Two columns"
-		},
-		{
-			key: 3,
-			value: "Three columns"
-		},
-		{
-			key: 4,
-			value: "Four columns"
-		}
-
-		];
+		popupData.rowOptions = 	webvellaAdminService.getRowColumnCountVariationsArray();
+		
+	
 		popupData.isUpdate = true;
 		if (row === null) {
 			popupData.isUpdate = false;
@@ -1102,8 +1123,9 @@
 		}
 		else {
 			popupData.row = fastCopy(row);
+			var selectedColVariationKey = webvellaAdminService.getRowColumnCountVariationKey(row)
 			for (var i = 0; i < popupData.rowOptions.length; i++) {
-				if (popupData.row.columns.length === popupData.rowOptions[i].key) {
+				if (selectedColVariationKey === popupData.rowOptions[i].key) {
 					popupData.selectedRowOption = popupData.rowOptions[i];
 				}
 			}
@@ -1124,7 +1146,6 @@
 			if (popupData.isUpdate) {
 				//A. Check if the row's column differ from the original number
 				var originalRowColumns = 0;
-				var newRowColumns = fastCopy(popupData.selectedRowOption.key);
 				for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
 					if (parentData.viewContentRegion.sections[i].name === popupData.section.name) {
 						for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
@@ -1134,26 +1155,27 @@
 						}
 					}
 				}
+
 				//B. If columns differ add to the end or remove from the end
-				if (originalRowColumns > newRowColumns) {
+				if (originalRowColumns > popupData.selectedRowOption.columns) {
 					//Columns need to be removed
-					var columnsToRemove = originalRowColumns - newRowColumns;
+					var columnsToRemove = originalRowColumns - popupData.selectedRowOption.columns;
 					popupData.row.columns.splice(columnsToRemove * -1);
 
 				}
-				else if (originalRowColumns < newRowColumns) {
+				else if (originalRowColumns < popupData.selectedRowOption.columns) {
 					//Columns need to be added
-					var columnsToAdd = newRowColumns - originalRowColumns;
+					var columnsToAdd = popupData.selectedRowOption.columns - originalRowColumns;
 
 					for (var m = 0; m < columnsToAdd; m++) {
-						var column = webvellaAdminService.initViewRowColumn(newRowColumns);
+						var column = webvellaAdminService.initViewRowColumn(popupData.selectedRowOption.columns);
 						popupData.row.columns.push(column);
 					}
 				}
 				//C. Fix the gridColCount for each column
-				var newGridColCount = 12 / newRowColumns;
+				var columnsCountArray = webvellaAdminService.convertRowColumnCountVariationKeyToArray(popupData.selectedRowOption.key);
 				for (var i = 0; i < popupData.row.columns.length; i++) {
-					popupData.row.columns[i].gridColCount = newGridColCount;
+					popupData.row.columns[i].gridColCount = columnsCountArray[i];
 				}
 				//D. Update
 				popupData.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupData.row, popupData.section.rows);

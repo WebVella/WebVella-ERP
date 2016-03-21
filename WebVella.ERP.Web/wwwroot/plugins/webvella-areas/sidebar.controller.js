@@ -23,6 +23,16 @@
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
         sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
+
+		sidebarData.isCurrentEntityActive = function(entity){
+			if(entity.name == $stateParams.entityName){
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
         $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 

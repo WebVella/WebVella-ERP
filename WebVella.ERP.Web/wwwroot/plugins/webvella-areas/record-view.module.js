@@ -25,17 +25,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasRecordViewSidebarController',
-					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordViewController',
-					templateUrl: '/plugins/webvella-areas/record-view.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/record-view.view.html',
 					controllerAs: 'contentData'
 				}
 			},
@@ -61,9 +61,9 @@
 
 	//#region << Resolve Function >> /////////////////////////
 
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaAreasService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentView.$inject = ['$q', '$log','webvellaRootService', 'webvellaAreasService', '$stateParams', '$state', '$timeout','resolvedCurrentEntityMeta'];
 	/* @ngInject */
-	function resolveCurrentView($q, $log, webvellaAreasService, $stateParams, $state, $timeout) {
+	function resolveCurrentView($q, $log,webvellaRootService, webvellaAreasService, $stateParams, $state, $timeout,resolvedCurrentEntityMeta) {
 		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
@@ -71,14 +71,10 @@
 		// Process
 		function successCallback(response) {
 			if (response.object === null) {
-				$timeout(function () {
-					alert("error in response!");
-				}, 0);
+				alert("error in response!");
 			}
 			else if(response.object.meta === null ) {
-				$timeout(function () {
-					alert("The view with name: " + $stateParams.viewName + " does not exist");
-				}, 0);
+				alert("The view with name: " + $stateParams.viewName + " does not exist");
 			} else {
 				defer.resolve(response.object);
 			}
@@ -86,13 +82,17 @@
 
 		function errorCallback(response) {
 			if (response.object === null) {
-				$timeout(function () {
-					alert("error in response!");
-				}, 0);
+				alert("error in response!");
 			}
 			else {
 				defer.reject(response.message);
 			}
+		}
+
+		var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(resolvedCurrentEntityMeta,"canRead");
+		if(!userHasUpdateEntityPermission){
+			alert("you do not have permissions to view records from this entity!");
+			defer.reject("you do not have permissions to view records from this entity");
 		}
 
 		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
@@ -138,6 +138,7 @@
 		contentData.selectedSidebarPage.data = null;
 		contentData.stateParams = $stateParams;
 		contentData.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
+
 
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
@@ -273,6 +274,16 @@
 			return null;
 		}
 		//#endregion
+
+		//#region << Render >>
+		contentData.userHasRecordDeletePermission = function(){
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,"canDelete"));
+		}
+
+		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
+
+		//#endregion
+
 
 		//#region << Logic >>
 
@@ -476,7 +487,26 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					contentData.selectedSidebarPage.data = fastCopy(response.object.data[0]);
+
+
+					//we need to add a cache breaker for the browser to get the new version of files and images
+					switch (item.meta.fieldType) {
+					   case 7: //file
+						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+						  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						}
+						break;
+					   case 9: //image
+						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+							response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						}
+						break;
+					}
+
+					
+					//We cannot reload the data from the response object as there is missing data for any 
+					//view or list or trees, or viewFromRelation etc.
+
 					defer.resolve();
 				}
 
@@ -535,6 +565,36 @@
 					contentData.moveSuccessCallback = function (response) {
 						$timeout(function () {
 							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
+							contentData.fieldUpdate(item, response.object.url );
+						}, 1);
+					}
+
+					contentData.uploadSuccessCallback = function (response) {
+						var tempPath = response.object.url;
+						var fileName = response.object.filename;
+						var targetPath = "/fs/" + contentData.currentEntity.name + "/" + newGuid() + "/" + fileName;
+						var overwrite = false;
+						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
+					}
+					contentData.uploadErrorCallback = function (response) {
+						alert(response.message);
+					}
+					contentData.uploadProgressCallback = function (response) {
+						$timeout(function () {
+							contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
+						}, 1);
+					}
+					webvellaAdminService.uploadFileToTemp(file, item.meta.name, contentData.uploadProgressCallback, contentData.uploadSuccessCallback, contentData.uploadErrorCallback);
+				}
+			};
+
+			contentData.updateFileUpload = function (file, item) {
+				if (file != null) {
+					contentData.uploadedFileName = item.dataName;
+					var oldFileName = contentData.selectedSidebarPage.data[contentData.uploadedFileName];
+					contentData.moveSuccessCallback = function (response) {
+						$timeout(function () {
+							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
 							contentData.fieldUpdate(item, response.object.url);
 						}, 1);
 					}
@@ -542,7 +602,7 @@
 					contentData.uploadSuccessCallback = function (response) {
 						var tempPath = response.object.url;
 						var fileName = response.object.filename;
-						var targetPath = "/fs/" + item.fieldId + "/" + fileName;
+						var targetPath = oldFileName;
 						var overwrite = true;
 						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 					}
@@ -626,6 +686,11 @@
 
 			contentData.currentUserHasUpdatePermission = function (item) {
 				var result = false;
+				//Check first if the entity allows it
+				var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(contentData.currentEntity,"canUpdate");
+				if(!userHasUpdateEntityPermission){
+					return false;
+				}
 				if (!item.meta.enableSecurity) {
 					return true;
 				}
@@ -639,67 +704,181 @@
 				return result;
 			}
 
+			//The goal for this method is to check the permissions that this user has to change either the current record or the related record in the N:N case
+			//The reason is:	when relation type 1:N or 1:1 only the target's record data is changed
+			//					when relation type N:N the target's and the origin's record data is changed
+			//User needs to have update permissions to change data
 			contentData.currentUserHasUpdatePermissionRelation = function (item) {
-				var result = false;
+				var userHasUpdatePermission = false;
 				var relation = contentData.getRelation(item.relationName);
 				var currentEntityId = contentData.currentEntity.id;
-				var checkedFieldMeta = null;
-				//Currently it is implemented only for 1:N & 1:1 relation type as it does not make much sense for N:N
-				if (relation.relationType == 1 || relation.relationType == 2) {
-					var checkedFieldId = null;
-					if (relation.originEntityId != relation.targetEntityId) {
-						//if the presented item from the current entity
-						if (currentEntityId == item.entityId) {
-							//we need to check this item permissions
-							checkedFieldMeta = item.meta;
+				var currentEntityIsRelationStatus = 1; // 1 - origin, 2- target, 3 - both
+				if (relation.originEntityId == relation.targetEntityId && relation.originEntityId == currentEntityId) {
+					currentEntityIsRelationStatus = 3;
 						}
-						else {
-							//we need to find the corresponding field from the current entity
-							if (relation.originFieldId == item.meta.id) {
-								//the field from the current entity is than target
-								checkedFieldId = relation.targetFieldId;
+				else if(relation.targetEntityId == currentEntityId)	{
+					currentEntityIsRelationStatus = 2;
+				}
+
+				//Case 0: the current entity is both item and origin. 
+				//		  User should have permission to update both fields in the current entity
+				if (currentEntityIsRelationStatus == 3) {
+					var originFieldMeta = null;
+					var userCanUpdateOrigin = false;
+					var targetFieldMeta = null;
+					var userCanUpdateTarget = false;
+					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+						if (contentData.currentEntity.fields[i].id == relation.originFieldId) {
+							originFieldMeta = contentData.currentEntity.fields[i];
+						}
+						else if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
+							targetFieldMeta = contentData.currentEntity.fields[i];
+						}
+					}
+					//Check basic security
+					if (!originFieldMeta.enableSecurity) {
+						userCanUpdateOrigin = true;
+					}
+
+					if (!targetFieldMeta.enableSecurity) {
+						userCanUpdateTarget = true;
+					}
+
+					for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+						//Check if origin has this role
+						if (!userCanUpdateOrigin) {
+							for (var k = 0; k < originFieldMeta.permissions.canUpdate.length; k++) {
+								if (originFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									userCanUpdateOrigin = true;
+									break;
+								}
 							}
-							else {
-								//the field from the current entity is than origin
-								checkedFieldId = relation.originFieldId;
+						}
+						//Check if target has this role
+						if (!userCanUpdateTarget) {
+							for (var k = 0; k < targetFieldMeta.permissions.canUpdate.length; k++) {
+								if (targetFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
+									userCanUpdateTarget = true;
+									break;
+								}
 							}
 						}
 					}
+					if (userCanUpdateOrigin && userCanUpdateTarget) {
+						userHasUpdatePermission = true;
+					}
 					else {
-						var checkedFieldId = null;
-						if (item.relationDirection == "target-origin") {
-							//we need the target field
+						//we need to find the corresponding field from the current entity
+						if (relation.originFieldId == item.meta.id) {
+							//the field from the current entity is than target
 							checkedFieldId = relation.targetFieldId;
 						}
-						else {
-							//we need the origin field
-							checkedFieldId = relation.originFieldId;
-						}
 					}
-
+				}
+				//Case 1: (1:1 or 1:N) and the current entity is target
+				//						the user should have permission to change the current Entity's field
+				else if(currentEntityIsRelationStatus == 2 && (relation.relationType == 1 || relation.relationType == 2)) {
+					var currentEntityFieldMeta = null;
 					for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
-						if (contentData.currentEntity.fields[i].id == checkedFieldId) {
-							checkedFieldMeta = contentData.currentEntity.fields[i];
-						}
+						if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
+							currentEntityFieldMeta = contentData.currentEntity.fields[i];
 					}
-
-					if (checkedFieldMeta == null) {
-						return false;
-					}
-					else {
-						if (!checkedFieldMeta.enableSecurity) {
-							return true;
+				}
+				if(currentEntityFieldMeta != null) {
+						if(!currentEntityFieldMeta.enableSecurity) {
+							userHasUpdatePermission = true;
 						}
-						for (var i = 0; i < contentData.currentUserRoles.length; i++) {
-							for (var k = 0; k < checkedFieldMeta.permissions.canUpdate.length; k++) {
-								if (checkedFieldMeta.permissions.canUpdate[k] == contentData.currentUserRoles[i]) {
-									return true;
+						else {
+							for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+								for (var k = 0; k < currentEntityFieldMeta.permissions.canUpdate.length; k++) {
+									if (currentEntityFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
+										userHasUpdatePermission = true;
+										break;
+									}
 								}
 							}
 						}
 					}
 				}
-				return result;
+					//Case 2: (1:1 or 1:N) and the current entity is origin
+				else if(currentEntityIsRelationStatus == 1 && (relation.relationType == 1 || relation.relationType == 2)) {
+						if (!item.meta.enableSecurity) {
+							userHasUpdatePermission = true;
+						}
+						else {
+							for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+								for (var k = 0; k < item.meta.permissions.canUpdate.length; k++) {
+									if (item.meta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
+										userHasUpdatePermission = true;
+										break;
+									}
+								}
+							}
+						}
+				}
+				//Case 3: (N:N) 	no matter if the current entity is origin or target
+				//					user should have permission to update both fields in both entities 
+				else if(relation.relationType == 3) {
+					var originFieldMeta = null;
+					var userCanUpdateOrigin = false;
+					var targetFieldMeta = null;
+					var userCanUpdateTarget = false;
+					//get origin field meta
+					if(currentEntityIsRelationStatus == 1) {
+						for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+							if (contentData.currentEntity.fields[i].id == relation.originFieldId) {
+								originFieldMeta = contentData.currentEntity.fields[i];
+						}
+					}
+						targetFieldMeta = item.meta;
+					}
+					else {
+						originFieldMeta = item.meta;
+						for (var i = 0; i < contentData.currentEntity.fields.length; i++) {
+							if (contentData.currentEntity.fields[i].id == relation.targetFieldId) {
+								targetFieldMeta = contentData.currentEntity.fields[i];
+							}
+						}
+					}
+
+					//Check basic security
+					if (!originFieldMeta.enableSecurity) {
+						userCanUpdateOrigin = true;
+					}
+
+ 					if (!targetFieldMeta.enableSecurity) {
+						userCanUpdateTarget = true;
+					}
+
+					for (var i = 0; i < contentData.currentUserRoles.length; i++) {
+					//Check if origin has this role
+						if(!userCanUpdateOrigin) {
+							for (var k = 0; k < originFieldMeta.permissions.canUpdate.length; k++) {
+								if (originFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
+									userCanUpdateOrigin = true;
+									break;
+								}
+							}
+						}
+						//Check if target has this role
+						if(!userCanUpdateTarget) {
+							for (var k = 0; k < targetFieldMeta.permissions.canUpdate.length; k++) {
+								if (targetFieldMeta.permissions.canUpdate[k]== contentData.currentUserRoles[i]) {
+									userCanUpdateTarget = true;
+									break;
+								}
+							}
+						}
+					}
+					if(userCanUpdateOrigin && userCanUpdateTarget) {
+						userHasUpdatePermission = true;
+					}
+					else {
+						userHasUpdatePermission = false;
+					}
+				}
+
+ 				return userHasUpdatePermission;
 			}
 
 			//#endregion
@@ -741,7 +920,7 @@
 				if (contentData.currentUserEntityPermissions[i].entityName == contentData.currentEntity.name) {
 					currentEntityPermissions = contentData.currentUserEntityPermissions[i];
 				}
-				else if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
+				if (contentData.currentUserEntityPermissions[i].entityName == relatedEntityName) {
 					relatedEntityPermissions = contentData.currentUserEntityPermissions[i];
 				}
 			}
