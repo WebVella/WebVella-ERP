@@ -13,10 +13,12 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 'resolvedSitemap', 'resolvedCurrentUser', 'pluginAuxPageName'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 
+						'resolvedSitemap', 'resolvedCurrentUser', 'pluginAuxPageName','$sessionStorage','$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, resolvedSitemap, resolvedCurrentUser, pluginAuxPageName) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, 
+						resolvedSitemap, resolvedCurrentUser, pluginAuxPageName,$sessionStorage,$timeout) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
@@ -24,6 +26,8 @@
         sidebarData.stateParams = $stateParams;
         sidebarData.entity = resolvedCurrentEntityMeta;
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
+		sidebarData.$sessionStorage	= $sessionStorage;
+
     	//#region << Select default list >>
         sidebarData.defaultEntityAreaListName = "";
     	//get the current area meta
@@ -78,6 +82,37 @@
         	}
         	return false;
         }
+
+		sidebarData.goBack = function(){
+			var useSessionBackUrl = false;
+			if(sidebarData.$sessionStorage["last-list-params"]){
+				//Check if the entity and the list name are the same
+				var storedParams = sidebarData.$sessionStorage["last-list-params"];
+				if(storedParams.areaName == sidebarData.stateParams.areaName &&  storedParams.entityName == sidebarData.stateParams.entityName){
+					 useSessionBackUrl = true;
+				}
+			}
+			
+			if(useSessionBackUrl){
+				$timeout(function () {
+                    $state.go('webvella-entity-records',sidebarData.$sessionStorage["last-list-params"]);
+                }, 0);
+			}
+			else {
+				var defaultParams = {};
+				defaultParams.areaName = sidebarData.stateParams.areaName;
+				defaultParams.entityName = sidebarData.stateParams.entityName;
+				defaultParams.listName = sidebarData.defaultEntityAreaListName;
+				defaultParams.filter = "all";
+				defaultParams.page = 1;
+				defaultParams.search = null;
+
+			   	$timeout(function () {
+                    $state.go('webvella-entity-records',defaultParams);
+                }, 0);
+			}
+			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/all/1"
+		}
 
 
         $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

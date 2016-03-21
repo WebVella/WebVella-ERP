@@ -11,7 +11,9 @@
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAreaEntityRecordsController', controller)
-		.controller('SetFiltersModalController', SetFiltersModalController);
+		.controller('SetFiltersModalController', SetFiltersModalController)
+		.controller('exportModalController', exportModalController)
+		.controller('importModalController', importModalController);
 
 
 
@@ -26,17 +28,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasSidebarController',
-					templateUrl: '/plugins/webvella-areas/sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreaEntityRecordsController',
-					templateUrl: '/plugins/webvella-areas/entity-records.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/entity-records.view.html',
 					controllerAs: 'contentData'
 				}
 			},
@@ -158,27 +160,29 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService',
+	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService','webvellaAdminService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast'];
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast','$sessionStorage'];
 
 	/* @ngInject */
-	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,
+	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,	webvellaAdminService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
-		resolvedEntityRelationsList, resolvedCurrentUser, ngToast) {
+		resolvedEntityRelationsList, resolvedCurrentUser, ngToast, $sessionStorage) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.records = fastCopy(resolvedListRecords.data);
 		contentData.recordsMeta = fastCopy(resolvedListRecords.meta);
-		contentData.relationsMeta = resolvedEntityRelationsList;
+		contentData.relationsMeta = fastCopy(resolvedEntityRelationsList);
+		contentData.$sessionStorage = $sessionStorage;
 		//#region << Set Environment >>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
 		contentData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
 		contentData.stateParams = $stateParams;
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
-
+		contentData.moreListsOpened = false;
+		contentData.moreListsInputFocused = false;
 		//Get the current meta
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 
@@ -225,16 +229,16 @@
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
 								break;
 							case "{entityName}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.entityName));
 								break;
 							case "{filter}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.filter));
 								break;
 							case "{page}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.page));
 								break;
 							case "{searchQuery}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.searchQuery));
 								break;
 						}
 					}
@@ -283,6 +287,10 @@
 				contentData.currentListView = contentData.entity.recordLists[i];
 			}
 		}
+
+		 contentData.entity.recordLists = contentData.entity.recordLists.sort(function(a, b) {
+			 return parseFloat(a.weight) - parseFloat(b.weight);
+		});
 
 		//#endregion
 
@@ -504,6 +512,124 @@
 				webvellaAreasService.createListFilter(filterArray, $stateParams.entityName, $stateParams.listName, successCallback, errorCallback);
 			}
 		}
+
+		contentData.openMoreLists = function(){
+			contentData.moreListsOpened = !contentData.moreListsOpened;
+			if(contentData.moreListsOpened){
+				$timeout(function(){
+					 contentData.moreListsInputFocused = true;
+				},100);			
+			}
+			else{
+				$timeout(function(){
+					contentData.moreListsInputFocused = false;
+					contentData.listFilter = "";		
+				},100);			
+			}
+		}
+
+		contentData.isCurrentListAreaDefault = function(){
+			for (var i = 0; i < contentData.area.subscriptions.length; i++) {
+				if(contentData.area.subscriptions[i].name == contentData.entity.name){
+					if(contentData.area.subscriptions[i].list.name == contentData.currentListView.name){
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+			}
+		}
+
+		contentData.setCurrentListAsDefault = function(){
+			var currentAreaCopy = fastCopy(contentData.area);
+			currentAreaCopy.subscriptions = angular.fromJson(currentAreaCopy.subscriptions);
+			//console.log(contentData.area);
+			//console.log(contentData.entity);
+			//console.log(contentData.currentListView);
+			//console.log(contentData.area.subscriptions);
+			//contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
+			//1. Cycle true subscriptions and find the current entity
+			for (var i = 0; i < currentAreaCopy.subscriptions.length; i++) {
+				if(currentAreaCopy.subscriptions[i].name == contentData.entity.name){
+					//2. Change the subscription list
+					currentAreaCopy.subscriptions[i].list.name = contentData.currentListView.name;					
+					currentAreaCopy.subscriptions[i].list.label = contentData.currentListView.label;
+				}
+			}
+			//3. Stringify back the subscription field
+			currentAreaCopy.subscriptions = angular.toJson(currentAreaCopy.subscriptions);
+			//4. Update the area
+			function updateAreaSuccessCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
+				});
+				$state.reload();
+			}
+
+			function updateAreaErrorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + 'Error occurred while updating the area record!'
+				});				
+			}
+
+			webvellaAdminService.updateRecord(currentAreaCopy.id, "area", currentAreaCopy, updateAreaSuccessCallback, updateAreaErrorCallback);
+		}
+
+		contentData.exportModal	= undefined;
+		contentData.openExportModal = function(){
+		  contentData.exportModal =  $uibModal.open({
+				animation: false,
+				templateUrl: 'exportModalContent.html',
+				controller: 'exportModalController',
+				controllerAs: "popupData",
+				//size: "lg",
+				resolve: {
+					contentData: function () {
+						return contentData;
+					}
+				}
+			});
+		}
+		//Close the modal on state change
+		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
+		  if (contentData.exportModal) {
+			contentData.exportModal.dismiss();
+		  }
+		})
+
+		contentData.importModal	= undefined;
+		contentData.openImportModal = function(){
+		  contentData.importModal =  $uibModal.open({
+				animation: false,
+				templateUrl: 'importModalContent.html',
+				controller: 'importModalController',
+				controllerAs: "popupData",
+				//size: "lg",
+				resolve: {
+					contentData: function () {
+						return contentData;
+					}
+				}
+			});
+		}
+		//Close the modal on state change
+		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
+		  if (contentData.importModal) {
+			contentData.importModal.dismiss();
+		  }
+		})
+
+		contentData.checkEntityPermissions = function(permissionsCsv){
+			return 	webvellaRootService.userHasEntityPermissions(contentData.entity,permissionsCsv);
+		}
+
+		contentData.saveStateParamsToSessionStorage = function(){
+		   contentData.$sessionStorage["last-list-params"] = $stateParams;
+		}
+
 
 		//#endregion
 
@@ -1348,5 +1474,140 @@
 		$log.debug('webvellaAreas>records>SetFiltersModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
+	exportModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
+ 	function exportModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+		$log.debug('webvellaAreas>records>exportModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		var popupData = this;
+		popupData.contentData = fastCopy(contentData);	
+		popupData.loading = false;
+		popupData.hasError = false;
+		popupData.errorMessage = "";
+		popupData.count = -1;
+		popupData.countHasSize = true;
+		popupData.downloadFilePath = null;
 
+		popupData.count = popupData.contentData.currentListView.pageSize;
+
+
+		popupData.exportSuccessCallback = function (response) {
+			//popupData.loading = false;
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success </span> Records successfully exported!'
+			});
+			popupData.downloadFilePath = response.object;
+			
+		}
+		popupData.exportErrorCallback = function (response) {
+			popupData.loading = false;
+			//popupData.hasError = true;
+			//popupData.errorMessage = response.message;
+		}
+
+		popupData.ok = function () {
+			popupData.loading = true;	
+			popupData.hasError = false;
+			popupData.errorMessage = "";
+			if(popupData.count == 0){
+				popupData.hasError = true;
+				popupData.loading = false;	
+				popupData.errorMessage = "Records export count could not be 0";				
+			}
+			else{
+				if(!popupData.countHasSize){
+					popupData.count = -1;
+				}
+				webvellaAreasService.exportListRecords(popupData.contentData.entity.name, popupData.contentData.currentListView.name, popupData.count, popupData.exportSuccessCallback,popupData.exportErrorCallback);
+			}
+		};
+
+		popupData.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+		$log.debug('webvellaAreas>records>exportModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	}
+
+
+	importModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
+ 	function importModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+		$log.debug('webvellaAreas>records>importModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		var popupData = this;
+		popupData.contentData = fastCopy(contentData);	
+		popupData.uploadedFile = null;
+		popupData.uploadedFilePath = null;
+		popupData.uploadProgress = 0;
+		popupData.loading = false;
+		popupData.hasError = false;
+		popupData.errorMessage = "";
+
+		popupData.upload = function (file) {
+			popupData.uploadedFilePath = null;
+			popupData.uploadProgress = 0;
+
+			if (file != null) {
+				popupData.uploadSuccessCallback = function (response) {
+					popupData.uploadedFilePath = response.object.url;
+				}
+				popupData.uploadErrorCallback = function (response) {
+					alert(response.message);
+				}
+				popupData.uploadProgressCallback = function (response) {
+					$timeout(function () {
+						popupData.uploadProgress = parseInt(100.0 * response.loaded / response.total);
+					}, 100);
+				}
+
+			webvellaAdminService.uploadFileToTemp(file, file.name, popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
+
+			}
+		}
+
+		popupData.deleteFileUpload = function(){
+			$timeout(function () {
+			popupData.uploadedFile = null;
+			popupData.uploadedFilePath = null;
+			popupData.uploadProgress = 0;
+			},100);
+		}
+
+		popupData.importSuccessCallback = function (response) {
+			//popupData.loading = false;
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success </span> Records successfully imported!'
+			});
+			//$modalInstance.dismiss('cancel');
+			$state.reload();
+		}
+		popupData.importErrorCallback = function (response) {
+			popupData.loading = false;
+			//popupData.hasError = true;
+			//popupData.errorMessage = response.message;
+		}
+
+		popupData.ok = function () {
+			popupData.loading = true;	
+			popupData.hasError = false;
+			popupData.errorMessage = "";
+
+			if(popupData.uploadedFilePath == null || popupData.uploadedFilePath == ""){
+				popupData.loading = false;
+				popupData.hasError = true;
+				popupData.errorMessage = "You need to upload a CSV file first";
+			}
+			else if(!popupData.uploadedFile.name.endsWith(".csv")){
+				popupData.loading = false;
+				popupData.hasError = true;
+				popupData.errorMessage = "This is not a CSV file";			
+			}
+			else{
+				webvellaAreasService.importEntityRecords(popupData.contentData.entity.name, popupData.uploadedFilePath, popupData.importSuccessCallback,popupData.importErrorCallback);
+			}
+		};
+
+		popupData.cancel = function () {
+			$modalInstance.dismiss('cancel');
+		};
+		$log.debug('webvellaAreas>records>importModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	}
 })();

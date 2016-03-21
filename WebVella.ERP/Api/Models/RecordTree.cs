@@ -7,6 +7,11 @@ namespace WebVella.ERP.Api.Models
 {
 	public class InputRecordTree
 	{
+		public InputRecordTree() {
+			NodeWeightFieldId = null;
+		}
+
+
 		[JsonProperty(PropertyName = "id")]
 		public Guid? Id { get; set; }
 
@@ -46,6 +51,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "nodeLabelFieldId")]
 		public Guid? NodeLabelFieldId { get; set; }
 
+		[JsonProperty(PropertyName = "nodeWeightFieldId")]
+		public Guid? NodeWeightFieldId { get; set; }
+
 		[JsonProperty(PropertyName = "rootNodes")]
 		public List<RecordTreeNode> RootNodes { get; set; }
 
@@ -71,6 +79,7 @@ namespace WebVella.ERP.Api.Models
 			IconName = "";
 			RootNodes = new List<RecordTreeNode>();
 			NodeObjectProperties = new List<Guid>();
+			NodeWeightFieldId = null;
 		}
 
 		[JsonProperty(PropertyName = "id")] 
@@ -112,6 +121,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "nodeLabelFieldId")]
 		public Guid NodeLabelFieldId { get; set; }
 
+		[JsonProperty(PropertyName = "nodeWeightFieldId")]
+		public Guid? NodeWeightFieldId { get; set; }
+
 		[JsonProperty(PropertyName = "rootNodes")]
 		public List<RecordTreeNode> RootNodes { get; set; }
 
@@ -130,6 +142,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "label")]
 		public string Label { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public int? Weight { get; set; }
 
 		[JsonProperty(PropertyName = "parentId")]
 		public Guid? ParentId { get; set; }
@@ -169,6 +184,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "parentId")]
 		public Guid? ParentId { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public int? Weight { get; set; }
 
 		[JsonProperty(PropertyName = "nodes")]
 		public List<ResponseTreeNode> Nodes{ get; set; }

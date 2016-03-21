@@ -35,6 +35,8 @@ namespace WebVella.ERP.Storage
 
 		Guid NodeLabelFieldId { get; set; }
 
+		Guid? NodeWeightFieldId { get; set; }
+
 		List<Guid> RootNodes { get; set; }
 
 		List<Guid> NodeObjectProperties { get; set; }

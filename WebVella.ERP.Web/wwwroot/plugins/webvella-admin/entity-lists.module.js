@@ -11,7 +11,8 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityListsController', controller)
-		.controller('createListModalController', createListModalController);
+		.controller('createListModalController', createListModalController)
+		.controller('copyListModalController', copyListModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -20,21 +21,21 @@
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-lists', {
             parent: 'webvella-admin-base',
-            url: '/entities/:entityName/lists', //  /desktop/areas after the parent state is prepended
+            url: '/entities/:entityName/lists?createNew', //  /desktop/areas after the parent state is prepended
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminEntityListsController',
-                    templateUrl: '/plugins/webvella-admin/entity-lists.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/entity-lists.view.html',
                     controllerAs: 'contentData'
                 }
             },
@@ -190,8 +191,9 @@
         //#endregion
 
     	//Create new list modal
+		contentData.createListModalInstance = undefined;
         contentData.createListModal = function () {
-        	var modalInstance = $uibModal.open({
+        	contentData.createListModalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'createListModal.html',
         		controller: 'createListModalController',
@@ -202,6 +204,51 @@
         		}
         	});
         }
+		//Close the modal on state change
+		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
+		  if (contentData.createListModalInstance) {
+			contentData.createListModalInstance.dismiss();
+		  }
+		})
+
+
+		contentData.calculateStats = function(list){
+			var columnsCount = list.columns.length;
+
+			if(columnsCount != 0){
+				return "<span class='go-green'>" + columnsCount + "</span> columns";
+			}
+			else {
+				return "<span class='go-gray'>empty</span>";
+			}
+		}
+
+
+		//Check if the param createNewList is true if yes - open the modal
+		if($state.params.createNew){
+		   contentData.createListModal();
+		}
+
+        contentData.copyList = function (list) {
+
+        	var modalInstance = $uibModal.open({
+        		animation: false,
+        		templateUrl: 'copyModal.html',
+        		controller: 'copyListModalController',
+        		controllerAs: "popupData",
+        		size: "",
+        		resolve: {
+        			contentData: function () {
+        				return contentData;
+        			},
+        			list: function () {
+        				return list;
+        			}
+        		}
+        	});
+
+        }
+
 
         $log.debug('webvellaAdmin>entity-records-list> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
@@ -254,5 +301,82 @@
 
     	$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
+
+    copyListModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData','list', 'webvellaAdminService', 'webvellaRootService'];
+	/* @ngInject */
+    function copyListModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, list, webvellaAdminService, webvellaRootService) {
+    	$log.debug('webvellaAdmin>entities>copyListModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    	/* jshint validthis:true */
+    	var popupData = this;
+    	popupData.modalInstance = $modalInstance;
+    	popupData.list = fastCopy(list);
+    	popupData.currentEntity = fastCopy(contentData.entity);
+		popupData.alternative = "new";
+		popupData.listName = null;
+		popupData.listNameValidationError = false;
+		
+		popupData.entityLists = []; //filter the current view
+
+		for (var i = 0; i < popupData.currentEntity.recordLists.length; i++) {
+			 if(popupData.currentEntity.recordLists[i].name != popupData.list.name){
+				popupData.entityLists.push(popupData.currentEntity.recordLists[i]);
+			 }
+		}
+
+		popupData.selectedList = popupData.entityLists[0];
+
+    	popupData.ok = function () {
+			popupData.listNameValidationError = false;
+			if(popupData.alternative == "new"){
+				if(popupData.listName == null || popupData.listName == ""){
+					popupData.listNameValidationError = true;
+				}
+				else {
+	    			 var newList = fastCopy(popupData.list);
+					 newList.id = null;
+					 newList.name = popupData.listName;
+					 newList.label = popupData.listName;
+					 webvellaAdminService.createEntityList(newList, popupData.currentEntity.name, successCallback, errorCallback);
+				}
+			}
+			else {
+	   			var newList = fastCopy(popupData.list);
+				var oldList = fastCopy(popupData.selectedList);
+				oldList.viewNameOverride = newList.viewNameOverride;
+				oldList.visibleColumnsCount = newList.visibleColumnsCount;
+				oldList.pageSize = newList.pageSize;
+				oldList.columns = newList.columns;
+				oldList.query = newList.query;
+				oldList.sorts = newList.sorts;
+				oldList.relationOptions = newList.relationOptions;
+				webvellaAdminService.updateEntityList(oldList, popupData.currentEntity.name, successCallback, errorCallback);				
+			}
+    	};
+
+    	popupData.cancel = function () {
+    		$modalInstance.dismiss('cancel');
+    	};
+
+    	/// Aux
+    	function successCallback(response) {
+    		ngToast.create({
+    			className: 'success',
+    			content: '<span class="go-green">Success:</span> '+ 'The list was successfully saved'
+    		});
+    		$modalInstance.close('success');
+    		webvellaRootService.GoToState($state, $state.current.name, {});
+    	}
+
+    	function errorCallback(response) {
+    		ngToast.create({
+    			className: 'danger',
+    			content: '<span class="go-red">Error:</span> '+ response.message
+    		});
+    	}
+
+    	$log.debug('webvellaAdmin>entities>copyListModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    };
+
+
 
 })();

@@ -1,0 +1,798 @@
+﻿////////////////////////////////////////////////////////////////////////////////
+CREATE ENTITY
+////////////////////////////////////////////////////////////////////////////////
+
+#region << entity_name >>
+var ENTITY_ID = new Guid("guid");
+var ENTITY_NAME = "entity_name";
+{
+	#region << entity >>
+	{
+		InputEntity entity = new InputEntity();
+		entity.Id = ENTITY_ID;
+		entity.Name = ENTITY_NAME;
+		entity.Label = "Name";
+		entity.LabelPlural = "Names";
+		entity.System = true;
+		entity.IconName = "history";
+		entity.Weight = 9;
+		entity.RecordPermissions = new RecordPermissions();
+		entity.RecordPermissions.CanCreate = new List<Guid>();
+		entity.RecordPermissions.CanRead = new List<Guid>();
+		entity.RecordPermissions.CanUpdate = new List<Guid>();
+		entity.RecordPermissions.CanDelete = new List<Guid>();
+		//Create
+		entity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+		//READ
+		entity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+		//UPDATE
+		entity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+		//DELETE
+		entity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+		
+		{
+			var response = entMan.CreateEntity(entity);
+			if (!response.Success)
+				throw new Exception("System error 10050. Entity: " + ENTITY_NAME + " Field: entity creation" + " Message:" + response.Message);
+		}
+	}
+	#endregion
+}
+#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+AUTOINCREMENT
+////////////////////////////////////////////////////////////////////////////////
+
+#region << field_name >>
+{
+	InputAutoNumberField autonumberField = new InputAutoNumberField();
+	autonumberField.Id = new Guid("guid");
+	autonumberField.Name = "field_name";
+	autonumberField.Label = "field_name";
+	autonumberField.PlaceholderText = "";
+	autonumberField.Description = "";
+	autonumberField.HelpText = "";
+	autonumberField.Required = true;
+	autonumberField.Unique = true;
+	autonumberField.Searchable = true;
+	autonumberField.Auditable = false;
+	autonumberField.System = true;
+	autonumberField.DefaultValue = 0;
+	autonumberField.DisplayFormat = "{0}";
+	autonumberField.StartingNumber = 1;
+	autonumberField.EnableSecurity = true;
+	autonumberField.Permissions = new FieldPermissions();
+	autonumberField.Permissions.CanRead = new List<Guid>();
+	autonumberField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	autonumberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	autonumberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, autonumberField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+CHECKBOX
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >> 
+{
+	InputCheckboxField checkboxField = new InputCheckboxField();
+	checkboxField.Id = new Guid("guid");
+	checkboxField.Name = "field_name";
+	checkboxField.Label = "field_name";
+	checkboxField.PlaceholderText = "";
+	checkboxField.Description = "";
+	checkboxField.HelpText = "";
+	checkboxField.Required = true;
+	checkboxField.Unique = false;
+	checkboxField.Searchable = false;
+	checkboxField.Auditable = false;
+	checkboxField.System = true;
+	checkboxField.DefaultValue = true;
+	checkboxField.EnableSecurity = true;
+	checkboxField.Permissions = new FieldPermissions();
+	checkboxField.Permissions.CanRead = new List<Guid>();
+	checkboxField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	checkboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	checkboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, checkboxField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+///////////////////////////////////////////////////////////////////////////////
+ CURRENCY
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputCurrencyField currencyField = new InputCurrencyField();
+	currencyField.Id = new Guid("guid");
+	currencyField.Name = "field_name";
+	currencyField.Label = "field_name";
+	currencyField.PlaceholderText = "";
+	currencyField.Description = "";
+	currencyField.HelpText = "";
+	currencyField.Required = true;
+	currencyField.Unique = false;
+	currencyField.Searchable = false;
+	currencyField.Auditable = false;
+	currencyField.System = true;
+	currencyField.DefaultValue = 0;
+	currencyField.MinValue = 0;
+	currencyField.Currency = bgnCurrency;
+	currencyField.EnableSecurity = true;
+	currencyField.Permissions.CanRead = new List<Guid>();
+	currencyField.Permissions.CanUpdate = new List<Guid>();	
+	//READ
+	currencyField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	currencyField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);	
+	
+	{
+		var response = entMan.CreateField(ENTITY_ID, currencyField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+///////////////////////////////////////////////////////////////////////////////
+DATE
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+DATETIME
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputDateTimeField datetimeField = new InputDateTimeField();
+	datetimeField.Id = new Guid("guid");
+	datetimeField.Name = "field_name";
+	datetimeField.Label = "Field name";
+	datetimeField.PlaceholderText = "";
+	datetimeField.Description = "";
+	datetimeField.HelpText = "";
+	datetimeField.Required = true;
+	datetimeField.Unique = false;
+	datetimeField.Searchable = false;
+	datetimeField.Auditable = false;
+	datetimeField.System = true;
+	datetimeField.DefaultValue = null;
+	datetimeField.Format = "dd MMM yyyy HH:mm";
+	datetimeField.UseCurrentTimeAsDefaultValue = true;
+	datetimeField.EnableSecurity = true;
+	datetimeField.Permissions = new FieldPermissions();
+	datetimeField.Permissions.CanRead = new List<Guid>();
+	datetimeField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	datetimeField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	datetimeField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, datetimeField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+EMAIL
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+FILE
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+HTML
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputHtmlField htmlField = new InputHtmlField();
+	htmlField.Id = new Guid("guid");
+	htmlField.Name = "field_name";
+	htmlField.Label = "field_name";
+	htmlField.PlaceholderText = "";
+	htmlField.Description = "";
+	htmlField.HelpText = "";
+	htmlField.Required = false;
+	htmlField.Unique = false;
+	htmlField.Searchable = false;
+	htmlField.Auditable = false;
+	htmlField.System = true;
+	htmlField.DefaultValue = string.Empty;
+	htmlField.EnableSecurity = true;
+	htmlField.Permissions = new FieldPermissions();
+	htmlField.Permissions.CanRead = new List<Guid>();
+	htmlField.Permissions.CanUpdate = new List<Guid>();
+	
+	htmlField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	
+	htmlField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, htmlField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+///////////////////////////////////////////////////////////////////////////////
+IMAGE
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputImageField imageField = new InputImageField();
+	imageField.Id = new Guid("guid");
+	imageField.Name = "field_name";
+	imageField.Label = "field_name";
+	imageField.PlaceholderText = "";
+	imageField.Description = "";
+	imageField.HelpText = "";
+	imageField.Required = false;
+	imageField.Unique = false;
+	imageField.Searchable = false;
+	imageField.Auditable = false;
+	imageField.System = true;
+	imageField.DefaultValue = string.Empty;
+	imageField.EnableSecurity = true;
+	imageField.Permissions = new FieldPermissions();
+	imageField.Permissions.CanRead = new List<Guid>();
+	imageField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	imageField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	imageField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, imageField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+///////////////////////////////////////////////////////////////////////////////
+TEXTAREA
+///////////////////////////////////////////////////////////////////////////////
+
+#region << field_name >>
+{
+	InputMultiLineTextField textareaField = new InputMultiLineTextField();
+	textareaField.Id = new Guid("guid");
+	textareaField.Name = "field_name";
+	textareaField.Label = "field_name";
+	textareaField.PlaceholderText = "";
+	textareaField.Description = "";
+	textareaField.HelpText = "";
+	textareaField.Required = false;
+	textareaField.Unique = false;
+	textareaField.Searchable = false;
+	textareaField.Auditable = false;
+	textareaField.System = true;
+	textareaField.DefaultValue = string.Empty;
+	textareaField.VisibleLineNumber = 4;
+	textareaField.EnableSecurity = true;
+	textareaField.Permissions = new FieldPermissions();
+	textareaField.Permissions.CanRead = new List<Guid>();
+	textareaField.Permissions.CanUpdate = new List<Guid>();
+	
+	textareaField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	
+	textareaField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, textareaField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+MULTISELECT
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+NUMBER
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputNumberField numberField = new InputNumberField();
+	numberField.Id = new Guid("guid");
+	numberField.Name = "field_name";
+	numberField.Label = "field_name";
+	numberField.PlaceholderText = "";
+	numberField.Description = "";
+	numberField.HelpText = "";
+	numberField.Required = false;
+	numberField.Unique = false;
+	numberField.Searchable = false;
+	numberField.Auditable = false;
+	numberField.System = true;
+	numberField.DefaultValue = 0;
+	numberField.MinValue = null;
+	numberField.MaxValue = null;
+	numberField.DecimalPlaces = 0;
+	numberField.EnableSecurity = true;
+	numberField.Permissions = new FieldPermissions();
+	numberField.Permissions.CanRead = new List<Guid>();
+	numberField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	numberField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	numberField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, numberField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+////////////////////////////////////////////////////////////////////////////////
+PASSWORD
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+PERCENT
+////////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputPercentField percentField = new InputPercentField();
+	percentField.Id = new Guid("guid");
+	percentField.Name = "field_name";
+	percentField.Label = "field_name";
+	percentField.PlaceholderText = "";
+	percentField.Description = "";
+	percentField.HelpText = "";
+	percentField.Required = false;
+	percentField.Unique = false;
+	percentField.Searchable = false;
+	percentField.Auditable = false;
+	percentField.System = true;
+	percentField.DefaultValue = 0;
+	percentField.MinValue = 0;
+	percentField.DecimalPlaces = 2;
+	percentField.EnableSecurity = true;
+	percentField.Permissions = new FieldPermissions();
+	percentField.Permissions.CanRead = new List<Guid>();
+	percentField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	percentField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	percentField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, percentField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+PHONE
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+GUID
+////////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputGuidField guidField = new InputGuidField();
+	guidField.Id = new Guid("guid");
+	guidField.Name = "field_name";
+	guidField.Label = "Field name";
+	guidField.PlaceholderText = "";
+	guidField.Description = "";
+	guidField.HelpText = "";
+	guidField.Required = true;
+	guidField.Unique = false;
+	guidField.Searchable = false;
+	guidField.Auditable = false;
+	guidField.System = true;
+	guidField.DefaultValue = Guid.Empty;
+	guidField.GenerateNewId = false;
+	guidField.EnableSecurity = true;
+	guidField.Permissions = new FieldPermissions();
+	guidField.Permissions.CanRead = new List<Guid>();
+	guidField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	guidField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	guidField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	
+	{
+		var response = entMan.CreateField(ENTITY_ID, guidField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+////////////////////////////////////////////////////////////////////////////////
+DROPDOWN
+////////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputSelectField dropdownField = new InputSelectField();
+	dropdownField.Id = new Guid("guid");
+	dropdownField.Name = "field_name";
+	dropdownField.Label = "field_name";
+	dropdownField.PlaceholderText = "";
+	dropdownField.Description = "";
+	dropdownField.HelpText = "";
+	dropdownField.Required = false;
+	dropdownField.Unique = false;
+	dropdownField.Searchable = false;
+	dropdownField.Auditable = false;
+	dropdownField.System = true;
+	dropdownField.DefaultValue = "simple";
+	dropdownField.Options = new List<SelectFieldOption>
+		{
+			new SelectFieldOption(){ Key = "simple", Value = "simple" },
+			new SelectFieldOption(){ Key = "simple", Value = "simple" }
+		};
+	dropdownField.EnableSecurity = true;
+	dropdownField.Permissions = new FieldPermissions();
+	dropdownField.Permissions.CanRead = new List<Guid>();
+	dropdownField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	dropdownField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	dropdownField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+
+	{
+		var response = entMan.CreateField(ENTITY_ID, dropdownField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}	
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+TEXT
+///////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputTextField textboxField = new InputTextField();
+	textboxField.Id = new Guid("guid");
+	textboxField.Name = "field_name";
+	textboxField.Label = "field_name";
+	textboxField.PlaceholderText = "";
+	textboxField.Description = "";
+	textboxField.HelpText = "";
+	textboxField.Required = false;
+	textboxField.Unique = false;
+	textboxField.Searchable = false;
+	textboxField.Auditable = false;
+	textboxField.System = true;
+	textboxField.DefaultValue = string.Empty;
+	textboxField.MaxLength = null;
+	textboxField.EnableSecurity = true;
+	textboxField.Permissions = new FieldPermissions();
+	textboxField.Permissions.CanRead = new List<Guid>();
+	textboxField.Permissions.CanUpdate = new List<Guid>();
+	//READ
+	textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+	//UPDATE
+	textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+	{
+		var response = entMan.CreateField(ENTITY_ID, textboxField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+////////////////////////////////////////////////////////////////////////////////
+URL
+////////////////////////////////////////////////////////////////////////////////
+#region << field_name >>
+{
+	InputUrlField urlField = new InputUrlField();
+	urlField.Id = new Guid("guid");
+	urlField.Name = "field_name";
+	urlField.Label = "field_name";
+	urlField.PlaceholderText = "";
+	urlField.Description = "";
+	urlField.HelpText = "";
+	urlField.Required = false;
+	urlField.Unique = false;
+	urlField.Searchable = false;
+	urlField.Auditable = false;
+	urlField.System = true;
+	urlField.DefaultValue = "";
+	urlField.MaxLength = null;
+	urlField.OpenTargetInNewWindow = true;
+	urlField.EnableSecurity = false;
+	{
+		var response = entMan.CreateField(ENTITY_ID, urlField, false);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Field: field_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+////////////////////////////////////////////////////////////////////////////////
+TREE SELECT
+////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+ 1:N RELATION
+///////////////////////////////////////////////////////////////////////////////
+
+#region << relation_name Relation >>
+{
+	var originEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	var targetEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	EntityRelation oneToNRelation = new EntityRelation();
+	oneToNRelation.Id = new Guid("guid");
+	oneToNRelation.Name = "relation_name";
+	oneToNRelation.Label = "relation_name";
+	oneToNRelation.System = true;
+	oneToNRelation.RelationType = EntityRelationType.OneToMany;
+	oneToNRelation.OriginEntityId = originEntity.Id;
+	oneToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "field_name").Id;
+	oneToNRelation.TargetEntityId = targetEntity.Id;
+	oneToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "field_name").Id;
+	{
+		var result = relMan.Create(oneToNRelation);
+		if (!result.Success)
+			throw new Exception("CREATE relation_name RELATION:" + result.Message);
+	}
+}
+#endregion
+
+///////////////////////////////////////////////////////////////////////////////
+ N:N RELATION
+///////////////////////////////////////////////////////////////////////////////
+
+#region << relation_name Relation >>
+{
+	var originEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	var targetEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	EntityRelation NToNRelation = new EntityRelation();
+	NToNRelation.Id = new Guid("guid");
+	NToNRelation.Name = "relation_name";
+	NToNRelation.Label = "relation_name";
+	NToNRelation.System = true;
+	NToNRelation.RelationType = EntityRelationType.ManyToMany;
+	NToNRelation.OriginEntityId = originEntity.Id;
+	NToNRelation.OriginFieldId = originEntity.Fields.Single(x => x.Name == "field_name").Id;
+	NToNRelation.TargetEntityId = targetEntity.Id;
+	NToNRelation.TargetFieldId = targetEntity.Fields.Single(x => x.Name == "field_name").Id;
+	{
+		var result = relMan.Create(NToNRelation);
+		if (!result.Success)
+			throw new Exception("CREATE relation_name RELATION:" + result.Message);
+	}
+}
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+ UPDATE VIEW
+///////////////////////////////////////////////////////////////////////////////
+
+#region << view_name >>
+{
+	var updateViewEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	var updateView = updateViewEntity.RecordViews.Single(x => x.Name == "view_name");
+	var updateViewInput = new InputRecordView();
+	var viewSection = new InputRecordViewSection();
+	var viewRow = new InputRecordViewRow();
+	var viewColumn = new InputRecordViewColumn();
+	var viewItem = new InputRecordViewFieldItem();
+	//General view fields
+	
+	//Convert recordList to recordListInput
+	updateViewInput = updateView.DynamicMapTo<InputRecordView>();
+
+	//General view fields
+	//updateViewInput.IconName = "";
+
+	#region << Section >>
+	viewSection = new InputRecordViewSection();
+	viewSection.Id = Guid.NewGuid();
+	viewSection.Name = "details";
+	viewSection.Label = "Details";
+	viewSection.ShowLabel = false;
+	viewSection.CssClass = "";
+	viewSection.Collapsed = false;
+	viewSection.TabOrder = "left-right";
+	viewSection.Weight = 1;
+	viewSection.Rows = new List<InputRecordViewRow>();
+
+	#region << Row >>
+	viewRow = new InputRecordViewRow();
+	viewRow.Id = Guid.NewGuid();
+	viewRow.Weight = 1;
+	viewRow.Columns = new List<InputRecordViewColumn>();
+
+	#region << Column 1 >>
+	viewColumn = new InputRecordViewColumn();
+	viewColumn.GridColCount = 12;
+	viewColumn.Items = new List<InputRecordViewItemBase>();
+
+
+	#region << name >>
+	viewItem = new InputRecordViewFieldItem();
+	viewItem.EntityId = ENTITY_ID;
+	viewItem.EntityName = ENTITY_NAME;
+	viewItem.FieldId = updateViewEntity.Fields.Single(x => x.Name == "name").Id;
+	viewItem.FieldName = "name";
+	viewItem.Type = "field";
+	viewColumn.Items.Add(viewItem);
+	#endregion
+
+
+	//Save column
+	viewRow.Columns.Add(viewColumn);
+	#endregion
+
+	//Save row
+	viewSection.Rows.Add(viewRow);
+	#endregion
+
+	//Save section
+	foreach (var region in updateViewInput.Regions)
+	{
+		if (region.Name == "content")
+		{
+			region.Sections.Add(viewSection);
+		}
+	}
+
+	#endregion
+
+	{
+		var response = entMan.UpdateRecordView(ENTITY_ID, updateViewInput);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Updated view: create" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+///////////////////////////////////////////////////////////////////////////////
+ UPDATE LIST
+///////////////////////////////////////////////////////////////////////////////
+
+#region << list_name >>
+{
+	var updateListEntity = entMan.ReadEntity(ENTITY_ID).Object;
+	var updateList = updateListEntity.RecordLists.Single(x => x.Name == "list_name");
+	var updateListInput = new InputRecordList();
+	var listItem = new InputRecordListFieldItem();
+	var listSort = new InputRecordListSort();
+	var listQuery = new InputRecordListQuery();
+					
+	//Convert recordList to recordListInput
+	updateListInput = updateList.DynamicMapTo<InputRecordList>();
+	
+	//General list details
+	//updateListInput.IconName = "";	
+	
+	//Fields
+	#region << field_name >>
+	listItem = new InputRecordListFieldItem();
+	listItem.EntityId = ENTITY_ID;
+	listItem.EntityName = ENTITY_NAME;
+	listItem.FieldId = updateListEntity.Fields.Single(x => x.Name == "field_name").Id;
+	listItem.FieldName = "field_name";
+	listItem.Type = "field";
+	updateListInput.Columns.Add(listItem);
+	#endregion
+	
+	//Query
+	#region << query descr >>
+		//listQuery = new InputRecordListQuery();
+		//listQuery.FieldName = "id";
+		//listQuery.FieldValue = "00000000-0000-0000-0000-000000000000";
+		//listQuery.QueryType = "AND"; //"OR",EQ,NOT,LT,LTE,GT,GTE,CONTAINS,NOTCONTAINS,STARTSWITH,NOTSTARTSWITH
+		//listQuery.SubQueries = new List<InputRecordListQuery>();
+		//updateListInput.Query = listQuery;
+	#endregion	
+	
+	
+	//Sort
+	#region << Sort >>
+		//listSort = new InputRecordListSort();
+		//listSort.FieldName = "created_on";
+		//listSort.SortType = "descending";
+		//updateListInput.Sorts.Add(listSort);
+	#endregion
+	{
+		var response = entMan.UpdateRecordList(ENTITY_ID, updateListInput);
+		if (!response.Success)
+			throw new Exception("System error 10060. Entity: " + ENTITY_NAME + " Updated List: list_name" + " Message:" + response.Message);
+	}
+}
+#endregion
+
+
+////////////////////////////////////////////////////////////////////////////////
+//	CREATE INDEX
+////////////////////////////////////////////////////////////////////////////////
+
+#region << collection_name >>
+{
+	MongoUrl targetMongoUrl = new MongoUrl(Settings.ConnectionString);
+	var TargetServer = new MongoClient(targetMongoUrl).GetServer();
+	var TargetDatabase = TargetServer.GetDatabase(targetMongoUrl.DatabaseName);
+	var indexCollection = TargetDatabase.GetCollection<BsonDocument>("collection_name");
+
+	#region << field_name_1-field_name_2-field_name_3_desc >>
+	{
+		var indexName = "field_name_1-field_name_2-field_name_3_desc";
+
+		var ascendingFieldNamesArray = new List<string>();
+		ascendingFieldNamesArray.Add("field_name_1");
+		ascendingFieldNamesArray.Add("field_name_2");
+
+
+		var descendingFieldNamesArray = new List<string>();
+		descendingFieldNamesArray.Add("field_name_3");
+
+		var indexesList = indexCollection.GetIndexes();
+		var targetIndex = indexesList.SingleOrDefault(x => x.Name == indexName);
+		if (targetIndex != null)
+		{
+			indexCollection.DropIndexByName(indexName);
+		}
+
+		IndexOptionsBuilder options = IndexOptions.SetUnique(false).SetDropDups(false).SetName(indexName).SetBackground(true);
+		var result = indexCollection.CreateIndex(new IndexKeysBuilder().Ascending(ascendingFieldNamesArray.ToArray()).Descending(descendingFieldNamesArray.ToArray()), options);
+		if (!result.Ok)
+		{
+			throw new Exception(result.ErrorMessage);
+		}
+	}
+	#endregion
+}
+#endregion
+
+
+////////////////////////////////////////////////////////////////////////////////
+//	AREA SUBSCRIPTIONS ADD
+////////////////////////////////////////////////////////////////////////////////
+
+#region << area add subsription: AreaName -> EntityName >>
+{
+	var updatedAreaId = new Guid("area_guid");
+	var updateAreaResult = UpsetAreaSubscription(entMan, recMan, updatedAreaId, "entity_name", "view_name", "list_name");
+	if (!updateAreaResult.Success)
+	{
+		throw new Exception("System error 10060. Area update with id : " + updatedAreaId + " Message:" + updateAreaResult.Message);
+	}
+}
+#endregion

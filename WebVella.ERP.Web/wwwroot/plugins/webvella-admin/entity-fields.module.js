@@ -25,17 +25,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
-					templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAdminEntityFieldsController',
-					templateUrl: '/plugins/webvella-admin/entity-fields.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-admin/entity-fields.view.html',
 					controllerAs: 'contentData'
 				}
 			},
@@ -1374,10 +1374,14 @@
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
-
+		popupData.validation = {};
 		popupData.contentData = contentData;
 		popupData.createFieldStep2Loading = false;
 		popupData.field = webvellaAdminService.initField();
+
+		popupData.isEmpty = function(object){
+			return isEmpty(object)
+		}
 
 		popupData.fieldTypes = contentData.fieldTypes;
 		// Inject a searchable field
@@ -1722,6 +1726,7 @@
 
 		//////
 		popupData.ok = function () {
+			popupData.validation = {};
 			switch (popupData.field.fieldType) {
 				case 3:
 					for (var i = 0; i < contentData.currencyMetas.length; i++) {
@@ -1745,6 +1750,14 @@
 				case 5: //Date & Time
 					if (popupData.field.defaultValue !== null) {
 						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					}
+					break;
+				case 11: //Multiselect
+					if (popupData.field.required && (!popupData.field.defaultValue || popupData.field.defaultValue.length == 0)) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> You need to select at least one option as default, when the field is required'
+						});
 					}
 					break;
 			}
@@ -1781,22 +1794,33 @@
 		}
 
 		popupData.toggleKeyAsDefault = function (key) {
-			if (popupData.field.defaultValue.indexOf(key) > -1) {
-				//There could be multiple keys with the same key
-				var cleanArray = [];
-				for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-					if (popupData.field.defaultValue[j] !== key) {
-						cleanArray.push(popupData.field.defaultValue[j]);
-					}
+			if (!key || key == "") {
+  				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> You need to fill in value or label first'
+				});
+			}
+			else {
+				if (!popupData.field.defaultValue) {
+					popupData.field.defaultValue = [];
 				}
-				popupData.field.defaultValue = fastCopy(cleanArray);
-			} else {
-				popupData.field.defaultValue.push(key);
+				if (popupData.field.defaultValue.indexOf(key) > -1) {
+					//There could be multiple keys with the same key
+					var cleanArray = [];
+					for (var j = 0; j < popupData.field.defaultValue.length; j++) {
+						if (popupData.field.defaultValue[j] !== key) {
+							cleanArray.push(popupData.field.defaultValue[j]);
+						}
+					}
+					popupData.field.defaultValue = fastCopy(cleanArray);
+				} else {
+					popupData.field.defaultValue.push(key);
+				}
 			}
 		}
 
 		popupData.isKeyDefault = function (key) {
-			
+
 			if (popupData.field.defaultValue && popupData.field.defaultValue.indexOf(key) > -1) {
 				return true;
 			} else {
@@ -1831,7 +1855,9 @@
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
-
+		popupData.isEmpty = function(object){
+			return isEmpty(object)
+		}
 		//#region << Init >>
 		popupData.modalInstance = $modalInstance;
 		popupData.contentData = contentData;

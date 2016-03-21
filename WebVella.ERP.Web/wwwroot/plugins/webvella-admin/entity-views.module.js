@@ -11,7 +11,8 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityViewsController', controller)
-	    .controller('CreateViewModalController', createViewModalController);
+	    .controller('CreateViewModalController', createViewModalController)
+		.controller('CopyViewModalController', CopyViewModalController);
 
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
@@ -24,17 +25,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminEntityViewsController',
-                    templateUrl: '/plugins/webvella-admin/entity-views.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/entity-views.view.html',
                     controllerAs: 'contentData'
                 }
             },
@@ -147,6 +148,37 @@
             $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         });
 
+
+		contentData.calculateStats = function(view){
+			var itemsCount = 0;
+			var sectionsCount = 0;
+			for (var i = 0; i < view.regions.length; i++) {
+				if(view.regions[i].name == "content"){
+					sectionsCount = view.regions[i].sections.length;
+					var sections = 	view.regions[i].sections;
+					for (var j = 0; j < sections.length; j++) {
+						 var rows =  sections[j].rows;
+						 for (var m = 0; m < rows.length; m++) {
+							   var columns = rows[m].columns;
+							   for (var k = 0; k < columns.length; k++) {
+									var items = columns[k].items;
+									itemsCount += items.length;
+							   }
+						 }
+					}
+				}
+			}
+
+
+			if(sectionsCount != 0){
+				return "<span class='go-green'>" + itemsCount + "</span> items and <span class='go-green'>"	+ sectionsCount+ "</span>  sections";
+			}
+			else {
+				return "<span class='go-gray'>empty</span>";
+			}
+		}
+
+
     	//Create new view modal
         contentData.createView = function () {
 
@@ -165,6 +197,27 @@
 
         }
 
+    	//Cppy new view modal
+        contentData.copyView = function (view) {
+
+        	var modalInstance = $uibModal.open({
+        		animation: false,
+        		templateUrl: 'copyModal.html',
+        		controller: 'CopyViewModalController',
+        		controllerAs: "popupData",
+        		size: "",
+        		resolve: {
+        			contentData: function () {
+        				return contentData;
+        			},
+        			view: function () {
+        				return view;
+        			}
+        		}
+        	});
+
+        }
+
 
         $log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
@@ -172,8 +225,7 @@
 
 	//// Modal Controllers
     createViewModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
-
-	/* @ngInject */
+ 	/* @ngInject */
     function createViewModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
     	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
@@ -204,6 +256,78 @@
     		var location = $location;
     		//Process the response and generate the validation Messages
     		webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+    	}
+
+    	$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    };
+
+
+    CopyViewModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData','view', 'webvellaAdminService', 'webvellaRootService'];
+	/* @ngInject */
+    function CopyViewModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, view, webvellaAdminService, webvellaRootService) {
+    	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    	/* jshint validthis:true */
+    	var popupData = this;
+    	popupData.modalInstance = $modalInstance;
+    	popupData.view = fastCopy(view);
+    	popupData.currentEntity = fastCopy(contentData.entity);
+		popupData.alternative = "new";
+		popupData.viewName = null;
+		popupData.viewNameValidationError = false;
+		
+		popupData.entityViews = []; //filter the current view
+
+		for (var i = 0; i < popupData.currentEntity.recordViews.length; i++) {
+			 if(popupData.currentEntity.recordViews[i].name != popupData.view.name){
+				popupData.entityViews.push(popupData.currentEntity.recordViews[i]);
+			 }
+		}
+
+		popupData.selectedView = popupData.entityViews[0];
+
+    	popupData.ok = function () {
+			popupData.viewNameValidationError = false;
+			if(popupData.alternative == "new"){
+				if(popupData.viewName == null || popupData.viewName == ""){
+					popupData.viewNameValidationError = true;
+				}
+				else {
+	    			 var newView = fastCopy(popupData.view);
+					 newView.id = null;
+					 newView.name = popupData.viewName;
+					 newView.label = popupData.viewName;
+					 webvellaAdminService.createEntityView(newView, popupData.currentEntity.name, successCallback, errorCallback);
+				}
+			}
+			else {
+	   			var newView = fastCopy(popupData.view);
+				var oldView = fastCopy(popupData.selectedView);
+				oldView.regions = newView.regions;
+				oldView.sidebar = newView.sidebar;
+				oldView.relationOptions = newView.relationOptions;
+				webvellaAdminService.updateEntityView(oldView, popupData.currentEntity.name, successCallback, errorCallback);				
+			}
+    	};
+
+    	popupData.cancel = function () {
+    		$modalInstance.dismiss('cancel');
+    	};
+
+    	/// Aux
+    	function successCallback(response) {
+    		ngToast.create({
+    			className: 'success',
+    			content: '<span class="go-green">Success:</span> '+ 'The view was successfully saved'
+    		});
+    		$modalInstance.close('success');
+    		webvellaRootService.GoToState($state, $state.current.name, {});
+    	}
+
+    	function errorCallback(response) {
+    		ngToast.create({
+    			className: 'danger',
+    			content: '<span class="go-red">Error:</span> '+ response.message
+    		});
     	}
 
     	$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

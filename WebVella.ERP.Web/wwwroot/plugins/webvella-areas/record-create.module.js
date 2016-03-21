@@ -23,17 +23,17 @@
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
 					controller: 'WebVellaAreasSidebarController',
-					templateUrl: '/plugins/webvella-areas/sidebar.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordCreateController',
-					templateUrl: '/plugins/webvella-areas/record-create.view.html?v=' + htmlCacheBreaker,
+					templateUrl: '/plugins/webvella-areas/record-create.view.html',
 					controllerAs: 'contentData'
 				}
 			},
@@ -87,6 +87,7 @@
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
 		contentData.siteMap = fastCopy(resolvedSitemap);
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.currentArea = null;
 		for (var i = 0; i < contentData.siteMap.data.length; i++) {
 			if (contentData.siteMap.data[i].name == $state.params.areaName) {
@@ -120,7 +121,6 @@
 		for (var l = 0; l < contentData.currentEntity.fields.length; l++) {
 			contentData.entityData[contentData.currentEntity.fields[l].name] = null;
 		}
-
 		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		contentData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
@@ -260,8 +260,8 @@
 				contentData.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
-					var overwrite = true;
+					var targetPath = "/fs/" + contentData.currentEntity.name + "/" + newGuid() + "/" + fileName;
+					var overwrite = false;
 					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 				}
 				contentData.uploadErrorCallback = function (response) {
@@ -278,13 +278,12 @@
 
 		contentData.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = contentData.selectedSidebarPage.data[fieldName];
+			var filePath = contentData.entityData[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					contentData.selectedSidebarPage.data[fieldName] = null;
+					contentData.entityData[fieldName] = null;
 					contentData.progress[fieldName] = 0;
-					contentData.fieldUpdate(item, null);
 				}, 0);
 				return true;
 			}
@@ -344,17 +343,118 @@
 		//#endregion
 
 
+		//#region << Render >>
+		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
+		contentData.checkUserEntityPermissions = function(permissionsCsv){
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,permissionsCsv));
+		}
+
+
+		contentData.getRelationLabel = function (item) {
+			if (item.fieldLabel) {
+				return item.fieldLabel
+			}
+			else {
+				var relationName = item.relationName;
+				var relation = findInArray(contentData.relationsList, "name", relationName);
+				if (relation) {
+					return relation.label;
+				}
+				else {
+					return "";
+				}
+			}
+		}
+
+		//#region << Methods to generate the record details view name >>
+		
+		//Select default view for the area
+		contentData.selectedList = {};
+		for (var j = 0; j < contentData.currentEntity.recordLists.length; j++) {
+			if (contentData.currentEntity.recordLists[j].name === $stateParams.listName) {
+				contentData.selectedList = contentData.currentEntity.recordLists[j];
+				break;
+			}
+		}
+
+
+
+		//Generate the proper view name for the record details screen (needed in the redirect)
+		contentData.generateViewName = function (record) {
+			//default is the selected view in the area
+			var result = fastCopy(contentData.selectedList.name);
+
+			if (contentData.selectedList.viewNameOverride && ccontentData.selectedList.viewNameOverride.length > 0) {
+				var arrayOfTemplateKeys = contentData.selectedList.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
+				var resultStringStorage = fastCopy(contentData.selectedList.viewNameOverride);
+
+				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
+					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
+						switch (arrayOfTemplateKeys[i]) {
+							case "{areaName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
+								break;
+							case "{entityName}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.entityName));
+								break;
+							case "{filter}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.filter));
+								break;
+							case "{page}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.page));
+								break;
+							case "{searchQuery}":
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.searchQuery));
+								break;
+						}
+					}
+					else {
+						//Extract the dataName from string by removing the leading and the closing {}
+						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
+						//Check template has corresponding list data value
+						if (record[dataName] != undefined) {
+							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
+							//Case 1 - data is not from relation (not starting with $)
+							if(!dataName.startsWith('$')){
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
+							}
+							else {
+							//Case 2 - relation field
+								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
+							}
+
+						}
+						else {
+							//NO -> substitute the template key with the dataName only, as no value could be extracted
+							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(dataName));
+						}
+					}
+
+				}
+				result = resultStringStorage;
+			}
+
+			return result;
+		}
+		//#endregion
+
+		//#endregion
+
 		//#region << Save >>
-		contentData.create = function () {
+		contentData.create = function (redirectTarget) {
 			//Alter some data before save
 			for (var k = 0; k < availableViewFields.length; k++) {
 				if (availableViewFields[k].type === "field") {
 					switch (availableViewFields[k].meta.fieldType) {
 						case 4: //Date
-							contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
+							if(contentData.entityData[availableViewFields[k].meta.name] != null){
+								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
+							}
 							break;
 						case 5: //Date & Time
-							contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
+							if(contentData.entityData[availableViewFields[k].meta.name] != null){
+								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
+							}
 							break;
 						case 14: //Percent
 							//need to convert to decimal 0 <= val <= 100 Divide by 100
@@ -369,7 +469,15 @@
 			}
 			contentData.entityData["created_on"] = moment().utc().toISOString();
 			//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-			webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
+			switch(redirectTarget){
+				case "details":
+					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
+					break;
+				case "list":
+					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
+					break;
+			}
+			
 
 		};
 
@@ -393,6 +501,38 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
+				var detailsViewName = contentData.generateViewName(response.object);
+
+				$state.go("webvella-areas-record-view", {
+					areaName: $stateParams.areaName,
+					entityName: $stateParams.entityName,
+					recordId: response.object.data[0].id,
+					viewName: detailsViewName,
+					auxPageName:"*",
+					filter: $stateParams.filter,
+					page: $stateParams.page
+
+				}, { reload: true });
+
+				//$state.go("webvella-entity-records", {
+				//	areaName: $stateParams.areaName,
+				//	entityName: $stateParams.entityName,
+				//	listName: $stateParams.listName,
+				//	filter: $stateParams.filter,
+				//	page: $stateParams.page
+
+				//}, { reload: true });
+			}, 0);
+		}
+
+		function successCallbackList(response) {
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> ' + response.message
+			});
+			$timeout(function () {
+				var detailsViewName = contentData.generateViewName(response.object);
+
 				$state.go("webvella-entity-records", {
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,

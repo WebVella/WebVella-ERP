@@ -1,4 +1,4 @@
-﻿<p ng-if="::(canAddExisting || canCreate) && !hasError && listData.length > 0">
+﻿<p ng-if="::(canAddExisting || canCreate) && !hasError">
 	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 		<i class="fa fa-download"></i> Add existing
 	</a>
@@ -17,10 +17,10 @@
 	<tbody>
 		<tr ng-repeat="record in listData track by record.id">
 			<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;">
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
+				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 					<i class="fa fa-pencil"></i>
 				</a>
-				<a href='javascript:void(0)' class="btn btn-default btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
+				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?"  ng-if="::canRemove">
 					<i class="fa fa-times go-red"></i>
 				</a>
 			</td>
@@ -29,25 +29,7 @@
 					<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 				</div>
 				<div ng-switch="::column.meta.fieldType" ng-switch-when="fieldFromRelation">
-					<div ng-switch-when="1" ng-switch="::dataKind">
-						<div ng-switch-when="origin">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="target">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
-					</div>
-					<div ng-switch-when="2" ng-switch="::dataKind">
-						<div ng-switch-when="origin">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="target">
-							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
-						</div>
-						<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
-					</div>
-					<div ng-switch-when="3" ng-switch="::dataKind">
+					<div ng-switch="::dataKind">
 						<div ng-switch-when="origin">
 							<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 						</div>
@@ -73,7 +55,9 @@
 		</tr>
 	</tbody>
 </table>
-<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>
+
+<!--<div ng-show="::listData.length == 0" class="ng-hide"  ng-if="::!hasError">No items</div>-->
+
 <div ng-if="::hasError" ng-bind="errorMessage" class="go-red"></div>
 
 

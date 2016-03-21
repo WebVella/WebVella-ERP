@@ -1,29 +1,29 @@
 <nav class="navbar navbar-inverse desktop">
 	<div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" ng-click="topbarData.toggleCollapsedNav()">
+			<button type="button" class="navbar-toggle collapsed" ng-click="pluginData.collapsedNav = !pluginData.collapsedNav">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="" title="WebVella ERP" style="margin-right:30px;">
-				<img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="display:inline-block;margin-right:10px; position: relative; top: -2px;" />
+			<!--<span class="navbar-brand" title="WebVella ERP">
+				<img alt="Brand" src="/plugins/webvella-desktop/assets/logo.png" style="width:20px;display:inline-block;margin-right:10px; position: relative; top: -2px;" />
 				<span class="hidden-xs hidden-sm">WebVella ERP</span>
-			</a>
+			</span>-->
 		</div>
-		<div class="collapse navbar-collapse" ng-class="{'display-block':topbarData.showCollapsedNav}">
-			<!--<ul class="nav navbar-nav">
-				<li ng-repeat="item in pluginData.topnav" ui-sref-active="active"><a href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
-			</ul>-->
+		<div class="collapse navbar-collapse" ng-class="{'display-block':pluginData.collapsedNav}">
+			<ul class="nav navbar-nav">
+				<li ng-repeat="item in pluginData.topnav" ng-class="{'active':pluginData.isNavActive(item)}"><a title="{{item.weight}}" href="javascript:void(0)" ui-sref="{{item.stateName}}({{item.stateParams}})">{{item.label}}</a></li>
+			</ul>
 			<ul class="nav navbar-nav navbar-right"  ng-cloak>
-				<li class="hidden-xs hidden-sm">
+				<!--<li class="hidden-xs hidden-sm">
 					<p class="navbar-text">
-						<img class="avatar" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
-						<img class="avatar" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
-						{{pluginData.user.first_name}} {{pluginData.user.last_name}}
+						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" src="/plugins/webvella-root/assets/avatar.png" ng-if="!pluginData.user.image">
+						<img class="avatar" title="{{pluginData.user.first_name}} {{pluginData.user.last_name}}" ng-src="{{pluginData.user.image}}" ng-if="pluginData.user.image">
+						
 					</p>
-				</li>
+				</li>-->
 				<!--<li><a href="javascript:void(0)">Account</a></li>-->
 				<li><a href="javascript:void(0)" ng-click="pluginData.logout()"><i class="fa fa-sign-out"></i> logout</a></li>
 			</ul>

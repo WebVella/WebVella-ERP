@@ -1345,6 +1345,8 @@ namespace WebVella.ERP.Web.Controllers
 						tree.NodeNameFieldId = inputTree.NodeNameFieldId;
 					if (prop.Name.ToLower() == "nodelabelfieldid")
 						tree.NodeLabelFieldId = inputTree.NodeLabelFieldId;
+					if (prop.Name.ToLower() == "nodeweightfieldid")
+						tree.NodeWeightFieldId = inputTree.NodeWeightFieldId;
 					if (prop.Name.ToLower() == "rootnodes")
 						tree.RootNodes = inputTree.RootNodes;
 					if (prop.Name.ToLower() == "nodeobjectproperties")
@@ -1355,8 +1357,8 @@ namespace WebVella.ERP.Web.Controllers
 			{
 				return DoBadRequestResponse(response, "Input object is not in valid format! It cannot be converted.", e);
 			}
-
-			return DoResponse(entityManager.UpdateRecordTree(entity, tree));
+			var updateResponse = entityManager.UpdateRecordTree(entity, tree);
+			return DoResponse(updateResponse);
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "api/v1/en_US/meta/entity/{entityName}/tree/{treeName}")]
@@ -2978,6 +2980,7 @@ namespace WebVella.ERP.Web.Controllers
 			Field treeParrentField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeParentIdFieldId);
 			Field nameField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeNameFieldId);
 			Field labelField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeLabelFieldId);
+			Field weightField = treeEntity.Fields.FirstOrDefault(f => f.Id == tree.NodeWeightFieldId);
 
 			var relIdField = treeEntity.Fields.Single(x => x.Name == "id");
 
@@ -2994,6 +2997,13 @@ namespace WebVella.ERP.Web.Controllers
 
 			if (!fieldIdsToInclude.Contains(tree.NodeLabelFieldId))
 				fieldIdsToInclude.Add(tree.NodeLabelFieldId);
+
+			var weightFieldNonNullable = Guid.Empty;
+			if(tree.NodeWeightFieldId.HasValue) {
+				weightFieldNonNullable = tree.NodeWeightFieldId.Value;
+			}
+			if (weightField != null && !fieldIdsToInclude.Contains(weightFieldNonNullable))
+				fieldIdsToInclude.Add(weightFieldNonNullable);
 
 			string queryFields = string.Empty;
 			foreach (var fieldId in fieldIdsToInclude)
@@ -3014,12 +3024,17 @@ namespace WebVella.ERP.Web.Controllers
 			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
 			foreach (var rootNode in tree.RootNodes.OrderBy(x=>x.Name))
 			{
-				//List<ResponseTreeNode> children = GetTreeNodeChildren(treeEntity.Name, queryFields, treeIdField.Name,
-				//					 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit );
-
-				List<ResponseTreeNode> children = GetTreeNodeChildren(allRecords, treeIdField.Name,
-									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, 1, tree.DepthLimit);
-
+				List<ResponseTreeNode> children = new List<ResponseTreeNode>();
+				int? rootNodeWeight = null;
+				if(weightField != null) {
+					rootNodeWeight = rootNode.Weight;
+					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
+									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, weightField.Name, 1, tree.DepthLimit);
+				}
+				else {
+					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
+									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, "no-weight", 1, tree.DepthLimit);				
+				}
 				rootNodes.Add(new ResponseTreeNode
 				{
 					RecordId = rootNode.RecordId,
@@ -3027,6 +3042,7 @@ namespace WebVella.ERP.Web.Controllers
 					ParentId = rootNode.ParentId,
 					Name = rootNode.Name,
 					Label = rootNode.Label,
+					Weight = rootNodeWeight,
 					Nodes = children
 				});
 
@@ -3036,7 +3052,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		private List<ResponseTreeNode> GetTreeNodeChildren(string entityName, string fields, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId, int depth = 1 , int maxDepth = 20 )
+				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1 , int maxDepth = 20 )
 		{
 			if (depth >= maxDepth)
 				return new List<ResponseTreeNode>();
@@ -3049,22 +3065,41 @@ namespace WebVella.ERP.Web.Controllers
 			depth++;
             foreach (var record in records)
 			{
-				nodes.Add(new ResponseTreeNode
-				{
-					RecordId = (Guid)record["id"],
-					Id = (Guid)record[idFieldName],
-					ParentId = (Guid?)record[parentIdFieldName],
-					Name = record[nameFieldName]?.ToString(),
-					Label = record[labelFieldName]?.ToString(),
-					Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName, (Guid)record[idFieldName], depth, maxDepth)
-				});
+				if(weightFieldName == "no-weight") {
+					nodes.Add(new ResponseTreeNode
+					{
+						RecordId = (Guid)record["id"],
+						Id = (Guid)record[idFieldName],
+						ParentId = (Guid?)record[parentIdFieldName],
+						Name = record[nameFieldName]?.ToString(),
+						Label = record[labelFieldName]?.ToString(),
+						Weight = null,
+						Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName,(Guid)record[idFieldName], weightFieldName, depth, maxDepth)
+					});
+				}
+				else {
+					nodes.Add(new ResponseTreeNode
+					{
+						RecordId = (Guid)record["id"],
+						Id = (Guid)record[idFieldName],
+						ParentId = (Guid?)record[parentIdFieldName],
+						Name = record[nameFieldName]?.ToString(),
+						Label = record[labelFieldName]?.ToString(),
+						Weight = (int?)((decimal?)record[weightFieldName]),
+						Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName,(Guid)record[idFieldName], weightFieldName, depth, maxDepth)
+					});
+				}
 			}
-
-			return nodes.OrderBy(x => x.Name).ToList();
+			if(weightFieldName == "no-weight") {
+				return nodes.OrderBy(x => x.Name).ToList();
+			}
+			else {
+				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
+			}
 		}
 
 		private List<ResponseTreeNode> GetTreeNodeChildren(List<EntityRecord> allRecords, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId, int depth = 1, int maxDepth = 20)
+				string nameFieldName, string labelFieldName, Guid? nodeId,string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
 		{
 			if (depth >= maxDepth)
 				return new List<ResponseTreeNode>();
@@ -3074,19 +3109,80 @@ namespace WebVella.ERP.Web.Controllers
 			depth++;
 			foreach (var record in records)
 			{
-				nodes.Add(new ResponseTreeNode
-				{
-					RecordId = (Guid)record["id"],
-					Id = (Guid)record[idFieldName],
-					ParentId = (Guid?)record[parentIdFieldName],
-					Name = record[nameFieldName]?.ToString(),
-					Label = record[labelFieldName]?.ToString(),
-					Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], depth, maxDepth)
-				});
+				if(weightFieldName == "no-weight") {
+					nodes.Add(new ResponseTreeNode
+					{
+						RecordId = (Guid)record["id"],
+						Id = (Guid)record[idFieldName],
+						ParentId = (Guid?)record[parentIdFieldName],
+						Name = record[nameFieldName]?.ToString(),
+						Label = record[labelFieldName]?.ToString(),
+						Weight = null,
+						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName],weightFieldName, depth, maxDepth)
+					});
+				}
+				else {
+					nodes.Add(new ResponseTreeNode
+					{
+						RecordId = (Guid)record["id"],
+						Id = (Guid)record[idFieldName],
+						ParentId = (Guid?)record[parentIdFieldName],
+						Name = record[nameFieldName]?.ToString(),
+						Label = record[labelFieldName]?.ToString(),
+						Weight = (int?)((decimal?)record[weightFieldName]),
+						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName],weightFieldName, depth, maxDepth)
+					});
+				}
 			}
 
-			return nodes.OrderBy(x => x.Name).ToList();
+			if(weightFieldName == "no-weight") {
+				return nodes.OrderBy(x => x.Name).ToList();
+			}
+			else {
+				return nodes.OrderBy(x => x.Weight).ThenBy(y => y.Name).ToList();
+			}
 		}
+
+
+		// Export list records to csv
+		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
+		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10) {
+			if(count == -1) {
+				//return all records 
+			}
+			else if(count > 0) {
+				//returh the defined count of records
+			}
+			else {
+				//return empty list
+			}
+		
+			//Just for test
+			var theExportFilePathInTempGridFs = "/fs/entityGuid/listGuid/timestamp/boz-export-path.csv";
+			
+				
+			var response = new ResponseModel();
+			response.Success = true;
+			response.Message = "Records successfully exported";
+			response.Object = theExportFilePathInTempGridFs;
+			return DoResponse(response);
+		}
+
+		// Import list records to csv
+		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath) {
+		
+			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
+			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised.
+			var response = new ResponseModel();
+			response.Success = true;
+			response.Message = "Records successfully imported";
+			response.Object = null;
+			return DoResponse(response);
+		}
+
 
 		#endregion
 
@@ -3150,7 +3246,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/sitemap")]
 		public IActionResult GetSitemap()
 		{
-			var columnsNeeded = "id,name,label,color,icon_name,weight,roles,subscriptions";
+			var columnsNeeded = "id,name,label,color,icon_name,folder,weight,roles,subscriptions";
 			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
 			QueryResponse resultAreas = recMan.Find(queryAreas);
 			if (!resultAreas.Success)

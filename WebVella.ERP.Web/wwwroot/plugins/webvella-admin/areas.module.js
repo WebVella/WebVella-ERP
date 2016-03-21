@@ -28,17 +28,17 @@
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
-                    templateUrl: '/plugins/webvella-admin/topnav.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/topnav.view.html',
                     controllerAs: 'topnavData'
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
                     controller: 'WebVellaAdminAreasController',
-                    templateUrl: '/plugins/webvella-admin/areas.view.html?v=' + htmlCacheBreaker,
+                    templateUrl: '/plugins/webvella-admin/areas.view.html',
                     controllerAs: 'contentData'
                 }
             },
@@ -450,7 +450,7 @@
             //Soft alphabetically
             popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
                 if (a.name < b.name) return -1;
-                if (a.na, e > b.name) return 1;
+                if (a.name > b.name) return 1;
                 return 0;
             });
             

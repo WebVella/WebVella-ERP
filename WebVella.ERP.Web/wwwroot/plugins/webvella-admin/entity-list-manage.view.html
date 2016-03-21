@@ -4,7 +4,7 @@
 
 		</div>
 		<!--<div class="icon-box">
-			<i class="fa fa-database"></i>
+			<i class="fa fa-database  fa-fw"></i>
 		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="Entities">entities</h4>
@@ -15,7 +15,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-{{::contentData.entity.iconName}}"></i>
+			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
 		</div>
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
@@ -113,12 +113,14 @@
 								<div class="form-group">
 									<label class="control-label" for="label">CSS Class</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass}}</a>
+									<div class="form-description">use "hide-header" and "table-noborder" if needed</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="weight">Icon Name</label>
 									<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.list.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.list.iconName}}"></i> {{ contentData.list.iconName}}</a>
+									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 								</div>
 							</div>
 						</div>
@@ -279,7 +281,7 @@
 						</div>
 					</div>
 					<br />
-					<table class="table table-border">
+					<table class="table table-bordered">
 						<thead>
 							<tr>
 								<th class="go-bkg-white">relations</th>

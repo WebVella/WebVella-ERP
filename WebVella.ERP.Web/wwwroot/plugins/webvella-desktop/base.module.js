@@ -76,16 +76,17 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout','webvellaAdminService','resolvedCurrentUser'];
+    controller.$inject = ['$scope','$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout','webvellaRootService','resolvedCurrentUser'];
 
     /* @ngInject */
-    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout,webvellaAdminService,resolvedCurrentUser) {
+    function controller($scope,$log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout,webvellaRootService,resolvedCurrentUser) {
     	$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var pluginData = this;
         pluginData.topnav = [];
         pluginData.user = fastCopy(resolvedCurrentUser);
+		
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaDesktopTopnavFactory.initTopnav();
@@ -103,23 +104,32 @@
             readyTopnavDestructor();
             updateTopnavDestructor();
         });
+
         ////5. Bootstrap the pluggable element and cast the Ready hook
         //Push the Browse area menu
-        var item = {
-            "label": "Browse",
-            "stateName": "webvella-desktop-browse",
-            "stateParams": {},
-            "parentName": "",
-            "nodes": [],
-            "weight": 1.0
-        };
-        webvellaDesktopTopnavFactory.addItem(item);
+        //var item = {
+        //    "label": "TTG",
+        //    "stateName": "webvella-desktop-browse",
+        //    "stateParams": {},
+        //    "parentName": "",
+        //    "nodes": [],
+        //    "weight": 1.0
+        //};
+        //webvellaDesktopTopnavFactory.addItem(item);
+        //item = {
+        //    "label": "CRM",
+        //    "stateName": "webvella-desktop-browse",
+        //    "stateParams": {},
+        //    "parentName": "",
+        //    "nodes": [],
+        //    "weight": 1.0
+        //};
+        //webvellaDesktopTopnavFactory.addItem(item);
         $rootScope.$emit("webvellaDesktop-topnav-ready");
         $log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
-
         pluginData.logout = function () {
-        	webvellaAdminService.logout(
+        	webvellaRootService.logout(
                     function (response) {
                     	//  $window.location = '#/login';
                     	$timeout(function () {
@@ -129,13 +139,23 @@
                     function (response) { });
         }
 
+		pluginData.isNavActive = function(item){
+			if(item.label == $state.params.folder){
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 
         $log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         function activate() {
             if (pluginData.topnav.length > 0) {
                 $timeout(function () {
-                    $state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+					if(!$state.params.folder){
+						$state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+					}
                 }, 0);
                
             }

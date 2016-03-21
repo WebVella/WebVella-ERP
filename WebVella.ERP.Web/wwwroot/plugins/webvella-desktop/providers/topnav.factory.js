@@ -43,6 +43,7 @@
 
         function getTopnav() {
         	$log.debug('webvellaDesktop>providers>topnav.factory>getTopnav> function called ' + moment().format('HH:mm:ss SSSS'));
+			console.log(topnav);
             return topnav;
         }
     }

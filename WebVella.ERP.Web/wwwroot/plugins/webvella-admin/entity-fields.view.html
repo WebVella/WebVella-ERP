@@ -1,10 +1,10 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
+			<!--<a class="btn btn-success" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>-->
 		</div>
 		<!--<div class="icon-box">
-			<i class="fa fa-database"></i>
+			<i class="fa fa-database  fa-fw"></i>
 		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="Entities">entities</h4>
@@ -15,7 +15,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="icon-box">
-			<i class="fa fa-{{::contentData.entity.iconName}}"></i>
+			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
 		</div>
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
@@ -47,12 +47,19 @@
 	</div>
 
 	<form id="filters" class="form-inline">
-		<div class="form-group">
+		<div class="form-group form-group-sm">
 			<div class="input-group">
+				<div class="btn-group">
+					<a class="btn btn-default btn-sm" ng-click="contentData.createFieldModal()"><i class="fa fa-fw fa-plus"></i> Add field</a>
+				</div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<div class="input-group">
+				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search field names">
 				<span class="input-group-addon" id="basic-addon1">
 					<i class="fa fa-search"></i>
 				</span>
-				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search field names">
 			</div>
 		</div>
 	</form>
@@ -127,7 +134,7 @@
 
 			<table class="table table-bordered table-hover">
 				<tr ng-repeat="type in popupData.fieldTypes | filter:popupData.typeFilter">
-					<th style="width:200px;">{{type.label}}</th>
+					<th style="width:200px;">{{type.id}}. {{type.label}}</th>
 					<td>{{type.description}}</td>
 					<td><a ng-click="popupData.selectType(type.id)" class="btn btn-default">select</a></td>
 				</tr>
@@ -139,6 +146,13 @@
 				<div class="spinner-icon"></div>
 			</div>
 			<div class="alert alert-danger ng-hide" ng-show="popupData.createFieldStep2Error" ng-bind-html="popupData.createFieldStep2ErrorMessage"></div>
+			<div class="alert alert-danger ng-hide" ng-show="!popupData.isEmpty(popupData.validation)">
+				<ul>
+					<li ng-repeat="(key, value) in popupData.validation">
+						{{value.message}}
+					</li>
+				</ul>
+			</div>
 			<form class="form ng-hide" name="createFieldStep2" ng-show="!popupData.createFieldStep2Error && !popupData.createFieldStep2Loading">
 				<div class="row">
 					<div class="col-sm-6">
@@ -725,9 +739,10 @@
 				</div>
 				<!--Multiple select 11 -->
 				<div ng-if="popupData.wizard.selectedType.id == 11">
-					<div class="row">
+					<input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
+					<!--<div class="row">
 						<div class="col-sm-6">
-							<input type="hidden" value="{{popupData.wizard.selectedType.id}}" name="fieldType" />
+							
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupData.defaultValueError}">
 								<label class="control-label" ng-class="{'required':popupData.field.required}">Default values</label>
 								<input class="form-control" ng-model="popupData.field.defaultValue" name="defaultValue" type="text"
@@ -743,7 +758,7 @@
 							</div>
 
 						</div>
-					</div>
+					</div>-->
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
@@ -1348,6 +1363,13 @@
 		</h3>
 	</div>
 	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="!popupData.isEmpty(popupData.validation)">
+			<ul>
+				<li ng-repeat="(key, value) in popupData.validation">
+					{{value.message}}
+				</li>
+			</ul>
+		</div>
 		<form class="form" name="manageFieldForm">
 			<div class="row">
 				<div class="col-sm-6">
