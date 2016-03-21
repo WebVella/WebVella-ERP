@@ -371,6 +371,28 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Npgsql/3.1.0-alpha6": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections",
+          "System.Core",
+          "System.Data",
+          "System.Diagnostics.Contracts",
+          "System.DirectoryServices",
+          "System.Numerics",
+          "System.Transactions",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/dnx452/Npgsql.dll": {}
+        },
+        "runtime": {
+          "lib/dnx452/Npgsql.dll": {}
+        }
+      },
       "System.Diagnostics.DiagnosticSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
@@ -789,6 +811,28 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Npgsql/3.1.0-alpha6": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections",
+          "System.Core",
+          "System.Data",
+          "System.Diagnostics.Contracts",
+          "System.DirectoryServices",
+          "System.Numerics",
+          "System.Transactions",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/dnx452/Npgsql.dll": {}
+        },
+        "runtime": {
+          "lib/dnx452/Npgsql.dll": {}
         }
       },
       "runtime.win7.System.Threading/4.0.11-beta-23516": {
@@ -1215,6 +1259,28 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Npgsql/3.1.0-alpha6": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections",
+          "System.Core",
+          "System.Data",
+          "System.Diagnostics.Contracts",
+          "System.DirectoryServices",
+          "System.Numerics",
+          "System.Transactions",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/dnx452/Npgsql.dll": {}
+        },
+        "runtime": {
+          "lib/dnx452/Npgsql.dll": {}
         }
       },
       "runtime.win7.System.Threading/4.0.11-beta-23516": {
@@ -1693,10 +1759,30 @@
         "tools/install.ps1"
       ]
     },
+    "Npgsql/3.1.0-alpha6": {
+      "type": "package",
+      "sha512": "gYOozZ+PPgrw7zogHlBONFjZxNnagSWkDfVXZTamJy9zWRU/+O6pCHgEsEwsdENGaYC0RFvQUbDo5lIYA8kjpA==",
+      "files": [
+        "app/project.json",
+        "app/rewrite-async",
+        "app/rewrite-async.cmd",
+        "lib/dnx452/Npgsql.dll",
+        "lib/dnx452/Npgsql.xml",
+        "lib/dnxcore50/Npgsql.dll",
+        "lib/dnxcore50/Npgsql.xml",
+        "lib/net45/Npgsql.dll",
+        "lib/net45/Npgsql.xml",
+        "lib/net452/Npgsql.dll",
+        "lib/net452/Npgsql.xml",
+        "Npgsql.3.1.0-alpha6.nupkg",
+        "Npgsql.3.1.0-alpha6.nupkg.sha512",
+        "Npgsql.nuspec"
+      ]
+    },
     "runtime.win7.System.Threading/4.0.11-beta-23516": {
       "type": "package",
       "serviceable": true,
-      "sha512": "paSNXQ5Y6Exu3OpekooyMJFQ8mitn69fGO5Br3XLIfQ1KiMYVmRf+o6dMprC0SpPROVCiCxdUaJx5XkDEVL3uA==",
+      "sha512": "kKQ9uUB1g3S9eyK5njdwh5LO0HxJ9CN6cF9dXtp7uzdZvh2UoTgAZ0Jf+/TvzWcUsfcKIPQUGPPLOBLaQpXASg==",
       "files": [
         "ref/dotnet/_._",
         "runtime.win7.System.Threading.4.0.11-beta-23516.nupkg",
@@ -1921,6 +2007,7 @@
   "projectFileDependencyGroups": {
     "": [
       "AutoMapper >= 3.3.1",
+      "Npgsql >= 3.1.0-alpha6",
       "Microsoft.AspNet.Diagnostics >= 1.0.0-rc1-final",
       "Microsoft.CSharp >= 4.0.1-beta-23516",
       "Microsoft.Extensions.Configuration >= 1.0.0-rc1-final",
@@ -1930,7 +2017,8 @@
       "System.Threading >= 4.0.11-beta-23516"
     ],
     "DNX,Version=v4.6": [
-      "fx/System.XML >= 4.0.0"
+      "fx/System.XML >= 4.0.0",
+      "fx/System.Data >= 4.0.0"
     ]
   }
 }

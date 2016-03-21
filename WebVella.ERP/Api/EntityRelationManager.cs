@@ -4,23 +4,16 @@ using System.Linq;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models.AutoMapper;
+using WebVella.ERP.Database;
 
 namespace WebVella.ERP.Api
 {
     public class EntityRelationManager
     {
-        private IStorageService storageService;
-        private IStorageEntityRelationRepository relationRepository;
-        private IStorageEntityRepository entityRepository;
-
-        public EntityRelationManager(IStorageService storageService)
+        public EntityRelationManager()
         {
-            if (storageService == null)
-                throw new ArgumentNullException("storageService", "The storage service is required.");
-
-            this.storageService = storageService;
-            relationRepository = storageService.GetEntityRelationRepository();
-            entityRepository = storageService.GetEntityRepository();
+			//relationRepository = new DbRelationRepository();
+			//entityRepository = new DbEntityRepository();
         }
 
         #region << Validation >>  
@@ -42,14 +35,14 @@ namespace WebVella.ERP.Api
                 //of if there is no relation with this id already                
                 if (relation.Id == Guid.Empty)
                     errors.Add(new ErrorModel("id", null, "Id is required!"));
-                else if (relationRepository.Read(relation.Id) == null)
+                else if (DbContext.Current.RelationRepository.Read(relation.Id) == null)
                     errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id does not exist!"));
             }
             else if (validationType == ValidationType.Create)
             {
                 //if id is null, them we later will assing one before create process
                 //otherwise check if relation with same id already exists
-                if (relation.Id != Guid.Empty && (relationRepository.Read(relation.Id) != null))
+                if (relation.Id != Guid.Empty && (DbContext.Current.RelationRepository.Read(relation.Id) != null))
                     errors.Add(new ErrorModel("id", relation.Id.ToString(), "Entity relation with such Id already exist!"));
 
             }
@@ -59,7 +52,7 @@ namespace WebVella.ERP.Api
                 //this case is here only for readability
             }
 
-            IStorageEntityRelation existingRelation = null;
+            DbEntityRelation existingRelation = null;
             if (validationType == ValidationType.Create || validationType == ValidationType.Update)
             {
                 //validate name
@@ -70,7 +63,7 @@ namespace WebVella.ERP.Api
                     errors.AddRange(nameValidationErrors);
                 else
                 {
-                    existingRelation = relationRepository.Read(relation.Name);
+                    existingRelation = DbContext.Current.RelationRepository.Read(relation.Name);
                     if (validationType == ValidationType.Create)
                     {
                         //if relation with same name alfready exists
@@ -93,10 +86,10 @@ namespace WebVella.ERP.Api
 
             errors.AddRange(ValidationUtility.ValidateLabel(relation.Label));
 
-            IStorageEntity originEntity = entityRepository.Read(relation.OriginEntityId);
-            IStorageEntity targetEntity = entityRepository.Read(relation.TargetEntityId);
-            IStorageField originField = null;
-            IStorageField targetField = null;
+            DbEntity originEntity = DbContext.Current.EntityRepository.Read(relation.OriginEntityId);
+            DbEntity targetEntity = DbContext.Current.EntityRepository.Read(relation.TargetEntityId);
+            DbBaseField originField = null;
+            DbBaseField targetField = null;
 
             if (originEntity == null)
                 errors.Add(new ErrorModel("originEntity", relation.OriginEntityId.ToString(), "The origin entity do not exist."));
@@ -105,7 +98,7 @@ namespace WebVella.ERP.Api
                 originField = originEntity.Fields.SingleOrDefault(x => x.Id == relation.OriginFieldId);
                 if (originField == null)
                     errors.Add(new ErrorModel("originField", relation.OriginFieldId.ToString(), "The origin field do not exist."));
-                if (!(originField is IStorageGuidField))
+                if (!(originField is DbGuidField))
                     errors.Add(new ErrorModel("originField", relation.OriginFieldId.ToString(), "The origin field should be Unique Identifier (GUID) field."));
             }
 
@@ -116,7 +109,7 @@ namespace WebVella.ERP.Api
                 targetField = targetEntity.Fields.SingleOrDefault(x => x.Id == relation.TargetFieldId);
                 if (targetField == null)
                     errors.Add(new ErrorModel("targetField", relation.TargetFieldId.ToString(), "The target field do not exist."));
-                if (!(targetField is IStorageGuidField))
+                if (!(targetField is DbGuidField))
                     errors.Add(new ErrorModel("targetField", relation.TargetFieldId.ToString(), "The target field should be Unique Identifier (GUID) field."));
             }
 
@@ -158,7 +151,7 @@ namespace WebVella.ERP.Api
                         errors.Add(new ErrorModel("", "", "The origin and target fields cannot be the same."));
 
                     //validate there is no other already existing relation with same parameters
-                    foreach (var rel in relationRepository.Read())
+                    foreach (var rel in DbContext.Current.RelationRepository.Read())
                     {
                         if (rel.OriginEntityId == relation.OriginEntityId && rel.TargetEntityId == relation.TargetEntityId &&
                             rel.OriginFieldId == relation.OriginFieldId && rel.TargetFieldId == relation.TargetFieldId)
@@ -242,7 +235,7 @@ namespace WebVella.ERP.Api
 
             try
             {
-                IStorageEntityRelation storageRelation = relationRepository.Read(name);
+                DbEntityRelation storageRelation = DbContext.Current.RelationRepository.Read(name);
                 response.Success = false;
 
                 if (storageRelation != null)
@@ -276,7 +269,7 @@ namespace WebVella.ERP.Api
             response.Success = true;
             try
             {
-                var storageRelation = relationRepository.Read(relationId);
+                var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
                 if (storageRelation != null)
                 {
                     response.Object = storageRelation.MapTo<EntityRelation>();
@@ -306,7 +299,7 @@ namespace WebVella.ERP.Api
 
             try
             {
-                response.Object = relationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
+                response.Object = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
                 response.Success = true;
                 response.Message = null;
                 return response;
@@ -338,12 +331,12 @@ namespace WebVella.ERP.Api
 
             try
             {
-                var storageRelation = relation.MapTo<IStorageEntityRelation>();
+                var storageRelation = relation.MapTo<DbEntityRelation>();
 
                 if (storageRelation.Id == Guid.Empty)
                     storageRelation.Id = Guid.NewGuid();
 
-                var success = relationRepository.Create(storageRelation);
+                var success = DbContext.Current.RelationRepository.Create(storageRelation);
 
                 if (success)
                 {
@@ -388,8 +381,8 @@ namespace WebVella.ERP.Api
 
             try
             {
-                var storageRelation = relation.MapTo<IStorageEntityRelation>();//ConvertToStorage(relation);
-                var success = relationRepository.Update(storageRelation);
+                var storageRelation = relation.MapTo<DbEntityRelation>();
+                var success = DbContext.Current.RelationRepository.Update(storageRelation);
 
                 if (success)
                 {
@@ -429,10 +422,10 @@ namespace WebVella.ERP.Api
             try
             {
 
-                var storageRelation = relationRepository.Read(relationId);
+                var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
                 if (storageRelation != null)
                 {
-                    relationRepository.Delete(relationId);
+					DbContext.Current.RelationRepository.Delete(relationId);
                     response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was deleted!";

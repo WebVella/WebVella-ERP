@@ -321,7 +321,7 @@ namespace WebVella.ERP.Api.Models
 		public List<RecordListSort> Sorts { get; set; }
 
         [JsonProperty(PropertyName = "relationOptions")]
-        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+        public List<EntityRelationOptions> RelationOptions { get; set; }
     }
 
 	public class RecordListQuery

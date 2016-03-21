@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api.Models.AutoMapper;
+using WebVella.ERP.Database;
 using WebVella.ERP.Storage;
 using WebVella.ERP.Utilities.Dynamic;
 
@@ -12,17 +15,8 @@ namespace WebVella.ERP.Api
 {
 	public class EntityManager
 	{
-		public IStorageService Storage { get; set; }
-
-		public IStorageEntityRepository EntityRepository { get; set; }
-
-		public IStorageObjectFactory StorageObjectFactory { get; set; }
-
-		public EntityManager(IStorageService storage)
+		public EntityManager()
 		{
-			Storage = storage;
-			EntityRepository = storage.GetEntityRepository();
-			StorageObjectFactory = storage.GetObjectFactory();
 		}
 
 		#region << Validation methods >>
@@ -31,7 +25,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			IList<IStorageEntity> entities = EntityRepository.Read();
+			List<DbEntity> entities = DbContext.Current.EntityRepository.Read();
 
 			if (entity.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
@@ -41,7 +35,7 @@ namespace WebVella.ERP.Api
 				//update
 				if (entity.Id != Guid.Empty)
 				{
-					IStorageEntity verifiedEntity = EntityRepository.Read(entity.Id);
+					DbEntity verifiedEntity = DbContext.Current.EntityRepository.Read(entity.Id);
 
 					if (verifiedEntity == null)
 						errorList.Add(new ErrorModel("id", entity.Id.ToString(), "Entity with such Id does not exist!"));
@@ -57,7 +51,7 @@ namespace WebVella.ERP.Api
 
 			if (!string.IsNullOrWhiteSpace(entity.Name))
 			{
-				IStorageEntity verifiedEntity = EntityRepository.Read(entity.Name);
+				DbEntity verifiedEntity = DbContext.Current.EntityRepository.Read(entity.Name);
 
 				if (verifiedEntity != null && verifiedEntity.Id != entity.Id)
 					errorList.Add(new ErrorModel("name", entity.Name, "Entity with such Name exists already!"));
@@ -92,7 +86,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 			Entity entity = storageEntity.MapTo<Entity>();
 
 			if (fields.Count == 0)
@@ -378,7 +372,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 			Entity entity = storageEntity.MapTo<Entity>();
 
 			foreach (var recordList in recordLists)
@@ -393,14 +387,14 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
-			EntityRelationManager relationManager = new EntityRelationManager(Storage);
-			EntityRelationListResponse relationListResponse = relationManager.Read();
-			List<EntityRelation> relationList = new List<EntityRelation>();
-			if (relationListResponse.Object != null)
-				relationList = relationListResponse.Object;
+			//EntityRelationManager relationManager = new EntityRelationManager(Storage);
+			//EntityRelationListResponse relationListResponse = relationManager.Read();
+			List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
+			//if (relationListResponse.Object != null)
+			//	relationList = relationListResponse.Object;
 
 			//List<RecordList> recordLists = new List<RecordList>();
 			//List<RecordView> recordViews = new List<RecordView>();
@@ -600,7 +594,7 @@ namespace WebVella.ERP.Api
 						}
 						else
 						{
-							EntityRelation relation = null;
+							DbEntityRelation relation = null;
 							if (string.IsNullOrWhiteSpace(inputColumn.RelationName))
 								relation = relationList.SingleOrDefault(x => x.Id == inputColumn.RelationId);
 							else
@@ -627,7 +621,7 @@ namespace WebVella.ERP.Api
 								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 							else
 							{
-								EntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
+								DbEntityRelation relation = relationList.FirstOrDefault(r => r.Id == inputColumn.RelationId.Value);
 
 								if (relation != null)
 								{
@@ -657,7 +651,7 @@ namespace WebVella.ERP.Api
 					}
 					else if (column is InputRecordListRelationTreeItem)
 					{
-						EntityRelation relation = null;
+						DbEntityRelation relation = null;
 						InputRecordListRelationTreeItem inputColumn = (InputRecordListRelationTreeItem)column;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
@@ -720,7 +714,7 @@ namespace WebVella.ERP.Api
 					}
 					else if (column is InputRecordListRelationListItem)
 					{
-						EntityRelation relation = null;
+						DbEntityRelation relation = null;
 						InputRecordListRelationListItem inputColumn = (InputRecordListRelationListItem)column;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
@@ -784,7 +778,7 @@ namespace WebVella.ERP.Api
 					else if (column is InputRecordListRelationViewItem)
 					{
 						InputRecordListRelationViewItem inputColumn = (InputRecordListRelationViewItem)column;
-						EntityRelation relation = null;
+						DbEntityRelation relation = null;
 						if (string.IsNullOrWhiteSpace(inputColumn.RelationName) && inputColumn.RelationId == null)
 						{
 							errorList.Add(new ErrorModel("columns.relationName", null, "Relation name or id is required!"));
@@ -914,7 +908,7 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 			Entity entity = storageEntity.MapTo<Entity>();
 
 			foreach (var recordView in recordViewList)
@@ -929,14 +923,14 @@ namespace WebVella.ERP.Api
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
-			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
-			EntityRelationManager relationManager = new EntityRelationManager(Storage);
-			EntityRelationListResponse relationListResponse = relationManager.Read();
-			List<EntityRelation> relationList = new List<EntityRelation>();
-			if (relationListResponse.Object != null)
-				relationList = relationListResponse.Object;
+			//EntityRelationManager relationManager = new EntityRelationManager(Storage);
+			//EntityRelationListResponse relationListResponse = relationManager.Read();
+			List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
+			//if (relationListResponse.Object != null)
+			//	relationList = relationListResponse.Object;
 
 			if (!recordView.Id.HasValue || recordView.Id == Guid.Empty)
 				errorList.Add(new ErrorModel("id", null, "Id is required!"));
@@ -1154,7 +1148,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationFieldItem)
 													{
-														EntityRelation relation = null;
+														DbEntityRelation relation = null;
 
 														InputRecordViewRelationFieldItem inputItem = (InputRecordViewRelationFieldItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
@@ -1229,7 +1223,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationTreeItem)
 													{
-														EntityRelation relation = null;
+														DbEntityRelation relation = null;
 														InputRecordViewRelationTreeItem inputItem = (InputRecordViewRelationTreeItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1286,7 +1280,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationListItem)
 													{
-														EntityRelation relation = null;
+														DbEntityRelation relation = null;
 														InputRecordViewRelationListItem inputItem = (InputRecordViewRelationListItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1344,7 +1338,7 @@ namespace WebVella.ERP.Api
 													}
 													else if (item is InputRecordViewRelationViewItem)
 													{
-														EntityRelation relation = null;
+														DbEntityRelation relation = null;
 														InputRecordViewRelationViewItem inputItem = (InputRecordViewRelationViewItem)item;
 														if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 														{
@@ -1482,7 +1476,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationListItem)
 						{
-							EntityRelation relation = null;
+							DbEntityRelation relation = null;
 							InputRecordViewSidebarRelationListItem inputItem = (InputRecordViewSidebarRelationListItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1546,7 +1540,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationTreeItem)
 						{
-							EntityRelation relation = null;
+							DbEntityRelation relation = null;
 							InputRecordViewSidebarRelationTreeItem inputItem = (InputRecordViewSidebarRelationTreeItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1610,7 +1604,7 @@ namespace WebVella.ERP.Api
 						}
 						else if (item is InputRecordViewSidebarRelationViewItem)
 						{
-							EntityRelation relation = null;
+							DbEntityRelation relation = null;
 							InputRecordViewSidebarRelationViewItem inputItem = (InputRecordViewSidebarRelationViewItem)item;
 							if (string.IsNullOrWhiteSpace(inputItem.RelationName) && inputItem.RelationId == null)
 							{
@@ -1716,8 +1710,8 @@ namespace WebVella.ERP.Api
 				entity.RecordLists = CreateEntityDefaultRecordLists(entity);
 				entity.RecordViews = CreateEntityDefaultRecordViews(entity);
 
-				IStorageEntity storageEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Create(storageEntity);
+				DbEntity storageEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Create(storageEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -1742,7 +1736,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			IStorageEntity createdEntity = EntityRepository.Read(entity.Id);
+			DbEntity createdEntity = DbContext.Current.EntityRepository.Read(entity.Id);
 			response.Object = createdEntity.MapTo<Entity>();
 			response.Timestamp = DateTime.UtcNow;
 
@@ -1790,7 +1784,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				IStorageEntity storageEntity = EntityRepository.Read(entity.Id);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entity.Id);
 
 				storageEntity.Label = entity.Label;
 				storageEntity.LabelPlural = entity.LabelPlural;
@@ -1802,7 +1796,7 @@ namespace WebVella.ERP.Api
 				storageEntity.RecordPermissions.CanUpdate = entity.RecordPermissions.CanUpdate;
 				storageEntity.RecordPermissions.CanDelete = entity.RecordPermissions.CanDelete;
 
-				bool result = EntityRepository.Update(storageEntity);
+				bool result = DbContext.Current.EntityRepository.Update(storageEntity);
 
 				if (!result)
 				{
@@ -1826,7 +1820,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			IStorageEntity updatedEntity = EntityRepository.Read(entity.Id);
+			DbEntity updatedEntity = DbContext.Current.EntityRepository.Read(entity.Id);
 			response.Object = updatedEntity.MapTo<Entity>();
 			response.Timestamp = DateTime.UtcNow;
 
@@ -1915,7 +1909,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity entity = EntityRepository.Read(id);
+				DbEntity entity = DbContext.Current.EntityRepository.Read(id);
 
 				if (entity == null)
 				{
@@ -1927,7 +1921,7 @@ namespace WebVella.ERP.Api
 				}
 
 				//entity, entity records and relations are deleted in storage repository 
-				EntityRepository.Delete(id);
+				DbContext.Current.EntityRepository.Delete(id);
 			}
 			catch (Exception e)
 			{
@@ -1955,14 +1949,14 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<IStorageEntity> storageEntityList = EntityRepository.Read();
+				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 				List<Entity> entities = storageEntityList.MapTo<Entity>();
 
-				EntityRelationManager relationManager = new EntityRelationManager(Storage);
-				EntityRelationListResponse relationListResponse = relationManager.Read();
-				List<EntityRelation> relationList = new List<EntityRelation>();
-				if (relationListResponse.Object != null)
-					relationList = relationListResponse.Object;
+				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
+				//EntityRelationListResponse relationListResponse = relationManager.Read();
+				List<DbEntityRelation> relationList = DbContext.Current.RelationRepository.Read();
+				//if (relationListResponse.Object != null)
+				//	relationList = relationListResponse.Object;
 
 				List<RecordList> recordLists = new List<RecordList>();
 				List<RecordView> recordViews = new List<RecordView>();
@@ -2486,8 +2480,7 @@ namespace WebVella.ERP.Api
 						{
 							foreach (RecordTreeNode node in recordTree.RootNodes)
 							{
-								IStorageRecordRepository recRep = Storage.GetRecordRepository();
-								var recData = recRep.Find(entity.Name, node.RecordId);
+								var recData = DbContext.Current.RecordRepository.Find(entity.Name, node.RecordId);
 								if (recData != null)
 								{
 									var idField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeIdFieldId);
@@ -2506,17 +2499,17 @@ namespace WebVella.ERP.Api
 									if (labelField == null)
 										throw new Exception("Cannot initialize tree '" + recordTree.Name + "'. Node label field is missing in entity meta.");
 
-									var valuePair = recData.SingleOrDefault(x => x.Key == idField.Name);
-									node.Id = (valuePair.Value as Guid?) ?? Guid.Empty;
+									var value = recData[idField.Name];
+									node.Id = (value as Guid?) ?? Guid.Empty;
 
-									valuePair = recData.SingleOrDefault(x => x.Key == parentIdField.Name);
-									node.ParentId = valuePair.Value as Guid?;
+									value = recData[parentIdField.Name];
+									node.ParentId = value as Guid?;
 
-									valuePair = recData.SingleOrDefault(x => x.Key == nameField.Name);
-									node.Name = (valuePair.Value ?? string.Empty).ToString();
+									value = recData[nameField.Name];
+									node.Name = (value ?? string.Empty).ToString();
 
-									valuePair = recData.SingleOrDefault(x => x.Key == labelField.Name);
-									node.Label = (valuePair.Value ?? string.Empty).ToString();
+									value = recData[labelField.Name];
+									node.Label = (value ?? string.Empty).ToString();
 								}
 							}
 						}
@@ -2640,7 +2633,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -2670,24 +2663,24 @@ namespace WebVella.ERP.Api
 
 				entity.Fields.Add(field);
 
-				IStorageEntity editedEntity = entity.MapTo<IStorageEntity>();
+				DbEntity editedEntity = entity.MapTo<DbEntity>();
 
-				var recRep = Storage.GetRecordRepository();
-				IStorageTransaction transaction = null;
-                if ( transactional )
-					transaction = recRep.CreateTransaction();
+				//var recRep = Storage.GetRecordRepository();
+				//IStorageTransaction transaction = null;
+				//            if ( transactional )
+				//	transaction = recRep.CreateTransaction();
 				try
 				{
-					if (transactional)
-						transaction.Begin();
+					//if (transactional)
+					//	transaction.Begin();
 
-						if( field is AutoNumberField )
-							recRep.CreateAutoNumberRecordField(entity.Name, field.Name, 1);
-						else
-							recRep.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+					//if (field is AutoNumberField)
+					//	recRep.CreateAutoNumberRecordField(entity.Name, field.Name, 1);
+					//else
+					DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
 
 
-					bool result = EntityRepository.Update(editedEntity);
+					bool result = DbContext.Current.EntityRepository.Update(editedEntity);
 					if (!result)
 					{
 						response.Timestamp = DateTime.UtcNow;
@@ -2696,13 +2689,13 @@ namespace WebVella.ERP.Api
 						return response;
 					}
 
-					if (transactional)
-						transaction.Commit();
+					//if (transactional)
+					//	transaction.Commit();
 				}
 				catch
 				{
-					if (transactional)
-						transaction.Rollback();
+					//if (transactional)
+					//	transaction.Rollback();
 					throw;
 				}
 
@@ -2933,7 +2926,7 @@ namespace WebVella.ERP.Api
 		{
 			FieldResponse response = new FieldResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -2979,8 +2972,8 @@ namespace WebVella.ERP.Api
 
 				entity.Fields.Add(field);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -3265,7 +3258,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -3290,19 +3283,19 @@ namespace WebVella.ERP.Api
 
 				entity.Fields.Remove(field);
 
-				var recRep = Storage.GetRecordRepository();
-				IStorageTransaction transaction = null;
-				if (transactional)
-					transaction = recRep.CreateTransaction();
+				//var recRep = Storage.GetRecordRepository();
+				//IStorageTransaction transaction = null;
+				//if (transactional)
+				//	transaction = recRep.CreateTransaction();
 				try
 				{
-					if (transactional)
-						transaction.Begin();
+					//if (transactional)
+					//	transaction.Begin();
 
-					recRep.RemoveRecordField(entity.Name, field.Name);
+					DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field.Name);
 
-					IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-					bool result = EntityRepository.Update(updatedEntity);
+					DbEntity updatedEntity = entity.MapTo<DbEntity>();
+					bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 					if (!result)
 					{
 						response.Timestamp = DateTime.UtcNow;
@@ -3310,13 +3303,13 @@ namespace WebVella.ERP.Api
 						response.Message = "The field was not updated! An internal error occurred!";
 						return response;
 					}
-					if (transactional)
-						transaction.Commit();
+					//if (transactional)
+					//	transaction.Commit();
 				}
 				catch
 				{
-					if (transactional)
-						transaction.Rollback();
+					//if (transactional)
+					//	transaction.Rollback();
 					throw;
 				}
 			}
@@ -3346,7 +3339,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -3359,7 +3352,7 @@ namespace WebVella.ERP.Api
 				FieldList fieldList = new FieldList();
 				fieldList.Fields = new List<Field>();
 
-				foreach (IStorageField storageField in storageEntity.Fields)
+				foreach (DbBaseField storageField in storageEntity.Fields)
 				{
 					fieldList.Fields.Add(storageField.MapTo<Field>());
 				}
@@ -3393,11 +3386,11 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<IStorageEntity> storageEntities = EntityRepository.Read();
+				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
 
 				FieldList fieldList = new FieldList();
 
-				foreach (IStorageEntity entity in storageEntities)
+				foreach (DbEntity entity in storageEntities)
 				{
 					fieldList.Fields.AddRange(entity.Fields.MapTo<Field>());
 				}
@@ -3431,7 +3424,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -3441,7 +3434,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				IStorageField storageField = storageEntity.Fields.FirstOrDefault(f => f.Id == id);
+				DbBaseField storageField = storageEntity.Fields.FirstOrDefault(f => f.Id == id);
 
 				if (storageField == null)
 				{
@@ -3480,7 +3473,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -3500,7 +3493,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -3547,8 +3540,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordLists.Add(recordList);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -3578,7 +3571,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -3598,7 +3591,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -3645,8 +3638,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordLists.Add(recordList);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -3809,7 +3802,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -3834,8 +3827,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordLists.Remove(recordList);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -3870,7 +3863,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityName);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 				if (storageEntity == null)
 				{
@@ -3895,8 +3888,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordLists.Remove(recordList);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4117,12 +4110,12 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<IStorageEntity> storageEntities = EntityRepository.Read();
+				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
 
 				RecordListCollection recordListCollection = new RecordListCollection();
 				recordListCollection.RecordLists = new List<RecordList>();
 
-				foreach (IStorageEntity entity in storageEntities)
+				foreach (DbEntity entity in storageEntities)
 				{
 					recordListCollection.RecordLists.AddRange(entity.RecordLists.MapTo<RecordList>());
 				}
@@ -4154,7 +4147,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -4174,7 +4167,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -4220,8 +4213,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordViews.Add(recordView);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4250,7 +4243,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -4270,7 +4263,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -4317,8 +4310,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordViews.Add(recordView);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4479,7 +4472,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -4504,8 +4497,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordViews.Remove(recordView);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4540,7 +4533,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityName);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 				if (storageEntity == null)
 				{
@@ -4565,8 +4558,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordViews.Remove(recordView);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4788,12 +4781,12 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<IStorageEntity> storageEntities = EntityRepository.Read();
+				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
 
 				RecordViewCollection recordViewList = new RecordViewCollection();
 				recordViewList.RecordViews = new List<RecordView>();
 
-				foreach (IStorageEntity entity in storageEntities)
+				foreach (DbEntity entity in storageEntities)
 				{
 					recordViewList.RecordViews.AddRange(entity.RecordViews.MapTo<RecordView>());
 				}
@@ -4825,7 +4818,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -4842,7 +4835,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -4886,8 +4879,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordTrees.Add(recordTree);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -4917,7 +4910,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityId);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 			if (storageEntity == null)
 			{
@@ -4933,7 +4926,7 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			IStorageEntity storageEntity = EntityRepository.Read(entityName);
+			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 			if (storageEntity == null)
 			{
@@ -4975,8 +4968,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordTrees.Add(recordTree);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -5012,7 +5005,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityId);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
 
 				if (storageEntity == null)
 				{
@@ -5037,8 +5030,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordTrees.Remove(recordTree);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -5073,7 +5066,7 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				IStorageEntity storageEntity = EntityRepository.Read(entityName);
+				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
 
 				if (storageEntity == null)
 				{
@@ -5098,8 +5091,8 @@ namespace WebVella.ERP.Api
 
 				entity.RecordTrees.Remove(recordTree);
 
-				IStorageEntity updatedEntity = entity.MapTo<IStorageEntity>();
-				bool result = EntityRepository.Update(updatedEntity);
+				DbEntity updatedEntity = entity.MapTo<DbEntity>();
+				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
 				if (!result)
 				{
 					response.Timestamp = DateTime.UtcNow;
@@ -5319,12 +5312,12 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<IStorageEntity> storageEntities = EntityRepository.Read();
+				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
 
 				RecordTreeCollection recordTreeCollection = new RecordTreeCollection();
 				recordTreeCollection.RecordTrees = new List<RecordTree>();
 
-				foreach (IStorageEntity entity in storageEntities)
+				foreach (DbEntity entity in storageEntities)
 				{
 					recordTreeCollection.RecordTrees.AddRange(entity.RecordTrees.MapTo<RecordTree>());
 				}
@@ -5370,7 +5363,7 @@ namespace WebVella.ERP.Api
 			if (entity.RecordTrees.Any(f => f.Id != recordTree.Id && f.Label.ToLowerInvariant() == recordTree.Label.ToLowerInvariant()))
 				errorList.Add(new ErrorModel("label", null, "There is already a tree with same label!"));
 
-			EntityRelation relation = null;
+			DbEntityRelation relation = null;
 			if (recordTree.RelationId == null || recordTree.RelationId == Guid.Empty)
 			{
 				errorList.Add(new ErrorModel("relationId", null, "Relation is required!"));
@@ -5378,10 +5371,7 @@ namespace WebVella.ERP.Api
 			}
 			else
 			{
-				EntityRelationManager relationManager = new EntityRelationManager(Storage);
-				EntityRelationResponse relationResponse = relationManager.Read(recordTree.RelationId);
-				if (relationResponse.Object != null)
-					relation = relationResponse.Object;
+				relation = DbContext.Current.RelationRepository.Read(recordTree.RelationId);
 			}
 
 			if (relation == null)
@@ -5439,28 +5429,27 @@ namespace WebVella.ERP.Api
 
 			if (recordTree.RootNodes != null)
 			{
-				IStorageRecordRepository recRep = Storage.GetRecordRepository();
 				List<RecordTreeNode> expiredNodes = new List<RecordTreeNode>();
 				foreach (var node in recordTree.RootNodes)
 				{
-					var recData = recRep.Find(entity.Name, node.RecordId);
+					var recData = DbContext.Current.RecordRepository.Find(entity.Name, node.RecordId);
 					if (recData != null)
 					{
 						var parentIdField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeParentIdFieldId);
 						var nameField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeNameFieldId);
 						var labelField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeLabelFieldId);
 
-						var valuePair = recData.SingleOrDefault(x => x.Key == idField.Name);
-						node.Id = (valuePair.Value as Guid?) ?? Guid.Empty;
+						var value = recData[idField.Name];
+						node.Id = (value as Guid?) ?? Guid.Empty;
 
-						valuePair = recData.SingleOrDefault(x => x.Key == parentIdField.Name);
-						node.ParentId = (valuePair.Value as Guid?) ?? Guid.Empty;
+						value = recData[parentIdField.Name];
+						node.ParentId = (value as Guid?) ?? Guid.Empty;
 
-						valuePair = recData.SingleOrDefault(x => x.Key == nameField.Name);
-						node.Name = (valuePair.Value ?? string.Empty).ToString();
+						value = recData[nameField.Name];
+						node.Name = (value ?? string.Empty).ToString();
 
-						valuePair = recData.SingleOrDefault(x => x.Key == labelField.Name);
-						node.Label = (valuePair.Value ?? string.Empty).ToString();
+						value = recData[labelField.Name];
+						node.Label = (value ?? string.Empty).ToString();
 					}
 					else
 						expiredNodes.Add(node);
@@ -5623,8 +5612,6 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "general";
-			create.Weight = 10;
-			create.PageSize = 10;
 			create.VisibleColumnsCount = 5;
 			recordLists.Add(create);
 
@@ -5635,7 +5622,6 @@ namespace WebVella.ERP.Api
 			lookup.Default = true;
 			lookup.System = true;
 			lookup.Type = "lookup";
-			lookup.Weight = 10;
 			lookup.PageSize = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
@@ -5657,7 +5643,6 @@ namespace WebVella.ERP.Api
 			create.Label = "Create";
 			create.Default = true;
 			create.System = true;
-			create.Weight = 10;
 			create.Type = "create";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
@@ -5669,7 +5654,6 @@ namespace WebVella.ERP.Api
 			quickCreate.Label = "Quick create";
 			quickCreate.Default = true;
 			quickCreate.System = true;
-			quickCreate.Weight = 10;
 			quickCreate.Type = "quick_create";
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
@@ -5681,7 +5665,6 @@ namespace WebVella.ERP.Api
 			quickView.Label = "Quick view";
 			quickView.Default = true;
 			quickView.System = true;
-			quickView.Weight = 10;
 			quickView.Type = "quick_view";
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
@@ -5693,7 +5676,6 @@ namespace WebVella.ERP.Api
 			general.Label = "General";
 			general.Default = true;
 			general.System = true;
-			general.Weight = 10;
 			general.Type = "general";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
@@ -5722,7 +5704,7 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByListId(Guid listId)
 		{
-			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
 			return GetEntityByListId(listId, entities);
@@ -5755,7 +5737,7 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByViewId(Guid viewId)
 		{
-			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
 			return GetEntityByViewId(viewId, entities);
@@ -5774,7 +5756,7 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByFieldId(Guid fieldId)
 		{
-			List<IStorageEntity> storageEntityList = EntityRepository.Read();
+			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
 			List<Entity> entities = storageEntityList.MapTo<Entity>();
 
 			return GetEntityByFieldId(fieldId, entities);

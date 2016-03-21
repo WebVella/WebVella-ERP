@@ -4,7 +4,6 @@ namespace WebVella.ERP
 {
     public interface IErpService
     {
-        IStorageService StorageService { get; set; }
         void InitializeSystemEntities();
     }
 }

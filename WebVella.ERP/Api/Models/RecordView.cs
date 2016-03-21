@@ -478,7 +478,7 @@ namespace WebVella.ERP.Api.Models
 			Type = Enum.GetName(typeof(RecordViewType), RecordViewType.General).ToLower();
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
-            RelationOptions = new List<IStorageEntityRelationOptions>();
+            RelationOptions = new List<EntityRelationOptions>();
 		}
 
 		[JsonProperty(PropertyName = "id")]
@@ -512,7 +512,7 @@ namespace WebVella.ERP.Api.Models
 		public List<RecordViewRegion> Regions { get; set; }
 
         [JsonProperty(PropertyName = "relationOptions")]
-        public List<IStorageEntityRelationOptions> RelationOptions { get; set; }
+        public List<EntityRelationOptions> RelationOptions { get; set; }
 
         [JsonProperty(PropertyName = "sidebar")]
 		public RecordViewSidebar Sidebar { get; set; }
