@@ -20,18 +20,18 @@ namespace WebVella.ERP.Web.Controllers
     public partial class ApiDevelopersController : ApiControllerBase
     {
 
-        EntityManager em;
-        EntityRelationManager rm;
-        RecordManager recMan;
-        IStorageFS fs;
+        //EntityManager em;
+        //EntityRelationManager rm;
+        //RecordManager recMan;
+        //IStorageFS fs;
 
-        public ApiDevelopersController(IErpService service) : base(service)
-        {
-            em = new EntityManager(service.StorageService);
-            rm = new EntityRelationManager(service.StorageService);
-            recMan = new RecordManager(service);
-            fs = service.StorageService.GetFS();
-        }
+        //public ApiDevelopersController(IErpService service) : base(service)
+        //{
+        //    em = new EntityManager(service.StorageService);
+        //    rm = new EntityRelationManager(service.StorageService);
+        //    recMan = new RecordManager(service);
+        //    fs = service.StorageService.GetFS();
+        //}
 /*
         [AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/upload/")]
         public IActionResult Upload([FromForm] IFormFile file)

@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebVella.ERP.Storage;
+using WebVella.ERP.Database;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -20,7 +17,7 @@ namespace WebVella.ERP.Api.Models
 
         }
 
-        public SystemSettings(IStorageSystemSettings settings)
+        public SystemSettings(DbSystemSettings settings)
         {
             Id = settings.Id;
             Version = settings.Version;

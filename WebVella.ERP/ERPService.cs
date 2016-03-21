@@ -1,44 +1,35 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using WebVella.ERP.Storage;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api;
 using System.Linq;
 using WebVella.ERP.Api.Models.AutoMapper;
+using WebVella.ERP.Database;
 
 namespace WebVella.ERP
 {
 	public class ErpService : IErpService
 	{
-		public IStorageService StorageService
+		public ErpService()
 		{
-			get; set;
-		}
-
-		public ErpService(IStorageService storage)
-		{
-			StorageService = storage;
 		}
 
 		public void InitializeSystemEntities()
 		{
 			EntityResponse response = null;
 			FieldResponse fieldResponse = null;
-			EntityManager em = new EntityManager(StorageService);
-			EntityRelationManager rm = new EntityRelationManager(StorageService);
-			RecordManager recMan = new RecordManager(this);
+			EntityManager em = new EntityManager();
+			EntityRelationManager rm = new EntityRelationManager();
+			RecordManager recMan = new RecordManager();
 
-			using (var transaction = recMan.CreateTransaction())
+			using (var connection = DbContext.Current.CreateConnection() )
 			{
-
 				try
 				{
+					connection.BeginTransaction();
 
-					transaction.Begin();
-
-					IStorageSystemSettingsRepository systemSettingsRepository = StorageService.GetSystemSettingsRepository();
-					IStorageSystemSettings storeSystemSettings = systemSettingsRepository.Read();
+					DbSystemSettings storeSystemSettings = DbContext.Current.SettingsRepository.Read();
 
 					Guid systemSettingsId = new Guid("F3223177-B2FF-43F5-9A4B-FF16FC67D186");
 					SystemSettings systemSettings = new SystemSettings();
@@ -51,7 +42,7 @@ namespace WebVella.ERP
 						currentVersion = systemSettings.Version;
 					}
 
-					EntityManager entityManager = new EntityManager(StorageService);
+					EntityManager entityManager = new EntityManager();
 
 					//tmp code - during debug only
 					//em.DeleteEntity(SystemIds.UserEntityId);
@@ -828,50 +819,9 @@ namespace WebVella.ERP
 						#endregion
 					}
 
-
-					if (currentVersion < 160316)
-					{
-						systemSettings.Version = 160316;
-						//Area Folder name
-						var AREA_ENTITY_ID = SystemIds.AreaEntityId;
-						var AREA_ENTITY_NAME = "area";
-						#region << folder >>
-						{
-							InputTextField textboxField = new InputTextField();
-							textboxField.Id = Guid.NewGuid();
-							textboxField.Name = "folder";
-							textboxField.Label = "folder";
-							textboxField.PlaceholderText = "";
-							textboxField.Description = "";
-							textboxField.HelpText = "";
-							textboxField.Required = false;
-							textboxField.Unique = false;
-							textboxField.Searchable = false;
-							textboxField.Auditable = false;
-							textboxField.System = true;
-							textboxField.DefaultValue = string.Empty;
-							textboxField.MaxLength = null;
-							textboxField.EnableSecurity = true;
-							textboxField.Permissions = new FieldPermissions();
-							textboxField.Permissions.CanRead = new List<Guid>();
-							textboxField.Permissions.CanUpdate = new List<Guid>();
-							//READ
-							textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
-							//UPDATE
-							textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-							{
-								var createResponse = entityManager.CreateField(AREA_ENTITY_ID, textboxField, false);
-								if (!createResponse.Success)
-									throw new Exception("System error 10060. Entity: " + AREA_ENTITY_NAME + " Field: folder" + " Message:" + response.Message);
-							}
-						}
-						#endregion
-
-					}
-
-
-					storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
-					systemSettingsRepository.Save(storeSystemSettings);
+					//following 2 rows are commented during mongo to pg move
+					//storeSystemSettings = DbContext.Current.SettingsRepository.Convert(systemSettings);
+					//systemSettingsRepository.Save(storeSystemSettings);
 
 					//if (currentVersion == 150508) //update to 150510
 					//{
@@ -881,12 +831,12 @@ namespace WebVella.ERP
 					//    systemSettingsRepository.Save(storeSystemSettings);
 					//}
 
-					transaction.Commit();
+					connection.CommitTransaction();
 				}
 				catch (Exception ex)
 				{
 					var exception = ex;
-					transaction.Rollback();
+					connection.RollbackTransaction();
 					throw;
 				}
 
@@ -901,8 +851,7 @@ namespace WebVella.ERP
 		{
 			Debug.WriteLine("==== START ENTITY TESTS====");
 
-
-			var entityManager = new EntityManager(StorageService);
+			var entityManager = new EntityManager();
 
 			InputEntity inputEntity = new InputEntity();
 			//entity.Id = new Guid("C5050AC8-5967-4CE1-95E7-A79B054F9D14");

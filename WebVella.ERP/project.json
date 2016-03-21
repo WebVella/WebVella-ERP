@@ -8,6 +8,7 @@
 
 	"dependencies": {
 		"AutoMapper": "3.3.1",
+		"Npgsql": "3.1.0-alpha6",
 		"Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
 		"Microsoft.CSharp": "4.0.1-beta-23516",
 		"Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
@@ -20,7 +21,8 @@
 	"frameworks": {
 		"dnx46": {
 			"frameworkAssemblies": {
-				"System.XML": "4.0.0.0"
+        "System.XML": "4.0.0.0",
+        "System.Data": "4.0.0.0"
 			}
 		}
 	}

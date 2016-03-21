@@ -26,9 +26,9 @@ namespace WebVella.ERP.Web.Security
             cache = new MemoryCache(cacheOptions);
         }
 
-        public static string Login(HttpContext context, Guid userId, DateTime? modifiedOn, bool rememberMe, IErpService service)
+        public static string Login(HttpContext context, Guid userId, DateTime? modifiedOn, bool rememberMe )
         {
-            var identity = CreateIdentity(userId, service);
+            var identity = CreateIdentity(userId);
 
             if (identity == null)
                 throw new Exception("Try to login with invalid user.");
@@ -38,7 +38,7 @@ namespace WebVella.ERP.Web.Security
 
 
 
-            ErpUser user = new SecurityManager(service).GetUser(userId);
+            ErpUser user = new SecurityManager().GetUser(userId);
             string token = AuthToken.Create(user, rememberMe).Encrypt();
             if (rememberMe)
             {
@@ -51,7 +51,7 @@ namespace WebVella.ERP.Web.Security
 
             context.User = new ErpPrincipal(identity);
 
-            new SecurityManager(service).UpdateUserLastLoginTime(userId);
+            new SecurityManager().UpdateUserLastLoginTime(userId);
 
             return token;
         }
@@ -62,7 +62,7 @@ namespace WebVella.ERP.Web.Security
             context.User = null;
         }
 
-        public static void Authenticate(HttpContext context, IErpService service)
+        public static void Authenticate(HttpContext context)
         {
             string tokenString = context.Request.Headers[AUTH_TOKEN_KEY];
 			if (String.IsNullOrEmpty(tokenString)) 
@@ -79,7 +79,7 @@ namespace WebVella.ERP.Web.Security
                     var identity = GetIdentityFromCache(token.UserId);
                     if (identity == null)
                     {
-                        identity = CreateIdentity(token.UserId, service);
+                        identity = CreateIdentity(token.UserId);
 
                         //user has token, but identity cannot be created
                         //1. user is disabled 
@@ -97,7 +97,7 @@ namespace WebVella.ERP.Web.Security
                     {
                         RemoveIdentityFromCache(identity.User.Id);
 
-                        identity = CreateIdentity(token.UserId, service);
+                        identity = CreateIdentity(token.UserId);
 
                         //user has token, but identity cannot be created
                         //1. user is disabled 
@@ -141,9 +141,9 @@ namespace WebVella.ERP.Web.Security
                 scopeMarker.Dispose();
         }
 
-        internal static ErpIdentity CreateIdentity(Guid? userId, IErpService service)
+        internal static ErpIdentity CreateIdentity(Guid? userId)
         {
-            SecurityManager secMan = new SecurityManager(service);
+            SecurityManager secMan = new SecurityManager();
             ErpUser user = secMan.GetUser(userId.Value);
 
             if (user == null || !user.Enabled)
@@ -171,7 +171,7 @@ namespace WebVella.ERP.Web.Security
             cache.Remove(userId.ToString());
         }
 
-        internal static object GetCurrentUserPermissions(HttpContext context, IErpService service)
+        internal static object GetCurrentUserPermissions(HttpContext context)
         {
             if (context == null)
                 throw new NullReferenceException("context");
@@ -184,7 +184,7 @@ namespace WebVella.ERP.Web.Security
                     user = identity.User;
             }
 
-            EntityManager entMan = new EntityManager(service.StorageService);
+            EntityManager entMan = new EntityManager();
             var entities = entMan.ReadEntities().Object.Entities;
 
             List<object> permissions = new List<object>();

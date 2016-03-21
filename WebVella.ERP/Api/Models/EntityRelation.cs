@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -28,7 +27,7 @@ namespace WebVella.ERP.Api.Models
         ManyToMany = 3
     }
 
-    public class EntityRelation : IStorageEntityRelation
+    public class EntityRelation
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -103,4 +102,16 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "detachTargetFieldRecordIds")]
         public List<Guid> DetachTargetFieldRecordIds { get; set; }
     }
+
+	public class EntityRelationOptions
+	{
+		[JsonProperty(PropertyName = "relationId")]
+		public Guid? RelationId { get; set; }
+
+		[JsonProperty(PropertyName = "relationName")]
+		public string RelationName { get; set; }
+
+		[JsonProperty(PropertyName = "direction")]
+		public string Direction { get; set; }
+	}
 }

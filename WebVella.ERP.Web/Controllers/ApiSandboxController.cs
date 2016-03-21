@@ -3,7 +3,6 @@
 using Microsoft.AspNet.Mvc;
 using WebVella.ERP.Api.Models;
 using System;
-using Newtonsoft.Json;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -11,10 +10,6 @@ namespace WebVella.ERP.Web.Controllers
 {
     public class ApiSandboxController : ApiControllerBase
     {
-
-        public ApiSandboxController(IErpService service) : base(service)
-        {
-        }
 
         [AcceptVerbs(new[] { "GET" }, Route = "sandbox/api/entity/{entityName}/records/list")]
         public IActionResult GetRecordsByEntityName(string entityName)

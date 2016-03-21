@@ -4,6 +4,7 @@ using Microsoft.AspNet.Http;
 using System;
 using System.Diagnostics;
 using Microsoft.AspNet.Http.Features;
+using System.Threading;
 
 namespace WebVella.ERP.Web.Security
 {
@@ -31,13 +32,14 @@ namespace WebVella.ERP.Web.Security
 			try
 			{
 				//var httpFeature = context.GetFeature<IHttpConnectionFeature>();
-				Debug.WriteLine("BEGIN REQUEST:" + context.Request.Host);
+				Debug.WriteLine("BEGIN REQUEST:" + Thread.CurrentThread.ManagedThreadId);
 				await next(context);
-				Debug.WriteLine("END REQUEST:" + context.Request.Host);
+				Debug.WriteLine("END REQUEST:" + Thread.CurrentThread.ManagedThreadId);
 			}
 			catch (Exception ex)
 			{
 				var exception = ex;
+				throw ex;
 			}
 		}
 	}

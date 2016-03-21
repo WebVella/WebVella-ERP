@@ -96,9 +96,9 @@ namespace WebVella.ERP.Api.Models
             return new QueryObject { QueryType = QueryType.STARTSWITH, FieldName = fieldName, FieldValue = value };
         }
 
-        public static QueryObject QueryRegex(string fieldName, object value)
+        public static QueryObject QueryRegex(string fieldName, object value, QueryObjectRegexOperator op = QueryObjectRegexOperator.MatchCaseSensitive )
         {
-            return new QueryObject { QueryType = QueryType.REGEX, FieldName = fieldName, FieldValue = value };
+            return new QueryObject { QueryType = QueryType.REGEX, FieldName = fieldName, FieldValue = value, RegexOperator = op };
         }
 
 		public static QueryObject Related(string relationName, string direction = "origin-target")

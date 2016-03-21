@@ -15,7 +15,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper
         private static object lockObj = new object();
         private static bool alreadyConfigured = false;
         
-        public static void Configure(IErpService service)
+        public static void Configure()
         {
             if (alreadyConfigured)
                 return;
@@ -29,15 +29,15 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 
                 Mapper.CreateMap<Guid, string>().ConvertUsing<GuidToStringConverter>();
                 Mapper.CreateMap<DateTimeOffset, DateTime>().ConvertUsing<DateTimeTypeConverter>();
-                Mapper.AddProfile(new EntityRelationProfile(service));
-				Mapper.AddProfile(new EntityProfile(service));
-				Mapper.AddProfile(new RecordPermissionsProfile(service));
-                Mapper.AddProfile(new FieldPermissionsProfile(service));
-                Mapper.AddProfile(new FieldProfile(service));
-				Mapper.AddProfile(new RecordsListProfile(service));
-				Mapper.AddProfile(new RecordViewProfile(service));
-				Mapper.AddProfile(new RecordTreeProfile(service));
-				Mapper.AddProfile(new EntityRelationOptionsProfile(service));
+                Mapper.AddProfile(new EntityRelationProfile());
+				Mapper.AddProfile(new EntityProfile());
+				Mapper.AddProfile(new RecordPermissionsProfile());
+                Mapper.AddProfile(new FieldPermissionsProfile());
+                Mapper.AddProfile(new FieldProfile());
+				Mapper.AddProfile(new RecordsListProfile());
+				Mapper.AddProfile(new RecordViewProfile());
+				Mapper.AddProfile(new RecordTreeProfile());
+				Mapper.AddProfile(new EntityRelationOptionsProfile());
                 
                 //Mapper.AddProfile(new RecordViewFieldProfile(service));
 
