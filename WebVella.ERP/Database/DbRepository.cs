@@ -144,9 +144,7 @@ namespace WebVella.ERP.Database
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {targetTableName} ADD CONSTRAINT {relName} FOREIGN KEY ({targetFieldName}) REFERENCES {originTableName} ({originFieldName});";
-
 				NpgsqlCommand command = connection.CreateCommand(sql);
-
 				command.ExecuteNonQuery();
 			}
 		}
@@ -160,6 +158,8 @@ namespace WebVella.ERP.Database
 			SetPrimaryKey(relTableName, new List<string> { "origin_id", "target_id" });
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
+			CreateIndex($"idx_{relName}_target_id", relTableName, "target_id" );
+			CreateIndex($"idx_{relName}_origin_id", relTableName, "origin_id");
 		}
 
 		public static void RenameRelation(string tableName, string name, string newName)
@@ -167,9 +167,7 @@ namespace WebVella.ERP.Database
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {tableName} RENAME CONSTRAINT {name} TO {newName};";
-
 				NpgsqlCommand command = connection.CreateCommand(sql);
-
 				command.ExecuteNonQuery();
 			}
 		}
@@ -179,9 +177,7 @@ namespace WebVella.ERP.Database
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {relName};";
-
 				NpgsqlCommand command = connection.CreateCommand(sql);
-
 				command.ExecuteNonQuery();
 			}
 		}
@@ -192,9 +188,32 @@ namespace WebVella.ERP.Database
 
 			DeleteRelation($"{relName}_origin", originTableName);
 			DeleteRelation($"{relName}_target", targetTableName);
-			DeleteRelation($"{relName}_origin", relTableName);
-			DeleteRelation($"{relName}_target", relTableName);
+			DropIndex($"idx_{relName}_target_id");
+			DropIndex($"idx_{relName}_origin_id");
 			DeleteTable(relTableName, false);
+		}
+
+		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false )
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName});";
+				if ( unique )
+					sql = $"CREATE UNIQUE INDEX {indexName} ON {tableName} ({columnName});";
+
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
+		public static void DropIndex(string indexName )
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = $"DROP INDEX IF EXISTS {indexName}";
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
 		}
 
 		public static bool InsertRecord(string tableName, List<DbParameter> parameters)
