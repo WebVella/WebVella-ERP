@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		internal.PNG = internal.PNG
 		LIBRARIES.md = LIBRARIES.md
 		LICENSE.txt = LICENSE.txt
+		C:\Users\rumen.yankov\Desktop\postgresql.conf = C:\Users\rumen.yankov\Desktop\postgresql.conf
 		README.md = README.md
 	EndProjectSection
 EndProject
