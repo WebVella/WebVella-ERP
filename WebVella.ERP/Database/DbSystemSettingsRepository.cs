@@ -14,8 +14,11 @@ namespace WebVella.ERP.Database
 		{
 			DbSystemSettings setting = null;
 
-			using (DbConnection con = DbContext.Current.CreateConnection())
+			DbConnection con = null;
+			try
 			{
+				con = DbContext.Current.CreateConnection();
+				con.BeginTransaction();
 				NpgsqlCommand command = con.CreateCommand("SELECT * FROM system_settings;");
 
 				using (var reader = command.ExecuteReader())
@@ -28,8 +31,17 @@ namespace WebVella.ERP.Database
 					}
 					reader.Close();
 				}
+				con.CommitTransaction();
 			}
+			catch (Exception ex)
+			{
+				if (con != null)
+					con.RollbackTransaction();
 
+				if (!ex.Message.Contains("does not exist"))
+					throw;
+
+			}
 			return setting;
 		}
 

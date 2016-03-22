@@ -76,7 +76,7 @@ namespace WebVella.ERP.Database
 						relationCache = new List<DbEntityRelation>();
 						return true;
 					}
-					catch (Exception)
+					catch 
 					{
 						con.RollbackTransaction();
 					}

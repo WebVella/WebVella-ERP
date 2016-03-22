@@ -21,13 +21,15 @@ namespace WebVella.ERP
 			FieldResponse fieldResponse = null;
 			EntityManager em = new EntityManager();
 			EntityRelationManager rm = new EntityRelationManager();
-			RecordManager recMan = new RecordManager();
+			RecordManager recMan = new RecordManager(true);
 
-			using (var connection = DbContext.Current.CreateConnection() )
+			using (var connection = DbContext.Current.CreateConnection())
 			{
 				try
 				{
 					connection.BeginTransaction();
+
+					CheckCreateSystemTables();
 
 					DbSystemSettings storeSystemSettings = DbContext.Current.SettingsRepository.Read();
 
@@ -368,8 +370,8 @@ namespace WebVella.ERP
 							QueryResponse result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.AdministratorRoleId, SystemIds.FirstUserId);
 							if (!result.Success)
 								throw new Exception("CREATE FIRST-USER <-> ADMINISTRATOR ROLE RELATION RECORD:" + result.Message);
-						
-					
+
+
 							result = recMan.CreateRelationManyToManyRecord(SystemIds.UserRoleRelationId, SystemIds.RegularRoleId, SystemIds.FirstUserId);
 							if (!result.Success)
 								throw new Exception("CREATE FIRST-USER <-> REGULAR ROLE RELATION RECORD:" + result.Message);
@@ -843,6 +845,60 @@ namespace WebVella.ERP
 			}
 
 			//recMan.ConvertNtoNRelations();
+		}
+
+
+		private void CheckCreateSystemTables()
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				bool entitiesTableExists = false;
+				var command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'entities' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					entitiesTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!entitiesTableExists)
+				{
+					command = connection.CreateCommand("CREATE TABLE public.entities(  id uuid NOT NULL, \"json\"  json NOT NULL,  CONSTRAINT entities_pkey	PRIMARY KEY (id)) WITH(	OIDS = FALSE  )");
+					command.ExecuteNonQuery();
+				}
+
+				bool relationsTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'entity_relations' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					relationsTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!relationsTableExists)
+				{
+					command = connection.CreateCommand("CREATE TABLE public.entity_relations(  id uuid NOT NULL, \"json\"  json NOT NULL,  CONSTRAINT entity_relations_pkey	PRIMARY KEY (id)) WITH(	OIDS = FALSE  )");
+					command.ExecuteNonQuery();
+				}
+
+
+				bool settingsTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'system_settings' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					settingsTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!settingsTableExists)
+				{
+					command = connection.CreateCommand("CREATE TABLE public.system_settings (  id uuid NOT NULL,  version  integer NOT NULL, CONSTRAINT system_settings_pkey	PRIMARY KEY(id)) WITH(	OIDS = FALSE  )");
+					command.ExecuteNonQuery();
+				}
+
+			}
 		}
 
 		#region << tests >>

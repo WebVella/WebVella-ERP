@@ -141,6 +141,12 @@ namespace WebVella.ERP.Database
 
 		public static void CreateRelation(string relName, string originTableName, string originFieldName, string targetTableName, string targetFieldName)
 		{
+			if (!TableExists(originTableName))
+				return;
+
+			if (!TableExists(targetTableName))
+				return;
+
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {targetTableName} ADD CONSTRAINT {relName} FOREIGN KEY ({targetFieldName}) REFERENCES {originTableName} ({originFieldName});";
@@ -164,6 +170,9 @@ namespace WebVella.ERP.Database
 
 		public static void RenameRelation(string tableName, string name, string newName)
 		{
+			if (!TableExists(tableName))
+				return;
+
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {tableName} RENAME CONSTRAINT {name} TO {newName};";
@@ -174,6 +183,9 @@ namespace WebVella.ERP.Database
 
 		public static void DeleteRelation(string relName, string tableName)
 		{
+			if (!TableExists(tableName))
+				return;
+
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {relName};";
@@ -195,6 +207,9 @@ namespace WebVella.ERP.Database
 
 		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false )
 		{
+			if (!TableExists(tableName))
+				return;
+
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName});";
@@ -288,6 +303,22 @@ namespace WebVella.ERP.Database
 				command.CommandText = $"DELETE FROM {tableName} WHERE id=@id";
 
 				return command.ExecuteNonQuery() > 0;
+			}
+		}
+
+		public static bool TableExists(string tableName)
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				bool tableExists = false;
+				var command = connection.CreateCommand($"SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = '{tableName}' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					tableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+				return tableExists;
 			}
 		}
 	}

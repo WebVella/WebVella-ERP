@@ -195,7 +195,7 @@ namespace WebVella.ERP.Api
 					}
 				}
 
-				SetRecordServiceInformation(record, true);
+				SetRecordServiceInformation(record, true, ignoreSecurity);
 
 				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
@@ -363,7 +363,7 @@ namespace WebVella.ERP.Api
 					}
 				}
 
-				SetRecordServiceInformation(record, false);
+				SetRecordServiceInformation(record, false, ignoreSecurity);
 
 				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
@@ -936,7 +936,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true)
+		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true, bool ignoreSecurity = false)
 		{
 			if (record == null)
 				return;
@@ -953,8 +953,13 @@ namespace WebVella.ERP.Api
 				}
 				else
 				{
-					record["created_by"] = null;
-					record["last_modified_by"] = null;
+					//if ignore security is set then do not overwrite already set values
+					//needed to set first user
+					if (!ignoreSecurity)
+					{
+						record["created_by"] = null;
+						record["last_modified_by"] = null;
+					}
 				}
 			}
 			else
