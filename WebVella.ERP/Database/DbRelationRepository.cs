@@ -73,7 +73,7 @@ namespace WebVella.ERP.Database
 						}
 
 						con.CommitTransaction();
-
+						relationCache = new List<DbEntityRelation>();
 						return true;
 					}
 					catch (Exception)
@@ -82,7 +82,7 @@ namespace WebVella.ERP.Database
 					}
 				}
 
-				relationCache = new List<DbEntityRelation>();
+				
 			}
 			return false;
 		}
@@ -205,7 +205,7 @@ namespace WebVella.ERP.Database
 
 					con.BeginTransaction();
 
-					NpgsqlCommand command = con.CreateCommand("");
+					NpgsqlCommand command = con.CreateCommand("DELETE FROM entity_relations WHERE id=@id;");
 
 					var parameterId = command.CreateParameter() as NpgsqlParameter;
 					parameterId.ParameterName = "id";
@@ -227,6 +227,7 @@ namespace WebVella.ERP.Database
 						}
 
 						con.CommitTransaction();
+						relationCache = new List<DbEntityRelation>();
 
 						return true;
 					}
@@ -236,7 +237,7 @@ namespace WebVella.ERP.Database
 					}
 				}
 
-				relationCache = new List<DbEntityRelation>();
+			
 			}
 
 			return false;
