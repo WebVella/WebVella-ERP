@@ -2677,8 +2677,6 @@ namespace WebVella.ERP.Api
 					//if (field is AutoNumberField)
 					//	recRep.CreateAutoNumberRecordField(entity.Name, field.Name, 1);
 					//else
-					DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
-
 
 					bool result = DbContext.Current.EntityRepository.Update(editedEntity);
 					if (!result)
@@ -2689,6 +2687,7 @@ namespace WebVella.ERP.Api
 						return response;
 					}
 
+					DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
 					//if (transactional)
 					//	transaction.Commit();
 				}
