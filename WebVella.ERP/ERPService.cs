@@ -939,6 +939,44 @@ namespace WebVella.ERP
 					command.ExecuteNonQuery();
 				}
 
+				bool filesTableExists = false;
+				command = connection.CreateCommand("SELECT EXISTS (  SELECT 1 FROM   information_schema.tables  WHERE  table_schema = 'public' AND table_name = 'files' ) ");
+				using (var reader = command.ExecuteReader())
+				{
+					reader.Read();
+					filesTableExists = reader.GetBoolean(0);
+					reader.Close();
+				}
+
+				if (!filesTableExists)
+				{
+					const string filesTableSql = @"CREATE TABLE public.files (
+					  id           uuid NOT NULL,
+					  object_id    numeric(18) NOT NULL,
+					  filepath     text NOT NULL,
+					  created_on   timestamp WITHOUT TIME ZONE NOT NULL,
+					  modified_on  timestamp WITHOUT TIME ZONE NOT NULL,
+					  created_by   uuid,
+					  modified_by  uuid,
+					  /* Keys */
+					  CONSTRAINT files_pkey
+						PRIMARY KEY (id), 
+					  CONSTRAINT udx_filepath
+						UNIQUE (filepath), 
+					  CONSTRAINT udx_object_id
+						UNIQUE (object_id)
+					) WITH (
+						OIDS = FALSE
+					  )";
+
+					command = connection.CreateCommand(filesTableSql);
+					command.ExecuteNonQuery();
+
+					DbRepository.CreateIndex("idx_filepath", "files", "filepath", true);
+				}
+
+				
+
 			}
 		}
 
