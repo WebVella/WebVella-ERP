@@ -46,26 +46,34 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, string defaultValue, bool isNullable = false)
+		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable = false)
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(type);
-			CreateColumn(tableName, name, pgType, isPrimaryKey, defaultValue, isNullable);
-		}
 
-		public static void CreateColumn(string tableName, string name, string type, bool isPrimaryKey, string defaultValue, bool isNullable = false)
-		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
+				NpgsqlCommand command = connection.CreateCommand("");
+
 				string canBeNull = isNullable && !isPrimaryKey ? "NULL" : "NOT NULL";
-				string sql = $"ALTER TABLE {tableName} ADD COLUMN {name} {type} {canBeNull};";
+				string sql = $"ALTER TABLE {tableName} ADD COLUMN {name} {pgType} {canBeNull}";
+
+				if (defaultValue != null && !(defaultValue is Guid && (Guid)defaultValue == Guid.Empty))
+				{
+					//var parameter = command.CreateParameter() as NpgsqlParameter;
+					//parameter.ParameterName = "@default_value";
+					//parameter.Value = defaultValue;
+					//parameter.NpgsqlDbType = DbTypeConverter.ConvertToDatabaseType(type);
+					//command.Parameters.Add(parameter);
+					var defVal = ConvertDefaultValue(type, defaultValue);
+					sql += $" DEFAULT {defVal}";
+				}
 
 				if (isPrimaryKey)
-					sql += $"\r\n ALTER TABLE {tableName} ADD PRIMARY KEY ({name});";
+					sql += $" PRIMARY KEY";
 
-				if (!string.IsNullOrWhiteSpace(defaultValue) && (defaultValue != "'00000000-0000-0000-0000-000000000000'"))
-					sql += $"\r\n ALTER TABLE {tableName} ALTER COLUMN {name} SET DEFAULT {defaultValue};";
+				sql += ";";
 
-				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.CommandText = sql;
 
 				command.ExecuteNonQuery();
 			}
@@ -321,5 +329,51 @@ namespace WebVella.ERP.Database
 				return tableExists;
 			}
 		}
+
+		public static string ConvertDefaultValue(FieldType type, object value)
+		{
+			if (value == null)
+				return null;
+
+			switch (type)
+			{
+				case FieldType.DateField:
+					return "'" + ((DateTime)value).ToString("yyyy-MM-dd") + "'";
+				case FieldType.DateTimeField:
+					return "'" + ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss") + "'";
+				case FieldType.EmailField:
+				case FieldType.FileField:
+				case FieldType.HtmlField:
+				case FieldType.ImageField:
+				case FieldType.MultiLineTextField:
+				case FieldType.PhoneField:
+				case FieldType.SelectField:
+				case FieldType.TextField:
+				case FieldType.UrlField:
+					return "'" + value + "'";
+				case FieldType.GuidField:
+					return "'" + ((Guid)value).ToString() + "'";
+				case FieldType.MultiSelectField:
+					{
+						string outValue = "";
+						List<string> defaultValues = (List<string>)value;
+						if (defaultValues.Count > 0)
+						{
+							outValue += "'{";
+							foreach (var val in defaultValues)
+							{
+								outValue += $"\"{val}\",";
+							}
+							outValue = outValue.Remove(outValue.Length - 1, 1);
+							outValue += "}'";
+						}
+
+						return outValue;
+					}
+				default:
+					return value.ToString();
+			}
+		}
+
 	}
 }

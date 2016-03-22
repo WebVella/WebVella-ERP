@@ -4,8 +4,8 @@ using WebVella.ERP.Api.Models;
 
 namespace WebVella.ERP.Database
 {
-    public static class DbTypeConverter
-    {
+	public static class DbTypeConverter
+	{
 		public static string ConvertToDatabaseSqlType(FieldType type)
 		{
 			string pgType = "";
@@ -25,7 +25,7 @@ namespace WebVella.ERP.Database
 					pgType = "date";
 					break;
 				case FieldType.DateTimeField:
-					pgType = "timestamp";
+					pgType = "timestamp with time zone";
 					break;
 				case FieldType.EmailField:
 					pgType = "varchar(500)";
@@ -154,8 +154,58 @@ namespace WebVella.ERP.Database
 
 		public static NpgsqlDbType GetDatabaseType(Field field)
 		{
-			FieldType type =field.GetFieldType();
+			FieldType type = field.GetFieldType();
 			return ConvertToDatabaseType(type);
+		}
+
+		public static NpgsqlDbType GetDatabaseFieldType(DbBaseField field)
+		{
+			NpgsqlDbType pgType = NpgsqlDbType.Numeric;
+
+			if (field is DbAutoNumberField)
+				pgType = NpgsqlDbType.Numeric;
+			else if (field is DbCheckboxField)
+				pgType = NpgsqlDbType.Boolean;
+			else if (field is DbCurrencyField)
+				pgType = NpgsqlDbType.Numeric;
+			else if (field is DbDateField)
+				pgType = NpgsqlDbType.Date;
+			else if (field is DbDateTimeField)
+				pgType = NpgsqlDbType.TimestampTZ;
+			else if (field is DbEmailField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbFileField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbGuidField)
+				pgType = NpgsqlDbType.Uuid;
+			else if (field is DbHtmlField)
+				pgType = NpgsqlDbType.Text;
+			else if (field is DbImageField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbMultiLineTextField)
+				pgType = NpgsqlDbType.Text;
+			else if (field is DbMultiSelectField)
+				pgType = NpgsqlDbType.Array | NpgsqlDbType.Text;
+			else if (field is DbNumberField)
+				pgType = NpgsqlDbType.Numeric;
+			else if (field is DbPasswordField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbPercentField)
+				pgType = NpgsqlDbType.Numeric;
+			else if (field is DbPhoneField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbSelectField)
+				pgType = NpgsqlDbType.Varchar;
+			else if (field is DbTextField)
+				pgType = NpgsqlDbType.Text;
+			else if (field is DbTreeSelectField)
+				pgType = NpgsqlDbType.Array | NpgsqlDbType.Uuid;
+			else if (field is DbUrlField)
+				pgType = NpgsqlDbType.Varchar;
+			else
+				throw new Exception("FieldType is not supported.");
+
+			return pgType;
 		}
 	}
 }

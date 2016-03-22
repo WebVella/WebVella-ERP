@@ -1719,9 +1719,6 @@ namespace WebVella.ERP.Api
 					response.Message = "The entity was not created! An internal error occurred!";
 					return response;
 				}
-
-				//TODO: create records collection
-
 			}
 			catch (Exception e)
 			{
@@ -2665,37 +2662,30 @@ namespace WebVella.ERP.Api
 
 				DbEntity editedEntity = entity.MapTo<DbEntity>();
 
-				//var recRep = Storage.GetRecordRepository();
-				//IStorageTransaction transaction = null;
-				//            if ( transactional )
-				//	transaction = recRep.CreateTransaction();
-				try
+				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
-					//if (transactional)
-					//	transaction.Begin();
+					con.BeginTransaction();
 
-					//if (field is AutoNumberField)
-					//	recRep.CreateAutoNumberRecordField(entity.Name, field.Name, 1);
-					//else
-
-					bool result = DbContext.Current.EntityRepository.Update(editedEntity);
-					if (!result)
+					try
 					{
-						response.Timestamp = DateTime.UtcNow;
-						response.Success = false;
-						response.Message = "The field was not created! An internal error occurred!";
-						return response;
-					}
+						bool result = DbContext.Current.EntityRepository.Update(editedEntity);
+						if (!result)
+						{
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = false;
+							response.Message = "The field was not created! An internal error occurred!";
+							return response;
+						}
 
-					DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
-					//if (transactional)
-					//	transaction.Commit();
-				}
-				catch
-				{
-					//if (transactional)
-					//	transaction.Rollback();
-					throw;
+						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+
+						con.CommitTransaction();
+					}
+					catch
+					{
+						con.RollbackTransaction();
+						throw;
+					}
 				}
 
 			}
@@ -3282,34 +3272,30 @@ namespace WebVella.ERP.Api
 
 				entity.Fields.Remove(field);
 
-				//var recRep = Storage.GetRecordRepository();
-				//IStorageTransaction transaction = null;
-				//if (transactional)
-				//	transaction = recRep.CreateTransaction();
-				try
+				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
-					//if (transactional)
-					//	transaction.Begin();
-
-					DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field.Name);
-
-					DbEntity updatedEntity = entity.MapTo<DbEntity>();
-					bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
-					if (!result)
+					con.BeginTransaction();
+					try
 					{
-						response.Timestamp = DateTime.UtcNow;
-						response.Success = false;
-						response.Message = "The field was not updated! An internal error occurred!";
-						return response;
+						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field.Name);
+
+						DbEntity updatedEntity = entity.MapTo<DbEntity>();
+						bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
+						if (!result)
+						{
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = false;
+							response.Message = "The field was not updated! An internal error occurred!";
+							return response;
+						}
+
+						con.CommitTransaction();
 					}
-					//if (transactional)
-					//	transaction.Commit();
-				}
-				catch
-				{
-					//if (transactional)
-					//	transaction.Rollback();
-					throw;
+					catch
+					{
+						con.RollbackTransaction();
+						throw;
+					}
 				}
 			}
 			catch (Exception e)

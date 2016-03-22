@@ -339,8 +339,8 @@ namespace WebVella.ERP
                 return ((PhoneField)this).DefaultValue;
             else if (this is GuidField)
             {
-                if (Name == "id")
-                    throw new Exception("Cannot use default value for id this.");
+				if (Name == "id")
+					return null; //throw new Exception("Cannot use default value for id this.");
 
                 var guidField = (this as GuidField);
                 if (guidField.GenerateNewId != null && guidField.GenerateNewId.Value)
