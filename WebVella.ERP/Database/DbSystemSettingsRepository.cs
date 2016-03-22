@@ -14,33 +14,33 @@ namespace WebVella.ERP.Database
 		{
 			DbSystemSettings setting = null;
 
-			DbConnection con = null;
-			try
+			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				con = DbContext.Current.CreateConnection();
-				con.BeginTransaction();
-				NpgsqlCommand command = con.CreateCommand("SELECT * FROM system_settings;");
-
-				using (var reader = command.ExecuteReader())
+				try
 				{
-					if (reader != null && reader.Read())
+					con.BeginTransaction();
+					NpgsqlCommand command = con.CreateCommand("SELECT * FROM system_settings;");
+
+					using (var reader = command.ExecuteReader())
 					{
-						setting = new DbSystemSettings();
-						setting.Id = (Guid)reader["id"];
-						setting.Version = (int)reader["version"];
+						if (reader != null && reader.Read())
+						{
+							setting = new DbSystemSettings();
+							setting.Id = (Guid)reader["id"];
+							setting.Version = (int)reader["version"];
+						}
+						reader.Close();
 					}
-					reader.Close();
+					con.CommitTransaction();
 				}
-				con.CommitTransaction();
-			}
-			catch (Exception ex)
-			{
-				if (con != null)
-					con.RollbackTransaction();
+				catch (Exception ex)
+				{
+					if (con != null)
+						con.RollbackTransaction();
 
-				if (!ex.Message.Contains("does not exist"))
-					throw;
-
+					if (!ex.Message.Contains("does not exist"))
+						throw;
+				}
 			}
 			return setting;
 		}
