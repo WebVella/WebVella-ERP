@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("font","eu",{fontSize:{label:"Tamaina",voiceLabel:"Tamaina",panelTitle:"Tamaina"},label:"Letra-tipoa",panelTitle:"Letra-tipoa",voiceLabel:"Letra-tipoa"});
+﻿CKEDITOR.plugins.setLang("font","eu",{fontSize:{label:"Tamaina",voiceLabel:"Letra-tamaina",panelTitle:"Letra-tamaina"},label:"Letra-tipoa",panelTitle:"Letra-tipoaren izena",voiceLabel:"Letra-tipoa"});

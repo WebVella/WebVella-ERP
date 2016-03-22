@@ -1,6 +1,6 @@
 {
   "name": "ng-sortable",
-  "version": "1.3.1",
+  "version": "1.3.3",
   "homepage": "https://github.com/a5hik/ng-sortable",
   "author": "Muhammed Ashik <https://github.com/a5hik>",
   "description": "Angular Library for Drag and Drop, supports Sortable and Draggable.",
@@ -41,14 +41,14 @@
     "karma.conf.js",
     "package.json"
   ],
-  "_release": "1.3.1",
+  "_release": "1.3.3",
   "_resolution": {
     "type": "version",
-    "tag": "1.3.1",
-    "commit": "3eff0cada6a075e3150369ca57b8cb512de0f382"
+    "tag": "1.3.3",
+    "commit": "4f9d2441cda6eaef764127ffaedc2f5abb30e245"
   },
   "_source": "git://github.com/a5hik/ng-sortable.git",
-  "_target": "~1.3.1",
+  "_target": "~1.3.3",
   "_originalSource": "ng-sortable",
   "_direct": true
 }

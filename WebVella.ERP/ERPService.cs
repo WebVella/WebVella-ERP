@@ -821,6 +821,47 @@ namespace WebVella.ERP
 						#endregion
 					}
 
+					if (currentVersion < 160316)
+					{
+						systemSettings.Version = 160316;
+						//Area Folder name
+						var AREA_ENTITY_ID = SystemIds.AreaEntityId;
+						var AREA_ENTITY_NAME = "area";
+						#region << folder >>
+						{
+							InputTextField textboxField = new InputTextField();
+							textboxField.Id = Guid.NewGuid();
+							textboxField.Name = "folder";
+							textboxField.Label = "folder";
+							textboxField.PlaceholderText = "";
+							textboxField.Description = "";
+							textboxField.HelpText = "";
+							textboxField.Required = false;
+							textboxField.Unique = false;
+							textboxField.Searchable = false;
+							textboxField.Auditable = false;
+							textboxField.System = true;
+							textboxField.DefaultValue = string.Empty;
+							textboxField.MaxLength = null;
+							textboxField.EnableSecurity = true;
+							textboxField.Permissions = new FieldPermissions();
+							textboxField.Permissions.CanRead = new List<Guid>();
+							textboxField.Permissions.CanUpdate = new List<Guid>();
+							//READ
+							textboxField.Permissions.CanRead.Add(SystemIds.AdministratorRoleId);
+							//UPDATE
+							textboxField.Permissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+							{
+								var createResponse = entityManager.CreateField(AREA_ENTITY_ID, textboxField, false);
+								if (!createResponse.Success)
+									throw new Exception("System error 10060. Entity: " + AREA_ENTITY_NAME + " Field: folder" + " Message:" + response.Message);
+							}
+						}
+						#endregion
+
+					}
+
+
 					//following 2 rows are commented during mongo to pg move
 					//storeSystemSettings = DbContext.Current.SettingsRepository.Convert(systemSettings);
 					//systemSettingsRepository.Save(storeSystemSettings);
