@@ -1,10 +1,8 @@
 import extend from './extend';
 import { hooks } from './hooks';
-import isUndefined from './is-undefined';
 
 function warn(msg) {
-    if (hooks.suppressDeprecationWarnings === false &&
-            (typeof console !==  'undefined') && console.warn) {
+    if (hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) {
         console.warn('Deprecation warning: ' + msg);
     }
 }
@@ -14,7 +12,7 @@ export function deprecate(msg, fn) {
 
     return extend(function () {
         if (firstTime) {
-            warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
+            warn(msg + '\n' + (new Error()).stack);
             firstTime = false;
         }
         return fn.apply(this, arguments);
@@ -31,3 +29,4 @@ export function deprecateSimple(name, msg) {
 }
 
 hooks.suppressDeprecationWarnings = false;
+

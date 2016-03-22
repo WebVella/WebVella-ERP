@@ -27,8 +27,3 @@ export function toObject () {
         milliseconds: m.milliseconds()
     };
 }
-
-export function toJSON () {
-    // new Date(NaN).toJSON() === null
-    return this.isValid() ? this.toISOString() : null;
-}

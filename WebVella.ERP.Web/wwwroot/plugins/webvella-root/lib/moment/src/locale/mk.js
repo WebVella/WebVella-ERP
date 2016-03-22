@@ -21,19 +21,19 @@ export default moment.defineLocale('mk', {
     calendar : {
         sameDay : '[Денес во] LT',
         nextDay : '[Утре во] LT',
-        nextWeek : '[Во] dddd [во] LT',
+        nextWeek : 'dddd [во] LT',
         lastDay : '[Вчера во] LT',
         lastWeek : function () {
             switch (this.day()) {
             case 0:
             case 3:
             case 6:
-                return '[Изминатата] dddd [во] LT';
+                return '[Во изминатата] dddd [во] LT';
             case 1:
             case 2:
             case 4:
             case 5:
-                return '[Изминатиот] dddd [во] LT';
+                return '[Во изминатиот] dddd [во] LT';
             }
         },
         sameElse : 'L'

@@ -2,11 +2,10 @@ import { addFormatToken } from '../format/format';
 import { addUnitAlias } from './aliases';
 import { addRegexToken, match1to2, match1to4, match1to6, match2, match4, match6, matchSigned } from '../parse/regex';
 import { addWeekParseToken } from '../parse/token';
-import { weekOfYear, weeksInYear, dayOfYearFromWeeks } from './week-calendar-utils';
+import { weekOfYear } from './week';
 import toInt from '../utils/to-int';
 import { hooks } from '../utils/hooks';
 import { createLocal } from '../create/local';
-import { createUTCDate } from '../create/date-from-array';
 
 // FORMATTING
 
@@ -51,20 +50,22 @@ addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
     week[token] = hooks.parseTwoDigitYear(input);
 });
 
+// HELPERS
+
+function weeksInYear(year, dow, doy) {
+    return weekOfYear(createLocal([year, 11, 31 + dow - doy]), dow, doy).week;
+}
+
 // MOMENTS
 
 export function getSetWeekYear (input) {
-    return getSetWeekYearHelper.call(this,
-            input,
-            this.week(),
-            this.weekday(),
-            this.localeData()._week.dow,
-            this.localeData()._week.doy);
+    var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
+    return input == null ? year : this.add((input - year), 'y');
 }
 
 export function getSetISOWeekYear (input) {
-    return getSetWeekYearHelper.call(this,
-            input, this.isoWeek(), this.isoWeekday(), 1, 4);
+    var year = weekOfYear(this, 1, 4).year;
+    return input == null ? year : this.add((input - year), 'y');
 }
 
 export function getISOWeeksInYear () {
@@ -74,27 +75,4 @@ export function getISOWeeksInYear () {
 export function getWeeksInYear () {
     var weekInfo = this.localeData()._week;
     return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-}
-
-function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-    var weeksTarget;
-    if (input == null) {
-        return weekOfYear(this, dow, doy).year;
-    } else {
-        weeksTarget = weeksInYear(input, dow, doy);
-        if (week > weeksTarget) {
-            week = weeksTarget;
-        }
-        return setWeekAll.call(this, input, week, weekday, dow, doy);
-    }
-}
-
-function setWeekAll(weekYear, week, weekday, dow, doy) {
-    var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-        date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-
-    this.year(date.getUTCFullYear());
-    this.month(date.getUTCMonth());
-    this.date(date.getUTCDate());
-    return this;
 }

@@ -1,12 +1,8 @@
 language: node_js
 node_js:
-  - "4.2.4"
-
-addons:
-  firefox: "latest"
+  - "0.10"
 
 before_script:
-  - echo "Using firefox version `firefox --version`"
   - npm install -g bower
   - bower install
   - export DISPLAY=:99.0
@@ -17,10 +13,6 @@ before_script:
 
 script:
   - npm test
-
-after_success:
-  - npm run coveralls
-  - npm run codacy
 
 notifications:
   - email: false

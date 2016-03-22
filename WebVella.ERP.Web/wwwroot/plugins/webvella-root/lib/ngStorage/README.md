@@ -164,7 +164,7 @@ var app = angular.module('app', ['ngStorage'])
     function ($localStorageProvider) {
         $localStorageProvider.get('MyKey');
 
-        $localStorageProvider.set('MyKey', { k: 'value' });
+        $localStorageProvder.set('MyKey', { k: 'value' });
     }]);
 ```
 

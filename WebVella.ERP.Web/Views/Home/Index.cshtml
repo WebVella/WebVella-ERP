@@ -42,6 +42,7 @@
 	<script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js?v=@ViewBag.CacheBreaker"></script>
+	@*<script src="~/plugins/webvella-root/lib/fastclick/lib/fastclick.js?v=@ViewBag.CacheBreaker"></script>*@
 	<script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js?v=@ViewBag.CacheBreaker"></script>
@@ -70,7 +71,7 @@
 			angular
                 .module('wvApp', [
                     // Angular modules
-                    'ngAnimate', 'ngTouch', 'ngCookies', 'ngSanitize',
+                    'ngAnimate', 'ngCookies','ngTouch', 'ngSanitize', //
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
@@ -110,8 +111,8 @@
 			function run(editableOptions, editableThemes) { editableOptions.theme = 'bs3'; editableThemes.bs3.buttonsClass = 'btn-sm'; };
 		})();
 	</script>
-	<script src="~/application.controller.js"></script>
-	<script src="~/application.constants.js"></script>
+	<script src="~/application.controller.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/application.constants.js?v=@ViewBag.CacheBreaker"></script>
     
 	<!-- Server generated global variables -->
 	<script>

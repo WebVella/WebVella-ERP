@@ -78,6 +78,12 @@
 			}
 		});
 		delete $httpProvider.defaults.headers.common["X-Requested-With"];
+
+		//if ('addEventListener' in document) {
+		//	document.addEventListener('DOMContentLoaded', function() {
+		//		FastClick.attach(document.body);
+		//	}, false);
+		//}
 	}
 
 
@@ -119,14 +125,16 @@
 		//Side menu visibility
 		appData.sideMenuIsVisible = true;
 		$rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {
-			appData.sideMenuIsVisible = isVisible;
+			$timeout(function () {
+				appData.sideMenuIsVisible = isVisible;
+			}, 10);
 		});
 
 		//Redirect State (usefull when you need to redirect from resolve)
 		$rootScope.$on("state-change-needed", function (event, stateName, stateParams) {
 			$timeout(function () {
 				$state.go(stateName, stateParams, { reload: true });
-			}, 0);
+			}, 10);
 		});
 
 		$log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

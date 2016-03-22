@@ -10,8 +10,7 @@
       e = _error;
     }
     return results;
-  }, Offline = {}, Offline.options = window.Offline ? window.Offline.options || {} :{}, 
-  defaultOptions = {
+  }, Offline = {}, null == Offline.options && (Offline.options = {}), defaultOptions = {
     checks:{
       xhr:{
         url:function() {

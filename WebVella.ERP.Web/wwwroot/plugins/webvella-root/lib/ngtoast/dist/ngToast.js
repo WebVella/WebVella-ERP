@@ -1,9 +1,8 @@
 /*!
- * ngToast v2.0.0 (http://tameraydin.github.io/ngToast)
- * Copyright 2016 Tamer Aydin (http://tamerayd.in)
+ * ngToast v1.5.6 (http://tameraydin.github.io/ngToast)
+ * Copyright 2015 Tamer Aydin (http://tamerayd.in)
  * Licensed under MIT (http://tameraydin.mit-license.org/)
  */
-
 (function(window, angular, undefined) {
   'use strict';
 
@@ -22,13 +21,11 @@
           dismissButton: false,
           dismissButtonHtml: '&times;',
           dismissOnClick: true,
-          onDismiss: null,
           compileContent: false,
           combineDuplications: false,
           horizontalPosition: 'right', // right, center, left
           verticalPosition: 'top', // top, bottom,
-          maxNumber: 0,
-          newestOnTop: true
+          maxNumber: 0
         };
 
         function Message(msg) {
@@ -47,7 +44,6 @@
           this.dismissButton = defaults.dismissButton;
           this.dismissButtonHtml = defaults.dismissButtonHtml;
           this.dismissOnClick = defaults.dismissOnClick;
-          this.onDismiss = defaults.onDismiss;
           this.compileContent = defaults.compileContent;
 
           angular.extend(this, msg);
@@ -107,9 +103,12 @@
               }
 
               var newMsg = new Message(msg);
-              messages[defaults.newestOnTop ? 'unshift' : 'push'](newMsg);
+              if (defaults.verticalPosition === 'bottom') {
+                messages.unshift(newMsg);
+              } else {
+                messages.push(newMsg);
+              }
               messageStack.push(newMsg.id);
-
               return newMsg.id;
             },
             success: function(msg) {
@@ -258,11 +257,6 @@
                 ngToast.dismiss(scope.message.id);
                 scope.$apply();
               });
-            }
-
-            if (scope.message.onDismiss) {
-              scope.$on('$destroy',
-                scope.message.onDismiss.bind(scope.message));
             }
           }
         };

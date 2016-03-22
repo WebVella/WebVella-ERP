@@ -1,31 +1,28 @@
 import { isMoment } from './constructor';
 import { normalizeUnits } from '../units/aliases';
 import { createLocal } from '../create/local';
-import isUndefined from '../utils/is-undefined';
 
 export function isAfter (input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input);
-    if (!(this.isValid() && localInput.isValid())) {
-        return false;
-    }
-    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    var inputMs;
+    units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
     if (units === 'millisecond') {
-        return +this > +localInput;
+        input = isMoment(input) ? input : createLocal(input);
+        return +this > +input;
     } else {
-        return +localInput < +this.clone().startOf(units);
+        inputMs = isMoment(input) ? +input : +createLocal(input);
+        return inputMs < +this.clone().startOf(units);
     }
 }
 
 export function isBefore (input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input);
-    if (!(this.isValid() && localInput.isValid())) {
-        return false;
-    }
-    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    var inputMs;
+    units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
     if (units === 'millisecond') {
-        return +this < +localInput;
+        input = isMoment(input) ? input : createLocal(input);
+        return +this < +input;
     } else {
-        return +this.clone().endOf(units) < +localInput;
+        inputMs = isMoment(input) ? +input : +createLocal(input);
+        return +this.clone().endOf(units) < inputMs;
     }
 }
 
@@ -34,24 +31,13 @@ export function isBetween (from, to, units) {
 }
 
 export function isSame (input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input),
-        inputMs;
-    if (!(this.isValid() && localInput.isValid())) {
-        return false;
-    }
+    var inputMs;
     units = normalizeUnits(units || 'millisecond');
     if (units === 'millisecond') {
-        return +this === +localInput;
+        input = isMoment(input) ? input : createLocal(input);
+        return +this === +input;
     } else {
-        inputMs = +localInput;
+        inputMs = +createLocal(input);
         return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
     }
-}
-
-export function isSameOrAfter (input, units) {
-    return this.isSame(input, units) || this.isAfter(input,units);
-}
-
-export function isSameOrBefore (input, units) {
-    return this.isSame(input, units) || this.isBefore(input,units);
 }
