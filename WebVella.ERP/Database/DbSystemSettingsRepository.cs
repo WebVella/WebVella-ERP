@@ -52,15 +52,28 @@ namespace WebVella.ERP.Database
 
 			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				NpgsqlCommand command = con.CreateCommand("UPDATE system_settings SET version=@version WHERE id=@id;");
+				bool recordExists = false;
+				NpgsqlCommand command = con.CreateCommand("SELECT COUNT(*) FROM system_settings WHERE id=@id;");
+				var parameterId = command.CreateParameter();
+				parameterId.ParameterName = "id";
+				parameterId.Value = systemSettings.Id;
+				parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
+				command.Parameters.Add(parameterId);
 
-				var parameter = command.CreateParameter() as NpgsqlParameter;
+				recordExists = ((long)command.ExecuteScalar()) > 0;
+
+				if (recordExists)
+					command = con.CreateCommand("UPDATE system_settings SET version=@version WHERE id=@id;");
+				else
+					command = con.CreateCommand("INSERT INTO system_settings (id, version) VALUES( @id,@version)");
+
+				var parameter = command.CreateParameter();
 				parameter.ParameterName = "version";
 				parameter.Value = systemSettings.Version;
 				parameter.NpgsqlDbType = NpgsqlDbType.Integer;
 				command.Parameters.Add(parameter);
 
-				var parameterId = command.CreateParameter() as NpgsqlParameter;
+				parameterId = command.CreateParameter();
 				parameterId.ParameterName = "id";
 				parameterId.Value = systemSettings.Id;
 				parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;

@@ -858,21 +858,9 @@ namespace WebVella.ERP
 							}
 						}
 						#endregion
-
 					}
 
-
-					//following 2 rows are commented during mongo to pg move
-					//storeSystemSettings = DbContext.Current.SettingsRepository.Convert(systemSettings);
-					//systemSettingsRepository.Save(storeSystemSettings);
-
-					//if (currentVersion == 150508) //update to 150510
-					//{
-					//    systemSettings.Version = 150510;
-
-					//    storeSystemSettings = systemSettingsRepository.Convert(systemSettings);
-					//    systemSettingsRepository.Save(storeSystemSettings);
-					//}
+					new DbSystemSettingsRepository().Save( new DbSystemSettings { Id = systemSettings.Id, Version = systemSettings.Version } );
 
 					connection.CommitTransaction();
 				}
