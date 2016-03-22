@@ -208,7 +208,7 @@ namespace WebVella.ERP.Database
 			DbEntity dbEntity = DbContext.Current.EntityRepository.Read(entityName);
 			Entity entity = dbEntity.MapTo<Entity>();
 			Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == fieldName.ToLowerInvariant());
-			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, ConvertDefaultValue(field.GetFieldType(), value), field.Required);
+			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, value, !field.Required);
 		}
 
 		public void RemoveRecordField(string entityName, string fieldName)
@@ -216,48 +216,6 @@ namespace WebVella.ERP.Database
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
 			DbRepository.DeleteColumn(tableName, fieldName);
-		}
-
-		public string ConvertDefaultValue(FieldType type, object value)
-		{
-			switch (type)
-			{
-				case FieldType.DateField:
-					return "'" + ((DateTime)value).ToString("yyyy-MM-dd") + "'";
-				case FieldType.DateTimeField:
-					return "'" + ((DateTime)value).ToString("yyyy-MM-dd HH:mm:sszz") + "'";
-				case FieldType.EmailField:
-				case FieldType.FileField:
-				case FieldType.HtmlField:
-				case FieldType.ImageField:
-				case FieldType.MultiLineTextField:
-				case FieldType.PhoneField:
-				case FieldType.SelectField:
-				case FieldType.TextField:
-				case FieldType.UrlField:
-					return "'" + value + "'";
-				case FieldType.GuidField:
-					return "'" + ((Guid)value).ToString() + "'";
-				case FieldType.MultiSelectField:
-					{
-						string outValue = "";
-						List<string> defaultValues = (List<string>)value;
-						if (defaultValues.Count > 0)
-						{
-							outValue += "'{";
-							foreach (var val in defaultValues)
-							{
-								outValue += $"\"{val}\",";
-							}
-							outValue = outValue.Remove(outValue.Length - 1, 1);
-							outValue += "}'";
-						}
-
-						return outValue;
-					}
-				default:
-					return value != null ? value.ToString() : null;
-			}
 		}
 
 		private EntityRecord ConvertJObjectToEntityRecord(JObject jObj, List<Field> fields)

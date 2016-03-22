@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using WebVella.ERP.Api.Models;
 using WebVella.ERP.Database.Models;
 
 namespace WebVella.ERP.Database
@@ -14,30 +15,61 @@ namespace WebVella.ERP.Database
 	{
 		static object lockObj = new object();
 		static List<DbEntity> entityCache = new List<DbEntity>();
+		internal const string RECORD_COLLECTION_PREFIX = "rec_";
 
 		public bool Create(DbEntity entity)
 		{
-			lock(lockObj)
+			lock (lockObj)
 			{
-				List<DbParameter> parameters = new List<DbParameter>();
+				using (DbConnection con = DbContext.Current.CreateConnection())
+				{
+					con.BeginTransaction();
 
-				JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+					try
+					{
+						List<DbParameter> parameters = new List<DbParameter>();
 
-				DbParameter parameterId = new DbParameter();
-				parameterId.Name = "id";
-				parameterId.Value = entity.Id;
-				parameterId.Type = NpgsqlDbType.Uuid;
-				parameters.Add(parameterId);
+						JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
 
-				DbParameter parameterJson = new DbParameter();
-				parameterJson.Name = "json";
-				parameterJson.Value = JsonConvert.SerializeObject(entity, settings);
-				parameterJson.Type = NpgsqlDbType.Json;
-				parameters.Add(parameterJson);
+						DbParameter parameterId = new DbParameter();
+						parameterId.Name = "id";
+						parameterId.Value = entity.Id;
+						parameterId.Type = NpgsqlDbType.Uuid;
+						parameters.Add(parameterId);
 
-				entityCache = new List<DbEntity>();
-			
-				return DbRepository.InsertRecord("entities", parameters);
+						DbParameter parameterJson = new DbParameter();
+						parameterJson.Name = "json";
+						parameterJson.Value = JsonConvert.SerializeObject(entity, settings);
+						parameterJson.Type = NpgsqlDbType.Json;
+						parameters.Add(parameterJson);
+
+						string tableName = RECORD_COLLECTION_PREFIX + entity.Name;
+						
+						DbRepository.CreateTable(tableName);
+						foreach (var field in entity.Fields)
+						{
+							bool isPrimaryKey = field.Name.ToLowerInvariant() == "id";
+							FieldType fieldType = field.GetFieldType();
+							DbRepository.CreateColumn(tableName, field.Name, fieldType, isPrimaryKey, field.GetDefaultValue(), !field.Required);
+						}
+
+						bool result = DbRepository.InsertRecord("entities", parameters);
+
+						if(!result)
+							throw new Exception("Entity record was not added!");
+
+						entityCache = new List<DbEntity>();
+
+						con.CommitTransaction();
+
+						return result;
+					}
+					catch(Exception e)
+					{
+						con.RollbackTransaction();
+					}
+				}
+				return false;
 			}
 		}
 
@@ -63,7 +95,7 @@ namespace WebVella.ERP.Database
 					parameterId.Value = entity.Id;
 					parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
 					command.Parameters.Add(parameterId);
-					
+
 					entityCache = new List<DbEntity>();
 
 					return command.ExecuteNonQuery() > 0;
@@ -80,7 +112,7 @@ namespace WebVella.ERP.Database
 		public DbEntity Read(string entityName)
 		{
 			List<DbEntity> entities = Read();
-			return entities.FirstOrDefault(e=> e.Name.ToLowerInvariant() == entityName.ToLowerInvariant());
+			return entities.FirstOrDefault(e => e.Name.ToLowerInvariant() == entityName.ToLowerInvariant());
 		}
 
 		public List<DbEntity> Read()
