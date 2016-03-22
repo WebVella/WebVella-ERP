@@ -36,7 +36,7 @@
         	$log.debug('webvellaAdmin>providers>sidebar.factory>addItem> function called ' + moment().format('HH:mm:ss SSSS'));
             sidebar.push(item);
             sidebar.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-            $rootScope.$emit('webvellaDesktop-topnav-updated', sidebar)
+            $rootScope.$emit('webvellaDesktop-sidebar-updated', sidebar)
             $log.debug('rootScope>events> "webvellaAdmin-sidebar-updated" emitted ' + moment().format('HH:mm:ss SSSS'));
         }
 

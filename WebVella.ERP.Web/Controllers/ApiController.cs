@@ -3139,6 +3139,46 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
+
+		// Export list records to csv
+		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
+		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10) {
+			if(count == -1) {
+				//return all records 
+			}
+			else if(count > 0) {
+				//returh the defined count of records
+			}
+			else {
+				//return empty list
+			}
+		
+			//Just for test
+			var theExportFilePathInTempGridFs = "/fs/entityGuid/listGuid/timestamp/boz-export-path.csv";
+			
+				
+			var response = new ResponseModel();
+			response.Success = true;
+			response.Message = "Records successfully exported";
+			response.Object = theExportFilePathInTempGridFs;
+			return DoResponse(response);
+		}
+
+		// Import list records to csv
+		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath) {
+		
+			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
+			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
+			var response = new ResponseModel();
+			response.Success = true;
+			response.Message = "Records successfully imported";
+			response.Object = null;
+			return DoResponse(response);
+		}
+
 		#endregion
 
 		#region << Area Specific >>
@@ -3202,7 +3242,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/sitemap")]
 		public IActionResult GetSitemap()
 		{
-			var columnsNeeded = "id,name,label,color,icon_name,weight,roles,subscriptions";
+			var columnsNeeded = "id,name,label,color,icon_name,folder,weight,roles,subscriptions";
 			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
 			QueryResponse resultAreas = recMan.Find(queryAreas);
 			if (!resultAreas.Success)
