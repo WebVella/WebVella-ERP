@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("iframe","eu",{border:"Markoaren ertza ikusi",noUrl:"iframe-aren URLa idatzi, mesedez.",scrolling:"Korritze barrak gaitu",title:"IFrame-aren Propietateak",toolbar:"IFrame"});
+﻿CKEDITOR.plugins.setLang("iframe","eu",{border:"Erakutsi markoaren ertza",noUrl:"Idatzi iframe-aren URLa, mesedez.",scrolling:"Gaitu korritze-barrak",title:"IFrame-aren propietateak",toolbar:"IFrame-a"});

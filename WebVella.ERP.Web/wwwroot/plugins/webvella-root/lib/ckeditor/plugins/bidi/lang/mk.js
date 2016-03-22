@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("bidi","mk",{ltr:"Text direction from left to right",rtl:"Text direction from right to left"});
+﻿CKEDITOR.plugins.setLang("bidi","mk",{ltr:"Насока на текст: од лево кон десно",rtl:"Насока на текст: од десно кон лево"});
