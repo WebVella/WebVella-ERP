@@ -45,7 +45,7 @@ namespace WebVella.ERP.Database
 						parameters.Add(parameterJson);
 
 						string tableName = RECORD_COLLECTION_PREFIX + entity.Name;
-						
+
 						DbRepository.CreateTable(tableName);
 						foreach (var field in entity.Fields)
 						{
@@ -56,69 +56,71 @@ namespace WebVella.ERP.Database
 
 						bool result = DbRepository.InsertRecord("entities", parameters);
 
-						if(!result)
+						if (!result)
 							throw new Exception("Entity record was not added!");
 
 						entityCache = new List<DbEntity>();
 
-						DbEntity userEntity = Read(SystemIds.UserEntityId);
-
-						DbRelationRepository relRep = new DbRelationRepository();
-
-						Guid createdByRelationId = Guid.NewGuid();
-						Guid modifiedByRelationId = Guid.NewGuid();
-						string createdByRelationName = $"user_{entity.Name}_created_by";
-						string modifiedByRelationName = $"user_{entity.Name}_modified_by";
-
-						List<DbEntityRelation> relationList = relRep.Read();
-						DbEntityRelation tempRel = relationList.FirstOrDefault(r=> r.Name == createdByRelationName);
-						if (tempRel != null)
+						if (entity.Id != SystemIds.UserEntityId)
 						{
-							createdByRelationId = tempRel.Id;
-							relRep.Delete(createdByRelationId);
-						}
-						tempRel = relationList.FirstOrDefault(r => r.Name == modifiedByRelationName);
-						if (tempRel != null)
-						{
-							modifiedByRelationId = tempRel.Id;
-							relRep.Delete(modifiedByRelationId);
-						}
+							DbEntity userEntity = Read(SystemIds.UserEntityId);
 
-						DbEntityRelation createdByRelation = new DbEntityRelation();
-						createdByRelation.Id = createdByRelationId;
-						createdByRelation.Name = createdByRelationName;
-						createdByRelation.Label = $"user<-[1]:[m]->{entity.Name}.created_by";
-						createdByRelation.RelationType = EntityRelationType.OneToMany;
-						createdByRelation.OriginEntityId = SystemIds.UserEntityId;
-						createdByRelation.OriginFieldId = userEntity.Fields.Single(f => f.Name == "id").Id;
-						createdByRelation.TargetEntityId = entity.Id;
-						createdByRelation.TargetFieldId = entity.Fields.Single(f => f.Name == "created_by").Id;
-						{
-							bool res = relRep.Create(createdByRelation);
-							if (!res)
-								throw new Exception("Creation of relation between User and Area entities failed!");
-						}
+							DbRelationRepository relRep = new DbRelationRepository();
 
-						DbEntityRelation modifiedByRelation = new DbEntityRelation();
-						modifiedByRelation.Id = modifiedByRelationId;
-						modifiedByRelation.Name = modifiedByRelationName;
-						modifiedByRelation.Label = "user<-[1]:[m]->area.last_modified_by";
-						modifiedByRelation.RelationType = EntityRelationType.OneToMany;
-						modifiedByRelation.OriginEntityId = SystemIds.UserEntityId;
-						modifiedByRelation.OriginFieldId = userEntity.Fields.Single(f => f.Name == "id").Id;
-						modifiedByRelation.TargetEntityId = entity.Id;
-						modifiedByRelation.TargetFieldId = entity.Fields.Single(f => f.Name == "last_modified_by").Id;
-						{
-							bool res = relRep.Create(modifiedByRelation);
-							if (!res)
-								throw new Exception($"Creation of relation between User and {entity.Name} entities failed!");
-						}
+							Guid createdByRelationId = Guid.NewGuid();
+							Guid modifiedByRelationId = Guid.NewGuid();
+							string createdByRelationName = $"user_{entity.Name}_created_by";
+							string modifiedByRelationName = $"user_{entity.Name}_modified_by";
 
+							List<DbEntityRelation> relationList = relRep.Read();
+							DbEntityRelation tempRel = relationList.FirstOrDefault(r => r.Name == createdByRelationName);
+							if (tempRel != null)
+							{
+								createdByRelationId = tempRel.Id;
+								relRep.Delete(createdByRelationId);
+							}
+							tempRel = relationList.FirstOrDefault(r => r.Name == modifiedByRelationName);
+							if (tempRel != null)
+							{
+								modifiedByRelationId = tempRel.Id;
+								relRep.Delete(modifiedByRelationId);
+							}
+
+							DbEntityRelation createdByRelation = new DbEntityRelation();
+							createdByRelation.Id = createdByRelationId;
+							createdByRelation.Name = createdByRelationName;
+							createdByRelation.Label = $"user<-[1]:[m]->{entity.Name}.created_by";
+							createdByRelation.RelationType = EntityRelationType.OneToMany;
+							createdByRelation.OriginEntityId = SystemIds.UserEntityId;
+							createdByRelation.OriginFieldId = userEntity.Fields.Single(f => f.Name == "id").Id;
+							createdByRelation.TargetEntityId = entity.Id;
+							createdByRelation.TargetFieldId = entity.Fields.Single(f => f.Name == "created_by").Id;
+							{
+								bool res = relRep.Create(createdByRelation);
+								if (!res)
+									throw new Exception("Creation of relation between User and Area entities failed!");
+							}
+
+							DbEntityRelation modifiedByRelation = new DbEntityRelation();
+							modifiedByRelation.Id = modifiedByRelationId;
+							modifiedByRelation.Name = modifiedByRelationName;
+							modifiedByRelation.Label = "user<-[1]:[m]->area.last_modified_by";
+							modifiedByRelation.RelationType = EntityRelationType.OneToMany;
+							modifiedByRelation.OriginEntityId = SystemIds.UserEntityId;
+							modifiedByRelation.OriginFieldId = userEntity.Fields.Single(f => f.Name == "id").Id;
+							modifiedByRelation.TargetEntityId = entity.Id;
+							modifiedByRelation.TargetFieldId = entity.Fields.Single(f => f.Name == "last_modified_by").Id;
+							{
+								bool res = relRep.Create(modifiedByRelation);
+								if (!res)
+									throw new Exception($"Creation of relation between User and {entity.Name} entities failed!");
+							}
+						}
 						con.CommitTransaction();
 
 						return result;
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						con.RollbackTransaction();
 					}

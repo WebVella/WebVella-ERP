@@ -25,7 +25,7 @@ namespace WebVella.ERP.Database
 					pgType = "date";
 					break;
 				case FieldType.DateTimeField:
-					pgType = "timestamp";
+					pgType = "timestamptz";
 					break;
 				case FieldType.EmailField:
 					pgType = "varchar(500)";

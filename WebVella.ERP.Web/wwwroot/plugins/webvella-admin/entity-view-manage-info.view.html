@@ -40,7 +40,7 @@
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="page-body">
+<div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
 	<div class="tabbable tabs-left spilled">
 		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
@@ -146,10 +146,11 @@
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label class="control-label" for="iconName">Dynamic HTML template</label>
-							<a href="javascript:void(0)" editable-textarea="contentData.view.dynamicHtmlTemplate" onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
-								<div ng-bind-html='contentData.view.dynamicHtmlTemplate || "not set"'>{{ contentData.view.dynamicHtmlTemplate || "not set"}}</div>
+							<a href="javascript:void(0)"  editable-textarea="contentData.view.dynamicHtmlTemplate"
+											   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
+								<div ng-bind="contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:10})">{{ contentData.view.dynamicHtmlTemplate}}</div>
 							</a>
-							<div class="form-description">url link to a file containing the dynamic html template that needs to substitute the default view html template</div>
+							<div class="form-description">Substitute the default view html template with a custom one. If it starts with "<": the dynamic html template code. If not: url link to a file containing the dynamic html template.</div>
 						</div>
 					</div>
 				</div>
