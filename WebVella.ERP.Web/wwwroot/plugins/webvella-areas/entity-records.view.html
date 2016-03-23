@@ -139,7 +139,7 @@
 
 	</form>
 	<div id="page-text">
-		<table class="table table-bordered table-hover table-vertical-align-middle {{::contentData.recordsMeta.cssClass}}" ng-hide="::contentData.records.length == 0">
+		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
 			<thead>
 				<tr>
 					<th class="actions"></th>
@@ -181,9 +181,15 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="alert alert-info" ng-show="::contentData.records.length == 0">
+
+		<div class="ng-hide" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate != null && contentData.recordsMeta.dynamicHtmlTemplate != "")'>
+			<div ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+		</div>
+
+		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
 			There are no records matching your query
 		</div>
+
 		<ul class="pager ng-hide" ng-hide="::contentData.currentPage == 1 && contentData.currentListView.pageSize > contentData.records.length" ng-if="::contentData.currentListView.pageSize != 0">
 			<!--<li ng-if="::contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
 			<li ng-if="::contentData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>

@@ -649,11 +649,12 @@
 				language: 'en',
 				'skin': 'moono',
 				height: '160',
-				//'extraPlugins': "save",//"imagebrowser",//"imagebrowser,mediaembed",
+				'extraPlugins': "sourcedialog",//"imagebrowser",//"imagebrowser,mediaembed",
 				//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
 				//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
 				//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
 				//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+				allowedContent: true,
 				toolbarLocation: 'top',
 				toolbar: 'full',
 				toolbar_full: [
@@ -664,9 +665,9 @@
 					{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
 					{ name: 'clipboard', items: ['Undo', 'Redo'] },
 					{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-					{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
+					{ name: 'insert', items: ['Image', 'Table', 'SpecialChar','Sourcedialog'] }, '/',
 				]
-			};
+			};	
 
 			contentData.currentUserRoles = fastCopy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {

@@ -120,10 +120,10 @@
 
     //#region << Controller >> ////////////////////////////
     controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast'];
+                            'resolvedCurrentEntityMeta', 'webvellaAdminService','webvellaAreasService', 'ngToast'];
     /* @ngInject */
     function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast) {
+                        resolvedCurrentEntityMeta, webvellaAdminService,webvellaAreasService, ngToast) {
     	$log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
@@ -158,6 +158,12 @@
         }
         //#endregion
         contentData.nameIsChanged = false;
+		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+
+		
+		//#region << Html field >>
+		
+
         contentData.fieldUpdate = function (key, data) {
         	contentData.nameIsChanged = false;
         	contentData.patchObject = {};
