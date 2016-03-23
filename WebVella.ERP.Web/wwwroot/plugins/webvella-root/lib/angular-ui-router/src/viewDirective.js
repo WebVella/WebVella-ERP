@@ -1,5 +1,3 @@
-var ngMajorVer = angular.version.major;
-var ngMinorVer = angular.version.minor;
 /**
  * @ngdoc directive
  * @name ui.router.state.directive:ui-view
@@ -23,9 +21,6 @@ var ngMinorVer = angular.version.minor;
  * when a view is populated. By default, $anchorScroll is overridden by ui-router's custom scroll
  * service, {@link ui.router.state.$uiViewScroll}. This custom service let's you
  * scroll ui-view elements into view when they are populated during a state activation.
- *
- * @param {string=} noanimation If truthy, the non-animated renderer will be selected (no animations
- * will be applied to the ui-view)
  *
  * *Note: To revert back to old [`$anchorScroll`](http://docs.angularjs.org/api/ng.$anchorScroll)
  * functionality, call `$uiViewScrollProvider.useAnchorScroll()`.*
@@ -138,44 +133,26 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
   // Returns a set of DOM manipulation functions based on which Angular version
   // it should use
   function getRenderer(attrs, scope) {
-    var statics = {
-      enter: function (element, target, cb) { target.after(element); cb(); },
-      leave: function (element, cb) { element.remove(); cb(); }
+    var statics = function() {
+      return {
+        enter: function (element, target, cb) { target.after(element); cb(); },
+        leave: function (element, cb) { element.remove(); cb(); }
+      };
     };
 
-    if (!!attrs.noanimation) return statics;
-
-    function animEnabled(element) {
-      if (ngMajorVer === 1 && ngMinorVer >= 4) return !!$animate.enabled(element);
-      if (ngMajorVer === 1 && ngMinorVer >= 2) return !!$animate.enabled();
-      return (!!$animator);
-    }
-
-    // ng 1.2+
     if ($animate) {
       return {
         enter: function(element, target, cb) {
-          if (!animEnabled(element)) {
-            statics.enter(element, target, cb);
-          } else if (angular.version.minor > 2) {
-            $animate.enter(element, null, target).then(cb);
-          } else {
-            $animate.enter(element, null, target, cb);
-          }
+          var promise = $animate.enter(element, null, target, cb);
+          if (promise && promise.then) promise.then(cb);
         },
         leave: function(element, cb) {
-          if (!animEnabled(element)) {
-            statics.leave(element, cb);
-          } else if (angular.version.minor > 2) {
-            $animate.leave(element).then(cb);
-          } else {
-            $animate.leave(element, cb);
-          }
+          var promise = $animate.leave(element, cb);
+          if (promise && promise.then) promise.then(cb);
         }
       };
     }
 
-    // ng 1.1.5
     if ($animator) {
       var animate = $animator && $animator(scope, attrs);
 
@@ -185,7 +162,7 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
       };
     }
 
-    return statics;
+    return statics();
   }
 
   var directive = {
@@ -203,41 +180,31 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
         scope.$on('$stateChangeSuccess', function() {
           updateView(false);
         });
+        scope.$on('$viewContentLoading', function() {
+          updateView(false);
+        });
 
         updateView(true);
 
         function cleanupLastView() {
-          var _previousEl = previousEl;
-          var _currentScope = currentScope;
-
-          if (_currentScope) {
-            _currentScope._willBeDestroyed = true;
+          if (previousEl) {
+            previousEl.remove();
+            previousEl = null;
           }
 
-          function cleanOld() {
-            if (_previousEl) {
-              _previousEl.remove();
-            }
-
-            if (_currentScope) {
-              _currentScope.$destroy();
-            }
+          if (currentScope) {
+            currentScope.$destroy();
+            currentScope = null;
           }
 
           if (currentEl) {
             renderer.leave(currentEl, function() {
-              cleanOld();
               previousEl = null;
             });
 
             previousEl = currentEl;
-          } else {
-            cleanOld();
-            previousEl = null;
+            currentEl = null;
           }
-
-          currentEl = null;
-          currentScope = null;
         }
 
         function updateView(firstTime) {
@@ -245,23 +212,9 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
               name            = getUiViewName(scope, attrs, $element, $interpolate),
               previousLocals  = name && $state.$current && $state.$current.locals[name];
 
-          if (!firstTime && previousLocals === latestLocals || scope._willBeDestroyed) return; // nothing to do
+          if (!firstTime && previousLocals === latestLocals) return; // nothing to do
           newScope = scope.$new();
           latestLocals = $state.$current.locals[name];
-
-          /**
-           * @ngdoc event
-           * @name ui.router.state.directive:ui-view#$viewContentLoading
-           * @eventOf ui.router.state.directive:ui-view
-           * @eventType emits on ui-view directive scope
-           * @description
-           *
-           * Fired once the view **begins loading**, *before* the DOM is rendered.
-           *
-           * @param {Object} event Event object.
-           * @param {string} viewName Name of the view.
-           */
-          newScope.$emit('$viewContentLoading', name);
 
           var clone = $transclude(newScope, function(clone) {
             renderer.enter(clone, $element, function onUiViewEnter() {
@@ -283,13 +236,12 @@ function $ViewDirective(   $state,   $injector,   $uiViewScroll,   $interpolate)
            * @name ui.router.state.directive:ui-view#$viewContentLoaded
            * @eventOf ui.router.state.directive:ui-view
            * @eventType emits on ui-view directive scope
-           * @description
+           * @description           *
            * Fired once the view is **loaded**, *after* the DOM is rendered.
            *
            * @param {Object} event Event object.
-           * @param {string} viewName Name of the view.
            */
-          currentScope.$emit('$viewContentLoaded', name);
+          currentScope.$emit('$viewContentLoaded');
           currentScope.$eval(onloadExp);
         }
       };

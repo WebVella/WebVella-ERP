@@ -20,15 +20,15 @@
     "package.json"
   ],
   "homepage": "https://github.com/moment/moment",
-  "version": "2.12.0",
-  "_release": "2.12.0",
+  "version": "2.10.6",
+  "_release": "2.10.6",
   "_resolution": {
     "type": "version",
-    "tag": "2.12.0",
-    "commit": "d3d7488b4d60632854181cb0a9af325d57fb3d51"
+    "tag": "2.10.6",
+    "commit": "446ce77eb08c5c862d7b0b11ef1d2e884d12e3d7"
   },
   "_source": "git://github.com/moment/moment.git",
-  "_target": "~2.12.0",
+  "_target": "~2.10.6",
   "_originalSource": "moment",
   "_direct": true
 }

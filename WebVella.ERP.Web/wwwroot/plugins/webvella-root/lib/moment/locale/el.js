@@ -2,16 +2,11 @@
 //! locale : modern greek (el)
 //! author : Aggelos Karalias : https://github.com/mehiel
 
-;(function (global, factory) {
-   typeof exports === 'object' && typeof module !== 'undefined'
-       && typeof require === 'function' ? factory(require('../moment')) :
+(function (global, factory) {
+   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['moment'], factory) :
    factory(global.moment)
 }(this, function (moment) { 'use strict';
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
 
 
     var el = moment.defineLocale('el', {
@@ -65,7 +60,7 @@
         calendar : function (key, mom) {
             var output = this._calendarEl[key],
                 hours = mom && mom.hours();
-            if (isFunction(output)) {
+            if (typeof output === 'function') {
                 output = output.apply(mom);
             }
             return output.replace('{}', (hours % 12 === 1 ? 'στη' : 'στις'));

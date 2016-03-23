@@ -2,7 +2,6 @@
 //! locale : german (de)
 //! author : lluchs : https://github.com/lluchs
 //! author: Menelion Elensúle: https://github.com/Oire
-//! author : Mikolaj Dadela : https://github.com/mik01aj
 
 import moment from '../moment';
 
@@ -35,11 +34,11 @@ export default moment.defineLocale('de', {
         LLLL : 'dddd, D. MMMM YYYY HH:mm'
     },
     calendar : {
-        sameDay: '[heute um] LT [Uhr]',
+        sameDay: '[Heute um] LT [Uhr]',
         sameElse: 'L',
-        nextDay: '[morgen um] LT [Uhr]',
+        nextDay: '[Morgen um] LT [Uhr]',
         nextWeek: 'dddd [um] LT [Uhr]',
-        lastDay: '[gestern um] LT [Uhr]',
+        lastDay: '[Gestern um] LT [Uhr]',
         lastWeek: '[letzten] dddd [um] LT [Uhr]'
     },
     relativeTime : {
@@ -64,3 +63,4 @@ export default moment.defineLocale('de', {
         doy : 4  // The week that contains Jan 4th is the first week of the year.
     }
 });
+

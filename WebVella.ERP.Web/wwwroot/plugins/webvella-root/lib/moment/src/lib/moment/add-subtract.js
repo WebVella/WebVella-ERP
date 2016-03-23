@@ -3,8 +3,6 @@ import { setMonth } from '../units/month';
 import { createDuration } from '../duration/create';
 import { deprecateSimple } from '../utils/deprecate';
 import { hooks } from '../utils/hooks';
-import absRound from '../utils/abs-round';
-
 
 // TODO: remove 'name' arg after deprecation is removed
 function createAdder(direction, name) {
@@ -25,14 +23,8 @@ function createAdder(direction, name) {
 
 export function addSubtract (mom, duration, isAdding, updateOffset) {
     var milliseconds = duration._milliseconds,
-        days = absRound(duration._days),
-        months = absRound(duration._months);
-
-    if (!mom.isValid()) {
-        // No op
-        return;
-    }
-
+        days = duration._days,
+        months = duration._months;
     updateOffset = updateOffset == null ? true : updateOffset;
 
     if (milliseconds) {
