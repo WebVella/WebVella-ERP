@@ -5441,7 +5441,7 @@ namespace WebVella.ERP.Api
 				}
 
 				foreach (var node in expiredNodes)
-					recordTree.RootNodes.Remove(node);
+					errorList.Add(new ErrorModel("rootNodes", null, $"Root node Id '{node.Id}'  not found"));
 			}
 			else
 				recordTree.RootNodes = new List<RecordTreeNode>();

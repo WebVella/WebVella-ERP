@@ -145,6 +145,9 @@ namespace WebVella.ERP.Database
 						for (int index = 0; index < fieldcount; index++)
 							record[reader.GetName(index)] = reader[index];
 					}
+					else {
+						return null;
+					}
 
 					reader.Close();
 

@@ -252,7 +252,7 @@ namespace WebVella.ERP.Database
 
 					var parameter = command.CreateParameter() as NpgsqlParameter;
 					parameter.ParameterName = param.Name;
-					parameter.Value = param.Value;
+					parameter.Value = param.Value ?? DBNull.Value;
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 
@@ -356,18 +356,17 @@ namespace WebVella.ERP.Database
 				case FieldType.MultiSelectField:
 					{
 						string outValue = "";
+						outValue += "'{";
 						List<string> defaultValues = (List<string>)value;
 						if (defaultValues.Count > 0)
 						{
-							outValue += "'{";
 							foreach (var val in defaultValues)
 							{
 								outValue += $"\"{val}\",";
 							}
 							outValue = outValue.Remove(outValue.Length - 1, 1);
-							outValue += "}'";
 						}
-
+						outValue += "}'";
 						return outValue;
 					}
 				default:
