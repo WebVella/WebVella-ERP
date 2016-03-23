@@ -33,7 +33,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record views">manage</h4>
+			<h4 class="no-link" title="Manage a Record views">{{contentData.view.name}}</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -139,6 +139,17 @@
 								<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.view.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.view.iconName}}"></i> {{ contentData.view.iconName || "" }}</a>
 								<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label" for="iconName">Dynamic HTML template</label>
+							<a href="javascript:void(0)" editable-textarea="contentData.view.dynamicHtmlTemplate" onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
+								<div ng-bind-html='contentData.view.dynamicHtmlTemplate || "not set"'>{{ contentData.view.dynamicHtmlTemplate || "not set"}}</div>
+							</a>
+							<div class="form-description">url link to a file containing the dynamic html template that needs to substitute the default view html template</div>
 						</div>
 					</div>
 				</div>
