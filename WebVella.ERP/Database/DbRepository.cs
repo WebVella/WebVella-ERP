@@ -226,9 +226,9 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName});";
+				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName}) ";
 				if ( unique )
-					sql = $"CREATE UNIQUE INDEX {indexName} ON {tableName} ({columnName});";
+					sql = $"CREATE UNIQUE INDEX {indexName} ON {tableName} ({columnName}) ";
 
 				if( !ascending )
 					sql = sql + " DESC";
