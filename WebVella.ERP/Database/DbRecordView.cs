@@ -20,7 +20,9 @@ namespace WebVella.ERP.Database
             Type = RecordViewType.General;
             Regions = new List<DbRecordViewRegion>();
             Sidebar = new DbRecordViewSidebar();
-        }
+			DynamicHtmlTemplate = "";
+
+		}
 
 		[JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -58,7 +60,10 @@ namespace WebVella.ERP.Database
 		[JsonProperty(PropertyName = "relation_options")]
         public List<DbEntityRelationOptions> RelationOptions { get; set; }
 
-    }
+		[JsonProperty(PropertyName = "dynamic_html_template")]
+		public string DynamicHtmlTemplate { get; set; }
+
+	}
 
     ////////////////////////
     public class DbRecordViewSidebar

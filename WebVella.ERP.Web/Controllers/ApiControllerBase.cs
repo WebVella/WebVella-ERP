@@ -32,7 +32,13 @@ namespace WebVella.ERP.Web.Controllers
             return Json(new { });
         }
 
-        public IActionResult DoBadRequestResponse(BaseResponseModel response, string message = null, Exception ex = null)
+		public IActionResult DoItemNotFoundResponse(BaseResponseModel response)
+		{
+			HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+			return Json(response);
+		}
+
+		public IActionResult DoBadRequestResponse(BaseResponseModel response, string message = null, Exception ex = null)
         {
             response.Timestamp = DateTime.UtcNow;
             response.Success = false;
