@@ -8,15 +8,15 @@ If you use this module you can give it a thumbs up at [http://ngmodules.org/modu
 
 #### Release:
 
-Latest release version 1.3.3 
+Latest release version 1.3.1 
 [Module name is modified from 'ui.sortable' to 'as.sortable' from versions 1.3.x,
 considering the conflict with the sortable module from bootstrap-ui.]
 
 #### Demo Page:
 
-[Simple] (http://a5hik.github.io/ng-sortable/#/kanban)
+[Simple] (http://a5hik.github.io/ng-sortable/plunker.html)
 
-[Advanced] (http://a5hik.github.io/ng-sortable/#/sprint)
+[Advanced] (http://a5hik.github.io/ng-sortable/)
 
 Demo Includes:
 
@@ -34,7 +34,6 @@ Demo Includes:
 - Enable/Disable Drag at run time.
 - Drag Boundary can be defined.
 - Clone an item and drop.
-- Allows duplicate items to be dropped from the clones.
 
 #### Implementation Details:
 
@@ -63,7 +62,6 @@ The directives are structured like below.
 - Added a Jquery like 'containment' option to the sortable to prevent the drag outside specified bounds.
 - 'containerPositioning' option may be set to 'relative' to accommodate relative positioning on the container or its ancestry. Use this if the draggable item is offset from the mouse cursor while dragging. A common scenario for this is when using bootstrap columns.
 - The 'is-disabled' attribute can be added optionally to as-sortable disable the Drag at runTime.
-- Added a `longTouch` option to the sortable, setting to `true` will cause the drag and drop functionality to get activated upon `long-touch` aka `touch-and-hold` on touch devices. This maintains the native scroll by dragging functionality on touch devices. Default is set to `false`.
 
 #### Placeholder:
 - By default a placeholder element is created using the same tag as the as-sortable-item element
@@ -105,7 +103,7 @@ Following callbacks are defined, and should be overridden to perform custom logi
      destItemScope - the destination item scope, this is an optional Param.(Must check for undefined).
 
 - callbacks.orderChanged = function({type: Object}) // triggered when item order is changed with in the same column.
-- callbacks.itemMoved = function({type: Object}) // triggered when an item is moved across columns.
+- callbacks.itemMoved = function({type: Object}) // triggered when an item is moved accross columns.
 - callbacks.dragStart = function({type: Object}) // triggered on drag start.
 - callbacks.dragEnd = function({type: Object}) // triggered on drag end.
 
@@ -143,8 +141,6 @@ Or bower.json
   "dependencies": [..., "ng-sortable: "latest_version eg - "1.1.0" ", ...],
 }
 ```
-Or npm 
-```
 npm install ng-sortable
 ```
 Make sure to load the scripts in your html.
@@ -180,12 +176,6 @@ Define your callbacks in the invoking controller.
         orderChanged: function(event) {//Do what you want},
         containment: '#board'//optional param.
         clone: true //optional param for clone feature.
-        allowDuplicates: false //optional param allows duplicates to be dropped.
-    };
-    
-    $scope.dragControlListeners1 = {
-            containment: '#board'//optional param.
-            allowDuplicates: true //optional param allows duplicates to be dropped.
     };
     
 That's what all you have to do.
@@ -245,9 +235,9 @@ Implement dragMove callback and follow https://github.com/a5hik/ng-sortable/issu
 
 ##### Enable/Disable Drag at Runtime:
 
-The Drag can be controlled at runtime and you can enable/disable it by setting the "is-disabled" property to a boolean value of either true or false.
+The Drag can be controlled at runtime and you can enable/disable it by setting the "is-disabled" property to true or false.
 
-    <div as-sortable is-disabled="is-disabled-boolean-property">..</div>
+    <div as-sortable is-disabled="true">..</div>
 
 ##### Testing:
 

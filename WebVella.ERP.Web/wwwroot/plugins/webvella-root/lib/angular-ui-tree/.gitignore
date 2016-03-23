@@ -16,7 +16,6 @@ node_modules
 # IDE files #
 .idea
 *.iml
-.vscode
 
 examples/bower_components
 examples/source
@@ -25,4 +24,3 @@ examples/source
 #########
 .tmp
 .publish
-coverage

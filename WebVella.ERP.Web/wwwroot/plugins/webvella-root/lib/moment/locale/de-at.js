@@ -3,11 +3,9 @@
 //! author : lluchs : https://github.com/lluchs
 //! author: Menelion Elensúle: https://github.com/Oire
 //! author : Martin Groller : https://github.com/MadMG
-//! author : Mikolaj Dadela : https://github.com/mik01aj
 
-;(function (global, factory) {
-   typeof exports === 'object' && typeof module !== 'undefined'
-       && typeof require === 'function' ? factory(require('../moment')) :
+(function (global, factory) {
+   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['moment'], factory) :
    factory(global.moment)
 }(this, function (moment) { 'use strict';
@@ -42,11 +40,11 @@
             LLLL : 'dddd, D. MMMM YYYY HH:mm'
         },
         calendar : {
-            sameDay: '[heute um] LT [Uhr]',
+            sameDay: '[Heute um] LT [Uhr]',
             sameElse: 'L',
-            nextDay: '[morgen um] LT [Uhr]',
+            nextDay: '[Morgen um] LT [Uhr]',
             nextWeek: 'dddd [um] LT [Uhr]',
-            lastDay: '[gestern um] LT [Uhr]',
+            lastDay: '[Gestern um] LT [Uhr]',
             lastWeek: '[letzten] dddd [um] LT [Uhr]'
         },
         relativeTime : {

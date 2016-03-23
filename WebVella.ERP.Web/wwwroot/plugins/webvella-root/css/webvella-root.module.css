@@ -2162,11 +2162,17 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 
 	.form .form-control,
-	.form-horizontal .form-control {
+	.form-horizontal .form-control,
+	.form-control {
 		background-color: #fff;
-		border-color: #ccc;
+		border-color: #bbb;
 		border-radius:0;
 	}
+
+.input-group-addon {
+	border-color:#bbb;
+	border-radius:0;
+}
 
 .control-label {
 	font-weight: normal;

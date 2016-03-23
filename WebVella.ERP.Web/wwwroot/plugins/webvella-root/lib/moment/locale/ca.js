@@ -2,9 +2,8 @@
 //! locale : catalan (ca)
 //! author : Juan G. Hurtado : https://github.com/juanghurtado
 
-;(function (global, factory) {
-   typeof exports === 'object' && typeof module !== 'undefined'
-       && typeof require === 'function' ? factory(require('../moment')) :
+(function (global, factory) {
+   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['moment'], factory) :
    factory(global.moment)
 }(this, function (moment) { 'use strict';
@@ -18,7 +17,7 @@
         weekdaysMin : 'Dg_Dl_Dt_Dc_Dj_Dv_Ds'.split('_'),
         longDateFormat : {
             LT : 'H:mm',
-            LTS : 'H:mm:ss',
+            LTS : 'LT:ss',
             L : 'DD/MM/YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY H:mm',

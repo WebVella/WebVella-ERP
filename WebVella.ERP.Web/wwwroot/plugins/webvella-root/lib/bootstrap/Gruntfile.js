@@ -231,7 +231,6 @@ module.exports = function (grunt) {
         //    and then simplify the fix for https://github.com/twbs/bootstrap/issues/14837 accordingly
         compatibility: 'ie8',
         keepSpecialComments: '*',
-        sourceMap: true,
         advanced: false
       },
       minifyCore: {
@@ -244,7 +243,6 @@ module.exports = function (grunt) {
       },
       docs: {
         src: [
-          'docs/assets/css/ie10-viewport-bug-workaround.css',
           'docs/assets/css/src/pygments-manni.css',
           'docs/assets/css/src/docs.css'
         ],
@@ -350,7 +348,7 @@ module.exports = function (grunt) {
       options: {
         ignore: [
           'Attribute "autocomplete" not allowed on element "button" at this point.',
-          'Attribute "autocomplete" is only allowed when the input type is "color", "date", "datetime", "datetime-local", "email", "month", "number", "password", "range", "search", "tel", "text", "time", "url", or "week".',
+          'Attribute "autocomplete" not allowed on element "input" at this point.',
           'Element "img" is missing required attribute "src".'
         ]
       },

@@ -293,6 +293,20 @@
         if (popupData.area.id == null) {
             popupData.isUpdate = false;
             popupData.modalTitle = $sce.trustAsHtml("Create new area");
+			//Select "administrator" and "regular" roles by default
+            for (var i = 0; i < popupData.roles.length; i++) {
+				switch(popupData.roles[i].name){
+					case "administrator":
+						popupData.area.roles.push(popupData.roles[i].id);
+						break;
+					case "regular":
+						popupData.area.roles.push(popupData.roles[i].id);
+						break;
+					default:
+						break;
+				}
+            }
+			popupData.rolesValues = angular.fromJson(popupData.area.roles);
         }
         else {
             //popupData.area.roles = angular.fromJson(popupData.area.roles);
