@@ -749,6 +749,8 @@ namespace WebVella.ERP.Web.Controllers
 						list.ViewNameOverride = inputList.ViewNameOverride;
 					if (prop.Name.ToLower() == "visiblecolumnscount")
 						list.VisibleColumnsCount = inputList.VisibleColumnsCount;
+					if (prop.Name.ToLower() == "dynamichtmltemplate")
+						list.DynamicHtmlTemplate = inputList.DynamicHtmlTemplate;
 				}
 			}
 			catch (Exception e)
@@ -1189,6 +1191,8 @@ namespace WebVella.ERP.Web.Controllers
 						view.Sidebar = inputView.Sidebar;
 					if (prop.Name.ToLower() == "iconname")
 						view.IconName = inputView.IconName;
+					if (prop.Name.ToLower() == "dynamichtmltemplate")
+						view.DynamicHtmlTemplate = inputView.DynamicHtmlTemplate;
 				}
 			}
 			catch (Exception e)
