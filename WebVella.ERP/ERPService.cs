@@ -59,71 +59,6 @@ namespace WebVella.ERP
 						List<Guid> allowedRoles = new List<Guid>();
 						allowedRoles.Add(SystemIds.AdministratorRoleId);
 
-						#region << create role entity >>
-
-						{
-							InputEntity roleEntity = new InputEntity();
-							roleEntity.Id = SystemIds.RoleEntityId;
-							roleEntity.Name = "role";
-							roleEntity.Label = "Role";
-							roleEntity.LabelPlural = "Roles";
-							roleEntity.System = true;
-							roleEntity.RecordPermissions = new RecordPermissions();
-							roleEntity.RecordPermissions.CanCreate = new List<Guid>();
-							roleEntity.RecordPermissions.CanRead = new List<Guid>();
-							roleEntity.RecordPermissions.CanUpdate = new List<Guid>();
-							roleEntity.RecordPermissions.CanDelete = new List<Guid>();
-							roleEntity.RecordPermissions.CanCreate.Add(SystemIds.GuestRoleId);
-							roleEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
-							roleEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
-							roleEntity.RecordPermissions.CanRead.Add(SystemIds.GuestRoleId);
-							roleEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
-							roleEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
-							roleEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
-
-							response = entityManager.CreateEntity(roleEntity);
-
-							InputTextField nameRoleField = new InputTextField();
-
-							nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
-							nameRoleField.Name = "name";
-							nameRoleField.Label = "Name";
-							nameRoleField.PlaceholderText = "";
-							nameRoleField.Description = "The name of the role";
-							nameRoleField.HelpText = "";
-							nameRoleField.Required = true;
-							nameRoleField.Unique = false;
-							nameRoleField.Searchable = false;
-							nameRoleField.Auditable = false;
-							nameRoleField.System = true;
-							nameRoleField.DefaultValue = "";
-
-							nameRoleField.MaxLength = 200;
-
-							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField, false);
-
-							InputTextField descriptionRoleField = new InputTextField();
-
-							descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
-							descriptionRoleField.Name = "description";
-							descriptionRoleField.Label = "Description";
-							descriptionRoleField.PlaceholderText = "";
-							descriptionRoleField.Description = "";
-							descriptionRoleField.HelpText = "";
-							descriptionRoleField.Required = true;
-							descriptionRoleField.Unique = false;
-							descriptionRoleField.Searchable = false;
-							descriptionRoleField.Auditable = false;
-							descriptionRoleField.System = true;
-							descriptionRoleField.DefaultValue = "";
-
-							descriptionRoleField.MaxLength = 200;
-
-							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField, false);
-						}
-
-						#endregion
-
 						#region << create user entity >>
 						{
 
@@ -281,6 +216,73 @@ namespace WebVella.ERP
 						}
 
 						#endregion
+
+						#region << create role entity >>
+
+						{
+							InputEntity roleEntity = new InputEntity();
+							roleEntity.Id = SystemIds.RoleEntityId;
+							roleEntity.Name = "role";
+							roleEntity.Label = "Role";
+							roleEntity.LabelPlural = "Roles";
+							roleEntity.System = true;
+							roleEntity.RecordPermissions = new RecordPermissions();
+							roleEntity.RecordPermissions.CanCreate = new List<Guid>();
+							roleEntity.RecordPermissions.CanRead = new List<Guid>();
+							roleEntity.RecordPermissions.CanUpdate = new List<Guid>();
+							roleEntity.RecordPermissions.CanDelete = new List<Guid>();
+							roleEntity.RecordPermissions.CanCreate.Add(SystemIds.GuestRoleId);
+							roleEntity.RecordPermissions.CanCreate.Add(SystemIds.AdministratorRoleId);
+							roleEntity.RecordPermissions.CanRead.Add(SystemIds.RegularRoleId);
+							roleEntity.RecordPermissions.CanRead.Add(SystemIds.GuestRoleId);
+							roleEntity.RecordPermissions.CanRead.Add(SystemIds.AdministratorRoleId);
+							roleEntity.RecordPermissions.CanUpdate.Add(SystemIds.AdministratorRoleId);
+							roleEntity.RecordPermissions.CanDelete.Add(SystemIds.AdministratorRoleId);
+
+							response = entityManager.CreateEntity(roleEntity);
+
+							InputTextField nameRoleField = new InputTextField();
+
+							nameRoleField.Id = new Guid("36F91EBD-5A02-4032-8498-B7F716F6A349");
+							nameRoleField.Name = "name";
+							nameRoleField.Label = "Name";
+							nameRoleField.PlaceholderText = "";
+							nameRoleField.Description = "The name of the role";
+							nameRoleField.HelpText = "";
+							nameRoleField.Required = true;
+							nameRoleField.Unique = false;
+							nameRoleField.Searchable = false;
+							nameRoleField.Auditable = false;
+							nameRoleField.System = true;
+							nameRoleField.DefaultValue = "";
+
+							nameRoleField.MaxLength = 200;
+
+							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, nameRoleField, false);
+
+							InputTextField descriptionRoleField = new InputTextField();
+
+							descriptionRoleField.Id = new Guid("4A8B9E0A-1C36-40C6-972B-B19E2B5D265B");
+							descriptionRoleField.Name = "description";
+							descriptionRoleField.Label = "Description";
+							descriptionRoleField.PlaceholderText = "";
+							descriptionRoleField.Description = "";
+							descriptionRoleField.HelpText = "";
+							descriptionRoleField.Required = true;
+							descriptionRoleField.Unique = false;
+							descriptionRoleField.Searchable = false;
+							descriptionRoleField.Auditable = false;
+							descriptionRoleField.System = true;
+							descriptionRoleField.DefaultValue = "";
+
+							descriptionRoleField.MaxLength = 200;
+
+							fieldResponse = entityManager.CreateField(roleEntity.Id.Value, descriptionRoleField, false);
+						}
+
+						#endregion
+
+					
 
 						#region << create user - role relation >>
 						{
