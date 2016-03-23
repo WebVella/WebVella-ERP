@@ -161,6 +161,13 @@ namespace WebVella.ERP.Database
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
+
+			//if fields are not id field create index , for id we alread have by default
+			if( originFieldName != "id" )
+				CreateIndex($"idx_{relName}_{originFieldName}", originTableName, originFieldName);
+			if (targetFieldName != "id")
+				CreateIndex($"idx_{relName}_{originFieldName}", targetTableName, targetFieldName);
+
 		}
 
 		public static void CreateNtoNRelation(string relName, string originTableName, string originFieldName, string targetTableName, string targetFieldName)
@@ -172,22 +179,21 @@ namespace WebVella.ERP.Database
 			SetPrimaryKey(relTableName, new List<string> { "origin_id", "target_id" });
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
-			CreateIndex($"idx_{relName}_target_id", relTableName, "target_id" );
-			CreateIndex($"idx_{relName}_origin_id", relTableName, "origin_id");
 		}
 
-		public static void RenameRelation(string tableName, string name, string newName)
-		{
-			if (!TableExists(tableName))
-				return;
+		// not used
+		//public static void RenameRelation(string tableName, string name, string newName)
+		//{
+		//	if (!TableExists(tableName))
+		//		return;
 
-			using (var connection = DbContext.Current.CreateConnection())
-			{
-				string sql = $"ALTER TABLE {tableName} RENAME CONSTRAINT {name} TO {newName};";
-				NpgsqlCommand command = connection.CreateCommand(sql);
-				command.ExecuteNonQuery();
-			}
-		}
+		//	using (var connection = DbContext.Current.CreateConnection())
+		//	{
+		//		string sql = $"ALTER TABLE {tableName} RENAME CONSTRAINT {name} TO {newName};";
+		//		NpgsqlCommand command = connection.CreateCommand(sql);
+		//		command.ExecuteNonQuery();
+		//	}
+		//}
 
 		public static void DeleteRelation(string relName, string tableName)
 		{
@@ -200,6 +206,8 @@ namespace WebVella.ERP.Database
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
+
+			DropIndex(relName);
 		}
 
 		public static void DeleteNtoNRelation(string relName, string originTableName, string targetTableName)
@@ -208,12 +216,10 @@ namespace WebVella.ERP.Database
 
 			DeleteRelation($"{relName}_origin", originTableName);
 			DeleteRelation($"{relName}_target", targetTableName);
-			DropIndex($"idx_{relName}_target_id");
-			DropIndex($"idx_{relName}_origin_id");
 			DeleteTable(relTableName, false);
 		}
 
-		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false )
+		public static void CreateIndex( string indexName, string tableName, string columnName, bool unique = false, bool ascending = true )
 		{
 			if (!TableExists(tableName))
 				return;
@@ -223,6 +229,9 @@ namespace WebVella.ERP.Database
 				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName});";
 				if ( unique )
 					sql = $"CREATE UNIQUE INDEX {indexName} ON {tableName} ({columnName});";
+
+				if( !ascending )
+					sql = sql + " DESC";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
