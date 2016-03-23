@@ -15,6 +15,7 @@ using WebVella.ERP.Web.Security;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNet.Authorization;
+using CsvHelper;
 
 
 
@@ -1734,7 +1735,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
-		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all", string search = "")
+		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all", string search = "", int? pageSize = null)
 		{
 
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
@@ -1767,7 +1768,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter, search);
+				response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter, search, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -1989,7 +1990,7 @@ namespace WebVella.ERP.Web.Controllers
 			return null;
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null, string search = null)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null, string search = null, int? pageSize = null)
 		{
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
@@ -2209,13 +2210,15 @@ namespace WebVella.ERP.Web.Controllers
 
 				}
 
-				if (list.PageSize > 0)
+				if (!pageSize.HasValue)
+					pageSize = list.PageSize;
+
+				if (pageSize.Value > 0)
 				{
-					resultQuery.Limit = list.PageSize;
+					resultQuery.Limit = pageSize.Value;
 					if (page != null && page > 0)
 						resultQuery.Skip = (page - 1) * resultQuery.Limit;
 				}
-
 			}
 
 			List<EntityRecord> resultDataList = new List<EntityRecord>();
@@ -3143,39 +3146,234 @@ namespace WebVella.ERP.Web.Controllers
 		// Export list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/export
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/export")]
-		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10) {
-			if(count == -1) {
-				//return all records 
+		public IActionResult ExportListRecordsToCsv(string entityName, string listName, int count = 10)
+		{
+			ResponseModel response = new ResponseModel();
+			response.Message = "Records successfully exported";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object = null;
+
+			EntityListResponse entitiesResponse = entityManager.ReadEntities();
+			List<Entity> entities = entitiesResponse.Object.Entities;
+			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+
+			if (entity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Export failed! Entity with such name does not exist!";
+				response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+				return DoResponse(response);
 			}
-			else if(count > 0) {
-				//returh the defined count of records
+
+			bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
+			if (!hasPermisstion)
+			{
+				response.Success = false;
+				response.Message = "Export failed! Trying to read records from entity '" + entity.Name + "' with no read access.";
+				response.Errors.Add(new ErrorModel { Message = "Access denied." });
+				return DoResponse(response);
 			}
-			else {
-				//return empty list
+
+			var stream = new MemoryStream();
+
+			try
+			{
+				List<EntityRecord> records = new List<EntityRecord>();
+
+				if (count == -1)
+				{
+					//return all records 
+					records = GetListRecords(entities, entity, listName, 1);
+				}
+				else if (count > 0)
+				{
+					//returh the defined count of records
+					records = GetListRecords(entities, entity, listName, 1, null, null, null, count);
+				}
+
+				if (records.Count > 0)
+				{
+					RecordList listMeta = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
+
+					var textWriter = new StreamWriter(stream);
+					var csv = new CsvWriter(textWriter);
+
+					foreach (var prop in records[0].Properties)
+					{
+						csv.WriteField(prop.Key);
+					}
+					csv.NextRecord();
+
+					foreach (var record in records)
+					{
+						foreach (var prop in record.Properties)
+						{
+							if (prop.Value != null)
+								csv.WriteField(prop.Value);
+							else
+								csv.WriteField("");
+						}
+						csv.NextRecord();
+					}
+				}
 			}
-		
+			catch (Exception ex)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = ex.Message;
+				return DoResponse(response);
+			}
+
+			//var random = new Random().Next(10, 99);
+			//DateTime dt = DateTime.Now;
+			//string time = dt.Year.ToString() + dt.Month.ToString() + dt.Day.ToString() + dt.Hour.ToString() + dt.Minute.ToString() + dt.Second.ToString() + dt.Millisecond.ToString();
+			//string fileName = $"{entity.Label.Replace(' ', '-').Trim().ToLowerInvariant()}-{time}{random}.csv"; //"goro-test-report.csv";
+			//var fs = service.StorageService.GetFS();
+			//var createdFile = fs.CreateTempFile(fileName, stream.ToArray());
+
+			//response.Object = "/fs" + createdFile.FilePath;
+			//return DoResponse(response);
+
 			//Just for test
 			var theExportFilePathInTempGridFs = "/fs/entityGuid/listGuid/timestamp/boz-export-path.csv";
-			
-				
-			var response = new ResponseModel();
-			response.Success = true;
-			response.Message = "Records successfully exported";
+
 			response.Object = theExportFilePathInTempGridFs;
 			return DoResponse(response);
+
+			//return File(stream.GetBuffer(), System.Net.Mime.MediaTypeNames.Application.Octet);
+
+			//FileStreamResult result = new FileStreamResult(stream, "text/csv");
+			//result.FileDownloadName = "testfile.csv";
+			//return result;
 		}
 
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
-		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath) {
-		
+		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]string fileTempPath)
+		{
 			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
 			//If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones.
-			var response = new ResponseModel();
-			response.Success = true;
+
+			ResponseModel response = new ResponseModel();
 			response.Message = "Records successfully imported";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
 			response.Object = null;
+
+			EntityListResponse entitiesResponse = entityManager.ReadEntities();
+			List<Entity> entities = entitiesResponse.Object.Entities;
+			Entity entity = entities.FirstOrDefault(e => e.Name == entityName);
+
+			if (entity == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Import failed! Entity with such name does not exist!";
+				response.Errors.Add(new ErrorModel("entityName", entityName, "Entity with such name does not exist!"));
+				return DoResponse(response);
+			}
+
+			//FileInfo fileInfo = new FileInfo(fileTempPath);
+
+			//var fs = service.StorageService.GetFS();
+			//var file = fs.Find(fileTempPath);
+
+			//if (file == null)
+			//{
+			//	response.Timestamp = DateTime.UtcNow;
+			//	response.Success = false;
+			//	response.Message = "Import failed! File does not exist!";
+			//	response.Errors.Add(new ErrorModel("fileTempPath", fileTempPath, "Import failed! File does not exist!"));
+			//	return DoItemNotFoundResponse(response);
+			//}
+
+			//FileStream fileStream = (FileStream)file.GetContentStream();
+			//TextReader reader = new StreamReader(fileStream);
+			////string csvContent = reader.ReadToEnd();
+
+			//CsvReader csvReader = new CsvReader(reader);
+			//csvReader.Configuration.HasHeaderRecord = true;
+			//csvReader.Configuration.IsHeaderCaseSensitive = false;
+
+			//List<EntityRecord> records = new List<EntityRecord>();
+			//List<string> columns = csvReader.FieldHeaders.ToList();
+
+			//while (csvReader.Read())
+			//{
+			//	EntityRecord newRecord = new EntityRecord();
+			//	foreach (var column in columns)
+			//	{
+			//		//var intField = csvReader.GetField<int>(0);
+			//		//var stringField = csvReader.GetField<string>(1);
+
+			//		Field fieldMeta;
+
+			//		if (column.StartsWith("$"))
+			//		{
+			//			fieldMeta = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == column.ToLowerInvariant());
+			//		}
+			//		else
+			//		{
+			//			fieldMeta = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == column.ToLowerInvariant());
+			//		}
+
+			//		FieldType fieldType = fieldMeta.GetFieldType();
+
+			//		switch (fieldType)
+			//		{
+			//			case FieldType.AutoNumberField:
+			//			case FieldType.CurrencyField:
+			//			case FieldType.NumberField:
+			//			case FieldType.PercentField:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<decimal>(column);
+			//				}
+			//				break;
+			//			case FieldType.CheckboxField:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<bool>(column);
+			//				}
+			//				break;
+			//			case FieldType.DateField:
+			//			case FieldType.DateTimeField:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<DateTime>(column);
+			//				}
+			//				break;
+			//			case FieldType.MultiSelectField:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<string[]>(column);
+			//				}
+			//				break;
+			//			case FieldType.TreeSelectField:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<Guid[]>(column);
+			//				}
+			//				break;
+			//			default:
+			//				{
+			//					newRecord[fieldMeta.Name] = csvReader.GetField<string>(column);
+			//				}
+			//				break;
+			//		}
+			//	}
+			//	if (!newRecord.GetProperties().Any(x => x.Key == "id") || string.IsNullOrEmpty(newRecord["id"] as string))
+			//	{
+			//		newRecord["id"] = Guid.NewGuid();
+			//		QueryResponse result = recMan.CreateRecord(entityName, newRecord);
+			//	}
+			//	else
+			//	{
+			//		QueryResponse result = recMan.UpdateRecord(entityName, newRecord);
+			//	}
+			//}
+
+			//fileStream.Close();
+
 			return DoResponse(response);
 		}
 

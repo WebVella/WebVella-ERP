@@ -54,7 +54,10 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "relation_options")]
         public List<DbEntityRelationOptions> RelationOptions { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "dynamic_html_template")]
+		public string DynamicHtmlTemplate { get; set; }
+	}
 
 	public class DbRecordListQuery
 	{

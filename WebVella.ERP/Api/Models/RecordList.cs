@@ -75,7 +75,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "relationOptions")]
         public List<EntityRelationOptionsItem> RelationOptions { get; set; }
 
-        public static InputRecordList Convert(JObject inputList)
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
+		public static InputRecordList Convert(JObject inputList)
 		{
 			InputRecordList list = JsonConvert.DeserializeObject<InputRecordList>(inputList.ToString(), new RecordListItemConverter());
 
@@ -322,7 +325,10 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "relationOptions")]
         public List<EntityRelationOptions> RelationOptions { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+	}
 
 	public class RecordListQuery
 	{

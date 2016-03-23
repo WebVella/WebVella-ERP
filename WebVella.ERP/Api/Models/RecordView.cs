@@ -66,6 +66,9 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public InputRecordViewSidebar Sidebar { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
+
 		public static InputRecordView Convert(JObject inputField)
 		{
 			JsonConverter itemConverter = new RecordViewItemConverter();
@@ -479,6 +482,7 @@ namespace WebVella.ERP.Api.Models
 			Regions = new List<RecordViewRegion>();
 			Sidebar = new RecordViewSidebar();
             RelationOptions = new List<EntityRelationOptions>();
+			DynamicHtmlTemplate = "";
 		}
 
 		[JsonProperty(PropertyName = "id")]
@@ -517,6 +521,8 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "sidebar")]
 		public RecordViewSidebar Sidebar { get; set; }
 
+		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
+		public string DynamicHtmlTemplate { get; set; }
 	}
 
     ////////////////////////
