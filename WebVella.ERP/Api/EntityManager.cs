@@ -1428,7 +1428,7 @@ namespace WebVella.ERP.Api
 							else
 							{
 								RecordList list = null;
-								if (string.IsNullOrWhiteSpace(inputItem.ListName))
+								if (inputItem.ListId.HasValue)
 									list = entity.RecordLists.SingleOrDefault(l => l.Id == inputItem.ListId);
 								else
 									list = entity.RecordLists.SingleOrDefault(l => l.Name == inputItem.ListName);
@@ -1457,16 +1457,17 @@ namespace WebVella.ERP.Api
 							{
 
 								RecordView view = null;
-								if (string.IsNullOrWhiteSpace(inputItem.ViewName))
-									view = entity.RecordViews.SingleOrDefault(l => l.Id == inputItem.ViewId);
+								if (inputItem.ViewId.HasValue)
+									view = entity.RecordViews.SingleOrDefault(v => v.Id == inputItem.ViewId);
 								else
-									view = entity.RecordViews.SingleOrDefault(l => l.Name == inputItem.ViewName);
+									view = entity.RecordViews.SingleOrDefault(v => v.Name == inputItem.ViewName);
 
 								if (view == null)
 									errorList.Add(new ErrorModel("sidebar.items.viewName", null, "Wrong name. There is no view with such name or id!"));
 								else
 								{
-									inputItem.ViewId = entity.RecordViews.FirstOrDefault(v => v.Name == inputItem.ViewName).Id;
+									inputItem.ViewId = view.Id;
+									inputItem.ViewName = view.Name;
 								}
 
 								if (recordView.Sidebar.Items.Where(i => i is InputRecordViewSidebarViewItem && ((InputRecordViewSidebarViewItem)i).ViewName == inputItem.ViewName).Count() > 1)

@@ -2,6 +2,7 @@
 using AutoMapper;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace WebVella.ERP.Api.Models.AutoMapper
 {
@@ -38,5 +39,18 @@ namespace WebVella.ERP.Api.Models.AutoMapper
 
             return (TResult)Mapper.DynamicMap(self, self.GetType(), typeof(TResult));
         }
-    }
+
+		public static IMappingExpression<TSource, TDestination> IgnoreAllNonExisting<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
+		{
+			var sourceType = typeof(TSource);
+			var destinationType = typeof(TDestination);
+			var existingMaps = Mapper.GetAllTypeMaps().First(x => x.SourceType.Equals(sourceType)
+				&& x.DestinationType.Equals(destinationType));
+			foreach (var property in existingMaps.GetUnmappedPropertyNames())
+			{
+				expression.ForMember(property, opt => opt.Ignore());
+			}
+			return expression;
+		}
+	}
 }
