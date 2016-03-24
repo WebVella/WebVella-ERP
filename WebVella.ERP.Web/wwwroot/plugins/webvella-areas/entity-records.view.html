@@ -100,7 +100,7 @@
 				</span>
 			</div>
 		</div>
-		<div class="form-group  form-group-sm">
+		<div class="form-group  form-group-sm"  ng-if="::contentData.defaultSearchField != null">
 			<a class="btn btn-default btn-sm" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
 				<i class="fa fa-fw fa-filter"></i>
 			</a>
