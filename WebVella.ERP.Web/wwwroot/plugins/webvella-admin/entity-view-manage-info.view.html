@@ -146,11 +146,10 @@
 					<div class="col-sm-12">
 						<div class="form-group">
 							<label class="control-label" for="iconName">Dynamic HTML template</label>
-							<a href="javascript:void(0)"  editable-textarea="contentData.view.dynamicHtmlTemplate"
-											   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
-								<div ng-bind="contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:10})">{{ contentData.view.dynamicHtmlTemplate}}</div>
+							<a href="javascript:void(0)"  editable-text="contentData.view.dynamicHtmlTemplate" ng-bind-html="contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:18})"
+								class="textbox"	   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
 							</a>
-							<div class="form-description">Substitute the default view html template with a custom one. If it starts with "<": the dynamic html template code. If not: url link to a file containing the dynamic html template.</div>
+							<div class="form-description">Substitute the default view html template with a custom one. The url link to the template file could be absolute or relative.</div>
 						</div>
 					</div>
 				</div>

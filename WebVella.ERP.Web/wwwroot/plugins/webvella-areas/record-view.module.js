@@ -171,6 +171,7 @@
 			var returnObject = {
 				data: null,
 				meta: null,
+				templateMeta: null,
 				isView: true,
 				isEdit: true
 			};
@@ -179,6 +180,7 @@
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
+						returnObject.templateMeta = fastCopy(contentData.defaultRecordView);
 						returnObject.meta.label = "General";
 					}
 				}
@@ -196,6 +198,7 @@
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									returnObject.isEdit = true;
+									returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i].meta;
 									returnObject.meta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
 									returnObject.meta.label = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
@@ -204,6 +207,7 @@
 						}
 						else {
 							returnObject = contentData.defaultRecordView.sidebar.items[i];
+							returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i];
 						}
 
 						//Set data
