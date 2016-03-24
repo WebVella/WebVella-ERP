@@ -33,14 +33,14 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record views">manage</h4>
+			<h4 class="no-link" title="Manage a Record views">{{contentData.view.name}}</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
 		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
 	</div>-->
 </div>
-<div id="page-body">
+<div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
 	<div class="tabbable tabs-left spilled">
 		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
@@ -139,6 +139,17 @@
 								<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.view.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.view.iconName}}"></i> {{ contentData.view.iconName || "" }}</a>
 								<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="control-label" for="iconName">Dynamic HTML template</label>
+							<a href="javascript:void(0)"  editable-text="contentData.view.dynamicHtmlTemplate" ng-bind-html="contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:18})"
+								class="textbox"	   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
+							</a>
+							<div class="form-description">Substitute the default view html template with a custom one. The url link to the template file could be absolute or relative.</div>
 						</div>
 					</div>
 				</div>

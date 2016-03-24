@@ -52,19 +52,18 @@ namespace WebVella.ERP.Database
 
 		public void Create(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
 		{
-			DbEntity dbEntity = DbContext.Current.EntityRepository.Read(entityName);
-			Entity entity = dbEntity.MapTo<Entity>();
+			DbEntity entity = DbContext.Current.EntityRepository.Read(entityName);
 
 			List<DbParameter> parameters = new List<DbParameter>();
 
 			foreach (var record in recordData)
 			{
-				Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
+				DbBaseField field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
 
 				DbParameter param = new DbParameter();
 				param.Name = field.Name;
 				param.Value = record.Value;
-				param.Type = DbTypeConverter.GetDatabaseType(field);
+				param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
 				parameters.Add(param);
 			}
 
@@ -74,15 +73,14 @@ namespace WebVella.ERP.Database
 
 		public EntityRecord Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
 		{
-			DbEntity dbEntity = DbContext.Current.EntityRepository.Read(entityName);
-			Entity entity = dbEntity.MapTo<Entity>();
+			DbEntity entity = DbContext.Current.EntityRepository.Read(entityName);
 
 			List<DbParameter> parameters = new List<DbParameter>();
 			Guid? id = null;
 
 			foreach (var record in recordData)
 			{
-				Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
+				DbBaseField field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == record.Key.ToLowerInvariant());
 
 				if (field.Name == "id")
 					id = (Guid)record.Value;
@@ -90,7 +88,7 @@ namespace WebVella.ERP.Database
 				DbParameter param = new DbParameter();
 				param.Name = field.Name;
 				param.Value = record.Value;
-				param.Type = DbTypeConverter.GetDatabaseType(field);
+				param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
 				parameters.Add(param);
 			}
 

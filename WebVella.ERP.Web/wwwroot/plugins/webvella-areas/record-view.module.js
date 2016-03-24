@@ -171,6 +171,7 @@
 			var returnObject = {
 				data: null,
 				meta: null,
+				templateMeta: null,
 				isView: true,
 				isEdit: true
 			};
@@ -179,6 +180,7 @@
 				for (var i = 0; i < contentData.defaultRecordView.regions.length; i++) {
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
+						returnObject.templateMeta = fastCopy(contentData.defaultRecordView);
 						returnObject.meta.label = "General";
 					}
 				}
@@ -196,6 +198,7 @@
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									returnObject.isEdit = true;
+									returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i].meta;
 									returnObject.meta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
 									returnObject.meta.label = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
@@ -204,6 +207,7 @@
 						}
 						else {
 							returnObject = contentData.defaultRecordView.sidebar.items[i];
+							returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i];
 						}
 
 						//Set data
@@ -649,11 +653,12 @@
 				language: 'en',
 				'skin': 'moono',
 				height: '160',
-				//'extraPlugins': "save",//"imagebrowser",//"imagebrowser,mediaembed",
+				'extraPlugins': "sourcedialog",//"imagebrowser",//"imagebrowser,mediaembed",
 				//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
 				//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
 				//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
 				//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+				allowedContent: true,
 				toolbarLocation: 'top',
 				toolbar: 'full',
 				toolbar_full: [
@@ -664,9 +669,9 @@
 					{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
 					{ name: 'clipboard', items: ['Undo', 'Redo'] },
 					{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-					{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'MediaEmbed'] }, '/',
+					{ name: 'insert', items: ['Image', 'Table', 'SpecialChar','Sourcedialog'] }, '/',
 				]
-			};
+			};	
 
 			contentData.currentUserRoles = fastCopy(resolvedCurrentUser.roles);
 			contentData.currentUserHasReadPermission = function (item) {

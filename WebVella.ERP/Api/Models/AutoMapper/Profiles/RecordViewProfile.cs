@@ -129,33 +129,33 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<InputRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>()
 				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty))
 				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
-			Mapper.CreateMap<RecordViewSidebarRelationViewItem, DbRecordViewSidebarRelationViewItem>();
+			Mapper.CreateMap<RecordViewSidebarRelationViewItem, DbRecordViewSidebarRelationViewItem>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebarRelationViewItem, RecordViewSidebarRelationViewItem>();
 
 			Mapper.CreateMap<RecordViewSidebarRelationListItem, InputRecordViewSidebarRelationListItem>();
 			Mapper.CreateMap<InputRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>()
 				.ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty))
 				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
-			Mapper.CreateMap<RecordViewSidebarRelationListItem, DbRecordViewSidebarRelationListItem>();
+			Mapper.CreateMap<RecordViewSidebarRelationListItem, DbRecordViewSidebarRelationListItem>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebarRelationListItem, RecordViewSidebarRelationListItem>();
 
 			Mapper.CreateMap<RecordViewSidebarRelationTreeItem, InputRecordViewSidebarRelationTreeItem>();
 			Mapper.CreateMap<InputRecordViewSidebarRelationTreeItem, RecordViewSidebarRelationTreeItem>()
 				.ForMember(x => x.TreeId, opt => opt.MapFrom(y => (y.TreeId.HasValue) ? y.TreeId.Value : Guid.Empty))
 				.ForMember(x => x.RelationId, opt => opt.MapFrom(y => (y.RelationId.HasValue) ? y.RelationId.Value : Guid.Empty));
-			Mapper.CreateMap<RecordViewSidebarRelationTreeItem, DbRecordViewSidebarRelationTreeItem>();
+			Mapper.CreateMap<RecordViewSidebarRelationTreeItem, DbRecordViewSidebarRelationTreeItem>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebarRelationTreeItem, RecordViewSidebarRelationTreeItem>();
 
-			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarListItem>();
+			Mapper.CreateMap<RecordViewSidebarViewItem, InputRecordViewSidebarViewItem>();
 			Mapper.CreateMap<InputRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
 				.ForMember(x => x.ViewId, opt => opt.MapFrom(y => (y.ViewId.HasValue) ? y.ViewId.Value : Guid.Empty));
-			Mapper.CreateMap<RecordViewSidebarViewItem, DbRecordViewSidebarViewItem>();
+			Mapper.CreateMap<RecordViewSidebarViewItem, DbRecordViewSidebarViewItem>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebarViewItem, RecordViewSidebarViewItem>();
 
 			Mapper.CreateMap<RecordViewSidebarListItem, InputRecordViewSidebarListItem>();
 			Mapper.CreateMap<InputRecordViewSidebarListItem, RecordViewSidebarListItem>()
 				.ForMember(x => x.ListId, opt => opt.MapFrom(y => (y.ListId.HasValue) ? y.ListId.Value : Guid.Empty));
-			Mapper.CreateMap<RecordViewSidebarListItem, DbRecordViewSidebarListItem>();
+			Mapper.CreateMap<RecordViewSidebarListItem, DbRecordViewSidebarListItem>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebarListItem, RecordViewSidebarListItem>();
 
 			Mapper.CreateMap<RecordViewSidebarItemBase, InputRecordViewSidebarItemBase>()
@@ -177,7 +177,11 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 				.Include<RecordViewSidebarViewItem, DbRecordViewSidebarViewItem>()
 				.Include<RecordViewSidebarRelationListItem, DbRecordViewSidebarRelationListItem>()
 				.Include<RecordViewSidebarRelationViewItem, DbRecordViewSidebarRelationViewItem>()
-				.Include<RecordViewSidebarRelationTreeItem, DbRecordViewSidebarRelationTreeItem>();
+				.Include<RecordViewSidebarRelationTreeItem, DbRecordViewSidebarRelationTreeItem>()
+				.ForSourceMember(x => x.DataName, opt => opt.Ignore())
+				.ForSourceMember(x => x.EntityLabel, opt => opt.Ignore())
+				.ForSourceMember(x => x.EntityName, opt => opt.Ignore())
+				.ForSourceMember(x => x.EntityLabelPlural, opt => opt.Ignore());
 			Mapper.CreateMap<DbRecordViewSidebarItemBase, RecordViewSidebarItemBase>()
 				.Include<DbRecordViewSidebarListItem, RecordViewSidebarListItem>()
 				.Include<DbRecordViewSidebarViewItem, RecordViewSidebarViewItem>()
@@ -188,7 +192,7 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 			Mapper.CreateMap<RecordViewSidebar, InputRecordViewSidebar>();
 			Mapper.CreateMap<InputRecordViewSidebar, RecordViewSidebar>()
 				.ForMember(x => x.Render, opt => opt.MapFrom(y => (y.Render.HasValue) ? y.Render.Value : false));
-			Mapper.CreateMap<RecordViewSidebar, DbRecordViewSidebar>();
+			Mapper.CreateMap<RecordViewSidebar, DbRecordViewSidebar>().IgnoreAllNonExisting();
 			Mapper.CreateMap<DbRecordViewSidebar, RecordViewSidebar>();
 
 			Mapper.CreateMap<RecordView, InputRecordView>();

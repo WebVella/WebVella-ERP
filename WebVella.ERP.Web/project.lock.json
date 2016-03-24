@@ -1784,26 +1784,13 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Npgsql/3.1.0-alpha6": {
+      "Npgsql/3.0.5": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Collections",
-          "System.Core",
-          "System.Data",
-          "System.Diagnostics.Contracts",
-          "System.DirectoryServices",
-          "System.Numerics",
-          "System.Transactions",
-          "System.Xml"
-        ],
         "compile": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         },
         "runtime": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         }
       },
       "Remotion.Linq/2.0.1": {
@@ -2063,7 +2050,7 @@
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
           "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.1-beta3",
-          "Npgsql": "3.1.0-alpha6",
+          "Npgsql": "3.0.5",
           "System.Linq": "4.0.1-beta-23516",
           "System.Threading": "4.0.11-beta-23516"
         },
@@ -3858,26 +3845,13 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Npgsql/3.1.0-alpha6": {
+      "Npgsql/3.0.5": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Collections",
-          "System.Core",
-          "System.Data",
-          "System.Diagnostics.Contracts",
-          "System.DirectoryServices",
-          "System.Numerics",
-          "System.Transactions",
-          "System.Xml"
-        ],
         "compile": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         },
         "runtime": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         }
       },
       "Remotion.Linq/2.0.1": {
@@ -4143,7 +4117,7 @@
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
           "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.1-beta3",
-          "Npgsql": "3.1.0-alpha6",
+          "Npgsql": "3.0.5",
           "System.Linq": "4.0.1-beta-23516",
           "System.Threading": "4.0.11-beta-23516"
         },
@@ -5938,26 +5912,13 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
-      "Npgsql/3.1.0-alpha6": {
+      "Npgsql/3.0.5": {
         "type": "package",
-        "frameworkAssemblies": [
-          "Microsoft.CSharp",
-          "mscorlib",
-          "System",
-          "System.Collections",
-          "System.Core",
-          "System.Data",
-          "System.Diagnostics.Contracts",
-          "System.DirectoryServices",
-          "System.Numerics",
-          "System.Transactions",
-          "System.Xml"
-        ],
         "compile": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         },
         "runtime": {
-          "lib/dnx452/Npgsql.dll": {}
+          "lib/net45/Npgsql.dll": {}
         }
       },
       "Remotion.Linq/2.0.1": {
@@ -6223,7 +6184,7 @@
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
           "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
           "Newtonsoft.Json": "8.0.1-beta3",
-          "Npgsql": "3.1.0-alpha6",
+          "Npgsql": "3.0.5",
           "System.Linq": "4.0.1-beta-23516",
           "System.Threading": "4.0.11-beta-23516"
         },
@@ -7782,23 +7743,14 @@
         "tools/install.ps1"
       ]
     },
-    "Npgsql/3.1.0-alpha6": {
+    "Npgsql/3.0.5": {
       "type": "package",
-      "sha512": "gYOozZ+PPgrw7zogHlBONFjZxNnagSWkDfVXZTamJy9zWRU/+O6pCHgEsEwsdENGaYC0RFvQUbDo5lIYA8kjpA==",
+      "sha512": "tFLPYZC1WrBdJvzpRPIJRKSIgsmGER5gBQltJlbU99fXnyBpRAeuu1OIg/7uDcKFgTCJTKi1ieVOWQlxPu/8QA==",
       "files": [
-        "app/project.json",
-        "app/rewrite-async",
-        "app/rewrite-async.cmd",
-        "lib/dnx452/Npgsql.dll",
-        "lib/dnx452/Npgsql.xml",
-        "lib/dnxcore50/Npgsql.dll",
-        "lib/dnxcore50/Npgsql.xml",
         "lib/net45/Npgsql.dll",
         "lib/net45/Npgsql.xml",
-        "lib/net452/Npgsql.dll",
-        "lib/net452/Npgsql.xml",
-        "Npgsql.3.1.0-alpha6.nupkg",
-        "Npgsql.3.1.0-alpha6.nupkg.sha512",
+        "Npgsql.3.0.5.nupkg",
+        "Npgsql.3.0.5.nupkg.sha512",
         "Npgsql.nuspec"
       ]
     },

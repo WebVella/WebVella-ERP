@@ -236,10 +236,10 @@
 
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaAdminService', 'resolvedEntityRelationsList'];
+						'resolvedViewLibrary', 'webvellaAdminService','webvellaAreasService', 'resolvedEntityRelationsList'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaAdminService, resolvedEntityRelationsList) {
+						resolvedViewLibrary, webvellaAdminService,webvellaAreasService, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -426,7 +426,7 @@
 		//#endregion
 
 		//#region << Logic >>
-
+		 contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
 		//#region << Drag & Drop >>
 		contentData.moveToColumns = function (item, index) {
 			//Add Item at the end of the columns list

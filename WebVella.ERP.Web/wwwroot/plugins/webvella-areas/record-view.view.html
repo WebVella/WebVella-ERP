@@ -34,7 +34,7 @@
 </div>
 
 <div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
-	<div id="page-text" class="record-details" ng-if='::contentData.selectedSidebarPage.isEdit && (contentData.selectedSidebarPage.meta.cssClass == null || contentData.selectedSidebarPage.meta.cssClass == "")'>
+	<div id="page-text" class="record-details" ng-if='::contentData.selectedSidebarPage.isEdit && (contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == null || contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == "")'>
 		<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
 			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
 				<a href="javascript:void(0)" ng-click="contentData.toggleSectionCollapse(section)">
@@ -465,7 +465,7 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && (contentData.selectedSidebarPage.meta.cssClass == null || contentData.selectedSidebarPage.meta.cssClass == "")'>
+	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && (contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == null || contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == "")'>
 		<div class="records-details" ng-if="::contentData.selectedSidebarPage.isView">
 			<div ng-switch="::contentData.selectedSidebarPage.type">
 				<div ng-switch-when="view">
@@ -514,8 +514,8 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if='::contentData.selectedSidebarPage.meta.cssClass != null && contentData.selectedSidebarPage.meta.cssClass != ""'>
-		<div ng-include="contentData.selectedSidebarPage.meta.cssClass"></div>
+	<div id="page-text" ng-if='::contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate != null && contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate != ""'>
+		<div ng-include="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
 	</div>
 </div>
 
