@@ -27,24 +27,26 @@ namespace WebVella.ERP.Database
 		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
 
 		internal const string RECORD_COLLECTION_PREFIX = "rec_";
-		const string BEGIN_SELECT = @"SELECT   json_build_object(";
-		const string REGULAR_FIELD_SELECT = @"	'{0}', {1}.{0},";
-		const string JOIN_FIELD_SELECT = @"	'{0}', array_remove(array_agg(distinct(json_build_object({1})::jsonb)), NULL),";
-		const string END_SELECT = @")::jsonb";
+		const string BEGIN_OUTER_SELECT = @"SELECT row_to_json( X )FROM (";
+		const string BEGIN_SELECT = @"SELECT ";
+		const string REGULAR_FIELD_SELECT = @" {1}.""{0}"" AS ""{0}"",";
+		//const string JOIN_FIELD_SELECT = @"	'{0}', array_remove(array_agg(distinct(json_build_object({1})::jsonb)), NULL),";
+		const string END_SELECT = @"";
+		const string END_OUTER_SELECT = @") X";
 		const string FROM = @"FROM {0}";
-		const string JOIN = @"LEFT JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
-		const string GROUPBY = @"GROUP BY {0}";
+		//const string JOIN = @"LEFT JOIN  {0} {1} ON {2}.{3} = {4}.{5}";
+		//const string GROUPBY = @"GROUP BY {0}";
 
-		const string OTM_RELATION_TEMPLATE = @"	'{0}', (SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
+		const string OTM_RELATION_TEMPLATE = @"	(SELECT  COALESCE( array_to_json( array_agg( row_to_json(d) )), '[]') FROM ( 
 					SELECT {1} 
 					FROM {2} {3}
-					WHERE {3}.{4} = {5}.{6} ) d ),";
+					WHERE {3}.{4} = {5}.{6} ) d ) AS ""{0}"",";
 
-		const string MTM_RELATION_TEMPLATE = @"	'{0}', ( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
+		const string MTM_RELATION_TEMPLATE = @"( SELECT  COALESCE(  array_to_json(array_agg( row_to_json(d))), '[]') FROM ( 
 					SELECT {1}
 					FROM {2} {3}
 					LEFT JOIN  {4} {5} ON {6}.{7} = {8}.{9}
-					WHERE {10}.{11} = {12}.{13} )d  ),"; 
+					WHERE {10}.{11} = {12}.{13} )d  ) AS ""{0}"","; 
 
 		#endregion
 
@@ -408,6 +410,7 @@ namespace WebVella.ERP.Database
 			StringBuilder sqlJoins = new StringBuilder();
 			StringBuilder sqlGroupBy = new StringBuilder();
 
+			sql.AppendLine(BEGIN_OUTER_SELECT);
 			sql.AppendLine(BEGIN_SELECT);
 			foreach (var field in fields)
 			{
@@ -694,6 +697,8 @@ namespace WebVella.ERP.Database
 
 				sql.AppendLine(pagingSql);
 			}
+
+			sql.AppendLine(END_OUTER_SELECT);
 
 			DataTable dt = new DataTable();
 			using (var conn = DbContext.Current.CreateConnection())
