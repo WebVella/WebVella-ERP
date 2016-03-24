@@ -12,8 +12,8 @@ namespace WebVella.ERP.Database
 	public class DbConnection : IDisposable
 	{
 		private Stack<string> transactionStack = new Stack<string>();
-		private NpgsqlTransaction transaction;
-		private NpgsqlConnection connection;
+		internal NpgsqlTransaction transaction;
+		internal NpgsqlConnection connection;
 		private bool initialTransactionHolder = false;
 
 		/// <summary>

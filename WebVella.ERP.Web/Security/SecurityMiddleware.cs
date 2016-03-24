@@ -23,21 +23,20 @@ namespace WebVella.ERP.Web.Security
         IErpService service;
         RequestDelegate next;
 
-        public SecurityMiddleware(RequestDelegate next, IErpService service)
+        public SecurityMiddleware(RequestDelegate next)
         {
             this.next = next;
-            this.service = service;
         }
 
         public async Task Invoke(HttpContext context)
         {
-			DbContext.CreateContext(Settings.ConnectionString);
-			WebSecurityUtil.Authenticate(context);
-			WebSecurityUtil.OpenScope(context);
-			await next(context);
-			WebSecurityUtil.CloseScope(context);
-			DbContext.CloseContext();
-
+			using (var dbCtx = DbContext.CreateContext(Settings.ConnectionString))
+			{
+				WebSecurityUtil.Authenticate(context);
+				WebSecurityUtil.OpenScope(context);
+				await next(context);
+				WebSecurityUtil.CloseScope(context);
+			}
 		}
     }
 
