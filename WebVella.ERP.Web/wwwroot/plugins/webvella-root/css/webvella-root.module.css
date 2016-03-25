@@ -88,6 +88,11 @@ span.divider {
 	margin-bottom: 10px;
 }
 
+	.panel.panel-white {
+		background:#fff !important;
+		border:1px solid #bbb;
+	}
+
 .panel, .panel-heading {
 	border-radius: 0;
 	background-color:transparent !important;
