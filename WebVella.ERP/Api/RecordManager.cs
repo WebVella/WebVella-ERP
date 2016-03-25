@@ -673,6 +673,9 @@ namespace WebVella.ERP.Api
 			if (fieldValue != null && fieldValue.Value.Key != null)
 			{
 				var pair = fieldValue.Value;
+				if(pair.Value == DBNull.Value) {
+					pair = new KeyValuePair<string,object>(pair.Key,null);
+				}
 
 				if (field is AutoNumberField)
 				{

@@ -62,7 +62,7 @@ namespace WebVella.ERP.Database
 
 				DbParameter param = new DbParameter();
 				param.Name = field.Name;
-				param.Value = record.Value;
+				param.Value = record.Value ?? DBNull.Value;
 				param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
 				parameters.Add(param);
 			}
@@ -87,7 +87,7 @@ namespace WebVella.ERP.Database
 
 				DbParameter param = new DbParameter();
 				param.Name = field.Name;
-				param.Value = record.Value;
+				param.Value = record.Value ?? DBNull.Value;
 				param.Type = DbTypeConverter.ConvertToDatabaseType(field.GetFieldType());
 				parameters.Add(param);
 			}
@@ -143,7 +143,8 @@ namespace WebVella.ERP.Database
 					{
 
 						for (int index = 0; index < fieldcount; index++)
-							record[reader.GetName(index)] = reader[index];
+							record[reader.GetName(index)] = reader[index] == DBNull.Value ? null: reader[index];
+
 					}
 					else {
 						return null;
