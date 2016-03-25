@@ -292,7 +292,7 @@ namespace WebVella.ERP.Database
 
 					var parameter = command.CreateParameter() as NpgsqlParameter;
 					parameter.ParameterName = param.Name;
-					parameter.Value = param.Value;
+					parameter.Value = param.Value ?? DBNull.Value;
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 
