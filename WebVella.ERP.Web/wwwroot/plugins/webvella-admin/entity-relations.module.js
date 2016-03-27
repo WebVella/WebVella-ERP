@@ -263,14 +263,14 @@
 
 
     //// Modal Controllers
-    ManageRelationModalController.$inject = ['$modalInstance','$uibModal', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
+    ManageRelationModalController.$inject = ['$uibModalInstance','$uibModal', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'managedRelation'];
 
     /* @ngInject */
-    function ManageRelationModalController($modalInstance, $uibModal, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
+    function ManageRelationModalController($uibModalInstance, $uibModal, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData, managedRelation) {
     	$log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
-        popupData.modalInstance = $modalInstance;
+        popupData.modalInstance = $uibModalInstance;
         if (managedRelation === null) {
         	popupData.relation = webvellaAdminService.initRelation();
         }
@@ -555,7 +555,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -564,7 +564,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + 'The entity was successfully created'
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             webvellaRootService.GoToState($state, $state.current.name, {});
         }
 
@@ -595,10 +595,10 @@
 
 
     //// Modal Controllers
-    DeleteRelationModalController.$inject = ['parentPopupData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    DeleteRelationModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function DeleteRelationModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function DeleteRelationModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteRelationModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
@@ -609,7 +609,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -618,7 +618,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
             $timeout(function () {
                 $state.go("webvella-admin-entity-relations", { name: popupData.parentData.currentEntity.name }, { reload: true });

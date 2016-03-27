@@ -239,10 +239,10 @@
     //#endregion
 
 	//#region << Modal Controllers >>
-    deleteViewModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+    deleteViewModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-    function deleteViewModalController(parentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+    function deleteViewModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
     	var popupData = this;
@@ -255,7 +255,7 @@
     	};
 
     	popupData.cancel = function () {
-    		$modalInstance.dismiss('cancel');
+    		$uibModalInstance.dismiss('cancel');
     	};
 
     	/// Aux
@@ -264,7 +264,7 @@
     			className: 'success',
     			content: '<span class="go-green">Success:</span> ' + response.message
     		});
-    		$modalInstance.close('success');
+    		$uibModalInstance.close('success');
     		$timeout(function () {
     			$state.go("webvella-admin-entity-views", { entityName: popupData.parentData.entity.name }, { reload: true });
     		}, 0);

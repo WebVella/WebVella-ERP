@@ -251,14 +251,14 @@
     //#endregion
 
 	//// Modal Controllers
-    createListModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
+    createListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
 
 	/* @ngInject */
-    function createListModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
+    function createListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
     	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
     	var popupData = this;
-    	popupData.modalInstance = $modalInstance;
+    	popupData.modalInstance = $uibModalInstance;
     	popupData.contentData = fastCopy(contentData);
     	popupData.list = webvellaAdminService.initList();
     	//Check if there is an id column set, if not include it as it always should be there
@@ -276,7 +276,7 @@
     	};
 
     	popupData.cancel = function () {
-    		$modalInstance.dismiss('cancel');
+    		$uibModalInstance.dismiss('cancel');
     	};
 
     	/// Aux
@@ -285,7 +285,7 @@
     			className: 'success',
     			content: '<span class="go-green">Success:</span> ' + 'The view was successfully saved'
     		});
-    		$modalInstance.close('success');
+    		$uibModalInstance.close('success');
     		webvellaRootService.GoToState($state, $state.current.name, {});
     	}
 
@@ -298,13 +298,13 @@
     	$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
-    copyListModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData','list', 'webvellaAdminService', 'webvellaRootService'];
+    copyListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData','list', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-    function copyListModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData, list, webvellaAdminService, webvellaRootService) {
+    function copyListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, list, webvellaAdminService, webvellaRootService) {
     	$log.debug('webvellaAdmin>entities>copyListModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
     	var popupData = this;
-    	popupData.modalInstance = $modalInstance;
+    	popupData.modalInstance = $uibModalInstance;
     	popupData.list = fastCopy(list);
     	popupData.currentEntity = fastCopy(contentData.entity);
 		popupData.alternative = "new";
@@ -350,7 +350,7 @@
     	};
 
     	popupData.cancel = function () {
-    		$modalInstance.dismiss('cancel');
+    		$uibModalInstance.dismiss('cancel');
     	};
 
     	/// Aux
@@ -359,7 +359,7 @@
     			className: 'success',
     			content: '<span class="go-green">Success:</span> '+ 'The list was successfully saved'
     		});
-    		$modalInstance.close('success');
+    		$uibModalInstance.close('success');
     		webvellaRootService.GoToState($state, $state.current.name, {});
     	}
 

@@ -351,10 +351,10 @@
 
 	//#region << Modals >>
 
-	AddNewTreeNodeModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
+	AddNewTreeNodeModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'resolvedAllRootNodeIds', 'webvellaAreasService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function AddNewTreeNodeModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+	function AddNewTreeNodeModalController(contentData, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
        resolvedAllRootNodeIds,webvellaAreasService, ngToast, $timeout, $state) {
 
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -427,11 +427,11 @@
 		}
 
 		popupData.selectSingleRecord = function (record) {
-			$modalInstance.close(record);
+			$uibModalInstance.close(record);
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion
 

@@ -206,13 +206,13 @@
 
 
     //// Modal Controllers
-    manageUserController.$inject = ['$modalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
     /* @ngInject */
-    function manageUserController($modalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
-        popupData.modalInstance = $modalInstance;
+        popupData.modalInstance = $uibModalInstance;
         popupData.user = fastCopy(contentData.currentUser);
         popupData.roles = fastCopy(contentData.roles);
         popupData.password = null;
@@ -313,7 +313,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -322,7 +322,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + 'The user was successfully saved'
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             webvellaRootService.GoToState($state,$state.current.name, {});
         }
 

@@ -241,14 +241,14 @@
 
 
     //// Modal Controllers
-    manageAreaController.$inject = ['$modalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageAreaController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
 
     /* @ngInject */
-    function manageAreaController($modalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageAreaController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
-        popupData.modalInstance = $modalInstance;
+        popupData.modalInstance = $uibModalInstance;
         popupData.area = fastCopy(contentData.currentArea);
         popupData.areaEntityRelations = fastCopy(contentData.areaEntityRelations);
         popupData.roles = fastCopy(contentData.roles);
@@ -498,7 +498,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -507,7 +507,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             webvellaRootService.GoToState($state,$state.current.name, {});
         }
 
@@ -538,10 +538,10 @@
 
 
     //// Modal Controllers
-    DeleteAreaModalController.$inject = ['parentPopupData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+    DeleteAreaModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function DeleteAreaModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+    function DeleteAreaModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
@@ -554,7 +554,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -563,7 +563,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
             webvellaRootService.GoToState($state,$state.current.name, {});
         }

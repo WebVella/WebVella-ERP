@@ -661,9 +661,9 @@
 	}
 	//#endregion
 
-	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
+	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
 	/* @ngInject */
-	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
+	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -736,7 +736,7 @@
 
 
 		popupData.ok = function () {
-			$modalInstance.close(popupData.field);
+			$uibModalInstance.close(popupData.field);
 		};
 
 		popupData.cancel = function () {
@@ -745,7 +745,7 @@
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
 			}
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -754,7 +754,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 		}
 
 		function errorCallback(response) {

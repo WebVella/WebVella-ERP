@@ -1364,9 +1364,9 @@
 
 
 	//// Create Field Controllers
-	CreateFieldModalController.$inject = ['contentData', '$scope', '$modalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	CreateFieldModalController.$inject = ['contentData', '$scope', '$uibModalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
-	function CreateFieldModalController(contentData, $scope, $modalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function CreateFieldModalController(contentData, $scope, $uibModalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1761,7 +1761,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		//Dropdown or Multiselect
@@ -1830,7 +1830,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			webvellaRootService.GoToState($state, $state.current.name, {});
 		}
 
@@ -1843,10 +1843,10 @@
 	};
 
 	//// Create Field Controllers
-	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
+	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
 						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce'];
 	/* @ngInject */
-	function ManageFieldModalController(contentData, resolvedField, $uibModal, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
+	function ManageFieldModalController(contentData, resolvedField, $uibModal, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
 						webvellaRootService, $location, resolvedRelatedEntity, $sce) {
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -1855,7 +1855,7 @@
 			return isEmpty(object)
 		}
 		//#region << Init >>
-		popupData.modalInstance = $modalInstance;
+		popupData.modalInstance = $uibModalInstance;
 		popupData.contentData = contentData;
 
 		popupData.field = fastCopy(resolvedField);
@@ -2082,7 +2082,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		//Delete field
@@ -2155,7 +2155,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			webvellaRootService.GoToState($state, $state.current.name, {});
 		}
 
@@ -2169,10 +2169,10 @@
 
 
 	//// Modal Controllers
-	DeleteFieldModalController.$inject = ['parentPopupData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	DeleteFieldModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-	function DeleteFieldModalController(parentPopupData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+	function DeleteFieldModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -2183,7 +2183,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -2192,7 +2192,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			popupData.parentData.modalInstance.close('success');
 			$timeout(function () {
 				$state.go("webvella-admin-entity-fields", { name: popupData.parentData.contentData.entity.name }, { reload: true });

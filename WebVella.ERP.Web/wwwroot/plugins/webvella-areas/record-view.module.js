@@ -1364,10 +1364,10 @@
 
 	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
-	ManageRelationFieldModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
+	ManageRelationFieldModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function ManageRelationFieldModalController(contentData, $modalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+	function ManageRelationFieldModalController(contentData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -1455,7 +1455,7 @@
 				dataKind: selectedDataKind,
 				selectedRecordId: record.id
 			};
-			$modalInstance.close(returnObject);
+			$uibModalInstance.close(returnObject);
 		};
 
 		// Multiple records before save
@@ -1508,7 +1508,7 @@
 				attachDelta: popupData.attachedRecordIdsDelta,
 				detachDelta: popupData.detachedRecordIdsDelta
 			};
-			$modalInstance.close(returnObject);
+			$uibModalInstance.close(returnObject);
 			//category_id
 		};
 
@@ -1602,7 +1602,7 @@
 
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -1611,7 +1611,7 @@
 		//		className: 'success',
 		//		content: '<span class="go-green">Success:</span> ' + response.message
 		//	});
-		//	$modalInstance.close('success');
+		//	$uibModalInstance.close('success');
 		//	popupData.parentData.modalInstance.close('success');
 		//	//webvellaRootService.GoToState($state, $state.current.name, {});
 		//}
@@ -1631,10 +1631,10 @@
 	//#endregion 
 
 	//#region << Select Tree >>
-	SelectTreeNodesModalController.$inject = ['contentData', '$modalInstance', '$rootScope','$scope', '$log', '$q', '$stateParams', 'resolvedTree',
+	SelectTreeNodesModalController.$inject = ['contentData', '$uibModalInstance', '$rootScope','$scope', '$log', '$q', '$stateParams', 'resolvedTree',
         'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$uibModal',
 		'resolvedCurrentUserPermissions'];
-	function SelectTreeNodesModalController(contentData, $modalInstance,$rootScope,$scope, $log, $q, $stateParams, resolvedTree,
+	function SelectTreeNodesModalController(contentData, $uibModalInstance,$rootScope,$scope, $log, $q, $stateParams, resolvedTree,
 			selectedItem, resolvedTreeRelation, selectedItemData, webvellaAdminService, ngToast, $timeout, $state, $uibModal, 
 			resolvedCurrentUserPermissions) {
 		var popupData = this;
@@ -1673,7 +1673,7 @@
 		//#endregion 
 
 		popupData.close = function () {
-			$modalInstance.close();
+			$uibModalInstance.close();
 		};
 
 

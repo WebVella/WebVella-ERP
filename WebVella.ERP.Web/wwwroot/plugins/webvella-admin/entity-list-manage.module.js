@@ -703,10 +703,10 @@
 	//#endregion
 
 	//#region << Modal Controllers >>
-	deleteListModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-	function deleteListModalController(parentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteListModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -719,7 +719,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -728,7 +728,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			$timeout(function () {
 				$state.go("webvella-admin-entity-lists", { entityName: popupData.parentData.entity.name }, { reload: true });
 			}, 0);

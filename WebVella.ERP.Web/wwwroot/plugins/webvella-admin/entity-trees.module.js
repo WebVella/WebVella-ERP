@@ -250,15 +250,15 @@
     }
 
     //#region << Modal Controllers >>
-    createTreeModalController.$inject = ['$modalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData',
+    createTreeModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData',
 						'resolvedEligibleRelationsList', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-    function createTreeModalController($modalInstance, $log, ngToast, $timeout, $state, $location, contentData,
+    function createTreeModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData,
 						resolvedEligibleRelationsList, webvellaAdminService, webvellaRootService) {
     	$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
     	var popupData = this;
-    	popupData.modalInstance = $modalInstance;
+    	popupData.modalInstance = $uibModalInstance;
     	popupData.tree = webvellaAdminService.initTree();
     	popupData.entity = fastCopy(contentData.entity);
     	popupData.eligibleRelations = fastCopy(resolvedEligibleRelationsList);
@@ -271,7 +271,7 @@
     	};
 
     	popupData.cancel = function () {
-    		$modalInstance.dismiss('cancel');
+    		$uibModalInstance.dismiss('cancel');
     	};
 
     	/// Aux
@@ -280,7 +280,7 @@
     			className: 'success',
     			content: '<span class="go-green">Success:</span> ' + 'The tree was successfully saved'
     		});
-    		$modalInstance.close('success');
+    		$uibModalInstance.close('success');
     		webvellaRootService.GoToState($state, $state.current.name, {});
     	}
 

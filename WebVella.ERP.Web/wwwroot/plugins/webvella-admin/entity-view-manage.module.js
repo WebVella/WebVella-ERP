@@ -999,9 +999,9 @@
 	//#region << Modal Controllers >> /////////////////////
 
 	//Section Modal
-	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$scope'];
+	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$scope'];
 	/* @ngInject */
-	function ManageSectionModalController(parentData, section, weight, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, $scope) {
+	function ManageSectionModalController(parentData, section, weight, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, $scope) {
 		$log.debug('webvellaAdmin>entities>createSectionModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 
@@ -1069,7 +1069,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -1078,7 +1078,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			//Initialize both view and the content region
 			parentData.view = fastCopy(response.object);
 			for (var i = 0; i < parentData.view.regions.length; i++) {
@@ -1099,10 +1099,10 @@
 	};
 
 	//Row Modal
-	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$modalInstance', '$log', 'webvellaAdminService',
+	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaAdminService',
 				'ngToast'];
 	/* @ngInject */
-	function ManageRowModalController(parentData, row, section, weight, $modalInstance, $log, webvellaAdminService,
+	function ManageRowModalController(parentData, row, section, weight, $uibModalInstance, $log, webvellaAdminService,
 				ngToast) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -1201,7 +1201,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		/// Aux
@@ -1210,7 +1210,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 			//Initialize both view and the content region
 			parentData.view = fastCopy(response.object);
 			for (var i = 0; i < parentData.view.regions.length; i++) {
@@ -1229,9 +1229,9 @@
 	};
 
 
-	ManageHtmlStringModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj'];
+	ManageHtmlStringModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj'];
 	/* @ngInject */
-	function ManageHtmlStringModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj) {
+	function ManageHtmlStringModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj) {
 		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -1239,7 +1239,7 @@
 		popupData.field = fastCopy(fieldObj);
 		console.log(popupData.parentData.view);
 		popupData.ok = function () {
-			$modalInstance.close(popupData.field);
+			$uibModalInstance.close(popupData.field);
 		};
 
 		popupData.cancel = function () {
@@ -1248,16 +1248,16 @@
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
 			}
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
-	ManageFromRelationModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj',
+	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj',
 			'fieldObj', 'relatedEntityMeta', 'orderChangedOnly'];
 	/* @ngInject */
-	function ManageFromRelationModalController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj,
+	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj,
 			fieldObj, relatedEntityMeta, orderChangedOnly) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
@@ -1330,7 +1330,7 @@
 
 
 		popupData.ok = function () {
-			$modalInstance.close(popupData.field);
+			$uibModalInstance.close(popupData.field);
 		};
 
 		popupData.cancel = function () {
@@ -1339,7 +1339,7 @@
 				//we are currently copying so no need to return it back
 				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
 			}
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		///// Aux
@@ -1348,7 +1348,7 @@
 		//		className: 'success',
 		//		content: '<span class="go-green">Success:</span> ' + response.message
 		//	});
-		//	$modalInstance.close('success');
+		//	$uibModalInstance.close('success');
 		//}
 
 		//function errorCallback(response) {
