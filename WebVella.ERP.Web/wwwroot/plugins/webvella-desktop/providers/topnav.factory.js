@@ -34,9 +34,18 @@
 
         function addItem(item) {
         	$log.debug('webvellaDesktop>providers>topnav.factory>addItem> function called ' + moment().format('HH:mm:ss SSSS'));
-            topnav.push(item);
-            topnav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-            $rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
+			//check label is not already added
+			var navLabelAlreadyAdded = false;
+        	for (var i = 0; i < topnav.length; i++) {
+				 if(topnav[i].label === item.label){
+				 	 navLabelAlreadyAdded = true;
+				 }
+        	}
+			if(!navLabelAlreadyAdded){
+				topnav.push(item);
+				topnav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
+				$rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
+			}
             $log.debug('rootScope>events> "webvellaDesktop-topnav-updated" emitted ' + moment().format('HH:mm:ss SSSS'));
         }
 

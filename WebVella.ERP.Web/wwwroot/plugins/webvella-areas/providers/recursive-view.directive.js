@@ -29,14 +29,14 @@
 			templateUrl: '/plugins/webvella-areas/providers/recursive-view.template.html',
 			restrict: 'E',
 			scope: {
-				viewData: '=',
-				viewMeta: '=',
-				relation: '=',
-				parentId: '=',
-				canAddExisting: '=',
-				canCreate: '=',
-				canRemove: '=',
-				canUpdate: '='
+				viewData: '=?',
+				viewMeta: '=?',
+				relation: '=?',
+				parentId: '=?',
+				canAddExisting: '=?',
+				canCreate: '=?',
+				canRemove: '=?',
+				canUpdate: '=?'
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
