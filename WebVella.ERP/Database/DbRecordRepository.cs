@@ -703,6 +703,7 @@ namespace WebVella.ERP.Database
 			using (var conn = DbContext.Current.CreateConnection())
 			{
 				NpgsqlCommand command = conn.CreateCommand(sql.ToString());
+				command.CommandTimeout = 600;
 				command.Parameters.AddRange(parameters.ToArray());
 				new NpgsqlDataAdapter(command).Fill(dt);
 			}
