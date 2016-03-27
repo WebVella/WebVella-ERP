@@ -1,1 +1,1 @@
-﻿CKEDITOR.plugins.setLang("smiley","eu",{options:"Aurpegiera Aukerak",title:"Aurpegiera Sartu",toolbar:"Aurpegierak"});
+﻿CKEDITOR.plugins.setLang("smiley","eu",{options:"Aurpegieren aukerak",title:"Txertatu aurpegiera",toolbar:"Aurpegierak"});
