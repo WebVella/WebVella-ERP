@@ -371,7 +371,6 @@
 	</div>
 </div>
 
-
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -403,18 +402,7 @@
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
 			</td>
 			<td>
-				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()">
-					<option value="EQ">is equal to</option>
-					<option value="NOT">is not equal to</option>
-					<option value="LT">is less than</option>
-					<option value="LTE">is less than or equal</option>
-					<option value="GT">is greater than</option>
-					<option value="GTE">is greater than or equal</option>
-					<option value="CONTAINS">contains</option>
-					<option value="NOTCONTAINS">does not contain</option>
-					<option value="STARTSWITH">starts with</option>
-					<option value="NOTSTARTSWITH">does not start with</option>
-				</select>
+				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()" ng-options="item.key as item.value for item in contentData.getQueryComparisonOptionsList(currentQuery)"></select>
 			</td>
 			<td>
 				<select class="form-control" disabled>

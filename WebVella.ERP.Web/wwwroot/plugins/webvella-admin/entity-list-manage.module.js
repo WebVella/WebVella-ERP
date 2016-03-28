@@ -269,6 +269,86 @@
 		];
 		//#endregion
 
+		//#region << Query comparison options >>
+		contentData.allQueryComparisonList = [
+			{
+				key: "EQ",
+				value:"is equal to"
+			},
+			{
+				key: "NOT",
+				value:"is not equal to"
+			},
+			{
+				key: "LT",
+				value:"is less than"
+			},
+			{
+				key: "LTE",
+				value:"is less than or equal"
+			},
+			{
+				key: "GT",
+				value:"is greater than"
+			},
+			{
+				key: "GTE",
+				value:"is greater than or equal"
+			},
+			{
+				key: "CONTAINS",
+				value:"contains"
+			},
+			{
+				key: "NOTCONTAINS",
+				value:"does not contain"
+			},
+			{
+				key: "STARTSWITH",
+				value:"starts with"
+			},
+			{
+				key: "NOTSTARTSWITH",
+				value:"does not start with"
+			}
+		];
+
+		contentData.basicQueryComparisonList = [
+			{
+				key: "EQ",
+				value:"is equal to"
+			},
+			{
+				key: "NOT",
+				value:"is not equal to"
+			}
+		];
+
+		contentData.getQueryComparisonOptionsList = function(query){
+			var field = {};
+			for (var i = 0; i < contentData.library.items.length; i++) {
+				if(contentData.library.items[i].fieldName == query.fieldName){
+					field = contentData.library.items[i];
+				}
+			}
+			if(isEmpty(field)){
+				return 	contentData.allQueryComparisonList;
+			}
+			else {
+				switch(field.meta.fieldType){
+					case 11:
+						return 	contentData.basicQueryComparisonList;
+					case 21:
+						return 	contentData.basicQueryComparisonList;
+					default:
+						return contentData.allQueryComparisonList;
+				}
+			}
+		
+		}
+		//#endregion
+
+
 		//#region << Initialize the list >>
 		contentData.list = fastCopy(resolvedCurrentEntityList);
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
@@ -326,7 +406,7 @@
 		contentData.updateQuery = function () {
 			$timeout(function () {
 				var postObj = {};
-				postObj.query = contentData.list.query;
+				postObj.query = fastCopy(contentData.list.query);
 				webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
 			}, 1);
 		}
@@ -336,6 +416,9 @@
 			postObj.sorts = contentData.list.sorts;
 			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
+
+
+
 
 		//#endregion
 
@@ -391,12 +474,20 @@
 		});
 		function sortLibrary() {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
-				if (a.dataName < b.dataName) return -1;
-				if (a.dataName > b.dataName) return 1;
+				if (a.fieldName < b.fieldName) return -1;
+				if (a.fieldName > b.fieldName) return 1;
+				return 0;
+			});
+		}
+		function sortOnlyFieldsLibrary() {
+			contentData.onlyFieldsLibrary.items = contentData.onlyFieldsLibrary.items.sort(function (a, b) {
+				if (a.fieldName < b.fieldName) return -1;
+				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
 		sortLibrary();
+		sortOnlyFieldsLibrary();
 		contentData.originalLibrary = fastCopy(contentData.library.items);
 
 		//Extract the direction change information from the list if present

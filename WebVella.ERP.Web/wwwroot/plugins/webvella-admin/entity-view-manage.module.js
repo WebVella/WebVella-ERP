@@ -299,8 +299,8 @@
 		});
 		function sortLibrary() {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
-				if (a.dataName < b.dataName) return -1;
-				if (a.dataName > b.dataName) return 1;
+				if (a.fieldName < b.fieldName) return -1;
+				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
