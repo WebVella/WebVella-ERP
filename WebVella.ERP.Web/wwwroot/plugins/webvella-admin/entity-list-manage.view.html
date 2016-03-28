@@ -332,17 +332,17 @@
 
 
 			<h3 class="page-header">Query</h3>
-			<div ng-if="contentData.list.query == null"><a class="btn btn-success" ng-click="contentData.AddSection(null)">add query section</a></div>
+			<div ng-if="contentData.list.query == null"><a class="btn btn-default" ng-click="contentData.AddSection(null)">add query section</a></div>
 			<div ng-if="contentData.list.query != null">
 				<query-item current-query="contentData.list.query" parent-query="null" root-query="contentData.list.query" page-scope="contentData" query-index="0"></query-item>
 			</div>
 
 			<h3 class="page-header">Sort</h3>
-			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="contentData.AddSortRule()">add new sort</a></div>
 			<div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
-						<a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
+						<a class="btn btn-default btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
 					</span>
 				</div>
 				<div class="panel-body">
@@ -432,8 +432,8 @@
 		<div class="panel-heading clearfix">
 			<span class="pull-right">
 				<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(currentQuery)">add section</a>
-				<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(currentQuery)">add rule</a>
+				<a class="btn btn-default btn-sm" ng-click="contentData.AddSection(currentQuery)">add section</a>
+				<a class="btn btn-default btn-sm" ng-click="contentData.AddRule(currentQuery)">add rule</a>
 			</span>
 			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()">
 				<option value="AND">all</option>
