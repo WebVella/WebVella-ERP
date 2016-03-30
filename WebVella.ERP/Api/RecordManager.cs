@@ -246,6 +246,7 @@ namespace WebVella.ERP.Api
 					response.Object = null;
 					response.Success = true;
 					response.Message = "Record was created successfully";
+					return response;
 				}
 
 				var query = EntityQuery.QueryEQ("id", recordId);
@@ -406,6 +407,7 @@ namespace WebVella.ERP.Api
 					response.Object = null;
 					response.Success = true;
 					response.Message = "Record was updated successfully";
+					return response;
 				}
 
 				//fixes issue with ID comming from webapi request 
