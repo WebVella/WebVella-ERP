@@ -287,6 +287,8 @@ namespace WebVella.ERP.Database
 					return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
 				else if (value is List<object>)
 					return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
+				else if (value is string[])
+					return new List<string>(value as string[]);
 				else
 					return value as IEnumerable<string>;
 			}
@@ -356,6 +358,8 @@ namespace WebVella.ERP.Database
 					return ((JArray)value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
 				else if (value is List<object>)
 					return ((List<object>)value).Select(x => ((Guid)x)).ToList<Guid>();
+				else if (value is Guid[])
+					return new List<Guid>(value as Guid[]);
 				else
 					return value as IEnumerable<Guid>;
 			}
