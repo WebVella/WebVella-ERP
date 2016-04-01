@@ -104,7 +104,7 @@ namespace WebVella.ERP.Database
 			var updateSuccess = DbRepository.UpdateRecord(tableName, parameters);
 			if (!updateSuccess)
 				throw new StorageException("Failed to update record.");
-
+			
 			return Find(entityName, id.Value);
 		}
 
@@ -121,7 +121,7 @@ namespace WebVella.ERP.Database
 			return outRecord;
 		}
 
-		public EntityRecord Find(string entityName, Guid id)
+		public EntityRecord FindTreeNodeRecord(string entityName, Guid id)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
@@ -160,44 +160,6 @@ namespace WebVella.ERP.Database
 				return record;
 			}
 		}
-
-		/*
-		public IEnumerable<IEnumerable<KeyValuePair<string, object>>> Find(string entityName, QueryObject query, QuerySortObject[] sort, int? skip, int? limit)
-		{
-			string tableName = RECORD_COLLECTION_PREFIX + entityName;
-
-			List<List<KeyValuePair<string, object>>> records = new List<List<KeyValuePair<string, object>>>();
-
-			using (DbConnection con = DbContext.Current.CreateConnection())
-			{
-				NpgsqlCommand command = con.CreateCommand($"SELECT * FROM {tableName};");
-
-				//var parameter = command.CreateParameter() as NpgsqlParameter;
-				//parameter.ParameterName = "id";
-				//parameter.Value = id;
-				//parameter.NpgsqlDbType = NpgsqlDbType.Uuid;
-				//command.Parameters.Add(parameter);
-
-				var reader = command.ExecuteReader();
-
-				int fieldcount = reader.FieldCount;
-
-				while (reader.Read())
-				{
-					List<KeyValuePair<string, object>> record = new List<KeyValuePair<string, object>>();
-					for (int index = 0; index < fieldcount; index++)
-					{
-						KeyValuePair<string, object> column = new KeyValuePair<string, object>(reader.GetName(index), reader[index]);
-						record.Add(column);
-					}
-
-					records.Add(record);
-				}
-
-				return records;
-			}
-		}
-		*/
 
 		public long Count(string entityName, QueryObject query)
 		{
@@ -402,15 +364,17 @@ namespace WebVella.ERP.Database
 			throw new Exception("System Error. A field type is not supported in field value extraction process.");
 		}
 
+		public EntityRecord Find(string entityName, Guid id)
+		{
+			EntityQuery query = new EntityQuery(entityName, "*", EntityQuery.QueryEQ("id", id));
+			var results = Find(query);
+			return results.FirstOrDefault();
+		}
+
 		public List<EntityRecord> Find( EntityQuery query )
 		{
-			Stopwatch sw = new Stopwatch();
-			sw.Start();
-
 			Entity entity = entMan.ReadEntity(query.EntityName).Object;
-			Debug.WriteLine("get entity:" + sw.ElapsedMilliseconds);
 			var fields = ExtractQueryFieldsMeta(query);
-			Debug.WriteLine("extraxt meta:" + sw.ElapsedMilliseconds);
 			StringBuilder sql = new StringBuilder();
 			StringBuilder sqlJoins = new StringBuilder();
 			StringBuilder sqlGroupBy = new StringBuilder();
@@ -465,7 +429,6 @@ namespace WebVella.ERP.Database
 					sql.AppendLine(pagingSql);
 				}
 
-				Debug.WriteLine("sql generation:" + sw.ElapsedMilliseconds);
 				using (var conn = DbContext.Current.CreateConnection())
 				{
 					List<EntityRecord> result = new List<EntityRecord>();
@@ -480,7 +443,11 @@ namespace WebVella.ERP.Database
 							{
 								EntityRecord record = new EntityRecord();
 								for (int index = 0; index < fieldcount; index++)
-									record[reader.GetName(index)] = reader[index] == DBNull.Value ? null : reader[index];
+								{
+									string fieldName = reader.GetName(index);
+									Field field = fields.Single(x => x.Name == fieldName);
+									record[fieldName] = reader[index] == DBNull.Value ? null : ExtractFieldValue(reader[index], field); ;
+								}
 
 								result.Add(record);
 							}
@@ -490,7 +457,6 @@ namespace WebVella.ERP.Database
 							reader.Close();
 						}
 
-						Debug.WriteLine("sql execute:" + sw.ElapsedMilliseconds);
 						return result;
 					}
 				}
@@ -1002,12 +968,7 @@ namespace WebVella.ERP.Database
 
 		internal List<Field> ExtractQueryFieldsMeta(EntityQuery query)
 		{
-
-			Stopwatch sw = new Stopwatch();
-			sw.Start();
 			List<EntityRelation> relations = relMan.Read().Object;
-			Debug.WriteLine("ExtractQueryFieldsMeta[1]:" + sw.ElapsedMilliseconds);
-
 			List<Field> result = new List<Field>();
 
 			//split field string into tokens speparated by FIELDS_SEPARATOR
@@ -1029,7 +990,6 @@ namespace WebVella.ERP.Database
 				return result;
 			}
 
-			Debug.WriteLine("ExtractQueryFieldsMeta[2]:" + sw.ElapsedMilliseconds);
 			//process only tokens do not contain RELATION_SEPARATOR 
 			foreach (var token in tokens)
 			{
@@ -1148,7 +1108,6 @@ namespace WebVella.ERP.Database
 				}
 			}
 
-			Debug.WriteLine("ExtractQueryFieldsMeta[3]:" + sw.ElapsedMilliseconds);
 			return result;
 		}
 	}

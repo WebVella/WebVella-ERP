@@ -2488,7 +2488,7 @@ namespace WebVella.ERP.Api
 						{
 							foreach (RecordTreeNode node in recordTree.RootNodes)
 							{
-								var recData = DbContext.Current.RecordRepository.Find(entity.Name, node.RecordId);
+								var recData = DbContext.Current.RecordRepository.FindTreeNodeRecord(entity.Name, node.RecordId);
 								if (recData != null)
 								{
 									var idField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeIdFieldId);
