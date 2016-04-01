@@ -21,7 +21,7 @@ We will greatly appriciate your support of the project by:
 6. Default account is with email "erp@webvella.com" and password "erp"
 
 
-You will get a barebone installation. A test set is going to be available until the end of 2015. Before that you can test by doing the following:
+## You will get a barebone installation. Before that you can test by doing the following:
 1. Create a test entity from "administration -> entities"
 2. Create a "general" view for this entity from "administration -> entities -> views" and set it as a default one.
 3. Create a "quickcreate" view for this entity from "administration -> entities -> views" and set it as a default one.
