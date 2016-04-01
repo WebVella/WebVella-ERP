@@ -2507,6 +2507,10 @@ namespace WebVella.ERP.Api
 									if (labelField == null)
 										throw new Exception("Cannot initialize tree '" + recordTree.Name + "'. Node label field is missing in entity meta.");
 
+									var weigthField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeWeightFieldId);
+									if (weigthField == null)
+										throw new Exception("Cannot initialize tree '" + recordTree.Name + "'. Node weigth field is missing in entity meta.");
+
 									var value = recData[idField.Name];
 									node.Id = (value as Guid?) ?? Guid.Empty;
 
@@ -2518,6 +2522,8 @@ namespace WebVella.ERP.Api
 
 									value = recData[labelField.Name];
 									node.Label = (value ?? string.Empty).ToString();
+
+									node.Weight = (int?)( recData[weigthField.Name] as decimal? );
 								}
 							}
 						}
