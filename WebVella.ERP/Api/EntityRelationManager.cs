@@ -233,6 +233,18 @@ namespace WebVella.ERP.Api
                 return response;
             }
 
+			var relations = Cache.GetRelations();
+			if( relations != null )
+			{
+				response.Object = relations.SingleOrDefault(x => x.Name == name);
+				response.Success = true;
+				if(response.Object!=null)
+					response.Message = "The entity relation was successfully returned!";
+				else
+					response.Message = string.Format("The entity relation '{0}' does not exist!", name);
+				return response;
+			}
+
             try
             {
                 DbEntityRelation storageRelation = DbContext.Current.RelationRepository.Read(name);
@@ -269,7 +281,19 @@ namespace WebVella.ERP.Api
             response.Success = true;
             try
             {
-                var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
+				var relations = Cache.GetRelations();
+				if (relations != null)
+				{
+					response.Object = relations.SingleOrDefault(x => x.Id == relationId);
+					response.Success = true;
+					if (response.Object != null)
+						response.Message = "The entity relation was successfully returned!";
+					else
+						response.Message = string.Format("The entity relation with id '{0}' does not exist!", relationId);
+					return response;
+				}
+
+				var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
                 if (storageRelation != null)
                 {
                     response.Object = storageRelation.MapTo<EntityRelation>();
@@ -299,8 +323,21 @@ namespace WebVella.ERP.Api
 
             try
             {
-                response.Object = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
-                response.Success = true;
+				var relations = Cache.GetRelations();
+				if (relations != null)
+				{
+					response.Object = relations;
+					response.Success = true;
+					response.Message = null;
+					return response;
+				}
+
+				response.Object = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
+				
+				if( response.Object != null )
+					Cache.AddRelations(response.Object);
+
+				response.Success = true;
                 response.Message = null;
                 return response;
             }

@@ -4,6 +4,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebVella.ERP.Api;
 using WebVella.ERP.Api.Models;
 using WebVella.ERP.Database.Models;
 
@@ -11,12 +12,9 @@ namespace WebVella.ERP.Database
 {
 	public class DbRelationRepository
 	{
-		static object lockObj = new object();
-		static List<DbEntityRelation> relationCache = new List<DbEntityRelation>();
-
 		public bool Create(DbEntityRelation relation)
 		{
-			lock (lockObj)
+			try
 			{
 				if (relation == null)
 					throw new ArgumentNullException("relation");
@@ -73,23 +71,24 @@ namespace WebVella.ERP.Database
 						}
 
 						con.CommitTransaction();
-						relationCache = new List<DbEntityRelation>();
 						return true;
 					}
-					catch 
+					catch
 					{
 						con.RollbackTransaction();
 					}
 				}
-
-				
+				return false;
 			}
-			return false;
+			finally
+			{
+				Cache.Clear();
+			}
 		}
 
 		public bool Update(DbEntityRelation relation)
 		{
-			lock (lockObj)
+			try
 			{
 				if (relation == null)
 					throw new ArgumentNullException("relation");
@@ -113,67 +112,47 @@ namespace WebVella.ERP.Database
 					parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
 					command.Parameters.Add(parameterId);
 
-					relationCache = new List<DbEntityRelation>();
-
 					return command.ExecuteNonQuery() > 0;
 				}
 
 			}
+			finally
+			{
+				Cache.Clear();
+			}
+
 		}
 
 		public DbEntityRelation Read(Guid relationId)
 		{
-			lock (lockObj)
-			{
-				var cachedRelation = relationCache.SingleOrDefault(x => x.Id == relationId);
-				if (cachedRelation != null)
-					return cachedRelation;
-
-				var relations = Read();
-				return relations.FirstOrDefault(r => r.Id == relationId);
-			}
+			var relations = Read();
+			return relations.FirstOrDefault(r => r.Id == relationId);
 		}
 
 		public DbEntityRelation Read(string relationName)
 		{
-			lock (lockObj)
-			{
-				var cachedRelation = relationCache.SingleOrDefault(r => r.Name.ToLowerInvariant() == relationName.ToLowerInvariant());
-				if (cachedRelation != null)
-					return cachedRelation;
-
-				var relations = Read();
-				return relations.FirstOrDefault(r => r.Name.ToLowerInvariant() == relationName.ToLowerInvariant());
-			}
+			var relations = Read();
+			return relations.FirstOrDefault(r => r.Name.ToLowerInvariant() == relationName.ToLowerInvariant());
 		}
 
 		public List<DbEntityRelation> Read()
 		{
-			lock (lockObj)
+			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				if (relationCache.Any())
-					return relationCache;
+				NpgsqlCommand command = con.CreateCommand("SELECT json FROM entity_relations;");
 
-				using (DbConnection con = DbContext.Current.CreateConnection())
+				using (NpgsqlDataReader reader = command.ExecuteReader())
 				{
-					NpgsqlCommand command = con.CreateCommand("SELECT json FROM entity_relations;");
-
-					using (NpgsqlDataReader reader = command.ExecuteReader())
+					JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+					List<DbEntityRelation> relations = new List<DbEntityRelation>();
+					while (reader.Read())
 					{
-						JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-						List<DbEntityRelation> relations = new List<DbEntityRelation>();
-						while (reader.Read())
-						{
-							DbEntityRelation relation = JsonConvert.DeserializeObject<DbEntityRelation>(reader[0].ToString(), settings);
-							relations.Add(relation);
-						}
-
-						reader.Close();
-
-						relationCache = new List<DbEntityRelation>(relations.ToArray());
-
-						return relations;
+						DbEntityRelation relation = JsonConvert.DeserializeObject<DbEntityRelation>(reader[0].ToString(), settings);
+						relations.Add(relation);
 					}
+
+					reader.Close();
+					return relations;
 				}
 			}
 		}
@@ -198,7 +177,7 @@ namespace WebVella.ERP.Database
 			string originTableName = $"rec_{originEntity.Name}";
 			string targetTableName = $"rec_{targetEntity.Name}";
 
-			lock (lockObj)
+			try
 			{
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
@@ -227,8 +206,6 @@ namespace WebVella.ERP.Database
 						}
 
 						con.CommitTransaction();
-						relationCache = new List<DbEntityRelation>();
-
 						return true;
 					}
 					catch (Exception)
@@ -237,10 +214,13 @@ namespace WebVella.ERP.Database
 					}
 				}
 
-			
-			}
+				return false;
 
-			return false;
+			}
+			finally
+			{
+				Cache.Clear();
+			}
 		}
 
 		public void CreateManyToManyRecord(Guid relationId, Guid originId, Guid targetId)

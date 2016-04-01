@@ -1945,10 +1945,20 @@ namespace WebVella.ERP.Api
 				Message = "The entity was successfully returned!",
 			};
 
+			//try return from cache			
+			var entities = Cache.GetEntities(); 
+			if (entities != null)
+			{
+				EntityList entityList = new EntityList();
+				entityList.Entities = entities;
+				response.Object = entityList;
+				return response; 
+			}
+
 			try
 			{
 				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-				List<Entity> entities = storageEntityList.MapTo<Entity>();
+				entities = storageEntityList.MapTo<Entity>();
 
 				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
 				//EntityRelationListResponse relationListResponse = relationManager.Read();
@@ -2518,6 +2528,7 @@ namespace WebVella.ERP.Api
 
 				EntityList entityList = new EntityList();
 				entityList.Entities = entities;
+				Cache.AddEntities(entities);
 				response.Object = entityList;
 			}
 			catch (Exception e)
