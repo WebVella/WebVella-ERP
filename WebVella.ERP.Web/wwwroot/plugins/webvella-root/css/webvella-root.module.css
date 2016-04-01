@@ -228,6 +228,26 @@ span.divider {
 	border-bottom:1px solid #ccc;
 }
 
+.width-2000 {
+	width:2000px;
+}
+
+.width-2500 {
+	width:2500px;
+}
+
+.width-3000 {
+	width:3000px;
+}
+
+.width-3500 {
+	width:3500px;
+}
+
+
+.width-4000 {
+	width:4000px;
+}
 
 
 /*
@@ -616,6 +636,10 @@ ngToast
 
 	#page-topnav .btn-link {
 		color: #555;
+	}
+
+	#page-topnav .fa-home {
+		font-size:18px;
 	}
 
 
@@ -1988,6 +2012,16 @@ ngToast
 .nav-stacked li.active-filter.active a:after {
 	right: 10px;
 }
+
+
+/*.table-scroll-wrapper {
+	overflow-x:auto;
+}*/
+
+.table-scroll-wrapper .table {
+	margin-bottom:5px;
+}
+
 
 /*#endregion */
 

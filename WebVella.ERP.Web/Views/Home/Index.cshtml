@@ -41,8 +41,8 @@
 	<script src="~/plugins/webvella-root/lib/angular-sanitize/angular-sanitize.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-aria/angular-aria.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-messages/angular-messages.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js?v=@ViewBag.CacheBreaker"></script>
-	@*<script src="~/plugins/webvella-root/lib/fastclick/lib/fastclick.js?v=@ViewBag.CacheBreaker"></script>*@
+	@*<script src="~/plugins/webvella-root/lib/angular-touch/angular-touch.js?v=@ViewBag.CacheBreaker"></script>*@
+	<script src="~/plugins/webvella-root/lib/fastclick/lib/fastclick.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-cookies/angular-cookies.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-ui-router/release/angular-ui-router.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/ngtoast/dist/ngToast.js?v=@ViewBag.CacheBreaker"></script>
@@ -71,11 +71,11 @@
 			angular
                 .module('wvApp', [
                     // Angular modules
-                    'ngAnimate', 'ngCookies','ngTouch', 'ngSanitize', //
+                    'ngAnimate', 'ngCookies', 'ngSanitize', //'ngTouch'
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
-
+					'doubleScrollBars',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 					
@@ -171,6 +171,7 @@
 	<script src="~/plugins/webvella-areas/providers/recursive-view.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/recursive-list.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/view-tree-select.directive.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/providers/scroll.directive.js?v=@ViewBag.CacheBreaker"></script>
 
 	
 
