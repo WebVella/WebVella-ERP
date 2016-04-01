@@ -380,6 +380,11 @@
 				}
 			}
 
+			contentData.opened = {};
+			contentData.open = function(dataName,isOpen){
+ 					contentData.opened[dataName] = isOpen;			
+			}
+
 			contentData.fieldUpdate = function (item, data) {
 				var defer = $q.defer();
 				contentData.patchObject = {};
@@ -528,15 +533,15 @@
 				return defer.promise;
 			}
 
-			$scope.picker = { opened: false };
-			$scope.openPicker = function () {
-				$timeout(function () {
-					$scope.picker.opened = true;
-				});
-			};
-			$scope.closePicker = function () {
-				$scope.picker.opened = false;
-			};
+			//$scope.picker = { opened: false };
+			//$scope.openPicker = function () {
+			//	$timeout(function () {
+			//		$scope.picker.opened = true;
+			//	});
+			//};
+			//$scope.closePicker = function () {
+			//	$scope.picker.opened = false;
+			//};
 
 			//File upload
 			contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below

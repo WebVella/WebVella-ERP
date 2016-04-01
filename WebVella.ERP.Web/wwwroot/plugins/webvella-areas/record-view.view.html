@@ -76,12 +76,12 @@
 											   href="javascript:void(0)"
 											   editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
 											   e-uib-datepicker-popup="{{::item.meta.format || 'dd MMM yyyy'}}"
-											   e-init-date="false"
-											   e-is-open="picker.opened"
-											   onshow="openPicker()"
-											   onhide="closePicker()"
-											   ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"
+												e-is-open="contentData.opened[item.dataName]"
+												onshow="contentData.open(item.dataName,true)"
+												onhide="contentData.open(item.dataName,false)"
 											   onbeforesave="contentData.fieldUpdate(item, $data)">
+											   	 <!--ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"-->
+												 {{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}
 											</a>
 											<span ng-switch-when="4" class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 											<!-- If type 5 - datetime -->
@@ -91,12 +91,12 @@
 													   href="javascript:void(0)"
 													   editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
 													   e-datepicker-popup="dd MMM yyyy"
-													   e-init-date="false"
-													   e-is-open="picker.opened"
-													   onshow="openPicker()"
-													   onhide="closePicker()"
-													   ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"
+													   e-is-open="contentData.opened[item.dataName]"
+													   onshow="contentData.open(item.dataName,true)"
+													   onhide="contentData.open(item.dataName,false)"
 													   onbeforesave="contentData.fieldUpdate(item, $data)">
+													   {{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}
+													   <!--ng-bind-html='contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)'-->
 													</a>
 													<span class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 												</div>
