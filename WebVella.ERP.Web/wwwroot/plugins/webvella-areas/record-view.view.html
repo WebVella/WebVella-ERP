@@ -75,7 +75,7 @@
 											   ng-if="::contentData.currentUserHasUpdatePermission(item)"
 											   href="javascript:void(0)"
 											   editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
-											   e-datepicker-popup="{{::item.meta.format || 'dd MMM yyyy'}}"
+											   e-uib-datepicker-popup="{{::item.meta.format || 'dd MMM yyyy'}}"
 											   e-init-date="false"
 											   e-is-open="picker.opened"
 											   onshow="openPicker()"

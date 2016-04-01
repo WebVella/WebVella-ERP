@@ -136,7 +136,8 @@
 						<div class="form-group">
 							<div class="form-group">
 								<label class="control-label" for="weight">Icon Name</label>
-								<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.view.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.view.iconName}}"></i> {{ contentData.view.iconName || "" }}</a>
+								<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.view.iconName" 
+								onbeforesave="contentData.fieldUpdate('iconName', $data)" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.view.iconName}}"></i> {{ contentData.view.iconName || "" }}</a>
 								<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 							</div>
 						</div>
@@ -178,6 +179,6 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | uibTypeaheadHighlight:query"></span>
 	</a>
 </script>

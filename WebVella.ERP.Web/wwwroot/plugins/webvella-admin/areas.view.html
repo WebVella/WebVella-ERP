@@ -271,13 +271,13 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item" href="javascript:void(0)">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | uibTypeaheadHighlight:query"></span>
 	</a>
 </script>
 
 <script type="text/ng-template" id="entityTypeaheadTemplate.html">
 	<a style="line-height:30px;">
-		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
+		<div ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></div>
 		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
 	</a>
 	<hr style="margin:0;border-color:#ddd;" />
