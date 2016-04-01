@@ -638,7 +638,7 @@ namespace WebVella.ERP
 							relationName.PlaceholderText = "";
 							relationName.Description = "";
 							relationName.HelpText = "";
-							relationName.Required = true;
+							relationName.Required = false;
 							relationName.Unique = false;
 							relationName.Searchable = false;
 							relationName.Auditable = false;
