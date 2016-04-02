@@ -4416,6 +4416,12 @@ span.not-editable.not-readable {
 
 /*#region << BS Time */
 
+.uib-daypicker .btn.active {
+	color: #fff !important;
+    background-color: #269abc !important;
+    border-color: #1b6d85 !important;
+}
+
 /* temporary workaround for display editable-bstime in bs3 - up/down symbols not shown */
 .editable-bstime .editable-input i.icon-chevron-up:before {
 	content: '\e113';
