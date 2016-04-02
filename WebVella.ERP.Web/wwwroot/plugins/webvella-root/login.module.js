@@ -45,24 +45,22 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$state','$window', '$log', 'webvellaRootService', '$timeout', 'pageTitle', '$stateParams', '$location'];
+	controller.$inject = ['$state', '$window', '$log', 'webvellaRootService', '$timeout', 'pageTitle', '$stateParams', '$location'];
 
 	/* @ngInject */
-	function controller($state,$window, $log, webvellaRootService, $timeout, pageTitle, $stateParams, $location) {
+	function controller($state, $window, $log, webvellaRootService, $timeout, pageTitle, $stateParams, $location) {
 		$log.debug('webvellaRoot>login> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var loginData = this;
 		loginData.loginIsActive = false;
 		var currentUser = webvellaRootService.getCurrentUser();
 		if (currentUser != null) {
-			$timeout(function () {
-				$state.go("webvella-desktop-browse");
-			}, 0);
+			$window.location = '#/desktop/browse';
 		}
 		else {
-			$timeout(function () { 
+			$timeout(function () {
 				loginData.loginIsActive = true;
-			});
+			}, 0);
 
 			loginData.rememberMe = false;
 			loginData.pageTitle = "Login | " + pageTitle;
@@ -75,7 +73,7 @@
 			loginData.doLogin = function () {
 				webvellaRootService.login(loginData,
 										  function (response) {
-										  	$window.location = '#/desktop/browse';
+									  		$window.location = '#/desktop/browse';
 										  },
 										  function (response) {
 										  	//show validation
