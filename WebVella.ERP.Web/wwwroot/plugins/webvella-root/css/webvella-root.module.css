@@ -63,9 +63,11 @@ form.form-signin {
 }
 
 .page-buttons {
-	border-top: 3px solid #ccc;
-	margin-top: 1em;
-	padding-top: 1em;
+	border: 1px solid #ccc;
+    margin-top: 4em;
+    padding-top: 1em;
+    background: white;
+    padding: 10px;
 }
 
 span.divider {
@@ -1429,6 +1431,10 @@ ngToast
 	margin-top: -3px;
 }
 
+	#page-title .aux-actions a {
+		margin-left:15px;
+		color:#333;
+	}
 
 #page-messages > .alert {
 	margin-bottom: 0;
@@ -2419,6 +2425,14 @@ table .btn-xs.btn-link {
 	border-bottom-width: 1px;
 }
 
+.table-bordered > thead > tr > th {
+    font-weight: normal;
+    color: #555;
+    font-size: 13px;
+	text-transform:lowercase;
+}
+
+
 .table.table-permissions thead th {
 	font-weight: normal;
 	color: #999;
@@ -2849,6 +2863,7 @@ table .btn-xs.btn-link {
 		margin: 0;
 		left: -50px;
 		top: 14px;
+		top: 64px;
 	}
 
 	#sidebar .tabbable.spilled {
@@ -4229,8 +4244,8 @@ span.not-editable.not-readable {
 
 .view-divider {
 	position: relative;
-	line-height: 50px;
-	height: 50px;
+	line-height: 30px;
+	height: 30px;
 	color: #ccc;
 }
 
@@ -4267,6 +4282,7 @@ span.not-editable.not-readable {
 		right: 0;
 		width: 130px;
 		text-align: center;
+		top:10px;
 	}
 
 
