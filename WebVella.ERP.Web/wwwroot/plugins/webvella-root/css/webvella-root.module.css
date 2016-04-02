@@ -537,7 +537,7 @@ ngToast
 	padding: 10px 15px;
 	background: #212121;
 	position: relative;
-	height: 56px;
+	height: 46px;
 	white-space: nowrap;
 }
 
@@ -617,7 +617,7 @@ ngToast
 /*#region << Page topnav >> */
 
 #page-topnav {
-	height: 56px;
+	height: 46px;
 	border-bottom: 2px solid #90A4AE;
 	border-top: 1px solid #ccc;
 	position: relative;
@@ -639,7 +639,7 @@ ngToast
 	}
 
 	#page-topnav .fa-home {
-		font-size:18px;
+		font-size:16px;
 	}
 
 
@@ -717,7 +717,7 @@ ngToast
 #page-topnav #switcher {
 	position: absolute;
 	left: 0;
-	top: 15px;
+	top: 10px;
 	bottom: 0;
 	border-radius: 0 3px 3px 0;
 	border: none;
@@ -810,7 +810,7 @@ ngToast
 
 #page-topnav #areanav {
 	float: left;
-	margin-top: -2px;
+	margin-top: -8px;
 	display: inline-block;
 }
 
@@ -944,9 +944,9 @@ ngToast
 
 #page-topnav #area-title {
 	margin-left: 15px;
-	height: 40px;
-	line-height: 40px;
-	font-size: 18px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
 	margin-top: -5px;
 	text-transform: uppercase;
 	float: left;
@@ -960,6 +960,7 @@ ngToast
 
 #page-topnav .aux-actions {
 	float: right;
+	margin-top: -8px;
 }
 
 #page-topnav .btn + .btn {
@@ -1211,15 +1212,19 @@ ngToast
 	display: table-cell;
 	vertical-align: middle;
 	padding-right: 10px;
+    line-height: 14px;
+    height: 14px;
 }
 
 	#page-title .icon-box .fa {
-		font-size: 24px;
+		font-size: 16px;
 	}
 
 #page-title .entity-box {
 	display: table-cell;
 	vertical-align: top;
+    line-height: 14px;
+    height: 14px;
 }
 
 	#page-title .entity-box h4 {
@@ -1230,15 +1235,8 @@ ngToast
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		font-size:14px;
 	}
-
-		#page-title .entity-box h4.no-link {
-			line-height: 39px;
-		}
-
-#page-title .lists-box h4.no-link {
-	line-height: 39px;
-}
 
 #page-title .entity-box a,
 #page-title .entity-box span {
@@ -1253,15 +1251,18 @@ ngToast
 #page-title .divider-box {
 	display: table-cell;
 	padding-right: 15px;
-	border-left: 1px solid #BDBDBD;
+	/*border-left: 1px solid #BDBDBD;*/
+	border-left:none;
 	vertical-align: middle;
+    line-height: 14px;
+    height: 14px;
 }
 
 	#page-title .divider-box .fa {
 		color: #BDBDBD;
 		font-size: 14px;
 		position: relative;
-		top: 2px;
+		top: 0;
 	}
 
 /* Theming */
@@ -1414,6 +1415,7 @@ ngToast
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		font-size:14px;
 	}
 
 	#page-title .lists-box a {
@@ -1422,8 +1424,9 @@ ngToast
 
 #page-title .aux-actions {
 	float: right;
-	padding-top: 5px;
+	padding-top: 0;
 	margin-right: 18px;
+	margin-top: -3px;
 }
 
 

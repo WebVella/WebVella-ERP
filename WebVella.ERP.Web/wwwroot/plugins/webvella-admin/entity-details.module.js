@@ -186,6 +186,12 @@
         $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
         $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 
+		contentData.showSidebar = function(){
+		        //Show Sidemenu
+				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+				$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		}
+
         //Create new entity modal
         contentData.openDeleteEntityModal = function () {
         	var modalInstance = $uibModal.open({
