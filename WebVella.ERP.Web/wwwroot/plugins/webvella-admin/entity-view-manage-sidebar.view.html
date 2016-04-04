@@ -14,9 +14,9 @@
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-{{::contentData.entity.iconName}} fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
 		</div>
@@ -26,7 +26,6 @@
 		</div>
 		<div class="entity-box">
 			<h4 title="Record Views">record views</h4>
-			<a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-arrow-left"></i> Back to list</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -42,7 +41,7 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
@@ -72,7 +71,7 @@
 					<div class="panel panel-default wrapper">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by item.dataName"
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by $index"
 									ng-switch="::item.type">
 									<div ng-switch-when="view">
 										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove($index)"></i>

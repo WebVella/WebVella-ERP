@@ -13,7 +13,7 @@ namespace WebVella.ERP.Database
 			switch (type)
 			{
 				case FieldType.AutoNumberField:
-					pgType = "numeric";
+					pgType = "serial";
 					break;
 				case FieldType.CheckboxField:
 					pgType = "boolean";

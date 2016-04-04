@@ -1,7 +1,7 @@
 /*!
-angular-xeditable - 0.1.10
+angular-xeditable - 0.1.11
 Edit-in-place for angular.js
-Build date: 2016-02-16 
+Build date: 2016-04-01 
 */
 /**
  * Angular-xeditable module 
@@ -82,63 +82,76 @@ angular.module('xeditable', [])
 });
 
 /*
-Angular-ui bootstrap datepicker
-http://angular-ui.github.io/bootstrap/#/datepicker
-*/
+ Angular-ui bootstrap datepicker
+ http://angular-ui.github.io/bootstrap/#/datepicker
+ */
 angular.module('xeditable').directive('editableBsdate', ['editableDirectiveFactory',
-	function(editableDirectiveFactory) {
-		return editableDirectiveFactory({
-			directiveName: 'editableBsdate',
-			inputTpl: '<div></div>',
-			render: function() {
-				/** This basically renders a datepicker as in the example shown in 
-				**  http://angular-ui.github.io/bootstrap/#/datepicker
-				**  The attributes are all the same as in the bootstrap-ui datepicker with e- as prefix
-				**/
-				this.parent.render.call(this);
+    function(editableDirectiveFactory) {
+        return editableDirectiveFactory({
+            directiveName: 'editableBsdate',
+            inputTpl: '<div></div>',
+            render: function() {
+                /** This basically renders a datepicker as in the example shown in
+                 **  http://angular-ui.github.io/bootstrap/#/datepicker
+                 **  The attributes are all the same as in the bootstrap-ui datepicker with e- as prefix
+                 **/
+                this.parent.render.call(this);
 
-				var inputDatePicker = angular.element('<input type="text" class="form-control" ng-model="$data"/>');
-				var buttonDatePicker = angular.element('<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>');
-				var buttonWrapper = angular.element('<span class="input-group-btn"></span>');
+                var inputDatePicker = angular.element('<input type="text" class="form-control" ng-model="$data"/>');
+                var buttonDatePicker = angular.element('<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>');
+                var buttonWrapper = angular.element('<span class="input-group-btn"></span>');
 
-				inputDatePicker.attr('datepicker-popup', this.attrs.eDatepickerPopupXEditable || 'yyyy/MM/dd' );
-				inputDatePicker.attr('is-open', this.attrs.eIsOpen);
-				inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
-				inputDatePicker.attr('datepicker-popup', this.attrs.eDatepickerPopup);
-				inputDatePicker.attr('datepicker-mode', this.attrs.eDatepickerMode || 'day');
-				inputDatePicker.attr('min-date', this.attrs.eMinDate);
-				inputDatePicker.attr('max-date', this.attrs.eMaxDate);
-				inputDatePicker.attr('show-weeks', this.attrs.eShowWeeks || true);
-				inputDatePicker.attr('starting-day', this.attrs.eStartingDay || 0);
-				inputDatePicker.attr('init-date', this.attrs.eInitDate || new Date());
-				inputDatePicker.attr('min-mode', this.attrs.eMinMode || 'day');
-				inputDatePicker.attr('max-mode', this.attrs.eMaxMode || 'year');
-				inputDatePicker.attr('format-day', this.attrs.eFormatDay || 'dd');
-				inputDatePicker.attr('format-month', this.attrs.eFormatMonth || 'MMMM');
-				inputDatePicker.attr('format-year', this.attrs.eFormatYear || 'yyyy');
-				inputDatePicker.attr('format-day-header', this.attrs.eFormatDayHeader || 'EEE');
-				inputDatePicker.attr('format-day-title', this.attrs.eFormatDayTitle || 'MMMM yyyy');
-				inputDatePicker.attr('format-month-title', this.attrs.eFormatMonthTitle || 'yyyy');
-				inputDatePicker.attr('year-range', this.attrs.eYearRange || 20);
-				inputDatePicker.attr('show-button-bar', this.attrs.eShowButtonBar || true);
-				inputDatePicker.attr('current-text', this.attrs.eCurrentText || 'Today');
-				inputDatePicker.attr('clear-text', this.attrs.eClearText || 'Clear');
-				inputDatePicker.attr('close-text', this.attrs.eCloseText || 'Done');
-				inputDatePicker.attr('close-on-date-selection', this.attrs.eCloseOnDateSelection || true);
-				inputDatePicker.attr('date-picker-append-to-body', this.attrs.eDatePickerAppendToBody || false);
-				inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
+                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopupXEditable || 'yyyy/MM/dd' );
+                inputDatePicker.attr('is-open', this.attrs.eIsOpen);
+                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
+                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopup);
+                inputDatePicker.attr('min-date', this.attrs.eMinDate);
+                inputDatePicker.attr('max-date', this.attrs.eMaxDate);
+                inputDatePicker.attr('year-range', this.attrs.eYearRange || 20);
+                inputDatePicker.attr('show-button-bar', this.attrs.eShowButtonBar || true);
+                inputDatePicker.attr('current-text', this.attrs.eCurrentText || 'Today');
+                inputDatePicker.attr('clear-text', this.attrs.eClearText || 'Clear');
+                inputDatePicker.attr('close-text', this.attrs.eCloseText || 'Done');
+                inputDatePicker.attr('close-on-date-selection', this.attrs.eCloseOnDateSelection || true);
+                inputDatePicker.attr('datepicker-append-to-body', this.attrs.eDatePickerAppendToBody || false);
+                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
+                inputDatePicker.attr('name', this.attrs.eName);
 
-				buttonDatePicker.attr('ng-click',this.attrs.eNgClick);
+                this.scope.dateOptions = {
+                    formatDay:  this.attrs.eFormatDay || 'dd',
+                    formatMonth: this.attrs.eFormatMonth || 'MMMM',
+                    formatYear: this.attrs.eFormatYear || 'yyyy',
+                    formatDayHeader: this.attrs.eFormatDayHeader || 'EEE',
+                    formatDayTitle: this.attrs.eFormatDayTitle || 'MMMM yyyy',
+                    formatMonthTitle: this.attrs.eFormatMonthTitle || 'yyyy',
+                    showWeeks: this.attrs.eShowWeeks ? this.attrs.eShowWeeks.toLowerCase() === 'true' : true,
+                    startingDay: this.attrs.eStartingDay || 0,
+                    minMode: this.attrs.eMinMode || 'day',
+                    maxMode: this.attrs.eMaxMode || 'year',
+                    initDate: this.attrs.eInitDate || new Date(),
+                    datepickerMode: this.attrs.eDatepickerMode || 'day'
+                };
 
-				buttonWrapper.append(buttonDatePicker);
-				this.inputEl.prepend(inputDatePicker);
-				this.inputEl.append(buttonWrapper);
+                inputDatePicker.attr('datepicker-options', "dateOptions");
 
-				this.inputEl.removeAttr('class');
-				this.inputEl.attr('class','input-group');
+                buttonDatePicker.attr('ng-click',this.attrs.eNgClick);
 
-			}
-    });
+                buttonWrapper.append(buttonDatePicker);
+                this.inputEl.prepend(inputDatePicker);
+                this.inputEl.append(buttonWrapper);
+
+                this.inputEl.removeAttr('class');
+                this.inputEl.removeAttr('ng-click');
+                this.inputEl.removeAttr('is-open');
+                this.inputEl.removeAttr('init-date');
+                this.inputEl.removeAttr('datepicker-popup');
+                this.inputEl.removeAttr('required');
+                this.inputEl.removeAttr('ng-model');
+                this.inputEl.removeAttr('date-picker-append-to-body');
+                this.inputEl.removeAttr('name');
+                this.inputEl.attr('class','input-group');
+            }
+	});
 }]);
 /*
 Angular-ui bootstrap editable timepicker
@@ -148,7 +161,7 @@ angular.module('xeditable').directive('editableBstime', ['editableDirectiveFacto
   function(editableDirectiveFactory) {
     return editableDirectiveFactory({
       directiveName: 'editableBstime',
-      inputTpl: '<timepicker></timepicker>',
+      inputTpl: '<uib-timepicker></uib-timepicker>',
       render: function() {
         this.parent.render.call(this);
 
@@ -1016,7 +1029,7 @@ angular.module('xeditable').factory('editableFormController',
   // bind click to body: cancel|submit|ignore forms
   $document.bind('click', function(e) {
     // ignore right/middle button click
-    if ((e.which && e.which !== 1) || e.isDefaultPrevented()) {
+    if (e.which && e.which !== 1) {
       return;
     }
 
@@ -2152,6 +2165,7 @@ Editable themes:
 - default
 - bootstrap 2
 - bootstrap 3
+- semantic-ui
 
 Note: in postrender() `this` is instance of editableController
 */
@@ -2218,6 +2232,7 @@ angular.module('xeditable').factory('editableThemes', function() {
           case 'editableTime':
           case 'editableMonth':
           case 'editableWeek':
+          case 'editablePassword':
             this.inputEl.addClass('form-control');
             if(this.theme.inputClass) {
               // don`t apply `input-sm` and `input-lg` to select multiple
@@ -2238,6 +2253,20 @@ angular.module('xeditable').factory('editableThemes', function() {
           this.buttonsEl.find('button').addClass(this.theme.buttonsClass);
         }
       }
+    },
+    
+    //semantic-ui
+    'semantic': {
+      formTpl:     '<form class="editable-wrap ui form" ng-class="{\'error\': $error}" role="form"></form>',
+      noformTpl:   '<span class="editable-wrap"></span>',
+      controlsTpl: '<div class="editable-controls ui fluid input" ng-class="{\'error\': $error}"></div>',
+      inputTpl:    '',
+      errorTpl:    '<div class="editable-error ui error message" ng-show="$error" ng-bind="$error"></div>',
+      buttonsTpl:  '<span class="mini ui buttons"></span>',
+      submitTpl:   '<button type="submit" class="ui primary button"><i class="ui check icon"></i></button>',
+      cancelTpl:   '<button type="button" class="ui button" ng-click="$form.$cancel()">'+
+                      '<i class="ui cancel icon"></i>'+
+                   '</button>'
     }
   };
 

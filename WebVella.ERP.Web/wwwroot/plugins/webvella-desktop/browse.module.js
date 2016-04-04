@@ -29,7 +29,8 @@
 				}
 			},
 			resolve: {
-				resolvedSitemap: resolveSitemap
+				resolvedSitemap: resolveSitemap,
+				resolvedLastUsedArea: resolveLastUsedArea
 			},
 			data: {}
 		});
@@ -54,7 +55,6 @@
 
 	//#region << Resolve Function >>
 	resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
-
 	/* @ngInject */
 	function resolveSitemap($q, $log, webvellaRootService) {
 		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
@@ -76,25 +76,56 @@
 		$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
+
+	resolveLastUsedArea.$inject = ['$q', '$log', 'webvellaRootService','$localStorage','$stateParams','$window'];
+	/* @ngInject */
+	function resolveLastUsedArea($q, $log, webvellaRootService,$localStorage, $stateParams, $window) {
+		$log.debug('webvellaDesktop>browse> BEGIN resolveLastUsedArea ' + moment().format('HH:mm:ss SSSS'));
+		// Initialize
+		var defer = $q.defer();
+		var currentFolderName = $stateParams.folder;
+		var localStorage = $localStorage;
+		if(!currentFolderName && localStorage.folder){
+			$window.location = '#/desktop/browse?folder=' + localStorage.folder;
+		}
+		else if(!currentFolderName && !localStorage.folder){
+			$window.location = '#/desktop/browse?folder=Default';
+		}
+		else {
+			//Do nothing
+			defer.resolve();		
+		}
+
+		// Return
+		$log.debug('webvellaDesktop>browse> END resolveLastUsedArea ' + moment().format('HH:mm:ss SSSS'));
+		return defer.promise;
+	}
 	//#endregion
 
 
 	//#region << Controller >>
-	controller.$inject = ['$log', '$rootScope', '$scope', '$state','pageTitle', 
-					'webvellaDesktopTopnavFactory','webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
+	controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', '$localStorage',
+					'webvellaDesktopTopnavFactory', 'webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
 
 	/* @ngInject */
-	function controller($log, $rootScope, $scope, $state, pageTitle, 
-					webvellaDesktopTopnavFactory,webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
+	function controller($log, $rootScope, $scope, $state, pageTitle,  $localStorage,
+					webvellaDesktopTopnavFactory, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
 		$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.browsenav = [];
 		contentData.folder = fastCopy($state.params.folder);
+		var localStorage =$localStorage; 
+		if(contentData.folder){
+			 localStorage.folder = contentData.folder;
+		}
+		else {
+			 localStorage.folder = "Default";
+		}
 		contentData.topNav = [];
 		contentData.topNavDict = [];
 		webvellaDesktopTopnavFactory.initTopnav();
-		
+
 		//#region << Set Page title >>
 		contentData.pageTitle = "Browse Desktop | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -102,70 +133,67 @@
 		//#region << Make the Browsenav pluggable & Initialize>>
 		////1. CONSTRUCTOR - initialize the factory
 		webvellaDesktopBrowsenavFactory.initBrowsenav();
-		////2. READY hook listener
-		var readyBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-ready", function (event, data) {
-			var sitemapAreas = fastCopy(resolvedSitemap.data);
-			sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-			for (var i = 0; i < sitemapAreas.length; i++) {
-				//Generate topnav
 
-				var folderLabel = "Default";
-				if(sitemapAreas[i].folder && sitemapAreas[i].folder != ""){
-					folderLabel	= sitemapAreas[i].folder;
-				}
-				if(contentData.topNavDict.indexOf(folderLabel) == -1){
-					var topNavItem = {
-						"label": folderLabel,
-						"stateName": "webvella-desktop-browse",
-						"stateParams": {folder:folderLabel},
-						"parentName": "",
-						"nodes": [],
-						"weight": sitemapAreas[i].weight					
-					}
-					topNavItem.nodes.push(sitemapAreas[i]);
-					contentData.topNav.push(topNavItem);
-					contentData.topNavDict.push(folderLabel);
-				}
-				else {
-					for (var j = 0; j < contentData.topNav.length; j++) {
-						if(contentData.topNav[j].label == folderLabel){
-							var currentWeight = contentData.topNav[j].weight;
-							var currentNodes = contentData.topNav[j].nodes.length;
-
-							var newAvarageWeight = (currentWeight * currentNodes + sitemapAreas[i].weight)/(currentNodes+1);
-							 newAvarageWeight = Math.round(newAvarageWeight);
-							contentData.topNav[j].weight = 	newAvarageWeight;
-						}
-					}
-				}
-
-
-
-				var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(sitemapAreas[i]);
-				if (menuItem != null) {
-					var userCanUseArrea = false;
-					for (var k = 0; k < resolvedCurrentUser.roles.length; k++) {
-						for (var p = 0; p < menuItem.roles.length; p++) {
-							if (menuItem.roles[p] == resolvedCurrentUser.roles[k]) {
-								userCanUseArrea = true;
-							}
-						}
-					}
-					webvellaDesktopBrowsenavFactory.addItem(menuItem);
-				}
-			};
-
-			for (var i = 0; i < contentData.topNav.length; i++) {
-				webvellaDesktopTopnavFactory.addItem(contentData.topNav[i]);
+		var sitemapAreas = fastCopy(resolvedSitemap.data);
+		sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		for (var i = 0; i < sitemapAreas.length; i++) {
+			//Generate topnav
+			var folderLabel = "Default";
+			if (sitemapAreas[i].folder && sitemapAreas[i].folder != "") {
+				folderLabel = sitemapAreas[i].folder;
 			}
-			//$rootScope.$emit("webvellaDesktop-topnav-updated");
-		})
+			if (contentData.topNavDict.indexOf(folderLabel) == -1) {
+				var topNavItem = {
+					"label": folderLabel,
+					"stateName": "webvella-desktop-browse",
+					"stateParams": { folder: folderLabel },
+					"parentName": "",
+					"nodes": [],
+					"weight": sitemapAreas[i].weight
+				}
+				topNavItem.nodes.push(sitemapAreas[i]);
+				contentData.topNav.push(topNavItem);
+				contentData.topNavDict.push(folderLabel);
+			}
+			else {
+				for (var j = 0; j < contentData.topNav.length; j++) {
+					if (contentData.topNav[j].label == folderLabel) {
+						var currentWeight = contentData.topNav[j].weight;
+						var currentNodes = contentData.topNav[j].nodes.length;
+
+						var newAvarageWeight = (currentWeight * currentNodes + sitemapAreas[i].weight) / (currentNodes + 1);
+						newAvarageWeight = Math.round(newAvarageWeight);
+						contentData.topNav[j].weight = newAvarageWeight;
+					}
+				}
+			}
+
+
+
+			var menuItem = webvellaDesktopBrowsenavFactory.generateMenuItemFromArea(sitemapAreas[i]);
+			if (menuItem != null) {
+				var userCanUseArrea = false;
+				for (var k = 0; k < resolvedCurrentUser.roles.length; k++) {
+					for (var p = 0; p < menuItem.roles.length; p++) {
+						if (menuItem.roles[p] == resolvedCurrentUser.roles[k]) {
+							userCanUseArrea = true;
+						}
+					}
+				}
+				webvellaDesktopBrowsenavFactory.addItem(menuItem);
+			}
+		};
+
+		for (var i = 0; i < contentData.topNav.length; i++) {
+			webvellaDesktopTopnavFactory.addItem(contentData.topNav[i]);
+		}
+
 		////3. UPDATED hook listener
 		var updateBrowsenavDestructor = $rootScope.$on("webvellaDesktop-browsenav-updated", function (event, data) {
 			var browseNav = [];
 			for (var i = 0; i < data.length; i++) {
 				var menuItem = data[i];
-				if(!menuItem.folder || menuItem.folder == ""){
+				if (!menuItem.folder || menuItem.folder == "") {
 					menuItem.folder = "Default";
 				}
 				if (menuItem.folder == $state.params.folder) {
@@ -178,7 +206,6 @@
 		});
 		////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
 		$scope.$on("$destroy", function () {
-			readyBrowsenavDestructor();
 			updateBrowsenavDestructor();
 		});
 		////5. Bootstrap the pluggable Browsenav

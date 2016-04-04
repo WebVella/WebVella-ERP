@@ -1,4 +1,7 @@
 # Angular-xeditable
+
+[![npm](https://img.shields.io/npm/v/angular-xeditable.svg)]() [![Bower](https://img.shields.io/bower/v/angular-xeditable.svg)]()
+
 Edit in place for AngularJS
 
 ## Overview
@@ -15,6 +18,10 @@ to use power of angular and support complex forms / editable grids.
 #### Bower
 ````
 bower install angular-xeditable
+````
+#### NPM
+````
+npm install angular-xeditable
 ````
 #### Manual
 Download latest version from [project homepage](http://vitalets.github.io/angular-xeditable).

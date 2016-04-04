@@ -14,13 +14,11 @@ namespace WebVella.ERP.Database
 {
 	public class DbEntityRepository
 	{
-		static object lockObj = new object();
-		static List<DbEntity> entityCache = new List<DbEntity>();
 		internal const string RECORD_COLLECTION_PREFIX = "rec_";
 
 		public bool Create(DbEntity entity)
 		{
-			lock (lockObj)
+			try
 			{
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
@@ -58,8 +56,6 @@ namespace WebVella.ERP.Database
 
 						if (!result)
 							throw new Exception("Entity record was not added!");
-
-						entityCache = new List<DbEntity>();
 
 						if (entity.Id != SystemIds.UserEntityId)
 						{
@@ -127,13 +123,16 @@ namespace WebVella.ERP.Database
 				}
 				return false;
 			}
+			finally
+			{
+				Cache.Clear();
+			}
 		}
 
 		public bool Update(DbEntity entity)
 		{
-			lock (lockObj)
+			try
 			{
-
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
 					NpgsqlCommand command = con.CreateCommand("UPDATE entities SET json=@json WHERE id=@id;");
@@ -152,10 +151,13 @@ namespace WebVella.ERP.Database
 					parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
 					command.Parameters.Add(parameterId);
 
-					entityCache = new List<DbEntity>();
 
 					return command.ExecuteNonQuery() > 0;
 				}
+			}
+			finally
+			{
+				Cache.Clear();
 			}
 		}
 
@@ -173,39 +175,33 @@ namespace WebVella.ERP.Database
 
 		public List<DbEntity> Read()
 		{
-			lock (lockObj)
+			Debug.WriteLine("READ ENTITIIES:" + Thread.CurrentThread.ManagedThreadId);
+			using (DbConnection con = DbContext.Current.CreateConnection())
 			{
-				if (entityCache.Any())
-					return entityCache;
+				NpgsqlCommand command = con.CreateCommand("SELECT json FROM entities;");
 
-				Debug.WriteLine("READ ENTITIIES:" + Thread.CurrentThread.ManagedThreadId);
-				using (DbConnection con = DbContext.Current.CreateConnection())
+				using (NpgsqlDataReader reader = command.ExecuteReader())
 				{
-					NpgsqlCommand command = con.CreateCommand("SELECT json FROM entities;");
 
-					using (NpgsqlDataReader reader = command.ExecuteReader())
+					JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+					List<DbEntity> entities = new List<DbEntity>();
+					while (reader.Read())
 					{
-
-						JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-						List<DbEntity> entities = new List<DbEntity>();
-						while (reader.Read())
-						{
-							DbEntity entity = JsonConvert.DeserializeObject<DbEntity>(reader[0].ToString(), settings);
-							entities.Add(entity);
-						}
-
-						entityCache = new List<DbEntity>(entities.ToArray());
-
-						reader.Close();
-						return entities;
+						DbEntity entity = JsonConvert.DeserializeObject<DbEntity>(reader[0].ToString(), settings);
+						entities.Add(entity);
 					}
+
+
+
+					reader.Close();
+					return entities;
 				}
 			}
 		}
 
 		public bool Delete(Guid entityId)
 		{
-			lock (lockObj)
+			try
 			{
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
@@ -217,10 +213,12 @@ namespace WebVella.ERP.Database
 					parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
 					command.Parameters.Add(parameterId);
 
-					entityCache = new List<DbEntity>();
-
 					return command.ExecuteNonQuery() > 0;
 				}
+			}
+			finally
+			{
+				Cache.Clear();
 			}
 		}
 	}

@@ -214,12 +214,17 @@
 	//#endregion
 
     //#region << Controller >>
-    controller.$inject = ['$log', '$stateParams', 'webvellaRootService', 'resolvedCurrentUser', 'resolvedSitemap', 'ngToast', '$window'];
+    controller.$inject = ['$log','$rootScope', '$stateParams', 'webvellaRootService', 'resolvedCurrentUser', 'resolvedSitemap', 'ngToast', '$window'];
     /* @ngInject */
-    function controller($log, $stateParams, webvellaRootService, resolvedCurrentUser, resolvedSitemap, ngToast, $window) {
+    function controller($log, $rootScope,$stateParams, webvellaRootService, resolvedCurrentUser, resolvedSitemap, ngToast, $window) {
     	$log.debug('webvellaAreas>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
     	var pluginData = this;
+
+        //Show Sidemenu	always
+        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+
         $log.debug('webvellaAreas>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
     //#endregion

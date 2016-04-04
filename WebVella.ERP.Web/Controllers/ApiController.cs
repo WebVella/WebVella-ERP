@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNet.Authorization;
 using CsvHelper;
+using Microsoft.AspNet.StaticFiles;
 
 
 
@@ -68,7 +69,7 @@ namespace WebVella.ERP.Web.Controllers
 					responseObj.Object = null;
 					responseObj.Success = true;
 					responseObj.Timestamp = DateTime.UtcNow;
-					responseObj.Object = new { token = WebSecurityUtil.Login(HttpContext, user.Id, user.ModifiedOn, rememberMe ) };
+					responseObj.Object = new { token = WebSecurityUtil.Login(HttpContext, user.Id, user.ModifiedOn, rememberMe) };
 				}
 
 			}
@@ -1705,6 +1706,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			if (postObj == null)
 				postObj = new EntityRecord();
 
@@ -1722,6 +1724,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			return DoResponse(result);
 		}
@@ -1731,6 +1734,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			postObj["id"] = recordId;
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			return DoResponse(result);
@@ -2368,7 +2372,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/view/{viewName}/{id}")]
-		public  IActionResult GetViewRecords(string entityName, string viewName, Guid id)
+		public IActionResult GetViewRecords(string entityName, string viewName, Guid id)
 		{
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
@@ -2944,7 +2948,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 
-		
+
 
 			bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Read, entity);
 			if (!hasPermisstion)
@@ -2957,7 +2961,7 @@ namespace WebVella.ERP.Web.Controllers
 			try
 			{
 				List<EntityRelation> relationList = new EntityRelationManager().Read().Object ?? new List<EntityRelation>();
-				response.Object.Data = GetTreeRecords( entities,relationList,tree);
+				response.Object.Data = GetTreeRecords(entities, relationList, tree);
 				response.Object.Meta = tree;
 			}
 			catch (Exception ex)
@@ -2967,7 +2971,7 @@ namespace WebVella.ERP.Web.Controllers
 				response.Message = ex.Message;
 				return DoResponse(response);
 			}
-		
+
 			return DoResponse(response);
 		}
 
@@ -3002,7 +3006,8 @@ namespace WebVella.ERP.Web.Controllers
 				fieldIdsToInclude.Add(tree.NodeLabelFieldId);
 
 			var weightFieldNonNullable = Guid.Empty;
-			if(tree.NodeWeightFieldId.HasValue) {
+			if (tree.NodeWeightFieldId.HasValue)
+			{
 				weightFieldNonNullable = tree.NodeWeightFieldId.Value;
 			}
 			if (weightField != null && !fieldIdsToInclude.Contains(weightFieldNonNullable))
@@ -3025,18 +3030,19 @@ namespace WebVella.ERP.Web.Controllers
 			var allRecords = recMan.Find(eq).Object.Data;
 
 			List<ResponseTreeNode> rootNodes = new List<ResponseTreeNode>();
-			foreach (var rootNode in tree.RootNodes.OrderBy(x=>x.Name))
+			foreach (var rootNode in tree.RootNodes.OrderBy(x => x.Name))
 			{
 				List<ResponseTreeNode> children = new List<ResponseTreeNode>();
 				int? rootNodeWeight = null;
-				if(weightField != null) {
+				if (weightField != null)
+				{
 					rootNodeWeight = rootNode.Weight;
 					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
 									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, weightField.Name, 1, tree.DepthLimit);
 				}
 				else {
 					children = GetTreeNodeChildren(allRecords, treeIdField.Name,
-									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, "no-weight", 1, tree.DepthLimit);				
+									 treeParrentField.Name, nameField.Name, labelField.Name, rootNode.Id, "no-weight", 1, tree.DepthLimit);
 				}
 				rootNodes.Add(new ResponseTreeNode
 				{
@@ -3055,7 +3061,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		private List<ResponseTreeNode> GetTreeNodeChildren(string entityName, string fields, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1 , int maxDepth = 20 )
+				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
 		{
 			if (depth >= maxDepth)
 				return new List<ResponseTreeNode>();
@@ -3066,9 +3072,10 @@ namespace WebVella.ERP.Web.Controllers
 			var records = recMan.Find(eq).Object.Data;
 			List<ResponseTreeNode> nodes = new List<ResponseTreeNode>();
 			depth++;
-            foreach (var record in records)
+			foreach (var record in records)
 			{
-				if(weightFieldName == "no-weight") {
+				if (weightFieldName == "no-weight")
+				{
 					nodes.Add(new ResponseTreeNode
 					{
 						RecordId = (Guid)record["id"],
@@ -3077,7 +3084,7 @@ namespace WebVella.ERP.Web.Controllers
 						Name = record[nameFieldName]?.ToString(),
 						Label = record[labelFieldName]?.ToString(),
 						Weight = null,
-						Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName,(Guid)record[idFieldName], weightFieldName, depth, maxDepth)
+						Nodes = GetTreeNodeChildren(entityName, fields, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
 				else {
@@ -3089,11 +3096,12 @@ namespace WebVella.ERP.Web.Controllers
 						Name = record[nameFieldName]?.ToString(),
 						Label = record[labelFieldName]?.ToString(),
 						Weight = (int?)((decimal?)record[weightFieldName]),
-						Nodes = GetTreeNodeChildren(entityName,fields,idFieldName,parentIdFieldName, nameFieldName,labelFieldName,(Guid)record[idFieldName], weightFieldName, depth, maxDepth)
+						Nodes = GetTreeNodeChildren(entityName, fields, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
 			}
-			if(weightFieldName == "no-weight") {
+			if (weightFieldName == "no-weight")
+			{
 				return nodes.OrderBy(x => x.Name).ToList();
 			}
 			else {
@@ -3102,7 +3110,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		private List<ResponseTreeNode> GetTreeNodeChildren(List<EntityRecord> allRecords, string idFieldName, string parentIdFieldName,
-				string nameFieldName, string labelFieldName, Guid? nodeId,string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
+				string nameFieldName, string labelFieldName, Guid? nodeId, string weightFieldName = "no-weight", int depth = 1, int maxDepth = 20)
 		{
 			if (depth >= maxDepth)
 				return new List<ResponseTreeNode>();
@@ -3112,7 +3120,8 @@ namespace WebVella.ERP.Web.Controllers
 			depth++;
 			foreach (var record in records)
 			{
-				if(weightFieldName == "no-weight") {
+				if (weightFieldName == "no-weight")
+				{
 					nodes.Add(new ResponseTreeNode
 					{
 						RecordId = (Guid)record["id"],
@@ -3121,7 +3130,7 @@ namespace WebVella.ERP.Web.Controllers
 						Name = record[nameFieldName]?.ToString(),
 						Label = record[labelFieldName]?.ToString(),
 						Weight = null,
-						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName],weightFieldName, depth, maxDepth)
+						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
 				else {
@@ -3133,12 +3142,13 @@ namespace WebVella.ERP.Web.Controllers
 						Name = record[nameFieldName]?.ToString(),
 						Label = record[labelFieldName]?.ToString(),
 						Weight = (int?)((decimal?)record[weightFieldName]),
-						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName],weightFieldName, depth, maxDepth)
+						Nodes = GetTreeNodeChildren(allRecords, idFieldName, parentIdFieldName, nameFieldName, labelFieldName, (Guid)record[idFieldName], weightFieldName, depth, maxDepth)
 					});
 				}
 			}
 
-			if(weightFieldName == "no-weight") {
+			if (weightFieldName == "no-weight")
+			{
 				return nodes.OrderBy(x => x.Name).ToList();
 			}
 			else {
@@ -3803,8 +3813,6 @@ namespace WebVella.ERP.Web.Controllers
 		[Route("/fs/{*filepath}")]
 		public IActionResult Download([FromRoute] string filepath)
 		{
-			return DoPageNotFoundResponse();
-			/*
 			//TODO  authorize
 			if (string.IsNullOrWhiteSpace(filepath))
 				return DoPageNotFoundResponse();
@@ -3814,70 +3822,68 @@ namespace WebVella.ERP.Web.Controllers
 
 			filepath = filepath.ToLowerInvariant();
 
-			var fs = service.StorageService.GetFS();
-			var file = fs.Find(filepath);
+			DbFileRepository fsRepository = new DbFileRepository();
+			var file = fsRepository.Find(filepath);
 
 			if (file == null)
 				return DoPageNotFoundResponse();
 
-			return File(file.GetBytes(), System.Net.Mime.MediaTypeNames.Application.Octet);
-			*/
+			string mimeType;
+			var extension = Path.GetExtension(filepath);
+			new FileExtensionContentTypeProvider().Mappings.TryGetValue(extension, out mimeType);
+
+			return File(file.GetBytes(), mimeType);
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/upload/")]
 		public IActionResult UploadFile([FromForm] IFormFile file)
 		{
-			return DoPageNotFoundResponse();
-			/*
+
 			var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').ToLowerInvariant();
-			var fs = service.StorageService.GetFS();
-			var createdFile = fs.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
+			DbFileRepository fsRepository = new DbFileRepository();
+			var createdFile = fsRepository.CreateTempFile(fileName, ReadFully(file.OpenReadStream()));
 
 			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + createdFile.FilePath, Filename = fileName }));
-			*/
+
 		}
 
 		[AcceptVerbs(new[] { "POST" }, Route = "/fs/move/")]
 		public IActionResult MoveFile([FromBody]JObject submitObj)
 		{
-			return DoPageNotFoundResponse();
-			/*
-				string source = submitObj["source"].Value<string>();
-				string target = submitObj["target"].Value<string>();
-				bool overwrite = false;
-				if (submitObj["overwrite"] != null)
-					overwrite = submitObj["overwrite"].Value<bool>();
+			string source = submitObj["source"].Value<string>();
+			string target = submitObj["target"].Value<string>();
+			bool overwrite = false;
+			if (submitObj["overwrite"] != null)
+				overwrite = submitObj["overwrite"].Value<bool>();
 
-				source = source.ToLowerInvariant();
-				target = target.ToLowerInvariant();
+			source = source.ToLowerInvariant();
+			target = target.ToLowerInvariant();
 
-				if (source.StartsWith("/fs/"))
-					source = source.Substring(3);
+			if (source.StartsWith("/fs/"))
+				source = source.Substring(3);
 
-				if (source.StartsWith("fs/"))
-					source = source.Substring(2);
+			if (source.StartsWith("fs/"))
+				source = source.Substring(2);
 
-				if (target.StartsWith("/fs/"))
-					target = target.Substring(3);
+			if (target.StartsWith("/fs/"))
+				target = target.Substring(3);
 
-				if (target.StartsWith("fs/"))
-					target = target.Substring(2);
+			if (target.StartsWith("fs/"))
+				target = target.Substring(2);
 
-				var fileName = target.Split(new char[] { '/' }).LastOrDefault();
+			var fileName = target.Split(new char[] { '/' }).LastOrDefault();
 
-				var fs = service.StorageService.GetFS();
-				var sourceFile = fs.Find(source);
+			DbFileRepository fsRepository = new DbFileRepository();
+			var sourceFile = fsRepository.Find(source);
 
-				var movedFile = fs.Move(source, target, overwrite);
-				return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
-				*/
+			var movedFile = fsRepository.Move(source, target, overwrite);
+			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + movedFile.FilePath, Filename = fileName }));
+
 		}
 
 		[AcceptVerbs(new[] { "DELETE" }, Route = "{*filepath}")]
 		public IActionResult DeleteFile([FromRoute] string filepath)
 		{
-			return DoPageNotFoundResponse();
-			/*
 			filepath = filepath.ToLowerInvariant();
 
 			if (filepath.StartsWith("/fs/"))
@@ -3888,12 +3894,11 @@ namespace WebVella.ERP.Web.Controllers
 
 			var fileName = filepath.Split(new char[] { '/' }).LastOrDefault();
 
-			var fs = service.StorageService.GetFS();
-			var sourceFile = fs.Find(filepath);
+			DbFileRepository fsRepository = new DbFileRepository();
+			var sourceFile = fsRepository.Find(filepath);
 
-			fs.Delete(filepath);
+			fsRepository.Delete(filepath);
 			return DoResponse(new FSResponse(new FSResult { Url = "/fs" + filepath, Filename = fileName }));
-			*/
 		}
 
 		private static byte[] ReadFully(Stream input)

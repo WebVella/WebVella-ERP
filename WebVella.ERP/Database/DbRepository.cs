@@ -50,6 +50,12 @@ namespace WebVella.ERP.Database
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(type);
 
+			if( type == FieldType.AutoNumberField )
+			{
+				CreateAutoNumberColumn(tableName, name);
+				return;
+			}
+
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				NpgsqlCommand command = connection.CreateCommand("");
@@ -75,6 +81,17 @@ namespace WebVella.ERP.Database
 
 				command.CommandText = sql;
 
+				command.ExecuteNonQuery();
+			}
+		}
+
+		private static void CreateAutoNumberColumn(string tableName, string name )
+		{
+			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(FieldType.AutoNumberField);
+
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				NpgsqlCommand command = connection.CreateCommand($"ALTER TABLE {tableName} ADD COLUMN {name} {pgType};");
 				command.ExecuteNonQuery();
 			}
 		}
@@ -292,7 +309,7 @@ namespace WebVella.ERP.Database
 
 					var parameter = command.CreateParameter() as NpgsqlParameter;
 					parameter.ParameterName = param.Name;
-					parameter.Value = param.Value;
+					parameter.Value = param.Value ?? DBNull.Value;
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 

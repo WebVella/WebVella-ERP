@@ -9,6 +9,8 @@
 .as-sortable-item {
     -ms-touch-action: none;
     touch-action: none;
+    /* to disable context menu on iOS devices */
+    -webkit-touch-callout: none;
 }
 
 .as-sortable-item-handle {

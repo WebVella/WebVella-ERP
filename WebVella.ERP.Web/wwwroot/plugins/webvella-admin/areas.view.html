@@ -3,9 +3,9 @@
 		<div class="aux-actions">
 			
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-th-large fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="Area">Areas</h4>
 		</div>
@@ -41,7 +41,7 @@
 		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.areas.length > 0">
 			<thead>
 				<tr>
-					<th width="60">action</th>
+					<th width="50"></th>
 					<th width="60" class="text-center">weight</th>
 					<th width="60" class="text-center">color</th>
 					<th width="60" class="text-center">icon</th>
@@ -271,16 +271,16 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item" href="javascript:void(0)">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | uibTypeaheadHighlight:query"></span>
 	</a>
 </script>
 
 <script type="text/ng-template" id="entityTypeaheadTemplate.html">
-	<a>
-		<div ng-bind-html="match.model.name | typeaheadHighlight:query"></div>
+	<a style="line-height:30px;">
+		<div ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></div>
 		<!--<div class="go-light-blue" ng-bind-html="match.model.label"></div>-->
 	</a>
-	<hr style="margin:0" />
+	<hr style="margin:0;border-color:#ddd;" />
 </script>
 
 <script type="text/ng-template" id="deleteAreaModal.html">

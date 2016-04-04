@@ -113,7 +113,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		public QueryResponse CreateRecord(string entityName, EntityRecord record)
+		public QueryResponse CreateRecord(string entityName, EntityRecord record, bool skipRecordReturn = false )
 		{
 			if (string.IsNullOrWhiteSpace(entityName))
 			{
@@ -140,10 +140,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return CreateRecord(entity, record);
+			return CreateRecord(entity, record, skipRecordReturn);
 		}
 
-		public QueryResponse CreateRecord(Guid entityId, EntityRecord record)
+		public QueryResponse CreateRecord(Guid entityId, EntityRecord record, bool skipRecordReturn = false)
 		{
 			Entity entity = GetEntity(entityId);
 			if (entity == null)
@@ -158,10 +158,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return CreateRecord(entity, record);
+			return CreateRecord(entity, record, skipRecordReturn);
 		}
 
-		public QueryResponse CreateRecord(Entity entity, EntityRecord record)
+		public QueryResponse CreateRecord(Entity entity, EntityRecord record, bool skipRecordReturn = false)
 		{
 
 			QueryResponse response = new QueryResponse();
@@ -245,6 +245,13 @@ namespace WebVella.ERP.Api
 
 				recRepo.Create(entity.Name, storageRecordData);
 
+				if( skipRecordReturn )
+				{
+					response.Object = null;
+					response.Success = true;
+					response.Message = "Record was created successfully";
+					return response;
+				}
 
 				var query = EntityQuery.QueryEQ("id", recordId);
 				var entityQuery = new EntityQuery(entity.Name, "*", query);
@@ -279,7 +286,7 @@ namespace WebVella.ERP.Api
 
 		}
 
-		public QueryResponse UpdateRecord(string entityName, EntityRecord record)
+		public QueryResponse UpdateRecord(string entityName, EntityRecord record, bool skipRecordReturn = false)
 		{
 			if (string.IsNullOrWhiteSpace(entityName))
 			{
@@ -306,10 +313,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return UpdateRecord(entity, record);
+			return UpdateRecord(entity, record, skipRecordReturn);
 		}
 
-		public QueryResponse UpdateRecord(Guid entityId, EntityRecord record)
+		public QueryResponse UpdateRecord(Guid entityId, EntityRecord record, bool skipRecordReturn = false)
 		{
 			Entity entity = GetEntity(entityId);
 			if (entity == null)
@@ -324,10 +331,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			return UpdateRecord(entity, record);
+			return UpdateRecord(entity, record, skipRecordReturn );
 		}
 
-		public QueryResponse UpdateRecord(Entity entity, EntityRecord record)
+		public QueryResponse UpdateRecord(Entity entity, EntityRecord record, bool skipRecordReturn = false)
 		{
 
 			QueryResponse response = new QueryResponse();
@@ -552,6 +559,14 @@ namespace WebVella.ERP.Api
 
 				var recRepo = DbContext.Current.RecordRepository;
 				recRepo.Update(entity.Name, storageRecordData);
+
+				if( skipRecordReturn )
+				{
+					response.Object = null;
+					response.Success = true;
+					response.Message = "Record was updated successfully";
+					return response;
+				}
 
 				//fixes issue with ID comming from webapi request 
 				Guid recordId = Guid.Empty;
@@ -833,13 +848,16 @@ namespace WebVella.ERP.Api
 			if (fieldValue != null && fieldValue.Value.Key != null)
 			{
 				var pair = fieldValue.Value;
+				if(pair.Value == DBNull.Value) {
+					pair = new KeyValuePair<string,object>(pair.Key,null);
+				}
 
 				if (field is AutoNumberField)
 				{
 					if (pair.Value == null)
 						return null;
 					if (pair.Value is string)
-						return decimal.Parse(pair.Value as string);
+						return (int)decimal.Parse(pair.Value as string);
 
 					return Convert.ToDecimal(pair.Value);
 				}

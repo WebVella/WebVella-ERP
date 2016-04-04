@@ -27,14 +27,14 @@
 			templateUrl: '/plugins/webvella-areas/providers/recursive-list.template.html',
 			restrict: 'E',
 			scope: {
-				listData: '=',
-				listMeta: '=',
-				relation: '=',
-				parentId: '=',
-				canAddExisting: '=',
-				canCreate: '=',
-				canRemove: '=',
-				canUpdate: '='
+				listData: '=?',
+				listMeta: '=?',
+				relation: '=?',
+				parentId: '=?',
+				canAddExisting: '=?',
+				canCreate: '=?',
+				canRemove: '=?',
+				canUpdate: '=?'
 			},
 			compile: function (element) {
 				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
@@ -351,10 +351,10 @@
 
 	//#region < Modal Controllers >
 
-	RLAddExistingModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
+	RLAddExistingModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
-	function RLAddExistingModalController(contentData, $modalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+	function RLAddExistingModalController(contentData, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService) {
 
 		$log.debug('webvellaAdmin>recursive-list>RLAddExistingModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -433,11 +433,11 @@
 				operation: "attach"
 			}
 			popupData.processInstantSelection(returnObject);
-			$modalInstance.close();
+			$uibModalInstance.close();
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		popupData.processInstantSelection = contentData.processInstantSelection;
@@ -456,9 +456,9 @@
 	};
 
 
-	RLManageRelatedRecordModalController.$inject = ['contentData', '$modalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
+	RLManageRelatedRecordModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedManagedRecordQuickCreateView'];
-	function RLManageRelatedRecordModalController(contentData, $modalInstance, $log, $q, $stateParams, $scope, $location,
+	function RLManageRelatedRecordModalController(contentData, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedManagedRecordQuickCreateView) {
 		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
@@ -727,7 +727,7 @@
 		function createSuccessCallback(response) {
 			if (!popupData.isFromRelation) {
 				$state.reload();
-				$modalInstance.close('success');
+				$uibModalInstance.close('success');
 			}
 			else {
 				var returnObject = {
@@ -738,7 +738,7 @@
 				}
 				popupData.processInstantSelection = contentData.processInstantSelection;
 				popupData.processInstantSelection(returnObject);
-				$modalInstance.close('success');
+				$uibModalInstance.close('success');
 			}
 		}
 
@@ -748,7 +748,7 @@
 				content: '<span class="go-green">Success:</span> ' + 'The record was successfully updated'
 			});
 			$state.reload();
-			$modalInstance.close('success');
+			$uibModalInstance.close('success');
 		}
 
 		function manageErrorCallback(response) {
@@ -758,7 +758,7 @@
 		}
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion
 

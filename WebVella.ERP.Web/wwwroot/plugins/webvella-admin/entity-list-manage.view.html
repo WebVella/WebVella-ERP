@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-
+			<a class="go-red" ng-click="contentData.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
 		</div>
 		<!--<div class="icon-box">
 			<i class="fa fa-database  fa-fw"></i>
@@ -14,9 +14,9 @@
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
 		</div>
@@ -26,14 +26,13 @@
 		</div>
 		<div class="lists-box">
 			<h4 title="Records lists">records lists</h4>
-			<a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-arrow-left"></i> Back to list</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record list">manage</h4>
+			<h4 class="no-link" title="Manage a Record list">{{contentData.list.name}}</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -42,7 +41,7 @@
 </div>
 <div id="page-body" style="padding-bottom:3em; ">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
@@ -55,7 +54,6 @@
 	</div>
 	<div id="page-text">
 		<div class="view-manage-section">
-			<a class="btn btn-link go-red pull-right" ng-click="contentData.deleteListModal()">[ Delete list ]</a>
 			<h3 class="page-header">Basic info</h3>
 			<div class="panel panel-default" style="margin-top:2em;">
 				<div class="panel-body">
@@ -113,13 +111,14 @@
 								<div class="form-group">
 									<label class="control-label" for="label">CSS Class</label>
 									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass}}</a>
-									<div class="form-description">use "hide-header" and "table-noborder" if needed</div>
+									<div class="form-description">e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000", "width-3500"</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
 									<label class="control-label" for="weight">Icon Name</label>
-									<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.list.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.list.iconName}}"></i> {{ contentData.list.iconName}}</a>
+									<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.list.iconName"
+									 onbeforesave="contentData.fieldUpdate('iconName', $data)" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.list.iconName}}"></i> {{ contentData.list.iconName}}</a>
 									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 								</div>
 							</div>
@@ -332,17 +331,17 @@
 
 
 			<h3 class="page-header">Query</h3>
-			<div ng-if="contentData.list.query == null"><a class="btn btn-success" ng-click="contentData.AddSection(null)">add query section</a></div>
+			<div ng-if="contentData.list.query == null"><a class="btn btn-default" ng-click="contentData.AddSection(null)">add query section</a></div>
 			<div ng-if="contentData.list.query != null">
 				<query-item current-query="contentData.list.query" parent-query="null" root-query="contentData.list.query" page-scope="contentData" query-index="0"></query-item>
 			</div>
 
 			<h3 class="page-header">Sort</h3>
-			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-success" ng-click="contentData.AddSortRule()">add new sort</a></div>
+			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="contentData.AddSortRule()">add new sort</a></div>
 			<div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
-						<a class="btn btn-success btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
+						<a class="btn btn-default btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
 					</span>
 				</div>
 				<div class="panel-body">
@@ -371,7 +370,6 @@
 	</div>
 </div>
 
-
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -392,7 +390,7 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | uibTypeaheadHighlight:query"></span>
 	</a>
 </script>
 
@@ -403,18 +401,7 @@
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
 			</td>
 			<td>
-				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()">
-					<option value="EQ">is equal to</option>
-					<option value="NOT">is not equal to</option>
-					<option value="LT">is less than</option>
-					<option value="LTE">is less than or equal</option>
-					<option value="GT">is greater than</option>
-					<option value="GTE">is greater than or equal</option>
-					<option value="CONTAINS">contains</option>
-					<option value="NOTCONTAINS">does not contain</option>
-					<option value="STARTSWITH">starts with</option>
-					<option value="NOTSTARTSWITH">does not start with</option>
-				</select>
+				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()" ng-options="item.key as item.value for item in contentData.getQueryComparisonOptionsList(currentQuery)"></select>
 			</td>
 			<td>
 				<select class="form-control" disabled>
@@ -444,8 +431,8 @@
 		<div class="panel-heading clearfix">
 			<span class="pull-right">
 				<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-success btn-sm" ng-click="contentData.AddSection(currentQuery)">add section</a>
-				<a class="btn btn-success btn-sm" ng-click="contentData.AddRule(currentQuery)">add rule</a>
+				<a class="btn btn-default btn-sm" ng-click="contentData.AddSection(currentQuery)">add section</a>
+				<a class="btn btn-default btn-sm" ng-click="contentData.AddRule(currentQuery)">add rule</a>
 			</span>
 			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()">
 				<option value="AND">all</option>

@@ -174,10 +174,10 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
 
     /* @ngInject */
-    function createEntityController($modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function createEntityController($uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
@@ -283,7 +283,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -292,7 +292,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> '+ 'The entity was successfully created'
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             $timeout(function () {
             	$state.go("webvella-admin-entity-details", { entityName: response.object.name}, { reload: true });
             }, 0);

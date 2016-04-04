@@ -664,9 +664,9 @@
 	}
 
 	//// Modal Controllers
-	SetFiltersModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
+	SetFiltersModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
 	/* @ngInject */
-	function SetFiltersModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+	function SetFiltersModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>SetFiltersModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = fastCopy(contentData);
@@ -699,7 +699,7 @@
 		};
 		var regexMatch = {
 			key: "regex",
-			value: "Regular expression"
+			value: "Contains or RegEx"
 		};
 
 		//auto increment type 1
@@ -1412,7 +1412,7 @@
 						className: 'info',
 						content: '<span class="go-blue"><i class="fa fa-refresh fa-spin"></i> Wait! </span> ' + 'Applying filter ...'
 					});
-					$modalInstance.close('success');
+					$uibModalInstance.close('success');
 				}, 0);
 			}
 
@@ -1430,11 +1430,11 @@
 					$timeout(function () {
 						//TODO: Decide whether we should delete the filter
 						$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, filter: "all", page: 1, search: $stateParams.search }, { reload: true });
-						$modalInstance.dismiss('cancel');
+						$uibModalInstance.dismiss('cancel');
 					}, 0);
 				}
 				else {
-					$modalInstance.dismiss('cancel');
+					$uibModalInstance.dismiss('cancel');
 				}
 			}
 			else {
@@ -1458,7 +1458,7 @@
 					}
 				}
 				if (filterArrayIsTheSame) {
-					$modalInstance.dismiss('cancel');
+					$uibModalInstance.dismiss('cancel');
 				}
 					//Case 3: filter array changed or new - needs create
 				else {
@@ -1468,14 +1468,14 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 
 		$log.debug('webvellaAreas>records>SetFiltersModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
-	exportModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
- 	function exportModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+	exportModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
+ 	function exportModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>exportModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = fastCopy(contentData);	
@@ -1522,14 +1522,14 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 		$log.debug('webvellaAreas>records>exportModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 
-	importModalController.$inject = ['$modalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
- 	function importModalController($modalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+	importModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
+ 	function importModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>importModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
 		popupData.contentData = fastCopy(contentData);	
@@ -1576,7 +1576,7 @@
 				className: 'success',
 				content: '<span class="go-green">Success </span> Records successfully imported!'
 			});
-			//$modalInstance.dismiss('cancel');
+			//$uibModalInstance.dismiss('cancel');
 			$state.reload();
 		}
 		popupData.importErrorCallback = function (response) {
@@ -1606,7 +1606,7 @@
 		};
 
 		popupData.cancel = function () {
-			$modalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss('cancel');
 		};
 		$log.debug('webvellaAreas>records>importModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}

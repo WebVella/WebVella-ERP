@@ -1,16 +1,17 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<div class="btn-group" role="group" aria-label="page toolbar">
+			<!--<div class="btn-group" role="group" aria-label="page toolbar">-->
 				<!--<a class="btn btn-default hidden-xs" ng-click="" uib-tooltip-placement="bottom" tooltip="Bookmark this page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
-			</div>
+				<a target="_blank" href='#/admin/entities/{{::contentData.currentEntity.name}}'><i class="fa fa-gear"></i> Settings</a>
+				<a ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
+			<!--</div>-->
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-{{::contentData.currentEntity.iconName}} fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4>{{::contentData.currentEntity.label}}</h4>
-			<a target="_blank" href='#/admin/entities/{{::contentData.currentEntity.name}}'><i class="fa fa-gear"></i> Settings</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -18,7 +19,6 @@
 		</div>
 		<div class="lists-box">
 			<h4 title="{{::contentData.defaultRecordView.label}}" ng-class="{'no-link':!contentData.userHasRecordDeletePermission()}">{{::contentData.defaultRecordView.label}}</h4>
-			<a class="go-red" ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash"></i> Delete Record</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -75,13 +75,13 @@
 											   ng-if="::contentData.currentUserHasUpdatePermission(item)"
 											   href="javascript:void(0)"
 											   editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
-											   e-datepicker-popup="{{::item.meta.format || 'dd MMM yyyy'}}"
-											   e-init-date="false"
-											   e-is-open="picker.opened"
-											   onshow="openPicker()"
-											   onhide="closePicker()"
-											   ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"
+											   e-uib-datepicker-popup="{{::item.meta.format || 'dd MMM yyyy'}}"
+												e-is-open="contentData.opened[item.dataName]"
+												onshow="contentData.open(item.dataName,true)"
+												onhide="contentData.open(item.dataName,false)"
 											   onbeforesave="contentData.fieldUpdate(item, $data)">
+											   	 <!--ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"-->
+												 {{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}
 											</a>
 											<span ng-switch-when="4" class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 											<!-- If type 5 - datetime -->
@@ -91,12 +91,12 @@
 													   href="javascript:void(0)"
 													   editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
 													   e-datepicker-popup="dd MMM yyyy"
-													   e-init-date="false"
-													   e-is-open="picker.opened"
-													   onshow="openPicker()"
-													   onhide="closePicker()"
-													   ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"
+													   e-is-open="contentData.opened[item.dataName]"
+													   onshow="contentData.open(item.dataName,true)"
+													   onhide="contentData.open(item.dataName,false)"
 													   onbeforesave="contentData.fieldUpdate(item, $data)">
+													   {{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}
+													   <!--ng-bind-html='contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)'-->
 													</a>
 													<span class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 												</div>
@@ -360,12 +360,13 @@
 								<div class="field" ng-switch-when="view">
 									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<recursive-view view-meta="item"
+										<!--<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
 														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
 														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)">
-										</recursive-view>
+										</recursive-view>-->
+										
 										<div ng-if="::item.meta.helpText" class="form-description">
 											{{item.meta.helpText}}
 										</div>

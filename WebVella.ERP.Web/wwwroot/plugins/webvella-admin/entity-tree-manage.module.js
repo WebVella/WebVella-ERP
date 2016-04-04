@@ -191,10 +191,6 @@
         //Hide Sidemenu
         $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
         $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-        $scope.$on("$destroy", function () {
-            $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-        });
 
 		//#region << Init selected relation >>
         contentData.selectedRelation = {};
@@ -484,10 +480,10 @@
     }
 
 	//#region << Modal Controllers >>
-    deleteTreeModalController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+    deleteTreeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-    function deleteTreeModalController(parentData, $modalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+    function deleteTreeModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteListModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
     	var popupData = this;
@@ -500,7 +496,7 @@
     	};
 
     	popupData.cancel = function () {
-    		$modalInstance.dismiss('cancel');
+    		$uibModalInstance.dismiss('cancel');
     	};
 
     	/// Aux
@@ -509,7 +505,7 @@
     			className: 'success',
     			content: '<span class="go-green">Success:</span> ' + response.message
     		});
-    		$modalInstance.close('success');
+    		$uibModalInstance.close('success');
     		$timeout(function () {
     			$state.go("webvella-admin-entity-trees", { entityName: popupData.parentData.entity.name }, { reload: true });
     		}, 0);

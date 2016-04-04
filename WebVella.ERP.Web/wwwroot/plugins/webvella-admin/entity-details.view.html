@@ -1,7 +1,8 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-
+					<span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+			<a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
 		</div>
 		<!--<div class="icon-box">
 			<i class="fa fa-database fa-fw"></i>
@@ -14,13 +15,11 @@
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-{{contentData.entity.iconName}}  fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4 title="{{contentData.entity.label}}">{{contentData.entity.name}}</h4>
-			<span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
-			<a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
@@ -36,7 +35,7 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a ng-click="contentData.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
@@ -85,7 +84,8 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label" for="iconName">Icon name</label>
-						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName }}</a>
+						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" 
+						e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName }}</a>
 						<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
 					</div>
 				</div>
@@ -152,7 +152,7 @@
 <script type="text/ng-template" id="iconTypeaheadTemplate.html">
 	<a class="typeahead-icon-item">
 		<i class="fa fa-{{match.model}} fa-fw go-gray"></i>
-		<span ng-bind-html="match.model | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model | uibTypeaheadHighlight:query"></span>
 	</a>
 </script>
 

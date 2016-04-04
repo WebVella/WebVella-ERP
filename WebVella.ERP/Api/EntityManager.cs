@@ -1945,10 +1945,20 @@ namespace WebVella.ERP.Api
 				Message = "The entity was successfully returned!",
 			};
 
+			//try return from cache			
+			var entities = Cache.GetEntities(); 
+			if (entities != null)
+			{
+				EntityList entityList = new EntityList();
+				entityList.Entities = entities;
+				response.Object = entityList;
+				return response; 
+			}
+
 			try
 			{
 				List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-				List<Entity> entities = storageEntityList.MapTo<Entity>();
+				entities = storageEntityList.MapTo<Entity>();
 
 				//EntityRelationManager relationManager = new EntityRelationManager(Storage);
 				//EntityRelationListResponse relationListResponse = relationManager.Read();
@@ -2478,7 +2488,7 @@ namespace WebVella.ERP.Api
 						{
 							foreach (RecordTreeNode node in recordTree.RootNodes)
 							{
-								var recData = DbContext.Current.RecordRepository.Find(entity.Name, node.RecordId);
+								var recData = DbContext.Current.RecordRepository.FindTreeNodeRecord(entity.Name, node.RecordId);
 								if (recData != null)
 								{
 									var idField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeIdFieldId);
@@ -2497,6 +2507,10 @@ namespace WebVella.ERP.Api
 									if (labelField == null)
 										throw new Exception("Cannot initialize tree '" + recordTree.Name + "'. Node label field is missing in entity meta.");
 
+									var weigthField = entity.Fields.SingleOrDefault(x => x.Id == recordTree.NodeWeightFieldId);
+									if (weigthField == null)
+										throw new Exception("Cannot initialize tree '" + recordTree.Name + "'. Node weigth field is missing in entity meta.");
+
 									var value = recData[idField.Name];
 									node.Id = (value as Guid?) ?? Guid.Empty;
 
@@ -2508,6 +2522,8 @@ namespace WebVella.ERP.Api
 
 									value = recData[labelField.Name];
 									node.Label = (value ?? string.Empty).ToString();
+
+									node.Weight = (int?)( recData[weigthField.Name] as decimal? );
 								}
 							}
 						}
@@ -2518,6 +2534,7 @@ namespace WebVella.ERP.Api
 
 				EntityList entityList = new EntityList();
 				entityList.Entities = entities;
+				Cache.AddEntities(entities);
 				response.Object = entityList;
 			}
 			catch (Exception e)
@@ -5598,6 +5615,8 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "general";
+			create.IconName = "list";
+			create.PageSize = 10;
 			create.VisibleColumnsCount = 5;
 			recordLists.Add(create);
 
@@ -5608,6 +5627,7 @@ namespace WebVella.ERP.Api
 			lookup.Default = true;
 			lookup.System = true;
 			lookup.Type = "lookup";
+			lookup.IconName = "list";
 			lookup.PageSize = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
@@ -5630,6 +5650,7 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "create";
+			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
 			recordViewList.Add(create);
@@ -5641,6 +5662,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Default = true;
 			quickCreate.System = true;
 			quickCreate.Type = "quick_create";
+			quickCreate.IconName = "file-text-o";
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
 			recordViewList.Add(quickCreate);
@@ -5652,6 +5674,7 @@ namespace WebVella.ERP.Api
 			quickView.Default = true;
 			quickView.System = true;
 			quickView.Type = "quick_view";
+			quickView.IconName = "file-text-o";
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
 			recordViewList.Add(quickView);
@@ -5663,6 +5686,7 @@ namespace WebVella.ERP.Api
 			general.Default = true;
 			general.System = true;
 			general.Type = "general";
+			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
 			recordViewList.Add(general);

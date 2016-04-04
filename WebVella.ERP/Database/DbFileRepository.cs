@@ -129,12 +129,12 @@ namespace WebVella.ERP.Database
 
 					command.Parameters.Add(new NpgsqlParameter("@id", Guid.NewGuid()));
 					command.Parameters.Add(new NpgsqlParameter("@object_id", (decimal)objectId));
-					command.Parameters.Add(new NpgsqlParameter("@filepath", Guid.NewGuid()));
+					command.Parameters.Add(new NpgsqlParameter("@filepath", filepath ));
 					var date = createdOn ?? DateTime.UtcNow;
 					command.Parameters.Add(new NpgsqlParameter("@created_on", date));
 					command.Parameters.Add(new NpgsqlParameter("@modified_on", date));
-					command.Parameters.Add(new NpgsqlParameter("@created_by", createdBy));
-					command.Parameters.Add(new NpgsqlParameter("@modified_by", createdBy));
+					command.Parameters.Add(new NpgsqlParameter("@created_by", (object)createdBy ?? DBNull.Value ));
+					command.Parameters.Add(new NpgsqlParameter("@modified_by", (object)createdBy ?? DBNull.Value ));
 
 					command.ExecuteNonQuery();
 
@@ -142,7 +142,7 @@ namespace WebVella.ERP.Database
 
 					connection.CommitTransaction();
 				}
-				catch
+				catch( Exception ex )
 				{
 					connection.RollbackTransaction();
 				}
@@ -349,7 +349,7 @@ namespace WebVella.ERP.Database
 
 			string section = Guid.NewGuid().ToString().Replace("-", "").ToLowerInvariant();
 			var tmpFilePath = FOLDER_SEPARATOR + TMP_FOLDER_NAME + FOLDER_SEPARATOR + section + FOLDER_SEPARATOR + filename + extension ?? string.Empty;
-			return Find(tmpFilePath);
+			return Create(tmpFilePath, buffer, DateTime.UtcNow, null );
 		}
 
 		/// <summary>

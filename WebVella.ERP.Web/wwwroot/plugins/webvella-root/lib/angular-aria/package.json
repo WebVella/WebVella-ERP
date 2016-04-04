@@ -1,6 +1,6 @@
 {
   "name": "angular-aria",
-  "version": "1.4.7",
+  "version": "1.5.3",
   "description": "AngularJS module for making accessibility easy",
   "main": "index.js",
   "scripts": {

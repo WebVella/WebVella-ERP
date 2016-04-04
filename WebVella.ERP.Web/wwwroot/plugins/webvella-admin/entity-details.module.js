@@ -185,10 +185,12 @@
         //Hide Sidemenu
         $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
         $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-        $scope.$on("$destroy", function () {
-            $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-            $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-        });
+
+		contentData.showSidebar = function(){
+		        //Show Sidemenu
+				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+				$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		}
 
         //Create new entity modal
         contentData.openDeleteEntityModal = function () {
@@ -296,10 +298,10 @@
 
 
     //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$modalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+    deleteEntityController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
     /* @ngInject */
-    function deleteEntityController(parentData, $modalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+    function deleteEntityController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var popupData = this;
@@ -310,7 +312,7 @@
         };
 
         popupData.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
 
         /// Aux
@@ -319,7 +321,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
-            $modalInstance.close('success');
+            $uibModalInstance.close('success');
             $timeout(function() {
                 $state.go("webvella-admin-entities");
             }, 10);

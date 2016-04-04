@@ -4,5 +4,7 @@
 	"keywords": [ "ckeditor", "fckeditor", "editor", "wysiwyg", "html", "richtext", "text", "javascript" ],
 	"authors": "CKSource (http://cksource.com/)",
 	"license": "For licensing, see LICENSE.md or http://ckeditor.com/license.",
-	"homepage": "http://ckeditor.com"
+	"homepage": "http://ckeditor.com",
+	"main": "./ckeditor.js",
+	"moduleType": "globals"
 }

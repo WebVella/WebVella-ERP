@@ -63,9 +63,11 @@ form.form-signin {
 }
 
 .page-buttons {
-	border-top: 3px solid #ccc;
-	margin-top: 1em;
-	padding-top: 1em;
+	border: 1px solid #ccc;
+    margin-top: 4em;
+    padding-top: 1em;
+    background: white;
+    padding: 10px;
 }
 
 span.divider {
@@ -87,6 +89,11 @@ span.divider {
 	background:transparent;
 	margin-bottom: 10px;
 }
+
+	.panel.panel-white {
+		background:#fff !important;
+		border:1px solid #bbb;
+	}
 
 .panel, .panel-heading {
 	border-radius: 0;
@@ -168,7 +175,7 @@ span.divider {
 }
 
 #content .btn-default {
-	border-color:#bbb;
+	border-color:#ccc;
 	background:transparent;
 }
 
@@ -223,6 +230,26 @@ span.divider {
 	border-bottom:1px solid #ccc;
 }
 
+.width-2000 {
+	width:2000px;
+}
+
+.width-2500 {
+	width:2500px;
+}
+
+.width-3000 {
+	width:3000px;
+}
+
+.width-3500 {
+	width:3500px;
+}
+
+
+.width-4000 {
+	width:4000px;
+}
 
 
 /*
@@ -512,7 +539,7 @@ ngToast
 	padding: 10px 15px;
 	background: #212121;
 	position: relative;
-	height: 56px;
+	height: 46px;
 	white-space: nowrap;
 }
 
@@ -592,7 +619,7 @@ ngToast
 /*#region << Page topnav >> */
 
 #page-topnav {
-	height: 56px;
+	height: 46px;
 	border-bottom: 2px solid #90A4AE;
 	border-top: 1px solid #ccc;
 	position: relative;
@@ -611,6 +638,10 @@ ngToast
 
 	#page-topnav .btn-link {
 		color: #555;
+	}
+
+	#page-topnav .fa-home {
+		font-size:16px;
 	}
 
 
@@ -688,7 +719,7 @@ ngToast
 #page-topnav #switcher {
 	position: absolute;
 	left: 0;
-	top: 15px;
+	top: 10px;
 	bottom: 0;
 	border-radius: 0 3px 3px 0;
 	border: none;
@@ -781,7 +812,7 @@ ngToast
 
 #page-topnav #areanav {
 	float: left;
-	margin-top: -2px;
+	margin-top: -8px;
 	display: inline-block;
 }
 
@@ -915,9 +946,9 @@ ngToast
 
 #page-topnav #area-title {
 	margin-left: 15px;
-	height: 40px;
-	line-height: 40px;
-	font-size: 18px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
 	margin-top: -5px;
 	text-transform: uppercase;
 	float: left;
@@ -931,6 +962,7 @@ ngToast
 
 #page-topnav .aux-actions {
 	float: right;
+	margin-top: -8px;
 }
 
 #page-topnav .btn + .btn {
@@ -964,6 +996,7 @@ ngToast
 	margin-left: 180px;
 	background-color:#f1f1f1;
 	background-color:#e9e9e9;
+	border-top:1px solid #212121;
 }
 
 .no-sidebar #content {
@@ -1182,15 +1215,19 @@ ngToast
 	display: table-cell;
 	vertical-align: middle;
 	padding-right: 10px;
+    line-height: 14px;
+    height: 14px;
 }
 
 	#page-title .icon-box .fa {
-		font-size: 24px;
+		font-size: 16px;
 	}
 
 #page-title .entity-box {
 	display: table-cell;
 	vertical-align: top;
+    line-height: 14px;
+    height: 14px;
 }
 
 	#page-title .entity-box h4 {
@@ -1201,15 +1238,9 @@ ngToast
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		font-size:12px;
+		line-height: 14px;
 	}
-
-		#page-title .entity-box h4.no-link {
-			line-height: 39px;
-		}
-
-#page-title .lists-box h4.no-link {
-	line-height: 39px;
-}
 
 #page-title .entity-box a,
 #page-title .entity-box span {
@@ -1224,15 +1255,18 @@ ngToast
 #page-title .divider-box {
 	display: table-cell;
 	padding-right: 15px;
-	border-left: 1px solid #BDBDBD;
+	/*border-left: 1px solid #BDBDBD;*/
+	border-left:none;
 	vertical-align: middle;
+    line-height: 12px;
+    height: 12px;
 }
 
 	#page-title .divider-box .fa {
 		color: #BDBDBD;
 		font-size: 14px;
 		position: relative;
-		top: 2px;
+		top: 0;
 	}
 
 /* Theming */
@@ -1385,6 +1419,8 @@ ngToast
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		font-size:12px;
+		line-height: 14px;
 	}
 
 	#page-title .lists-box a {
@@ -1393,10 +1429,15 @@ ngToast
 
 #page-title .aux-actions {
 	float: right;
-	padding-top: 5px;
+	padding-top: 0;
 	margin-right: 18px;
+	margin-top: -3px;
 }
 
+	#page-title .aux-actions a {
+		margin-left:15px;
+		color:#333;
+	}
 
 #page-messages > .alert {
 	margin-bottom: 0;
@@ -1984,6 +2025,16 @@ ngToast
 	right: 10px;
 }
 
+
+/*.table-scroll-wrapper {
+	overflow-x:auto;
+}*/
+
+.table-scroll-wrapper .table {
+	margin-bottom:5px;
+}
+
+
 /*#endregion */
 
 /*#region << Loading bar overrides>> */
@@ -2376,6 +2427,14 @@ table .btn-xs.btn-link {
 .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
 	border-bottom-width: 1px;
 }
+
+.table-bordered > thead > tr > th {
+    font-weight: normal;
+    color: #555;
+    font-size: 13px;
+	text-transform:lowercase;
+}
+
 
 .table.table-permissions thead th {
 	font-weight: normal;
@@ -2807,6 +2866,7 @@ table .btn-xs.btn-link {
 		margin: 0;
 		left: -50px;
 		top: 14px;
+		top: 64px;
 	}
 
 	#sidebar .tabbable.spilled {
@@ -3143,11 +3203,21 @@ table .btn-xs.btn-link {
 .form .editable,
 .form-horizontal .editable {
 	width: 100%;
-	background-color:#fff;
+	background-color:#f2f2f2;
 	border: 1px solid #ccc;
 	padding-right: 40px;
 	color: #333;
 	overflow: hidden;
+}
+
+.editable.table,
+.editable.table td,
+.editable.table th {
+	border-color: #ccc !important;
+}
+
+table.editable:after {
+	border-left-color:#bbb;
 }
 
 
@@ -3339,7 +3409,7 @@ table.editable {
 		padding: 6px 0;
 		text-align: center;
 		color: #BDBDBD;
-		background: #f5f5f5;
+		background: #e9e9e9;
 		display: inline-block;
 		border-radius: 0;
 	}
@@ -3370,9 +3440,10 @@ table.editable {
 	span.editable:hover:after,
 	table.editable:hover:after {
 		display: inline-block;
-		border: 1px solid #FFCC80;
+		/*border: 1px solid #FFCC80;
 		color: #fff;
-		background: #FFCC80;
+		background: #FFCC80;*/
+		color:#FF9800;
 	}
 
 
@@ -3401,8 +3472,8 @@ table.editable {
 		height: 100%;
 		padding: 6px 0;
 		text-align: center;
-		color: #BDBDBD;
-		background: #eee;
+		color: #aaa;
+		background: #e9e9e9;
 		display: inline-block;
 		border-radius: 0 3px 3px 0;
 	}
@@ -3413,29 +3484,26 @@ table.editable {
 
 a.editable:hover,
 span.editable:hover {
-	background: #FFF3E0;
-	border: 1px solid #FFCC80;
+	/*background: #FFF3E0;
+	border: 1px solid #FFCC80;*/
+	border-color:#ccc;
 	cursor: pointer;
 	color: #333;
 	z-index: 2;
 }
 
 table.editable:hover {
-	background: #FFF3E0;
-	border: 1px solid #FFCC80;
+	/*background: #FFF3E0;
+	border: 1px solid #FFCC80;*/
+	border-color:#ccc;
 	cursor: pointer;
 }
 
-	table.editable:hover tr:first-child td {
-		border-top: 1px solid #FFCC80;
-	}
-
-	table.editable:hover tr td:first-child {
-		border-left: 1px solid #FFCC80;
-	}
-
+	table.editable:hover tr:first-child td,
+	table.editable:hover tr td:first-child,
 	table.editable:hover tr td:last-child {
-		border-right: 1px solid #FFCC80;
+		/*border-top: 1px solid #FFCC80;*/
+		border-top: 1px solid #ccc;
 	}
 
 	table.editable tr:last-child td,
@@ -4187,8 +4255,8 @@ span.not-editable.not-readable {
 
 .view-divider {
 	position: relative;
-	line-height: 50px;
-	height: 50px;
+	line-height: 30px;
+	height: 30px;
 	color: #ccc;
 }
 
@@ -4225,6 +4293,7 @@ span.not-editable.not-readable {
 		right: 0;
 		width: 130px;
 		text-align: center;
+		top:10px;
 	}
 
 
@@ -4376,6 +4445,12 @@ span.not-editable.not-readable {
 /*#endregion*/
 
 /*#region << BS Time */
+
+.uib-daypicker .btn.active {
+	color: #fff !important;
+    background-color: #269abc !important;
+    border-color: #1b6d85 !important;
+}
 
 /* temporary workaround for display editable-bstime in bs3 - up/down symbols not shown */
 .editable-bstime .editable-input i.icon-chevron-up:before {

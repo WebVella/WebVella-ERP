@@ -1,4 +1,8 @@
-﻿<p ng-if="::(canAddExisting || canCreate) && !hasError">
+﻿<div ng-if='::viewMeta.meta.dynamicHtmlTemplate != null && viewMeta.meta.dynamicHtmlTemplate != ""'>
+	<div ng-include="viewMeta.meta.dynamicHtmlTemplate"></div>
+</div>
+<div ng-if='::viewMeta.meta.dynamicHtmlTemplate == null || viewMeta.meta.dynamicHtmlTemplate == ""'>
+<p ng-if="::(canAddExisting || canCreate) && !hasError">
 	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 		<i class="fa fa-download"></i> Add existing
 	</a>
@@ -74,6 +78,7 @@
 		</div>
 	</div>
 	<!--<hr class="divider" style="border-color: #ddd;" ng-hide="$last" />-->
+</div>
 </div>
 
 <script type="text/ng-template" id="addExistingModal.html">
