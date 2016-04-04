@@ -1706,6 +1706,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}")]
 		public IActionResult CreateEntityRecord(string entityName, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			if (postObj == null)
 				postObj = new EntityRecord();
 
@@ -1723,6 +1724,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult UpdateEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			return DoResponse(result);
 		}
@@ -1732,6 +1734,7 @@ namespace WebVella.ERP.Web.Controllers
 		[AcceptVerbs(new[] { "PATCH" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
 		public IActionResult PatchEntityRecord(string entityName, Guid recordId, [FromBody]EntityRecord postObj)
 		{
+			//TODO implement validation
 			postObj["id"] = recordId;
 			QueryResponse result = recMan.UpdateRecord(entityName, postObj);
 			return DoResponse(result);
