@@ -257,18 +257,39 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public void DeleteManyToManyRecord(Guid relationId, Guid originId, Guid targetId)
+		public void DeleteManyToManyRecord(string relationName, Guid? originId = null, Guid? targetId = null)
 		{
-			var relation = Read(relationId);
-			string tableName = $"rel_{relation.Name}";
+			string tableName = $"rel_{relationName}";
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				NpgsqlCommand command = connection.CreateCommand($"DELETE FROM {tableName} WHERE origin_id=@origin_id AND target_id=@target_id");
-				command.Parameters.Add(new NpgsqlParameter("@origin_id", originId));
-				command.Parameters.Add(new NpgsqlParameter("@target_id", targetId));
+				NpgsqlCommand command;
+				if (originId.HasValue && targetId.HasValue)
+				{
+					command = connection.CreateCommand($"DELETE FROM {tableName} WHERE origin_id=@origin_id AND target_id=@target_id");
+					command.Parameters.Add(new NpgsqlParameter("@origin_id", originId));
+					command.Parameters.Add(new NpgsqlParameter("@target_id", targetId));
+				}
+				else if(originId.HasValue)
+				{
+					command = connection.CreateCommand($"DELETE FROM {tableName} WHERE origin_id=@origin_id");
+					command.Parameters.Add(new NpgsqlParameter("@origin_id", originId));
+				}
+				else
+				{
+					command = connection.CreateCommand($"DELETE FROM {tableName} WHERE target_id=@target_id");
+					command.Parameters.Add(new NpgsqlParameter("@target_id", targetId));
+				}
+
 				command.ExecuteNonQuery();
 			}
+		}
+
+		public void DeleteManyToManyRecord(Guid relationId, Guid? originId = null, Guid? targetId = null)
+		{
+			var relation = Read(relationId);
+
+			DeleteManyToManyRecord(relation.Name, originId, targetId);
 		}
 	}
 }

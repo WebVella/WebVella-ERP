@@ -6,11 +6,15 @@ using WebVella.ERP.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using WebVella.ERP.Database;
+using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Api
 {
 	public class RecordManager
 	{
+		private const char RELATION_SEPARATOR = '.';
+		private const char RELATION_NAME_RESULT_SEPARATOR = '$';
+
 		private List<Entity> entityCache;
 		private EntityManager entityManager;
 		private EntityRelationManager entityRelationManager;
@@ -70,7 +74,7 @@ namespace WebVella.ERP.Api
 			}
 		}
 
-		public QueryResponse RemoveRelationManyToManyRecord(Guid relationId, Guid originValue, Guid targetValue)
+		public QueryResponse RemoveRelationManyToManyRecord(Guid relationId, Guid? originValue, Guid? targetValue)
 		{
 			QueryResponse response = new QueryResponse();
 			response.Object = null;
@@ -331,6 +335,9 @@ namespace WebVella.ERP.Api
 			response.Success = true;
 			response.Timestamp = DateTime.UtcNow;
 
+			DbConnection connection = DbContext.Current.CreateConnection();
+			connection.BeginTransaction();
+
 			try
 			{
 				if (entity == null)
@@ -365,30 +372,181 @@ namespace WebVella.ERP.Api
 
 				SetRecordServiceInformation(record, false, ignoreSecurity);
 
+				QueryObject filterObj = EntityQuery.QueryEQ("id", record["id"]);
+				var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
+				var oldRecord = oldRecordResponse.Object;
+
+				var entities = entityManager.ReadEntities().Object.Entities;
+				var relations = relationRepository.Read();
+
 				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
-				var recordFields = record.GetProperties();
-				foreach (var field in entity.Fields)
+				foreach (var pair in record.GetProperties())
 				{
-					var pair = recordFields.SingleOrDefault(x => x.Key == field.Name);
 					try
 					{
 						if (pair.Key == null)
 							continue;
 
-						if (field is PasswordField && pair.Value == null)
-							continue;
+						if (pair.Key.Contains(RELATION_SEPARATOR))
+						{
+							//---------------------------------------------------
+							string token = pair.Key;
+
+							var relationData = token.Split(RELATION_SEPARATOR).Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+							if (relationData.Count > 2)
+								throw new Exception(string.Format("The specified field name '{0}' is incorrect. Only first level relation can be specified.", token));
+
+							string relationName = relationData[0];
+							string relationFieldName = relationData[1];
+
+							if (string.IsNullOrWhiteSpace(relationName) || relationName == "$" || relationName == "$$")
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not specified.", token));
+							else if (!relationName.StartsWith("$"))
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation name is not correct.", token));
+							else
+								relationName = relationName.Substring(1);
+
+							//check for target priority mark $$
+							if (relationName.StartsWith("$"))
+							{
+								relationName = relationName.Substring(1);
+							}
+
+							if (string.IsNullOrWhiteSpace(relationFieldName))
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", token));
+
+							var relation = relations.SingleOrDefault(x => x.Name == relationName);
+							if (relation == null)
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
+
+							if (relation.TargetEntityId != entity.Id && relation.OriginEntityId != entity.Id)
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation field belongs to entity that does not relate to current entity.", token));
+
+							Entity relationEntity = null;
+							Field relationIdField = null;
+							Field realtionSearchField;
+							Field field = null;
+
+							if (relation.OriginEntityId == entity.Id)
+							{
+								relationEntity = GetEntity(relation.TargetEntityId);
+								relationIdField = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+								realtionSearchField = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+								field = entity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+							}
+							else
+							{
+								relationEntity = GetEntity(relation.OriginEntityId);
+								relationIdField = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
+								realtionSearchField = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
+								field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
+							}
+
+							if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
+								throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", token));
+
+							QueryObject filter = null;
+							if (relation.RelationType == EntityRelationType.ManyToMany)
+							{
+								List<string> values = new List<string>();
+								if (pair.Value is JArray)
+									values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+								else if (pair.Value is List<object>)
+									values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
+								else
+									values.Add(pair.Value.ToString());
+
+								List<QueryObject> queries = new List<QueryObject>();
+								foreach (var val in values)
+								{
+									queries.Add(EntityQuery.QueryEQ(realtionSearchField.Name, val));
+
+								}
+
+								filter = EntityQuery.QueryOR(queries.ToArray());
+							}
+							else
+							{
+								filter = EntityQuery.QueryEQ(realtionSearchField.Name, ExtractFieldValue(pair, realtionSearchField, true));
+							}
+
+							QueryResponse relatedRecordResponse = Find(new EntityQuery(relationEntity.Name, "*", filter, null, null, null));
+
+							if (!relatedRecordResponse.Success && relatedRecordResponse.Object.Data.Count < 1)
+							{
+								throw new Exception(string.Format("Invalid relation '{0}'. The relation record does not exist.", token));
+							}
+							else if (relatedRecordResponse.Object.Data.Count > 1 && relation.RelationType != EntityRelationType.ManyToMany)
+							{
+								//there can be no more than 1 records
+								throw new Exception(string.Format("Invalid relation '{0}'. There are multiple relation records.", token));
+							}
+
+							List<Guid> relatedRecordIdValues = new List<Guid>();
+							foreach (var relatedRecord in relatedRecordResponse.Object.Data)
+							{
+								relatedRecordIdValues.Add((Guid)relatedRecord["id"]);
+							}
+
+							if (relation.RelationType == EntityRelationType.ManyToMany)
+							{
+								//string queryFields = $"id, ${relation.Name}.id";
+								//filter = EntityQuery.QueryEQ("id", record["id"]);
+								//var relatedOldRecordResponce = Find(new EntityQuery(entity.Name, queryFields, filter, null, null, null));
+								//if (!relatedOldRecordResponce.Success || relatedOldRecordResponce.Object.Data == null ||
+								//	relatedOldRecordResponce.Object.Data.Count < 1)
+								//	throw new Exception(string.Format("Invalid relation '{0}'. Related record does not exist.", token));
+
+								//List<Guid> relatedOldRecordId = (Guid)relatedOldRecordResponce.Object.Data[0][$"${relation.Name}.id"];
+
+								Guid? originFieldOldValue = (Guid)record["id"];
+								Guid? targetFieldOldValue = null;
+								if (relation.TargetEntityId == entity.Id)
+								{
+									originFieldOldValue = null;
+									targetFieldOldValue = (Guid)record["id"];
+								}
+								RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
 
 
 
-						storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+								foreach (Guid recordIdValue in relatedRecordIdValues)
+								{
+									Guid originFieldValue = (Guid)record["id"];
+									Guid targetFieldValue = recordIdValue;
+
+									if (relation.TargetEntityId == entity.Id)
+									{
+										originFieldValue = recordIdValue;
+										targetFieldValue = (Guid)record["id"];
+									}
+
+									CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
+								}
+							}
+							else
+							{
+								storageRecordData.Add(new KeyValuePair<string, object>(field.Name, relatedRecordIdValues[0]));
+							}
+
+							//-------------------------------------------------
+						}
+						else
+						{
+							//locate the field
+							var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
+
+							if (field is PasswordField && pair.Value == null)
+								continue;
+
+							storageRecordData.Add(new KeyValuePair<string, object>(field.Name, ExtractFieldValue(pair, field, true)));
+						}
 					}
 					catch (Exception ex)
 					{
-						if (pair.Key == null)
-							throw new Exception("Error during processing value for field: '" + field.Name + "'. No value is specified.");
-						else
-							throw new Exception("Error during processing value for field: '" + field.Name + "'. Invalid value: '" + pair.Value + "'", ex);
+						if (pair.Key != null)
+							throw new Exception("Error during processing value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'", ex);
 					}
 				}
 
@@ -416,10 +574,12 @@ namespace WebVella.ERP.Api
 					response.Message = "Record was not updated successfully";
 				}
 
+				connection.CommitTransaction();
 				return response;
 			}
 			catch (Exception e)
 			{
+				connection.RollbackTransaction();
 				response.Success = false;
 				response.Object = null;
 				response.Timestamp = DateTime.UtcNow;
