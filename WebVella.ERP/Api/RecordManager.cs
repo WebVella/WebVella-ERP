@@ -697,7 +697,7 @@ namespace WebVella.ERP.Api
 					if (pair.Value == null)
 						return null;
 					if (pair.Value is string)
-						return decimal.Parse(pair.Value as string);
+						return (int)decimal.Parse(pair.Value as string);
 
 					return Convert.ToDecimal(pair.Value);
 				}
