@@ -5650,7 +5650,7 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "create";
-			create.IconName = "fa-file-text-o";
+			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
 			recordViewList.Add(create);
@@ -5662,7 +5662,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Default = true;
 			quickCreate.System = true;
 			quickCreate.Type = "quick_create";
-			quickCreate.IconName = "fa-file-text-o";
+			quickCreate.IconName = "file-text-o";
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
 			recordViewList.Add(quickCreate);
@@ -5674,7 +5674,7 @@ namespace WebVella.ERP.Api
 			quickView.Default = true;
 			quickView.System = true;
 			quickView.Type = "quick_view";
-			quickView.IconName = "fa-file-text-o";
+			quickView.IconName = "file-text-o";
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
 			recordViewList.Add(quickView);
@@ -5686,7 +5686,7 @@ namespace WebVella.ERP.Api
 			general.Default = true;
 			general.System = true;
 			general.Type = "general";
-			general.IconName = "fa-file-text-o";
+			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
 			recordViewList.Add(general);

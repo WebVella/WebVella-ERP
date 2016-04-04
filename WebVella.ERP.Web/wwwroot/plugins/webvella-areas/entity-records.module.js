@@ -699,7 +699,7 @@
 		};
 		var regexMatch = {
 			key: "regex",
-			value: "Regular expression"
+			value: "Contains or RegEx"
 		};
 
 		//auto increment type 1

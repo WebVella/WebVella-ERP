@@ -14,9 +14,9 @@
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
-		<div class="icon-box">
+		<!--<div class="icon-box">
 			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
-		</div>
+		</div>-->
 		<div class="entity-box">
 			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
 		</div>
@@ -34,7 +34,7 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a ng-click="contentData.showSidebar()"  class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
 			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
