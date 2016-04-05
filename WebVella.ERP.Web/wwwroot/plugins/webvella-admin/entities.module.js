@@ -150,6 +150,9 @@
             if(a.name > b.name) return 1;
             return 0; 
         });
+        //Show Sidemenu
+        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
         contentData.roles = resolvedRolesList.data;
         contentData.search = {};
         //Create new entity modal

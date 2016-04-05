@@ -234,11 +234,11 @@
 						<table class="table table-bordered x-editable ng-hide" ng-show="popupData.subscribedEntities.length > 0">
 							<thead>
 								<tr>
-									<th width="60">w.</th>
+									<th width="30">w.</th>
 									<th>entity</th>
-									<th width="25%">view</th>
-									<th width="25%">list</th>
-									<th width="100">action</th>
+									<th width="35%">view</th>
+									<th width="35%">list</th>
+									<th width="40">action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -246,12 +246,22 @@
 									<td>{{subscription.weight}}</td>
 									<td>{{subscription.name}}</td>
 									<td>
-										<span editable-select="subscription.view.name" e-ng-options="view.name as view.name for view in popupData.getViews(subscription.name)" onaftersave="popupData.updateSubscriptionView(subscription)">{{subscription.view.name}}</span>
+										<div class="editable-wrapper input-group editable-updatable">
+											<input type="text" class="form-control" disabled editable-select="subscription.view.name"
+												   value="{{subscription.view.name}}" e-ng-options="view.name as view.name for view in popupData.getViews(subscription.name)"
+												   onaftersave="popupData.updateSubscriptionView(subscription)" e-form="{{'fieldFormView_' + subscription.name}}">
+											<span class="input-group-addon" ng-click="this['fieldFormView_' + subscription.name].$show()" ng-hide="this['fieldFormView_' + subscription.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+										</div>
 									</td>
 									<td>
-										<span editable-select="subscription.list.name" e-ng-options="list.name as list.name for list in popupData.getLists(subscription.name)" onaftersave="popupData.updateSubscriptionList(subscription)">{{subscription.list.name}}</span>
+										<div class="editable-wrapper input-group editable-updatable">
+											<input type="text" class="form-control" disabled editable-select="subscription.list.name"
+												   value="{{subscription.list.name}}" e-ng-options="list.name as list.name for list in popupData.getLists(subscription.name)"
+												   onaftersave="popupData.updateSubscriptionList(subscription)" e-form="{{'fieldFormList_' + subscription.name}}">
+											<span class="input-group-addon" ng-click="this['fieldFormList_' + subscription.name].$show()" ng-hide="this['fieldFormList_' + subscription.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+										</div>
 									</td>
-									<td><a href="javascript:void(0)" ng-click="popupData.deleteSubscription(subscription)" class="go-red"><i class="fa fa-fw fa-trash"></i> delete</a></td>
+									<td><a href="javascript:void(0)" ng-click="popupData.deleteSubscription(subscription)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-trash go-red"></i></a></td>
 								</tr>
 							</tbody>
 						</table>

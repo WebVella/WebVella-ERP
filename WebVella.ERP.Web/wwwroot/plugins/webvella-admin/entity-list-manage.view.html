@@ -57,104 +57,215 @@
 			<h3 class="page-header">Basic info</h3>
 			<div class="panel panel-default" style="margin-top:2em;">
 				<div class="panel-body">
-					<div class="form">
+					<div class="form-horizontal">
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="name">Name</label>
-									<span class="not-editable">{{contentData.list.name}}</span>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Name</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-readonly">
+												<input type="text" class="form-control" disabled value="{{::contentData.list.name}}"></input>
+												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="name">Type</label>
-									<a href="javascript:void(0)" editable-select="contentData.list.type" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
-									   onbeforesave="contentData.fieldUpdate('type', $data)">
-										{{contentData.list.type}}
-									</a>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Type</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-select="contentData.list.type"
+													   value="{{contentData.list.type}}" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
+													   onbeforesave="contentData.fieldUpdate('type', $data)" e-form="fieldForm_type">
+												<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="label">Label</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.label"
-									   onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.list.label}}</a>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Label</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.label"
+													   value="{{contentData.list.label}}"
+													   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+												<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="weight">Weight</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.list.weight}}</a>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="name">Default</label>
-									<a href="javascript:void(0)" editable-checkbox="contentData.list.default" e-title="Make this default list?"
-									   onbeforesave="contentData.fieldUpdate('default', $data)">{{ contentData.list.default && "Default list" || "Not a default list" }}</a>
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="name">System</label>
-									<span ng-show="contentData.list.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-									<span ng-show="!contentData.list.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="label">CSS Class</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.list.cssClass}}</a>
-									<div class="form-description">e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000", "width-3500"</div>
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="control-label" for="weight">Icon Name</label>
-									<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.list.iconName"
-									 onbeforesave="contentData.fieldUpdate('iconName', $data)" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.list.iconName}}"></i> {{ contentData.list.iconName}}</a>
-									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Weight</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.weight"
+													   value="{{contentData.list.weight}}"
+													   onbeforesave="contentData.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+												<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="weight">Visible columns count</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.visibleColumnsCount" onbeforesave="contentData.fieldUpdate('visibleColumnsCount', $data)">{{ contentData.list.visibleColumnsCount}}</a>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Default</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<span class="input-group-addon hidden-xs" ng-if="contentData.list.default && !fieldForm_default.$visible">
+													<i class="fa fa-check fa-fw go-green"></i>
+												</span>
+												<span class="input-group-addon hidden-xs" ng-if="!contentData.list.default && !fieldForm_default.$visible">
+													<i class="fa fa-times fa-fw go-red"></i>
+												</span>
+												<input type="text" class="form-control" disabled editable-checkbox="contentData.list.default"
+													   e-title="Make this default list?" value="{{contentData.list.default}}"
+													   onbeforesave="contentData.fieldUpdate('default',$data)" e-form="fieldForm_default">
+												<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<label class="control-label" for="weight">Page size (zero for unlimitted)</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.pageSize" onbeforesave="contentData.fieldUpdate('pageSize', $data)">{{ contentData.list.pageSize}}</a>
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">System</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-readonly">
+												<span class="input-group-addon" ng-if="contentData.list.system">
+													<i class="fa fa-check fa-fw go-green"></i>
+												</span>
+												<span class="input-group-addon" ng-if="!contentData.list.system">
+													<i class="fa fa-times fa-fw go-red"></i>
+												</span>
+												<input type="text" class="form-control" disabled value="{{::contentData.list.system}}"></input>
+												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
 								</div>
-
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">CSS class</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.cssClass"
+													   value="{{contentData.list.cssClass}}"
+													   onbeforesave="contentData.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+												<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description">e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000", "width-3500"</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Icon Name</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<span class="input-group-addon"><i class="fa fa-{{contentData.list.iconName}} fa-fw"></i></span>
+												<input type="text" class="form-control" disabled editable-text="contentData.list.iconName"
+													   value="{{contentData.list.iconName}}" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10">
+												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Visible columns #</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.visibleColumnsCount"
+													   value="{{contentData.list.visibleColumnsCount}}"
+													   onbeforesave="contentData.fieldUpdate('visibleColumnsCount',$data)" e-form="fieldForm_visibleColumnsCount">
+												<span class="input-group-addon" ng-click="fieldForm_visibleColumnsCount.$show()" ng-hide="fieldForm_visibleColumnsCount.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<div class="editable-field field">
+										<label class="control-label col-lg-2">Page size</label>
+										<div class="col-lg-10">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.pageSize"
+													   value="{{contentData.list.pageSize}}"
+													   onbeforesave="contentData.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
+												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description">zero for unlimitted</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="form-group">
-									<label class="control-label" for="weight">View name override</label>
-									<a href="javascript:void(0)" editable-text="contentData.list.viewNameOverride" onbeforesave="contentData.fieldUpdate('viewNameOverride', $data)">{{ contentData.list.viewNameOverride}}</a>
-									<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
+									<div class="editable-field field">
+										<label class="control-label col-lg-1">View name override</label>
+										<div class="col-lg-11">
+											<div class="editable-wrapper input-group editable-updatable">
+												<input type="text" class="form-control" disabled editable-text="contentData.list.viewNameOverride"
+													   value="{{contentData.list.viewNameOverride}}"
+													   onbeforesave="contentData.fieldUpdate('viewNameOverride',$data)" e-form="fieldForm_viewNameOverride">
+												<span class="input-group-addon" ng-click="fieldForm_viewNameOverride.$show()" ng-hide="fieldForm_viewNameOverride.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="form-group">
-									<label class="control-label" for="iconName">Dynamic HTML template</label>
-									<a href="javascript:void(0)"  editable-text="contentData.list.dynamicHtmlTemplate" ng-bind-html="contentData.renderFieldValue(contentData.list.dynamicHtmlTemplate,{fieldType:18})"
-										class="textbox"	   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
-									</a>
-									<div class="form-description">Substitute the default view html template with a custom one. The url link to the template file could be absolute or relative.</div>
+									<div class="editable-field field">
+										<label class="control-label col-lg-1">Template</label>
+										<div class="col-lg-11">
+											<div class="editable-wrapper input-group editable-updatable">
+												<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
+													<a href="{{contentData.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw go-blue"></i></a>
+												</span>
+												<input type="text" class="form-control" disabled editable-text="contentData.list.dynamicHtmlTemplate"
+													   value="{{contentData.renderFieldValue(contentData.list.dynamicHtmlTemplate,{fieldType:18})}}"
+													   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
+												<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+											</div>
+											<div class="form-description">Substitute the default view html template with a custom dynamic html one, which will be compiled by angular. The url link to the template file could be absolute or relative.</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -442,8 +553,8 @@
 		</div>
 		<div class="panel-body">
 			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
-			<query-item ng-repeat="queryItem in currentQuery.subQueries"  
-						current-query="queryItem" parent-query="currentQuery" 
+			<query-item ng-repeat="queryItem in currentQuery.subQueries"
+						current-query="queryItem" parent-query="currentQuery"
 						root-query="contentData.list.query" page-scope="contentData"
 						query-index="$index"></query-item>
 		</div>

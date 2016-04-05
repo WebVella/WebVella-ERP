@@ -319,17 +319,17 @@
 		//#endregion
 
     	//#region << Logic >>
-        contentData.getRelationHtml = function (tree) {
-        	var result = "unknown";
+        contentData.getRelationBadgeHtml = function (tree) {
+        	var result = "<span class=\"go-gray\" title=\"Unknown\">?</span>";
         	if (contentData.selectedRelation) {
         		if(contentData.selectedRelation.relationType == 2){
-        			result =$sce.trustAsHtml(contentData.selectedRelation.name + " <span class=\"badge badge-primary badge-inverse\" title=\"One to Many\" style=\"margin-left:5px;\">1 : N</span>");
+        			result ="<span title=\"One to Many\">1:n</span>";
         		}
 				else if(contentData.selectedRelation.relationType == 3) {
-        			result = $sce.trustAsHtml(contentData.selectedRelation.name + ' <span class="badge badge-primary badge-inverse" title="Many to Many" style="margin-left:5px;">N : N</span>');
+        			result = '<span title=\"Many to Many\">n:n</span>';
         		}
           	}
-        	return result;
+        	return $sce.trustAsHtml(result);
         }
 
         function patchSuccessCallback(response) {
