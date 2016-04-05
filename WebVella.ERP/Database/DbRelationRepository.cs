@@ -76,6 +76,7 @@ namespace WebVella.ERP.Database
 					catch
 					{
 						con.RollbackTransaction();
+						throw;
 					}
 				}
 				return false;
