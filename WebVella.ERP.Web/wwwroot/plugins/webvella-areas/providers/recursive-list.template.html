@@ -16,7 +16,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="record in listData track by record.id">
-			<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;">
+			<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;padding:0;">
 				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 					<i class="fa fa-pencil"></i>
 				</a>
