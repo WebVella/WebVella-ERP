@@ -177,7 +177,8 @@ namespace WebVella.ERP.Database
 			Entity entity = entMan.ReadEntity(entityName).Object;
 			Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == fieldName.ToLowerInvariant());
 			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, value, !field.Required, field.Unique );
-			DbRepository.SetUniqueConstraint("ux_" + tableName + "_" + field.Name, tableName, new List<string> { field.Name } );
+			if( field.Unique )
+				DbRepository.SetUniqueConstraint("ux_" + tableName + "_" + field.Name, tableName, new List<string> { field.Name } );
 		}
 
 		public void RemoveRecordField(string entityName, string fieldName)
