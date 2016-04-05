@@ -1,14 +1,14 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-					<span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+			<span class="go-gray" title="System entities cannot be deleted" ng-show="contentData.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
 			<a class="go-red" href="javascript:void(0)" ng-click="contentData.openDeleteEntityModal()" ng-show="!contentData.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
 		</div>
 		<!--<div class="icon-box">
 			<i class="fa fa-database fa-fw"></i>
 		</div>-->
 		<div class="entity-box">
-			<h4 class="no-link" title="Entities">entities</h4>
+			<h4 class="no-link" title="Entities">Entities</h4>
 			<!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
 		</div>
 		<div class="spacer-box"></div>
@@ -26,7 +26,7 @@
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Details">details</h4>
+			<h4 class="no-link" title="Details">Details</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -47,20 +47,39 @@
 
 	</div>
 	<div id="page-text">
-		<div class="form">
+		<div class="form-horizontal" style="margin-top: 43px;">
 
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="name">Name</label>
-						<span class="not-editable">{{contentData.entity.name}}</span>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">Name</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-readonly">
+									<input type="text" class="form-control" disabled value="{{::contentData.entity.name}}"></input>
+									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="name">System entity</label>
-						<span ng-show="contentData.entity.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-						<span ng-show="!contentData.entity.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">System entity</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-readonly">
+									<span class="input-group-addon" ng-if="contentData.entity.system">
+										<i class="fa fa-check fa-fw go-green"></i>
+									</span>
+									<span class="input-group-addon" ng-if="!contentData.entity.system">
+										<i class="fa fa-times fa-fw go-red"></i>
+									</span>
+									<input type="text" class="form-control" disabled value="{{::contentData.entity.system}}"></input>
+									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -68,14 +87,32 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="label">Label</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.entity.label }}</a>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">Label</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-updatable">
+									<input type="text" class="form-control" disabled editable-text="contentData.entity.label"
+										   value="{{contentData.entity.label}}"
+										   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+									<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="labelPlural">Label Plural</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.labelPlural" onbeforesave="contentData.fieldUpdate('labelPlural', $data)">{{ contentData.entity.labelPlural }}</a>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">Label Plural</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-updatable">
+									<input type="text" class="form-control" disabled editable-text="contentData.entity.labelPlural"
+										   value="{{contentData.entity.labelPlural}}"
+										   onbeforesave="contentData.fieldUpdate('labelPlural',$data)" e-form="fieldForm_labelPlural">
+									<span class="input-group-addon" ng-click="fieldForm_labelPlural.$show()" ng-hide="fieldForm_labelPlural.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -83,16 +120,34 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="iconName">Icon name</label>
-						<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.entity.iconName" onbeforesave="contentData.fieldUpdate('iconName', $data)" 
-						e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8"><i class="fa fa-fw fa-{{contentData.entity.iconName}}"></i> {{ contentData.entity.iconName }}</a>
-						<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">Icon name</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-updatable">
+									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{contentData.entity.iconName}} fa-fw"></i></span>
+									<input type="text" class="form-control" disabled editable-text="contentData.entity.iconName"
+										   value="{{contentData.entity.iconName}}" onbeforesave="contentData.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"
+										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:8">
+									<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+								<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" for="weight">Weight</label>
-						<a href="javascript:void(0)" editable-text="contentData.entity.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.entity.weight }}</a>
+						<div class="editable-field field">
+							<label class="control-label col-lg-2">Weight</label>
+							<div class="col-lg-10">
+								<div class="editable-wrapper input-group editable-updatable">
+									<input type="text" class="form-control" disabled editable-text="contentData.entity.weight"
+										   value="{{contentData.entity.weight}}"
+										   onbeforesave="contentData.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+									<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -100,49 +155,85 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<label class="control-label">Record permissions</label>
-						<table class="table table-bordered table-permissions">
-							<thead>
-								<tr>
-									<th style="width:20%">role name</th>
-									<th style="width:20%">create</th>
-									<th style="width:20%">read</th>
-									<th style="width:20%">update</th>
-									<th style="width:20%">delete</th>
+						<div class="editable-field field">
+							<label class="control-label col-lg-1">Permissions</label>
+							<div class="col-lg-11">
+								<table class="table table-bordered table-permissions">
+									<thead>
+										<tr>
+											<th style="width:20%">role name</th>
+											<th style="width:20%">create</th>
+											<th style="width:20%">read</th>
+											<th style="width:20%">update</th>
+											<th style="width:20%">delete</th>
 
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="role in contentData.entity.roles track by role.id">
-									<td>{{::role.label}}</td>
-									<td class="position-relative">
-										<a href="javascript:void(0)" editable-checkbox="role.canCreate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)">
-											<span ng-show="role.canCreate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-											<span ng-show="!role.canCreate"><i class='fa fa-fw fa-close go-red'></i> false</span>
-										</a>
-									</td>
-									<td class="position-relative">
-										<a href="javascript:void(0)" editable-checkbox="role.canRead" e-title="granted" onbeforesave="contentData.permissionPatch(role.id,'canRead',$data)">
-											<span ng-show="role.canRead"><i class='fa fa-fw fa-check go-green'></i> true</span>
-											<span ng-show="!role.canRead"><i class='fa fa-fw fa-close go-red'></i> false</span>
-										</a>
-									</td>
-									<td class="position-relative">
-										<a href="javascript:void(0)" editable-checkbox="role.canUpdate" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)">
-											<span ng-show="role.canUpdate"><i class='fa fa-fw fa-check go-green'></i> true</span>
-											<span ng-show="!role.canUpdate"><i class='fa fa-fw fa-close go-red'></i> false</span>
-										</a>
-									</td>
-									<td class="position-relative">
-										<a href="javascript:void(0)" editable-checkbox="role.canDelete" e-title="granted" onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)">
-											<span ng-show="role.canDelete"><i class='fa fa-fw fa-check go-green'></i> true</span>
-											<span ng-show="!role.canDelete"><i class='fa fa-fw fa-close go-red'></i> false</span>
-										</a>
-									</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="role in contentData.entity.roles track by role.id">
+											<td>{{::role.label}}</td>
+											<td class="position-relative">
+												<div class="editable-wrapper input-group editable-updatable">
+													<span class="input-group-addon hidden-xs" ng-if="role.canCreate && !this['fieldFormCreate_' + role.name].$visible">
+														<i class="fa fa-check fa-fw go-green"></i>
+													</span>
+													<span class="input-group-addon hidden-xs" ng-if="!role.canCreate && !this['fieldFormCreate_' + role.name].$visible">
+														<i class="fa fa-times fa-fw go-red"></i>
+													</span>
+													<input type="text" class="form-control" disabled editable-checkbox="role.canCreate"
+														   e-title="granted" value="{{role.canCreate}}"
+														   onbeforesave="contentData.permissionPatch(role.id, 'canCreate', $data)" e-form="{{'fieldFormCreate_' + role.name}}">
+													<span class="input-group-addon" ng-click="this['fieldFormCreate_' + role.name].$show()" ng-hide="this['fieldFormCreate_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+												</div>
+											</td>
+											<td class="position-relative">
+												<div class="editable-wrapper input-group editable-updatable">
+													<span class="input-group-addon hidden-xs" ng-if="role.canRead && !this['fieldFormRead_' + role.name].$visible">
+														<i class="fa fa-check fa-fw go-green"></i>
+													</span>
+													<span class="input-group-addon hidden-xs" ng-if="!role.canRead && !this['fieldFormRead_' + role.name].$visible">
+														<i class="fa fa-times fa-fw go-red"></i>
+													</span>
+													<input type="text" class="form-control" disabled editable-checkbox="role.canRead"
+														   e-title="granted" value="{{role.canRead}}"
+														   onbeforesave="contentData.permissionPatch(role.id, 'canRead', $data)" e-form="{{'fieldFormRead_' + role.name}}">
+													<span class="input-group-addon" ng-click="this['fieldFormRead_' + role.name].$show()" ng-hide="this['fieldFormRead_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+												</div>
+											</td>
+											<td class="position-relative">
+												<div class="editable-wrapper input-group editable-updatable">
+													<span class="input-group-addon hidden-xs" ng-if="role.canUpdate && !this['fieldFormUpdate_' + role.name].$visible">
+														<i class="fa fa-check fa-fw go-green"></i>
+													</span>
+													<span class="input-group-addon hidden-xs" ng-if="!role.canUpdate && !this['fieldFormUpdate_' + role.name].$visible">
+														<i class="fa fa-times fa-fw go-red"></i>
+													</span>
+													<input type="text" class="form-control" disabled editable-checkbox="role.canUpdate"
+														   e-title="granted" value="{{role.canUpdate}}"
+														   onbeforesave="contentData.permissionPatch(role.id, 'canUpdate', $data)" e-form="{{'fieldFormUpdate_' + role.name}}">
+													<span class="input-group-addon" ng-click="this['fieldFormUpdate_' + role.name].$show()" ng-hide="this['fieldFormUpdate_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+												</div>
+											</td>
+											<td class="position-relative">
+												<div class="editable-wrapper input-group editable-updatable">
+													<span class="input-group-addon hidden-xs" ng-if="role.canDelete && !this['fieldFormDelete_' + role.name].$visible">
+														<i class="fa fa-check fa-fw go-green"></i>
+													</span>
+													<span class="input-group-addon hidden-xs" ng-if="!role.canDelete && !this['fieldFormDelete_' + role.name].$visible">
+														<i class="fa fa-times fa-fw go-red"></i>
+													</span>
+													<input type="text" class="form-control" disabled editable-checkbox="role.canDelete"
+														   e-title="granted" value="{{role.canDelete}}"
+														   onbeforesave="contentData.permissionPatch(role.id, 'canDelete', $data)" e-form="{{'fieldFormDelete_' + role.name}}">
+													<span class="input-group-addon" ng-click="this['fieldFormDelete_' + role.name].$show()" ng-hide="this['fieldFormDelete_' + role.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+												</div>
+											</td>
 
-								</tr>
-							</tbody>
-						</table>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1527,7 +1527,7 @@
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.displayFormat.$invalid && !manageFieldForm.displayFormat.$pristine || popupData.displayFormatError}">
 							<label class="control-label">Display format</label>
-							<input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" type="text" ng-model-options="{allowInvalid:true}" />
+							<input class="form-control" ng-model="popupData.field.displayFormat" name="displayFormat" placeholder="e.g. Order-{0}" type="text" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.displayFormat.$touched && manageFieldForm.displayFormat.$dirty && manageFieldForm.displayFormat.$invalid || popupData.displayFormatError">
 								<small class="error ng-hide" ng-show="popupData.displayFormatError">
 									{{popupData.displayFormatMessage}}

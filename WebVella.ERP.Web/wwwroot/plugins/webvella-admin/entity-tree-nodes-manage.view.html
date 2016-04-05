@@ -25,14 +25,13 @@
 		</div>
 		<div class="lists-box">
 			<h4 title="Records lists">records trees</h4>
-			<a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-arrow-left"></i> Back to list</a>
 		</div>
 		<div class="spacer-box"></div>
 		<div class="divider-box">
 			<i class="fa fa-caret-right"></i>
 		</div>
 		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record Tree nodes">Nodes manage</h4>
+			<h4 class="no-link" title="Manage a Record Tree nodes">Manage Nodes</h4>
 		</div>
 	</div>
 	<!--<div id="page-messages">
@@ -56,11 +55,14 @@
 	<div id="page-text">
 
 		<!-- Nested node template -->
-		<div ui-tree ="contentData.treeOptions">
+		<div ui-tree ="contentData.treeOptions" ng-if="contentData.tree.data.length > 0">
 			<ol ui-tree-nodes ng-model="contentData.tree.data" id="tree-root">
 				<li ng-repeat="node in contentData.tree.data track by node.id" ui-tree-node ng-include="'nodes_renderer.html'"
 					ng-class="{parent_li:node.nodes.length > 0, hovered: contentData.attachHoverEffectClass[node.id]}"></li>
 			</ol>
+		</div>
+		<div class="alert alert-info" ng-if="contentData.tree.data.length == 0">
+			No tree nodes found. If there are existing records for this entity, check the root tree nodes configuration			
 		</div>
 	</div>
 </div>
