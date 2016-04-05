@@ -25,6 +25,9 @@ namespace WebVella.ERP
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
+				//setup necesary extensions
+				DbRepository.CreatePostgresqlExtensions();
+
 				try
 				{
 					connection.BeginTransaction();

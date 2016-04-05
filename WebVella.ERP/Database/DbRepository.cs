@@ -9,6 +9,16 @@ namespace WebVella.ERP.Database
 {
 	public static class DbRepository
 	{
+		public static void CreatePostgresqlExtensions()
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = $"CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
 		public static void CreateTable(string name)
 		{
 			using (var connection = DbContext.Current.CreateConnection())
@@ -46,7 +56,7 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable = false)
+		public static void CreateColumn(string tableName, string name, FieldType type, bool isPrimaryKey, object defaultValue, bool isNullable = false, bool isUnique = false )
 		{
 			string pgType = DbTypeConverter.ConvertToDatabaseSqlType(type);
 
@@ -70,8 +80,15 @@ namespace WebVella.ERP.Database
 					//parameter.Value = defaultValue;
 					//parameter.NpgsqlDbType = DbTypeConverter.ConvertToDatabaseType(type);
 					//command.Parameters.Add(parameter);
-					var defVal = ConvertDefaultValue(type, defaultValue);
-					sql += $" DEFAULT {defVal}";
+					if (type == FieldType.GuidField && isUnique )
+					{
+						sql += @" DEFAULT  uuid_generate_v1() ";
+					}
+					else
+					{
+						var defVal = ConvertDefaultValue(type, defaultValue);
+						sql += $" DEFAULT {defVal}";
+					}
 				}
 
 				if (isPrimaryKey)
