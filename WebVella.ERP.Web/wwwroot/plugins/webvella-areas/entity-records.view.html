@@ -131,8 +131,8 @@
 
 	</form>
 	<div id="page-text">
-		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
-		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
+		<div class="table-scroll-wrapper" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate" data-double-scroll-bar-horizontal>
+		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0'>
 			<thead>
 				<tr>
 					<th class="actions"></th>
@@ -175,11 +175,11 @@
 			</tbody>
 		</table>
 		</div>
-		<div class="ng-hide" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate != null && contentData.recordsMeta.dynamicHtmlTemplate != "")'>
+		<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
 			<div ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
 		</div>
 
-		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
+		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>
 			There are no records matching your query
 		</div>
 
