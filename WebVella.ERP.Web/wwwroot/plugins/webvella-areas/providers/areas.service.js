@@ -199,12 +199,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					if (fieldMeta.displayFormat) {
-						return fieldMeta.displayFormat.replace("{0}", data[0]);
-					}
-					else {
-						return data[0];
-					}
+					return getAutoIncrementString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -234,12 +229,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					if (data) {
-						return "TRUE";
-					}
-					else {
-						return "FALSE";
-					}
+					 return getCheckboxString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -268,12 +258,28 @@
 			if (!data && data != 0) {
 				return "";
 			}
-			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
-				if (fieldMeta.currency.symbolPlacement === 1) {
-					return fieldMeta.currency.symbol + " " + data[0];
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return getCurrencyString(data[0], fieldMeta);
 				}
 				else {
-					return data[0] + " " + fieldMeta.currency.symbol;
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getCurrencyString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
+			}
+			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
+				if (fieldMeta.currency.symbolPlacement === 1) {
+					return fieldMeta.currency.symbol + " " + data;
+				}
+				else {
+					return data + " " + fieldMeta.currency.symbol;
 				}
 			}
 			else {
@@ -290,7 +296,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return moment(data[0]).format("DD MMM YYYY");
+					return getDateString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -315,7 +321,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return moment(data[0]).format("DD MMM YYYY HH:mm");
+					return getDateTimeString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -343,7 +349,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getEmailString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -369,9 +375,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					var lastSlashIndex = data[0].lastIndexOf("/") + 1;
-					var fileName = data[0].slice(lastSlashIndex,data[0].length);
-					return "<a href='" + data[0] + "' taget='_blank' class='link-icon'>"+fileName + "</a>";
+					return getFileString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -398,7 +402,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getHtmlString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -423,7 +427,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return "<a target='_blank' href='" + data[0] + "'><img src='" + data[0] + "' class='table-image'/></a>";
+					return getImageString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -448,8 +452,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					//return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
-					return data[0];
+					return getTextareaString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -475,6 +478,9 @@
 				if (data.length == 0) {
 					return "";
 				}
+				else if (data.length == 1){
+					return getMultiselectString(data[0], fieldMeta);
+				}
 				else {
 					for (var i = 0; i < data.length; i++) {
 						var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
@@ -498,7 +504,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getNumberString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -548,7 +554,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0] * 100 + "%";
+					return getPercentString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -574,7 +580,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return phoneUtils.formatInternational(data[0]);
+					return getPhoneString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -600,7 +606,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getGuidString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -625,8 +631,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					var selected = $filter('filter')(fieldMeta.options, { key: data[0] });
-					return (data[0] && selected.length) ? selected[0].value : 'empty';
+					return getDropdownString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -652,7 +657,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getTextString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -677,7 +682,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data[0];
+					return getUrlString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";

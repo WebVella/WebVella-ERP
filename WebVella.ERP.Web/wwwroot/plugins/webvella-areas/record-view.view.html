@@ -547,12 +547,12 @@
 								<div class="field" ng-switch-when="view">
 									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<!--<recursive-view view-meta="item"
+										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														parent-id="::contentData.stateParams.recordId"
 														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
 														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)">
-										</recursive-view>-->
+										</recursive-view>
 
 										<div ng-if="::item.meta.helpText" class="form-description">
 											{{item.meta.helpText}}
