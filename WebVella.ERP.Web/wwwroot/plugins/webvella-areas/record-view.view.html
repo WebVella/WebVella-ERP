@@ -561,7 +561,8 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
 									</div>
 								</div>
 
@@ -586,7 +587,8 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
 									</div>
 								</div>
 
@@ -608,7 +610,8 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
 									</div>
 								</div>
 
@@ -633,7 +636,8 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
+										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
 									</div>
 								</div>
 
@@ -713,7 +717,8 @@
 	</div>
 
 	<div id="page-text" ng-if='::contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<div ng-include="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
+		<div ng-if="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('/') || contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
+		<div ng-if="!contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
 	</div>
 </div>
 
