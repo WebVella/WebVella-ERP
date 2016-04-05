@@ -239,6 +239,9 @@ namespace WebVella.ERP.Database
 
 		public void DeleteManyToManyRecord(string relationName, Guid? originId = null, Guid? targetId = null)
 		{
+			if(!originId.HasValue && !targetId.HasValue)
+				throw new Exception("Both origin id and target id cannot be null when delete many to many relation!");
+
 			string tableName = $"rel_{relationName}";
 
 			using (var connection = DbContext.Current.CreateConnection())
