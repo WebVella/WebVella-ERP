@@ -2,7 +2,7 @@
 	<div ng-if="listMeta.meta.dynamicHtmlTemplate.startsWith('/') || listMeta.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="listMeta.meta.dynamicHtmlTemplate"></div>
 	<div ng-if="!listMeta.meta.dynamicHtmlTemplate.startsWith('/') && !listMeta.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="listMeta.meta.dynamicHtmlTemplate"></div>
 </div>
-<div ng-if='::listMeta.meta.dynamicHtmlTemplate'>
+<div ng-if='::!listMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">
 		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
 			<i class="fa fa-download"></i> Add existing
@@ -25,7 +25,7 @@
 					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDettachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+					<a href='javascript:void(0)' title="Detach" class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
 						<i class="fa fa-times go-red"></i>
 					</a>
 				</td>
@@ -41,7 +41,9 @@
 							<div ng-switch-when="target">
 								<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
 							</div>
-							<div ng-switch-when="origin-target"><span class="go-red">Not implemented. Need test case</span></div>
+							<div ng-switch-when="origin-target">
+								<span ng-bind-html="::renderFieldValue(record[column.dataName],column.meta)"></span>
+							</div>
 						</div>
 					</div>
 					<div ng-switch-when="view">

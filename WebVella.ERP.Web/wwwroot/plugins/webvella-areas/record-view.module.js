@@ -1085,17 +1085,17 @@
 
 					// ** Post relation change between the two records
 					var recordsToBeAttached = [];
-					var recordsToBeDettached = [];
+					var recordsToBeDetached = [];
 					if (returnObject.dataKind == "origin") {
 						recordsToBeAttached.push(returnObject.selectedRecordId);
 						if (oldRelationRecordId != null) {
-							recordsToBeDettached.push(oldRelationRecordId);
+							recordsToBeDetached.push(oldRelationRecordId);
 						}
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else if (returnObject.dataKind == "target") {
 						recordsToBeAttached.push(displayedRecordId);
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+						webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else {
 						alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1532,12 +1532,12 @@
 			popupData.processOperation = returnObject.operation;
 			var displayedRecordId = $stateParams.recordId;
 			var recordsToBeAttached = [];
-			var recordsToBeDettached = [];
+			var recordsToBeDetached = [];
 			if (returnObject.operation == "attach") {
 				recordsToBeAttached.push(displayedRecordId);
 			}
 			else if (returnObject.operation == "detach") {
-				recordsToBeDettached.push(displayedRecordId);
+				recordsToBeDetached.push(displayedRecordId);
 			}
 
 			function successCallback(response) {
@@ -1578,7 +1578,7 @@
 
 			// ** Post relation change between the two records
 			if (returnObject.dataKind == "target") {
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 			else {
 				alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1793,7 +1793,7 @@
 		popupData.toggleNodeSelection = function (node) {
 			var nodeIndex = popupData.selectedTreeRecords.indexOf(node.recordId);
 			var recordsToBeAttached = [];
-			var recordsToBeDettached = [];			
+			var recordsToBeDetached = [];			
 			function createRelationChangeSuccessCallback(response) {
 				popupData.selectedTreeRecords.push(node.recordId);
 				//Add to the branch selected object
@@ -1820,13 +1820,13 @@
 			function applyRelationChangeErrorCallback(response) { }
 			//Node should be unselected. Relations should be severed
 			if (nodeIndex > -1) {
-				recordsToBeDettached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				recordsToBeDetached.push($stateParams.recordId);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 				//Node should be selected. Relations should be created
 			else {
 				recordsToBeAttached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 		}
 
