@@ -176,7 +176,8 @@
 		</table>
 		</div>
 		<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
-			<div ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+			<div ng-if="contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') || contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+			<div ng-if="!contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.recordsMeta.dynamicHtmlTemplate"></div>
 		</div>
 
 		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>

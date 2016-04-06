@@ -1,0 +1,31 @@
+{
+  "name": "angular-bind-html-compile",
+  "authors": [
+    "Graham Gilchrist <graham@incuna.com>",
+    "Perry Roper <perryroper@gmail.com>"
+  ],
+  "main": "angular-bind-html-compile.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.x"
+  },
+  "homepage": "https://github.com/incuna/angular-bind-html-compile",
+  "version": "1.2.1",
+  "_release": "1.2.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.2.1",
+    "commit": "b0ba42b3a962b08250f1d20751a7f1032381722a"
+  },
+  "_source": "git://github.com/incuna/angular-bind-html-compile.git",
+  "_target": "~1.2.1",
+  "_originalSource": "angular-bind-html-compile",
+  "_direct": true
+}

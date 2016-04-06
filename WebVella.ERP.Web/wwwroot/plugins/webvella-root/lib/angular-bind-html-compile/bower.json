@@ -1,0 +1,19 @@
+{
+  "name": "angular-bind-html-compile",
+  "authors": [
+    "Graham Gilchrist <graham@incuna.com>",
+    "Perry Roper <perryroper@gmail.com>"
+  ],
+  "main": "angular-bind-html-compile.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.x"
+  }
+}
