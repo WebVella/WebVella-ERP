@@ -58,16 +58,20 @@ namespace WebVella.ERP.Database
 						{
 							DbRepository.DeleteNtoNRelation(relation.Name, originTableName, targetTableName);
 							DbRepository.CreateNtoNRelation(relation.Name, originTableName, originField.Name, targetTableName, targetField.Name);
-
-							string relTableName = $"rel_{relation.Name}";
-							string relOriginFieldName = $"#{relation.Name}_origins";
-							string relTargetFieldName = $"#{relation.Name}_targets";
-
 						}
 						else
 						{
 							DbRepository.DeleteRelation(relation.Name, targetTableName);
+							if (originField.Name != "id")
+								DbRepository.DropIndex($"idx_r_{relation.Name}_{originField.Name}");
+							if (targetField.Name != "id")
+								DbRepository.DropIndex($"idx_r_{relation.Name}_{targetField.Name}");
+
 							DbRepository.CreateRelation(relation.Name, originTableName, originField.Name, targetTableName, targetField.Name);
+							if (originField.Name != "id")
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{originField.Name}", originTableName, originField.Name);
+							if (targetField.Name != "id")
+								DbRepository.CreateIndex($"idx_r_{relation.Name}_{targetField.Name}", targetTableName, targetField.Name);
 						}
 
 						con.CommitTransaction();
@@ -79,7 +83,6 @@ namespace WebVella.ERP.Database
 						throw;
 					}
 				}
-				return false;
 			}
 			finally
 			{
@@ -196,6 +199,11 @@ namespace WebVella.ERP.Database
 					try
 					{
 						command.ExecuteNonQuery();
+
+						if (originField.Name != "id")
+							DbRepository.DropIndex($"idx_r_{relation.Name}_{originField.Name}");
+						if (targetField.Name != "id")
+							DbRepository.DropIndex($"idx_r_{relation.Name}_{targetField.Name}");
 
 						if (relation.RelationType == EntityRelationType.ManyToMany)
 						{

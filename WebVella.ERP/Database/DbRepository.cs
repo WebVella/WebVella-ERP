@@ -159,7 +159,7 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public static void SetUniqueConstraint(string constraintName, string tableName, List<string> columns)
+		public static void CreateUniqueConstraint(string constraintName, string tableName, List<string> columns)
 		{
 			if (columns.Count == 0)
 				return;
@@ -173,10 +173,35 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} ADD CONSTRAINT {constraintName} UNIQUE ({colNames});";
-
+				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {constraintName};";
 				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
 
+				sql = $"ALTER TABLE {tableName} ADD CONSTRAINT {constraintName} UNIQUE ({colNames});";
+				command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
+		public static void DropUniqueConstraint(string constraintName, string tableName )
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {constraintName}";
+				NpgsqlCommand command = connection.CreateCommand(sql);
+				command.ExecuteNonQuery();
+			}
+		}
+
+		public static void SetColumnNullable(string tableName, string columnName, bool nullable )
+		{
+			using (var connection = DbContext.Current.CreateConnection())
+			{
+				string operation = "SET";
+				if (nullable)
+					operation = "DROP";
+				string sql = $"ALTER TABLE {tableName} ALTER COLUMN {columnName} {operation} NOT NULL";
+				var command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
 		}
@@ -195,13 +220,6 @@ namespace WebVella.ERP.Database
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
-
-			//if fields are not id field create index , for id we alread have by default
-			if( originFieldName != "id" )
-				CreateIndex($"idx_{relName}_{originFieldName}", originTableName, originFieldName);
-			if (targetFieldName != "id")
-				CreateIndex($"idx_{relName}_{originFieldName}", targetTableName, targetFieldName);
-
 		}
 
 		public static void CreateNtoNRelation(string relName, string originTableName, string originFieldName, string targetTableName, string targetFieldName)
@@ -210,24 +228,26 @@ namespace WebVella.ERP.Database
 			CreateTable(relTableName);
 			CreateColumn(relTableName, "origin_id", FieldType.GuidField, false, null, false);
 			CreateColumn(relTableName, "target_id", FieldType.GuidField, false, null, false);
+			
 			SetPrimaryKey(relTableName, new List<string> { "origin_id", "target_id" });
+			
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
+
+			CreateIndex("idx_origin_id", relTableName, "origin_id");
+			CreateIndex("idx_target_id", relTableName, "target_id");
+
+			if (originFieldName != "id")
+			{
+				DropIndex($"idx_r_{relName}_{originFieldName}");
+				CreateIndex($"idx_r_{relName}_{originFieldName}", originTableName, originFieldName);
+			}
+			if (targetFieldName != "id")
+			{
+				DropIndex($"idx_r_{relName}_{targetFieldName}");
+				CreateIndex($"idx_r_{relName}_{targetFieldName}", targetTableName, targetFieldName);
+			}
 		}
-
-		// not used
-		//public static void RenameRelation(string tableName, string name, string newName)
-		//{
-		//	if (!TableExists(tableName))
-		//		return;
-
-		//	using (var connection = DbContext.Current.CreateConnection())
-		//	{
-		//		string sql = $"ALTER TABLE {tableName} RENAME CONSTRAINT {name} TO {newName};";
-		//		NpgsqlCommand command = connection.CreateCommand(sql);
-		//		command.ExecuteNonQuery();
-		//	}
-		//}
 
 		public static void DeleteRelation(string relName, string tableName)
 		{
@@ -260,9 +280,9 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"CREATE INDEX {indexName} ON {tableName} ({columnName}";
+				string sql = $"CREATE INDEX IF NOT EXISTS {indexName} ON {tableName} ({columnName}";
 				if ( unique )
-					sql = $"CREATE UNIQUE INDEX {indexName} ON {tableName} ({columnName}";
+					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS {indexName} ON {tableName} ({columnName}";
 
 				if( !ascending )
 					sql = sql + " DESC";

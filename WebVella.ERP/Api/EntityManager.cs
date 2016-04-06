@@ -2695,7 +2695,7 @@ namespace WebVella.ERP.Api
 							return response;
 						}
 
-						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field);
 
 						con.CommitTransaction();
 					}
@@ -2978,6 +2978,8 @@ namespace WebVella.ERP.Api
 					entity.Fields.Remove(fieldForDelete);
 
 				entity.Fields.Add(field);
+
+				DbContext.Current.RecordRepository.UpdateRecordField(entity.Name, field);
 
 				DbEntity updatedEntity = entity.MapTo<DbEntity>();
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
@@ -3295,7 +3297,7 @@ namespace WebVella.ERP.Api
 					con.BeginTransaction();
 					try
 					{
-						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field.Name);
+						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field );
 
 						DbEntity updatedEntity = entity.MapTo<DbEntity>();
 						bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
