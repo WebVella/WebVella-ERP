@@ -3206,6 +3206,7 @@ table .btn-xs.btn-link {
 
 	.editable-wrapper .form-control {
 		background-color: #f2f2f2;
+		color:#333;
 	}
 
 		.editable-wrapper .form-control:focus {
@@ -3222,7 +3223,9 @@ table .btn-xs.btn-link {
 	color: #FB8C00;
 	cursor: pointer;
 }
-
+.editable-field > .control-label {
+	color:#999;
+}
 
 /* Common styles for multiple inline types*/
 

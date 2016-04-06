@@ -1984,7 +1984,7 @@ namespace WebVella.ERP.Web.Controllers
 					queries.Add(EntityQuery.QueryGTE(fieldName, fromDate));
 				}
 				else if (matchType == "regex")
-					queries.Add(EntityQuery.QueryRegex(fieldName, values[0]));
+					queries.Add(EntityQuery.QueryRegex(fieldName, values[0],QueryObjectRegexOperator.MatchCaseInsensitive));
 				else
 					throw new Exception("Not supported match type: " + matchType);
 
