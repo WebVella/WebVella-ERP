@@ -136,7 +136,7 @@
 				<tr ng-repeat="type in popupData.fieldTypes | filter:popupData.typeFilter">
 					<th style="width:200px;">{{type.id}}. {{type.label}}</th>
 					<td>{{type.description}}</td>
-					<td><a ng-click="popupData.selectType(type.id)" class="btn btn-default">select</a></td>
+					<td style="width:80px;"><a ng-click="popupData.selectType(type.id)" class="btn btn-default">select</a></td>
 				</tr>
 			</table>
 		</div>

@@ -860,8 +860,8 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
-													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;" ng-change="popupData.ensureNullOnEmpty(column,0)">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}" ng-change="popupData.ensureNullOnEmpty(column,0)">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">

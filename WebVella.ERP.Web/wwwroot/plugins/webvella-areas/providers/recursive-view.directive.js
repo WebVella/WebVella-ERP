@@ -155,7 +155,7 @@
 		$scope.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		//#region << Logic >>
-		$scope.instantDettachRecord = function (record) {
+		$scope.instantDetachRecord = function (record) {
 			var returnObject = {
 				relationName: $scope.relation.name,
 				dataKind: $scope.dataKind,
@@ -169,7 +169,7 @@
 			// Initialize
 
 			var recordsToBeAttached = [];
-			var recordsToBeDettached = [];
+			var recordsToBeDetached = [];
 
 			function successCallback(response) {
 				ngToast.create({
@@ -196,9 +196,9 @@
 					recordsToBeAttached.push(selectedRecordId);
 				}
 				else if (returnObject.operation == "detach") {
-					recordsToBeDettached.push(selectedRecordId);
+					recordsToBeDetached.push(selectedRecordId);
 				}
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, $scope.parentId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				webvellaAdminService.manageRecordsRelation(returnObject.relationName, $scope.parentId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 			else {
 				//The list entity is origin
@@ -207,9 +207,9 @@
 					recordsToBeAttached.push($scope.parentId);
 				}
 				else if (returnObject.operation == "detach") {
-					recordsToBeDettached.push($scope.parentId);
+					recordsToBeDetached.push($scope.parentId);
 				}
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 		}
 		//#endregion

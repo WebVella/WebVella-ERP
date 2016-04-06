@@ -277,6 +277,7 @@
 		$log.debug('webvellaAdmin>entities>CreateRelationModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
+		popupData.validation = {};
 		popupData.modalInstance = $uibModalInstance;
 		if (managedRelation === null) {
 			popupData.relation = webvellaAdminService.initRelation();
@@ -492,7 +493,7 @@
 			}
 
 			popupData.selectedTargetFieldEnabled = true;
-			if ((popupData.relation.relationType != 3) && popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
+			if (popupData.relation.relationType != 3 && popupData.selectedTargetField && popupData.selectedOriginField.id == popupData.selectedTargetField.id) {
 				popupData.fieldsDuplicatedError = true;
 			} else {
 				popupData.fieldsDuplicatedError = false;
@@ -542,6 +543,13 @@
 
 		//////
 		popupData.ok = function () {
+			popupData.validation = {};
+			if(!popupData.selectedOriginEntity.id || !popupData.selectedOriginField.id || !popupData.selectedTargetEntity.id || !popupData.selectedTargetField.id){
+				popupData.validation.hasError = true;			
+				popupData.validation.message = "Missing required information";
+				return;
+			}
+
 			popupData.relation.originEntityId = popupData.selectedOriginEntity.id;
 			popupData.relation.originFieldId = popupData.selectedOriginField.id;
 			popupData.relation.targetEntityId = popupData.selectedTargetEntity.id;

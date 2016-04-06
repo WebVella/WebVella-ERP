@@ -1203,7 +1203,7 @@ function guid() {
 				relationName: relationName,//string
 				originFieldRecordId: originFieldRecordId, //guid
 				attachTargetFieldRecordIds: attachTargetFieldRecordIds, //guid array - list of recordIds that needs to be attached to the new origin
-				detachTargetFieldRecordIds: detachTargetFieldRecordIds  //guid array - list of recordIds that needs to be dettached to the new origin - should be empty array when the target field is required
+				detachTargetFieldRecordIds: detachTargetFieldRecordIds  //guid array - list of recordIds that needs to be detached to the new origin - should be empty array when the target field is required
 			}
 
 

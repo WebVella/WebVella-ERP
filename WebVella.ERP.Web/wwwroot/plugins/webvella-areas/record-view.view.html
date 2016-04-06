@@ -180,7 +180,7 @@
 													</div>
 												</div>
 												<div class="image-upload" ng-if='contentData.selectedSidebarPage.data[item.dataName]'>
-													<img class="img-thumbnail" ng-src="{{contentData.selectedSidebarPage.data[item.dataName] + contentData.cacheBreakers[item.dataName]}}" />
+													<img class="img-thumbnail" ng-src="{{contentData.selectedSidebarPage.data[item.dataName] + contentData.cacheBreakers[item.dataName]}}" style="width:120px" />
 													<a class="update-link" href='javascript:void(0)' ngf-select="contentData.updateFileUpload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
@@ -617,7 +617,7 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+								<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
