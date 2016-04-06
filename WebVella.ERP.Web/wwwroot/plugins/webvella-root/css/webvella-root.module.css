@@ -110,7 +110,6 @@ span.divider {
 		padding-right: 0;
 		padding-left: 10px !important;
 		font-size: 14px;
-		text-transform: uppercase;
 		margin-bottom: 15px;
 	}
 
@@ -3417,6 +3416,10 @@ table .btn-xs.btn-link {
 	padding: 0 10px;
 }
 
+	.dropdown-menu > li > a.typeahead-icon-item:hover {
+		cursor:pointer;
+	}
+
 	.dropdown-menu > li > a.typeahead-icon-item i {
 		margin-right: 5px;
 		font-size: 18px;
@@ -3925,7 +3928,7 @@ table .btn-xs.btn-link {
 }
 
 .drop-zone > div {
-	padding: 0;
+	padding: 5px 2px;
 	min-height: 30px;
 }
 
@@ -3982,8 +3985,25 @@ table .btn-xs.btn-link {
 }
 
 .as-sortable-dragging {
-	width: 200px !important;
+	width: 250px !important;
+	white-space: nowrap;
+	-ms-text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
+
+	.as-sortable-dragging .dropped-item {
+		margin:0;
+	}
+
+	.as-sortable-dragging .fa {
+		display:none;
+	}
+
+	.as-sortable-dragging .fa.fa-arrows {
+		display:inline-block;
+	}
 
 .view-divider {
 	position: relative;

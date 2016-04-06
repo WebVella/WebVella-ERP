@@ -18,9 +18,15 @@
     },
     "web": {
       "commandName": "web",
+      "launchUrl": "http://erp.com",
       "environmentVariables": {
         "Hosting:Environment": "Development"
       }
+    },
+    "temp-web": {
+      "commandName": "temp-web",
+      "launchBrowser": true,
+      "launchUrl": "http://erp.com"
     }
   }
 }

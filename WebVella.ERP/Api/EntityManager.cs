@@ -5619,6 +5619,7 @@ namespace WebVella.ERP.Api
 			create.Type = "general";
 			create.IconName = "list";
 			create.PageSize = 10;
+			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			recordLists.Add(create);
 
@@ -5631,6 +5632,7 @@ namespace WebVella.ERP.Api
 			lookup.Type = "lookup";
 			lookup.IconName = "list";
 			lookup.PageSize = 10;
+			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
 
@@ -5652,6 +5654,7 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "create";
+			create.Weight = 10;
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
@@ -5665,6 +5668,7 @@ namespace WebVella.ERP.Api
 			quickCreate.System = true;
 			quickCreate.Type = "quick_create";
 			quickCreate.IconName = "file-text-o";
+			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
 			recordViewList.Add(quickCreate);
@@ -5677,6 +5681,7 @@ namespace WebVella.ERP.Api
 			quickView.System = true;
 			quickView.Type = "quick_view";
 			quickView.IconName = "file-text-o";
+			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
 			recordViewList.Add(quickView);
@@ -5688,6 +5693,7 @@ namespace WebVella.ERP.Api
 			general.Default = true;
 			general.System = true;
 			general.Type = "general";
+			general.Weight = 10;
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
