@@ -205,6 +205,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
 			Mapper.CreateMap<EntityRelationOptions, DbEntityRelationOptions>();
 			Mapper.CreateMap<DbEntityRelationOptions, EntityRelationOptions>();
+			Mapper.CreateMap<EntityRelationOptionsItem, EntityRelationOptions>();
+			Mapper.CreateMap<EntityRelationOptions, EntityRelationOptionsItem>();
 		}
 
 		private RecordViewType GetViewTypeId(string name)

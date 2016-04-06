@@ -5520,7 +5520,7 @@ namespace WebVella.ERP.Api
 			primaryKeyField.Searchable = false;
 			primaryKeyField.Auditable = false;
 			primaryKeyField.System = true;
-			primaryKeyField.DefaultValue = Guid.Empty;
+			primaryKeyField.DefaultValue = null;
 			primaryKeyField.GenerateNewId = true;
 
 			fields.Add(primaryKeyField);
@@ -5538,7 +5538,7 @@ namespace WebVella.ERP.Api
 			createdBy.Searchable = false;
 			createdBy.Auditable = false;
 			createdBy.System = true;
-			createdBy.DefaultValue = Guid.Empty;
+			createdBy.DefaultValue = null;
 			createdBy.GenerateNewId = false;
 
 			fields.Add(createdBy);
@@ -5556,7 +5556,7 @@ namespace WebVella.ERP.Api
 			lastModifiedBy.Searchable = false;
 			lastModifiedBy.Auditable = false;
 			lastModifiedBy.System = true;
-			lastModifiedBy.DefaultValue = Guid.Empty;
+			lastModifiedBy.DefaultValue = null;
 			lastModifiedBy.GenerateNewId = false;
 
 			fields.Add(lastModifiedBy);
