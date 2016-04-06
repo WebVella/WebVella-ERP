@@ -181,7 +181,7 @@
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
 						returnObject.templateMeta = fastCopy(contentData.defaultRecordView);
-						returnObject.meta.label = "General";
+						returnObject.meta.label = "Details";
 					}
 				}
 				returnObject.isView = true;
