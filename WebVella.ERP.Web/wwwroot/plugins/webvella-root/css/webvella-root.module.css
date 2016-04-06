@@ -2961,6 +2961,7 @@ table .btn-xs.btn-link {
 .mini-sidebar #sidebar .tabbable.spilled {
 	left: 0;
 	top: 120px;
+	top:105px;
 }
 
 .mini-sidebar .tabbable.spilled ul {

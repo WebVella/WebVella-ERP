@@ -10,6 +10,7 @@
 		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
 			<i class="fa fa-plus"></i> Create & Add
 		</a>
+
 	</p>
 
 	<table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
@@ -22,11 +23,11 @@
 		<tbody>
 			<tr ng-repeat="record in listData track by record.id">
 				<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;padding:0;">
-					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
+					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href='javascript:void(0)' title="Detach" class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
-						<i class="fa fa-times go-red"></i>
+					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+						<i class="fa fa-chain-broken go-red"></i>
 					</a>
 				</td>
 				<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount" ng-switch="::column.type">
@@ -317,7 +318,7 @@
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupData.recordData[item.dataName]'>
-													<img class="img-thumbnail" ng-src="{{popupData.recordData[item.dataName]}}" />
+													<img class="img-thumbnail" ng-src="{{popupData.recordData[item.dataName]}}" style="width:120px;"/>
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
