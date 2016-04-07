@@ -173,36 +173,36 @@ namespace WebVella.ERP.Api
 			using (DbConnection connection = DbContext.Current.CreateConnection())
 			{
 				bool isTransactionActive = false;
-			try
-			{
-				if (entity == null)
-					response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
-
-				if (record == null)
-					response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
-
-				if (response.Errors.Count > 0)
+				try
 				{
-					response.Object = null;
-					response.Success = false;
-					response.Timestamp = DateTime.UtcNow;
-					return response;
-				}
+					if (entity == null)
+						response.Errors.Add(new ErrorModel { Message = "Invalid entity name." });
 
-				if (!ignoreSecurity)
-				{
-					bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
-					if (!hasPermisstion)
+					if (record == null)
+						response.Errors.Add(new ErrorModel { Message = "Invalid record. Cannot be null." });
+
+					if (response.Errors.Count > 0)
 					{
-						response.StatusCode = HttpStatusCode.Forbidden;
+						response.Object = null;
 						response.Success = false;
-						response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
-						response.Errors.Add(new ErrorModel { Message = "Access denied." });
+						response.Timestamp = DateTime.UtcNow;
 						return response;
 					}
-				}
 
-				SetRecordServiceInformation(record, true, ignoreSecurity);
+					if (!ignoreSecurity)
+					{
+						bool hasPermisstion = SecurityContext.HasEntityPermission(EntityPermission.Create, entity);
+						if (!hasPermisstion)
+						{
+							response.StatusCode = HttpStatusCode.Forbidden;
+							response.Success = false;
+							response.Message = "Trying to create record in entity '" + entity.Name + "' with no create access.";
+							response.Errors.Add(new ErrorModel { Message = "Access denied." });
+							return response;
+						}
+					}
+
+					SetRecordServiceInformation(record, true, ignoreSecurity);
 
 					if (record.Properties.Any(p => p.Key.StartsWith("$")))
 					{
@@ -227,13 +227,12 @@ namespace WebVella.ERP.Api
 							throw new Exception("Guid.Empty value cannot be used as valid value for record id.");
 					}
 
-				List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
-					storageRecordData.Add(new KeyValuePair<string, object>("id", recordId));
+					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
 					foreach (var pair in record.GetProperties())
-				{
-					try
 					{
+						try
+						{
 							if (pair.Key == null)
 								continue;
 
@@ -259,7 +258,7 @@ namespace WebVella.ERP.Api
 								if (relationName.StartsWith("$"))
 								{
 									relationName = relationName.Substring(1);
-					}
+								}
 
 								if (string.IsNullOrWhiteSpace(relationFieldName))
 									throw new Exception(string.Format("Invalid relation '{0}'. The relation field name is not specified.", pair.Key));
@@ -277,19 +276,19 @@ namespace WebVella.ERP.Api
 								Field field = null;
 
 								if (relation.OriginEntityId == entity.Id)
-					{
+								{
 									relationEntity = GetEntity(relation.TargetEntityId);
 									relationField = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
 									realtionSearchField = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
 									field = entity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
 								}
-						else
+								else
 								{
 									relationEntity = GetEntity(relation.OriginEntityId);
 									relationField = relationEntity.Fields.FirstOrDefault(f => f.Id == relation.OriginFieldId);
 									realtionSearchField = relationEntity.Fields.FirstOrDefault(f => f.Name == relationFieldName);
 									field = entity.Fields.FirstOrDefault(f => f.Id == relation.TargetFieldId);
-					}
+								}
 
 								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
@@ -313,7 +312,7 @@ namespace WebVella.ERP.Api
 									{
 										queries.Add(EntityQuery.QueryEQ(realtionSearchField.Name, val));
 
-				}
+									}
 
 									filter = EntityQuery.QueryOR(queries.ToArray());
 								}
@@ -348,10 +347,10 @@ namespace WebVella.ERP.Api
 										Guid targetFieldValue = relatedRecordIdValue;
 
 										if (relation.TargetEntityId == entity.Id)
-				{
+										{
 											originFieldValue = relatedRecordIdValue;
 											targetFieldValue = (Guid)record[field.Name];
-				}
+										}
 
 										CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
 									}
@@ -362,7 +361,7 @@ namespace WebVella.ERP.Api
 										storageRecordData.Add(new KeyValuePair<string, object>(field.Name, relatedRecordValues[0]));
 								}
 							}
-				else
+							else
 							{
 								//locate the field
 								var field = entity.Fields.SingleOrDefault(x => x.Name == pair.Key);
@@ -377,55 +376,55 @@ namespace WebVella.ERP.Api
 						}
 					}
 
-				recRepo.Create(entity.Name, storageRecordData);
+					recRepo.Create(entity.Name, storageRecordData);
 
 					if (skipRecordReturn)
-				{
-					response.Object = null;
-					response.Success = true;
-					response.Message = "Record was created successfully";
+					{
+						response.Object = null;
+						response.Success = true;
+						response.Message = "Record was created successfully";
 
 						if (isTransactionActive)
 							connection.CommitTransaction();
-					return response;
-				}
+						return response;
+					}
 
-				var query = EntityQuery.QueryEQ("id", recordId);
-				var entityQuery = new EntityQuery(entity.Name, "*", query);
+					var query = EntityQuery.QueryEQ("id", recordId);
+					var entityQuery = new EntityQuery(entity.Name, "*", query);
 
-				// when user create record, it is get returned ignoring create permissions
-				bool oldIgnoreSecurity = ignoreSecurity;
-				response = Find(entityQuery);
-				ignoreSecurity = oldIgnoreSecurity;
+					// when user create record, it is get returned ignoring create permissions
+					bool oldIgnoreSecurity = ignoreSecurity;
+					response = Find(entityQuery);
+					ignoreSecurity = oldIgnoreSecurity;
 
-				if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
-					response.Message = "Record was created successfully";
-				else
-				{
-					response.Success = false;
-					response.Message = "Record was not created successfully";
-				}
+					if (response.Object != null && response.Object.Data != null && response.Object.Data.Count > 0)
+						response.Message = "Record was created successfully";
+					else
+					{
+						response.Success = false;
+						response.Message = "Record was not created successfully";
+					}
 
 					if (isTransactionActive)
 						connection.CommitTransaction();
 
-				return response;
-			}
-			catch (Exception e)
-			{
+					return response;
+				}
+				catch (Exception e)
+				{
 					if (isTransactionActive)
 						connection.RollbackTransaction();
 
-				response.Success = false;
-				response.Object = null;
-				response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Object = null;
+					response.Timestamp = DateTime.UtcNow;
 #if DEBUG
-				response.Message = e.Message + e.StackTrace;
+					response.Message = e.Message + e.StackTrace;
 #else
                 response.Message = "The entity record was not created. An internal error occurred!";
 #endif
-				return response;
-			}
+					return response;
+				}
 			}
 		}
 
@@ -506,7 +505,6 @@ namespace WebVella.ERP.Api
 						response.Timestamp = DateTime.UtcNow;
 						return response;
 					}
-
 
 					if (!ignoreSecurity)
 					{
@@ -607,6 +605,9 @@ namespace WebVella.ERP.Api
 
 								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
+
+								if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
+									throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
 
 								QueryObject filter = null;
 								if (relation.RelationType == EntityRelationType.ManyToMany)
@@ -727,13 +728,13 @@ namespace WebVella.ERP.Api
 					}
 
 					if (isTransactionActive)
-					connection.CommitTransaction();
+						connection.CommitTransaction();
 					return response;
 				}
 				catch (Exception e)
 				{
 					if (isTransactionActive)
-					connection.RollbackTransaction();
+						connection.RollbackTransaction();
 					response.Success = false;
 					response.Object = null;
 					response.Timestamp = DateTime.UtcNow;
