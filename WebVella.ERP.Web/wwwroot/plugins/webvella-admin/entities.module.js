@@ -82,13 +82,17 @@
 
 
     // Resolve EntityMetaList /////////////////////////
-    resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaAdminService'];
+    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaAdminService'];
 
     /* @ngInject */
-    function resolveEntityMetaList($q, $log, webvellaAdminService) {
+    function resolveEntityMetaList($rootScope,$q, $log, webvellaAdminService) {
     	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
+
+        //Show Sidemenu
+        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         // Process
         function successCallback(response) {
@@ -150,9 +154,7 @@
             if(a.name > b.name) return 1;
             return 0; 
         });
-        //Show Sidemenu
-        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+
         contentData.roles = resolvedRolesList.data;
         contentData.search = {};
         //Create new entity modal

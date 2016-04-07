@@ -557,6 +557,7 @@ namespace WebVella.ERP.Api
 						response.Object = null;
 						response.Success = true;
 						response.Message = "Record was updated successfully";
+						connection.CommitTransaction();
 						return response;
 					}
 
