@@ -217,7 +217,7 @@
 												</div>
 											</div>
 											<div class="image-upload" ng-show='contentData.entityData[item.dataName]'>
-												<img class="img-thumbnail" ng-src="{{contentData.entityData[item.dataName]}}" />
+												<img class="img-thumbnail" ng-src="{{contentData.entityData[item.dataName]}}" style="width:120px;"/>
 												<a class="delete-link" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 											</div>
 											<div class="form-description" ng-hide="contentData[item.meta.name + 'Error']">

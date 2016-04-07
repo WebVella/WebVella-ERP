@@ -1021,11 +1021,6 @@ ngToast
 }
 
 
-#content .nav > li > a:hover, #content .nav > li > a:focus {
-	background: #ccc;
-	color: #555;
-}
-
 /*#endregion */
 
 /*#region << Page title >> */
@@ -2778,11 +2773,12 @@ table .btn-xs.btn-link {
 		border-radius: 4px 0 0 4px;
 	}
 
-	.tabs-left > .nav-tabs .active > a,
+	/* Ruins the sidemenu*/
+	/*.tabs-left > .nav-tabs .active > a,
 	.tabs-left > .nav-tabs .active > a:hover,
 	.tabs-left > .nav-tabs .active > a:focus {
 		border: none;
-	}
+	}*/
 
 .tabs-right > .nav-tabs {
 	float: right;
@@ -2831,7 +2827,7 @@ table .btn-xs.btn-link {
 	}
 
 .tabbable.spilled ul {
-	width: 179px;
+	width: 177px;
 	background: #555;
 	background: rgba(255,255,255,0.2);
 	padding: 1em 0 1em 1em;
@@ -2860,10 +2856,9 @@ table .btn-xs.btn-link {
 	}
 
 	.tabbable.spilled ul li.active a {
-		background-color: #f1f1f1;
 		background-color: #e9e9e9;
-		border-color: #f1f1f1;
-		border-color: rgba(255,255,255,0.7);
+		border-top:1px solid #e9e9e9;
+		border-bottom:1px solid #e9e9e9;
 		color: #333;
 	}
 
@@ -2994,10 +2989,6 @@ table .btn-xs.btn-link {
 	.mini-sidebar #sidebar a.back {
 		background-color: transparent !important;
 	}
-
-.mini-sidebar .tabbable.spilled li.active a:hover {
-	border: none;
-}
 
 .mini-sidebar .tabbable.spilled a.back,
 .mini-sidebar #sidebar a.back {
@@ -3152,7 +3143,7 @@ table .btn-xs.btn-link {
 	line-height: 40px;
 	height: 40px;
 	top: -64px;
-	right: 20px;
+	right: 18px;
 	background: #ffffff;
 	background: rgba(255,255,255,0.2);
 	width: 90px;

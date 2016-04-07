@@ -521,19 +521,19 @@
 			for (var i = 0; i < popupData.entities.length; i++) {
 				//initialize target
 				if (popupData.entities[i].id === popupData.relation.targetEntityId) {
-					popupData.selectedTargetEntityLabel = popupData.entities[i].label;
+					popupData.selectedTargetEntityLabel = popupData.entities[i].name;
 					for (var j = 0; j < popupData.entities[i].fields.length; j++) {
 						if (popupData.entities[i].fields[j].id === popupData.relation.targetFieldId) {
-							popupData.selectedTargetFieldLabel = popupData.entities[i].fields[j].label;
+							popupData.selectedTargetFieldLabel = popupData.entities[i].fields[j].name;
 						}
 					}
 				}
 				// initialize origin
 				if (popupData.entities[i].id === popupData.relation.originEntityId) {
-					popupData.selectedOriginEntityLabel = popupData.entities[i].label;
+					popupData.selectedOriginEntityLabel = popupData.entities[i].name;
 					for (var j = 0; j < popupData.entities[i].fields.length; j++) {
 						if (popupData.entities[i].fields[j].id === popupData.relation.originFieldId) {
-							popupData.selectedOriginFieldLabel = popupData.entities[i].fields[j].label;
+							popupData.selectedOriginFieldLabel = popupData.entities[i].fields[j].name;
 						}
 					}
 				}
