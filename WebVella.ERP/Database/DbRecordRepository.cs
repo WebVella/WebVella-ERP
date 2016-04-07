@@ -75,7 +75,7 @@ namespace WebVella.ERP.Database
 			DbRepository.InsertRecord(tableName, parameters);
 		}
 
-		public EntityRecord Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
+		public void Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
 		{
 			Entity entity = entMan.ReadEntity(entityName).Object;
 
@@ -104,11 +104,9 @@ namespace WebVella.ERP.Database
 			var updateSuccess = DbRepository.UpdateRecord(tableName, parameters);
 			if (!updateSuccess)
 				throw new StorageException("Failed to update record.");
-			
-			return Find(entityName, id.Value);
 		}
 
-		public EntityRecord Delete(string entityName, Guid id)
+		public void Delete(string entityName, Guid id)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
@@ -117,8 +115,6 @@ namespace WebVella.ERP.Database
 				throw new StorageException("There is no record with such id to update.");
 
 			DbRepository.DeleteRecord(tableName, id);
-
-			return outRecord;
 		}
 
 		public EntityRecord FindTreeNodeRecord(string entityName, Guid id)
