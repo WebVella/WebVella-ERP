@@ -408,6 +408,26 @@
           "lib/net451/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections.Concurrent",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        }
+      },
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -423,8 +443,13 @@
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+      "Microsoft.Extensions.Logging.Console/1.0.0-rc1-final": {
         "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final"
+        },
         "frameworkAssemblies": [
           "Microsoft.CSharp",
           "mscorlib",
@@ -432,10 +457,10 @@
           "System.Core"
         ],
         "compile": {
-          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         },
         "runtime": {
-          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         }
       },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -993,6 +1018,26 @@
           "lib/net451/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections.Concurrent",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        }
+      },
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1006,6 +1051,26 @@
         },
         "runtime": {
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Logging.Console/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         }
       },
       "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
@@ -1584,6 +1649,26 @@
           "lib/net451/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {}
         }
       },
+      "Microsoft.Extensions.Logging/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Collections.Concurrent",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.Logging.dll": {}
+        }
+      },
       "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1599,8 +1684,13 @@
           "lib/net451/Microsoft.Extensions.Logging.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+      "Microsoft.Extensions.Logging.Console/1.0.0-rc1-final": {
         "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final"
+        },
         "frameworkAssemblies": [
           "Microsoft.CSharp",
           "mscorlib",
@@ -1608,10 +1698,10 @@
           "System.Core"
         ],
         "compile": {
-          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         },
         "runtime": {
-          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+          "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         }
       },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -2178,6 +2268,22 @@
         "Microsoft.Extensions.DependencyInjection.Abstractions.nuspec"
       ]
     },
+    "Microsoft.Extensions.Logging/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "anegHH4XHjaCmC557A0uvnJzprT44MOKr669yfiQLtITA+lQrM3aMijxjjdCREnxE8ftXuSz+6wViCvkgcAOhA==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.dll",
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.xml",
+        "lib/net451/Microsoft.Extensions.Logging.dll",
+        "lib/net451/Microsoft.Extensions.Logging.xml",
+        "lib/netcore50/Microsoft.Extensions.Logging.dll",
+        "lib/netcore50/Microsoft.Extensions.Logging.xml",
+        "Microsoft.Extensions.Logging.1.0.0-rc1-final.nupkg",
+        "Microsoft.Extensions.Logging.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.Extensions.Logging.nuspec"
+      ]
+    },
     "Microsoft.Extensions.Logging.Abstractions/1.0.0-rc1-final": {
       "type": "package",
       "serviceable": true,
@@ -2192,6 +2298,22 @@
         "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg",
         "Microsoft.Extensions.Logging.Abstractions.1.0.0-rc1-final.nupkg.sha512",
         "Microsoft.Extensions.Logging.Abstractions.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.Logging.Console/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "zUklTASL2my5gp291VZuK6YMLit9ECmU7gDNN/gDwqO3EB1CDyKQtGQBtABNNgJw/0In8mFFNbsiGYhZ8xFUJA==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Console.dll",
+        "lib/dotnet5.4/Microsoft.Extensions.Logging.Console.xml",
+        "lib/net451/Microsoft.Extensions.Logging.Console.dll",
+        "lib/net451/Microsoft.Extensions.Logging.Console.xml",
+        "lib/netcore50/Microsoft.Extensions.Logging.Console.dll",
+        "lib/netcore50/Microsoft.Extensions.Logging.Console.xml",
+        "Microsoft.Extensions.Logging.Console.1.0.0-rc1-final.nupkg",
+        "Microsoft.Extensions.Logging.Console.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.Extensions.Logging.Console.nuspec"
       ]
     },
     "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
@@ -2552,6 +2674,8 @@
       "Newtonsoft.Json >= 8.0.1-beta3",
       "System.Linq >= 4.0.1-beta-23516",
       "System.Threading >= 4.0.11-beta-23516",
+      "Microsoft.Extensions.Logging >= 1.0.0-*",
+      "Microsoft.Extensions.Logging.Console >= 1.0.0-*",
       "Microsoft.AspNet.Mvc.Core >= 6.0.0-rc1-final"
     ],
     "DNX,Version=v4.6": [

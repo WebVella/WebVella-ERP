@@ -181,7 +181,7 @@
 					if (contentData.defaultRecordView.regions[i].name === "content") {
 						returnObject.meta = fastCopy(contentData.defaultRecordView.regions[i]);
 						returnObject.templateMeta = fastCopy(contentData.defaultRecordView);
-						returnObject.meta.label = "General";
+						returnObject.meta.label = "Details";
 					}
 				}
 				returnObject.isView = true;
@@ -375,6 +375,7 @@
 						}
 					}
 					if (itemObject.meta != null && !itemObject.meta.required) {
+						contentData.selectedSidebarPage.data[item.dataName] = [];
 						contentData.fieldUpdate(itemObject, null);
 					}
 				}
@@ -421,13 +422,15 @@
 							if (!data && item.meta.required) {
 								return "This is a required field";
 							}
-							data = moment(data).startOf('day').utc().toISOString();
+							//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
+							
 							break;
 						case 5: //Datetime
 							if (!data && item.meta.required) {
 								return "This is a required field";
 							}
-							data = moment(data).startOf('minute').utc().toISOString();
+							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
 							break;
 						case 6: //Email
 							if (!data && item.meta.required) {
@@ -496,8 +499,7 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-
-
+ 
 					//we need to add a cache breaker for the browser to get the new version of files and images
 					switch (item.meta.fieldType) {
 					   case 7: //file
@@ -512,9 +514,10 @@
 						break;
 					}
 
-					
 					//We cannot reload the data from the response object as there is missing data for any 
 					//view or list or trees, or viewFromRelation etc.
+
+					//webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
 
 					defer.resolve();
 				}
@@ -597,6 +600,7 @@
 				}
 			};
 
+			contentData.cacheBreakers = {};
 			contentData.updateFileUpload = function (file, item) {
 				if (file != null) {
 					contentData.uploadedFileName = item.dataName;
@@ -605,13 +609,14 @@
 						$timeout(function () {
 							contentData.selectedSidebarPage.data[contentData.uploadedFileName] = response.object.url;
 							contentData.fieldUpdate(item, response.object.url);
+							contentData.cacheBreakers[item.dataName] = 	"?v=" + moment().toISOString();
 						}, 1);
 					}
 
 					contentData.uploadSuccessCallback = function (response) {
 						var tempPath = response.object.url;
 						var fileName = response.object.filename;
-						var targetPath = oldFileName;
+						var targetPath = file.name;
 						var overwrite = true;
 						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
 					}
@@ -1080,17 +1085,17 @@
 
 					// ** Post relation change between the two records
 					var recordsToBeAttached = [];
-					var recordsToBeDettached = [];
+					var recordsToBeDetached = [];
 					if (returnObject.dataKind == "origin") {
 						recordsToBeAttached.push(returnObject.selectedRecordId);
 						if (oldRelationRecordId != null) {
-							recordsToBeDettached.push(oldRelationRecordId);
+							recordsToBeDetached.push(oldRelationRecordId);
 						}
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else if (returnObject.dataKind == "target") {
 						recordsToBeAttached.push(displayedRecordId);
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+						webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else {
 						alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1527,12 +1532,12 @@
 			popupData.processOperation = returnObject.operation;
 			var displayedRecordId = $stateParams.recordId;
 			var recordsToBeAttached = [];
-			var recordsToBeDettached = [];
+			var recordsToBeDetached = [];
 			if (returnObject.operation == "attach") {
 				recordsToBeAttached.push(displayedRecordId);
 			}
 			else if (returnObject.operation == "detach") {
-				recordsToBeDettached.push(displayedRecordId);
+				recordsToBeDetached.push(displayedRecordId);
 			}
 
 			function successCallback(response) {
@@ -1546,7 +1551,7 @@
 					popupData.currentlyAttachedIds.splice(elementIndex, 1);
 					popupData.processingRecordId = "";
 				}
-
+				webvellaRootService.GoToState($state, $state.current.name, popupData.parentData.stateParams);
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> Change applied'
@@ -1573,7 +1578,7 @@
 
 			// ** Post relation change between the two records
 			if (returnObject.dataKind == "target") {
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDettached, successCallback, errorCallback);
+				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 			else {
 				alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1788,7 +1793,7 @@
 		popupData.toggleNodeSelection = function (node) {
 			var nodeIndex = popupData.selectedTreeRecords.indexOf(node.recordId);
 			var recordsToBeAttached = [];
-			var recordsToBeDettached = [];			
+			var recordsToBeDetached = [];			
 			function createRelationChangeSuccessCallback(response) {
 				popupData.selectedTreeRecords.push(node.recordId);
 				//Add to the branch selected object
@@ -1815,13 +1820,13 @@
 			function applyRelationChangeErrorCallback(response) { }
 			//Node should be unselected. Relations should be severed
 			if (nodeIndex > -1) {
-				recordsToBeDettached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				recordsToBeDetached.push($stateParams.recordId);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 				//Node should be selected. Relations should be created
 			else {
 				recordsToBeAttached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDettached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				webvellaAdminService.manageRecordsRelation(popupData.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 		}
 

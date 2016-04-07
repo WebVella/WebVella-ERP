@@ -203,17 +203,40 @@ namespace WebVella.ERP.Database
 		{
 			try
 			{
+				var relRepository = new DbRelationRepository();
+				var relations = relRepository.Read();
+				var entityRelations = relations.Where(x => x.TargetEntityId == entityId || x.OriginEntityId == entityId);
+
 				using (DbConnection con = DbContext.Current.CreateConnection())
 				{
-					NpgsqlCommand command = con.CreateCommand("DELETE FROM entities WHERE id=@id;");
+					try
+					{
+						con.BeginTransaction();
 
-					var parameterId = command.CreateParameter() as NpgsqlParameter;
-					parameterId.ParameterName = "id";
-					parameterId.Value = entityId;
-					parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
-					command.Parameters.Add(parameterId);
+						foreach (var relation in entityRelations)
+							relRepository.Delete(relation.Id);
+							
+						var entity = Read(entityId);
 
-					return command.ExecuteNonQuery() > 0;
+						NpgsqlCommand command = con.CreateCommand("DELETE FROM entities WHERE id=@id; DROP TABLE rec_" + entity.Name );
+
+						var parameterId = command.CreateParameter() as NpgsqlParameter;
+						parameterId.ParameterName = "id";
+						parameterId.Value = entityId;
+						parameterId.NpgsqlDbType = NpgsqlDbType.Uuid;
+						command.Parameters.Add(parameterId);
+
+						var result = command.ExecuteNonQuery() > 0;
+
+						con.CommitTransaction();
+
+						return result;
+					}
+					catch
+					{
+						con.RollbackTransaction();
+						throw;
+					}
 				}
 			}
 			finally

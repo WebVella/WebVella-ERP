@@ -114,6 +114,7 @@
         <h3 class="modal-title" ng-show="popupData.relation.id != null">Manage relation</h3>
     </div>
     <div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupData.validation.hasError" ng-bind="popupData.validation.message"></div>
         <form name="createRelation">
             <div class="row">
                 <div class="col-sm-6">

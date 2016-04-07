@@ -85,31 +85,8 @@
 			return "one";
 		}
 
+		pluginData.boz = "<a ng-click='click(1)' href='#'>Click me</a>";
 	}
 
 })();
 
-
-(function () {
-	'use strict';
-
-	angular
-        .module('webvellaDevelopers')
-        .controller('WebVellaDevelopersBaseController', WebVellaDevelopersBaseController);
-
-   	// Controller ///////////////////////////////
-	WebVellaDevelopersBaseController.$inject = ['$log','$controller', '$scope', '$timeout', '$rootScope', 'webvellaDevelopersQueryService', 'Upload', 'webvellaAdminService'];
-
-	/* @ngInject */
-	function WebVellaDevelopersBaseController($log,$controller, $scope, $timeout,$rootScope, queryService, Upload, webvellaAdminService) {
-		$log.debug('webvellaDevelopers>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
-		var pluginData = this;
-
-		pluginData.getName = function(){
-			return "two";
-		}
-
-	}
-
-  })();

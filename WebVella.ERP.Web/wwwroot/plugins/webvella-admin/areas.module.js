@@ -420,13 +420,13 @@
                     selectedEntity.iconName = popupData.cleanEntities[i].iconName;
                     selectedEntity.weight = popupData.cleanEntities[i].weight;
                     for (var j = 0; j < popupData.cleanEntities[i].recordViews.length; j++) {
-                        if (popupData.cleanEntities[i].recordViews[j].default) {
+                        if (popupData.cleanEntities[i].recordViews[j].default && popupData.cleanEntities[i].recordViews[j].type == "general") {
                             selectedEntity.view.name = popupData.cleanEntities[i].recordViews[j].name;
                             selectedEntity.view.label = popupData.cleanEntities[i].recordViews[j].label;
                         }
                     }
                     for (var m  = 0; m < popupData.cleanEntities[i].recordLists.length; m++) {
-                        if (popupData.cleanEntities[i].recordLists[m].default) {
+                        if (popupData.cleanEntities[i].recordLists[m].default && popupData.cleanEntities[i].recordLists[m].type == "general") {
                             selectedEntity.list.name = popupData.cleanEntities[i].recordLists[m].name;
                             selectedEntity.list.label = popupData.cleanEntities[i].recordLists[m].label;
                         }

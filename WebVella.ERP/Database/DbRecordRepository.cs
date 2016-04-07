@@ -75,7 +75,7 @@ namespace WebVella.ERP.Database
 			DbRepository.InsertRecord(tableName, parameters);
 		}
 
-		public EntityRecord Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
+		public void Update(string entityName, IEnumerable<KeyValuePair<string, object>> recordData)
 		{
 			Entity entity = entMan.ReadEntity(entityName).Object;
 
@@ -104,11 +104,9 @@ namespace WebVella.ERP.Database
 			var updateSuccess = DbRepository.UpdateRecord(tableName, parameters);
 			if (!updateSuccess)
 				throw new StorageException("Failed to update record.");
-			
-			return Find(entityName, id.Value);
 		}
 
-		public EntityRecord Delete(string entityName, Guid id)
+		public void Delete(string entityName, Guid id)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
@@ -117,8 +115,6 @@ namespace WebVella.ERP.Database
 				throw new StorageException("There is no record with such id to update.");
 
 			DbRepository.DeleteRecord(tableName, id);
-
-			return outRecord;
 		}
 
 		public EntityRecord FindTreeNodeRecord(string entityName, Guid id)
@@ -171,18 +167,45 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public void CreateRecordField(string entityName, string fieldName, object value)
+		public void CreateRecordField(string entityName, Field field )
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
-			Entity entity = entMan.ReadEntity(entityName).Object;
-			Field field = entity.Fields.FirstOrDefault(f => f.Name.ToLowerInvariant() == fieldName.ToLowerInvariant());
-			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, value, !field.Required);
+		
+			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetDefaultValue(), !field.Required, field.Unique );
+			if( field.Unique )
+				DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name } );
+			if (field.Searchable)
+				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name );
 		}
 
-		public void RemoveRecordField(string entityName, string fieldName)
+		public void UpdateRecordField(string entityName, Field field)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
-			DbRepository.DeleteColumn(tableName, fieldName);
+
+			DbRepository.SetColumnNullable(RECORD_COLLECTION_PREFIX + entityName, field.Name, !field.Required);
+
+			if (field.Unique)
+				DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
+			else
+				DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName );
+
+
+			if (field.Searchable)
+				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+			else
+				DbRepository.DropIndex("idx_s_" + entityName + "_" + field.Name);
+		}
+
+		public void RemoveRecordField(string entityName, Field field )
+		{
+			string tableName = RECORD_COLLECTION_PREFIX + entityName;
+
+			if (field.Unique)
+				DbRepository.DropIndex("idx_u_" + entityName + "_" + field.Name);
+			if (field.Searchable)
+				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
+
+			DbRepository.DeleteColumn(tableName, field.Name);
 		}
 
 		private EntityRecord ConvertJObjectToEntityRecord(JObject jObj, List<Field> fields)

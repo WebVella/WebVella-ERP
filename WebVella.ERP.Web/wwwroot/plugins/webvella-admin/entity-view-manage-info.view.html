@@ -52,7 +52,7 @@
 		</ul>
 
 	</div>
-	
+
 	<div id="page-text">
 		<ul class="nav nav-pills">
 			<li role="presentation" class="active">
@@ -74,69 +74,143 @@
 				The only drawback is that the values of the field should be only alphanumberic chars.
 			</div>
 
-			<div class="form">
+			<div class="form-horizontal">
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="name">Name</label>
-							<a href="javascript:void(0)" editable-text="contentData.view.name" onbeforesave="contentData.fieldUpdate('name',$data)">{{ contentData.view.name || "not set" }}</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2" for="name">Name</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-text="contentData.view.name"
+											   value="{{contentData.view.name}}"
+											   onbeforesave="contentData.fieldUpdate('name',$data)" e-form="fieldForm_name">
+										<span class="input-group-addon" ng-click="fieldForm_name.$show()" ng-hide="fieldForm_name.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="type">Type</label>
-							<a href="javascript:void(0)" editable-select="contentData.view.type" e-ng-options="s.name as s.label for s in contentData.viewTypes" onbeforesave="contentData.fieldUpdate('type', $data)">
-								{{ contentData.showViewType() }}
-							</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">Type</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-select="contentData.view.type"
+											   value="{{contentData.showViewType()}}" e-ng-options="s.name as s.label for s in contentData.viewTypes"
+											   onbeforesave="contentData.fieldUpdate('type', $data)" e-form="fieldForm_type">
+										<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="label">Label</label>
-							<a href="javascript:void(0)" editable-text="contentData.view.label" onbeforesave="contentData.fieldUpdate('label',$data)">{{ contentData.view.label || "not set" }}</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">Label</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-text="contentData.view.label"
+											   value="{{contentData.view.label}}"
+											   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+										<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="weight">Weight</label>
-							<a href="javascript:void(0)" editable-text="contentData.view.weight" onbeforesave="contentData.fieldUpdate('weight', $data)">{{ contentData.view.weight || "not set" }}</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">Weight</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-text="contentData.view.weight"
+											   value="{{contentData.view.weight}}"
+											   onbeforesave="contentData.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+										<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="default">Default</label>
-							<a href="javascript:void(0)" editable-checkbox="contentData.view.default" e-title="make this default view" onbeforesave="contentData.fieldUpdate('default',$data)">
-								<span ng-show="contentData.view.default"><i class='fa fa-fw fa-check go-green'></i> true</span>
-								<span ng-show="!contentData.view.default"><i class='fa fa-fw fa-close go-red'></i> false</span>
-							</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">Default</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<span class="input-group-addon hidden-xs" ng-if="contentData.view.default && !fieldForm_default.$visible">
+											<i class="fa fa-check fa-fw go-green"></i>
+										</span>
+										<span class="input-group-addon hidden-xs" ng-if="!contentData.view.default && !fieldForm_default.$visible">
+											<i class="fa fa-times fa-fw go-red"></i>
+										</span>
+										<input type="text" class="form-control" disabled editable-checkbox="contentData.view.default"
+											   e-title="Make this default view?" value="{{contentData.view.default}}"
+											   onbeforesave="contentData.fieldUpdate('default',$data)" e-form="fieldForm_default">
+										<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="system">System view</label>
-							<span ng-show="contentData.view.system" class="not-editable"><i class="go-green fa fa-check"></i> true</span>
-							<span ng-show="!contentData.view.system" class="not-editable"><i class="go-red fa fa-close"></i> false</span>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">System</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-readonly">
+										<span class="input-group-addon" ng-if="contentData.view.system">
+											<i class="fa fa-check fa-fw go-green"></i>
+										</span>
+										<span class="input-group-addon" ng-if="!contentData.view.system">
+											<i class="fa fa-times fa-fw go-red"></i>
+										</span>
+										<input type="text" class="form-control" disabled value="{{::contentData.view.system}}"></input>
+										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="iconName">CSS class</label>
-							<a href="javascript:void(0)" editable-text="contentData.view.cssClass" onbeforesave="contentData.fieldUpdate('cssClass', $data)">{{ contentData.view.cssClass || "not set" }}</a>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">CSS class</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-text="contentData.view.cssClass"
+											   value="{{contentData.view.cssClass}}"
+											   onbeforesave="contentData.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+										<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="form-group">
-								<label class="control-label" for="weight">Icon Name</label>
-								<a href="javascript:void(0)" e-typeahead-template-url="iconTypeaheadTemplate.html" editable-text="contentData.view.iconName" 
-								onbeforesave="contentData.fieldUpdate('iconName', $data)" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10"><i class="fa fa-fw fa-{{contentData.view.iconName}}"></i> {{ contentData.view.iconName || "" }}</a>
-								<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+							<div class="editable-field field">
+								<label class="control-label col-lg-2">Icon Name</label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable">
+										<span class="input-group-addon"><i class="fa fa-{{contentData.view.iconName}} fa-fw"></i></span>
+										<input type="text" class="form-control" disabled editable-text="contentData.view.iconName"
+											   value="{{contentData.view.iconName}}" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+											   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10">
+										<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -144,11 +218,21 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-label" for="iconName">Dynamic HTML template</label>
-							<a href="javascript:void(0)"  editable-text="contentData.view.dynamicHtmlTemplate" ng-bind-html="contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:18})"
-								class="textbox"	   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)">
-							</a>
-							<div class="form-description">Substitute the default view html template with a custom one. The url link to the template file could be absolute or relative.</div>
+							<div class="editable-field field">
+								<label class="control-label col-lg-1">Template</label>
+								<div class="col-lg-11">
+									<div class="editable-wrapper input-group editable-updatable">
+										<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
+											<a href="{{contentData.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+										</span>
+										<input type="text" class="form-control" disabled editable-text="contentData.view.dynamicHtmlTemplate"
+											   value="{{contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:18})}}"
+											   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
+										<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+									<div class="form-description">Substitute the default view html template with a custom dynamic html one, which will be compiled by angular. If url to a template file, should start with '/' or 'http'.</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -2695,7 +2695,7 @@ namespace WebVella.ERP.Api
 							return response;
 						}
 
-						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field.Name, field.GetDefaultValue());
+						DbContext.Current.RecordRepository.CreateRecordField(entity.Name, field);
 
 						con.CommitTransaction();
 					}
@@ -2978,6 +2978,8 @@ namespace WebVella.ERP.Api
 					entity.Fields.Remove(fieldForDelete);
 
 				entity.Fields.Add(field);
+
+				DbContext.Current.RecordRepository.UpdateRecordField(entity.Name, field);
 
 				DbEntity updatedEntity = entity.MapTo<DbEntity>();
 				bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
@@ -3295,7 +3297,7 @@ namespace WebVella.ERP.Api
 					con.BeginTransaction();
 					try
 					{
-						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field.Name);
+						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field );
 
 						DbEntity updatedEntity = entity.MapTo<DbEntity>();
 						bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
@@ -5520,7 +5522,7 @@ namespace WebVella.ERP.Api
 			primaryKeyField.Searchable = false;
 			primaryKeyField.Auditable = false;
 			primaryKeyField.System = true;
-			primaryKeyField.DefaultValue = Guid.Empty;
+			primaryKeyField.DefaultValue = null;
 			primaryKeyField.GenerateNewId = true;
 
 			fields.Add(primaryKeyField);
@@ -5538,7 +5540,7 @@ namespace WebVella.ERP.Api
 			createdBy.Searchable = false;
 			createdBy.Auditable = false;
 			createdBy.System = true;
-			createdBy.DefaultValue = Guid.Empty;
+			createdBy.DefaultValue = null;
 			createdBy.GenerateNewId = false;
 
 			fields.Add(createdBy);
@@ -5556,7 +5558,7 @@ namespace WebVella.ERP.Api
 			lastModifiedBy.Searchable = false;
 			lastModifiedBy.Auditable = false;
 			lastModifiedBy.System = true;
-			lastModifiedBy.DefaultValue = Guid.Empty;
+			lastModifiedBy.DefaultValue = null;
 			lastModifiedBy.GenerateNewId = false;
 
 			fields.Add(lastModifiedBy);
@@ -5617,6 +5619,7 @@ namespace WebVella.ERP.Api
 			create.Type = "general";
 			create.IconName = "list";
 			create.PageSize = 10;
+			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			recordLists.Add(create);
 
@@ -5629,6 +5632,7 @@ namespace WebVella.ERP.Api
 			lookup.Type = "lookup";
 			lookup.IconName = "list";
 			lookup.PageSize = 10;
+			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			recordLists.Add(lookup);
 
@@ -5650,6 +5654,7 @@ namespace WebVella.ERP.Api
 			create.Default = true;
 			create.System = true;
 			create.Type = "create";
+			create.Weight = 10;
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
@@ -5663,6 +5668,7 @@ namespace WebVella.ERP.Api
 			quickCreate.System = true;
 			quickCreate.Type = "quick_create";
 			quickCreate.IconName = "file-text-o";
+			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
 			recordViewList.Add(quickCreate);
@@ -5675,6 +5681,7 @@ namespace WebVella.ERP.Api
 			quickView.System = true;
 			quickView.Type = "quick_view";
 			quickView.IconName = "file-text-o";
+			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
 			recordViewList.Add(quickView);
@@ -5686,6 +5693,7 @@ namespace WebVella.ERP.Api
 			general.Default = true;
 			general.System = true;
 			general.Type = "general";
+			general.Weight = 10;
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);

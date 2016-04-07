@@ -199,12 +199,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					if (fieldMeta.displayFormat) {
-						return fieldMeta.displayFormat.replace("{0}", data);
-					}
-					else {
-						return data;
-					}
+					return getAutoIncrementString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -234,12 +229,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					if (data) {
-						return "<span class='go-green'>true</span>";
-					}
-					else {
-						return "<span class='go-red'>false</span>";
-					}
+					 return getCheckboxString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -252,10 +242,10 @@
 			}
 			else {
 				if (data) {
-					return "<span class='go-green'>true</span>";
+					return "TRUE";
 				}
 				else {
-					return "<span class='go-red'>false</span>";
+					return "FALSE";
 				}
 
 			}
@@ -267,6 +257,22 @@
 		function getCurrencyString(data, fieldMeta) {
 			if (!data && data != 0) {
 				return "";
+			}
+			else if (data instanceof Array) {
+				if (data.length == 0) {
+					return "";
+				}
+				else if (data.length == 1) {
+					return getCurrencyString(data[0], fieldMeta);
+				}
+				else {
+					var htmlString = "<ul class='field-list'>";
+					for (var i = 0; i < data.length; i++) {
+						htmlString += "<li>" + getCurrencyString(data[i], fieldMeta) + "</li>";
+					}
+					htmlString += "</ul>";
+					return htmlString;
+				}
 			}
 			else if (fieldMeta.currency != null && fieldMeta.currency !== {} && fieldMeta.currency.symbol) {
 				if (fieldMeta.currency.symbolPlacement === 1) {
@@ -290,7 +296,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return moment(data).format("DD MMM YYYY");;
+					return getDateString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -315,7 +321,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return moment(data).format("DD MMM YYYY HH:mm");
+					return getDateTimeString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -343,7 +349,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return getEmailString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -369,7 +375,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return "<a href='" + data + "' taget='_blank' class='link-icon'>view file</a>";
+					return getFileString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -381,7 +387,9 @@
 				}
 			}
 			else {
-				return "<a href='" + data + "' taget='_blank' class='link-icon'>view file</a>";
+					var lastSlashIndex = data.lastIndexOf("/") + 1;
+					var fileName = data.slice(lastSlashIndex,data.length);
+				return "<a href='" + data + "' taget='_blank' class='link-icon'>"+fileName + "</a>";
 			}
 		}
 		//8.Html
@@ -394,7 +402,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return getHtmlString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -419,7 +427,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return "<a target='_blank' href='" + data + "'><img src='" + data + "' class='table-image'/></a>";
+					return getImageString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -444,7 +452,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
+					return getTextareaString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -456,7 +464,8 @@
 				}
 			}
 			else {
-				return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				//return data.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				return data;
 			}
 		}
 		//11.Multiselect
@@ -469,20 +478,15 @@
 				if (data.length == 0) {
 					return "";
 				}
-				else if (data.length == 1) {
+				else if (data.length == 1){
+					return getMultiselectString(data[0], fieldMeta);
+				}
+				else {
 					for (var i = 0; i < data.length; i++) {
 						var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
 						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
 					}
 					return generatedStringArray.join(', ');
-				}
-				else {
-					var htmlString = "<ul class='field-list'>";
-					for (var i = 0; i < data.length; i++) {
-						htmlString += "<li>" + getMultiselectString(data[i], fieldMeta) + "</li>";
-					}
-					htmlString += "</ul>";
-					return htmlString;
 				}
 			}
 			else {
@@ -500,7 +504,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return getNumberString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -550,7 +554,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data * 100 + "%";
+					return getPercentString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -576,7 +580,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return phoneUtils.formatInternational(data);
+					return getPhoneString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -602,7 +606,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return getGuidString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -627,8 +631,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					var selected = $filter('filter')(fieldMeta.options, { key: data });
-					return (data && selected.length) ? selected[0].value : 'empty';
+					return getDropdownString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -654,7 +657,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return data;
+					return getTextString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -679,7 +682,7 @@
 					return "";
 				}
 				else if (data.length == 1) {
-					return "<a href='" + data + "' target='_blank'>" + data + "</a>";
+					return getUrlString(data[0], fieldMeta);
 				}
 				else {
 					var htmlString = "<ul class='field-list'>";
@@ -691,7 +694,7 @@
 				}
 			}
 			else {
-				return "<a href='" + data + "' target='_blank'>" + data + "</a>";
+				return data;
 			}
 		}
 		//#endregion

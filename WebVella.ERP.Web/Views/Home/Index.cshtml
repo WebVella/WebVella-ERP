@@ -62,6 +62,7 @@
 	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-bind-html-compile/angular-bind-html-compile.js"></script>
 
 	@* Core Application module definition *@
 	<script>
@@ -75,7 +76,7 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
-					'doubleScrollBars',
+					'doubleScrollBars','angular-bind-html-compile',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 					
@@ -172,6 +173,7 @@
 	<script src="~/plugins/webvella-areas/providers/recursive-list.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/view-tree-select.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/scroll.directive.js?v=@ViewBag.CacheBreaker"></script>
+
 
 	
 

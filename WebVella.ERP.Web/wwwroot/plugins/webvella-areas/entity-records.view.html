@@ -131,8 +131,8 @@
 
 	</form>
 	<div id="page-text">
-		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
-		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
+		<div class="table-scroll-wrapper" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate" data-double-scroll-bar-horizontal>
+		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0'>
 			<thead>
 				<tr>
 					<th class="actions"></th>
@@ -175,11 +175,12 @@
 			</tbody>
 		</table>
 		</div>
-		<div class="ng-hide" ng-show='::contentData.records.length > 0 && (contentData.recordsMeta.dynamicHtmlTemplate != null && contentData.recordsMeta.dynamicHtmlTemplate != "")'>
-			<div ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+		<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
+			<div ng-if="contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') || contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+			<div ng-if="!contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.recordsMeta.dynamicHtmlTemplate"></div>
 		</div>
 
-		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0 && (contentData.recordsMeta.dynamicHtmlTemplate == null || contentData.recordsMeta.dynamicHtmlTemplate == "")'>
+		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>
 			There are no records matching your query
 		</div>
 
@@ -859,8 +860,8 @@
 											<div ng-switch="column.match_type">
 												<div class="form-group" ng-switch-when="exact">
 													<label>Value</label>
-													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}">
-													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;" ng-change="popupData.ensureNullOnEmpty(column,0)">
+													<input type="text" class="form-control" ng-model="column.data[0]" name="{{column.meta.name}}" ng-model-options="{allowInvalid:false}" ng-change="popupData.ensureNullOnEmpty(column,0)">
+													<div class="form-description" ng-hide="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid" style="margin-top: 0.5em;margin-left: 0.5em;">
 														{{column.meta.helpText}}
 													</div>
 													<div class="error" ng-show="filterForm.{{column.meta.name}}.$dirty && filterForm.{{column.meta.name}}.$invalid">

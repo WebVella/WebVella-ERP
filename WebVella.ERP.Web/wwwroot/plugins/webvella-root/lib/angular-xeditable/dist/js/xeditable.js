@@ -1,7 +1,7 @@
 /*!
 angular-xeditable - 0.1.11
 Edit-in-place for angular.js
-Build date: 2016-04-01 
+Build date: 2016-04-04 
 */
 /**
  * Angular-xeditable module 

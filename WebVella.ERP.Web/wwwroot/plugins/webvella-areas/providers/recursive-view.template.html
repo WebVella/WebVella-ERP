@@ -1,84 +1,85 @@
-﻿<div ng-if='::viewMeta.meta.dynamicHtmlTemplate != null && viewMeta.meta.dynamicHtmlTemplate != ""'>
-	<div ng-include="viewMeta.meta.dynamicHtmlTemplate"></div>
+﻿<div ng-if='::viewMeta.meta.dynamicHtmlTemplate'>
+	<div ng-if="viewMeta.meta.dynamicHtmlTemplate.startsWith('/') || viewMeta.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="viewMeta.meta.dynamicHtmlTemplate"></div>
+	<div ng-if="!viewMeta.meta.dynamicHtmlTemplate.startsWith('/') && !viewMeta.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="viewMeta.meta.dynamicHtmlTemplate"></div>
 </div>
-<div ng-if='::viewMeta.meta.dynamicHtmlTemplate == null || viewMeta.meta.dynamicHtmlTemplate == ""'>
-<p ng-if="::(canAddExisting || canCreate) && !hasError">
-	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
-		<i class="fa fa-download"></i> Add existing
-	</a>
-	<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
-		<i class="fa fa-plus"></i> Create & Add
-	</a>
-</p>
-<!--<div ng-if="::viewData.length == 0">No items</div>-->
-<div ng-repeat="recordData in viewData" ng-if="::viewData.length > 0" class="recursive-view-wrapper">
-	<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in selectedRegion.sections track by section.id">
-		<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel" ng-click="toggleSectionCollapse(section.id,recordData.id)">
-			<span class="ng-hide" ng-show="!sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-down"></i></span>
-			<span class="ng-hide" ng-show="sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-right"></i></span>
-			{{::section.label}}
-		</div>
-		<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
-			<div class="panel-body-actions" ng-if="::(canRemove || canUpdate)">
-				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canUpdate">
-					<i class="fa fa-pencil"></i>
-				</a>
-				<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDettachRecord(recordData)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
-					<i class="fa fa-times go-red"></i>
-				</a>
+<div ng-if='::!viewMeta.meta.dynamicHtmlTemplate'>
+	<p ng-if="::(canAddExisting || canCreate) && !hasError">
+		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
+			<i class="fa fa-download"></i> Add existing
+		</a>
+		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
+			<i class="fa fa-plus"></i> Create & Add
+		</a>
+	</p>
+	<!--<div ng-if="::viewData.length == 0">No items</div>-->
+	<div ng-repeat="recordData in viewData" ng-if="::viewData.length > 0" class="recursive-view-wrapper">
+		<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in selectedRegion.sections track by section.id">
+			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel" ng-click="toggleSectionCollapse(section.id,recordData.id)">
+				<span class="ng-hide" ng-show="!sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-down"></i></span>
+				<span class="ng-hide" ng-show="sectionCollapsedData[section.id][recordData.id]"><i class="fa fa-fw fa-caret-right"></i></span>
+				{{::section.label}}
 			</div>
-			<div class="form" style="background: transparent">
-				<div class="row" ng-repeat="row in section.rows track by row.id">
-					<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
-						<div class="form-group" ng-repeat="item in column.items"
-							ng-switch="::item.type">
-							<!--If item is field WITH NO relation-->
-							<div class="field" ng-switch-when="field">
-								<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
-								<div class="col-lg-{{::12 - 12/column.gridColCount}}">
-									<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
-								</div>
-							</div>
-
-							<!-- If item is field WITH relation -->
-							<div class="field" ng-switch-when="fieldFromRelation">
-								<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
-								<div class="col-lg-{{::12 - 12/column.gridColCount}}">
-									<div ng-switch="::dataKind">
-										<div ng-switch-when="origin">
-											<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
-										</div>
-										<div ng-switch-when="target">
-											<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
-										</div>
-										<div ng-switch-when="origin-target"><p class="form-control-static" class="go-red">Not implemented. Need test case</p></div>
+			<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
+				<div class="panel-body-actions" ng-if="::(canRemove || canUpdate)">
+					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canUpdate">
+						<i class="fa fa-pencil"></i>
+					</a>
+					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(recordData)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+						<i class="fa fa-times go-red"></i>
+					</a>
+				</div>
+				<div class="form" style="background: transparent">
+					<div class="row" ng-repeat="row in section.rows track by row.id">
+						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
+							<div class="form-group" ng-repeat="item in column.items"
+								 ng-switch="::item.type">
+								<!--If item is field WITH NO relation-->
+								<div class="field" ng-switch-when="field">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
+									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+										<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
 									</div>
 								</div>
-							</div>
 
-							<!-- If item is view -->
-							<div class="field" ng-switch-when="view">
-								<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
-							</div>
-							<div class="field" ng-switch-when="viewFromRelation">
-								<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
-							</div>
-							<!-- If item is list -->
-							<div class="field" ng-switch-when="list">
-								<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
-							</div>
-							<div class="field" ng-switch-when="listFromRelation">
-								<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
-							</div>
+								<!-- If item is field WITH relation -->
+								<div class="field" ng-switch-when="fieldFromRelation">
+									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
+									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+										<div ng-switch="::dataKind">
+											<div ng-switch-when="origin">
+												<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
+											</div>
+											<div ng-switch-when="target">
+												<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
+											</div>
+											<div ng-switch-when="origin-target"><p class="form-control-static" class="go-red">Not implemented. Need test case</p></div>
+										</div>
+									</div>
+								</div>
 
+								<!-- If item is view -->
+								<div class="field" ng-switch-when="view">
+									<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
+								</div>
+								<div class="field" ng-switch-when="viewFromRelation">
+									<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
+								</div>
+								<!-- If item is list -->
+								<div class="field" ng-switch-when="list">
+									<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
+								</div>
+								<div class="field" ng-switch-when="listFromRelation">
+									<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
+								</div>
+
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!--<hr class="divider" style="border-color: #ddd;" ng-hide="$last" />-->
 	</div>
-	<!--<hr class="divider" style="border-color: #ddd;" ng-hide="$last" />-->
-</div>
 </div>
 
 <script type="text/ng-template" id="addExistingModal.html">

@@ -25,6 +25,9 @@ namespace WebVella.ERP
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
+				//setup necesary extensions
+				DbRepository.CreatePostgresqlExtensions();
+
 				try
 				{
 					connection.BeginTransaction();
@@ -149,7 +152,7 @@ namespace WebVella.ERP
 							password.Description = "Password for the user account";
 							password.HelpText = "";
 							password.Required = true;
-							password.Unique = true;
+							password.Unique = false;
 							password.Searchable = false;
 							password.Auditable = false;
 							password.System = true;
