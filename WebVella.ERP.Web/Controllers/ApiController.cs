@@ -29,6 +29,7 @@ namespace WebVella.ERP.Web.Controllers
 		//TODO - add created_by and modified_by fields where needed, when the login is done
 		RecordManager recMan;
 		EntityManager entityManager;
+		EntityRelationManager entityRelationManager;
 		SecurityManager secMan;
 
 		public ApiController()
@@ -36,6 +37,7 @@ namespace WebVella.ERP.Web.Controllers
 			recMan = new RecordManager();
 			secMan = new SecurityManager();
 			entityManager = new EntityManager();
+			entityRelationManager = new EntityRelationManager();
 		}
 
 		[AllowAnonymous]
@@ -1851,7 +1853,7 @@ namespace WebVella.ERP.Web.Controllers
 				return EntityQuery.QueryContains(field.Name, search);
 		}
 
-		private QueryObject CreateFilterQuery(string filterId, List<Entity> entities)
+		private QueryObject CreateFilterQuery(Entity currentEntity, string filterId, List<Entity> entities)
 		{
 			if (filterId == "all" || string.IsNullOrWhiteSpace(filterId))
 				return null;
@@ -1871,20 +1873,59 @@ namespace WebVella.ERP.Web.Controllers
 				foreach (var value in ((JArray)jObject.Properties().First().First()).Values())
 					values.Add(WebUtility.UrlDecode(value.Value<string>()));
 
-				string entityName = (string)filter["entity_name"];
-				Entity entity = entities.Single(e => e.Name == entityName);
+				string relatedEntityName = (string)filter["entity_name"];
+				Entity relatedEntity = entities.Single(e => e.Name == relatedEntityName);
 
-				string fieldName = (string)filter["field_name"];
+				string relatedEntityFieldName = (string)filter["field_name"];
 				string relationName = (string)filter["relation_name"];
 				string matchType = (string)filter["match_type"];
 
-				if (matchType == "exact")
-					queries.Add(EntityQuery.QueryEQ(fieldName, values[0]));
+				if (matchType == "exact" && relationName == null)
+				{
+					queries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, values[0]));
+				}
+				else if (matchType == "exact" && relationName != null)
+				{
+
+					var relation = entityRelationManager.Read(relationName).Object;
+					if (relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.OneToMany)
+					{
+						var currentEntityFilteredFieldId = Guid.Empty;
+						if (relation.OriginEntityId == relatedEntity.Id)
+						{
+							//if the relatedEntity is origin than the current on is target
+							currentEntityFilteredFieldId = relation.TargetFieldId;
+						}
+						else if (relation.TargetEntityId == relatedEntity.Id)
+						{
+							//if the relatedEntity is target than the current on is origin
+							currentEntityFilteredFieldId = relation.OriginFieldId;
+						}
+						else {
+							throw new Exception("Invalid relation name. The target entity is not present neither as origin or target.");
+						}
+						var targetFieldName = "";
+						try
+						{
+							targetFieldName = currentEntity.Fields.Single(x => x.Id == currentEntityFilteredFieldId).Name;
+						}
+						catch
+						{
+							throw new Exception("Field not found in the target entity");
+						}
+
+						queries.Add(EntityQuery.QueryEQ(targetFieldName, values[0]));
+					}
+					else {
+						//TODO RUMEN:   N:N relation, we should work with the relation table
+						throw new Exception("Search in N:N related entity is not yet implemented.");
+					}
+				}
 				else if (matchType == "exact_and")
 				{
-					MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+					MultiSelectField field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName) as MultiSelectField;
 					if (field == null)
-						throw new Exception("Missing filter field:" + fieldName);
+						throw new Exception("Missing filter field:" + relatedEntityFieldName);
 
 					foreach (string val in values)
 					{
@@ -1894,23 +1935,23 @@ namespace WebVella.ERP.Web.Controllers
 						if (option != null)
 							optionKey = option.Key;
 
-						queries.Add(EntityQuery.QueryEQ(fieldName, optionKey));
+						queries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, optionKey));
 					}
 				}
 				else if (matchType == "exact_or")
 				{
 					List<QueryObject> exactOrQueries = new List<QueryObject>();
 
-					MultiSelectField field = entity.Fields.SingleOrDefault(x => x.Name == fieldName) as MultiSelectField;
+					MultiSelectField field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName) as MultiSelectField;
 					if (field == null)
-						throw new Exception("Missing filter field:" + fieldName);
+						throw new Exception("Missing filter field:" + relatedEntityFieldName);
 
 					foreach (string val in values)
 					{
 						//because the match type is exact OR if a value is missing from select field options, we just skip it
 						var option = field.Options.SingleOrDefault(o => o.Value == val);
 						if (option != null)
-							exactOrQueries.Add(EntityQuery.QueryEQ(fieldName, option.Key));
+							exactOrQueries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, option.Key));
 					}
 
 					if (exactOrQueries.Count == 1)
@@ -1923,7 +1964,7 @@ namespace WebVella.ERP.Web.Controllers
 					if (values.Count != 2)
 						throw new Exception("Range filter expects 2 values.");
 
-					Field field = entity.Fields.SingleOrDefault(x => x.Name == fieldName);
+					Field field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName);
 					if (field is DateTimeField || field is DateField)
 					{
 						if (!string.IsNullOrWhiteSpace(values[0]))
@@ -1932,7 +1973,7 @@ namespace WebVella.ERP.Web.Controllers
 							if (!DateTime.TryParse(values[0], out value))
 								throw new Exception("Invalid filter range value:" + values[0]);
 
-							queries.Add(EntityQuery.QueryGTE(fieldName, value));
+							queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, value));
 						}
 
 						if (!string.IsNullOrWhiteSpace(values[1]))
@@ -1941,7 +1982,7 @@ namespace WebVella.ERP.Web.Controllers
 							if (!DateTime.TryParse(values[1], out value))
 								throw new Exception("Invalid filter range value:" + values[0]);
 
-							queries.Add(EntityQuery.QueryLTE(fieldName, value));
+							queries.Add(EntityQuery.QueryLTE(relatedEntityFieldName, value));
 						}
 					}
 					else
@@ -1952,7 +1993,7 @@ namespace WebVella.ERP.Web.Controllers
 							if (!decimal.TryParse(values[0], out value))
 								throw new Exception("Invalid filter range value:" + values[0]);
 
-							queries.Add(EntityQuery.QueryGTE(fieldName, value));
+							queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, value));
 
 						}
 						if (!string.IsNullOrWhiteSpace(values[1]))
@@ -1960,7 +2001,7 @@ namespace WebVella.ERP.Web.Controllers
 							decimal value;
 							if (!decimal.TryParse(values[1], out value))
 								throw new Exception("Invalid filter range value:" + values[1]);
-							queries.Add(EntityQuery.QueryLTE(fieldName, value));
+							queries.Add(EntityQuery.QueryLTE(relatedEntityFieldName, value));
 						}
 					}
 
@@ -1981,10 +2022,10 @@ namespace WebVella.ERP.Web.Controllers
 					else
 						throw new Exception("Invalid period filter value: " + values[0]);
 
-					queries.Add(EntityQuery.QueryGTE(fieldName, fromDate));
+					queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, fromDate));
 				}
 				else if (matchType == "regex")
-					queries.Add(EntityQuery.QueryRegex(fieldName, values[0]));
+					queries.Add(EntityQuery.QueryRegex(relatedEntityFieldName, values[0], QueryObjectRegexOperator.MatchCaseInsensitive));
 				else
 					throw new Exception("Not supported match type: " + matchType);
 
@@ -2013,7 +2054,7 @@ namespace WebVella.ERP.Web.Controllers
 					queryObj = searchQuery;
 			}
 
-			var filterQuery = CreateFilterQuery(filter, entities);
+			var filterQuery = CreateFilterQuery(entity, filter, entities);
 			if (filterQuery != null)
 			{
 				if (queryObj != null)
