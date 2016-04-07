@@ -463,6 +463,21 @@
           "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         }
       },
+      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        }
+      },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -1704,6 +1719,21 @@
           "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
         }
       },
+      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        }
+      },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -2674,9 +2704,9 @@
       "Newtonsoft.Json >= 8.0.1-beta3",
       "System.Linq >= 4.0.1-beta-23516",
       "System.Threading >= 4.0.11-beta-23516",
+      "Microsoft.AspNet.Mvc.Core >= 6.0.0-rc1-final",
       "Microsoft.Extensions.Logging >= 1.0.0-*",
-      "Microsoft.Extensions.Logging.Console >= 1.0.0-*",
-      "Microsoft.AspNet.Mvc.Core >= 6.0.0-rc1-final"
+      "Microsoft.Extensions.Logging.Console >= 1.0.0-*"
     ],
     "DNX,Version=v4.6": [
       "fx/System.XML >= 4.0.0",
