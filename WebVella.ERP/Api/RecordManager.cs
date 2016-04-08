@@ -538,6 +538,8 @@ namespace WebVella.ERP.Api
 
 					QueryObject filterObj = EntityQuery.QueryEQ("id", record["id"]);
 					var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
+					if(!oldRecordResponse.Success)
+						throw new Exception(oldRecordResponse.Message);
 					var oldRecord = oldRecordResponse.Object;
 
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
