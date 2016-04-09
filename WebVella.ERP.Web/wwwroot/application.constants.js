@@ -9,7 +9,7 @@
 	angular
 		.module('wvApp')
 		.constant('wvAppConstants', {
-			"debugEnabled": false,
+			"debugEnabled": true,
 			"apiBaseUrl": "/api/v1/en_US/",
 			"locale": "en_US",
 			"authTokenKey": "erp-auth",

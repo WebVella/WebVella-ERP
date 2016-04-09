@@ -448,7 +448,217 @@
 								<div class="field" ng-switch-when="fieldFromRelation">
 									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
 									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<span class="not-editable not-readable">can be set this after the record is created</span>
+										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
+											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
+												<!-- Case 1 - Current Entity is Origin -->
+												<div ng-switch-when="1">
+													<div class="editable-wrapper input-group editable-readonly">
+														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<span class="input-group-addon" title="1:1 relations can be managed only from the target's side"><i class="fa fa-question fa-fw"></i></span>
+													</div>
+												</div>
+												<!-- Case 2 - Current Entity is Target -->
+												<div ng-switch-when="2">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.selectedSidebarPage.data[item.dataName].length > 0"
+															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+													</div>
+												</div>
+
+												<!-- Case 3 - Current Entity is both Origin and Target -->
+												<div ng-switch-when="3">
+													<span class="go-red">1:1 - origin-target > Not implemented. We need a test case. Please submit an issue in github's project page</span>
+												</div>
+												<!-- Case 0 - Error -->
+												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+											</div>
+											<div ng-switch-when="2" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+												<!-- Case 1 - Current Entity is Origin -->
+												<div ng-switch-when="1" class="position-relative">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+														<input type="text" class="form-control" disabled value=""></input>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+													</div>
+												</div>
+												<!-- Case 2 - Current Entity is Target -->
+												<div ng-switch-when="2">
+													<div class="editable-wrapper input-group editable-updatable">
+														<input type="text" class="form-control" disabled value="{{contentData.dummyFields[item.dataName]}}"></input>
+														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.entityData[item.dataName].length > 0"
+															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+												</div>
+												<!-- Case 3 - Current Entity is both Origin and Target -->
+												<div ng-switch-when="3" class="position-relative">
+													<div ng-if="item.relationDirection == 'origin-target'">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+															<input type="text" class="form-control" disabled value=""></input>
+															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														</div>
+														<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+															<table class="table table-bordered editable origin lookup">
+																<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																	<td>{{relationDataRecord}}</td>
+																</tr>
+																<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																	<td style="padding: 16px"></td>
+																</tr>
+															</table>
+															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														</div>
+														<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+															<table class="table table-bordered editable origin lookup">
+																<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																	<td>{{relationDataRecord}}</td>
+																</tr>
+																<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																	<td style="padding: 16px"></td>
+																</tr>
+															</table>
+															<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+														</div>
+													</div>
+													<div ng-if="item.relationDirection == 'target-origin'">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
+															<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+															<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.selectedSidebarPage.data[item.dataName].length > 0"
+																  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+														</div>
+														<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+															<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+															<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+														</div>
+													</div>
+												</div>
+												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+											</div>
+											<div ng-switch-when="3" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+												<!-- Case 1 - Current Entity is Origin -->
+												<div ng-switch-when="1" class="position-relative">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value=""></input>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+													</div>
+												</div>
+
+												<!-- Case 2 - Current Entity is Target -->
+												<div ng-switch-when="2" class="position-relative">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value=""></input>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+													</div>
+												</div>
+
+												<!-- Case 3 - Current Entity is both Origin and Target -->
+												<div ng-switch-when="3" class="position-relative">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value=""></input>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													</div>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<table class="table table-bordered editable origin lookup">
+															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<td>{{relationDataRecord}}</td>
+															</tr>
+															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<td style="padding: 16px"></td>
+															</tr>
+														</table>
+														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+													</div>
+												</div>
+
+												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
+											</div>
+										</div>
+										<div ng-if="::item.meta.helpText" class="form-description">
+											{{item.meta.helpText}}
+										</div>
 									</div>
 								</div>
 								<!--If item is view WITH NO relation-->
@@ -499,3 +709,85 @@
 		<button class="btn btn-default" ng-click="contentData.cancel()">Cancel</button>
 	</div>
 </div>
+
+<script type="text/ng-template" id="manageRelationFieldModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">{{popupData.getRelationLabel(popupData.selectedItem.relationName)}}</span></h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div ng-hide="popupData.hasError">
+			<div ng-if="popupData.hasWarning">
+				<div class="alert alert-warning">{{popupData.warningMessage}}</div>
+			</div>
+			<div ng-if="!popupData.hasWarning">
+				<form id="filters" class="form-inline">
+					<div class="form-group">
+						<div class="input-group">
+							<input ng-model="popupData.searchQuery" type="text" class="form-control" placeholder="{{::popupData.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupData.checkForSearchEnter($event)">
+							<span class="input-group-btn">
+								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupData.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
+							</span>
+						</div>
+					</div>
+				</form>
+
+				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
+					<thead>
+						<tr>
+							<th class="actions" style="width:80px;" ng-if="popupData.modalMode != 'single-trigger-selection'"></th>
+							<th class="actions" style="width:110px;" ng-if="popupData.modalMode == 'single-trigger-selection'"></th>
+							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="record in popupData.relationLookupList.data" ng-class="{'warning': popupData.isSelectedRecord(record.id)}">
+							<td ng-if="popupData.modalMode == 'single-selection'">
+								<a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+									select
+								</a>
+								<span class="go-red" ng-if="popupData.isSelectedRecord(record.id)">
+									selected
+								</span>
+							</td>
+							<td ng-if="popupData.modalMode == 'multi-selection'">
+								<a ng-click='popupData.attachRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+									select
+								</a>
+								<a ng-click='popupData.detachRecord(record)' href="javascript:void(0)" ng-if="popupData.isSelectedRecord(record.id)">
+									deselect
+								</a>
+							</td>
+							<td ng-if="popupData.modalMode == 'single-trigger-selection'">
+								<span class="go-gray" ng-show="popupData.processingRecordId == record.id">processing...</span>
+								<a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupData.isSelectedRecord(record.id) && popupData.processingRecordId != record.id">
+									select now
+								</a>
+								<a ng-click='popupData.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupData.isSelectedRecord(record.id)  && popupData.processingRecordId != record.id">
+									deselect now
+								</a>
+							</td>
+							<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">
+								<span ng-bind-html="::popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="alert alert-info" ng-show="popupData.relationLookupList.data.length == 0">
+					No records found
+				</div>
+				<ul class="pager">
+					<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+					<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+					<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<!--<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save changes</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>

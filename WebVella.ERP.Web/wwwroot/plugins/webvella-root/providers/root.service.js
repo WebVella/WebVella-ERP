@@ -99,12 +99,15 @@
 		}
 
 		//////////////////
-		function GoToState(state, stateName, params) {
+		function GoToState(stateName, params) {
 			$log.debug('webvellaRoot>providers>root.service>GoToState> function called ' + moment().format('HH:mm:ss SSSS'));
-
-			$timeout(function () {
-				state.go(stateName, params, { reload: true });
-			}, 0);
+			var redirectObject = {};
+			redirectObject.stateName = stateName;
+			redirectObject.params = params;
+			$rootScope.$emit("state-change-needed",redirectObject);
+			//$timeout(function () {
+			//	state.go(stateName, params, { reload: true });
+			//}, 0);
 		}
 
 		////////////////////

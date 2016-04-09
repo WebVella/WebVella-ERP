@@ -178,7 +178,7 @@ span.divider {
 
 #content .btn-default {
 	border-color: #ccc;
-	background: transparent;
+	background: rgba(255,255,255,0.5);
 }
 
 	#content .btn-default:hover {
@@ -538,7 +538,7 @@ ngToast
     Userbox
 *****************************/
 #userbox {
-	padding: 10px 15px;
+	padding: 5px 15px;
 	background: #212121;
 	position: relative;
 	height: 46px;
@@ -2818,7 +2818,7 @@ table .btn-xs.btn-link {
 }
 
 #sidebar .tabbable.spilled {
-	left: -28px;
+	left: -26px;
 	top: 95px;
 }
 
