@@ -74,16 +74,16 @@
 
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
+        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList','$anchorScroll','$location'];
 
 	/* @ngInject */
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
+        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList,$anchorScroll,$location) {
 		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.stateParams = $stateParams;
-
+		contentData.validation = {};
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
@@ -465,46 +465,67 @@
 
 		//#region << Save >>
 		contentData.create = function (redirectTarget) {
-			//Alter some data before save
+			//Validate 
+			contentData.validation = {};
 			for (var k = 0; k < availableViewFields.length; k++) {
-				if (availableViewFields[k].type === "field") {
-					switch (availableViewFields[k].meta.fieldType) {
-						case 4: //Date
-							if(contentData.entityData[availableViewFields[k].meta.name] != null){
-								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
-							}
-							break;
-						case 5: //Date & Time
-							if(contentData.entityData[availableViewFields[k].meta.name] != null){
-								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
-							}
-							break;
-						case 14: //Percent
-							//need to convert to decimal 0 <= val <= 100 Divide by 100
-							//Hack for proper javascript division
-							$scope.Math = window.Math;
-							var helpNumber = 10000000;
-							var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].meta.name] * helpNumber);
-							contentData.entityData[availableViewFields[k].meta.name] = multipliedValue / (100 * helpNumber);
-							break;
+				 if(availableViewFields[k].type === "field" && availableViewFields[k].meta.required){
+					   if(contentData.entityData[availableViewFields[k].dataName] == null || contentData.entityData[availableViewFields[k].dataName] == ""){
+							contentData.validation[availableViewFields[k].dataName] = true;
+							contentData.validation.hasError = true;
+							contentData.validation.errorMessage = "A required data is missing!";
+					   }
+				 }
+			}
+			if(!contentData.validation.hasError){
+				//Alter some data before save
+				for (var k = 0; k < availableViewFields.length; k++) {
+					if (availableViewFields[k].type === "field") {
+						switch (availableViewFields[k].meta.fieldType) {
+							case 4: //Date
+								if(contentData.entityData[availableViewFields[k].dataName] != null){
+									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
+								}
+								break;
+							case 5: //Date & Time
+								if(contentData.entityData[availableViewFields[k].dataName] != null){
+									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
+								}
+								break;
+							case 14: //Percent
+								//need to convert to decimal 0 <= val <= 100 Divide by 100
+								//Hack for proper javascript division
+								$scope.Math = window.Math;
+								var helpNumber = 10000000;
+								var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].dataName] * helpNumber);
+								contentData.entityData[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
+								break;
+						}
+					}
+					else if(availableViewFields[k].type === "fieldFromRelation"){
+						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
 					}
 				}
-				else if(availableViewFields[k].type === "fieldFromRelation"){
-					//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
+				contentData.entityData["created_on"] = moment().utc().toISOString();
+				//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
+				switch(redirectTarget){
+					case "details":
+						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
+						break;
+					case "list":
+						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
+						break;
 				}
 			}
-			contentData.entityData["created_on"] = moment().utc().toISOString();
-			//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-			switch(redirectTarget){
-				case "details":
-					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
-					break;
-				case "list":
-					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
-					break;
-			}
-			
+			else {
+			//Scroll top
+			// set the location.hash to the id of
+			// the element you wish to scroll to.
+			$location.hash('page-title');
 
+			// call $anchorScroll()
+			$anchorScroll();			
+			
+			}
 		};
 
 		contentData.cancel = function () {
@@ -571,10 +592,7 @@
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
-			popupData["currencyErrorMessage"] = "Bad new message";
-			popupData["currencyError"] = true;
+			
 
 		}
 

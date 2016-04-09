@@ -1,10 +1,16 @@
 <div id="home-tiles" class="container">
-    <div class="list-wrapper">
-        <span ui-sref="{{menuItem.stateName}}({{menuItem.stateParams}})" class="area thumbnail {{::menuItem.color}}" ng-repeat="menuItem in contentData.browsenav">
+    <div class="list-wrapper" ng-if="contentData.browsenav.length > 0">
+        <a href="javascript:void(0)" ui-sref="{{menuItem.stateName}}({{menuItem.stateParams}})" class="area thumbnail {{::menuItem.color}}" ng-repeat="menuItem in contentData.browsenav">
             <div class="icon-wrapper"><i class="fa fa-{{::menuItem.iconName}}"></i></div>
             <div class="caption">
                 {{::menuItem.label}}
             </div>
-        </span>
+        </a>
     </div>
+	<div class="alert alert-info" ng-if="contentData.browsenav.length == 0 && contentData.topNav.length > 0">
+		Begin by selecting one of the tabs above
+	</div>
+	<div class="alert alert-info" ng-if="contentData.browsenav.length == 0 && contentData.topNav.length == 0">
+		There are no areas defined!
+	</div>
 </div>
