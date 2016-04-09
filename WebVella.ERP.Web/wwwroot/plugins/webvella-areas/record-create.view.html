@@ -481,13 +481,13 @@
 											<div ng-switch-when="2" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="!contentData.dummyFields[item.dataName] || contentData.dummyFields[item.dataName].length == 0">
 														<input type="text" class="form-control" disabled value=""></input>
 														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.dummyFields[item.dataName].length > 0">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in contentData.dummyFields[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
 															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
@@ -495,25 +495,14 @@
 															</tr>
 														</table>
 														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
-													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
-														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
-																<td>{{relationDataRecord}}</td>
-															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
-																<td style="padding: 16px"></td>
-															</tr>
-														</table>
-														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
 													<div class="editable-wrapper input-group editable-updatable">
 														<input type="text" class="form-control" disabled value="{{contentData.dummyFields[item.dataName]}}"></input>
-														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.entityData[item.dataName].length > 0"
-															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.hasFieldFromRelationValue(item.dataName)"
+															  confirmed-click="contentData.removeFieldFromRelationValue(item.dataName)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
 														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 												</div>

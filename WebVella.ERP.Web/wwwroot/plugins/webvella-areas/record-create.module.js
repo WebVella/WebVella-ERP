@@ -74,11 +74,11 @@
 
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList','$anchorScroll','$location'];
+        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location'];
 
 	/* @ngInject */
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList,$anchorScroll,$location) {
+        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location) {
 		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -118,9 +118,6 @@
 
 		//Initialize entityRecordData
 		contentData.entityData = {};
-		for (var l = 0; l < contentData.currentEntity.fields.length; l++) {
-			contentData.entityData[contentData.currentEntity.fields[l].name] = null;
-		}
 		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		contentData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
@@ -324,9 +321,9 @@
 				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
 				{ name: 'clipboard', items: ['Undo', 'Redo'] },
 				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar','Sourcedialog'] }, '/',
+				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'Sourcedialog'] }, '/',
 			]
-		};	
+		};
 
 
 		contentData.toggleSectionCollapse = function (section) {
@@ -364,12 +361,34 @@
 			}
 			return null;
 		}
+
+		contentData.hasFieldFromRelationValue = function (itemDataName) {
+			var index = itemDataName.lastIndexOf('$') + 1;
+			var idFieldPrefix = itemDataName.slice(0, index);
+			if (contentData.entityData[idFieldPrefix + "id"]) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		contentData.removeFieldFromRelationValue = function (itemDataName) {
+			var index = itemDataName.lastIndexOf('$') + 1;
+			var idFieldPrefix = itemDataName.slice(0, index);
+			$timeout(function () {
+				delete contentData.entityData[idFieldPrefix + "id"];
+				delete contentData.dummyFields[itemDataName];
+			}, 10);
+		}
+
+
 		//#endregion
 
 		//#region << Render >>
 		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
-		contentData.checkUserEntityPermissions = function(permissionsCsv){
-			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,permissionsCsv));
+		contentData.checkUserEntityPermissions = function (permissionsCsv) {
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity, permissionsCsv));
 		}
 
 
@@ -390,7 +409,7 @@
 		}
 
 		//#region << Methods to generate the record details view name >>
-		
+
 		//Select default view for the area
 		contentData.selectedList = {};
 		for (var j = 0; j < contentData.currentEntity.recordLists.length; j++) {
@@ -438,7 +457,7 @@
 						if (record[dataName] != undefined) {
 							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
 							//Case 1 - data is not from relation (not starting with $)
-							if(!dataName.startsWith('$')){
+							if (!dataName.startsWith('$')) {
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
 							}
 							else {
@@ -468,26 +487,26 @@
 			//Validate 
 			contentData.validation = {};
 			for (var k = 0; k < availableViewFields.length; k++) {
-				 if(availableViewFields[k].type === "field" && availableViewFields[k].meta.required){
-					   if(contentData.entityData[availableViewFields[k].dataName] == null || contentData.entityData[availableViewFields[k].dataName] == ""){
-							contentData.validation[availableViewFields[k].dataName] = true;
-							contentData.validation.hasError = true;
-							contentData.validation.errorMessage = "A required data is missing!";
-					   }
-				 }
+				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
+					if (contentData.entityData[availableViewFields[k].dataName] == null || contentData.entityData[availableViewFields[k].dataName] == "") {
+						contentData.validation[availableViewFields[k].dataName] = true;
+						contentData.validation.hasError = true;
+						contentData.validation.errorMessage = "A required data is missing!";
+					}
+				}
 			}
-			if(!contentData.validation.hasError){
+			if (!contentData.validation.hasError) {
 				//Alter some data before save
 				for (var k = 0; k < availableViewFields.length; k++) {
 					if (availableViewFields[k].type === "field") {
 						switch (availableViewFields[k].meta.fieldType) {
 							case 4: //Date
-								if(contentData.entityData[availableViewFields[k].dataName] != null){
+								if (contentData.entityData[availableViewFields[k].dataName] != null) {
 									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
 								}
 								break;
 							case 5: //Date & Time
-								if(contentData.entityData[availableViewFields[k].dataName] != null){
+								if (contentData.entityData[availableViewFields[k].dataName] != null) {
 									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
 								}
 								break;
@@ -501,13 +520,13 @@
 								break;
 						}
 					}
-					else if(availableViewFields[k].type === "fieldFromRelation"){
+					else if (availableViewFields[k].type === "fieldFromRelation") {
 						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
 					}
 				}
 				contentData.entityData["created_on"] = moment().utc().toISOString();
 				//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-				switch(redirectTarget){
+				switch (redirectTarget) {
 					case "details":
 						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
 						break;
@@ -517,14 +536,14 @@
 				}
 			}
 			else {
-			//Scroll top
-			// set the location.hash to the id of
-			// the element you wish to scroll to.
-			$location.hash('page-title');
+				//Scroll top
+				// set the location.hash to the id of
+				// the element you wish to scroll to.
+				$location.hash('page-title');
 
-			// call $anchorScroll()
-			$anchorScroll();			
-			
+				// call $anchorScroll()
+				$anchorScroll();
+
 			}
 		};
 
@@ -555,7 +574,7 @@
 					entityName: $stateParams.entityName,
 					recordId: response.object.data[0].id,
 					viewName: detailsViewName,
-					auxPageName:"*",
+					auxPageName: "*",
 					filter: $stateParams.filter,
 					page: $stateParams.page
 
@@ -592,7 +611,7 @@
 		}
 
 		function errorCallback(response) {
-			
+
 
 		}
 
@@ -601,7 +620,7 @@
 		//#region << Modals >>
 
 		//#region << Relation field >>
-		contentData.dummyFields = {};
+		contentData.dummyFields = {};  //These fields will present data to the user that will not be submitted
 		////////////////////
 		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
 		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
@@ -646,17 +665,17 @@
 						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
 						var dummyFieldValue = null;
 						var index = item.dataName.lastIndexOf('$') + 1;
-						var dummyFieldName = item.dataName.slice(index,item.dataName.length);
-						contentData.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName],item.meta);
-						 //4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-						var idFieldPrefix = item.dataName.slice(0,index);
-						contentData.entityData[idFieldPrefix+ "id"] = returnObject.selectedRecordId;
-						}
+						var dummyFieldName = item.dataName.slice(index, item.dataName.length);
+						contentData.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
+						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
+						var idFieldPrefix = item.dataName.slice(0, index);
+						contentData.entityData[idFieldPrefix + "id"] = returnObject.selectedRecordId;
+					}
 					function modalCase1ErrorCallback(response) {
 						popupData.hasError = true;
 						popupData.errorMessage = response.message;
 					}
-					webvellaAdminService.getRecord(returnObject.selectedRecordId,item.entityName,modalCase1SuccessCallback,modalCase1ErrorCallback);
+					webvellaAdminService.getRecord(returnObject.selectedRecordId, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 				});
 			}
 				//Select MULTIPLE item modal
@@ -690,40 +709,38 @@
 				});
 				//On modal exit
 				modalInstance.result.then(function (returnObject) {
-
-					// Initialize
-					var displayedRecordId = $stateParams.recordId;
-
-					function successCallback(response) {
-						ngToast.create({
-							className: 'success',
-							content: '<span class="go-green">Success:</span> Change applied'
-						});
-						webvellaRootService.GoToState($state.current.name, contentData.stateParams);
-					}
-
-					function errorCallback(response) {
-						var messageHtml = response.message;
-						if (response.errors.length > 0) { //Validation errors
-							messageHtml = "<ul>";
-							for (var i = 0; i < response.errors.length; i++) {
-								messageHtml += "<li>" + response.errors[i].message + "</li>";
-							}
-							messageHtml += "</ul>";
+					var selectedRecords = [];
+					var index = item.dataName.lastIndexOf('$') + 1;
+					var dummyFieldName = item.dataName.slice(index, item.dataName.length);
+					var idFieldPrefix = item.dataName.slice(0, index);
+					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
+					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
+					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
+					function modalCase1SuccessCallback(response) {
+						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
+						var dummyFieldValue = null;
+						contentData.dummyFields[item.dataName] = [];
+						contentData.entityData[idFieldPrefix + "id"] = [];
+						for (var i = 0; i < response.object.data.length; i++) {
+							contentData.dummyFields[item.dataName].push(webvellaAreasService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
+							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
+							contentData.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
 						}
-						ngToast.create({
-							className: 'error',
-							content: '<span class="go-red">Error:</span> ' + messageHtml,
-							timeout: 7000
-						});
-					}
 
-					// There are currently cases just for origin, error on else
-					if (returnObject.dataKind == "origin") {
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, returnObject.attachDelta, returnObject.detachDelta, successCallback, errorCallback);
+					}
+					function modalCase1ErrorCallback(response) {
+						popupData.hasError = true;
+						popupData.errorMessage = response.message;
+					}
+					var fieldsArray = [];
+					fieldsArray.push("email");
+
+					if (returnObject.attachDelta.length == 0) {
+					   	contentData.dummyFields[item.dataName] = [];
+						contentData.entityData[idFieldPrefix + "id"] = [];
 					}
 					else {
-						alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
+						webvellaAreasService.getMultipleRecords(returnObject.attachDelta, fieldsArray, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}
@@ -804,7 +821,7 @@
 					errorCallback(response);
 				}
 				else {
-					
+
 					//var gg = contentData.modalSelectedItem;
 					//contentData.modalRelationType;
 					//contentData.modalDataKind;
@@ -850,7 +867,7 @@
 
 		//#endregion
 		//#endregion
-		
+
 		$log.debug('webvellaAreas>record-create> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
@@ -875,8 +892,15 @@
 		popupData.hasWarning = false;
 		popupData.warningMessage = "";
 		//Init
-		popupData.currentlyAttachedIds = fastCopy(popupData.parentData.entityData["$field$" + popupData.selectedItem.relationName + "$id"]); // temporary object in order to highlight
-		popupData.dbAttachedIds = fastCopy(popupData.currentlyAttachedIds);
+		var index = selectedItem.dataName.lastIndexOf('$') + 1;
+		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
+		var idFieldPrefix = selectedItem.dataName.slice(0, index);
+		popupData.currentlyAttachedIds = [];
+		popupData.dbAttachedIds = [];
+		if (popupData.parentData.entityData[idFieldPrefix + "id"] && popupData.parentData.entityData[idFieldPrefix + "id"].length > 0) {
+			popupData.dbAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
+			popupData.currentlyAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
+		}
 		popupData.getRelationLabel = contentData.getRelationLabel;
 		popupData.attachedRecordIdsDelta = [];
 		popupData.detachedRecordIdsDelta = [];
@@ -923,7 +947,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page,null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, null, successCallback, errorCallback);
 		}
 
 		//#endregion

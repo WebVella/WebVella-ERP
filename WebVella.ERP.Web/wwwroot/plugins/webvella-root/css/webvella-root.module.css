@@ -3214,6 +3214,11 @@ table .btn-xs.btn-link {
 	color: #FB8C00;
 	cursor: pointer;
 }
+
+.editable-updatable .input-group-addon.remove-addon:hover {
+	color: #F44336;
+}
+
 .editable-field > .control-label {
 	color:#999;
 }
