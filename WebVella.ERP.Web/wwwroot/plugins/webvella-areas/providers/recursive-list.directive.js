@@ -163,10 +163,10 @@
 				//The list entity is target
 				//this means that the parent Entity is the origin and relation should be managed through the parent record Id.
 				if (returnObject.operation == "attach") {
-					recordsToBeAttached.push(selectedRecordId);
+					recordsToBeAttached.push(returnObject.selectedRecordId);
 				}
 				else if (returnObject.operation == "detach") {
-					recordsToBeDetached.push(selectedRecordId);
+					recordsToBeDetached.push(returnObject.selectedRecordId);
 				}
 				webvellaAdminService.manageRecordsRelation(returnObject.relationName, $scope.parentId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}

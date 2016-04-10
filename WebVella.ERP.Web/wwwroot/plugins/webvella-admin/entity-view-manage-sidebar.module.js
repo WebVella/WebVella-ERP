@@ -523,8 +523,17 @@
 			}
 		};
 
-		contentData.dragItemRemove = function (index) {
-			contentData.itemScheduledForRemoval = contentData.view.sidebar.items[index];
+		contentData.dragItemRemove = function (itemDataName) {
+			contentData.itemScheduledForRemoval = null;
+			var index = -1;
+			for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
+				if(contentData.view.sidebar.items[i].dataName === itemDataName){
+					contentData.itemScheduledForRemoval =  contentData.view.sidebar.items[i];
+					index = i;
+				} 
+			}
+
+
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
