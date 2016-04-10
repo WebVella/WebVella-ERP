@@ -2074,7 +2074,7 @@ body.mini-sidebar #loading-bar-spinner {
 }
 
 body #loading-bar-spinner {
-	top: 10px;
+	top: 5px;
 	left: 15px;
 }
 
