@@ -288,6 +288,9 @@
 
 		contentData.generateLibrary = function (generateRelationOptions) {
 			contentData.library.items = [];
+			if(generateRelationOptions){
+				contentData.library.relations = [];
+			}
 			contentData.fullLibrary.items.forEach(function (item) {
 				//Initially remove all items that are from not activated relation and the relationOptions
 				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) === -1) || !item.meta) {
@@ -510,8 +513,7 @@
 			//Init
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are copying them currently only
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+				contentData.regenerateLibrary();
 			};
 
 			var droppedItem = fastCopy(fieldItem);
@@ -535,6 +537,7 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id !== "library") {
+					contentData.regenerateLibrary();
 				}
 
 			};
