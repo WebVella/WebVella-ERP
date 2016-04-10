@@ -11,8 +11,9 @@
 
 	angular
         .module('webvellaAreas')
-        .directive('recursiveList', recursiveList)
+        .directive('recursiveList', recursiveList)										   
 		.controller('RLAddExistingModalController', RLAddExistingModalController)
+		.controller('ViewRelatedRecordModalController', ViewRelatedRecordModalController)
 		.controller('RLManageRelatedRecordModalController', RLManageRelatedRecordModalController);
 
 	recursiveList.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
@@ -343,6 +344,78 @@
 
 			return defer.promise;
 		}
+
+
+		$scope.viewRelatedRecordItem = function (record) {
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'viewRelatedRecordModal.html',
+				controller: 'ViewRelatedRecordModalController',
+				controllerAs: "popupData",
+				size: "lg",
+				resolve: {
+					contentData: function () {
+						return $scope;
+					},
+					resolvedQuickViewRecord: function () {
+						return resolveQuickViewRecord(record);
+					}
+				}
+			});
+			//On modal exit
+			modalInstance.result.then(function () { });
+
+		}
+
+		var resolveQuickViewRecord = function (record) {
+			// Initialize
+			var defer = $q.defer();
+
+			// Process
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.reject();
+			}
+			function getViewRecordSuccessCallback(response) {
+				defer.resolve(response.object); //Submitting the whole response to manage the error states
+			}
+
+			function getViewMetaSuccessCallback(response) {
+				var responseObject = {};
+				responseObject.meta = response.object;
+				responseObject.data = null;
+				defer.resolve(responseObject); //Submitting the whole response to manage the error states
+			}
+
+			function getEntityMetaSuccessCallback(response) {
+				var entityMeta = response.object;
+				var defaultQuickViewView = null;
+				//Find the default lookup field if none return null.
+				for (var i = 0; i < entityMeta.recordViews.length; i++) {
+					if (entityMeta.recordViews[i].default && entityMeta.recordViews[i].type == "quick_view") {
+						defaultQuickViewView = entityMeta.recordViews[i];
+					}
+				}
+
+				if (defaultQuickViewView == null) {
+					response.message = "This entity does not have default quick_view view";
+					response.success = false;
+					errorCallback(response);
+				}
+				else {
+					webvellaAreasService.getViewRecord(record.id, defaultQuickViewView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+				}
+			}
+
+			webvellaAdminService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
+
+			return defer.promise;
+		}
+
 
 		//#endregion
 
@@ -757,6 +830,39 @@
 			webvellaRootService.generateValidationMessages(response, popupData, popupData.recordData, location);
 		}
 
+		popupData.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+		//#endregion
+
+		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	};
+
+
+	ViewRelatedRecordModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
+        'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedQuickViewRecord'];
+	function ViewRelatedRecordModalController(contentData, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
+        ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedQuickViewRecord) {
+		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+
+		//#region << Init >>
+		/* jshint validthis:true */
+		var popupData = this;
+		popupData.entity = fastCopy(contentData.entity);
+		popupData.recordData = fastCopy(resolvedQuickViewRecord.data)[0];
+ 		popupData.viewMeta = fastCopy(resolvedQuickViewRecord.meta);
+
+		popupData.contentRegion = {};
+		for (var j = 0; j < popupData.viewMeta.regions.length; j++) {
+			if (popupData.viewMeta.regions[j].name === "content") {
+				popupData.contentRegion = popupData.viewMeta.regions[j];
+			}
+		}
+
+		//#endregion
+
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
 		popupData.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};

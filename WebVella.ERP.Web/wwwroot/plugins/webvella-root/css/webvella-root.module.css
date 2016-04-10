@@ -2114,7 +2114,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 }
 
 .modal .modal-body {
-	background: #fff;
+	background: #e9e9e9;
 }
 
 .modal .modal-footer {
@@ -2223,11 +2223,6 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	padding-left: 7px;
 	padding-right: 7px;
 	border-color: #bbb;
-}
-
-.control-label {
-	font-weight: normal;
-	color: #9e9e9e;
 }
 
 .panel-body .form,
@@ -2351,12 +2346,6 @@ form .error,
 			background: #FF9800;
 			color: white;
 		}
-
-.panel .form .control-label,
-.control-label {
-	color: #333;
-	font-weight: normal;
-}
 
 .recursive-view-wrapper .form .control-label {
 	color: #999;
@@ -2984,7 +2973,6 @@ table .btn-xs.btn-link {
 		display: none;
 	}
 
-	.mini-sidebar .tabbable.spilled ul,
 	.mini-sidebar .tabbable.spilled a.back,
 	.mini-sidebar #sidebar a.back {
 		background-color: transparent !important;
@@ -3217,10 +3205,6 @@ table .btn-xs.btn-link {
 
 .editable-updatable .input-group-addon.remove-addon:hover {
 	color: #F44336;
-}
-
-.editable-field > .control-label {
-	color:#999;
 }
 
 /* Common styles for multiple inline types*/

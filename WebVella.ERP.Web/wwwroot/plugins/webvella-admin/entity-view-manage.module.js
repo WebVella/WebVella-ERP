@@ -900,7 +900,7 @@
 				contentData.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			sortLibrary();
+			contentData.sortLibrary();
 		}
 
 		contentData.getRelationType = function (relationId) {
