@@ -670,16 +670,20 @@
 						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
 						var idFieldPrefix = item.dataName.slice(0, index);
 						contentData.entityData[idFieldPrefix + "id"] = returnObject.selectedRecordId;
+						console.log(contentData.entityData);
 					}
 					function modalCase1ErrorCallback(response) {
-						popupData.hasError = true;
-						popupData.errorMessage = response.message;
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> ' + response.message,
+							timeout: 7000
+						});
 					}
 					webvellaAdminService.getRecord(returnObject.selectedRecordId, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 				});
 			}
 				//Select MULTIPLE item modal
-			else if ((relationType == 2 && dataKind == "origin") || (relationType == 3 && dataKind == "origin")) {
+			else if ((relationType == 2 && dataKind == "origin") || relationType == 3) {
 				var modalInstance = $uibModal.open({
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
@@ -726,53 +730,26 @@
 							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
 							contentData.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
 						}
-
+						 console.log(contentData.entityData);
 					}
 					function modalCase1ErrorCallback(response) {
-						popupData.hasError = true;
-						popupData.errorMessage = response.message;
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> ' + response.message,
+							timeout: 7000
+						});
 					}
 					var fieldsArray = [];
-					fieldsArray.push("email");
+					fieldsArray.push(dummyFieldName);
 
-					if (returnObject.attachDelta.length == 0) {
+					if (returnObject.selectedRecordIdArray.length == 0) {
 					   	contentData.dummyFields[item.dataName] = [];
 						contentData.entityData[idFieldPrefix + "id"] = [];
 					}
 					else {
-						webvellaAreasService.getMultipleRecords(returnObject.attachDelta, fieldsArray, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaAreasService.getMultipleRecords(returnObject.selectedRecordIdArray, fieldsArray, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
-			}
-			else if ((relationType == 3 && dataKind == "target")) {
-				var modalInstance = $uibModal.open({
-					animation: false,
-					templateUrl: 'manageRelationFieldModal.html',
-					controller: 'CreateRelationFieldModalController',
-					controllerAs: "popupData",
-					size: "lg",
-					resolve: {
-						contentData: function () {
-							return contentData;
-						},
-						selectedItem: function () {
-							return item;
-						},
-						selectedRelationType: function () {
-							return relationType;
-						},
-						selectedDataKind: function () {
-							return dataKind;
-						},
-						resolvedLookupRecords: function () {
-							return resolveLookupRecords(item, relationType, dataKind);
-						},
-						modalMode: function () {
-							return "single-trigger-selection";
-						},
-					}
-				});
-
 			}
 		}
 		contentData.modalSelectedItem = {};
@@ -896,14 +873,10 @@
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
 		popupData.currentlyAttachedIds = [];
-		popupData.dbAttachedIds = [];
 		if (popupData.parentData.entityData[idFieldPrefix + "id"] && popupData.parentData.entityData[idFieldPrefix + "id"].length > 0) {
-			popupData.dbAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
 			popupData.currentlyAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
 		}
 		popupData.getRelationLabel = contentData.getRelationLabel;
-		popupData.attachedRecordIdsDelta = [];
-		popupData.detachedRecordIdsDelta = [];
 
 
 		//Get the default lookup list for the entity
@@ -978,18 +951,8 @@
 
 		// Multiple records before save
 		popupData.attachRecord = function (record) {
-			//Add record to delta  if it is NOT part of the original list
-			if (popupData.dbAttachedIds.indexOf(record.id) == -1) {
-				popupData.attachedRecordIdsDelta.push(record.id);
-			}
-
-			//Check and remove from the detachDelta if it is there
-			var elementIndex = popupData.detachedRecordIdsDelta.indexOf(record.id);
-			if (elementIndex > -1) {
-				popupData.detachedRecordIdsDelta.splice(elementIndex, 1);
-			}
-			//Update the currentlyAttachedIds for highlight
-			elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			//Update the currentlyAttachedIds
+			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
 			if (elementIndex == -1) {
 				//this is the normal case
 				popupData.currentlyAttachedIds.push(record.id);
@@ -1000,17 +963,8 @@
 
 		}
 		popupData.detachRecord = function (record) {
-			//Add record to detachDelta if it is part of the original list
-			if (popupData.dbAttachedIds.indexOf(record.id) > -1) {
-				popupData.detachedRecordIdsDelta.push(record.id);
-			}
-			//Check and remove from attachDelta if it is there
-			var elementIndex = popupData.attachedRecordIdsDelta.indexOf(record.id);
-			if (elementIndex > -1) {
-				popupData.attachedRecordIdsDelta.splice(elementIndex, 1);
-			}
 			//Update the currentlyAttachedIds for highlight
-			elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
 			if (elementIndex > -1) {
 				//this is the normal case
 				popupData.currentlyAttachedIds.splice(elementIndex, 1);
@@ -1023,98 +977,12 @@
 			var returnObject = {
 				relationName: popupData.selectedItem.relationName,
 				dataKind: selectedDataKind,
-				attachDelta: popupData.attachedRecordIdsDelta,
-				detachDelta: popupData.detachedRecordIdsDelta
+				selectedRecordIdArray: popupData.currentlyAttachedIds
 			};
 			$uibModalInstance.close(returnObject);
 			//category_id
 		};
 
-		//Instant save on selection, keep popup open
-		popupData.processingRecordId = "";
-		popupData.processOperation = "";
-		popupData.processInstantSelection = function (returnObject) {
-
-			// Initialize
-			popupData.processingRecordId = returnObject.selectedRecordId;
-			popupData.processOperation = returnObject.operation;
-			var displayedRecordId = $stateParams.recordId;
-			var recordsToBeAttached = [];
-			var recordsToBeDetached = [];
-			if (returnObject.operation == "attach") {
-				recordsToBeAttached.push(displayedRecordId);
-			}
-			else if (returnObject.operation == "detach") {
-				recordsToBeDetached.push(displayedRecordId);
-			}
-
-			function successCallback(response) {
-				var currentRecordId = fastCopy(popupData.processingRecordId);
-				var elementIndex = popupData.currentlyAttachedIds.indexOf(currentRecordId);
-				if (popupData.processOperation == "attach" && elementIndex == -1) {
-					popupData.currentlyAttachedIds.push(currentRecordId);
-					popupData.processingRecordId = "";
-				}
-				else if (popupData.processOperation == "detach" && elementIndex > -1) {
-					popupData.currentlyAttachedIds.splice(elementIndex, 1);
-					popupData.processingRecordId = "";
-				}
-				webvellaRootService.GoToState($state.current.name, popupData.parentData.stateParams);
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> Change applied'
-				});
-			}
-
-			function errorCallback(response) {
-				popupData.processingRecordId = "";
-				var messageHtml = response.message;
-				if (response.errors.length > 0) { //Validation errors
-					messageHtml = "<ul>";
-					for (var i = 0; i < response.errors.length; i++) {
-						messageHtml += "<li>" + response.errors[i].message + "</li>";
-					}
-					messageHtml += "</ul>";
-				}
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + messageHtml,
-					timeout: 7000
-				});
-
-			}
-
-			// ** Post relation change between the two records
-			if (returnObject.dataKind == "target") {
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
-			}
-			else {
-				alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
-			}
-		}
-		popupData.instantAttachRecord = function (record) {
-			var returnObject = {
-				relationName: popupData.selectedItem.relationName,
-				dataKind: selectedDataKind,
-				selectedRecordId: record.id,
-				operation: "attach"
-			};
-			if (!popupData.processingRecordId) {
-				popupData.processInstantSelection(returnObject);
-			}
-		};
-		popupData.instantDetachRecord = function (record) {
-			var returnObject = {
-				relationName: popupData.selectedItem.relationName,
-				dataKind: selectedDataKind,
-				selectedRecordId: record.id,
-				operation: "detach"
-
-			};
-			if (!popupData.processingRecordId) {
-				popupData.processInstantSelection(returnObject);
-			}
-		};
 
 		//#endregion
 
@@ -1122,25 +990,6 @@
 		popupData.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
-
-		/// Aux
-		//function successCallback(response) {
-		//	ngToast.create({
-		//		className: 'success',
-		//		content: '<span class="go-green">Success:</span> ' + response.message
-		//	});
-		//	$uibModalInstance.close('success');
-		//	popupData.parentData.modalInstance.close('success');
-		//	//webvellaRootService.GoToState($state.current.name, {});
-		//}
-
-		//function errorCallback(response) {
-		//	popupData.hasError = true;
-		//	popupData.errorMessage = response.message;
-
-
-		//}
-
 
 		//#endregion
 
