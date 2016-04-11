@@ -459,15 +459,11 @@
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable">
 														<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.entityData[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.entityData[item.dataName].length > 0"
 															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
 														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
-													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.entityData[item.dataName],item.meta)}}"></input>
-														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
 

@@ -473,6 +473,8 @@
 
 		contentData.generateLibrary = function (generateRelationOptions) {
 			contentData.library.items = [];
+			contentData.onlyFieldsLibrary = {};
+			contentData.onlyFieldsLibrary.items = [];
 			if (generateRelationOptions) {
 				contentData.library.relations = [];
 			}

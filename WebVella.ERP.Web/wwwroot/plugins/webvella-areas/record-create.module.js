@@ -363,9 +363,8 @@
 		}
 
 		contentData.hasFieldFromRelationValue = function (itemDataName) {
-			var index = itemDataName.lastIndexOf('$') + 1;
-			var idFieldPrefix = itemDataName.slice(0, index);
-			if (contentData.entityData[idFieldPrefix + "id"]) {
+			var dataNameArray =  itemDataName.split('$');
+			if (contentData.entityData["$" + dataNameArray[2] + "." + "id"]) {
 				return true;
 			}
 			else {
@@ -374,10 +373,9 @@
 		}
 
 		contentData.removeFieldFromRelationValue = function (itemDataName) {
-			var index = itemDataName.lastIndexOf('$') + 1;
-			var idFieldPrefix = itemDataName.slice(0, index);
+			var dataNameArray =  itemDataName.split('$');
 			$timeout(function () {
-				delete contentData.entityData[idFieldPrefix + "id"];
+				delete contentData.entityData["$" + dataNameArray[2] + "." + "id"];
 				delete contentData.dummyFields[itemDataName];
 			}, 10);
 		}
@@ -579,15 +577,6 @@
 					page: $stateParams.page
 
 				}, { reload: true });
-
-				//$state.go("webvella-entity-records", {
-				//	areaName: $stateParams.areaName,
-				//	entityName: $stateParams.entityName,
-				//	listName: $stateParams.listName,
-				//	filter: $stateParams.filter,
-				//	page: $stateParams.page
-
-				//}, { reload: true });
 			}, 0);
 		}
 
@@ -664,13 +653,11 @@
 					function modalCase1SuccessCallback(response) {
 						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
 						var dummyFieldValue = null;
-						var index = item.dataName.lastIndexOf('$') + 1;
-						var dummyFieldName = item.dataName.slice(index, item.dataName.length);
+						var dataNameArray =  item.dataName.split('$');
+						var dummyFieldName = dataNameArray[3];
 						contentData.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
 						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-						var idFieldPrefix = item.dataName.slice(0, index);
-						contentData.entityData[idFieldPrefix + "id"] = returnObject.selectedRecordId;
-						console.log(contentData.entityData);
+						contentData.entityData["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
 					}
 					function modalCase1ErrorCallback(response) {
 						ngToast.create({
@@ -714,9 +701,9 @@
 				//On modal exit
 				modalInstance.result.then(function (returnObject) {
 					var selectedRecords = [];
-					var index = item.dataName.lastIndexOf('$') + 1;
-					var dummyFieldName = item.dataName.slice(index, item.dataName.length);
-					var idFieldPrefix = item.dataName.slice(0, index);
+					var dataNameArray =  item.dataName.split('$');
+					var dummyFieldName = dataNameArray[3];
+					var idFieldPrefix = "$" + dataNameArray[2] + ".";
 					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
 					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
 					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
@@ -730,7 +717,6 @@
 							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
 							contentData.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
 						}
-						 console.log(contentData.entityData);
 					}
 					function modalCase1ErrorCallback(response) {
 						ngToast.create({

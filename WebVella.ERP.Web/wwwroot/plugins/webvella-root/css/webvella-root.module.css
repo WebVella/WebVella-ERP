@@ -1039,7 +1039,7 @@ ngToast
 }
 
 	#page-meta uib-accordion .panel-group {
-		margin: 10px -10px -10px -20px;
+		margin: 0 -10px 0 -20px;
 	}
 
 		#page-meta uib-accordion .panel-group .panel {
@@ -1047,6 +1047,11 @@ ngToast
 			border-radius: 0;
 			box-shadow: none;
 			border: none !important;
+		}
+
+		#page-meta uib-accordion .panel-group .panel.panel-open {
+			margin-top:10px;
+			margin-bottom:-16px;
 		}
 
 			#page-meta uib-accordion .panel-group .panel .panel-heading {
@@ -1058,7 +1063,7 @@ ngToast
 				background: #555;
 				color: #9E9E9E;
 				padding-left: 15px;
-				padding-bottom: 20px;
+				padding-bottom: 10px;
 				padding-top: 10px;
 			}
 

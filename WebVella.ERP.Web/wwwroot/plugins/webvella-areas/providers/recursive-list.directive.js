@@ -31,6 +31,7 @@
 				listData: '=?',
 				listMeta: '=?',
 				relation: '=?',
+				relationsList: '=?',
 				parentId: '=?',
 				canAddExisting: '=?',
 				canCreate: '=?',
@@ -122,8 +123,26 @@
 
 		//#endregion
 
-		//Field render
+		//#region << Render >>
 		$scope.renderFieldValue = webvellaAreasService.renderFieldValue;
+		
+		$scope.getRelationLabel = function (item) {
+			if (item.fieldLabel) {
+				return item.fieldLabel
+			}
+			else {
+				var relationName = item.relationName;
+				var relation = findInArray($scope.relationsList, "name", relationName);
+				if (relation) {
+					return relation.label;
+				}
+				else {
+					return "";
+				}
+			}
+		}
+
+		//#endregion
 
 		//#region << Logic >>
 		$scope.instantDetachRecord = function (record) {
@@ -547,6 +566,9 @@
 			popupData.dataKind = fastCopy(contentData.dataKind);
 		}
 		popupData.entity = fastCopy(contentData.entity);
+		popupData.relationsList = fastCopy(contentData.relationsList);
+		popupData.getRelationLabel = contentData.getRelationLabel;
+
 		if (resolvedManagedRecordQuickCreateView.data == null) {
 			popupData.isEdit = false;
 			popupData.recordData = {};
@@ -786,6 +808,12 @@
 
 		//#endregion
 
+
+		//#region << Render >>
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+
+		//#endregion
+
 		//#region << Logic >>
 		popupData.ok = function () {
 			if (!popupData.isEdit) {
@@ -851,7 +879,7 @@
 		popupData.entity = fastCopy(contentData.entity);
 		popupData.recordData = fastCopy(resolvedQuickViewRecord.data)[0];
  		popupData.viewMeta = fastCopy(resolvedQuickViewRecord.meta);
-
+		
 		popupData.contentRegion = {};
 		for (var j = 0; j < popupData.viewMeta.regions.length; j++) {
 			if (popupData.viewMeta.regions[j].name === "content") {

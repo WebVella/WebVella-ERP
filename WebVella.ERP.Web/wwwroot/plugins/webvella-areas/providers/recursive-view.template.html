@@ -59,17 +59,17 @@
 
 								<!-- If item is view -->
 								<div class="field" ng-switch-when="view">
-									<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
+									<recursive-view view-meta="item" view-data="recordData[item.dataName]" relations-list="::relationsList"></recursive-view>
 								</div>
 								<div class="field" ng-switch-when="viewFromRelation">
-									<recursive-view view-meta="item" view-data="recordData[item.dataName]"></recursive-view>
+									<recursive-view view-meta="item" view-data="recordData[item.dataName]" relations-list="::relationsList"></recursive-view>
 								</div>
 								<!-- If item is list -->
 								<div class="field" ng-switch-when="list">
-									<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
+									<recursive-list list-meta="item" list-data="recordData[item.dataName]" relations-list="::relationsList"></recursive-list>
 								</div>
 								<div class="field" ng-switch-when="listFromRelation">
-									<recursive-list list-meta="item" list-data="recordData[item.dataName]"></recursive-list>
+									<recursive-list list-meta="item" list-data="recordData[item.dataName]" relations-list="::relationsList"></recursive-list>
 								</div>
 
 							</div>
