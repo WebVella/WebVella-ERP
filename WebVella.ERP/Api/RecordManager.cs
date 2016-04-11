@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using WebVella.ERP.Database;
 using WebVella.ERP.Utilities.Dynamic;
+using System.Dynamic;
 
 namespace WebVella.ERP.Api
 {
@@ -228,6 +229,7 @@ namespace WebVella.ERP.Api
 					}
 
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
+					List<dynamic> manyToManyRecordData = new List<dynamic>();
 
 					foreach (var pair in record.GetProperties())
 					{
@@ -355,7 +357,12 @@ namespace WebVella.ERP.Api
 											targetFieldValue = (Guid)record[field.Name];
 										}
 
-										CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
+										dynamic mmRelationData = new ExpandoObject();
+										mmRelationData.RelationId = relation.Id;
+										mmRelationData.OriginFieldValue = originFieldValue;
+										mmRelationData.TargetFieldValue = targetFieldValue;
+
+										manyToManyRecordData.Add(mmRelationData);
 									}
 								}
 								else
@@ -380,6 +387,14 @@ namespace WebVella.ERP.Api
 					}
 
 					recRepo.Create(entity.Name, storageRecordData);
+
+					foreach (var mmRelData in manyToManyRecordData)
+					{
+						var mmResponse = CreateRelationManyToManyRecord(mmRelData.RelationId, mmRelData.OriginFieldValue, mmRelData.TargetFieldValue);
+
+						if (!mmResponse.Success)
+							throw new Exception(mmResponse.Message);
+					}
 
 					if (skipRecordReturn)
 					{
@@ -541,7 +556,7 @@ namespace WebVella.ERP.Api
 
 					QueryObject filterObj = EntityQuery.QueryEQ("id", record["id"]);
 					var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
-					if(!oldRecordResponse.Success)
+					if (!oldRecordResponse.Success)
 						throw new Exception(oldRecordResponse.Message);
 					var oldRecord = oldRecordResponse.Object.Data[0];
 
@@ -616,8 +631,8 @@ namespace WebVella.ERP.Api
 								Guid? targetFieldOldValue = null;
 								if (relation.RelationType == EntityRelationType.ManyToMany)
 								{
-								if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
-									throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
+									if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
+										throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
 
 									List<string> values = new List<string>();
 									if (pair.Value is JArray)
@@ -637,7 +652,10 @@ namespace WebVella.ERP.Api
 
 									if (values.Count < 1)
 									{
-										RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
+										var mmResponse = RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
+
+										if (!mmResponse.Success)
+											throw new Exception(mmResponse.Message);
 
 										continue;
 									}
@@ -676,7 +694,10 @@ namespace WebVella.ERP.Api
 
 								if (relation.RelationType == EntityRelationType.ManyToMany)
 								{
-									RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
+									var mmResponse = RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
+
+									if (!mmResponse.Success)
+										throw new Exception(mmResponse.Message);
 
 									foreach (Guid relatedRecordValue in relatedRecordValues)
 									{
@@ -689,7 +710,10 @@ namespace WebVella.ERP.Api
 											targetFieldValue = (Guid)record[field.Name];
 										}
 
-										CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
+										mmResponse = CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
+
+										if (!mmResponse.Success)
+											throw new Exception(mmResponse.Message);
 									}
 								}
 								else
