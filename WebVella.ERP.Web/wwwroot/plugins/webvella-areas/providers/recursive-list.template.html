@@ -13,21 +13,24 @@
 
 	</p>
 
-	<table class="table table-vertical-align-middle table-bordered {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
+	<table class="table table-vertical-align-middle table-bordered table-hover {{::listMeta.meta.cssClass}} ng-hide" ng-show="::listData.length > 0" ng-if="::!hasError">
 		<thead>
 			<tr>
-				<th ng-if="::(canUpdate || canRemove)"></th>
+				<th></th>
 				<th class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns | limitTo: listMeta.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="record in listData track by record.id">
-				<td ng-if="::(canUpdate || canRemove)" style="width:1%;white-space:nowrap;padding:0;">
-					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
+				<td style="width:1%;white-space:nowrap;">
+					<a href='javascript:void(0)' title="quick view this record" class="btn btn-default btn-sm" ng-click="viewRelatedRecordItem(record)">
+						<i class="fa fa-eye"></i>
+					</a>
+					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
-						<i class="fa fa-chain-broken go-red"></i>
+					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-default btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+						<i class="fa fa-times go-red"></i>
 					</a>
 				</td>
 				<td class="wv-{{::column.meta.name}}" ng-repeat="column in listMeta.meta.columns  | limitTo: listMeta.meta.visibleColumnsCount" ng-switch="::column.type">
@@ -48,16 +51,16 @@
 						</div>
 					</div>
 					<div ng-switch-when="view">
-						<recursive-view view-meta="::column" view-data="::record[column.dataName]">	</recursive-view>
+						<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::relationsList"></recursive-view>
 					</div>
 					<div ng-switch-when="viewFromRelation">
-						<recursive-view view-meta="::column" view-data="::record[column.dataName]">	</recursive-view>
+						<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::relationsList">	</recursive-view>
 					</div>
 					<div ng-switch-when="list">
-						<recursive-list list-meta="column" list-data="record[column.dataName]"></recursive-list>
+						<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="::relationsList"></recursive-list>
 					</div>
 					<div ng-switch-when="listFromRelation">
-						<recursive-list list-meta="column" list-data="record[column.dataName]"></recursive-list>
+						<recursive-list list-meta="column" list-data="record[column.dataName]" relations-list="::relationsList"></recursive-list>
 					</div>
 				</td>
 			</tr>
@@ -152,9 +155,11 @@
 					<div class="form">
 						<div class="row" ng-repeat="row in section.rows track by row.id">
 							<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
-								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }">
+								<div class="form-group" ng-repeat="item in column.items"
+									 ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }"
+									 ng-switch="::item.type">
 									<!--If item is field WITH NO relation-->
-									<div class="field" ng-if="item.type === 'field'">
+									<div class="field" ng-switch-when="field">
 										<label class="control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
 										<div ng-switch="item.meta.fieldType">
 											<!-- 1. Autoincrement -->
@@ -318,7 +323,7 @@
 													</div>
 												</div>
 												<div class="image-upload" ng-show='popupData.recordData[item.dataName]'>
-													<img class="img-thumbnail" ng-src="{{popupData.recordData[item.dataName]}}" style="width:120px;"/>
+													<img class="img-thumbnail" ng-src="{{popupData.recordData[item.dataName]}}" style="width:120px;" />
 													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
@@ -544,7 +549,54 @@
 
 										</div>
 									</div>
-
+									<!--If item is field WITH relation-->
+									<div class="field" ng-switch-when="fieldFromRelation">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="{{popupData.renderFieldValue(popupData.recordData[item.dataName],item.meta)}}">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
+									<!--If item is view WITH NO relation-->
+									<div class="field" ng-switch-when="view">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="cannot be edited here">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
+									<!--If item is view WITH relation-->
+									<div class="field" ng-switch-when="viewFromRelation">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="cannot be edited here">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
+									<!--If item is list WITH NO relation-->
+									<div class="field" ng-switch-when="list">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="cannot be edited here">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
+									<!--If item is list WITH relation-->
+									<div class="field" ng-switch-when="listFromRelation">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="cannot be edited here">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
+									<!--If item is tree WITH relation-->
+									<div class="field" ng-switch-when="treeFromRelation">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div class="editable-wrapper input-group editable-readonly">
+											<input type="text" class="form-control" disabled="" value="cannot be edited here">
+											<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -556,6 +608,95 @@
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="!popupData.isEdit">Create & Add</button>
 		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="popupData.isEdit">Save change</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="viewRelatedRecordModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Quick view</h3>
+	</div>
+	<div class="modal-body">
+		<form name="viewRecord">
+			<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in popupData.contentRegion.sections track by section.id" ng-if="popupData.contentRegion != null">
+				<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="popupData.toggleSectionCollapse(section)">
+					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
+					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
+					{{section.label}}
+				</div>
+				<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
+					<div class="form">
+						<div class="row" ng-repeat="row in section.rows track by row.id">
+							<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }">
+									<!--If item is field WITH NO relation-->
+									<div class="editable-field field">
+										<label class="control-label">{{item.meta.label}}</label>
+										<div ng-if="item.type === 'field'">
+											<div class="editable-wrapper input-group editable-readonly">
+												<input type="text" class="form-control" disabled value="{{::popupData.renderFieldValue(popupData.recordData[item.dataName],item.meta)}}"></input>
+											</div>
+										</div>
+										<div ng-if="item.type === 'fieldFromRelation'">
+											<div class="editable-wrapper input-group editable-readonly">
+												<input type="text" class="form-control" disabled value="{{::popupData.renderFieldValue(popupData.recordData[item.dataName],item.meta)}}"></input>
+											</div>
+										</div>
+										<div ng-if="item.type === 'view'">
+											<recursive-view view-meta="item"
+															view-data="popupData.recordData[item.dataName]"
+															relations-list="::relationsList"
+															parent-id="::contentData.stateParams.recordId"
+															can-create="false"
+															can-update="false">
+											</recursive-view>
+										</div>
+										<div ng-if="item.type === 'viewFromRelation'">
+											<recursive-view view-meta="item"
+															view-data="popupData.recordData[item.dataName]"
+															relations-list="::relationsList"
+															parent-id="::contentData.stateParams.recordId"
+															can-create="false"
+															can-update="false">
+											</recursive-view>
+										</div>
+										<div ng-if="item.type === 'list'">
+											<recursive-list list-meta="::item"
+															list-data="::popupData.recordData[item.dataName]"
+															relations-list="::relationsList"
+															parent-id="::contentData.stateParams.recordId"
+															can-create="false"
+															can-update="false">
+											</recursive-list>
+										</div>
+										<div ng-if="item.type === 'listFromRelation'">
+											<recursive-list list-meta="::item"
+															list-data="::popupData.recordData[item.dataName]"
+															 relations-list="::relationsList"
+															parent-id="::contentData.stateParams.recordId"
+															can-create="false"
+															can-update="false">
+											</recursive-list>
+										</div>
+										<div ng-if="item.type === 'treeFromRelation'">
+											<div>
+												<span ng-repeat="treeDataRow in popupData.recordData[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
+												<div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>

@@ -13,7 +13,6 @@
         .controller('WebVellaAdminEntityViewManageController', controller)
         .controller('ManageSectionModalController', ManageSectionModalController)
         .controller('ManageRowModalController', ManageRowModalController)
-		.controller('ManageHtmlStringModalController', ManageHtmlStringModalController)
 		.controller('ManageFromRelationModalController', ManageFromRelationModalController);
 
 	//#region << Configuration >> /////////////////////////
@@ -217,11 +216,8 @@
 
 		/* jshint validthis:true */
 		var contentData = this;
-		//#region << Initialize Current Entity >>
+		//#region << General init >>
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		//#endregion
-
-		//#region << Update page title & Hide side menu>>
 		contentData.pageTitle = "Entity Views | " + pageTitle;
 		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		//Hide side menu
@@ -243,15 +239,19 @@
 				contentData.viewContentRegion = contentData.view.regions[i];
 			}
 		}
+		//#endregion
 
-		var alreadyUsedItemIds = [];
+		//#region << item Library init >>
+		var alreadyUsedItemDataNames = [];
+		//Get all items from the view and add their dataNames in the already used 
 		contentData.generateAlreadyUsed = function () {
+			alreadyUsedItemDataNames = [];
 			for (var i = 0; i < contentData.viewContentRegion.sections.length; i++) {
 				for (var j = 0; j < contentData.viewContentRegion.sections[i].rows.length; j++) {
 					for (var k = 0; k < contentData.viewContentRegion.sections[i].rows[j].columns.length; k++) {
 						for (var m = 0; m < contentData.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
 							if (contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
-								alreadyUsedItemIds.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
+								alreadyUsedItemDataNames.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
 							}
 						}
 					}
@@ -260,52 +260,91 @@
 		}
 		contentData.generateAlreadyUsed();
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
-		contentData.tempLibrary = {};
-		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
+		contentData.fullLibrary = {};
+		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
 		contentData.library = {};
 		contentData.library.relations = [];
 		contentData.library.items = [];
-
-		contentData.tempLibrary.items.forEach(function (item) {
-			//Initially remove all items that are from relation or relationOptions
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1) || !item.meta) {
-				switch (item.type) {
-					case "field":
-						contentData.library.items.push(item);
-						break;
-					case "view":
-						if (item.viewId !== contentData.view.id) {
-							contentData.library.items.push(item);
-						}
-						break;
-					case "list":
-						contentData.library.items.push(item);
-						break;
-					case "relationOptions":
-						item.addedToLibrary = false;
-						item.sameOriginTargetEntity = false;
-						for (var r = 0; r < contentData.relationsList.length; r++) {
-							if (item.relationName === contentData.relationsList[r].name && contentData.relationsList[r].originEntityId === contentData.relationsList[r].targetEntityId) {
-								item.sameOriginTargetEntity = true;
-							}
-						}
-						contentData.library.relations.push(item);
-						break;
-					case "html":
-						contentData.library.items.push(item);
-						break;
-				}
-			}
-		});
-		function sortLibrary() {
+		contentData.sortLibrary = function () {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		sortLibrary();
-		contentData.originalLibrary = fastCopy(contentData.library.items);
+		contentData.checkIfRelationAddedToLibrary = function(relationName){
+			if(contentData.library.relations.length > 0){
+				for (var i = 0; i < contentData.library.relations.length; i++) {
+					 if(contentData.library.relations[i].relationName ===  relationName  && contentData.library.relations[i].addedToLibrary){
+						return true;
+					 }
+				}
+				return false;
+			}
+			else {
+				return false;
+			}
+		}
+
+		contentData.generateLibrary = function (generateRelationOptions) {
+			contentData.library.items = [];
+			if(generateRelationOptions){
+				contentData.library.relations = [];
+			}
+			contentData.fullLibrary.items.forEach(function (item) {
+				//Initially remove all items that are from not activated relation and the relationOptions
+				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) === -1) || !item.meta) {
+					switch (item.type) {
+						case "field":
+							contentData.library.items.push(item);
+							break;
+						case "view":
+							if (item.viewId !== contentData.view.id) {
+								contentData.library.items.push(item);
+							}
+							break;
+						case "list":
+							contentData.library.items.push(item);
+							break;
+						case "relationOptions":
+							if(generateRelationOptions){
+								item.addedToLibrary = false;
+								item.sameOriginTargetEntity = false;
+								for (var r = 0; r < contentData.relationsList.length; r++) {
+									if (item.relationName === contentData.relationsList[r].name && contentData.relationsList[r].originEntityId === contentData.relationsList[r].targetEntityId) {
+										item.sameOriginTargetEntity = true;
+									}
+								}
+								contentData.library.relations.push(item);
+							}
+							break;
+						case "fieldFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "viewFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "listFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "treeFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+					}
+				}
+			});
+			contentData.sortLibrary();
+		}
+
+		contentData.generateLibrary(true);
 
 		//Extract the direction change information from the view if present
 		for (var k = 0; k < contentData.view.relationOptions.length; k++) {
@@ -324,9 +363,13 @@
 			return 0;
 		});
 
-
-		//Generate the relationOptions current Status
-
+		//#endregion
+ 
+		//#region << Regenerate library >>
+		contentData.regenerateLibrary = function () {
+			contentData.generateAlreadyUsed();
+			contentData.generateLibrary(false);
+		}
 
 		//#endregion
 
@@ -382,6 +425,7 @@
 			//Initialize both view and the content region with the new value
 			contentData.view = tempCopyView;
 			contentData.viewContentRegion = tempCopyViewRegion;
+			contentData.regenerateLibrary();
 		}
 		function errorSectionRemoveCallback(response) {
 			ngToast.create({
@@ -452,6 +496,7 @@
 					contentData.viewContentRegion = response.object.regions[i];
 				}
 			}
+			contentData.regenerateLibrary();
 		}
 		function errorRowRemoveCallback(response) {
 			ngToast.create({
@@ -463,127 +508,12 @@
 
 		//#endregion
 
-		//#region << Manage HtmlContentModal >>
-		var openHtmlContentModal = function (fieldItem, eventObj, orderChangedOnly) {
-			//Init
-			//Callbacks
-			var moveSuccess = function () {
-				// Prevent from dragging back to library use remove link instead
-				if (eventObj.dest.sortableScope.element[0].id !== "library") {
-
-				}
-			};
-			var moveFailure = function () {
-				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are copying them currently only
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
-			};
-
-			function successCallback(response) {
-				if (response.success) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
-					});
-					contentData.library.items = fastCopy(contentData.originalLibrary);
-					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "content") {
-							contentData.viewContentRegion = response.object.regions[i];
-						}
-					}
-					if (eventObj !== null) {
-						moveSuccess();
-					}
-				}
-				else {
-					errorCallback(response);
-					if (eventObj !== null) {
-						moveFailure();
-					}
-				}
-			}
-
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				if (eventObj !== null) {
-					moveFailure();
-				}
-			}
-
-
-			var modalInstance = $uibModal.open({
-				animation: false,
-				templateUrl: 'manageHtmlStringModal.html',
-				controller: 'ManageHtmlStringModalController',
-				controllerAs: "popupData",
-				backdrop: 'static',
-				size: "",
-				resolve: {
-					parentData: function () { return contentData; },
-					eventObj: eventObj,
-					fieldObj: fieldItem,
-					orderChangedOnly: orderChangedOnly
-				}
-			});
-
-			modalInstance.result.then(function (fieldObject) {
-
-				for (var k = 0; k < contentData.view.regions[i].sections.length; k++) {
-						for (var l = 0; l < contentData.view.regions[i].sections[k].rows.length; l++) {
-							for (var m = 0; m < contentData.view.regions[i].sections[k].rows[l].columns.length; m++) {
-								for (var n = 0; n < contentData.view.regions[i].sections[k].rows[l].columns[m].items.length; n++) {
-									if (fieldObject.type === "fieldFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-									}
-									else if (fieldObject.type === "viewFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-									}
-									else if (fieldObject.type === "listFromRelation" && contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										contentData.view.regions[i].sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
-									}
-								}
-							}
-						}
-					}
-
-				var tempView = fastCopy(contentData.view);
-				for (var i = 0; i < tempView.regions.length; i++) {
-					if(tempView.regions[i].name == "content"){
-						tempView.regions[i]	= contentData.viewContentRegion;
-					}
-				}
-				////2. Call the service
-				webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
-				return;
-			});
-		};
-		//#endregion
-
 		//#region << Manage FromRelationModal >>
 		var openFromRelationSettingsModal = function (fieldItem, eventObj, orderChangedOnly) {
 			//Init
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are copying them currently only
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+				contentData.regenerateLibrary();
 			};
 
 			var droppedItem = fastCopy(fieldItem);
@@ -607,6 +537,7 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id !== "library") {
+					contentData.regenerateLibrary();
 				}
 
 			};
@@ -655,7 +586,7 @@
 					backdrop: 'static',
 					size: "",
 					resolve: {
-						parentData: function() { return contentData; },
+						parentData: function () { return contentData; },
 						eventObj: eventObj,
 						relatedEntityMeta: response.object,
 						fieldObj: fieldItem,
@@ -663,7 +594,7 @@
 					}
 				});
 
-				modalInstance.result.then(function(fieldObject) {
+				modalInstance.result.then(function (fieldObject) {
 					for (var k = 0; k < contentData.viewContentRegion.sections.length; k++) {
 						for (var l = 0; l < contentData.viewContentRegion.sections[k].rows.length; l++) {
 							for (var m = 0; m < contentData.viewContentRegion.sections[k].rows[l].columns.length; m++) {
@@ -698,8 +629,8 @@
 
 					var tempView = fastCopy(contentData.view);
 					for (var i = 0; i < tempView.regions.length; i++) {
-						if(tempView.regions[i].name == "content"){
-							tempView.regions[i]	= contentData.viewContentRegion;
+						if (tempView.regions[i].name == "content") {
+							tempView.regions[i] = contentData.viewContentRegion;
 						}
 					}
 					////2. Call the service
@@ -745,12 +676,13 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id !== "library") {
-
+	 				contentData.regenerateLibrary();
 				}
 			};
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+				contentData.regenerateLibrary();
 			};
 
 			function successCallback(response) {
@@ -765,7 +697,6 @@
 							contentData.viewContentRegion = response.object.regions[i];
 						}
 					}
-					contentData.generateAlreadyUsed();
 					moveSuccess();
 				}
 				else {
@@ -782,17 +713,16 @@
 				});
 				moveFailure();
 			}
-			//#endregion
 
 			if ((eventObj.source.itemScope.item.type === "fieldFromRelation" || eventObj.source.itemScope.item.type === "viewFromRelation" || eventObj.source.itemScope.item.type === "listFromRelation") && !orderChangedOnly) {
-				$timeout(function(){
+				$timeout(function () {
 					openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
-				},0);
+				}, 0);
 			}
 			else if (eventObj.source.itemScope.item.type === "html" && !orderChangedOnly) {
-				$timeout(function(){
+				$timeout(function () {
 					openHtmlContentModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
-				},0);
+				}, 0);
 			}
 			else {
 				//cannot be managed
@@ -847,22 +777,21 @@
 			clone: false
 		};
 
-		contentData.dragItemRemove = function (column, index) {
-			contentData.itemScheduledForRemoval = column.items[index];
+		contentData.dragItemRemove = function (column, itemDataName) {
+			contentData.itemScheduledForRemoval = null;
+			var index = -1;
+			for (var i = 0; i < column.items.length; i++) {
+				if (column.items[i].dataName === itemDataName) {
+					contentData.itemScheduledForRemoval = column.items[i];
+					index = i;
+				}
+			}
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> ' + response.message
 				});
-
-				contentData.library.items.push(contentData.itemScheduledForRemoval);
-				sortLibrary();
-				if(contentData.itemScheduledForRemoval.meta){
-					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.dataName);
-					if (itemIndexInUsed > -1) {
-						alreadyUsedItemIds.slice(itemIndexInUsed, 1);
-					}
-				}
+				contentData.regenerateLibrary();
 			}
 
 			function errorCallback(response) {
@@ -934,9 +863,9 @@
 
 		contentData.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.tempLibrary.items.forEach(function (item) {
+				contentData.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName === relation.relationName) {
-						if(item.meta && alreadyUsedItemIds.indexOf(item.dataName) === -1){
+						if (item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) === -1) {
 							switch (item.type) {
 								case "fieldFromRelation":
 									contentData.library.items.push(item);
@@ -971,7 +900,7 @@
 				contentData.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			sortLibrary();
+			contentData.sortLibrary();
 		}
 
 		contentData.getRelationType = function (relationId) {
@@ -984,7 +913,7 @@
 		}
 
 		contentData.manageFieldFromRelation = function (item) {
-			openFromRelationSettingsModal(item, null,false);
+			openFromRelationSettingsModal(item, null, false);
 		}
 
 		//#endregion
@@ -1108,9 +1037,9 @@
 		/* jshint validthis:true */
 		var popupData = this;
 		popupData.section = fastCopy(section);
-		popupData.rowOptions = 	webvellaAdminService.getRowColumnCountVariationsArray();
-		
-	
+		popupData.rowOptions = webvellaAdminService.getRowColumnCountVariationsArray();
+
+
 		popupData.isUpdate = true;
 		if (row === null) {
 			popupData.isUpdate = false;
@@ -1218,6 +1147,8 @@
 					parentData.viewContentRegion = parentData.view.regions[i];
 				}
 			}
+			parentData.regenerateLibrary();
+
 		}
 
 		function errorCallback(response) {
@@ -1228,31 +1159,6 @@
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
-
-	ManageHtmlStringModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj'];
-	/* @ngInject */
-	function ManageHtmlStringModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj) {
-		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = fastCopy(parentData);
-		popupData.field = fastCopy(fieldObj);
-		console.log(popupData.parentData.view);
-		popupData.ok = function () {
-			$uibModalInstance.close(popupData.field);
-		};
-
-		popupData.cancel = function () {
-			if (eventObj !== null) {
-				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are currently copying so no need to return it back
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
-			}
-			$uibModalInstance.dismiss('cancel');
-		};
-
-		$log.debug('webvellaAdmin>entities>ManageHtmlStringModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-	};
 
 	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj',
 			'fieldObj', 'relatedEntityMeta', 'orderChangedOnly'];

@@ -219,11 +219,8 @@
 
 		/* jshint validthis:true */
 		var contentData = this;
-		//#region << Initialize Current Entity >>
+		//#region << General init >>
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		//#endregion
-
-		//#region << Update page title & Hide side menu>>
 		contentData.pageTitle = "Entity Views | " + pageTitle;
 		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		//Hide side menu
@@ -232,27 +229,30 @@
 
 		//#endregion
 
-		//#region << Initialize View and Content Region >>
+		//#region << Initialize View >>
 		contentData.view = {};
 		for (var i = 0; i < contentData.entity.recordViews.length; i++) {
 			if (contentData.entity.recordViews[i].name == $stateParams.viewName) {
 				contentData.view = fastCopy(contentData.entity.recordViews[i]);
 			}
 		}
+		//#endregion
 
-		var alreadyUsedItemIds = [];
+		//#region << item Library init >>
+		var alreadyUsedItemDataNames = [];
 		contentData.generateAlreadyUsed = function () {
+			alreadyUsedItemDataNames = [];
 			for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
 				if (contentData.view.sidebar.items[i].meta) {
-					alreadyUsedItemIds.push(contentData.view.sidebar.items[i].meta.id);
+					alreadyUsedItemDataNames.push(contentData.view.sidebar.items[i].dataName);
 				}
 			}
 		}
 		contentData.generateAlreadyUsed();
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
-		contentData.tempLibrary = {};
-		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
-		contentData.tempLibrary.items = contentData.tempLibrary.items.sort(function (a, b) {
+		contentData.fullLibrary = {};
+		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		contentData.fullLibrary.items = contentData.fullLibrary.items.sort(function (a, b) {
 			if (a.type < b.type) return -1;
 			if (a.type > b.type) return 1;
 			return 0;
@@ -260,43 +260,88 @@
 		contentData.library = {};
 		contentData.library.relations = [];
 		contentData.library.items = [];
-		contentData.tempLibrary.items.forEach(function (item) {
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) || !item.meta) {
-				//Initially remove all items that are from relation or relationOptions
-				switch (item.type) {
-					//case "field":
-					//	contentData.library.items.push(item);
-					//	break;
-					case "view":
-						if (item.viewId != contentData.view.id) {
-							contentData.library.items.push(item);
-						}
-						break;
-					case "list":
-						contentData.library.items.push(item);
-						break;
-					case "relationOptions":
-						item.addedToLibrary = false;
-						item.sameOriginTargetEntity = false;
-						for (var r = 0; r < contentData.relationsList.length; r++) {
-							if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
-								item.sameOriginTargetEntity = true;
-							}
-						}
-						contentData.library.relations.push(item);
-						break;
-				}
-			}
-		});
-		function sortLibrary() {
+
+		contentData.sortLibrary = function () {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
 				if (a.dataName < b.dataName) return -1;
 				if (a.dataName > b.dataName) return 1;
 				return 0;
 			});
 		}
-		sortLibrary();
-		contentData.originalLibrary = fastCopy(contentData.library.items);
+
+		contentData.checkIfRelationAddedToLibrary = function (relationName) {
+			if (contentData.library.relations.length > 0) {
+				for (var i = 0; i < contentData.library.relations.length; i++) {
+					if (contentData.library.relations[i].relationName === relationName && contentData.library.relations[i].addedToLibrary) {
+						return true;
+					}
+				}
+				return false;
+			}
+			else {
+				return false;
+			}
+		}
+
+		contentData.generateLibrary = function (generateRelationOptions) {
+			contentData.library.items = [];
+			if (generateRelationOptions) {
+				contentData.library.relations = [];
+			}
+			contentData.fullLibrary.items.forEach(function (item) {
+				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) || !item.meta) {
+					//Initially remove all items that are from relation or relationOptions
+					switch (item.type) {
+						//case "field":
+						//	contentData.library.items.push(item);
+						//	break;
+						case "view":
+							if (item.viewId != contentData.view.id) {
+								contentData.library.items.push(item);
+							}
+							break;
+						case "list":
+							contentData.library.items.push(item);
+							break;
+						case "relationOptions":
+							if (generateRelationOptions) {
+								item.addedToLibrary = false;
+								item.sameOriginTargetEntity = false;
+								for (var r = 0; r < contentData.relationsList.length; r++) {
+									if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+										item.sameOriginTargetEntity = true;
+									}
+								}
+								contentData.library.relations.push(item);
+							}
+							break;
+						case "fieldFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "viewFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "listFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "treeFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+					}
+				}
+			});
+			contentData.sortLibrary();
+		}
+
+		contentData.generateLibrary(true);
 
 
 		//Extract the direction change information from the view if present
@@ -316,6 +361,13 @@
 			return 0;
 		});
 
+		//#endregion
+ 
+		//#region << Regenerate library >>
+		contentData.regenerateLibrary = function () {
+			contentData.generateAlreadyUsed();
+			contentData.generateLibrary(false);
+		}
 
 		//#endregion
 
@@ -343,7 +395,7 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id != "library") {
-
+					contentData.regenerateLibrary();
 				}
 				else {
 					//we need to destroy the dropped object
@@ -352,8 +404,7 @@
 			};
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are copying them currently only
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
+				contentData.regenerateLibrary();
 			};
 
 			function successCallback(response) {
@@ -362,7 +413,6 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					//contentData.library.items = fastCopy(contentData.originalLibrary);
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
 							contentData.viewContentRegion = response.object.regions[i];
@@ -461,9 +511,8 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					//contentData.library.items = fastCopy(contentData.originalLibrary);
 					contentData.view.sidebar.items = response.object.sidebar.items;
-					contentData.generateAlreadyUsed();
+					contentData.regenerateLibrary();
 				}
 				else {
 					errorCallback(response);
@@ -477,6 +526,7 @@
 					content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout: 7000
 				});
+				contentData.regenerateLibrary();
 			}
 			//#endregion
 
@@ -498,11 +548,11 @@
 			},
 			itemMoved: function (eventObj) {
 				//Item is moved from one column to another
-				executeDragViewChange(eventObj,true);
+				executeDragViewChange(eventObj, true);
 			},
 			orderChanged: function (eventObj) {
 				//Item is moved within the same column
-				executeDragViewChange(eventObj,true);
+				executeDragViewChange(eventObj, true);
 			}
 		};
 
@@ -515,7 +565,7 @@
 			},
 			itemMoved: function (eventObj) {
 				//Item is moved from one column to another
-				executeDragViewChange(eventObj,false);
+				executeDragViewChange(eventObj, false);
 			},
 			orderChanged: function (eventObj) {
 				//Item is moved within the same column
@@ -523,21 +573,23 @@
 			}
 		};
 
-		contentData.dragItemRemove = function (index) {
-			contentData.itemScheduledForRemoval = contentData.view.sidebar.items[index];
+		contentData.dragItemRemove = function (itemDataName) {
+			contentData.itemScheduledForRemoval = null;
+			var index = -1;
+			for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
+				if (contentData.view.sidebar.items[i].dataName === itemDataName) {
+					contentData.itemScheduledForRemoval = contentData.view.sidebar.items[i];
+					index = i;
+				}
+			}
+
+
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> ' + response.message
 				});
-				contentData.library.items.push(contentData.itemScheduledForRemoval);
-				sortLibrary();
-				if (contentData.itemScheduledForRemoval.meta) {
-					var itemIndexInUsed = alreadyUsedItemIds.indexOf(contentData.itemScheduledForRemoval.meta.id);
-					if (itemIndexInUsed > -1) {
-						alreadyUsedItemIds.slice(itemIndexInUsed, 1);
-					}
-				}
+				contentData.regenerateLibrary();
 			}
 
 			function errorCallback(response) {
@@ -604,7 +656,7 @@
 
 		contentData.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.tempLibrary.items.forEach(function (item) {
+				contentData.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
 						switch (item.type) {
 							//case "fieldFromRelation":

@@ -388,7 +388,7 @@
 		}
 
 		contentData.goDesktopBrowse = function () {
-			webvellaRootService.GoToState($state, "webvella-desktop-browse", {});
+			webvellaRootService.GoToState("webvella-desktop-browse", {});
 		}
 
 		contentData.selectPage = function (page) {

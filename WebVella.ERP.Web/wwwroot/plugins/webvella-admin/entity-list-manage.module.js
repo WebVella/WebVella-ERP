@@ -236,14 +236,13 @@
 
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaAdminService','webvellaAreasService', 'resolvedEntityRelationsList'];
+						'resolvedViewLibrary', 'webvellaAdminService', 'webvellaAreasService', 'resolvedEntityRelationsList'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaAdminService,webvellaAreasService, resolvedEntityRelationsList) {
+						resolvedViewLibrary, webvellaAdminService, webvellaAreasService, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
-		//#region << Initialize>>
 		contentData.entity = resolvedCurrentEntityMeta;
 		//Awesome font icon names array 
 		contentData.icons = getFontAwesomeIconNames();
@@ -273,83 +272,82 @@
 		contentData.allQueryComparisonList = [
 			{
 				key: "EQ",
-				value:"is equal to"
+				value: "is equal to"
 			},
 			{
 				key: "NOT",
-				value:"is not equal to"
+				value: "is not equal to"
 			},
 			{
 				key: "LT",
-				value:"is less than"
+				value: "is less than"
 			},
 			{
 				key: "LTE",
-				value:"is less than or equal"
+				value: "is less than or equal"
 			},
 			{
 				key: "GT",
-				value:"is greater than"
+				value: "is greater than"
 			},
 			{
 				key: "GTE",
-				value:"is greater than or equal"
+				value: "is greater than or equal"
 			},
 			{
 				key: "CONTAINS",
-				value:"contains"
+				value: "contains"
 			},
 			{
 				key: "NOTCONTAINS",
-				value:"does not contain"
+				value: "does not contain"
 			},
 			{
 				key: "STARTSWITH",
-				value:"starts with"
+				value: "starts with"
 			},
 			{
 				key: "NOTSTARTSWITH",
-				value:"does not start with"
+				value: "does not start with"
 			}
 		];
 
 		contentData.basicQueryComparisonList = [
 			{
 				key: "EQ",
-				value:"is equal to"
+				value: "is equal to"
 			},
 			{
 				key: "NOT",
-				value:"is not equal to"
+				value: "is not equal to"
 			}
 		];
 
-		contentData.getQueryComparisonOptionsList = function(query){
+		contentData.getQueryComparisonOptionsList = function (query) {
 			var field = {};
 			for (var i = 0; i < contentData.library.items.length; i++) {
-				if(contentData.library.items[i].fieldName == query.fieldName){
+				if (contentData.library.items[i].fieldName == query.fieldName) {
 					field = contentData.library.items[i];
 				}
 			}
-			if(isEmpty(field)){
-				return 	contentData.allQueryComparisonList;
+			if (isEmpty(field)) {
+				return contentData.allQueryComparisonList;
 			}
 			else {
-				switch(field.meta.fieldType){
+				switch (field.meta.fieldType) {
 					case 11:
-						return 	contentData.basicQueryComparisonList;
+						return contentData.basicQueryComparisonList;
 					case 21:
-						return 	contentData.basicQueryComparisonList;
+						return contentData.basicQueryComparisonList;
 					default:
 						return contentData.allQueryComparisonList;
 				}
 			}
-		
+
 		}
 		//#endregion
 
-
-		//#region << Initialize the list >>
+ 		//#region << Initialize the list >>
 		contentData.list = fastCopy(resolvedCurrentEntityList);
 		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 
@@ -425,70 +423,118 @@
 		//#region << Initialize the library >>
 
 		//Generate already used
-		var alreadyUsedItemIds = [];
+		var alreadyUsedItemDataNames = [];
 		contentData.generateAlreadyUsed = function () {
+			alreadyUsedItemDataNames = [];
 			for (var i = 0; i < contentData.list.columns.length; i++) {
 				if (contentData.list.columns[i].meta) {
-					alreadyUsedItemIds.push(contentData.list.columns[i].meta.id);
+					alreadyUsedItemDataNames.push(contentData.list.columns[i].dataName);
 				}
 			}
 		}
 		contentData.generateAlreadyUsed();
-		contentData.tempLibrary = {};
-		contentData.tempLibrary.items = fastCopy(resolvedViewLibrary);
+		contentData.fullLibrary = {};
+		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
 		//Fields list eligable to be options in the sort and query dropdowns
 		contentData.onlyFieldsLibrary = {};
 		contentData.onlyFieldsLibrary.items = [];
 		contentData.library = {};
 		contentData.library.relations = [];
 		contentData.library.items = [];
-		contentData.tempLibrary.items.forEach(function (item) {
-			if ((item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) || !item.meta) {
-				switch (item.type) {
-					case "field":
-						contentData.library.items.push(item);
-						break;
-					case "relationOptions":
-						item.addedToLibrary = false;
-						item.sameOriginTargetEntity = false;
-						for (var r = 0; r < contentData.relationsList.length; r++) {
-							if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
-								item.sameOriginTargetEntity = true;
-							}
-						}
-						contentData.library.relations.push(item);
-						break;
-					case "view":
-						contentData.library.items.push(item);
-						break;
-					case "list":
-						if (item.listId != contentData.list.id) {
-							contentData.library.items.push(item);
-						}
-						break;
-				}
-			}
-			if (item.type == "field") {
-				contentData.onlyFieldsLibrary.items.push(item);
-			}
-		});
-		function sortLibrary() {
+
+		contentData.sortLibrary = function () {
 			contentData.library.items = contentData.library.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		function sortOnlyFieldsLibrary() {
+		contentData.sortOnlyFieldsLibrary = function () {
 			contentData.onlyFieldsLibrary.items = contentData.onlyFieldsLibrary.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		sortLibrary();
-		sortOnlyFieldsLibrary();
-		contentData.originalLibrary = fastCopy(contentData.library.items);
+		contentData.checkIfRelationAddedToLibrary = function (relationName) {
+			if (contentData.library.relations.length > 0) {
+				for (var i = 0; i < contentData.library.relations.length; i++) {
+					if (contentData.library.relations[i].relationName === relationName && contentData.library.relations[i].addedToLibrary) {
+						return true;
+					}
+				}
+				return false;
+			}
+			else {
+				return false;
+			}
+		}
+
+
+		contentData.generateLibrary = function (generateRelationOptions) {
+			contentData.library.items = [];
+			contentData.onlyFieldsLibrary = {};
+			contentData.onlyFieldsLibrary.items = [];
+			if (generateRelationOptions) {
+				contentData.library.relations = [];
+			}
+			contentData.fullLibrary.items.forEach(function (item) {
+				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) || !item.meta) {
+					switch (item.type) {
+						case "field":
+							contentData.library.items.push(item);
+							break;
+						case "relationOptions":
+							if (generateRelationOptions) {
+								item.addedToLibrary = false;
+								item.sameOriginTargetEntity = false;
+								for (var r = 0; r < contentData.relationsList.length; r++) {
+									if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+										item.sameOriginTargetEntity = true;
+									}
+								}
+								contentData.library.relations.push(item);
+							}
+							break;
+						case "view":
+							contentData.library.items.push(item);
+							break;
+						case "list":
+							if (item.listId != contentData.list.id) {
+								contentData.library.items.push(item);
+							}
+							break;
+						case "fieldFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "viewFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "listFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+						case "treeFromRelation":
+							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+								contentData.library.items.push(item);
+							}
+							break;
+					}
+				}
+				if (item.type == "field") {
+					contentData.onlyFieldsLibrary.items.push(item);
+				}
+			});
+			contentData.sortLibrary();
+			contentData.sortOnlyFieldsLibrary();
+		}
+
+		contentData.generateLibrary(true);
 
 		//Extract the direction change information from the list if present
 		for (var k = 0; k < contentData.list.relationOptions.length; k++) {
@@ -510,30 +556,29 @@
 
 		//#endregion
 
+		//#region << Regenerate library >>
+		contentData.regenerateLibrary = function () {
+			contentData.generateAlreadyUsed();
+			contentData.generateLibrary(false);
+		}
+
 		//#endregion
 
 		//#region << Logic >>
-		 contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
 		//#region << Drag & Drop >>
 		contentData.moveToColumns = function (item, index) {
 			//Add Item at the end of the columns list
 			contentData.list.columns.push(item);
 			//Remove from library
-			contentData.library.items.splice(index, 1);
 			contentData.updateColumns(true);
+			contentData.regenerateLibrary();
 		}
 		contentData.moveToLibrary = function (item, index) {
-			//Add Item at the end of the columns list
-			contentData.library.items.push(item);
 			//Remove from library
 			contentData.list.columns.splice(index, 1);
-
-			contentData.library.items = contentData.library.items.sort(function (a, b) {
-				if (a.type < b.type) return -1;
-				if (a.type > b.type) return 1;
-				return 0;
-			});
 			contentData.updateColumns(false);
+			contentData.regenerateLibrary();
 		}
 		contentData.dragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
@@ -541,9 +586,11 @@
 			},
 			itemMoved: function (eventObj) {
 				contentData.updateColumns(true);
+				contentData.regenerateLibrary();
 			},
 			orderChanged: function (eventObj) {
 				contentData.updateColumns(true);
+				contentData.regenerateLibrary();
 			}
 		};
 
@@ -553,9 +600,11 @@
 			},
 			itemMoved: function (eventObj) {
 				contentData.updateColumns(false);
+				contentData.regenerateLibrary();
 			},
 			orderChanged: function (eventObj) {
 				contentData.updateColumns(true);
+				contentData.regenerateLibrary();
 			}
 		};
 
@@ -723,9 +772,9 @@
 
 		contentData.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.tempLibrary.items.forEach(function (item) {
+				contentData.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
-						if (item.meta && alreadyUsedItemIds.indexOf(item.meta.id) == -1) {
+						if (item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) {
 							switch (item.type) {
 								case "fieldFromRelation":
 									contentData.library.items.push(item);
@@ -760,7 +809,7 @@
 				contentData.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			sortLibrary();
+			contentData.sortLibrary();
 		}
 
 		contentData.getRelationType = function (relationId) {

@@ -234,8 +234,8 @@ namespace WebVella.ERP.Database
 			CreateRelation($"{relName}_origin", originTableName, originFieldName, relTableName, "origin_id");
 			CreateRelation($"{relName}_target", targetTableName, targetFieldName, relTableName, "target_id");
 
-			CreateIndex("idx_origin_id", relTableName, "origin_id");
-			CreateIndex("idx_target_id", relTableName, "target_id");
+			CreateIndex("idx_"+ relName +"_origin_id", relTableName, "origin_id");
+			CreateIndex("idx_"+ relName +"_target_id", relTableName, "target_id");
 
 			if (originFieldName != "id")
 			{

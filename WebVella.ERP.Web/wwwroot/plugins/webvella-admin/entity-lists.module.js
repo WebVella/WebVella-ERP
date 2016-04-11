@@ -292,7 +292,7 @@
 				content: '<span class="go-green">Success:</span> ' + 'The view was successfully saved'
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state, $state.current.name, {});
+			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
@@ -366,7 +366,7 @@
 				content: '<span class="go-green">Success:</span> ' + 'The list was successfully saved'
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state, $state.current.name, {});
+			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {

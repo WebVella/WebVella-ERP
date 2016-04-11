@@ -23,6 +23,7 @@
 		serviceInstance.getViewByName = getViewByName;
 		serviceInstance.createEntityRecord = createEntityRecord;
 		serviceInstance.getListRecords = getListRecords;
+		serviceInstance.getMultipleRecords = getMultipleRecords;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
 		serviceInstance.createListFilter = createListFilter;
 		serviceInstance.getListFilter = getListFilter;
@@ -97,6 +98,15 @@
 				search = encodeURIComponent(search);
 				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page + '?search=' + search }).then(function getSuccessCallback(response){handleSuccessResult(response.data, response.status, successCallback, errorCallback);}, function getErrorCallback(response) {handleErrorResult(response.data, response.status, errorCallback);});
 			}
+		}
+
+		/////////////////////
+		function getMultipleRecords(recordIds,fieldNames, entityName, successCallback, errorCallback) {
+			var postObject = {};
+			postObject.record_id_array = recordIds;
+			postObject.field_name_array = fieldNames;
+			$log.debug('webvellaAreas>providers>areas.service>getMultipleRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list',data:postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////

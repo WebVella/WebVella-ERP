@@ -521,13 +521,12 @@
 				</select>
 			</td>
 			<td class="position-relative" width="250">
-				<div class="editable-field field">
-					<a href="javascript:void(0)" style="width: 100%;border: 1px solid #ccc;background-color: white;"
-					   editable-text="currentQuery.fieldValue"
-					   ng-bind-html="currentQuery.fieldValue"
-					   onaftersave="contentData.updateQuery()"></a>
+				<div class="editable-wrapper input-group editable-updatable">
+					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
+							value="{{currentQuery.fieldValue}}"
+							 onaftersave="contentData.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
+					<span class="input-group-addon" ng-click="this['queryForm_' + queryIndex].$show()" ng-hide="this['queryForm_' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 				</div>
-				<!--<input class="form-control" ng-model="parentQuery.fieldValue" />-->
 			</td>
 			<td style="width:60px;">
 				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red" ng-click="contentData.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>

@@ -171,7 +171,7 @@ namespace WebVella.ERP
 							lastLoggedIn.Description = "";
 							lastLoggedIn.HelpText = "";
 							lastLoggedIn.Required = false;
-							lastLoggedIn.Unique = true;
+							lastLoggedIn.Unique = false;
 							lastLoggedIn.Searchable = false;
 							lastLoggedIn.Auditable = true;
 							lastLoggedIn.System = true;

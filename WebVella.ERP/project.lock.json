@@ -14,6 +14,26 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "Microsoft.AspNet.Authorization/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        }
+      },
       "Microsoft.AspNet.Diagnostics/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -92,6 +112,25 @@
           "lib/net451/Microsoft.AspNet.FileProviders.Physical.dll": {}
         }
       },
+      "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        }
+      },
       "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -147,6 +186,70 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Abstractions/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Routing": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Core/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Authorization": "1.0.0-rc1-final",
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Hosting.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.MemoryPool": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+          "System.Diagnostics.DiagnosticSource": "4.0.0-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core",
+          "System.Runtime"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Routing/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
         }
       },
       "Microsoft.AspNet.WebUtilities/1.0.0-rc1-final": {
@@ -358,6 +461,21 @@
         },
         "runtime": {
           "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
+        }
+      },
+      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
         }
       },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -521,6 +639,26 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "Microsoft.AspNet.Authorization/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        }
+      },
       "Microsoft.AspNet.Diagnostics/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -599,6 +737,25 @@
           "lib/net451/Microsoft.AspNet.FileProviders.Physical.dll": {}
         }
       },
+      "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        }
+      },
       "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -654,6 +811,70 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Abstractions/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Routing": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Core/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Authorization": "1.0.0-rc1-final",
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Hosting.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.MemoryPool": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+          "System.Diagnostics.DiagnosticSource": "4.0.0-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core",
+          "System.Runtime"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Routing/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
         }
       },
       "Microsoft.AspNet.WebUtilities/1.0.0-rc1-final": {
@@ -865,6 +1086,21 @@
         },
         "runtime": {
           "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
+        }
+      },
+      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
         }
       },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -1034,6 +1270,26 @@
           "lib/net40/AutoMapper.Net4.dll": {}
         }
       },
+      "Microsoft.AspNet.Authorization/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Features": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Authorization.dll": {}
+        }
+      },
       "Microsoft.AspNet.Diagnostics/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -1112,6 +1368,25 @@
           "lib/net451/Microsoft.AspNet.FileProviders.Physical.dll": {}
         }
       },
+      "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Http.Abstractions": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll": {}
+        }
+      },
       "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
         "type": "package",
         "dependencies": {
@@ -1167,6 +1442,70 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNet.Http.Features.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Abstractions/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Routing": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Mvc.Core/6.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Authorization": "1.0.0-rc1-final",
+          "Microsoft.AspNet.FileProviders.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Hosting.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.Abstractions": "6.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.MemoryPool": "1.0.0-rc1-final",
+          "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
+          "System.Diagnostics.DiagnosticSource": "4.0.0-beta-23516"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core",
+          "System.Runtime"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Mvc.Core.dll": {}
+        }
+      },
+      "Microsoft.AspNet.Routing/1.0.0-rc1-final": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+          "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
+        },
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNet.Routing.dll": {}
         }
       },
       "Microsoft.AspNet.WebUtilities/1.0.0-rc1-final": {
@@ -1378,6 +1717,21 @@
         },
         "runtime": {
           "lib/net451/Microsoft.Extensions.Logging.Console.dll": {}
+        }
+      },
+      "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "mscorlib",
+          "System",
+          "System.Core"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.Extensions.MemoryPool.dll": {}
         }
       },
       "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -1602,6 +1956,20 @@
         "tools/wpa81/uninstall.ps1"
       ]
     },
+    "Microsoft.AspNet.Authorization/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "zXQ4VHNDQkWzNpI05jt3laIHSlNIqROFuSbZPV7wprVi43sgeZSn9gBW5rQNcedODgsEvmsIMzl73mXzKf3TTA==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.AspNet.Authorization.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Authorization.xml",
+        "lib/net451/Microsoft.AspNet.Authorization.dll",
+        "lib/net451/Microsoft.AspNet.Authorization.xml",
+        "Microsoft.AspNet.Authorization.1.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Authorization.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Authorization.nuspec"
+      ]
+    },
     "Microsoft.AspNet.Diagnostics/1.0.0-rc1-final": {
       "type": "package",
       "serviceable": true,
@@ -1658,6 +2026,20 @@
         "Microsoft.AspNet.FileProviders.Physical.nuspec"
       ]
     },
+    "Microsoft.AspNet.Hosting.Abstractions/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "07N5rzYcsjkLgwoI923FcAvvf7167qhLgCExXwYYkdZUIJQzneRG0DqZJTm6qpnaD5igf4FM9F+eh2m7y5NFbg==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Hosting.Abstractions.xml",
+        "lib/net451/Microsoft.AspNet.Hosting.Abstractions.dll",
+        "lib/net451/Microsoft.AspNet.Hosting.Abstractions.xml",
+        "Microsoft.AspNet.Hosting.Abstractions.1.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Hosting.Abstractions.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Hosting.Abstractions.nuspec"
+      ]
+    },
     "Microsoft.AspNet.Http.Abstractions/1.0.0-rc1-final": {
       "type": "package",
       "serviceable": true,
@@ -1698,6 +2080,48 @@
         "Microsoft.AspNet.Http.Features.1.0.0-rc1-final.nupkg",
         "Microsoft.AspNet.Http.Features.1.0.0-rc1-final.nupkg.sha512",
         "Microsoft.AspNet.Http.Features.nuspec"
+      ]
+    },
+    "Microsoft.AspNet.Mvc.Abstractions/6.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "xJH5D+h/C6KFA3XjUshgpMEznL7h018f/G4exZY76HhCfABMHmoqb5xrGKvwjKlaCwnSWPDTHeOowsGPmYZ6yQ==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.AspNet.Mvc.Abstractions.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Mvc.Abstractions.xml",
+        "lib/net451/Microsoft.AspNet.Mvc.Abstractions.dll",
+        "lib/net451/Microsoft.AspNet.Mvc.Abstractions.xml",
+        "Microsoft.AspNet.Mvc.Abstractions.6.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Mvc.Abstractions.6.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Mvc.Abstractions.nuspec"
+      ]
+    },
+    "Microsoft.AspNet.Mvc.Core/6.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "s4RFVnKx+c49vxu0rK33kwaff9TydQI/LI9ApgAyfZPlrjDvmzzPyKVGpfKBh682scnllaUFeOV+hL9Q6a1zJw==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.AspNet.Mvc.Core.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Mvc.Core.xml",
+        "lib/net451/Microsoft.AspNet.Mvc.Core.dll",
+        "lib/net451/Microsoft.AspNet.Mvc.Core.xml",
+        "Microsoft.AspNet.Mvc.Core.6.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Mvc.Core.6.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Mvc.Core.nuspec"
+      ]
+    },
+    "Microsoft.AspNet.Routing/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "kIDLp1Icd+l2Z5jFGZf5rAKALS2btMKdP+a+zOepiE4oZJCAJ5tWms+MyMkMJ8hD9/5O6fF4CzckBBcA6pxNUQ==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.AspNet.Routing.dll",
+        "lib/dotnet5.4/Microsoft.AspNet.Routing.xml",
+        "lib/net451/Microsoft.AspNet.Routing.dll",
+        "lib/net451/Microsoft.AspNet.Routing.xml",
+        "Microsoft.AspNet.Routing.1.0.0-rc1-final.nupkg",
+        "Microsoft.AspNet.Routing.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.AspNet.Routing.nuspec"
       ]
     },
     "Microsoft.AspNet.WebUtilities/1.0.0-rc1-final": {
@@ -1920,6 +2344,20 @@
         "Microsoft.Extensions.Logging.Console.1.0.0-rc2-15821.nupkg",
         "Microsoft.Extensions.Logging.Console.1.0.0-rc2-15821.nupkg.sha512",
         "Microsoft.Extensions.Logging.Console.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.MemoryPool/1.0.0-rc1-final": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "QaWADlihqf1DDDLqav1v5u7ObNF7qqPpt4CyN7xBwSx0/jhFjtDnFnKswNYgC/kNFJWZ+crF22AR19M3LlQRaQ==",
+      "files": [
+        "lib/dotnet5.4/Microsoft.Extensions.MemoryPool.dll",
+        "lib/dotnet5.4/Microsoft.Extensions.MemoryPool.xml",
+        "lib/net451/Microsoft.Extensions.MemoryPool.dll",
+        "lib/net451/Microsoft.Extensions.MemoryPool.xml",
+        "Microsoft.Extensions.MemoryPool.1.0.0-rc1-final.nupkg",
+        "Microsoft.Extensions.MemoryPool.1.0.0-rc1-final.nupkg.sha512",
+        "Microsoft.Extensions.MemoryPool.nuspec"
       ]
     },
     "Microsoft.Extensions.OptionsModel/1.0.0-rc1-final": {
@@ -2266,6 +2704,7 @@
       "Newtonsoft.Json >= 8.0.1-beta3",
       "System.Linq >= 4.0.1-beta-23516",
       "System.Threading >= 4.0.11-beta-23516",
+      "Microsoft.AspNet.Mvc.Core >= 6.0.0-rc1-final",
       "Microsoft.Extensions.Logging >= 1.0.0-*",
       "Microsoft.Extensions.Logging.Console >= 1.0.0-*"
     ],
