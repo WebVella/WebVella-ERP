@@ -2218,9 +2218,9 @@ namespace WebVella.ERP.Web.Controllers
 
 					if (queryObj != null)
 					{
-						if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
-							queryObj.SubQueries.Add(listQuery);
-						else
+						//if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
+						//	queryObj.SubQueries.Add(listQuery);
+						//else
 							queryObj = EntityQuery.QueryAND(listQuery, queryObj);
 					}
 					else
