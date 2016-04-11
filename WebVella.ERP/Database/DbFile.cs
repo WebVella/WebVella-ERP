@@ -32,7 +32,7 @@ namespace WebVella.ERP.Database
 				LastModifiedBy = (Guid?)row["modified_by"];
 		}
 
-		public Stream GetContentStream(DbConnection connection)
+		private Stream GetContentStream(DbConnection connection)
 		{
 			var manager = new NpgsqlLargeObjectManager(connection.connection);
 			return manager.OpenReadWrite(ObjectId);
