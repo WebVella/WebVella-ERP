@@ -1366,6 +1366,10 @@
 
 		//#endregion
 
+		//#region << Data for dynamic views >>
+		contentData.data = contentData.selectedSidebarPage.data;
+		//#endregion
+
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 

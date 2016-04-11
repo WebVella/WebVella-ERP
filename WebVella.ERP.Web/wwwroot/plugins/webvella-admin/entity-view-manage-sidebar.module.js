@@ -300,9 +300,9 @@
 								contentData.library.items.push(item);
 							}
 							break;
-						case "list":
-							contentData.library.items.push(item);
-							break;
+						//case "list":
+						//	contentData.library.items.push(item);
+						//	break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
@@ -315,26 +315,16 @@
 								contentData.library.relations.push(item);
 							}
 							break;
-						case "fieldFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
-							}
-							break;
-						case "viewFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
-							}
-							break;
-						case "listFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
-							}
-							break;
-						case "treeFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
-							}
-							break;
+						//case "viewFromRelation":
+						//	if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+						//		contentData.library.items.push(item);
+						//	}
+						//	break;
+						//case "listFromRelation":
+						//	if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
+						//		contentData.library.items.push(item);
+						//	}
+						//	break;
 					}
 				}
 			});

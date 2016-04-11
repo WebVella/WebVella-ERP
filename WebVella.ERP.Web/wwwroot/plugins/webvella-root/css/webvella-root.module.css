@@ -4166,7 +4166,7 @@ table .btn-xs.btn-link {
 	.record-details .no-labels .col-lg-1, .record-details .no-labels .col-lg-2, .record-details .no-labels .col-lg-3, .record-details .no-labels .col-lg-4, .record-details .no-labels .col-lg-5,
 	.record-details .no-labels .col-lg-6, .record-details .no-labels .col-lg-7, .record-details .no-labels .col-lg-8, .record-details .no-labels .col-lg-9, .record-details .no-labels .col-lg-10,
 	.record-details .no-labels .col-lg-11, .record-details .no-labels .col-lg-12 {
-		margin-left: 15px;
+		margin-left: 0;
 	}
 }
 
@@ -4773,4 +4773,35 @@ a.link-icon.link[href]:before {
 
 /*#endregion*/
 
+/*#region << Tooltip */
+.tooltip-btn:hover {
+	cursor:pointer;
+}
 
+.wva-tooltip {
+	opacity:1 !important;
+	width:500px;
+}
+
+.wva-tooltip .tooltip-inner{
+	background:#444;
+	max-width:none;
+	padding:5px;
+	font-size:14px;
+	box-shadow: 0 0 10px #333;
+}
+
+	.wva-tooltip .tooltip-description {
+		color:#ccc;
+		margin-bottom:5px;
+	}
+
+	.wva-tooltip .tooltip-databind {
+		color:white;
+		font-size:16px;
+	}
+
+	.wva-tooltip .tooltip-arrow {
+		border-bottom-color:#444 !important;
+	}
+/*#endregion*/
