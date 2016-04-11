@@ -304,8 +304,11 @@ namespace WebVella.ERP.Api
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
-									else
+									else if (pair.Value != null)
 										values.Add(pair.Value.ToString());
+
+									if (values.Count < 1)
+										continue;
 
 									List<QueryObject> queries = new List<QueryObject>();
 									foreach (var val in values)
@@ -538,7 +541,7 @@ namespace WebVella.ERP.Api
 
 					QueryObject filterObj = EntityQuery.QueryEQ("id", record["id"]);
 					var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
-					var oldRecord = oldRecordResponse.Object;
+					var oldRecord = oldRecordResponse.Object.Data[0];
 
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
 
@@ -606,19 +609,36 @@ namespace WebVella.ERP.Api
 								if (realtionSearchField.GetFieldType() == FieldType.MultiSelectField || realtionSearchField.GetFieldType() == FieldType.TreeSelectField)
 									throw new Exception(string.Format("Invalid relation '{0}'. Fields from Multiselect and Treeselect types can't be used as relation fields.", pair.Key));
 
-								if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
-									throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
-
 								QueryObject filter = null;
+								Guid? originFieldOldValue = null;
+								Guid? targetFieldOldValue = null;
 								if (relation.RelationType == EntityRelationType.ManyToMany)
 								{
+									if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
+										throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
+
 									List<string> values = new List<string>();
 									if (pair.Value is JArray)
 										values = ((JArray)pair.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
 									else if (pair.Value is List<object>)
 										values = ((List<object>)pair.Value).Select(x => ((object)x).ToString()).ToList<string>();
-									else
+									else if (pair.Value != null)
 										values.Add(pair.Value.ToString());
+
+									originFieldOldValue = (Guid)oldRecord[field.Name];
+									targetFieldOldValue = null;
+									if (relation.TargetEntityId == entity.Id)
+									{
+										originFieldOldValue = null;
+										targetFieldOldValue = (Guid)oldRecord[field.Name];
+									}
+
+									if (values.Count < 1)
+									{
+										RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
+
+										continue;
+									}
 
 									List<QueryObject> queries = new List<QueryObject>();
 									foreach (var val in values)
@@ -654,13 +674,6 @@ namespace WebVella.ERP.Api
 
 								if (relation.RelationType == EntityRelationType.ManyToMany)
 								{
-									Guid? originFieldOldValue = (Guid)record[field.Name];
-									Guid? targetFieldOldValue = null;
-									if (relation.TargetEntityId == entity.Id)
-									{
-										originFieldOldValue = null;
-										targetFieldOldValue = (Guid)record[field.Name];
-									}
 									RemoveRelationManyToManyRecord(relation.Id, originFieldOldValue, targetFieldOldValue);
 
 									foreach (Guid relatedRecordValue in relatedRecordValues)
