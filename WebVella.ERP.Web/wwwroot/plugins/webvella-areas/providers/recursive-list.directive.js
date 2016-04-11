@@ -816,6 +816,12 @@
 
 		//#region << Logic >>
 		popupData.ok = function () {
+			//We need to remove the unsupported field from relations that we display but do not want to submit
+			for(var property in popupData.recordData){
+				if(property.indexOf("$field") != -1 || property.indexOf("$fieldFromRelation") != -1){
+					delete popupData.recordData[property];
+				}
+			}
 			if (!popupData.isEdit) {
 				webvellaAdminService.createRecord(popupData.entity.name, popupData.recordData, createSuccessCallback, manageErrorCallback);
 			}
