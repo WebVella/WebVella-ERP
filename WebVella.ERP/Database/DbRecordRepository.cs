@@ -272,7 +272,11 @@ namespace WebVella.ERP.Database
 
 				DateTime? date = null;
 				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 					date = DateTime.Parse(value as string);
+				}
 				else
 					date = value as DateTime?;
 
@@ -286,7 +290,11 @@ namespace WebVella.ERP.Database
 					return null;
 
 				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 					return DateTime.Parse(value as string);
+				}
 
 				return value as DateTime?;
 			}
