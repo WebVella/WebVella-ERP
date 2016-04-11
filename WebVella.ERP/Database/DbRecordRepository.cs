@@ -830,7 +830,7 @@ namespace WebVella.ERP.Database
 				string entityTablePrefix = GetTableNameForEntity(entity) + ".";
 				completeFieldName = entityTablePrefix + query.FieldName;
 				paramName = "@" + query.FieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
-				parameters.Add(new NpgsqlParameter(paramName, ExtractQueryFieldValue(query.FieldValue, field)));
+				parameters.Add(new NpgsqlParameter(paramName, ExtractQueryFieldValue(query.FieldValue, field)??DBNull.Value));
 
 
 				if ((fieldType == FieldType.MultiSelectField || fieldType == FieldType.TreeSelectField) &&
@@ -1189,7 +1189,11 @@ namespace WebVella.ERP.Database
 
 				DateTime? date = null;
 				if (value is string)
-					date = DateTime.Parse(value as string);
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+					return DateTime.Parse(value as string);
+				}
 				else
 					date = value as DateTime?;
 
@@ -1203,7 +1207,11 @@ namespace WebVella.ERP.Database
 					return null;
 
 				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 					return DateTime.Parse(value as string);
+				}
 
 				return value as DateTime?;
 			}

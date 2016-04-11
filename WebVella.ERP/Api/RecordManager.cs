@@ -351,7 +351,6 @@ namespace WebVella.ERP.Api
 											originFieldValue = relatedRecordIdValue;
 											targetFieldValue = (Guid)record[field.Name];
 										}
-
 										CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
 									}
 								}
