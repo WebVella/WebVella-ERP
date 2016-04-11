@@ -517,7 +517,7 @@
 					//We cannot reload the data from the response object as there is missing data for any 
 					//view or list or trees, or viewFromRelation etc.
 
-					//webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+					//webvellaRootService.GoToState($state.current.name, contentData.stateParams);
 
 					defer.resolve();
 				}
@@ -998,7 +998,7 @@
 				}
 				//#endregion
 
-				webvellaRootService.GoToState($state, "webvella-entity-records", { listName: contentData.defaultEntityAreaListName, filter: "all", page: 1, search: null });
+				webvellaRootService.GoToState("webvella-entity-records", { listName: contentData.defaultEntityAreaListName, filter: "all", page: 1, search: null });
 			}
 
 			function errorCallback(response) {
@@ -1064,7 +1064,7 @@
 							className: 'success',
 							content: '<span class="go-green">Success:</span> Change applied'
 						});
-						webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+						webvellaRootService.GoToState($state.current.name, contentData.stateParams);
 					}
 
 					function errorCallback(response) {
@@ -1142,7 +1142,7 @@
 							className: 'success',
 							content: '<span class="go-green">Success:</span> Change applied'
 						});
-						webvellaRootService.GoToState($state, $state.current.name, contentData.stateParams);
+						webvellaRootService.GoToState($state.current.name, contentData.stateParams);
 					}
 
 					function errorCallback(response) {
@@ -1366,6 +1366,10 @@
 
 		//#endregion
 
+		//#region << Data for dynamic views >>
+		contentData.data = contentData.selectedSidebarPage.data;
+		//#endregion
+
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
@@ -1551,7 +1555,7 @@
 					popupData.currentlyAttachedIds.splice(elementIndex, 1);
 					popupData.processingRecordId = "";
 				}
-				webvellaRootService.GoToState($state, $state.current.name, popupData.parentData.stateParams);
+				webvellaRootService.GoToState($state.current.name, popupData.parentData.stateParams);
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> Change applied'
@@ -1623,7 +1627,7 @@
 		//	});
 		//	$uibModalInstance.close('success');
 		//	popupData.parentData.modalInstance.close('success');
-		//	//webvellaRootService.GoToState($state, $state.current.name, {});
+		//	//webvellaRootService.GoToState($state.current.name, {});
 		//}
 
 		//function errorCallback(response) {

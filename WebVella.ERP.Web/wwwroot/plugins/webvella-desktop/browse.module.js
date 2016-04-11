@@ -86,10 +86,12 @@
 		var currentFolderName = $stateParams.folder;
 		var localStorage = $localStorage;
 		if(!currentFolderName && localStorage.folder){
-			$window.location = '#/desktop/browse?folder=' + localStorage.folder;
+			webvellaRootService.GoToState("webvella-desktop-browse",{folder:localStorage.folder});
+			//$window.location = '#/desktop/browse?folder=' + localStorage.folder;
 		}
 		else if(!currentFolderName && !localStorage.folder){
-			$window.location = '#/desktop/browse?folder=Default';
+			webvellaRootService.GoToState("webvella-desktop-browse",{folder:"Default"});
+			//$window.location = '#/desktop/browse?folder=Default';
 		}
 		else {
 			//Do nothing

@@ -1837,7 +1837,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state, $state.current.name, {});
+			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
@@ -2162,7 +2162,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state, $state.current.name, {});
+			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {

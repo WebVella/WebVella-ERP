@@ -323,7 +323,7 @@
                 content: '<span class="go-green">Success:</span> ' + 'The user was successfully saved'
             });
             $uibModalInstance.close('success');
-            webvellaRootService.GoToState($state,$state.current.name, {});
+            webvellaRootService.GoToState($state.current.name, {});
         }
 
         function errorCallback(response) {

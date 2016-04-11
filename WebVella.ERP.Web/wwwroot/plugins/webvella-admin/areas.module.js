@@ -508,7 +508,7 @@
                 content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
             });
             $uibModalInstance.close('success');
-            webvellaRootService.GoToState($state,$state.current.name, {});
+            webvellaRootService.GoToState($state.current.name, {});
         }
 
         function errorCallback(response) {
@@ -565,7 +565,7 @@
             });
             $uibModalInstance.close('success');
             popupData.parentData.modalInstance.close('success');
-            webvellaRootService.GoToState($state,$state.current.name, {});
+            webvellaRootService.GoToState($state.current.name, {});
         }
 
         function errorCallback(response) {

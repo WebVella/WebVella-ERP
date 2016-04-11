@@ -541,6 +541,8 @@ namespace WebVella.ERP.Api
 
 					QueryObject filterObj = EntityQuery.QueryEQ("id", record["id"]);
 					var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
+					if(!oldRecordResponse.Success)
+						throw new Exception(oldRecordResponse.Message);
 					var oldRecord = oldRecordResponse.Object.Data[0];
 
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();
@@ -614,8 +616,8 @@ namespace WebVella.ERP.Api
 								Guid? targetFieldOldValue = null;
 								if (relation.RelationType == EntityRelationType.ManyToMany)
 								{
-									if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
-										throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
+								if (!record.Properties.ContainsKey(field.Name) || record[field.Name] == null)
+									throw new Exception(string.Format("Invalid relation '{0}'. Relation field does not exist into input record data or its value is null.", pair.Key));
 
 									List<string> values = new List<string>();
 									if (pair.Value is JArray)

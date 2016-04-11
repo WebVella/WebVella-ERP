@@ -10,6 +10,7 @@
 	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
+		.controller('CreateRelationFieldModalController', CreateRelationFieldModalController)
         .controller('WebVellaAreasRecordCreateController', controller);
 
 	// Configuration ///////////////////////////////////
@@ -73,21 +74,20 @@
 
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList'];
+        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location'];
 
 	/* @ngInject */
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList) {
+        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location) {
 		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.stateParams = $stateParams;
-
+		contentData.validation = {};
 		//#region <<Set pageTitle>>
 		contentData.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(contentData.pageTitle);
 		contentData.siteMap = fastCopy(resolvedSitemap);
-		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
 		contentData.currentArea = null;
 		for (var i = 0; i < contentData.siteMap.data.length; i++) {
 			if (contentData.siteMap.data[i].name == $state.params.areaName) {
@@ -118,9 +118,6 @@
 
 		//Initialize entityRecordData
 		contentData.entityData = {};
-		for (var l = 0; l < contentData.currentEntity.fields.length; l++) {
-			contentData.entityData[contentData.currentEntity.fields[l].name] = null;
-		}
 		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		contentData.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
@@ -324,9 +321,9 @@
 				{ name: 'tools', items: ['SpellChecker', 'Maximize'] },
 				{ name: 'clipboard', items: ['Undo', 'Redo'] },
 				{ name: 'styles', items: ['Format', 'FontSize', 'TextColor', 'PasteText', 'PasteFromWord', 'RemoveFormat'] },
-				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar','Sourcedialog'] }, '/',
+				{ name: 'insert', items: ['Image', 'Table', 'SpecialChar', 'Sourcedialog'] }, '/',
 			]
-		};	
+		};
 
 
 		contentData.toggleSectionCollapse = function (section) {
@@ -340,11 +337,56 @@
 
 		//#endregion
 
+		//#region << Entity relations functions >>
+		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
+
+		contentData.getRelation = function (relationName) {
+			for (var i = 0; i < contentData.relationsList.length; i++) {
+				if (contentData.relationsList[i].name == relationName) {
+					//set current entity role
+					if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+						contentData.relationsList[i].currentEntityRole = 3; //both origin and target
+					}
+					else if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+						contentData.relationsList[i].currentEntityRole = 2; //target
+					}
+					else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
+						contentData.relationsList[i].currentEntityRole = 1; //origin
+					}
+					else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
+						contentData.relationsList[i].currentEntityRole = 0; //possible problem
+					}
+					return contentData.relationsList[i];
+				}
+			}
+			return null;
+		}
+
+		contentData.hasFieldFromRelationValue = function (itemDataName) {
+			var dataNameArray =  itemDataName.split('$');
+			if (contentData.entityData["$" + dataNameArray[2] + "." + "id"]) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		contentData.removeFieldFromRelationValue = function (itemDataName) {
+			var dataNameArray =  itemDataName.split('$');
+			$timeout(function () {
+				delete contentData.entityData["$" + dataNameArray[2] + "." + "id"];
+				delete contentData.dummyFields[itemDataName];
+			}, 10);
+		}
+
+
+		//#endregion
 
 		//#region << Render >>
 		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
-		contentData.checkUserEntityPermissions = function(permissionsCsv){
-			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity,permissionsCsv));
+		contentData.checkUserEntityPermissions = function (permissionsCsv) {
+			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity, permissionsCsv));
 		}
 
 
@@ -365,7 +407,7 @@
 		}
 
 		//#region << Methods to generate the record details view name >>
-		
+
 		//Select default view for the area
 		contentData.selectedList = {};
 		for (var j = 0; j < contentData.currentEntity.recordLists.length; j++) {
@@ -413,11 +455,11 @@
 						if (record[dataName] != undefined) {
 							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
 							//Case 1 - data is not from relation (not starting with $)
-							if(!dataName.startsWith('$')){
+							if (!dataName.startsWith('$')) {
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
 							}
 							else {
-							//Case 2 - relation field
+								//Case 2 - relation field
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
 							}
 
@@ -440,43 +482,67 @@
 
 		//#region << Save >>
 		contentData.create = function (redirectTarget) {
-			//Alter some data before save
+			//Validate 
+			contentData.validation = {};
 			for (var k = 0; k < availableViewFields.length; k++) {
-				if (availableViewFields[k].type === "field") {
-					switch (availableViewFields[k].meta.fieldType) {
-						case 4: //Date
-							if(contentData.entityData[availableViewFields[k].meta.name] != null){
-								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('day').utc().toISOString();
-							}
-							break;
-						case 5: //Date & Time
-							if(contentData.entityData[availableViewFields[k].meta.name] != null){
-								contentData.entityData[availableViewFields[k].meta.name] = moment(contentData.entityData[availableViewFields[k].meta.name]).startOf('minute').utc().toISOString();
-							}
-							break;
-						case 14: //Percent
-							//need to convert to decimal 0 <= val <= 100 Divide by 100
-							//Hack for proper javascript division
-							$scope.Math = window.Math;
-							var helpNumber = 10000000;
-							var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].meta.name] * helpNumber);
-							contentData.entityData[availableViewFields[k].meta.name] = multipliedValue / (100 * helpNumber);
-							break;
+				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
+					if (contentData.entityData[availableViewFields[k].dataName] == null || contentData.entityData[availableViewFields[k].dataName] == "") {
+						contentData.validation[availableViewFields[k].dataName] = true;
+						contentData.validation.hasError = true;
+						contentData.validation.errorMessage = "A required data is missing!";
 					}
 				}
 			}
-			contentData.entityData["created_on"] = moment().utc().toISOString();
-			//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-			switch(redirectTarget){
-				case "details":
-					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
-					break;
-				case "list":
-					webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
-					break;
+			if (!contentData.validation.hasError) {
+				//Alter some data before save
+				for (var k = 0; k < availableViewFields.length; k++) {
+					if (availableViewFields[k].type === "field") {
+						switch (availableViewFields[k].meta.fieldType) {
+							case 4: //Date
+								if (contentData.entityData[availableViewFields[k].dataName] != null) {
+									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
+								}
+								break;
+							case 5: //Date & Time
+								if (contentData.entityData[availableViewFields[k].dataName] != null) {
+									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
+								}
+								break;
+							case 14: //Percent
+								//need to convert to decimal 0 <= val <= 100 Divide by 100
+								//Hack for proper javascript division
+								$scope.Math = window.Math;
+								var helpNumber = 10000000;
+								var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].dataName] * helpNumber);
+								contentData.entityData[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
+								break;
+						}
+					}
+					else if (availableViewFields[k].type === "fieldFromRelation") {
+						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
+					}
+				}
+				contentData.entityData["created_on"] = moment().utc().toISOString();
+				//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
+				switch (redirectTarget) {
+					case "details":
+						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
+						break;
+					case "list":
+						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
+						break;
+				}
 			}
-			
+			else {
+				//Scroll top
+				// set the location.hash to the id of
+				// the element you wish to scroll to.
+				$location.hash('page-title');
 
+				// call $anchorScroll()
+				$anchorScroll();
+
+			}
 		};
 
 		contentData.cancel = function () {
@@ -506,20 +572,11 @@
 					entityName: $stateParams.entityName,
 					recordId: response.object.data[0].id,
 					viewName: detailsViewName,
-					auxPageName:"*",
+					auxPageName: "*",
 					filter: $stateParams.filter,
 					page: $stateParams.page
 
 				}, { reload: true });
-
-				//$state.go("webvella-entity-records", {
-				//	areaName: $stateParams.areaName,
-				//	entityName: $stateParams.entityName,
-				//	listName: $stateParams.listName,
-				//	filter: $stateParams.filter,
-				//	page: $stateParams.page
-
-				//}, { reload: true });
 			}, 0);
 		}
 
@@ -543,21 +600,388 @@
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
-			popupData["currencyErrorMessage"] = "Bad new message";
-			popupData["currencyError"] = true;
+
 
 		}
 
-		//#engregion
+		//#endregion
 
+		//#region << Modals >>
+
+		//#region << Relation field >>
+		contentData.dummyFields = {};  //These fields will present data to the user that will not be submitted
+		////////////////////
+		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
+		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
+			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
+			//dataKind - target, origin, origin-target
+
+			//Select ONE item modal
+			if (relationType == 1 || (relationType == 2 && dataKind == "target")) {
+				var modalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'manageRelationFieldModal.html',
+					controller: 'CreateRelationFieldModalController',
+					controllerAs: "popupData",
+					size: "lg",
+					resolve: {
+						contentData: function () {
+							return contentData;
+						},
+						selectedItem: function () {
+							return item;
+						},
+						selectedRelationType: function () {
+							return relationType;
+						},
+						selectedDataKind: function () {
+							return dataKind;
+						},
+						resolvedLookupRecords: function () {
+							return resolveLookupRecords(item, relationType, dataKind);
+						},
+						modalMode: function () {
+							return "single-selection";
+						},
+					}
+				});
+				//On modal exit
+				modalInstance.result.then(function (returnObject) {
+					var selectedRecord = {};
+					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
+					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
+					function modalCase1SuccessCallback(response) {
+						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
+						var dummyFieldValue = null;
+						var dataNameArray =  item.dataName.split('$');
+						var dummyFieldName = dataNameArray[3];
+						contentData.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
+						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
+						contentData.entityData["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+					}
+					function modalCase1ErrorCallback(response) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> ' + response.message,
+							timeout: 7000
+						});
+					}
+					webvellaAdminService.getRecord(returnObject.selectedRecordId, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+				});
+			}
+				//Select MULTIPLE item modal
+			else if ((relationType == 2 && dataKind == "origin") || relationType == 3) {
+				var modalInstance = $uibModal.open({
+					animation: false,
+					templateUrl: 'manageRelationFieldModal.html',
+					controller: 'CreateRelationFieldModalController',
+					controllerAs: "popupData",
+					size: "lg",
+					resolve: {
+						contentData: function () {
+							return contentData;
+						},
+						selectedItem: function () {
+							return item;
+						},
+						selectedRelationType: function () {
+							return relationType;
+						},
+						selectedDataKind: function () {
+							return dataKind;
+						},
+						resolvedLookupRecords: function () {
+							return resolveLookupRecords(item, relationType, dataKind);
+						},
+						modalMode: function () {
+							return "multi-selection";
+						},
+					}
+				});
+				//On modal exit
+				modalInstance.result.then(function (returnObject) {
+					var selectedRecords = [];
+					var dataNameArray =  item.dataName.split('$');
+					var dummyFieldName = dataNameArray[3];
+					var idFieldPrefix = "$" + dataNameArray[2] + ".";
+					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
+					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
+					//2.get the record by returnObject.selectedRecordId, with the value of the field in the view 
+					function modalCase1SuccessCallback(response) {
+						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
+						var dummyFieldValue = null;
+						contentData.dummyFields[item.dataName] = [];
+						contentData.entityData[idFieldPrefix + "id"] = [];
+						for (var i = 0; i < response.object.data.length; i++) {
+							contentData.dummyFields[item.dataName].push(webvellaAreasService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
+							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
+							contentData.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
+						}
+					}
+					function modalCase1ErrorCallback(response) {
+						ngToast.create({
+							className: 'error',
+							content: '<span class="go-red">Error:</span> ' + response.message,
+							timeout: 7000
+						});
+					}
+					var fieldsArray = [];
+					fieldsArray.push(dummyFieldName);
+
+					if (returnObject.selectedRecordIdArray.length == 0) {
+					   	contentData.dummyFields[item.dataName] = [];
+						contentData.entityData[idFieldPrefix + "id"] = [];
+					}
+					else {
+						webvellaAreasService.getMultipleRecords(returnObject.selectedRecordIdArray, fieldsArray, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+					}
+				});
+			}
+		}
+		contentData.modalSelectedItem = {};
+		contentData.modalRelationType = -1;
+		contentData.modalDataKind = "";
+
+		//Resolve function lookup records
+		var resolveLookupRecords = function (item, relationType, dataKind) {
+			// Initialize
+			var defer = $q.defer();
+			contentData.modalSelectedItem = fastCopy(item);
+			contentData.modalRelationType = fastCopy(relationType);
+			contentData.modalDataKind = fastCopy(dataKind);
+			// Process
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.reject();
+			}
+			function getListRecordsSuccessCallback(response) {
+				defer.resolve(response); //Submitting the whole response to manage the error states
+			}
+
+			function getEntityMetaSuccessCallback(response) {
+				var entityMeta = response.object;
+				var defaultLookupList = null;
+				var selectedLookupListName = contentData.modalSelectedItem.fieldLookupList;
+				var selectedLookupList = null;
+				//Find the default lookup field if none return null.
+				for (var i = 0; i < entityMeta.recordLists.length; i++) {
+					//Check if the selected lookupList Exists
+					if (entityMeta.recordLists[i].name == selectedLookupListName) {
+						selectedLookupList = entityMeta.recordLists[i];
+					}
+					if (entityMeta.recordLists[i].default && entityMeta.recordLists[i].type == "lookup") {
+						defaultLookupList = entityMeta.recordLists[i];
+					}
+				}
+
+				if (selectedLookupList == null && defaultLookupList == null) {
+					response.message = "This entity does not have selected or default lookup list";
+					response.success = false;
+					errorCallback(response);
+				}
+				else {
+
+					//var gg = contentData.modalSelectedItem;
+					//contentData.modalRelationType;
+					//contentData.modalDataKind;
+					if (selectedLookupList != null) {
+						defaultLookupList = selectedLookupList;
+					}
+
+					//Current record is Origin
+					if (contentData.modalDataKind == "origin") {
+						//Find if the target field is required
+						var targetRequiredField = false;
+						var modalCurrrentRelation = contentData.getRelation(contentData.modalSelectedItem.relationName);
+						for (var m = 0; m < entityMeta.fields.length; m++) {
+							if (entityMeta.fields[m].id == modalCurrrentRelation.targetFieldId) {
+								targetRequiredField = entityMeta.fields[m].required;
+							}
+						}
+						if (targetRequiredField && contentData.modalRelationType == 1) {
+							//Case 1 - Solves the problem when the target field is required, but we are currently looking on the origin field holding record. 
+							//In this case we cannot allow this relation to be managed from this origin record as the change will leave the old target record with null for its required field
+							var lockedChangeResponse = {
+								success: false,
+								message: "This is a relation field, that cannot be managed from this record. Try managing it from the related <<" + entityMeta.label + ">> entity record",
+								object: null
+							}
+							getListRecordsSuccessCallback(lockedChangeResponse);
+						}
+						else {
+							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+						}
+					}
+					else if (contentData.modalDataKind == "target") {
+						//Current records is Target
+						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+					}
+				}
+			}
+
+			webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+
+			return defer.promise;
+		}
+
+		//#endregion
+		//#endregion
 
 		$log.debug('webvellaAreas>record-create> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 
 	//#region < Modal Controllers >
+
+	//#region << Manage relation Modal >>
+	//Test to unify all modals - Single select, multiple select, click to select
+	CreateRelationFieldModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	/* @ngInject */
+	function CreateRelationFieldModalController(contentData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+        selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+
+		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		/* jshint validthis:true */
+		var popupData = this;
+		popupData.currentPage = 1;
+		popupData.parentData = fastCopy(contentData);
+		popupData.selectedItem = fastCopy(selectedItem);
+		popupData.modalMode = fastCopy(modalMode);
+		popupData.hasWarning = false;
+		popupData.warningMessage = "";
+		//Init
+		var index = selectedItem.dataName.lastIndexOf('$') + 1;
+		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
+		var idFieldPrefix = selectedItem.dataName.slice(0, index);
+		popupData.currentlyAttachedIds = [];
+		if (popupData.parentData.entityData[idFieldPrefix + "id"] && popupData.parentData.entityData[idFieldPrefix + "id"].length > 0) {
+			popupData.currentlyAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
+		}
+		popupData.getRelationLabel = contentData.getRelationLabel;
+
+
+		//Get the default lookup list for the entity
+		if (resolvedLookupRecords.success) {
+			popupData.relationLookupList = fastCopy(resolvedLookupRecords.object);
+		}
+		else {
+			popupData.hasWarning = true;
+			popupData.warningMessage = resolvedLookupRecords.message;
+		}
+
+		//#region << Search >>
+		popupData.checkForSearchEnter = function (e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 13) { //Enter keycode
+				popupData.submitSearchQuery();
+			}
+		}
+		popupData.submitSearchQuery = function () {
+			function successCallback(response) {
+				popupData.relationLookupList = fastCopy(response.object);
+			}
+			function errorCallback(response) { }
+
+			if (popupData.searchQuery) {
+				popupData.searchQuery = popupData.searchQuery.trim();
+			}
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", 1, popupData.searchQuery, successCallback, errorCallback);
+		}
+		//#endregion
+
+		//#region << Paging >>
+		popupData.selectPage = function (page) {
+			// Process
+			function successCallback(response) {
+				popupData.relationLookupList = fastCopy(response.object);
+				popupData.currentPage = page;
+			}
+
+			function errorCallback(response) {
+
+			}
+
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, null, successCallback, errorCallback);
+		}
+
+		//#endregion
+
+		//#region << Logic >>
+
+		//Render field values
+		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+
+		popupData.isSelectedRecord = function (recordId) {
+			if (popupData.currentlyAttachedIds) {
+				return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+			}
+			else {
+				return false;
+			}
+		}
+
+		//Single record before save
+		popupData.selectSingleRecord = function (record) {
+			var returnObject = {
+				relationName: popupData.selectedItem.relationName,
+				dataKind: selectedDataKind,
+				selectedRecordId: record.id
+			};
+			$uibModalInstance.close(returnObject);
+		};
+
+		// Multiple records before save
+		popupData.attachRecord = function (record) {
+			//Update the currentlyAttachedIds
+			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			if (elementIndex == -1) {
+				//this is the normal case
+				popupData.currentlyAttachedIds.push(record.id);
+			}
+			else {
+				//if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+			}
+
+		}
+		popupData.detachRecord = function (record) {
+			//Update the currentlyAttachedIds for highlight
+			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			if (elementIndex > -1) {
+				//this is the normal case
+				popupData.currentlyAttachedIds.splice(elementIndex, 1);
+			}
+			else {
+				//if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
+			}
+		}
+		popupData.saveRelationChanges = function () {
+			var returnObject = {
+				relationName: popupData.selectedItem.relationName,
+				dataKind: selectedDataKind,
+				selectedRecordIdArray: popupData.currentlyAttachedIds
+			};
+			$uibModalInstance.close(returnObject);
+			//category_id
+		};
+
+
+		//#endregion
+
+
+		popupData.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+		//#endregion
+
+		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	};
+	//#endregion 
 
 	//#endregion
 

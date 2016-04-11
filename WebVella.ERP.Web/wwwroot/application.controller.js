@@ -131,10 +131,11 @@
 		});
 
 		//Redirect State (usefull when you need to redirect from resolve)
-		$rootScope.$on("state-change-needed", function (event, stateName, stateParams) {
+		$rootScope.$on("state-change-needed", function (event, redirectObject) {
+			event.preventDefault();
 			$timeout(function () {
-				$state.go(stateName, stateParams, { reload: true });
-			}, 10);
+				$state.go(redirectObject.stateName, redirectObject.params, { reload: true });
+			}, 1);
 		});
 
 		$log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

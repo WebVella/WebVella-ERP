@@ -54,13 +54,16 @@
 		var loginData = this;
 		loginData.loginIsActive = false;
 		var currentUser = webvellaRootService.getCurrentUser();
-		if (currentUser != null) {
-			$window.location = '#/desktop/browse';
+		if (currentUser) {
+			$timeout(function(){
+				webvellaRootService.GoToState("webvella-desktop-browse",{});
+				//$window.location = '#/desktop/browse';
+			},100);
 		}
 		else {
 			$timeout(function () {
 				loginData.loginIsActive = true;
-			}, 0);
+			}, 100);
 
 			loginData.rememberMe = false;
 			loginData.pageTitle = "Login | " + pageTitle;
@@ -73,7 +76,8 @@
 			loginData.doLogin = function () {
 				webvellaRootService.login(loginData,
 										  function (response) {
-									  		$window.location = '#/desktop/browse';
+									  		webvellaRootService.GoToState("webvella-desktop-browse",{});
+											//$window.location = '#/desktop/browse';
 										  },
 										  function (response) {
 										  	//show validation

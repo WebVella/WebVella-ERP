@@ -31,6 +31,7 @@
 			scope: {
 				viewData: '=?',
 				viewMeta: '=?',
+				relationsList: '=?',
 				relation: '=?',
 				parentId: '=?',
 				canAddExisting: '=?',

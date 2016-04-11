@@ -549,6 +549,7 @@
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
+														relations-list="::contentData.relationsList"
 														parent-id="::contentData.stateParams.recordId"
 														can-create="false"
 														can-update="false">
@@ -572,6 +573,7 @@
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-view view-meta="::item"
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
+														relations-list="::contentData.relationsList"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
 														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
@@ -598,6 +600,7 @@
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
+														relations-list="::contentData.relationsList"
 														parent-id="::contentData.stateParams.recordId"
 														can-create="false"
 														can-update="false">
@@ -621,6 +624,7 @@
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
+														relations-list="::contentData.relationsList"
 														relation="::contentData.getRelation(item.relationName)"
 														parent-id="::contentData.stateParams.recordId"
 														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
@@ -673,6 +677,7 @@
 				<div ng-switch-when="view">
 					<recursive-view view-meta="::contentData.selectedSidebarPage"
 									view-data="::contentData.selectedSidebarPage.data"
+									relations-list="::contentData.relationsList"
 									parent-id="::contentData.stateParams.recordId"
 									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
 									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
@@ -681,6 +686,7 @@
 				<div ng-switch-when="viewFromRelation">
 					<recursive-view view-meta="::contentData.selectedSidebarPage"
 									view-data="::contentData.selectedSidebarPage.data"
+									relations-list="::contentData.relationsList"
 									relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)"
 									parent-id="::contentData.stateParams.recordId"
 									can-add-existing="true"
@@ -696,6 +702,7 @@
 				<div ng-switch-when="list">
 					<recursive-list list-meta="::contentData.selectedSidebarPage"
 									list-data="::contentData.selectedSidebarPage.data"
+									relations-list="::contentData.relationsList"
 									parent-id="::contentData.stateParams.recordId"
 									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
 									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
@@ -704,6 +711,7 @@
 				<div ng-switch-when="listFromRelation">
 					<recursive-list list-meta="::contentData.selectedSidebarPage"
 									list-data="::contentData.selectedSidebarPage.data"
+									relations-list="::contentData.relationsList"
 									can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
 									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
 									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"

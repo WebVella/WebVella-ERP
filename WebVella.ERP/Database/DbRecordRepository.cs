@@ -272,7 +272,11 @@ namespace WebVella.ERP.Database
 
 				DateTime? date = null;
 				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 					date = DateTime.Parse(value as string);
+				}
 				else
 					date = value as DateTime?;
 
@@ -286,7 +290,11 @@ namespace WebVella.ERP.Database
 					return null;
 
 				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
 					return DateTime.Parse(value as string);
+				}
 
 				return value as DateTime?;
 			}
@@ -822,50 +830,51 @@ namespace WebVella.ERP.Database
 				string entityTablePrefix = GetTableNameForEntity(entity) + ".";
 				completeFieldName = entityTablePrefix + query.FieldName;
 				paramName = "@" + query.FieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
-				parameters.Add(new NpgsqlParameter(paramName, query.FieldValue));
+				parameters.Add(new NpgsqlParameter(paramName, ExtractQueryFieldValue(query.FieldValue, field)));
 
 
 				if ((fieldType == FieldType.MultiSelectField || fieldType == FieldType.TreeSelectField) &&
 					  !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
 					throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
+
+				
 			}
 
 			switch (query.QueryType)
 			{
 				case QueryType.EQ:
 					{
-						if (fieldType == FieldType.MultiSelectField)
-						{
-							var parameter = parameters.Single(x => x.ParameterName == paramName);
-							parameter.Value = new List<string>() { (string)query.FieldValue };
-							sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
-						}
-						else if (fieldType == FieldType.TreeSelectField)
-						{
-							var parameter = parameters.Single(x => x.ParameterName == paramName);
-							parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
-							sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
-						}
-						else
-							sql = sql + " " + completeFieldName + "=" + paramName;
-
+						//if (fieldType == FieldType.MultiSelectField)
+						//{
+						//	var parameter = parameters.Single(x => x.ParameterName == paramName);
+						//	parameter.Value = new List<string>() { (string)query.FieldValue };
+						//	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
+						//}
+						//else if (fieldType == FieldType.TreeSelectField)
+						//{
+						//	var parameter = parameters.Single(x => x.ParameterName == paramName);
+						//	parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
+						//	sql = sql + " " + paramName + " IN ( " + completeFieldName + " )";
+						//}
+						//else
+						sql = sql + " " + completeFieldName + "=" + paramName;
 						return;
 					}
 				case QueryType.NOT:
 					{
-						if (fieldType == FieldType.MultiSelectField)
-						{
-							var parameter = parameters.Single(x => x.ParameterName == paramName);
-							parameter.Value = new List<string>() { (string)query.FieldValue };
-							sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
-						}
-						else if (fieldType == FieldType.TreeSelectField)
-						{
-							var parameter = parameters.Single(x => x.ParameterName == paramName);
-							parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
-							sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
-						}
-						else
+						//if (fieldType == FieldType.MultiSelectField)
+						//{
+						//	var parameter = parameters.Single(x => x.ParameterName == paramName);
+						//	parameter.Value = new List<string>() { (string)query.FieldValue };
+						//	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
+						//}
+						//else if (fieldType == FieldType.TreeSelectField)
+						//{
+						//	var parameter = parameters.Single(x => x.ParameterName == paramName);
+						//	parameter.Value = new List<Guid>() { (Guid)query.FieldValue };
+						//	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
+						//}
+						//else
 							sql = sql + " " + completeFieldName + "<>" + paramName;
 
 						return;
@@ -1137,5 +1146,162 @@ namespace WebVella.ERP.Database
 
 			return result;
 		}
+
+
+		private object ExtractQueryFieldValue(object value, Field field)
+		{
+			if (value == null)
+				return null;
+
+			if (value is JToken)
+				value = ((JToken)value).ToObject<object>();
+
+			if (field is AutoNumberField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
+
+				return Convert.ToDecimal(value);
+			}
+			else if (field is CheckboxField)
+				return value as bool?;
+			else if (field is CurrencyField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+					if ((value as string).StartsWith("$"))
+						value = (value as string).Substring(1);
+					return decimal.Parse(value as string);
+				}
+
+				return Convert.ToDecimal(value);
+			}
+			else if (field is DateField)
+			{
+				if (value == null)
+					return null;
+
+				DateTime? date = null;
+				if (value is string)
+					date = DateTime.Parse(value as string);
+				else
+					date = value as DateTime?;
+
+				if (date != null)
+					return new DateTime(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+			}
+			else if (field is DateTimeField)
+			{
+
+				if (value == null)
+					return null;
+
+				if (value is string)
+					return DateTime.Parse(value as string);
+
+				return value as DateTime?;
+			}
+			else if (field is EmailField)
+				return value as string;
+			else if (field is FileField)
+				return value as string;
+			else if (field is ImageField)
+				return value as string;
+			else if (field is HtmlField)
+				return value as string;
+			else if (field is MultiLineTextField)
+				return value as string;
+			else if (field is MultiSelectField)
+			{
+				if (value == null)
+					return null;
+				else if (value is JArray)
+					return ((JArray)value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+				else if (value is List<object>)
+					return ((List<object>)value).Select(x => ((object)x).ToString()).ToList<string>();
+				else if (value is string[])
+					return new List<string>(value as string[]);
+				else
+					return value as IEnumerable<string>;
+			}
+			else if (field is NumberField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
+
+				return Convert.ToDecimal(value);
+			}
+			else if (field is PasswordField)
+			{
+				if (((PasswordField)field).Encrypted == true)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+
+					return PasswordUtil.GetMd5Hash(value as string);
+				}
+				return value;
+			}
+			else if (field is PercentField)
+			{
+				if (value == null)
+					return null;
+				if (value is string)
+					return decimal.Parse(value as string);
+
+				return Convert.ToDecimal(value);
+			}
+			else if (field is PhoneField)
+				return value as string;
+			else if (field is GuidField)
+			{
+				if (value is string)
+				{
+					if (string.IsNullOrWhiteSpace(value as string))
+						return null;
+
+					return new Guid(value as string);
+				}
+
+				if (value is Guid)
+					return (Guid?)value;
+
+				if (value == null)
+					return (Guid?)null;
+
+				throw new Exception("Invalid Guid field value.");
+			}
+			else if (field is SelectField)
+				return value as string;
+			else if (field is TextField)
+				return value as string;
+			else if (field is UrlField)
+				return value as string;
+			else if (field is TreeSelectField)
+			{
+				if (value == null)
+					return null;
+				else if (value is JArray)
+					return ((JArray)value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
+				else if (value is List<object>)
+					return ((List<object>)value).Select(x => ((Guid)x)).ToList<Guid>();
+				else if (value is Guid[])
+					return new List<Guid>(value as Guid[]);
+				else
+					return value as IEnumerable<Guid>;
+			}
+
+
+			throw new Exception("System Error. A field type is not supported in field value extraction process.");
+		}
 	}
+
 }

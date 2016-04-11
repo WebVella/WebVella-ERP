@@ -1756,7 +1756,7 @@ namespace WebVella.ERP.Web.Controllers
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
 			List<Entity> entities = entitiesResponse.Object.Entities;
 
-			RecordListRecordResponse response = new RecordListRecordResponse();
+			var response = new RecordListRecordResponse();
 			response.Message = "Success";
 			response.Timestamp = DateTime.UtcNow;
 			response.Success = true;
@@ -1801,6 +1801,124 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
+
+		// GET: api/v1/en_US/record/{entityName}/list
+		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list")]
+		public IActionResult GetMultipleRecordsByEntityName(string entityName, [FromBody] JObject submitObj)
+		{
+
+			var response = new QueryResponse();
+			var recordIdList = new List<Guid>();
+			var fieldList = new List<string>();
+
+			foreach (var prop in submitObj.Properties())
+			{
+				switch (prop.Name)
+				{
+					case "record_id_array":
+						if (prop.Value == null)
+						{
+							response.Message = "Success - id list is empty";
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = true;
+							response.Object = null;
+							return DoResponse(response);
+						}
+						else if (prop.Value is JArray)
+						{
+							try
+							{
+								recordIdList = ((JArray)prop.Value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
+							}
+							catch
+							{
+								response.Message = "error converting record_id_array to guid list";
+								response.Timestamp = DateTime.UtcNow;
+								response.Success = false;
+								response.Object = null;
+								return DoResponse(response);
+							}
+						}
+						else
+						{
+							response.Message = "record_id_array is not an array";
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = false;
+							response.Object = null;
+							return DoResponse(response);
+						}
+						break;
+					case "field_name_array":
+						if (prop.Value == null)
+						{
+							response.Message = "Success - field names list is empty";
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = true;
+							response.Object = null;
+							return DoResponse(response);
+						}
+						else if (prop.Value is JArray)
+						{
+							try
+							{
+								fieldList = ((JArray)prop.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
+							}
+							catch
+							{
+								response.Message = "error converting field_name_array to string list";
+								response.Timestamp = DateTime.UtcNow;
+								response.Success = false;
+								response.Object = null;
+								return DoResponse(response);
+							}
+						}
+						else
+						{
+							response.Message = "field_name_array is not an array";
+							response.Timestamp = DateTime.UtcNow;
+							response.Success = false;
+							response.Object = null;
+							return DoResponse(response);
+						}
+						break;
+				}
+			}
+
+			var QueryList = new List<QueryObject>();
+			foreach (var recordId in recordIdList)
+			{
+				QueryList.Add(EntityQuery.QueryEQ("id", recordId));
+			}
+
+			QueryObject recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
+
+			if(!fieldList.Contains("id")) {
+				fieldList.Add("id");
+			}
+			var columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
+
+			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
+			var queryResponse = recMan.Find(query);
+			if (!queryResponse.Success)
+			{
+				response.Message = queryResponse.Message;
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Object = null;
+				return DoResponse(response);
+			}
+
+
+			response.Message = "Success";
+			response.Timestamp = DateTime.UtcNow;
+			response.Success = true;
+			response.Object.Data = queryResponse.Object.Data;
+
+
+			return DoResponse(response);
+		}
+
+
 
 		private QueryObject CreateSearchQuery(string search, RecordList list, Entity entity)
 		{
