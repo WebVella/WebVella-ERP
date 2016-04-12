@@ -222,7 +222,7 @@
         popupData.isUpdate = true;
         if (popupData.user.id == null) {
         	popupData.isUpdate = false;
-        	popupData.user.$user_role = [];
+        	//popupData.user.$user_role = [];
             popupData.modalTitle = "Create new area";
             popupData.user.id = guid();
             popupData.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
@@ -300,15 +300,21 @@
         	popupData.validation = {};
         	if (!popupData.isUpdate) {
         		popupData.user.password = popupData.password;
-        		popupData.user.roles = popupData.userRoles;
-            	webvellaAdminService.createUser(popupData.user, successCallback, errorCallback);
+				popupData.user["$user_role.id"] = [];
+        		popupData.userRoles.forEach(function(role){
+					 popupData.user["$user_role.id"].push(role.id);
+				});
+				webvellaAdminService.createRecord("user",popupData.user, successCallback, errorCallback);
             }
             else {
-        		popupData.user.roles = popupData.userRoles;
+        		popupData.user["$user_role.id"] = [];
+        		popupData.userRoles.forEach(function(role){
+					 popupData.user["$user_role.id"].push(role.id);
+				});
         		if (popupData.password) {
         			popupData.user.password = popupData.password;
         		}
-        		webvellaAdminService.updateUser(popupData.user.id, popupData.user, successCallback, errorCallback);
+        		webvellaAdminService.updateRecord(popupData.user.id,"user",popupData.user, successCallback, errorCallback);
             } 
         };
 

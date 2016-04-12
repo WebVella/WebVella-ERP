@@ -733,7 +733,9 @@
 						contentData.entityData[idFieldPrefix + "id"] = [];
 					}
 					else {
-						webvellaAreasService.getMultipleRecords(returnObject.selectedRecordIdArray, fieldsArray, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
+						var fieldCSV = fieldsArray.join(',');
+						webvellaAreasService.getMultipleRecords(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}

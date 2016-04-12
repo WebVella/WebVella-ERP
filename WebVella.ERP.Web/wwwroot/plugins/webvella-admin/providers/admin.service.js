@@ -114,7 +114,6 @@ function guid() {
 		//User
 		serviceInstance.getUserById = getUserById;
 		serviceInstance.getAllUsers = getAllUsers;
-		serviceInstance.createUser = createUser;
 		serviceInstance.updateUser = updateUser;
 		serviceInstance.initUser = initUser;
 		//#endregion
@@ -1450,11 +1449,6 @@ function guid() {
 		function getAllUsers(successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getAllUsers> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/list' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-		///////////////////////
-		function createUser(userObject, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>createUser> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'user', data: userObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
