@@ -11,7 +11,7 @@
         .module('webvellaRoot')
         .service('webvellaRootService', service);
 
-	service.$inject = ['$cookies','$http', 'wvAppConstants', '$log', '$rootScope', '$window', '$location', '$anchorScroll', 'ngToast', '$timeout'];
+	service.$inject = ['$cookies', '$http', 'wvAppConstants', '$log', '$rootScope', '$window', '$location', '$anchorScroll', 'ngToast', '$timeout'];
 
 	/* @ngInject */
 	function service($cookies, $http, wvAppConstants, $log, $rootScope, $window, $location, $anchorScroll, ngToast, $timeout) {
@@ -52,15 +52,19 @@
 
 		/////////////////////
 		function launchHook(eventHookName, data) {
-			$rootScope.$emit(eventHookName, data);
-			$log.debug('rootScope>events> "'+ eventHookName + '" emitted ' + moment().format('HH:mm:ss SSSS'));
+			$timeout(function () {
+				$rootScope.$emit(eventHookName, data);
+				$log.debug('rootScope>events> "' + eventHookName + '" emitted ' + moment().format('HH:mm:ss SSSS'));
+			}, 0);
 		}
 
 		///////////////////////
 		function setPageTitle(pageTitle) {
 			$log.debug('webvellaRoot>providers>root.service>setPageTitle> function called ' + moment().format('HH:mm:ss SSSS'));
-			$rootScope.$emit("application-pageTitle-update", pageTitle);
-			$log.debug('rootScope>events> "application-pageTitle-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+			$timeout(function () {
+				$rootScope.$emit("application-pageTitle-update", pageTitle);
+				$log.debug('rootScope>events> "application-pageTitle-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+			}, 0);
 		}
 
 		//////////////////////
@@ -104,10 +108,10 @@
 			var redirectObject = {};
 			redirectObject.stateName = stateName;
 			redirectObject.params = params;
-			$rootScope.$emit("state-change-needed",redirectObject);
-			//$timeout(function () {
-			//	state.go(stateName, params, { reload: true });
-			//}, 0);
+
+			$timeout(function () {
+				$rootScope.$emit("state-change-needed", redirectObject);
+			}, 0);
 		}
 
 		////////////////////
@@ -172,7 +176,7 @@
 			if (currentUser == null) {
 				return false;
 			}
-	
+
 			var currentAreaObject = null;
 			for (var i = 0; i < sitemap.data.length; i++) {
 				if (sitemap.data[i].name == areaName) {
@@ -204,35 +208,35 @@
 
 
 		////////////////////////
-		function userHasEntityPermissions(entityMeta,permissionsCsv){
+		function userHasEntityPermissions(entityMeta, permissionsCsv) {
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
 			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
-		
+
 			var userRoles = fastCopy(getCurrentUser().roles);
-			
+
 			for (var i = 0; i < requestedPermissionsArray.length; i++) {
 				var permissionName = requestedPermissionsArray[i];
 				permissionChecks[permissionName] = false;
-				var entityAllowedRoles =  fastCopy(entityMeta.recordPermissions[permissionName]);
+				var entityAllowedRoles = fastCopy(entityMeta.recordPermissions[permissionName]);
 				for (var j = 0; j < entityAllowedRoles.length; j++) {
 					var roleId = entityAllowedRoles[j];
-					if(userRoles.indexOf(roleId) > -1){
+					if (userRoles.indexOf(roleId) > -1) {
 						permissionChecks[permissionName] = true;
 						break;
 					}
 				}
 			}
-			
+
 			var userHasAllPermissions = true;
-			for(var permission in permissionChecks){
-				if(!permissionChecks[permission]){
-				  userHasAllPermissions = false;
-				  break;
+			for (var permission in permissionChecks) {
+				if (!permissionChecks[permission]) {
+					userHasAllPermissions = false;
+					break;
 				}
 			}
 
-			return 	userHasAllPermissions;
+			return userHasAllPermissions;
 		}
 
 
@@ -272,7 +276,7 @@
 					errorCallback(data);
 					break;
 				default:
-					$log.debug('webvellaRoot>providers>root.service> result failure: API finished with error: ' + status +' ' + moment().format('HH:mm:ss SSSS'));
+					$log.debug('webvellaRoot>providers>root.service> result failure: API finished with error: ' + status + ' ' + moment().format('HH:mm:ss SSSS'));
 					ngToast.create({
 						className: 'error',
 						content: '<span class="go-red">Error:</span> ' + 'An API call finished with error: ' + status

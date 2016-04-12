@@ -210,10 +210,10 @@
 	//#endregion
 
 	//#region << Controller >> ////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal',
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal','$timeout',
                             'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal,
+	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal,$timeout,
                         resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
@@ -222,11 +222,12 @@
 		//#region << General init >>
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 		contentData.pageTitle = "Entity Views | " + pageTitle;
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		//Hide side menu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide side menu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
 		//#endregion
 
 		//#region << Initialize View >>

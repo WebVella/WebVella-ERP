@@ -10,10 +10,10 @@
         .module('webvellaDesktop')
         .factory('webvellaDesktopBrowsenavFactory', factory);
 
-    factory.$inject = ['$log', '$rootScope'];
+    factory.$inject = ['$log', '$rootScope','$timeout'];
 
     /* @ngInject */
-    function factory($log, $rootScope) {
+    function factory($log, $rootScope, $timeout) {
         var browsenav = [];
 
         var exports = {
@@ -76,7 +76,9 @@
             $log.debug('webvellaDesktop>providers>browsenav.factory>addItem> function called');
             browsenav.push(menuItem);
             browsenav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-            $rootScope.$emit('webvellaDesktop-browsenav-updated', browsenav);
+			$timeout(function(){
+				$rootScope.$emit('webvellaDesktop-browsenav-updated', browsenav);
+			},0);
             $log.debug('rootScope>events> "webvellaDesktop-browsenav-updated" emitted ' + moment().format('HH:mm:ss SSSS'));
             return browsenav
         }

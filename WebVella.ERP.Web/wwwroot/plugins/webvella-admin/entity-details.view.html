@@ -66,17 +66,19 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<div class="editable-field field">
-							<label class="control-label col-lg-2">System entity</label>
+							<label class="control-label col-lg-2">System</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-readonly">
-									<span class="input-group-addon" ng-if="contentData.entity.system">
+								<div class="editable-wrapper input-group editable-updatable">
+									<span class="input-group-addon" ng-if="contentData.entity.system && !fieldForm_system.$visible">
 										<i class="fa fa-check fa-fw go-green"></i>
 									</span>
-									<span class="input-group-addon" ng-if="!contentData.entity.system">
+									<span class="input-group-addon" ng-if="!contentData.entity.system && !fieldForm_system.$visible">
 										<i class="fa fa-times fa-fw go-red"></i>
 									</span>
-									<input type="text" class="form-control" disabled value="{{::contentData.entity.system}}"></input>
-									<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+									<input type="text" class="form-control" disabled editable-checkbox="contentData.entity.system"
+											e-title="set as TRUE" value="{{contentData.renderFieldValue(contentData.entity.system,{fieldType:2})}}"
+											onbeforesave="contentData.fieldUpdate('system',$data)" e-form="fieldForm_system">
+									<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 								</div>
 							</div>
 						</div>

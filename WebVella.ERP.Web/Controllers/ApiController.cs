@@ -1826,7 +1826,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 			}
 
-			if(!String.IsNullOrWhiteSpace(ids)) {
+			if(!String.IsNullOrWhiteSpace(fields)) {
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
 				foreach(var fieldName in fieldsArray) {
@@ -1846,8 +1846,11 @@ namespace WebVella.ERP.Web.Controllers
 				QueryList.Add(EntityQuery.QueryEQ("id", recordId));
 			}
 
-			QueryObject recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
-
+			QueryObject recordsFilterObj = null;
+			if(QueryList.Count > 0) {
+				recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
+			}
+			
 			if(!fieldList.Contains("id")) {
 				fieldList.Add("id");
 			}
@@ -1873,8 +1876,6 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
-
-
 
 		private QueryObject CreateSearchQuery(string search, RecordList list, Entity entity)
 		{
@@ -3778,22 +3779,6 @@ namespace WebVella.ERP.Web.Controllers
 
 			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image";
 			EntityQuery query = new EntityQuery("user", userColumns, null, null, null, null);
-
-			QueryResponse result = recMan.Find(query);
-			if (!result.Success)
-				return DoResponse(result);
-			return Json(result);
-		}
-
-		// GET: api/v1/en_US/user/{userId}
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/user/{userId}")]
-		public IActionResult GetUserById(Guid userId)
-		{
-
-			QueryObject userFilterObj = EntityQuery.QueryEQ("id", userId);
-			var userColumns = "$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image";
-
-			EntityQuery query = new EntityQuery("user", userColumns, userFilterObj, null, null, null);
 
 			QueryResponse result = recMan.Find(query);
 			if (!result.Success)

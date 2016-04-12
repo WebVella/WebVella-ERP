@@ -134,11 +134,12 @@
 
         //#region << Update page title & Hide side menu>>
         contentData.pageTitle = "Entity Views | " + pageTitle;
-        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-        //Hide side menu
-        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide side menu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
     	//#endregion
 
     	//Awesome font icon names array 

@@ -115,7 +115,7 @@
             }
         }
 
-        webvellaAdminService.getAllUsers(successCallback, errorCallback);
+        webvellaAdminService.getRecords("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
 
 
         // Return
@@ -151,10 +151,10 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedUserRecordsList',
-							'resolvedRolesList', '$uibModal', 'webvellaAdminService'];
+							'resolvedRolesList', '$uibModal', 'webvellaAdminService','$timeout'];
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedUserRecordsList,
-						resolvedRolesList, $uibModal, webvellaAdminService) {
+						resolvedRolesList, $uibModal, webvellaAdminService,$timeout) {
     	$log.debug('webvellaAdmin>user-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
@@ -162,7 +162,9 @@
 
         //#region << Update page title >>
         contentData.pageTitle = "User List | " + pageTitle;
-        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		$timeout(function(){
+		 $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		},0);
     	//#endregion
 
         contentData.users = fastCopy(resolvedUserRecordsList.data);
@@ -302,15 +304,16 @@
         		popupData.user.password = popupData.password;
 				popupData.user["$user_role.id"] = [];
         		popupData.userRoles.forEach(function(role){
-					 popupData.user["$user_role.id"].push(role.id);
+					 popupData.user["$user_role.id"].push(role);
 				});
 				webvellaAdminService.createRecord("user",popupData.user, successCallback, errorCallback);
             }
             else {
         		popupData.user["$user_role.id"] = [];
         		popupData.userRoles.forEach(function(role){
-					 popupData.user["$user_role.id"].push(role.id);
+					 popupData.user["$user_role.id"].push(role);
 				});
+				delete popupData.user["$user_role"];
         		if (popupData.password) {
         			popupData.user.password = popupData.password;
         		}

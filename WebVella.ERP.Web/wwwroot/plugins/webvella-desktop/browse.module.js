@@ -77,25 +77,25 @@
 		return defer.promise;
 	}
 
-	resolveLastUsedArea.$inject = ['$q', '$log', 'webvellaRootService','$localStorage','$stateParams','$window'];
+	resolveLastUsedArea.$inject = ['$q', '$log', 'webvellaRootService', '$localStorage', '$stateParams', '$window'];
 	/* @ngInject */
-	function resolveLastUsedArea($q, $log, webvellaRootService,$localStorage, $stateParams, $window) {
+	function resolveLastUsedArea($q, $log, webvellaRootService, $localStorage, $stateParams, $window) {
 		$log.debug('webvellaDesktop>browse> BEGIN resolveLastUsedArea ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 		var currentFolderName = $stateParams.folder;
 		var localStorage = $localStorage;
-		if(!currentFolderName && localStorage.folder){
-			webvellaRootService.GoToState("webvella-desktop-browse",{folder:localStorage.folder});
+		if (!currentFolderName && localStorage.folder) {
+			webvellaRootService.GoToState("webvella-desktop-browse", { folder: localStorage.folder });
 			//$window.location = '#/desktop/browse?folder=' + localStorage.folder;
 		}
-		else if(!currentFolderName && !localStorage.folder){
-			webvellaRootService.GoToState("webvella-desktop-browse",{folder:"Default"});
+		else if (!currentFolderName && !localStorage.folder) {
+			webvellaRootService.GoToState("webvella-desktop-browse", { folder: "Default" });
 			//$window.location = '#/desktop/browse?folder=Default';
 		}
 		else {
 			//Do nothing
-			defer.resolve();		
+			defer.resolve();
 		}
 
 		// Return
@@ -106,23 +106,23 @@
 
 
 	//#region << Controller >>
-	controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', '$localStorage',
+	controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', '$localStorage', '$timeout',
 					'webvellaDesktopTopnavFactory', 'webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
 
 	/* @ngInject */
-	function controller($log, $rootScope, $scope, $state, pageTitle,  $localStorage,
+	function controller($log, $rootScope, $scope, $state, pageTitle, $localStorage, $timeout,
 					webvellaDesktopTopnavFactory, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
 		$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
 		contentData.browsenav = [];
 		contentData.folder = fastCopy($state.params.folder);
-		var localStorage =$localStorage; 
-		if(contentData.folder){
-			 localStorage.folder = contentData.folder;
+		var localStorage = $localStorage;
+		if (contentData.folder) {
+			localStorage.folder = contentData.folder;
 		}
 		else {
-			 localStorage.folder = "Default";
+			localStorage.folder = "Default";
 		}
 		contentData.topNav = [];
 		contentData.topNavDict = [];
@@ -179,10 +179,13 @@
 					for (var p = 0; p < menuItem.roles.length; p++) {
 						if (menuItem.roles[p] == resolvedCurrentUser.roles[k]) {
 							userCanUseArrea = true;
+							break;
 						}
 					}
 				}
-				webvellaDesktopBrowsenavFactory.addItem(menuItem);
+				if (userCanUseArrea) {
+					webvellaDesktopBrowsenavFactory.addItem(menuItem);
+				}
 			}
 		};
 
@@ -203,7 +206,6 @@
 				}
 
 			}
-
 			contentData.browsenav = browseNav;
 		});
 		////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
@@ -211,7 +213,9 @@
 			updateBrowsenavDestructor();
 		});
 		////5. Bootstrap the pluggable Browsenav
-		$rootScope.$emit("webvellaDesktop-browsenav-ready");
+		$timeout(function () {
+			$rootScope.$emit("webvellaDesktop-browsenav-ready");
+		}, 0);
 		//#endregion
 
 		$log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

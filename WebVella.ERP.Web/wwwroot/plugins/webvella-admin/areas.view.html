@@ -25,7 +25,7 @@
 	<form id="filters" class="form-inline">
 		<div class="form-group form-group-sm">
 			<div class="input-group">
-				<a class="btn btn-default btn-sm" ng-click="contentData.openManageAreaModal(null)" href="javascript:void(0)"><i class="fa fa-plus"></i> Create Area</a>
+				<a class="btn btn-success btn-sm" ng-click="contentData.openManageAreaModal(null)" href="javascript:void(0)"><i class="fa fa-plus"></i> Create Area</a>
 			</div>
 		</div>
 		<div class="form-group form-group-sm ng-hide" ng-show="contentData.areas.length > 0">
@@ -80,6 +80,7 @@
 		<h3 class="modal-title" ng-bind-html="popupData.modalTitle"></h3>
 	</div>
 	<div class="modal-body">
+		<div class="alert alert-danger" ng-if="popupData.validation.hasError" ng-bind="popupData.validation.errorMessage"></div>
 		<form name="manageArea">
 			<div class="row">
 				<div class="col-sm-6">

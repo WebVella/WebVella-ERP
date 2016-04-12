@@ -219,11 +219,12 @@
 		//#region << General init >>
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 		contentData.pageTitle = "Entity Views | " + pageTitle;
+		$timeout(function(){
 		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		//Hide side menu
 		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		},0);
 		//#endregion
 
 		//#region << Initialize View and Content Region >>

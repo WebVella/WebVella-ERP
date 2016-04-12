@@ -101,18 +101,15 @@ function guid() {
 		serviceInstance.deleteFileFromFS = deleteFileFromFS;
 		serviceInstance.manageRecordsRelation = manageRecordsRelation;
 		serviceInstance.getRecordsByFieldRegex = getRecordsByFieldRegex;
+		serviceInstance.getRecords = getRecords;
 		//Area
 		serviceInstance.initArea = initArea;
 		serviceInstance.getAreaByName = getAreaByName;
 		serviceInstance.deleteArea = deleteArea;
-		//serviceInstance.getAreaRelationByEntityId = getAreaRelationByEntityId;
-		//serviceInstance.createAreaEntityRelation = createAreaEntityRelation;
-		//serviceInstance.removeAreaEntityRelation = removeAreaEntityRelation;
 		serviceInstance.regenerateAllAreaSubscriptions = regenerateAllAreaSubscriptions;
 		//Function
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
 		//User
-		serviceInstance.getUserById = getUserById;
 		serviceInstance.getAllUsers = getAllUsers;
 		serviceInstance.updateUser = updateUser;
 		serviceInstance.initUser = initUser;
@@ -1109,9 +1106,9 @@ function guid() {
 		}
 
 		///////////////////////
-		function getRecord(recordId, entityName, successCallback, errorCallback) {
+		function getRecord(recordId,fields,entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId + "?fields=" + fields}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
@@ -1159,6 +1156,12 @@ function guid() {
 			patternObject.pattern = pattern;
 			$log.debug('webvellaAdmin>providers>admin.service>getRecordsByFieldRegex> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/regex/' + fieldName, data: patternObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
+		/////////////////////
+		function getRecords(recordIds,fieldNames, entityName, successCallback, errorCallback) {
+			$log.debug('webvellaAdmin>providers>admin.service>getRecords> function called ' + moment().format('HH:mm:ss SSSS'));
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" +  fieldNames}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 
@@ -1242,24 +1245,6 @@ function guid() {
 		function deleteArea(recordId, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
-		///////////////////////
-		function getAreaRelationByEntityId(entityId, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>getEntityRelatedAreas> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'area/relations/entity/' + entityId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
-		///////////////////////
-		function createAreaEntityRelation(areaId, entityId, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>createAreaEntityRelation> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'area/' + areaId + '/entity/' + entityId + '/relation' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
-		///////////////////////
-		function removeAreaEntityRelation(areaId, entityId, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>removeAreaEntityRelation> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + areaId + '/entity/' + entityId + '/relation' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
@@ -1437,12 +1422,6 @@ function guid() {
 				"verified": true
 			}
 			return user;
-		}
-
-		///////////////////////
-		function getUserById(userId, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>getUserById> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'user/' + userId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////

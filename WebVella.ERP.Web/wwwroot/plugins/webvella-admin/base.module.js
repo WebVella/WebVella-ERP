@@ -108,10 +108,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory'];
+    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory','$timeout'];
 
     /* @ngInject */
-    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory) {
+    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory,$timeout) {
     	$log.debug('webvellaAdmin>base> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var adminData = this;
@@ -158,7 +158,9 @@
             "iconName": "cog"
         };
         adminData.sidebar.push(item);
-        $rootScope.$emit("webvellaAdmin-sidebar-ready");
+		$timeout(function(){
+			$rootScope.$emit("webvellaAdmin-sidebar-ready");
+		},0);
         $log.debug('rootScope>events> "webvellaAdmin-sidebar-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         activate();

@@ -187,11 +187,12 @@
 		contentData.icons = getFontAwesomeIconNames();
 		//Update page title
 		contentData.pageTitle = "Entity Trees | " + pageTitle;
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide Sidemenu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
 		//#region << Init selected relation >>
 		contentData.selectedRelation = {};
 		for (var i = 0; i < contentData.allRelations.length; i++) {

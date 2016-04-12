@@ -249,10 +249,12 @@
 
 		//#region << Update page title & hide the side menu >>
 		contentData.pageTitle = "Entity Details | " + pageTitle;
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide Sidemenu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
 		//#endregion
 
 		//#region << List types >>

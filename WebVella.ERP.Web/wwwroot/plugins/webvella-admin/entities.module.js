@@ -82,16 +82,18 @@
 
 
     // Resolve EntityMetaList /////////////////////////
-    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaAdminService'];
+    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaAdminService','$timeout'];
 
     /* @ngInject */
-    function resolveEntityMetaList($rootScope,$q, $log, webvellaAdminService) {
+    function resolveEntityMetaList($rootScope,$q, $log, webvellaAdminService,$timeout) {
     	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
         //Show Sidemenu
-        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+		$timeout(function(){
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+		},0);
         $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         // Process
@@ -138,16 +140,18 @@
 	//#endregion
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaAdminService'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaAdminService','$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaAdminService) {
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaAdminService,$timeout) {
     	$log.debug('webvellaAdmin>entities> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
         //Update page title
         contentData.pageTitle = "Entities | " + pageTitle;
-        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		},0);
         contentData.entities = resolvedEntityMetaList.entities;
         contentData.entities = contentData.entities.sort(function (a, b) { 
             if(a.name < b.name) return -1;

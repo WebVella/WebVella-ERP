@@ -666,7 +666,7 @@
 							timeout: 7000
 						});
 					}
-					webvellaAdminService.getRecord(returnObject.selectedRecordId, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+					webvellaAdminService.getRecord(returnObject.selectedRecordId,"*", item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 				});
 			}
 				//Select MULTIPLE item modal
@@ -735,7 +735,7 @@
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
 						var fieldCSV = fieldsArray.join(',');
-						webvellaAreasService.getMultipleRecords(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaAdminService.getRecords(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}

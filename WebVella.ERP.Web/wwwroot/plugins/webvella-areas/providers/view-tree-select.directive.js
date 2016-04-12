@@ -46,9 +46,9 @@
 		return directive;
 	}
 
-	viewTreeSelectDirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$rootScope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
+	viewTreeSelectDirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$rootScope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService','$timeout'];
 	/* @ngInject */
-	function viewTreeSelectDirectiveController($filter, $log, $state, $scope, $rootScope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
+	function viewTreeSelectDirectiveController($filter, $log, $state, $scope, $rootScope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService,$timeout) {
 
 		$scope.isRecordSelected = function (nodeRecordId) {
 			return $scope.selectedTreeRecords.indexOf(nodeRecordId) > -1
@@ -66,12 +66,16 @@
 
 		$scope.toggleNodeSelected = function (node) {
 			if ($scope.isNodeSelectable(node.id) || $scope.isRecordSelected(node.recordId)) {
-				$rootScope.$emit("webvellaAdmin-toggleTreeNode-selected", node);
+				$timeout(function(){
+					$rootScope.$emit("webvellaAdmin-toggleTreeNode-selected", node);
+				},0);
 			}
 		}
 
 		$scope.toggleNodeCollapse = function (node) {
-			$rootScope.$emit("webvellaAdmin-toggleTreeNode-collapsed", node);
+			$timeout(function(){
+				$rootScope.$emit("webvellaAdmin-toggleTreeNode-collapsed", node);
+			},0);
 		}
 
 

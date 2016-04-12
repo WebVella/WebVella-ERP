@@ -168,10 +168,10 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal','$timeout'];
 
 	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal,$timeout) {
 		$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -224,15 +224,18 @@
 
 		//Update page title
 		contentData.pageTitle = "Entity Relations | " + pageTitle;
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide Sidemenu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
 		contentData.showSidebar = function () {
 			//Show Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+			$timeout(function(){
+				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+				$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+			},0);
 		}
 
 

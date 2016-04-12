@@ -65,10 +65,10 @@
 		<div class="form-group form-group-sm">
 			<div class="input-group">
 				<div class="btn-group">
-					<a class="btn btn-default btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
+					<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
 					   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}"
 					   uib-tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
-						<i class="fa fa-pencil"></i> create new
+						<i class="fa fa-plus"></i> create new
 					</a>
 					<a class="btn btn-default btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate,canUpdate')"
 					   ng-click="contentData.openImportModal()"

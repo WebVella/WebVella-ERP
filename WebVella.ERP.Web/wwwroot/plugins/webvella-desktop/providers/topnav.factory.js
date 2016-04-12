@@ -10,10 +10,10 @@
         .module('webvellaDesktop')
         .factory('webvellaDesktopTopnavFactory', factory);
 
-    factory.$inject = ['$log','$rootScope'];
+    factory.$inject = ['$log','$rootScope','$timeout'];
 
     /* @ngInject */
-    function factory($log,$rootScope) {
+    function factory($log,$rootScope,$timeout) {
         var topnav = [];
         var exports = {
             initTopnav:initTopnav,
@@ -44,7 +44,9 @@
 			if(!navLabelAlreadyAdded){
 				topnav.push(item);
 				topnav.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-				$rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
+				$timeout(function(){
+					$rootScope.$emit('webvellaDesktop-topnav-updated', topnav)
+				},0);
 			}
             $log.debug('rootScope>events> "webvellaDesktop-topnav-updated" emitted ' + moment().format('HH:mm:ss SSSS'));
         }

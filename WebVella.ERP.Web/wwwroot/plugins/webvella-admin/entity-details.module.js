@@ -170,26 +170,31 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$uibModal',
-        'resolvedRolesList', 'webvellaAdminService', 'resolvedAreasList', '$timeout'];
+        'resolvedRolesList', 'webvellaAdminService', 'resolvedAreasList', '$timeout','webvellaAreasService'];
 
     /* @ngInject */
     function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $uibModal,
-        resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout) {
+        resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout,webvellaAreasService) {
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
         contentData.entity = resolvedCurrentEntityMeta;
         //Update page title
         contentData.pageTitle = "Entity Details | " + pageTitle;
-        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-        //Hide Sidemenu
-        $rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide Sidemenu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
+
 
 		contentData.showSidebar = function(){
 		        //Show Sidemenu
-				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-				$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+				$timeout(function(){
+					$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
+					$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+				},0);
 		}
 
         //Create new entity modal
@@ -252,6 +257,9 @@
         }
 
         // Helper function
+		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+
+
         function removeValueFromArray(array, value) {
             for (var i = array.length - 1; i >= 0; i--) {
                 if (array[i] === value) {

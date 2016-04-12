@@ -169,10 +169,10 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$sce', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta',
-					'$uibModal', 'resolvedEntityRecordTrees'];
+					'$uibModal', 'resolvedEntityRecordTrees','$timeout'];
 	/* @ngInject */
 	function controller($scope, $sce, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta,
-					$uibModal, resolvedEntityRecordTrees) {
+					$uibModal, resolvedEntityRecordTrees,$timeout) {
 		$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -185,15 +185,18 @@
 		contentData.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
 		//Update page title
 		contentData.pageTitle = "Entity Trees | " + pageTitle;
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
-
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			//Hide Sidemenu
+			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+		},0);
 		contentData.showSidebar = function () {
 			//Show Sidemenu
+			$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
+			},0);
 		}
 
 		//#endregion

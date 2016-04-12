@@ -111,10 +111,10 @@
     //#endregion
 
     //#region << Controller >> ///////////////////////////////
-    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 
+    controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle','$timeout', 
 							'resolvedRolesList', '$uibModal', 'webvellaAdminService'];
     /* @ngInject */
-    function controller($scope, $log, $rootScope, $state, pageTitle,
+    function controller($scope, $log, $rootScope, $state, pageTitle,$timeout,
 						resolvedRolesList, $uibModal, webvellaAdminService) {
     	$log.debug('webvellaAdmin>roles> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
@@ -123,7 +123,9 @@
 
         //#region << Update page title >>
         contentData.pageTitle = "User List | " + pageTitle;
-        $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		$timeout(function(){
+			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		},0);
     	//#endregion
 
         contentData.roles = fastCopy(resolvedRolesList.data);
