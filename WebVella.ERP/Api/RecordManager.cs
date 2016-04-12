@@ -953,20 +953,20 @@ namespace WebVella.ERP.Api
 					}
 				}
 
-				try
-				{
-					if (query.Query != null)
-						ProcessQueryObject(entity, query.Query);
-				}
-				catch (Exception ex)
-				{
-					response.Success = false;
-					response.Message = "The query is incorrect and cannot be executed.";
-					response.Object = null;
-					response.Errors.Add(new ErrorModel { Message = ex.Message });
-					response.Timestamp = DateTime.UtcNow;
-					return response;
-				}
+				//try
+				//{
+				//	if (query.Query != null)
+				//		ProcessQueryObject(entity, query.Query);
+				//}
+				//catch (Exception ex)
+				//{
+				//	response.Success = false;
+				//	response.Message = "The query is incorrect and cannot be executed.";
+				//	response.Object = null;
+				//	response.Errors.Add(new ErrorModel { Message = ex.Message });
+				//	response.Timestamp = DateTime.UtcNow;
+				//	return response;
+				//}
 
 				var fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
 				var data = DbContext.Current.RecordRepository.Find(query);
@@ -1007,20 +1007,20 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				try
-				{
-					if (query.Query != null)
-						ProcessQueryObject(entity, query.Query);
-				}
-				catch (Exception ex)
-				{
-					response.Success = false;
-					response.Message = "The query is incorrect and cannot be executed";
-					response.Object = 0;
-					response.Errors.Add(new ErrorModel { Message = ex.Message });
-					response.Timestamp = DateTime.UtcNow;
-					return response;
-				}
+				//try
+				//{
+				//	if (query.Query != null)
+				//		ProcessQueryObject(entity, query.Query);
+				//}
+				//catch (Exception ex)
+				//{
+				//	response.Success = false;
+				//	response.Message = "The query is incorrect and cannot be executed";
+				//	response.Object = 0;
+				//	response.Errors.Add(new ErrorModel { Message = ex.Message });
+				//	response.Timestamp = DateTime.UtcNow;
+				//	return response;
+				//}
 
 				List<Field> fields = DbContext.Current.RecordRepository.ExtractQueryFieldsMeta(query);
 				response.Object = DbContext.Current.RecordRepository.Count(query.EntityName, query.Query);
@@ -1232,7 +1232,7 @@ namespace WebVella.ERP.Api
 
 			return relations;
 		}
-
+		/*
 		private void ProcessQueryObject(Entity entity, QueryObject obj)
 		{
 			if (obj == null)
@@ -1308,7 +1308,7 @@ namespace WebVella.ERP.Api
 						ProcessQueryObject(entity, subObj);
 					}
 			}
-		}
+		}*/
 
 		private void SetRecordServiceInformation(EntityRecord record, bool newRecord = true, bool ignoreSecurity = false)
 		{
