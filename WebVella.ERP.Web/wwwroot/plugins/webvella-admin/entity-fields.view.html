@@ -791,6 +791,7 @@
 									</tr>
 								</tbody>
 							</table>
+							<br />
 						</div>
 					</div>
 				</div>
@@ -1973,7 +1974,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="option in popupData.field.options">
+								<tr ng-repeat="option in popupData.field.options track by $index">
 									<td><input class="form-control" ng-model="option.key" /></td>
 									<td><input class="form-control" ng-model="option.value" /></td>
 									<td><a ng-click="popupData.toggleKeyAsDefault(option.key)" href="javascript:void(0)" class="btn btn-sm" ng-class="popupData.isKeyDefault(option.key) ? 'btn-success' : 'btn-default go-gray'"><i class="fa fa-fw fa-check"></i></a></td>

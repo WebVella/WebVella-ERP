@@ -2124,7 +2124,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .modal .modal-footer {
 	text-align: center;
-	border-top-color: #E0E0E0;
+	border-top-color: #ccc;
 	background: #F5F5F5;
 }
 

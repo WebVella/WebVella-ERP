@@ -1850,10 +1850,10 @@
 
 	//// Create Field Controllers
 	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
-						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce'];
+						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce','$scope'];
 	/* @ngInject */
 	function ManageFieldModalController(contentData, resolvedField, $uibModal, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
-						webvellaRootService, $location, resolvedRelatedEntity, $sce) {
+						webvellaRootService, $location, resolvedRelatedEntity, $sce, $scope) {
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
@@ -2117,18 +2117,26 @@
 		}
 
 		popupData.deleteDropdownValue = function (index) {
-			var defaultKeyIndex = -1;
-			if (popupData.isKeyDefault(popupData.field.options[index].key)) {
-				for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-					if (popupData.field.defaultValue[j] !== popupData.field.options[index].key) {
-						defaultKeyIndex = j;
-						break;
+			//if the removed field is with the default value or in the default values list(multiselect)
+			if (popupData.field.defaultValue && popupData.field.fieldType == 11) { //Multiselect
+				var defaultKeyIndex = -1;
+				if (popupData.isKeyDefault(popupData.field.options[index].key)) {
+					for (var j = 0; j < popupData.field.defaultValue.length; j++) {
+						if (popupData.field.defaultValue[j] === popupData.field.options[index].key) {
+							defaultKeyIndex = j;
+							break;
+						}
 					}
 				}
-			}
-			if (popupData.field.defaultValue) {
 				popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
 			}
+			else if (popupData.field.defaultValue && popupData.field.fieldType == 17) {
+				if (popupData.field.options[index].key === popupData.field.defaultValue) {
+					popupData.field.defaultValue = ""; //Remove from default										
+				}
+
+			}
+
 			popupData.field.options.splice(index, 1); // remove from options
 		}
 

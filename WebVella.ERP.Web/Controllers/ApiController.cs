@@ -1670,12 +1670,12 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/{recordId}")]
-		public IActionResult GetRecord(Guid recordId, string entityName)
+		public IActionResult GetRecord(Guid recordId, string entityName, string fields = "*")
 		{
 
 			QueryObject filterObj = EntityQuery.QueryEQ("id", recordId);
 
-			EntityQuery query = new EntityQuery(entityName, "*", filterObj, null, null, null);
+			EntityQuery query = new EntityQuery(entityName, fields, filterObj, null, null, null);
 
 			QueryResponse result = recMan.Find(query);
 			if (!result.Success)
@@ -1750,7 +1750,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
-		public IActionResult GetRecordsByEntityName(string entityName, string listName, int page, string filter = "all", string search = "", int? pageSize = null)
+		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, string filter = "all", string search = "", int? pageSize = null)
 		{
 
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
@@ -1803,84 +1803,40 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		// GET: api/v1/en_US/record/{entityName}/list
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/list")]
-		public IActionResult GetMultipleRecordsByEntityName(string entityName, [FromBody] JObject submitObj)
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
+		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "")
 		{
-
 			var response = new QueryResponse();
 			var recordIdList = new List<Guid>();
 			var fieldList = new List<string>();
 
-			foreach (var prop in submitObj.Properties())
-			{
-				switch (prop.Name)
-				{
-					case "record_id_array":
-						if (prop.Value == null)
-						{
-							response.Message = "Success - id list is empty";
-							response.Timestamp = DateTime.UtcNow;
-							response.Success = true;
-							response.Object = null;
-							return DoResponse(response);
-						}
-						else if (prop.Value is JArray)
-						{
-							try
-							{
-								recordIdList = ((JArray)prop.Value).Select(x => new Guid(((JToken)x).Value<string>())).ToList<Guid>();
-							}
-							catch
-							{
-								response.Message = "error converting record_id_array to guid list";
-								response.Timestamp = DateTime.UtcNow;
-								response.Success = false;
-								response.Object = null;
-								return DoResponse(response);
-							}
-						}
-						else
-						{
-							response.Message = "record_id_array is not an array";
-							response.Timestamp = DateTime.UtcNow;
-							response.Success = false;
-							response.Object = null;
-							return DoResponse(response);
-						}
-						break;
-					case "field_name_array":
-						if (prop.Value == null)
-						{
-							response.Message = "Success - field names list is empty";
-							response.Timestamp = DateTime.UtcNow;
-							response.Success = true;
-							response.Object = null;
-							return DoResponse(response);
-						}
-						else if (prop.Value is JArray)
-						{
-							try
-							{
-								fieldList = ((JArray)prop.Value).Select(x => ((JToken)x).Value<string>()).ToList<string>();
-							}
-							catch
-							{
-								response.Message = "error converting field_name_array to string list";
-								response.Timestamp = DateTime.UtcNow;
-								response.Success = false;
-								response.Object = null;
-								return DoResponse(response);
-							}
-						}
-						else
-						{
-							response.Message = "field_name_array is not an array";
-							response.Timestamp = DateTime.UtcNow;
-							response.Success = false;
-							response.Object = null;
-							return DoResponse(response);
-						}
-						break;
+			if(!String.IsNullOrWhiteSpace(ids)) {
+				var idStringList = ids.Split(',');
+				var outGuid = Guid.Empty;
+				foreach(var idString in idStringList) {
+					if(Guid.TryParse(idString, out outGuid)){
+						recordIdList.Add(outGuid);
+					}
+					else {
+						response.Message = "One of the record ids is not a Guid";
+						response.Timestamp = DateTime.UtcNow;
+						response.Success = false;
+						response.Object.Data = null;						
+					}
+				}
+			}
+
+			if(!String.IsNullOrWhiteSpace(ids)) {
+				var fieldsArray = fields.Split(',');
+				var hasId = false;
+				foreach(var fieldName in fieldsArray) {
+					if(fieldName == "id") {
+						hasId = true;
+					}
+					fieldList.Add(fieldName);
+				}
+				if(!hasId) {
+					fieldList.Add("id");
 				}
 			}
 
@@ -2218,9 +2174,9 @@ namespace WebVella.ERP.Web.Controllers
 
 					if (queryObj != null)
 					{
-						if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
-							queryObj.SubQueries.Add(listQuery);
-						else
+						//if (queryObj.SubQueries != null && queryObj.SubQueries.Any())
+						//	queryObj.SubQueries.Add(listQuery);
+						//else
 							queryObj = EntityQuery.QueryAND(listQuery, queryObj);
 					}
 					else
@@ -3845,6 +3801,8 @@ namespace WebVella.ERP.Web.Controllers
 			return Json(result);
 		}
 
+		//Create user methods are removed as createRecord and updateRecord should be used instead
+		/*
 		// Create new user
 		// POST: api/v1/en_US/user
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user")]
@@ -4125,7 +4083,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			return DoResponse(response);
 		}
-
+		*/
 
 		#endregion
 

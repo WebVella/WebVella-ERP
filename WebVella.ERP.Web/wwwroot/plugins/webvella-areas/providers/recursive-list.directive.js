@@ -549,9 +549,9 @@
 
 
 	RLManageRelatedRecordModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
-        'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedManagedRecordQuickCreateView'];
+        'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService','webvellaRootService', 'resolvedManagedRecordQuickCreateView'];
 	function RLManageRelatedRecordModalController(contentData, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
-        ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedManagedRecordQuickCreateView) {
+        ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService,webvellaRootService, resolvedManagedRecordQuickCreateView) {
 		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		//#region << Init >>
@@ -818,7 +818,7 @@
 		popupData.ok = function () {
 			//We need to remove the unsupported field from relations that we display but do not want to submit
 			for(var property in popupData.recordData){
-				if(property.indexOf("$field") != -1 || property.indexOf("$fieldFromRelation") != -1){
+				if(property.startsWith("$field") || property.startsWith("$fieldFromRelation") || property.startsWith("$view") || property.startsWith("$viewFromRelation") || property.startsWith("$list") || property.startsWith("$listFromRelation")){
 					delete popupData.recordData[property];
 				}
 			}
