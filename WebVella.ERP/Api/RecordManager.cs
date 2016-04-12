@@ -348,13 +348,21 @@ namespace WebVella.ERP.Api
 								{
 									foreach (Guid relatedRecordIdValue in relatedRecordValues)
 									{
-										Guid originFieldValue = (Guid)record[field.Name];
+										Guid relRecordId = Guid.Empty;
+										if (record[field.Name] is string)
+											relRecordId = new Guid(record[field.Name] as string);
+										else if (record[field.Name] is Guid)
+											relRecordId = (Guid)record[field.Name];
+										else
+											throw new Exception("Invalid record value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'");
+
+										Guid originFieldValue = relRecordId;
 										Guid targetFieldValue = relatedRecordIdValue;
 
 										if (relation.TargetEntityId == entity.Id)
 										{
 											originFieldValue = relatedRecordIdValue;
-											targetFieldValue = (Guid)record[field.Name];
+											targetFieldValue = relRecordId;
 										}
 
 										dynamic mmRelationData = new ExpandoObject();
@@ -701,13 +709,21 @@ namespace WebVella.ERP.Api
 
 									foreach (Guid relatedRecordValue in relatedRecordValues)
 									{
-										Guid originFieldValue = (Guid)record[field.Name];
+										Guid relRecordId = Guid.Empty;
+										if (record[field.Name] is string)
+											relRecordId = new Guid(record[field.Name] as string);
+										else if (record[field.Name] is Guid)
+											relRecordId = (Guid)record[field.Name];
+										else
+											throw new Exception("Invalid record value for field: '" + pair.Key + "'. Invalid value: '" + pair.Value + "'");
+
+										Guid originFieldValue = relRecordId;
 										Guid targetFieldValue = relatedRecordValue;
 
 										if (relation.TargetEntityId == entity.Id)
 										{
 											originFieldValue = relatedRecordValue;
-											targetFieldValue = (Guid)record[field.Name];
+											targetFieldValue = relRecordId;
 										}
 
 										mmResponse = CreateRelationManyToManyRecord(relation.Id, originFieldValue, targetFieldValue);
