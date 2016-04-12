@@ -231,7 +231,6 @@
 		$log.debug('webvellaAreas>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var pluginData = this;
-
 		//Show Sidemenu	always
 		$timeout(function () {
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
