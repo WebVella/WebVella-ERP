@@ -61,7 +61,7 @@
 	</div>
 </div>
 <div id="page-body">
-	<form id="filters" class="form-inline hidden-xs hidden-sm">
+	<form id="filters" class="form-inline hidden-xs hidden-sm" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
 		<div class="form-group form-group-sm">
 			<div class="input-group">
 				<div class="btn-group">
@@ -92,7 +92,7 @@
 				</span>
 			</div>
 		</div>
-		<div class="form-group  form-group-sm"  ng-if="::contentData.defaultSearchField != null">
+		<div class="form-group  form-group-sm" ng-if="::contentData.defaultSearchField != null">
 			<a class="btn btn-default btn-sm" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
 				<i class="fa fa-fw fa-filter"></i>
 			</a>
@@ -130,56 +130,51 @@
 		</div>
 
 	</form>
-	<div id="page-text">
-		<div class="table-scroll-wrapper" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate" data-double-scroll-bar-horizontal>
-		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0'>
-			<thead>
-				<tr>
-					<th class="actions"></th>
-					<th class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="record in contentData.records">
-					<td class="actions">
-						<a ng-click="contentData.saveStateParamsToSessionStorage()" href='#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::record.id}}/{{::contentData.generateViewName(record)}}/*/*/*' class="btn btn-default btn-sm">
-							<i class="fa fa-eye"></i>
-						</a>
-					</td>
-					<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
-						<div ng-if="::contentData.currentUserHasReadPermission(column)" ng-switch="::column.type">
-							<div ng-switch-when="field">
-								<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+	<div id="page-text" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
+		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
+			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0'>
+				<thead>
+					<tr>
+						<th class="actions"></th>
+						<th class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="record in contentData.records">
+						<td class="actions">
+							<a ng-click="contentData.saveStateParamsToSessionStorage()" href='#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::record.id}}/{{::contentData.generateViewName(record)}}/*/*/*' class="btn btn-default btn-sm">
+								<i class="fa fa-eye"></i>
+							</a>
+						</td>
+						<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
+							<div ng-if="::contentData.currentUserHasReadPermission(column)" ng-switch="::column.type">
+								<div ng-switch-when="field">
+									<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+								</div>
+								<div ng-switch-when="fieldFromRelation">
+									<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+								</div>
+								<div ng-switch-when="view">
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
+								</div>
+								<div ng-switch-when="viewFromRelation">
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
+								</div>
+								<div ng-switch-when="list">
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
+								</div>
+								<div ng-switch-when="listFromRelation">
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
+								</div>
 							</div>
-							<div ng-switch-when="fieldFromRelation">
-								<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+							<div ng-if="::!contentData.currentUserHasReadPermission(column)">
+								<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
 							</div>
-							<div ng-switch-when="view">
-								<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
-							</div>
-							<div ng-switch-when="viewFromRelation">
-								<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
-							</div>
-							<div ng-switch-when="list">
-								<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
-							</div>
-							<div ng-switch-when="listFromRelation">
-								<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
-							</div>
-						</div>
-						<div ng-if="::!contentData.currentUserHasReadPermission(column)">
-							<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
-			<div ng-if="contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') || contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
-			<div ng-if="!contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.recordsMeta.dynamicHtmlTemplate"></div>
-		</div>
-
 		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>
 			There are no records matching your query
 		</div>
@@ -190,6 +185,10 @@
 			<li ng-if="::contentData.currentListView.pageSize <= contentData.records.length" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
 			<!--<li ng-if="::contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 		</ul>
+	</div>
+	<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
+		<div ng-if="contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') || contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+		<div ng-if="!contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.recordsMeta.dynamicHtmlTemplate"></div>
 	</div>
 </div>
 <script type="text/ng-template" id="setFiltersModalContent.html">
@@ -1089,14 +1088,14 @@
 		<p class="text-muted">This will export a number of records based on the current list filter and sort</p>
 		<div class="row">
 			<div class="col-xs-6">
-			<label class="radio-inline">
-			  <input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupData.count" style="width:60px;display:inline-block;margin:0 5px;"/> records
-			</label>
+				<label class="radio-inline">
+					<input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupData.count" style="width:60px;display:inline-block;margin:0 5px;" /> records
+				</label>
 			</div>
 			<div class="col-xs-6" style="padding:6px;">
-			<label class="radio-inline">
-			  <input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="false"> get all records
-			</label>
+				<label class="radio-inline">
+					<input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="false"> get all records
+				</label>
 			</div>
 		</div>
 	</div>
@@ -1106,7 +1105,7 @@
 		<div class="form" style="margin:15px 0"><a href="{{popupData.downloadFilePath}}"><i class="fa fa-file"></i> click here to download the export file</a></div>
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupData.ok()" class="btn btn-primary ng-hide"  ng-show="!popupData.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupData.loading, 'fa-spinner fa-spin':popupData.loading}"></i> Export</a>
+		<a href="javascript:void(0)" ng-click="popupData.ok()" class="btn btn-primary ng-hide" ng-show="!popupData.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupData.loading, 'fa-spinner fa-spin':popupData.loading}"></i> Export</a>
 		<a href="javascript:void(0)" ng-click="popupData.cancel()" class="btn btn-default">Cancel</a>
 	</div>
 </script>
@@ -1118,14 +1117,16 @@
 	<div class="modal-body record-details">
 		<div class="alert alert-danger ng-hide" ng-show="popupData.hasError" ng-bind="popupData.errorMessage"></div>
 		<h4>Import CSV</h4>
-		<p class="text-muted">The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
-		If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised</p>
+		<p class="text-muted">
+			The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
+			If the 'id' of a record equals 'null', a new record will be created with the provided columns and default values for the missing ones. If "id" does not exists, validation error will be raised
+		</p>
 		<div class="form">
 			<div class="editable-field field">
 				<label class="control-label">Uploaded CSV file</label>
 				<div>
-					<a ng-show='!popupData.uploadedFilePath && popupData.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-sm ng-hide' ngf-select="popupData.upload(popupData.uploadedFile)" ngf-max-size="20MB" 
-					ng-model='popupData.uploadedFile' ngf-multiple='false'>Browse</a>
+					<a ng-show='!popupData.uploadedFilePath && popupData.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-sm ng-hide' ngf-select="popupData.upload(popupData.uploadedFile)" ngf-max-size="20MB"
+					   ng-model='popupData.uploadedFile' ngf-multiple='false'>Browse</a>
 					<div class="progress ng-hide" ng-show="!popupData.uploadedFilePath && popupData.uploadProgress > 0 && popupData.uploadProgress <= 100">
 						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupData.uploadProgress+'%'}">
 							<span ng-show="popupData.uploadProgress < 100">{{popupData.uploadProgress || '0'}}%</span>

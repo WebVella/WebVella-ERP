@@ -62,15 +62,26 @@
 
 	//#region << Resolve Function >>
 
-	resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
+	resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService','webvellaAreasService','$stateParams','$rootScope','$timeout'];
 	/* @ngInject */
-	function resolveSitemap($q, $log, webvellaRootService) {
+	function resolveSitemap($q, $log, webvellaRootService, webvellaAreasService, $stateParams,$rootScope,$timeout) {
 		$log.debug('webvellaAreas>base>resolveSitemap> BEGIN sitemap resolved ' + moment().format('HH:mm:ss SSSS'));
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
+
+			var currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, response.object.data);
+			var areaSubscriptions = angular.fromJson(currentArea.subscriptions);
+
+			if(areaSubscriptions.length < 2){
+				$rootScope.$emit("application-body-sidebar-visible",false);
+			}
+			else {
+				$rootScope.$emit("application-body-sidebar-visible",true);
+			}
+
 			defer.resolve(response.object);
 		}
 

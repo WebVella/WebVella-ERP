@@ -97,6 +97,7 @@
 		var appData = this;
 		//Set page title
 		appData.pageTitle = 'WebVella ERP';
+
 		$rootScope.$on("application-pageTitle-update", function (event, newValue) {
 			appData.pageTitle = newValue;
 		});
@@ -110,18 +111,14 @@
 		if (!appData.$storage.isMiniSidebar) {
 			appData.$storage.isMiniSidebar = false;
 		}
-		//appData.isMiniSidebar = false;
-		//$rootScope.isMiniSidebar = false;
-		//if ($cookies.get("isMiniSidebar") == "true") {
-		//	appData.isMiniSidebar = true;
-		//	$rootScope.isMiniSidebar = true;
-		//}
 
-		//$rootScope.$on("application-sidebar-mini-toggle", function (event) {
-		//	appData.isMiniSidebar = !appData.isMiniSidebar;
-		//	$rootScope.isMiniSidebar = appData.isMiniSidebar;
-		//	$cookies.put("isMiniSidebar", appData.isMiniSidebar);
-		//});
+		appData.isSidebarVisible = true;
+		$rootScope.$on("application-body-sidebar-visible", function (event, isVisible) {
+			$timeout(function () {
+				appData.isSidebarVisible = isVisible;
+			}, 10);
+		});
+
 		//Side menu visibility
 		appData.sideMenuIsVisible = true;
 		$rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {

@@ -13,10 +13,10 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser','$timeout'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser,$timeout) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;

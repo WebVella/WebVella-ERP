@@ -85,6 +85,7 @@ span.divider {
 
 .navbar-brand {
 	font-size: 17px;
+	margin-right:20px;
 }
 
 .panel {
@@ -533,6 +534,20 @@ ngToast
 }
 
 
+/* Hidden Sidebar */
+
+body.hidden-sidebar #sidebar,
+body.hidden-sidebar #switcher {
+	display:none;
+}
+
+body.hidden-sidebar #content {
+	margin-left:0;
+}
+
+body.hidden-sidebar #page-topnav {
+	padding-left:20px;
+}
 
 /****************************
     Userbox
