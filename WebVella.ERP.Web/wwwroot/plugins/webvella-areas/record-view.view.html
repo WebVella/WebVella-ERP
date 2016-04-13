@@ -725,8 +725,7 @@
 	</div>
 
 	<div id="page-text" ng-if='::contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<div ng-if="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('/') || contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
-		<div ng-if="!contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate"></div>
+		<dynamic-view template-url="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data" template-meta="contentData.selectedSidebarPage.meta"></dynamic-view>
 	</div>
 </div>
 

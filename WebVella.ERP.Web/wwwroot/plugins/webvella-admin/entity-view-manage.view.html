@@ -94,7 +94,7 @@
 														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by item.dataName"
 														     ng-switch="::item.type">
 															<div ng-switch-when="field">
-																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,item.dataName)"></i> {{::item.meta.name}} <i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="bottom" tooltip-class="wva-tooltip"></i> <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,item.dataName)"></i> {{::item.meta.name}} <i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i> <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
 															</div>
 															<div ng-switch-when="fieldFromRelation">
 																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> <span class="go-gray"> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
@@ -487,6 +487,8 @@
 </script>
 
 <script type="text/ng-template" id="dataBindTemplate.html">
-    <div class="tooltip-description">You can bing to this field in a dynamic template by:</div>
-	<div class="tooltip-databind">contentData.data["$view${{contentData.view.name}}"][0].{{item.dataName}}</div>
+    <div class="tooltip-description">You can get this field value in a dynamic template by:</div>
+	<div class="tooltip-databind"><span>{</span>{templateData.{{item.dataName}}<span>}</span>}</div>
+	<div class="tooltip-description">View meta is accessible via:</div>
+	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
 </script>

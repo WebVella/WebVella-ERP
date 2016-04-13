@@ -1,6 +1,5 @@
 ﻿<div ng-if='::viewMeta.meta.dynamicHtmlTemplate'>
-	<div ng-if="viewMeta.meta.dynamicHtmlTemplate.startsWith('/') || viewMeta.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="viewMeta.meta.dynamicHtmlTemplate"></div>
-	<div ng-if="!viewMeta.meta.dynamicHtmlTemplate.startsWith('/') && !viewMeta.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="viewMeta.meta.dynamicHtmlTemplate"></div>
+	<dynamic-view template-url="viewMeta.meta.dynamicHtmlTemplate" template-data="viewData[0]" template-meta="viewMeta.meta"></dynamic-view>
 </div>
 <div ng-if='::!viewMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">

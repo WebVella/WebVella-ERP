@@ -124,6 +124,23 @@ namespace WebVella.ERP
 
 							fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName, false);
 
+							InputTextField userName = new InputTextField();
+							userName.Id = new Guid("263c0b21-88c1-4c2b-80b4-db7402b0d2e2");
+							userName.Name = "username";
+							userName.Label = "User Name";
+							userName.PlaceholderText = "";
+							userName.Description = "screen name for the user";
+							userName.HelpText = "";
+							userName.Required = true;
+							userName.Unique = true;
+							userName.Searchable = false;
+							userName.Auditable = false;
+							userName.System = true;
+							userName.DefaultValue = "";
+							userName.MaxLength = 200;
+							fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName, false);
+
+
 							InputEmailField email = new InputEmailField();
 
 							email.Id = new Guid("9FC75C8F-CE80-4A64-81D7-E2BEFA5E4815");
@@ -319,6 +336,7 @@ namespace WebVella.ERP
 							user["last_name"] = "Erp";
 							user["password"] = "erp";
 							user["email"] = "erp@webvella.com";
+							user["username"] = "administrator";
 							user["created_by"] = SystemIds.FirstUserId;
 							user["last_modified_by"] = SystemIds.FirstUserId;
 							user["created_on"] = DateTime.UtcNow;

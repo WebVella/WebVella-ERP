@@ -187,8 +187,7 @@
 		</ul>
 	</div>
 	<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
-		<div ng-if="contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') || contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" ng-include="contentData.recordsMeta.dynamicHtmlTemplate"></div>
-		<div ng-if="!contentData.recordsMeta.dynamicHtmlTemplate.startsWith('/') && !contentData.recordsMeta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="contentData.recordsMeta.dynamicHtmlTemplate"></div>
+		<dynamic-list template-url="contentData.recordsMeta.dynamicHtmlTemplate" template-data="contentData.records" template-meta="contentData.recordsMeta"></dynamic-list>
 	</div>
 </div>
 <script type="text/ng-template" id="setFiltersModalContent.html">

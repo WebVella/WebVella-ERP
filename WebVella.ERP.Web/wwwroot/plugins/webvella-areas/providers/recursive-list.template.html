@@ -1,6 +1,5 @@
 ﻿<div ng-if='::listMeta.meta.dynamicHtmlTemplate'>
-	<div ng-if="listMeta.meta.dynamicHtmlTemplate.startsWith('/') || listMeta.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="listMeta.meta.dynamicHtmlTemplate"></div>
-	<div ng-if="!listMeta.meta.dynamicHtmlTemplate.startsWith('/') && !listMeta.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="listMeta.meta.dynamicHtmlTemplate"></div>
+	<dynamic-list template-url="listMeta.meta.dynamicHtmlTemplate" template-data="listData" template-meta="listMeta.meta"></dynamic-list>
 </div>
 <div ng-if='::!listMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">

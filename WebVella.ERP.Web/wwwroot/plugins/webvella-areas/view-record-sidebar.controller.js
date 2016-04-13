@@ -33,7 +33,7 @@
     	//get the current area meta
 	    for (var j = 0; j < resolvedSitemap.data.length; j++) {
 	    	if (resolvedSitemap.data[j].name === $stateParams.areaName) {
-	    		var areaAttachments = angular.fromJson(resolvedSitemap.data[j].subscriptions);
+	    		var areaAttachments = angular.fromJson(resolvedSitemap.data[j].attachments);
 	    		for (var k = 0; k < areaAttachments.length; k++) {
 				    if (areaAttachments[k].name === $stateParams.entityName) {
 					    sidebarData.defaultEntityAreaListName = areaAttachments[k].list.name;

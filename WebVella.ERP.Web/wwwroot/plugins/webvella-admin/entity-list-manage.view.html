@@ -234,7 +234,7 @@
 							<div class="col-sm-12">
 								<div class="form-group">
 									<div class="editable-field field">
-										<label class="control-label col-lg-1">View name override</label>
+										<label class="control-label col-lg-1">Details View</label>
 										<div class="col-lg-11">
 											<div class="editable-wrapper input-group editable-updatable">
 												<input type="text" class="form-control" disabled editable-text="contentData.list.viewNameOverride"
@@ -242,7 +242,7 @@
 													   onbeforesave="contentData.fieldUpdate('viewNameOverride',$data)" e-form="fieldForm_viewNameOverride">
 												<span class="input-group-addon" ng-click="fieldForm_viewNameOverride.$show()" ng-hide="fieldForm_viewNameOverride.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">you can generate dynamic names with "{fieldDataName}" in the string. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
+											<div class="form-description">Leave blank for the area selected one. You can generate view names on the fly, with "{fieldDataName}" in the string above. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
 										</div>
 									</div>
 								</div>
@@ -263,7 +263,7 @@
 													   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 												<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">Substitute the default view html template with a custom dynamic html one, which will be compiled by angular. If url to a template file, should start with '/' or 'http'.</div>
+											<div class="form-description">URL to a customer html template file that should substitute the default view HTML template. It will be compiled by angular, and view data and meta are accessible.</div>
 										</div>
 									</div>
 								</div>
@@ -285,7 +285,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-6">
-					<div class="list-field-selection-box" style="height:400px;">
+					<div class="list-field-selection-box" style="height:250px;">
 						<div class="drop-zone">
 							<div as-sortable="contentData.dragLibraryListeners" ng-model="contentData.list.columns">
 								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns track by item.dataName"
@@ -294,6 +294,7 @@
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i> 
 										<span class="note go-green" ng-show="contentData.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div ng-switch-when="fieldFromRelation" class="clearfix">
@@ -326,19 +327,6 @@
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
 									</div>
-									<div ng-switch-when="html" class="clearfix">
-										<div ng-if='item.tag == ""'>
-											<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-											<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-											<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
-										</div>
-										<div ng-if='item.tag != ""'>
-											<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-											<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-											<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{::item.tag}}
-										</div>
-									</div>
-
 								</div>
 							</div>
 						</div>
@@ -508,6 +496,9 @@
 <script type="text/ng-template" id="queryRule.html">
 	<table class="table table-noborder">
 		<tr>
+			<td style="width:30px;">
+				<a class="btn btn-default" ng-click="contentData.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database" ng-class="{'go-gray': currentQuery.dataLinkCode == null, 'go-green': currentQuery.dataLinkCode != null}"></i></a>
+			</td>
 			<td>
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
 			</td>
@@ -523,8 +514,8 @@
 			<td class="position-relative" width="250">
 				<div class="editable-wrapper input-group editable-updatable">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
-							value="{{currentQuery.fieldValue}}"
-							 onaftersave="contentData.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
+						   value="{{currentQuery.fieldValue}}"
+						   onaftersave="contentData.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
 					<span class="input-group-addon" ng-click="this['queryForm_' + queryIndex].$show()" ng-hide="this['queryForm_' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 				</div>
 			</td>
@@ -561,3 +552,53 @@
 
 </script>
 
+<script type="text/ng-template" id="manageDataLinkModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Manage data link for the rule</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div class="alert alert-info ng-hide" ng-show="!popupData.hasError">
+			<p>The data link functionality allows you to pass dynamic parameters to this list. You need to define a data link key word, which later will be looked for
+			in the API call query parameters for a match.</p>
+			<p>If the key is found, the value of this rule will be substituted with the query parameter's value. If it is not found, the value of the rule will be used as set here by you.</p>
+			<p>As all url query parameters' values are just text, it needs to be converted to the proper data type which the field expects. If error occur, the API call will produce a validation error. 
+			The data and datetime value format is expected to be in ISO 8601 format and UTC timezone (e.g. '2016-04-13T12:23:46Z')</p>
+		</div>
+		<div class="panel panel-white" >
+			<div class="panel-body">
+				<form class="form-horizontal" name="dataLinkKey">
+					<div class="form-group" style="margin-bottom:0" ng-class="{ 'has-error' : dataLinkKey.name.$invalid && !dataLinkKey.name.$pristine || popupData.nameError}">
+						<label class="control-label col-lg-2 required" for="name">Datalink key</label>
+						<div class="col-lg-10">
+							<input ng-model="popupData.name" name="name" type="text" class="form-control" placeholder="e.g. user_id"
+								   pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+							<div class="error ng-hide" ng-show="dataLinkKey.name.$touched && dataLinkKey.name.$dirty && dataLinkKey.name.$invalid">
+								<small class="error" ng-show="dataLinkKey.name.$error.pattern">
+									only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+								</small>
+								<small class="error" ng-show="dataLinkKey.name.$error.maxlength">
+									must be less than 50 chars
+								</small>
+							</div>
+						</div>
+					</div>
+
+				</form>
+			</div>
+		</div>
+
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError">Save</button>
+		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="dataBindTemplate.html">
+    <div class="tooltip-description">You can get this field data in a dynamic template by:</div>
+	<div class="tooltip-databind"><span>{</span>{templateData[0].{{item.dataName}}<span>}</span>}</div>
+	<div class="tooltip-description">[0] is the index of the record in the list. List meta is accessible via:</div>
+	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
+</script>
