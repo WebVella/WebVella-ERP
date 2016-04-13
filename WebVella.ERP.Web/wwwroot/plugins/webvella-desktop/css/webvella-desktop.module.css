@@ -4,8 +4,8 @@
 /*#region << Desktop >> */
 
 #home-tiles .list-wrapper {
-    margin-left:-10px;
     min-height:300px;
+	padding: 0 15px;
 }
 
 #home-tiles .thumbnail{
@@ -57,7 +57,7 @@
 
     #home-tiles .thumbnail .icon-wrapper .fa{
         color:white;
-        font-size:32px;
+        font-size:30px;
         padding:0;
         position:relative;
         top:8px;
