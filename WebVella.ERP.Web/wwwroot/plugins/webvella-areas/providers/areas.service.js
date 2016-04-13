@@ -53,10 +53,10 @@
 				}
 			}
 
-			//Serialize the JSON subscriptions object
-			currentArea.subscriptions = angular.fromJson(currentArea.subscriptions);
+			//Serialize the JSON attachments object
+			currentArea.attachments = angular.fromJson(currentArea.attachments);
 
-			currentArea.subscriptions.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+			currentArea.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 			return currentArea;
 		}
 
@@ -64,9 +64,9 @@
 		function getCurrentEntityFromArea(entityName, area) {
 			var currentEntity = {};
 
-			for (var i = 0; i < area.subscriptions.length; i++) {
-				if (area.subscriptions[i].name == entityName) {
-					currentEntity = area.subscriptions[i];
+			for (var i = 0; i < area.attachments.length; i++) {
+				if (area.attachments[i].name == entityName) {
+					currentEntity = area.attachments[i];
 				}
 			}
 

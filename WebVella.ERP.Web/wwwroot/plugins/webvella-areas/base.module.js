@@ -71,17 +71,6 @@
 
 		// Process
 		function successCallback(response) {
-
-			var currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, response.object.data);
-			var areaSubscriptions = angular.fromJson(currentArea.subscriptions);
-
-			if(areaSubscriptions.length < 2){
-				$rootScope.$emit("application-body-sidebar-visible",false);
-			}
-			else {
-				$rootScope.$emit("application-body-sidebar-visible",true);
-			}
-
 			defer.resolve(response.object);
 		}
 

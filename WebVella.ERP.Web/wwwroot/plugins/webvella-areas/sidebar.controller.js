@@ -13,19 +13,22 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser','$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser','$timeout','$location'];
 
     /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser,$timeout) {
+    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser,$timeout,$location) {
     	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var sidebarData = this;
         sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
-        sidebarData.currentArea.subscriptions = angular.fromJson(sidebarData.currentArea.subscriptions);
+        sidebarData.currentArea.attachments = angular.fromJson(sidebarData.currentArea.attachments);
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
 
-		sidebarData.isCurrentEntityActive = function(entity){
-			if(entity.name == $stateParams.entityName){
+		sidebarData.isCurrentAttachmentActive = function(attachment){
+			if(attachment.name == $stateParams.entityName){
+				return true;
+			}
+			else if($location.path().startsWith(attachment.url) ){
 				return true;
 			}
 			else {

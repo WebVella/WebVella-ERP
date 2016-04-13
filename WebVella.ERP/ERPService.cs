@@ -493,22 +493,22 @@ namespace WebVella.ERP
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
 
-							InputTextField subscriptions = new InputTextField();
-							subscriptions.Id = new Guid("288EA657-C12C-4AC1-B701-81D6F9F39363");
-							subscriptions.Name = "subscriptions";
-							subscriptions.Label = "Subscriptions JSON String";
-							subscriptions.PlaceholderText = "";
-							subscriptions.Description = "Stringified Array of subscription objects";
-							subscriptions.HelpText = "";
-							subscriptions.Required = false;
-							subscriptions.Unique = false;
-							subscriptions.Searchable = false;
-							subscriptions.Auditable = false;
-							subscriptions.System = true;
-							subscriptions.DefaultValue = null;
-							subscriptions.MaxLength = null;
+							InputTextField attachments = new InputTextField();
+							attachments.Id = new Guid("288EA657-C12C-4AC1-B701-81D6F9F39363");
+							attachments.Name = "attachments";
+							attachments.Label = "Attachments JSON String";
+							attachments.PlaceholderText = "";
+							attachments.Description = "Stringified Array of attached objects";
+							attachments.HelpText = "";
+							attachments.Required = false;
+							attachments.Unique = false;
+							attachments.Searchable = false;
+							attachments.Auditable = false;
+							attachments.System = true;
+							attachments.DefaultValue = null;
+							attachments.MaxLength = null;
 							{
-								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, subscriptions, false);
+								var createResponse = entityManager.CreateField(SystemIds.AreaEntityId, attachments, false);
 								if (!createResponse.Success)
 									throw new Exception("System error 10340. Message:" + createResponse.Message);
 							}
@@ -536,7 +536,7 @@ namespace WebVella.ERP
 							InputTextField roles = new InputTextField();
 							roles.Id = new Guid("8E486F76-D0C1-4D0E-8617-9EF868BF1C55");
 							roles.Name = "roles";
-							roles.Label = "Subscriptions JSON String";
+							roles.Label = "Roles JSON String";
 							roles.PlaceholderText = "";
 							roles.Description = "Stringified Array of roles that have access to this area";
 							roles.HelpText = "";

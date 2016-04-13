@@ -289,7 +289,7 @@
                 className: 'success',
                 content: '<span class="go-green">Success:</span> ' + response.message
             });
-            webvellaAdminService.regenerateAllAreaSubscriptions();
+            //webvellaAdminService.regenerateAllAreaAttachments();
             return true;
         }
         function patchFailedCallback(response) {

@@ -105,8 +105,7 @@ function guid() {
 		//Area
 		serviceInstance.initArea = initArea;
 		serviceInstance.getAreaByName = getAreaByName;
-		serviceInstance.deleteArea = deleteArea;
-		serviceInstance.regenerateAllAreaSubscriptions = regenerateAllAreaSubscriptions;
+		serviceInstance.regenerateAllAreaAttachments = regenerateAllAreaAttachments;
 		//Function
 		serviceInstance.getItemsFromRegion = getItemsFromRegion;
 		//User
@@ -1228,7 +1227,7 @@ function guid() {
 				"weight": 10,
 				"name": null,
 				"roles": [],
-				"subscriptions": []
+				"attachments": []
 			};
 
 			return area;
@@ -1242,24 +1241,18 @@ function guid() {
 		}
 
 		///////////////////////
-		function deleteArea(recordId, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>patchRecord> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'area/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
-		///////////////////////
-		function regenerateAllAreaSubscriptions() {
-			$log.debug('webvellaAdmin>providers>admin.service>regenerateAllAreaSubscriptions> function called ' + moment().format('HH:mm:ss SSSS'));
+		function regenerateAllAreaAttachments() {
+			$log.debug('webvellaAdmin>providers>admin.service>regenerateAllAreaAttachments> function called ' + moment().format('HH:mm:ss SSSS'));
 			var response = {};
 			response.success = true;
-			response.message = "All area subscriptions regenerated";
+			response.message = "All area attachments regenerated";
 
 			var entities = [];
 			var areas = [];
 
 			//#region << Get data >>
 			function rasErrorCallback(data, status) {
-				$log.warn("Area subscriptions were not regenerated due to:  " + response.message);
+				$log.warn("Area attachments were not regenerated due to:  " + response.message);
 			}
 
 			function rasGetEntityMetaListSuccessCallback(data, status) {
@@ -1282,29 +1275,30 @@ function guid() {
 
 			function executeRegeneration() {
 				//Cycle entities and generate array of valid subscription for each
-				var validSubscriptionsArray = [];
+				var validAttachmentsArray = [];
 				entities.forEach(function (entity) {
-					var validSubscriptionObj = {
+					var validAttachmentObj = {
 						name: null,
 						label: null,
+						url: null,
 						labelPlural: null,
 						iconName: null,
 						weight: null
 					};
-					validSubscriptionObj.view = {
+					validAttachmentObj.view = {
 						name: null,
 						label: null
 					};
-					validSubscriptionObj.list = {
+					validAttachmentObj.list = {
 						name: null,
 						label: null
 					};
 					//Entity
-					validSubscriptionObj.name = entity.name;
-					validSubscriptionObj.label = entity.label;
-					validSubscriptionObj.labelPlural = entity.labelPlural;
-					validSubscriptionObj.iconName = entity.iconName;
-					validSubscriptionObj.weight = entity.weight;
+					validAttachmentObj.name = entity.name;
+					validAttachmentObj.label = entity.label;
+					validAttachmentObj.labelPlural = entity.labelPlural;
+					validAttachmentObj.iconName = entity.iconName;
+					validAttachmentObj.weight = entity.weight;
 
 					//Views
 
@@ -1316,8 +1310,8 @@ function guid() {
 					for (var k = 0; k < entity.recordViews.length; k++) {
 						var view = entity.recordViews[k];
 						if (view.default && view.type == "general") {
-							validSubscriptionObj.view.name = view.name;
-							validSubscriptionObj.view.label = view.label;
+							validAttachmentObj.view.name = view.name;
+							validAttachmentObj.view.label = view.label;
 							break;
 						}
 					}
@@ -1330,24 +1324,24 @@ function guid() {
 					for (var m = 0; m < entity.recordLists.length; m++) {
 						var list = entity.recordLists[m];
 						if (list.default && list.type == "general") {
-							validSubscriptionObj.list.name = list.name;
-							validSubscriptionObj.list.label = list.label;
+							validAttachmentObj.list.name = list.name;
+							validAttachmentObj.list.label = list.label;
 							break;
 						}
 					}
 
-					if (validSubscriptionObj.view.name && validSubscriptionObj.list.name) {
-						validSubscriptionsArray.push(validSubscriptionObj);
+					if (validAttachmentObj.view.name && validAttachmentObj.list.name) {
+						validAttachmentsArray.push(validAttachmentObj);
 					}
 				});
 
 				function rasAreaUpdateSuccessCallback(response) { }
 
 				function rasAreaUpdateErrorCallback(response) {
-					$log.warn("Area subscriptions were not regenerated due to:  " + response.message);
+					$log.warn("Area attachments were not regenerated due to:  " + response.message);
 				}
 
-				//Cycle through areas and substitute each entity subscription with its new valid subscription
+				//Cycle through areas and substitute each entity attachment with its new valid attachment
 				function checkIfEntityViewListExists(entityName, viewName, listName) {
 					var isEntityViewListExist = {};
 					isEntityViewListExist.view = false;
@@ -1372,31 +1366,31 @@ function guid() {
 				}
 
 				areas.forEach(function (area) {
-					var subscriptions = angular.fromJson(area.subscriptions);
-					var newSubscriptions = [];
-					for (var n = 0; n < subscriptions.length; n++) {
-						//if subscription view or list exists do not change it. This will enable the manual selections not to be overwritten
+					var attachments = angular.fromJson(area.attachments);
+					var newAttachments = [];
+					for (var n = 0; n < attachments.length; n++) {
+						//if attachment view or list exists do not change it. This will enable the manual selections not to be overwritten
 						var isEntityViewListExist = {};
 						isEntityViewListExist.view = false;
 						isEntityViewListExist.list = false;
-						isEntityViewListExist = checkIfEntityViewListExists(subscriptions[n].name, subscriptions[n].view.name, subscriptions[n].list.name);
+						isEntityViewListExist = checkIfEntityViewListExists(attachments[n].name, attachments[n].view.name, attachments[n].list.name);
 						if (isEntityViewListExist.view || isEntityViewListExist.list) {
-							for (var j = 0; j < validSubscriptionsArray.length; j++) {
-								if (subscriptions[n].name === validSubscriptionsArray[j].name) {
-									var newSubscriptionObject = validSubscriptionsArray[j];
+							for (var j = 0; j < validAttachmentsArray.length; j++) {
+								if (attachments[n].name === validAttachmentsArray[j].name) {
+									var newAttachmentObject = validAttachmentsArray[j];
 									if (isEntityViewListExist.view) {
-										newSubscriptionObject.view = subscriptions[n].view;
+										newAttachmentObject.view = attachments[n].view;
 									}
 									if (isEntityViewListExist.list) {
-										newSubscriptionObject.list = subscriptions[n].list;
+										newAttachmentObject.list = attachments[n].list;
 									}
-									newSubscriptions.push(newSubscriptionObject);
+									newAttachments.push(newAttachmentObject);
 									break;
 								}
 							}
 						}
 					}
-					area.subscriptions = angular.toJson(newSubscriptions);
+					area.attachments = angular.toJson(newAttachments);
 					updateRecord(area.id, "area", area, rasAreaUpdateSuccessCallback, rasAreaUpdateErrorCallback);
 				});
 

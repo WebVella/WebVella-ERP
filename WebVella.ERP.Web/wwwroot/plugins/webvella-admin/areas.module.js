@@ -180,7 +180,7 @@
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
 							'resolvedRolesList', 'resolvedEntityMetaList', '$uibModal',
-                            'webvellaAdminService','$timeout'];
+                            'webvellaAdminService', '$timeout'];
 	/* @ngInject */
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
 						resolvedRolesList, resolvedEntityMetaList, $uibModal,
@@ -191,9 +191,9 @@
 		contentData.search = {};
 		//#region << Update page title >>
 		contentData.pageTitle = "Areas List | " + pageTitle;
-		$timeout(function(){
+		$timeout(function () {
 			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
-		},0);
+		}, 0);
 		//#endregion
 
 		contentData.areas = fastCopy(resolvedAreaRecordsList.data);
@@ -255,9 +255,9 @@
 		popupData.areaEntityRelations = fastCopy(contentData.areaEntityRelations);
 		popupData.roles = fastCopy(contentData.roles);
 		popupData.entities = fastCopy(contentData.entities);
-		popupData.subscribedEntities = [];
-		if (popupData.area.subscriptions != null && popupData.area.subscriptions.length > 0) {
-			popupData.subscribedEntities = angular.fromJson(popupData.area.subscriptions);
+		popupData.attachments = [];
+		if (popupData.area.attachments != null && popupData.area.attachments.length > 0) {
+			popupData.attachments = angular.fromJson(popupData.area.attachments);
 		}
 
 		popupData.cleanEntities = [];
@@ -313,13 +313,13 @@
 		else {
 			//popupData.area.roles = angular.fromJson(popupData.area.roles);
 			popupData.rolesValues = angular.fromJson(popupData.area.roles);
-			//Remove the already subscribed from the available for subscription list
+			//Remove the already subscribed from the available for attachment list
 			popupData.tempEntitiesList = [];
 			for (var i = 0; i < popupData.cleanEntities.length; i++) {
 				var isSubscribed = false;
 				//check if subscribed
-				for (var j = 0; j < popupData.subscribedEntities.length; j++) {
-					if (popupData.cleanEntities[i].name === popupData.subscribedEntities[j].name) {
+				for (var j = 0; j < popupData.attachments.length; j++) {
+					if (popupData.cleanEntities[i].name === popupData.attachments[j].name) {
 						isSubscribed = true;
 					}
 				}
@@ -353,12 +353,12 @@
 			}
 			return views;
 		}
-		popupData.updateSubscriptionView = function (subscription) {
+		popupData.updateattachmentView = function (attachment) {
 			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == subscription.name) {
+				if (popupData.entities[i].name == attachment.name) {
 					for (var j = 0; j < popupData.entities[i].recordViews.length; j++) {
-						if (popupData.entities[i].recordViews[j].name == subscription.view.name) {
-							subscription.view.label = popupData.entities[i].recordViews[j].label;
+						if (popupData.entities[i].recordViews[j].name == attachment.view.name) {
+							attachment.view.label = popupData.entities[i].recordViews[j].label;
 							break;
 						}
 					}
@@ -379,12 +379,12 @@
 			}
 			return lists;
 		}
-		popupData.updateSubscriptionList = function (subscription) {
+		popupData.updateattachmentList = function (attachment) {
 			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == subscription.name) {
+				if (popupData.entities[i].name == attachment.name) {
 					for (var j = 0; j < popupData.entities[i].recordLists.length; j++) {
-						if (popupData.entities[i].recordLists[j].name == subscription.list.name) {
-							subscription.list.label = popupData.entities[i].recordLists[j].label;
+						if (popupData.entities[i].recordLists[j].name == attachment.list.name) {
+							attachment.list.label = popupData.entities[i].recordLists[j].label;
 							break;
 						}
 					}
@@ -400,6 +400,7 @@
 			var selectedEntity = {
 				name: null,
 				label: null,
+				url: null,
 				labelPlural: null,
 				iconName: null,
 				weight: null
@@ -436,8 +437,8 @@
 				}
 			}
 			//Add to subscribed 
-			popupData.subscribedEntities.push(selectedEntity);
-			popupData.subscribedEntities = popupData.subscribedEntities.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+			popupData.attachments.push(selectedEntity);
+			popupData.attachments = popupData.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 			popupData.pendingEntity = null;
 			//Remove from cleanEntities
 			var attachedItemIndex = -1;
@@ -452,34 +453,70 @@
 			}
 		}
 
+		popupData.attachURL = function () {
+			var urlAttachmentObj = {
+				name: null,
+				label: null,
+				url: null,
+				labelPlural: null,
+				iconName: null,
+				weight: null,
+				view: null,
+				list: null
+			};
+
+			urlAttachmentObj.label = popupData.pendingUrlLabel;
+			urlAttachmentObj.url = popupData.pendingUrl;
+			urlAttachmentObj.iconName = popupData.pendingUrlIconName;
+			urlAttachmentObj.weight = popupData.pendingUrlWeight;
+
+			//Add to subscribed 
+			popupData.attachments.push(urlAttachmentObj);
+			popupData.attachments = popupData.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+			popupData.pendingUrlLabel = null;
+			popupData.pendingUrl = null;
+			popupData.pendingUrlIconName = null;
+			popupData.pendingUrlWeight = null;
+
+		}
+
 
 		//Delete subscribed entity
-		popupData.deleteSubscription = function (subscription) {
-			var unsubscribedEntity = {};
-			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == subscription.name) {
-					unsubscribedEntity = popupData.entities[i];
-					break;
+		popupData.deleteAttachment = function (index) {
+			var attachment = popupData.attachments[index];
+			//If entity
+			if (attachment.url == null) {
+				var unsubscribedEntity = {};
+				for (var i = 0; i < popupData.entities.length; i++) {
+					if (popupData.entities[i].name == attachment.name) {
+						unsubscribedEntity = popupData.entities[i];
+						break;
+					}
 				}
-			}
-			popupData.cleanEntities.push(unsubscribedEntity);
-			//Soft alphabetically
-			popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
-				if (a.name < b.name) return -1;
-				if (a.name > b.name) return 1;
-				return 0;
-			});
+				popupData.cleanEntities.push(unsubscribedEntity);
+				//Soft alphabetically
+				popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
+					if (a.name < b.name) return -1;
+					if (a.name > b.name) return 1;
+					return 0;
+				});
 
-			//Remove subscription
-			var subscriptionIndex = -1;
-			for (var i = 0; i < popupData.subscribedEntities.length; i++) {
-				if (popupData.subscribedEntities[i].name == subscription.name) {
-					subscriptionIndex = i;
-					break;
+				//Remove attachment
+				var attachmentIndex = -1;
+				for (var i = 0; i < popupData.attachments.length; i++) {
+					if (popupData.attachments[i].name == attachment.name) {
+						attachmentIndex = i;
+						break;
+					}
+				}
+				if (attachmentIndex != -1) {
+					popupData.attachments.splice(attachmentIndex, 1);
 				}
 			}
-			if (subscriptionIndex != -1) {
-				popupData.subscribedEntities.splice(subscriptionIndex, 1);
+			//if URL
+			else {
+				popupData.attachments.splice(index, 1);
 			}
 
 		}
@@ -502,12 +539,12 @@
 			if (!popupData.validation.hasError) {
 				if (!popupData.isUpdate) {
 					popupData.area.roles = angular.toJson(popupData.rolesValues);
-					popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
+					popupData.area.attachments = angular.toJson(popupData.attachments);
 					webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
 				}
 				else {
 					popupData.area.roles = angular.toJson(popupData.rolesValues);
-					popupData.area.subscriptions = angular.toJson(popupData.subscribedEntities);
+					popupData.area.attachments = angular.toJson(popupData.attachments);
 					webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
 				}
 			}
@@ -565,7 +602,7 @@
 
 		popupData.ok = function () {
 
-			webvellaAdminService.deleteArea(popupData.parentData.area.id, successCallback, errorCallback);
+			webvellaAdminService.deleteRecord(popupData.parentData.area.id,"area", successCallback, errorCallback);
 
 		};
 

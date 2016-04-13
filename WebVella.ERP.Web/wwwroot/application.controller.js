@@ -112,13 +112,6 @@
 			appData.$storage.isMiniSidebar = false;
 		}
 
-		appData.isSidebarVisible = true;
-		$rootScope.$on("application-body-sidebar-visible", function (event, isVisible) {
-			$timeout(function () {
-				appData.isSidebarVisible = isVisible;
-			}, 10);
-		});
-
 		//Side menu visibility
 		appData.sideMenuIsVisible = true;
 		$rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {

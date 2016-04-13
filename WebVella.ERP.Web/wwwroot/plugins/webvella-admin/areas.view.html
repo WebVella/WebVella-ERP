@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			
+
 		</div>
 		<!--<div class="icon-box">
 			<i class="fa fa-th-large fa-fw"></i>
@@ -207,22 +207,20 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="form-group">
-					<label>Attached entities</label>
-
-					<form class="form" style="margin:1em 0;">
+					<label>Attached items</label>
+					<form class="form-horizontal" style="margin:1em 0;">
 						<div class="row">
 							<div class="col-sm-10">
-								<div class="form-group" style="margin-bottom:0;">
+								<div class="form-group">
 									<div class="input-group clean-addon ng-hide" ng-show="popupData.cleanEntities.length == 0" style="margin-bottom:0;">
 										<input type="text" class="form-control" placeholder="No more entities can be attached!" disabled>
 										<span class="input-group-addon"><i class="fa fa-warning go-red"></i></span>
 									</div>
 									<div class="input-group clean-addon fluid-dropdown ng-hide" ng-show="popupData.cleanEntities.length > 0" style="margin-bottom:0;">
-										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entity name"
+										<input ng-model="popupData.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="Entities that have least one default view and list are available"
 											   required uib-typeahead="entity.name for entity in popupData.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 									</div>
-									<div class="go-gray form-description">only ones that have at least one default view and list are available</div>
 								</div>
 							</div>
 							<div class="col-sm-2 text-right">
@@ -230,47 +228,80 @@
 							</div>
 						</div>
 					</form>
-					<div>
-						<div class="alert alert-info ng-hide" ng-show="popupData.subscribedEntities.length == 0">No entities are attached to this area</div>
-						<table class="table table-bordered x-editable ng-hide" ng-show="popupData.subscribedEntities.length > 0">
-							<thead>
-								<tr>
-									<th width="30">w.</th>
-									<th>entity</th>
-									<th width="35%">view</th>
-									<th width="35%">list</th>
-									<th width="40">action</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat="subscription in popupData.subscribedEntities">
-									<td>{{subscription.weight}}</td>
-									<td>{{subscription.name}}</td>
-									<td>
-										<div class="editable-wrapper input-group editable-updatable">
-											<input type="text" class="form-control" disabled editable-select="subscription.view.name"
-												   value="{{subscription.view.name}}" e-ng-options="view.name as view.name for view in popupData.getViews(subscription.name)"
-												   onaftersave="popupData.updateSubscriptionView(subscription)" e-form="{{'fieldFormView_' + subscription.name}}">
-											<span class="input-group-addon" ng-click="this['fieldFormView_' + subscription.name].$show()" ng-hide="this['fieldFormView_' + subscription.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
-										</div>
-									</td>
-									<td>
-										<div class="editable-wrapper input-group editable-updatable">
-											<input type="text" class="form-control" disabled editable-select="subscription.list.name"
-												   value="{{subscription.list.name}}" e-ng-options="list.name as list.name for list in popupData.getLists(subscription.name)"
-												   onaftersave="popupData.updateSubscriptionList(subscription)" e-form="{{'fieldFormList_' + subscription.name}}">
-											<span class="input-group-addon" ng-click="this['fieldFormList_' + subscription.name].$show()" ng-hide="this['fieldFormList_' + subscription.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
-										</div>
-									</td>
-									<td><a href="javascript:void(0)" ng-click="popupData.deleteSubscription(subscription)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-trash go-red"></i></a></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<form class="form-horizontal" style="margin:2em 0;">
+						<div class="row">
+							<div class="col-sm-2" style="padding-right:0;">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="URL weight" ng-model="popupData.pendingUrlWeight">
+								</div>
+							</div>
+							<div class="col-sm-8">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="relative or absolute URL" ng-model="popupData.pendingUrl">
+								</div>
+							</div>
+							<div class="col-sm-2 text-right">
+								<a ng-click="popupData.attachURL()" class="btn btn-success" style="display:block">Attach URL</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-5" style="padding-right:0;">
+								<div class="form-group" style="margin-bottom:0;">
+									<div class="input-group clean-addon">
+										<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.pendingUrlIconName}}"></i></span>
+										<input ng-model="popupData.pendingUrlIconName" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="URL icon"
+											   required uib-typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
+											   ng-model-options="{allowInvalid:true}">
+										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-5">
+								<div class="form-group" style="margin-bottom:0;">
+									<input type="text" class="form-control" placeholder="URL label" ng-model="popupData.pendingUrlLabel">
+								</div>
+							</div>
+						</div>
+					</form>
+
+					<div class="alert alert-info ng-hide" ng-show="popupData.attachments.length == 0">No items are attached to this area</div>
+					<table class="table table-bordered x-editable ng-hide" ng-show="popupData.attachments.length > 0">
+						<thead>
+							<tr>
+								<th width="40">w.</th>
+								<th>item</th>
+								<th colspan="2"></th>
+								<th width="40">action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="attachment in popupData.attachments track by $index">
+								<td>{{attachment.weight}}</td>
+								<td><i class="fa fa-fw fa-{{attachment.iconName}}"></i> {{attachment.label}}</td>
+								<td ng-if="attachment.url == null" width="35%">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-select="attachment.view.name"
+											   value="{{attachment.view.name}}" e-ng-options="view.name as view.name for view in popupData.getViews(attachment.name)"
+											   onaftersave="popupData.updateattachmentView(attachment)" e-form="{{'fieldFormView_' + attachment.name}}">
+										<span class="input-group-addon" ng-click="this['fieldFormView_' + attachment.name].$show()" ng-hide="this['fieldFormView_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</td>
+								<td ng-if="attachment.url == null" width="35%">
+									<div class="editable-wrapper input-group editable-updatable">
+										<input type="text" class="form-control" disabled editable-select="attachment.list.name"
+											   value="{{attachment.list.name}}" e-ng-options="list.name as list.name for list in popupData.getLists(attachment.name)"
+											   onaftersave="popupData.updateattachmentList(attachment)" e-form="{{'fieldFormList_' + attachment.name}}">
+										<span class="input-group-addon" ng-click="this['fieldFormList_' + attachment.name].$show()" ng-hide="this['fieldFormList_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+								</td>
+								<td colspan="2" ng-if="attachment.url != null">{{attachment.url}}</td>
+								<td><a href="javascript:void(0)" ng-click="popupData.deleteAttachment($index)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-trash go-red"></i></a></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
-
 	</div>
 	<div class="modal-footer">
 		<button ng-show="popupData.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupData.deleteAreaModal()">[ Delete area ]</button>

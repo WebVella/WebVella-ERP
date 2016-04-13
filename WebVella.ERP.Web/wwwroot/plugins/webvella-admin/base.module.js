@@ -85,9 +85,9 @@
     };
 
 	// Resolve ///////////////////////////////////
-    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
+    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams','$timeout'];
 	/* @ngInject */
-    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
+    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams,$timeout) {
     	$log.debug('webvellaAdmin>base>resolveCurrentUser> BEGIN user resolved ' + moment().format('HH:mm:ss SSSS'));
     	// Initialize
     	var defer = $q.defer();
@@ -116,7 +116,6 @@
         /* jshint validthis:true */
         var adminData = this;
         adminData.sidebar = [];
-
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaAdminSidebarFactory.initSidebar();

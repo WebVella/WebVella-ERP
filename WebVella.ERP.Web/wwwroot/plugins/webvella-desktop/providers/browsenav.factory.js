@@ -35,33 +35,42 @@
             var menuItem = {};
             menuItem.label = area.label;
             menuItem.weight = area.weight;
+			menuItem.url = null;
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
 			menuItem.folder = area.folder;
             menuItem.stateName = "webvella-entity-records";
-            var entitySubscriptions = angular.fromJson(area.subscriptions);
+            var areaAttachments = angular.fromJson(area.attachments);
 
-            //Safty check - if area has subscriptions. 
-            if (entitySubscriptions == []) {
+            //Safty check - if area has attachments. 
+            if (areaAttachments == []) {
                 $log.error("area has no subscribed entities");
                 return null;
             }
 
-            entitySubscriptions.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+            areaAttachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-            //Safty check - if first subscription has default list 
-            if (entitySubscriptions[0].list.name == null || entitySubscriptions[0].list.name == "") {
-                $log.error(area.name + 'is not rendered, because there is no default list for the entity ' + area.entities[0].name);
-                return null;
-            }
+            //If attachments has not url (it is an entity)
+			if(areaAttachments[0].url == null){
+				//Safty check - if first subscription has default list 
+				if (areaAttachments[0].list == null || areaAttachments[0].list.name == null || areaAttachments[0].list.name == "") {
+					$log.error(area.name + 'is not rendered, because there is no default list for the entity ' + area.entities[0].name);
+					return null;
+				}
 
-            menuItem.stateParams = {
-                "areaName": area.name,
-                "entityName": entitySubscriptions[0].name,
-                "listName": entitySubscriptions[0].list.name,
-                "filter": "all",
-                "page": 1
-            };
+				menuItem.stateParams = {
+					"areaName": area.name,
+					"entityName": areaAttachments[0].name,
+					"listName": areaAttachments[0].list.name,
+					"filter": "all",
+					"page": 1
+				};
+			}
+			else {
+				menuItem.url = areaAttachments[0].url;
+				menuItem.stateName = "url";		
+				menuItem.stateParams = {};
+			}
 
         	//Roles
             menuItem.roles = angular.fromJson(area.roles);

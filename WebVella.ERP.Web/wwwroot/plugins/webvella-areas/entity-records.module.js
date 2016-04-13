@@ -194,11 +194,11 @@
 		}
 
 
-		contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
-		contentData.areaEntitySubscription = {};
-		for (var i = 0; i < contentData.area.subscriptions.length; i++) {
-			if (contentData.area.subscriptions[i].name === contentData.entity.name) {
-				contentData.areaEntitySubscription = contentData.area.subscriptions[i];
+		contentData.area.attachments = angular.fromJson(contentData.area.attachments);
+		contentData.areaEntityAttachments = {};
+		for (var i = 0; i < contentData.area.attachments.length; i++) {
+			if (contentData.area.attachments[i].name === contentData.entity.name) {
+				contentData.areaEntityAttachments = contentData.area.attachments[i];
 				break;
 			}
 		}
@@ -274,7 +274,7 @@
 		//Select default details view
 		contentData.selectedView = {};
 		for (var j = 0; j < contentData.entity.recordViews.length; j++) {
-			if (contentData.entity.recordViews[j].name === contentData.areaEntitySubscription.view.name) {
+			if (contentData.entity.recordViews[j].name === contentData.areaEntityAttachments.view.name) {
 				contentData.selectedView = contentData.entity.recordViews[j];
 				break;
 			}
@@ -529,9 +529,9 @@
 		}
 
 		contentData.isCurrentListAreaDefault = function(){
-			for (var i = 0; i < contentData.area.subscriptions.length; i++) {
-				if(contentData.area.subscriptions[i].name == contentData.entity.name){
-					if(contentData.area.subscriptions[i].list.name == contentData.currentListView.name){
+			for (var i = 0; i < contentData.area.attachments.length; i++) {
+				if(contentData.area.attachments[i].name == contentData.entity.name){
+					if(contentData.area.attachments[i].list.name == contentData.currentListView.name){
 						return true;
 					}
 					else {
@@ -543,22 +543,22 @@
 
 		contentData.setCurrentListAsDefault = function(){
 			var currentAreaCopy = fastCopy(contentData.area);
-			currentAreaCopy.subscriptions = angular.fromJson(currentAreaCopy.subscriptions);
+			currentAreaCopy.attachments = angular.fromJson(currentAreaCopy.attachments);
 			//console.log(contentData.area);
 			//console.log(contentData.entity);
 			//console.log(contentData.currentListView);
-			//console.log(contentData.area.subscriptions);
-			//contentData.area.subscriptions = angular.fromJson(contentData.area.subscriptions);
-			//1. Cycle true subscriptions and find the current entity
-			for (var i = 0; i < currentAreaCopy.subscriptions.length; i++) {
-				if(currentAreaCopy.subscriptions[i].name == contentData.entity.name){
-					//2. Change the subscription list
-					currentAreaCopy.subscriptions[i].list.name = contentData.currentListView.name;					
-					currentAreaCopy.subscriptions[i].list.label = contentData.currentListView.label;
+			//console.log(contentData.area.attachments);
+			//contentData.area.attachments = angular.fromJson(contentData.area.attachments);
+			//1. Cycle true attachments and find the current entity
+			for (var i = 0; i < currentAreaCopy.attachments.length; i++) {
+				if(currentAreaCopy.attachments[i].name == contentData.entity.name){
+					//2. Change the attachment list
+					currentAreaCopy.attachments[i].list.name = contentData.currentListView.name;					
+					currentAreaCopy.attachments[i].list.label = contentData.currentListView.label;
 				}
 			}
-			//3. Stringify back the subscription field
-			currentAreaCopy.subscriptions = angular.toJson(currentAreaCopy.subscriptions);
+			//3. Stringify back the attachment field
+			currentAreaCopy.attachments = angular.toJson(currentAreaCopy.attachments);
 			//4. Update the area
 			function updateAreaSuccessCallback(response) {
 				ngToast.create({

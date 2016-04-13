@@ -988,10 +988,10 @@
 				//get the current area meta
 				for (var j = 0; j < resolvedSitemap.data.length; j++) {
 					if (resolvedSitemap.data[j].name === $stateParams.areaName) {
-						var areaSubscriptions = angular.fromJson(resolvedSitemap.data[j].subscriptions);
-						for (var k = 0; k < areaSubscriptions.length; k++) {
-							if (areaSubscriptions[k].name === $stateParams.entityName) {
-								contentData.defaultEntityAreaListName = areaSubscriptions[k].list.name;
+						var areaAttachments = angular.fromJson(resolvedSitemap.data[j].subscriptions);
+						for (var k = 0; k < areaAttachments.length; k++) {
+							if (areaAttachments[k].name === $stateParams.entityName) {
+								contentData.defaultEntityAreaListName = areaAttachments[k].list.name;
 							}
 						}
 					}

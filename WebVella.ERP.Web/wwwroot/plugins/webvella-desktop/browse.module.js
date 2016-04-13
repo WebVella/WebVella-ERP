@@ -218,6 +218,13 @@
 		}, 0);
 		//#endregion
 
+
+		//Wait for the load and show non items messages if needed
+		contentData.loaded = false;
+		$timeout(function () {
+		  contentData.loaded = true;
+		},250);
+
 		$log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 	//#endregion
