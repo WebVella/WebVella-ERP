@@ -6,7 +6,7 @@
 			<h4>
 				{{::contentData.currentListView.label}}
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalLists.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline" ng-click="contentData.openMoreLists()"><i class="fa fa-fw fa-caret-down"></i></a>
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="list in contentData.generalLists track by $index">
 							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">

@@ -155,6 +155,15 @@
 
 		//#region << Initialize current entity >>
 		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+
+		contentData.generalViews = [];
+		contentData.currentEntity.recordViews.forEach(function(view){
+			if(view.type == "general"){
+				contentData.generalViews.push(view);
+			}
+		});
+		contentData.generalViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
 		contentData.viewSection = {};
 		//#endregion
 

@@ -61,6 +61,7 @@
                         {{::list.name}}
                         <span class="badge badge-danger badge-inverse" ng-show="::list.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
                         <span class="badge badge-primary badge-inverse" ng-show="::list.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
+						<div class="go-gray"><small>{{::list.label}}</small></div>
                     </td>
                     <td>{{::list.type}}</td>
 					<td class="stats" ng-bind-html="contentData.calculateStats(list)"></td>

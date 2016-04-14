@@ -90,7 +90,7 @@
         // Initialize
         var defer = $q.defer();
 
-        //Show Sidemenu
+        //Show sidemenu
 		$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
 		},0);

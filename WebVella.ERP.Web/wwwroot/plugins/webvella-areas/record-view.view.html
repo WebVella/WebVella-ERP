@@ -4,7 +4,19 @@
 			<a ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
 		</div>
 		<div class="meta-label">
-			<h4>{{::contentData.viewSection.label}}</h4>
+			<h4>
+				{{::contentData.viewSection.label}}
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalViews.length > 1">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li ng-repeat="view in contentData.generalViews track by $index">
+							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.currentEntity.name}}/{{contentData.stateParams.recordId}}/{{::view.name}}/*/*/*">
+								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::view.label}}
+							</a>
+						</li>
+					</ul>
+				</span>
+			</h4>
 		</div>
 	</div>
 </div>
