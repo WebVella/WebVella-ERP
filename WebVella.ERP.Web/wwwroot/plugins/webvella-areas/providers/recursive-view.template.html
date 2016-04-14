@@ -27,23 +27,23 @@
 						<i class="fa fa-times go-red"></i>
 					</a>
 				</div>
-				<div class="form-horizontal" style="background: transparent">
+				<div class="form" style="background: transparent">
 					<div class="row" ng-repeat="row in section.rows track by row.id">
 						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
 							<div class="form-group" ng-repeat="item in column.items"
 								 ng-switch="::item.type">
 								<!--If item is field WITH NO relation-->
 								<div class="field" ng-switch-when="field">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label">{{::item.meta.label}}</label>
+									<div>
 										<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>
 									</div>
 								</div>
 
 								<!-- If item is field WITH relation -->
 								<div class="field" ng-switch-when="fieldFromRelation">
-									<label class="control-label col-lg-{{::12/column.gridColCount}}">{{::item.meta.label}}</label>
-									<div class="col-lg-{{::12 - 12/column.gridColCount}}">
+									<label class="control-label">{{::item.meta.label}}</label>
+									<div>
 										<div ng-switch="::dataKind">
 											<div ng-switch-when="origin">
 												<p class="form-control-static" ng-bind-html="::renderFieldValue(recordData[item.dataName],item.meta)"></p>

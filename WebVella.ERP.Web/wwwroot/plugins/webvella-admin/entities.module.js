@@ -152,6 +152,7 @@
 		$timeout(function(){
 			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		},0);
+
         contentData.entities = resolvedEntityMetaList.entities;
         contentData.entities = contentData.entities.sort(function (a, b) { 
             if(a.name < b.name) return -1;

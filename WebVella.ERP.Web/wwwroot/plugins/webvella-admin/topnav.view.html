@@ -13,6 +13,7 @@
     <a class="btn btn-default visible-xs-inline-block btn-sm" ng-click="openChangeLocalModal()"><i class="fa fa-bars"></i></a>
 </div>
 <div id="area-title" class="hidden-xs">Administration</div>
-<div class="divider-box"><i class="fa fa-caret-right"></i></div>
-<!--<div id="entity-label" class="hidden-xs">Entities</div>-->
+<div class="divider-box hidden-xs"><i class="fa fa-caret-right"></i></div>
+<div id="entity-label" class="hidden-xs">{{topnavData.currentSectionName}}</div>
+<div class="divider-box hidden-xs" ng-if="topnavData.currentSectionName != null"><i class="fa fa-caret-right"></i></div>
 

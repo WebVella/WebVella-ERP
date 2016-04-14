@@ -8,6 +8,9 @@
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalLists.length > 1">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li><a href="javascript:void(0)"><i class="fa fa-fw fa-thumb-tack go-red"></i> set current as default</a></li>
+						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
+						<li class="divider"></li>
 						<li ng-repeat="list in contentData.generalLists track by $index">
 							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">
 								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}

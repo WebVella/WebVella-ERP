@@ -37,6 +37,11 @@
                     function (response) {});
         }
 
+		topnavData.currentSectionName = null;
+		$rootScope.$watch("currentSectionName",function(newValue,oldValue){
+			topnavData.currentSectionName = newValue;		
+		});
+
         $log.debug('webvellaAdmin>topnav> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }

@@ -23,7 +23,7 @@
 
 <div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
 	<div id="page-text" class="record-details" ng-if='::contentData.selectedSidebarPage.isEdit && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<div class="panel panel-default  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
+		<div class="panel panel-default panel-section  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
 			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
 				<a href="javascript:void(0)" ng-click="contentData.toggleSectionCollapse(section)">
 					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
@@ -32,14 +32,14 @@
 				</a>
 			</div>
 			<div class="panel-body ng-hide" ng-hide="section.collapsed && section.showLabel">
-				<div class="form-horizontal">
+				<div class="form">
 					<div class="row" ng-repeat="row in section.rows track by row.id">
 						<div class="col-sm-{{::column.gridColCount}}" ng-repeat="column in row.columns">
 							<div class="form-group" ng-repeat="item in column.items" ng-switch="::item.type">
 								<!--If item is field WITH NO relation-->
 								<div class="editable-field field" ng-switch-when="field">
-									<label class="col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}} control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::item.meta.fieldType">
 											<!-- If type 1 - auto-increment -->
 											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="1">
@@ -176,10 +176,10 @@
 											<img ng-switch-when="9" class="img-thumbnail" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-src="{{contentData.selectedSidebarPage.data[item.dataName]}}" />
 											<!-- If type 10 - textarea -->
 											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="10" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<pre class="form-control" disabled editable-textarea="contentData.selectedSidebarPage.data[item.dataName]" e-rows="3"
+												<div class="form-control" disabled editable-textarea="contentData.selectedSidebarPage.data[item.dataName]" e-rows="3"
 													 onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}"
 													 ng-bind="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)">
-												</pre>
+												</div>
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="10" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
@@ -307,8 +307,8 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)">
 										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
 											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
@@ -533,8 +533,8 @@
 
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-view view-meta="item"
 														view-data="contentData.selectedSidebarPage.data[item.dataName]"
 														relations-list="::contentData.relationsList"
@@ -550,15 +550,14 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
-										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
+										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
 									</div>
 								</div>
 
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-view view-meta="::item"
 														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relations-list="::contentData.relationsList"
@@ -577,15 +576,14 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
-										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
+										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
 									</div>
 								</div>
 
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::item.meta.label}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relations-list="::contentData.relationsList"
@@ -608,8 +606,8 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
 														relations-list="::contentData.relationsList"
@@ -635,8 +633,8 @@
 
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
-									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::item.fieldLabel}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
+									<label class="control-label">{{::item.fieldLabel}}</label>
+									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative>
 										<span class="editable editable-click tree" ng-click="contentData.openSelectTreeNodesModal(item)">
 											<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
 										</span>

@@ -126,6 +126,7 @@
 		$timeout(function(){
 			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 		},0);
+
     	//#endregion
 
         contentData.roles = fastCopy(resolvedRolesList.data);
