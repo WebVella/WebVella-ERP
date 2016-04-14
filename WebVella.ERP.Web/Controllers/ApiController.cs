@@ -694,15 +694,25 @@ namespace WebVella.ERP.Web.Controllers
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(Name);
-				if (storageEntity == null)
+				//DbEntity storageEntity = DbContext.Current.EntityRepository.Read(Name);
+				//if (storageEntity == null)
+				//{
+				//	response.Timestamp = DateTime.UtcNow;
+				//	response.Success = false;
+				//	response.Message = "Entity with such Name does not exist!";
+				//	return DoBadRequestResponse(response);
+				//}
+				//entity = storageEntity.MapTo<Entity>();
+
+				var entResp = new EntityManager().ReadEntity(Name);
+				if (entResp.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Name does not exist!";
 					return DoBadRequestResponse(response);
 				}
-				entity = storageEntity.MapTo<Entity>();
+				entity = entResp.Object;
 
 				RecordList updatedList = entity.RecordLists.FirstOrDefault(l => l.Name == ListName);
 				if (updatedList == null)
