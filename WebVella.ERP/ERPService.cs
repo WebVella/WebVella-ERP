@@ -138,7 +138,7 @@ namespace WebVella.ERP
 							userName.System = true;
 							userName.DefaultValue = "";
 							userName.MaxLength = 200;
-							fieldResponse = entityManager.CreateField(userEntity.Id.Value, lastName, false);
+							fieldResponse = entityManager.CreateField(userEntity.Id.Value, userName, false);
 
 
 							InputEmailField email = new InputEmailField();
