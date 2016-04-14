@@ -1,36 +1,12 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<!--<div class="btn-group" role="group" aria-label="page toolbar">-->
-			<!--<a class="btn btn-default hidden-xs" ng-click="" uib-tooltip-placement="bottom" tooltip="Bookmark this page" tooltip-append-to-body="true"><i class="fa fa-star-o"></i></a>-->
-			<a target="_blank" href='#/admin/entities/{{::contentData.currentEntity.name}}'><i class="fa fa-gear"></i> Settings</a>
 			<a ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
-			<!--</div>-->
 		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-{{::contentData.currentEntity.iconName}} fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4>{{::contentData.currentEntity.label}}</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 title="{{::contentData.defaultRecordView.label}}" ng-class="{'no-link':!contentData.userHasRecordDeletePermission()}">{{::contentData.defaultRecordView.label}}</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 class="no-link" title="{{::contentData.viewSection.label}}">{{::contentData.viewSection.label}}</h4>
+		<div class="meta-label">
+			<h4>{{::contentData.viewSection.label}}</h4>
 		</div>
 	</div>
-	<!--<div id="page-messages">
-		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-	</div>-->
 </div>
 
 <div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
@@ -620,7 +596,7 @@
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-								<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
+									<label class="control-label col-lg-{{contentData.calculatefieldWidths('label',column.gridColCount)}}">{{::contentData.getRelationLabel(item)}}</label>
 									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate" class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
 										<recursive-list list-meta="::item"
 														list-data="::contentData.selectedSidebarPage.data[item.dataName]"

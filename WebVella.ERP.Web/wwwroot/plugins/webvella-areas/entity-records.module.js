@@ -183,9 +183,13 @@
 		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
 		contentData.moreListsOpened = false;
 		contentData.moreListsInputFocused = false;
-		//Get the current meta
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-
+		contentData.generalLists = [];
+		contentData.entity.recordLists.forEach(function(list){
+			if(list.type == "general"){
+				contentData.generalLists.push(list);
+			}
+		});
 		contentData.area = {};
 		for (var i = 0; i < resolvedSitemap.data.length; i++) {
 			if (resolvedSitemap.data[i].name == $stateParams.areaName) {

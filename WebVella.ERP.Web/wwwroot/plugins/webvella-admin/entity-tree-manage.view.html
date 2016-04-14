@@ -3,41 +3,10 @@
 		<div class="aux-actions">
 			<a ng-click="contentData.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i> Delete tree</a>
 		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-database  fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4 class="no-link" title="Entities">entities</h4>
-			<!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 title="Records lists">records trees</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record Tree">manage</h4>
+		<div class="meta-label">
+			<h4><span class="go-gray">Entity records' tree: </span>{{contentData.tree.meta.label}}</h4>
 		</div>
 	</div>
-	<!--<div id="page-messages">
-		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-	</div>-->
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">

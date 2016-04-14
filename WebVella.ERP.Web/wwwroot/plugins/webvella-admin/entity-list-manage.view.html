@@ -3,41 +3,11 @@
 		<div class="aux-actions">
 			<a class="go-red" ng-click="contentData.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
 		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-database  fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4 class="no-link" title="Entities">entities</h4>
-			<!--<a ui-sref="webvella-admin-entities"><i class="fa fa-arrow-left"></i> Back to list</a>-->
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-{{::contentData.entity.iconName}}  fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4 class="no-link" title="{{::contentData.entity.label}}">{{::contentData.entity.name}}</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 title="Records lists">records lists</h4>
-		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 class="no-link" title="Manage a Record list">{{contentData.list.name}}</h4>
+		<div class="meta-label">
+			<h4><span class="go-gray">Entity records' list:</span> {{contentData.list.name}}</h4>
 		</div>
 	</div>
-	<!--<div id="page-messages">
-		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
-	</div>-->
+
 </div>
 <div id="page-body" style="padding-bottom:3em; ">
 	<div class="tabbable tabs-left spilled">
@@ -54,8 +24,7 @@
 	</div>
 	<div id="page-text">
 		<div class="view-manage-section">
-			<h3 class="page-header">Basic info</h3>
-			<div class="panel panel-default" style="margin-top:2em;">
+			<div class="panel panel-default">
 				<div class="panel-body">
 					<div class="form-horizontal">
 						<div class="row">

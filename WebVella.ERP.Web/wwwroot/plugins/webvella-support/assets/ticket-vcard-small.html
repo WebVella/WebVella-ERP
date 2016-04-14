@@ -1,1 +1,26 @@
-﻿<strong>{{templateData.subject}}</strong><br/>
+﻿<table>
+	<tr>
+		<td width="30">
+		<span ng-switch="templateData.type">
+			<i ng-switch-when="bug" class="fa fa-fw fa-bug go-red"></i>
+			<i ng-switch-when="enhancement" class="fa fa-fw fa-puzzle-piece go-indigo"></i>
+			<i ng-switch-when="question" class="fa fa-fw fa-question-circle go-green"></i>
+			<i ng-switch-when="duplicate" class="fa fa-fw fa-copy go-gray"></i>
+			<i ng-switch-when="invalid" class="fa fa-fw fa-times-circle go-gray"></i>
+			<i ng-switch-when="wontfix" class="fa fa-fw fa-user-times go-gray"></i>
+		</span>
+		</td>
+		<td>
+			<span ng-switch="templateData.status">
+				<span ng-switch-when="opened" class="go-green">[opened]</span>
+				<span ng-switch-when="closed" class="go-gray">[closed]</span>
+				<span ng-switch-when="reopened" class="go-green">[reopened]</span>
+			</span>
+			<strong>{{templateData.subject}}</strong><br />
+			<div class="go-gray">#{{templateData.number}} opened {{templateData.created_on | date: "dd MMM yyyy"}} by {{templateData.$field$user_ticket_created_by$username[0]}}</div>
+		</td>
+		<td width="120">
+		<span class="go-gray">{{templateData.$field$user_1_n_ticket$username[0]}}</span>
+		</td>
+	</tr>
+</table>

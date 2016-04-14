@@ -13,14 +13,15 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout','webvellaRootService', 'webvellaAreasService', 'webvellaAdminService'];
+    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout','webvellaRootService', 'webvellaAreasService', 'resolvedCurrentEntityMeta'];
 
     /* @ngInject */
-    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout,webvellaRootService, webvellaAreasService, webvellaAdminService) {
+    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout,webvellaRootService, webvellaAreasService, resolvedCurrentEntityMeta) {
     	$log.debug('webvellaAreas>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var topnavData = this;
         topnavData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
+		topnavData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {
         	topnavData.$storage.isMiniSidebar = !topnavData.$storage.isMiniSidebar;

@@ -1,67 +1,29 @@
 ﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a target="_blank" href='#/admin/entities/{{::contentData.entity.name}}'><i class="fa fa-gear"></i> Settings</a>
-			<a href="javascript:void(0)" ng-click="contentData.openMoreLists()"><i class="fa fa-fw" ng-class="{'fa-table':!contentData.moreListsOpened, 'fa-caret-down go-red':contentData.moreListsOpened}"></i> Lists and Charts</a>
 		</div>
-		<!--<div class="icon-box">
-			<i class="fa fa-fw fa-{{::contentData.entity.iconName}} fa-fw"></i>
-		</div>-->
-		<div class="entity-box">
-			<h4>{{::contentData.entity.labelPlural}}</h4>
+		<div class="meta-label">
+			<h4>
+				{{::contentData.currentListView.label}}
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalLists.length > 1">
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline" ng-click="contentData.openMoreLists()"><i class="fa fa-fw fa-caret-down"></i></a>
+					<ul class="dropdown-menu" uib-dropdown-menu>
+						<li ng-repeat="list in contentData.generalLists track by $index">
+							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">
+								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
+							</a>
+						</li>
+					</ul>
+				</span>
+			</h4>
 		</div>
-		<div class="spacer-box"></div>
-		<div class="divider-box">
-			<i class="fa fa-caret-right"></i>
-		</div>
-		<div class="lists-box">
-			<h4 title="Newest active offers">{{::contentData.currentListView.label}}</h4>
-		</div>
-		<uib-accordion>
-			<uib-accordion-group is-open="contentData.moreListsOpened">
-				<!--<form class="form-inline">
-					<div class="form-group form-group-sm">
-						<div class="input-group">
-							<span class="input-group-addon" id="basic-addon1">
-								<i class="fa fa-search"></i>
-							</span>
-							<input ng-model="contentData.listFilter" type="text" class="form-control" placeholder="list or chart label" focus-me="contentData.moreListsInputFocused">
-						</div>
-					</div>
-					<div class="form-group hidden-xs hidden-sm form-group-sm">
-						<div class="filter">
-							<div class="field">Actions</div>
-							<ul class="criterias list-inline">
-								<li>
-									<a href="#/admin/entities/{{::contentData.entity.name}}/lists?createNew=true"><i class="fa fa-plus"></i> Create new list</a>
-								</li>
-								<li>
-									<a href="#/admin/entities/{{::contentData.entity.name}}/lists/{{contentData.currentListView.name}}"><i class="fa fa-pencil"></i> Edit this list</a>
-								</li>
-								<li class="ng-hide" ng-show="!contentData.isCurrentListAreaDefault()">
-									<a href="javascript:void(0)" ng-click="contentData.setCurrentListAsDefault()"><i class="fa fa-thumb-tack"></i> Set as default</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</form>
-				<hr class="divider" />-->
-				<ul class="list-inline">
-					<li style="padding-right:30px;" ng-repeat="list in contentData.entity.recordLists | filter: {label:contentData.listFilter}" ui-sref-active="active">
-						<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/all/1">
-							<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
-						</a>
-					</li>
-				</ul>
-			</uib-accordion-group>
-		</uib-accordion>
 	</div>
 	<div id="page-messages" class="hide">
-		<div class="alert alert-warning" role="alert">This is a plugin message dynamically embedded in the page</div>
+		<div class="alert alert-warning" role="alert">This is a plug-in message dynamically embedded in the page</div>
 	</div>
 </div>
 <div id="page-body">
-	<form id="filters" class="form-inline hidden-xs hidden-sm" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
+	<form id="filters" class="form-inline hidden-xs hidden-sm" style="margin-bottom:-2em;">
 		<div class="form-group form-group-sm">
 			<div class="input-group">
 				<div class="btn-group">
@@ -130,9 +92,9 @@
 		</div>
 
 	</form>
-	<div id="page-text" ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
+	<div id="page-text">
 		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
-			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0'>
+			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0' ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
 				<thead>
 					<tr>
 						<th class="actions"></th>
@@ -174,7 +136,12 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
+				<dynamic-list template-url="contentData.recordsMeta.dynamicHtmlTemplate" template-data="contentData.records" template-meta="contentData.recordsMeta"></dynamic-list>
+			</div>
 		</div>
+
 		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>
 			There are no records matching your query
 		</div>
@@ -186,15 +153,12 @@
 			<!--<li ng-if="::contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 		</ul>
 	</div>
-	<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
-		<dynamic-list template-url="contentData.recordsMeta.dynamicHtmlTemplate" template-data="contentData.records" template-meta="contentData.recordsMeta"></dynamic-list>
-	</div>
 </div>
 <script type="text/ng-template" id="setFiltersModalContent.html">
 	<div class="modal-header">
 		<h4 class="modal-title">Available filters</h4>
 	</div>
-	<div class="modal-body" ng-class="{'go-bkg-gray-light': popupData.filterColumns.length > 0}">
+	<div class="modal-body">
 		<div class="row">
 			<div class="col-sm-12">
 				<form name="filterForm" class="vertical-tabs-wrapper" ng-if="popupData.filterColumns.length > 0">
