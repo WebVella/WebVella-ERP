@@ -226,6 +226,10 @@
 		{
 			name: "quick_create",
 			label: "quick create"
+		},
+		{
+			name: "hidden",
+			label: "hidden"
 		}
         ];
 

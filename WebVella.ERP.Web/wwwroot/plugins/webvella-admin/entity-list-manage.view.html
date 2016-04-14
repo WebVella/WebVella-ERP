@@ -193,7 +193,7 @@
 													   onbeforesave="contentData.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
 												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">zero for unlimitted</div>
+											<div class="form-description">zero for unlimited</div>
 										</div>
 									</div>
 								</div>
@@ -232,7 +232,7 @@
 													   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 												<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">URL to a customer html template file that should substitute the default view HTML template. It will be compiled by angular, and view data and meta are accessible.</div>
+											<div class="form-description">URL to a customer HTML template file that should substitute the default view HTML template. It will be compiled by angular, and view data and meta are accessible.</div>
 										</div>
 									</div>
 								</div>
@@ -263,7 +263,7 @@
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
-										<i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i> 
+										<i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i>
 										<span class="note go-green" ng-show="contentData.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div ng-switch-when="fieldFromRelation" class="clearfix">
@@ -370,7 +370,7 @@
 						<tbody>
 							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
 								<td>
-									<div style="overflow-x:hidden;text-overflow:ellipsis;">
+									<div style="overflow-x: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis;">
 										<span ng-show="::contentData.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
 										<span ng-show="::contentData.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
 										<span ng-show="::contentData.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
@@ -413,9 +413,9 @@
 					</span>
 				</div>
 				<div class="panel-body">
-					<table class="table table-noborder">
+					<table class="table table-noborder table-vertical-align-middle">
 						<tr ng-repeat="sortRule in contentData.list.sorts">
-							<td style="width:60px"><span ng-if="$index != 0">than</span></td>
+							<td style="width:60px"><span ng-if="$index == 0">first</span><span ng-if="$index != 0">than</span></td>
 							<td>
 								<select class="form-control" ng-model="sortRule.sortType" ng-change="contentData.updateSorts()">
 									<option value="ascending">sort from low to high by</option>
@@ -463,24 +463,23 @@
 </script>
 
 <script type="text/ng-template" id="queryRule.html">
-	<table class="table table-noborder">
+	<table class="table table-noborder table-vertical-align-middle">
 		<tr>
 			<td style="width:30px;">
-				<a class="btn btn-default" ng-click="contentData.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database" ng-class="{'go-gray': currentQuery.dataLinkCode == null, 'go-green': currentQuery.dataLinkCode != null}"></i></a>
+				<a class="btn btn-default" ng-click="contentData.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database go-grey"></i></a>
 			</td>
-			<td>
+			<td  width="250">
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
 			</td>
-			<td>
+			<td  width="200">
 				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()" ng-options="item.key as item.value for item in contentData.getQueryComparisonOptionsList(currentQuery)"></select>
 			</td>
-			<td>
+			<!--<td  width="130">
 				<select class="form-control" disabled>
 					<option value="val" selected="">the value</option>
-					<!--<option value="valInField">the value in the field</option>-->
 				</select>
-			</td>
-			<td class="position-relative" width="250">
+			</td>-->
+			<td class="position-relative">
 				<div class="editable-wrapper input-group editable-updatable">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
 						   value="{{currentQuery.fieldValue}}"
@@ -527,46 +526,159 @@
 		<h3 class="modal-title">Manage data link for the rule</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div class="alert alert-info ng-hide" ng-show="!popupData.hasError">
-			<p>The data link functionality allows you to pass dynamic parameters to this list. You need to define a data link key word, which later will be looked for
-			in the API call query parameters for a match.</p>
-			<p>If the key is found, the value of this rule will be substituted with the query parameter's value. If it is not found, the value of the rule will be used as set here by you.</p>
-			<p>As all url query parameters' values are just text, it needs to be converted to the proper data type which the field expects. If error occur, the API call will produce a validation error. 
-			The data and datetime value format is expected to be in ISO 8601 format and UTC timezone (e.g. '2016-04-13T12:23:46Z')</p>
-		</div>
-		<div class="panel panel-white" >
-			<div class="panel-body">
-				<form class="form-horizontal" name="dataLinkKey">
-					<div class="form-group" style="margin-bottom:0" ng-class="{ 'has-error' : dataLinkKey.name.$invalid && !dataLinkKey.name.$pristine || popupData.nameError}">
-						<label class="control-label col-lg-2 required" for="name">Datalink key</label>
-						<div class="col-lg-10">
-							<input ng-model="popupData.name" name="name" type="text" class="form-control" placeholder="e.g. user_id"
-								   pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-							<div class="error ng-hide" ng-show="dataLinkKey.name.$touched && dataLinkKey.name.$dirty && dataLinkKey.name.$invalid">
-								<small class="error" ng-show="dataLinkKey.name.$error.pattern">
-									only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-								</small>
-								<small class="error" ng-show="dataLinkKey.name.$error.maxlength">
-									must be less than 50 chars
-								</small>
-							</div>
-						</div>
-					</div>
-
-				</form>
-			</div>
-		</div>
-
+		<p>In the most right input of this query rule row, you can set a static value or a dynamic one. The static value will be used as is. You can dynamically pass values to the query rule by using predefined data-link JSON objects.</p>
+		<h4>current_user</h4>
+		<pre class="ng-binding">Example: {"name":"current_user", "option": "id", "default": null, "settings":{}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">current_user</span></td>
+					<td>Check the currently authenticated user, if there is such.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">id</span></td>
+					<td>The "id" field of the current user is the only option available for now</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"valid guid"</span></li>
+						</ul>
+					</td>
+					<td>if there is no authenticated user, the returned null value can be replaces with "guid" of your own. Set 'null', if you do not want a default value</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{}</span></td>
+					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+				</tr>
+			</tbody>
+		</table>
+		<h4>current_date</h4>
+		<pre class="ng-binding">Example: {"name":"current_date", "option": "datetime", "default": null, "settings":{year:null,month:null,day:-1,hour:null,minute:null}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">current_date</span></td>
+					<td>Get and manipulates the current date in UTC.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">date</span></li>
+							<li><span class="go-blue">datetime</span></li>
+						</ul>
+					</td>
+					<td>Sets the ZERO HOUR date or the exact current date and hour in UTC</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<span class="go-blue">null</span>
+					</td>
+					<td>No need for default value as current date is always available.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td>
+					<span class="go-blue">
+						{<br/>
+						"year":null,<br/>
+						"month":null,<br/>
+						"day":null,<br/>
+						"hour":null,<br/>
+						"minute":null,<br/>
+						}
+					</span>
+					</td>
+					<td>with the settings object you can manipulate the current date or datetime, by subtracting or adding periods to it.<br/> Example: "year":-1, will mean that you want the result date or datetime to be the current one minus 1 year.</td>
+				</tr>
+			</tbody>
+		</table>
+		<h4>url_query</h4>
+		<pre class="ng-binding">Example: {"name":"url_query", "option": "some_query_key", "default": "some_value", "settings":{}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">url_query</span></td>
+					<td>The list controller will check the query parameters for keys that match the set string in the "options" attribute. If no match is found, it will use the default value. 
+					More than one rule can match the same query parameter key. <strong>The query parameter value should be encoded.</strong> The same value needs to be converted without an error 
+					to the data format of the selected rule field. If an error occurs the default value will be returned instead.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-gray">user defined string</span></td>
+					<td>The query key that needs to be matched. t needs to comply with the rules for the url strings.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"string"</span></li>
+						</ul>
+					</td>
+					<td>If not "null", the value needs to be converted without an error to the data format of the selected rule field. If an error occurs, it will not be used by the system, and will be 
+					equivalent to "null". The data and DateTime value format is expected to be in ISO 8601 format, in UTC and without timezone (e.g. '2016-04-13T12:23:46Z')</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{}</span></td>
+					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError">Save</button>
 		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="dataBindTemplate.html">
-    <div class="tooltip-description">You can get this field data in a dynamic template by:</div>
+	<div class="tooltip-description">You can get this field data in a dynamic template by:</div>
 	<div class="tooltip-databind"><span>{</span>{templateData[0].{{item.dataName}}<span>}</span>}</div>
 	<div class="tooltip-description">[0] is the index of the record in the list. List meta is accessible via:</div>
 	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>

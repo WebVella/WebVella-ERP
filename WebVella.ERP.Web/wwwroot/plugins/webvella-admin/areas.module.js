@@ -8,7 +8,7 @@
 	'use strict';
 
 	angular
-        .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
+        .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plug-in. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminAreasController', controller)
         .controller('ManageAreaModalController', manageAreaController)
@@ -341,7 +341,7 @@
 		//Awesome font icon names array 
 		popupData.icons = getFontAwesomeIconNames();
 
-		//Manage Inline edit
+		//Manage inline edit
 		popupData.getViews = function (entityName) {
 			var views = [];
 

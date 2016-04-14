@@ -190,6 +190,9 @@
 				contentData.generalLists.push(list);
 			}
 		});
+		contentData.generalLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+
 		contentData.area = {};
 		for (var i = 0; i < resolvedSitemap.data.length; i++) {
 			if (resolvedSitemap.data[i].name == $stateParams.areaName) {

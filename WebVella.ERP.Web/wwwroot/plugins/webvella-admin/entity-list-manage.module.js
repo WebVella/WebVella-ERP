@@ -267,6 +267,10 @@
             {
             	key: "lookup",
             	value: "lookup"
+            },
+            {
+            	key: "hidden",
+            	value: "hidden"
             }
 		];
 		//#endregion
@@ -622,9 +626,7 @@
 				controller: 'ManageDataLinkModalController',
 				controllerAs: "popupData",
 				size: "lg",
-				resolve: {
-					parentData: function () { return contentData; }
-				}
+				resolve: {}
 			});
 		}
 
@@ -901,37 +903,17 @@
 	};
 
 
-	ManageDataLinkModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageDataLinkModalController.$inject = ['$uibModalInstance', '$log'];
 	/* @ngInject */
-	function ManageDataLinkModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageDataLinkModalController($uibModalInstance, $log) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupData = this;
-		popupData.parentData = parentData;
-
-		popupData.ok = function () {
-
-			//webvellaAdminService.deleteRecord(popupData.parentData.area.id,"area", successCallback, errorCallback);
-
-		};
 
 		popupData.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
-		/// Aux
-		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$uibModalInstance.close('success');
-		}
-
-		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
-		}
 		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
