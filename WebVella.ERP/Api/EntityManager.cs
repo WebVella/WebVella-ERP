@@ -615,9 +615,16 @@ namespace WebVella.ERP.Api
 						}
 						else if (inputColumn.RelationId.HasValue && inputColumn.RelationId != Guid.Empty)
 						{
-							if (recordlist.Columns.Where(i => i is InputRecordListRelationFieldItem &&
-								((InputRecordListRelationFieldItem)i).FieldName == inputColumn.FieldName &&
+							if ((string.IsNullOrWhiteSpace(inputColumn.FieldName) &&
+								recordlist.Columns.Where(i => i is InputRecordListRelationFieldItem &&
+								((InputRecordListRelationFieldItem)i).FieldId == inputColumn.FieldId &&
 								((InputRecordListRelationFieldItem)i).RelationId == inputColumn.RelationId).Count() > 1)
+								||
+								( !string.IsNullOrWhiteSpace(inputColumn.FieldName) &&
+								recordlist.Columns.Where(i => i is InputRecordListRelationFieldItem &&
+								((InputRecordListRelationFieldItem)i).FieldName == inputColumn.FieldName &&
+								((InputRecordListRelationFieldItem)i).RelationId == inputColumn.RelationId).Count() > 1) )
+								
 								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 							else
 							{
