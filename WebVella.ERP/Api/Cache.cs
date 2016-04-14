@@ -76,5 +76,9 @@ namespace WebVella.ERP.Api
 			RemoveObjectFromCache(KEY_ENTITIES);
 		}
 
+		public static void ClearEntities()
+		{
+			RemoveObjectFromCache(KEY_ENTITIES);
+		}
 	}
 }

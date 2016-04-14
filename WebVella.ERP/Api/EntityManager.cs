@@ -620,11 +620,11 @@ namespace WebVella.ERP.Api
 								((InputRecordListRelationFieldItem)i).FieldId == inputColumn.FieldId &&
 								((InputRecordListRelationFieldItem)i).RelationId == inputColumn.RelationId).Count() > 1)
 								||
-								( !string.IsNullOrWhiteSpace(inputColumn.FieldName) &&
+								(!string.IsNullOrWhiteSpace(inputColumn.FieldName) &&
 								recordlist.Columns.Where(i => i is InputRecordListRelationFieldItem &&
 								((InputRecordListRelationFieldItem)i).FieldName == inputColumn.FieldName &&
-								((InputRecordListRelationFieldItem)i).RelationId == inputColumn.RelationId).Count() > 1) )
-								
+								((InputRecordListRelationFieldItem)i).RelationId == inputColumn.RelationId).Count() > 1))
+
 								errorList.Add(new ErrorModel("columns.fieldName", null, "There is already an item with such field name!"));
 							else
 							{
@@ -1741,8 +1741,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			DbEntity createdEntity = DbContext.Current.EntityRepository.Read(entity.Id);
-			response.Object = createdEntity.MapTo<Entity>();
+			Cache.ClearEntities();
+
+			var createdEntityResponse = ReadEntity(entity.Id);
+			response.Object = createdEntityResponse.Object;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
@@ -1825,8 +1827,10 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			DbEntity updatedEntity = DbContext.Current.EntityRepository.Read(entity.Id);
-			response.Object = updatedEntity.MapTo<Entity>();
+			Cache.ClearEntities();
+
+			var updatedEntityResponse = ReadEntity(entity.Id);
+			response.Object = updatedEntityResponse.Object;
 			response.Timestamp = DateTime.UtcNow;
 
 			return response;
@@ -1914,9 +1918,16 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity entity = DbContext.Current.EntityRepository.Read(id);
+				var entityResponse = ReadEntity(id);
 
-				if (entity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
@@ -1940,6 +1951,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			response.Timestamp = DateTime.UtcNow;
 			return response;
 		}
@@ -1953,13 +1966,13 @@ namespace WebVella.ERP.Api
 			};
 
 			//try return from cache			
-			var entities = Cache.GetEntities(); 
+			var entities = Cache.GetEntities();
 			if (entities != null)
 			{
 				EntityList entityList = new EntityList();
 				entityList.Entities = entities;
 				response.Object = entityList;
-				return response; 
+				return response;
 			}
 
 			try
@@ -2530,7 +2543,7 @@ namespace WebVella.ERP.Api
 									value = recData[labelField.Name];
 									node.Label = (value ?? string.Empty).ToString();
 
-									node.Weight = (int?)( recData[weigthField.Name] as decimal? );
+									node.Weight = (int?)(recData[weigthField.Name] as decimal?);
 								}
 							}
 						}
@@ -2655,20 +2668,26 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
+				Entity entity = entityResponse.Object;
 
 				if (inputField.Id == null || inputField.Id == Guid.Empty)
 					inputField.Id = Guid.NewGuid();
-
-				Entity entity = storageEntity.MapTo<Entity>();
 
 				response.Errors = ValidateField(entity, inputField, false);
 
@@ -2726,6 +2745,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			response.Object = field;
 			response.Timestamp = DateTime.UtcNow;
@@ -2940,17 +2961,23 @@ namespace WebVella.ERP.Api
 		{
 			FieldResponse response = new FieldResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
-
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 			return UpdateField(entity, inputField);
 		}
@@ -3011,6 +3038,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			response.Object = field;
 			response.Timestamp = DateTime.UtcNow;
@@ -3274,17 +3303,23 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
+				Entity entity = entityResponse.Object;
 
 				Field field = entity.Fields.FirstOrDefault(f => f.Id == id);
 
@@ -3304,7 +3339,7 @@ namespace WebVella.ERP.Api
 					con.BeginTransaction();
 					try
 					{
-						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field );
+						DbContext.Current.RecordRepository.RemoveRecordField(entity.Name, field);
 
 						DbEntity updatedEntity = entity.MapTo<DbEntity>();
 						bool result = DbContext.Current.EntityRepository.Update(updatedEntity);
@@ -3337,6 +3372,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			response.Timestamp = DateTime.UtcNow;
 			return response;
 		}
@@ -3351,23 +3388,26 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
+				Entity entity = entityResponse.Object;
 
 				FieldList fieldList = new FieldList();
-				fieldList.Fields = new List<Field>();
-
-				foreach (DbBaseField storageField in storageEntity.Fields)
-				{
-					fieldList.Fields.Add(storageField.MapTo<Field>());
-				}
+				fieldList.Fields = entity.Fields;
 
 				response.Object = fieldList;
 			}
@@ -3398,11 +3438,26 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
+				var entitiesResponse = ReadEntities();
+				if (!entitiesResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entitiesResponse.Message;
+					return response;
+				}
+				else if (entitiesResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "There is no entities into database!";
+					return response;
+				}
+				List<Entity> entities = entitiesResponse.Object.Entities;
 
 				FieldList fieldList = new FieldList();
 
-				foreach (DbEntity entity in storageEntities)
+				foreach (Entity entity in entities)
 				{
 					fieldList.Fields.AddRange(entity.Fields.MapTo<Field>());
 				}
@@ -3436,19 +3491,26 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
+				Entity entity = entityResponse.Object;
+				Field field = entity.Fields.FirstOrDefault(f => f.Id == id);
 
-				DbBaseField storageField = storageEntity.Fields.FirstOrDefault(f => f.Id == id);
-
-				if (storageField == null)
+				if (field == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
@@ -3457,7 +3519,6 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				Field field = storageField.MapTo<Field>();
 				response.Object = field;
 			}
 			catch (Exception e)
@@ -3485,17 +3546,23 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
-
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 
 			return CreateRecordList(entity, inputRecordList);
@@ -3505,18 +3572,24 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			Entity entity = entityResponse.Object;
 
 			return CreateRecordList(entity, inputRecordList);
 		}
@@ -3576,6 +3649,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			return ReadRecordList(entity.Id, recordList.Id);
 		}
 
@@ -3583,18 +3658,23 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
-
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			Entity entity = entityResponse.Object;
 
 			return UpdateRecordList(entity, inputRecordList);
 		}
@@ -3603,18 +3683,23 @@ namespace WebVella.ERP.Api
 		{
 			RecordListResponse response = new RecordListResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
 				return response;
 			}
-
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+			Entity entity = entityResponse.Object;
 
 			return UpdateRecordList(entity, inputRecordList);
 		}
@@ -3673,6 +3758,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			return ReadRecordList(entity.Id, recordList.Id);
 		}
@@ -3814,17 +3901,23 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
+				Entity entity = entityResponse.Object;
 
 				RecordList recordList = entity.RecordLists.FirstOrDefault(v => v.Id == id);
 
@@ -3861,6 +3954,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			response.Timestamp = DateTime.UtcNow;
 			return response;
 		}
@@ -3875,17 +3970,23 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+				var entityResponse = ReadEntity(entityName);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
-					response.Message = "Entity with such Name does not exist!";
+					response.Message = entityResponse.Message;
 					return response;
 				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
+				else if (entityResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Id does not exist!";
+					return response;
+				}
+				Entity entity = entityResponse.Object;
 
 				RecordList recordList = entity.RecordLists.FirstOrDefault(l => l.Name == name);
 
@@ -3921,6 +4022,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			response.Timestamp = DateTime.UtcNow;
 			return response;
@@ -4122,14 +4225,32 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
+				var entitiesResponse = ReadEntities();
+
+				if (!entitiesResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entitiesResponse.Message;
+					return response;
+				}
+				else if (entitiesResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "There is no entities into database!";
+					return response;
+				}
+
+				List<Entity> entities = entitiesResponse.Object.Entities;
+
 
 				RecordListCollection recordListCollection = new RecordListCollection();
 				recordListCollection.RecordLists = new List<RecordList>();
 
-				foreach (DbEntity entity in storageEntities)
+				foreach (Entity entity in entities)
 				{
-					recordListCollection.RecordLists.AddRange(entity.RecordLists.MapTo<RecordList>());
+					recordListCollection.RecordLists.AddRange(entity.RecordLists);
 				}
 
 				response.Object = recordListCollection;
@@ -4159,9 +4280,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -4169,8 +4297,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
-
+			Entity entity = entityResponse.Object;
 
 			return CreateRecordView(entity, inputRecordView);
 		}
@@ -4179,17 +4306,24 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 
 			return CreateRecordView(entity, inputRecordView);
@@ -4248,6 +4382,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			return ReadRecordView(entity.Id, recordView.Id);
 		}
 
@@ -4255,9 +4391,16 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
@@ -4265,7 +4408,7 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 
 			return UpdateRecordView(entity, inputRecordView);
@@ -4275,17 +4418,24 @@ namespace WebVella.ERP.Api
 		{
 			RecordViewResponse response = new RecordViewResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
 
-			Entity entity = storageEntity.MapTo<Entity>();
+			Entity entity = entityResponse.Object;
 
 
 			return UpdateRecordView(entity, inputRecordView);
@@ -4345,6 +4495,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			return ReadRecordView(entity.Id, recordView.Id);
 		}
@@ -4484,9 +4636,16 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
@@ -4494,7 +4653,7 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				Entity entity = storageEntity.MapTo<Entity>();
+				Entity entity = entityResponse.Object;
 
 				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Id == id);
 
@@ -4531,6 +4690,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			response.Timestamp = DateTime.UtcNow;
 			return response;
 		}
@@ -4545,17 +4706,24 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+				var entityResponse = ReadEntity(entityName);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
-					response.Message = "Entity with such Name does not exist!";
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
 
-				Entity entity = storageEntity.MapTo<Entity>();
+				Entity entity = entityResponse.Object;
 
 				RecordView recordView = entity.RecordViews.FirstOrDefault(r => r.Name == name);
 
@@ -4591,6 +4759,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			response.Timestamp = DateTime.UtcNow;
 			return response;
@@ -4793,14 +4963,31 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
+				var entitiesResponse = ReadEntities();
+
+				if (!entitiesResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entitiesResponse.Message;
+					return response;
+				}
+				else if (entitiesResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "There is no entities into database!";
+					return response;
+				}
+
+				List<Entity> entities = entitiesResponse.Object.Entities;
 
 				RecordViewCollection recordViewList = new RecordViewCollection();
 				recordViewList.RecordViews = new List<RecordView>();
 
-				foreach (DbEntity entity in storageEntities)
+				foreach (Entity entity in entities)
 				{
-					recordViewList.RecordViews.AddRange(entity.RecordViews.MapTo<RecordView>());
+					recordViewList.RecordViews.AddRange(entity.RecordViews);
 				}
 
 				response.Object = recordViewList;
@@ -4830,34 +5017,50 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
+			Entity entity = entityResponse.Object;
 
-			return CreateRecordTree(storageEntity.MapTo<Entity>(), inputRecordTree);
+			return CreateRecordTree(entity, inputRecordTree);
 		}
 
 		public RecordTreeResponse CreateRecordTree(string entityName, InputRecordTree inputRecordTree)
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
 				return response;
 			}
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+			Entity entity = entityResponse.Object;
 
-			return CreateRecordTree(storageEntity.MapTo<Entity>(), inputRecordTree);
+			return CreateRecordTree(entity, inputRecordTree);
 		}
 
 		private RecordTreeResponse CreateRecordTree(Entity entity, InputRecordTree inputRecordTree)
@@ -4915,6 +5118,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			return ReadRecordTree(entity.Id, recordTree.Id);
 		}
 
@@ -4922,32 +5127,50 @@ namespace WebVella.ERP.Api
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+			var entityResponse = ReadEntity(entityId);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = entityResponse.Message;
+				return response;
+			}
+			else if (entityResponse.Object == null)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
 				response.Message = "Entity with such Id does not exist!";
 				return response;
 			}
-			return UpdateRecordTree(storageEntity.MapTo<Entity>(), inputRecordTree);
+			Entity entity = entityResponse.Object;
+
+			return UpdateRecordTree(entity, inputRecordTree);
 		}
 
 		public RecordTreeResponse UpdateRecordTree(string entityName, InputRecordTree inputRecordTree)
 		{
 			RecordTreeResponse response = new RecordTreeResponse();
 
-			DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+			var entityResponse = ReadEntity(entityName);
 
-			if (storageEntity == null)
+			if (!entityResponse.Success)
 			{
 				response.Timestamp = DateTime.UtcNow;
 				response.Success = false;
-				response.Message = "Entity with such name does not exist!";
+				response.Message = entityResponse.Message;
 				return response;
 			}
-			return UpdateRecordTree(storageEntity.MapTo<Entity>(), inputRecordTree);
+			else if (entityResponse.Object == null)
+			{
+				response.Timestamp = DateTime.UtcNow;
+				response.Success = false;
+				response.Message = "Entity with such Id does not exist!";
+				return response;
+			}
+			Entity entity = entityResponse.Object;
+
+			return UpdateRecordTree(entity, inputRecordTree);
 		}
 
 		public RecordTreeResponse UpdateRecordTree(Entity entity, InputRecordTree inputRecordTree)
@@ -5004,6 +5227,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			return ReadRecordTree(entity.Id, recordTree.Id);
 		}
 
@@ -5017,17 +5242,23 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityId);
+				var entityResponse = ReadEntity(entityId);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
 					response.Message = "Entity with such Id does not exist!";
 					return response;
 				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
+				Entity entity = entityResponse.Object;
 
 				RecordTree recordTree = entity.RecordTrees.FirstOrDefault(v => v.Id == id);
 
@@ -5064,6 +5295,8 @@ namespace WebVella.ERP.Api
 				return response;
 			}
 
+			Cache.ClearEntities();
+
 			response.Timestamp = DateTime.UtcNow;
 			return response;
 		}
@@ -5078,17 +5311,23 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				DbEntity storageEntity = DbContext.Current.EntityRepository.Read(entityName);
+				var entityResponse = ReadEntity(entityName);
 
-				if (storageEntity == null)
+				if (!entityResponse.Success)
 				{
 					response.Timestamp = DateTime.UtcNow;
 					response.Success = false;
-					response.Message = "Entity with such Name does not exist!";
+					response.Message = entityResponse.Message;
 					return response;
 				}
-
-				Entity entity = storageEntity.MapTo<Entity>();
+				else if (entityResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "Entity with such Id does not exist!";
+					return response;
+				}
+				Entity entity = entityResponse.Object;
 
 				RecordTree recordTree = entity.RecordTrees.FirstOrDefault(l => l.Name == name);
 
@@ -5124,6 +5363,8 @@ namespace WebVella.ERP.Api
 #endif
 				return response;
 			}
+
+			Cache.ClearEntities();
 
 			response.Timestamp = DateTime.UtcNow;
 			return response;
@@ -5324,14 +5565,30 @@ namespace WebVella.ERP.Api
 
 			try
 			{
-				List<DbEntity> storageEntities = DbContext.Current.EntityRepository.Read();
+				var entityResponse = ReadEntities();
+
+				if (!entityResponse.Success)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = entityResponse.Message;
+					return response;
+				}
+				else if (entityResponse.Object == null)
+				{
+					response.Timestamp = DateTime.UtcNow;
+					response.Success = false;
+					response.Message = "There is no entities into database!";
+					return response;
+				}
+				List<Entity> entities = entityResponse.Object.Entities;
 
 				RecordTreeCollection recordTreeCollection = new RecordTreeCollection();
 				recordTreeCollection.RecordTrees = new List<RecordTree>();
 
-				foreach (DbEntity entity in storageEntities)
+				foreach (Entity entity in entities)
 				{
-					recordTreeCollection.RecordTrees.AddRange(entity.RecordTrees.MapTo<RecordTree>());
+					recordTreeCollection.RecordTrees.AddRange(entity.RecordTrees);
 				}
 
 				response.Object = recordTreeCollection;
@@ -5729,8 +5986,11 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByListId(Guid listId)
 		{
-			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-			List<Entity> entities = storageEntityList.MapTo<Entity>();
+			var entityResponse = ReadEntities();
+			if (!entityResponse.Success || entityResponse.Object == null)
+				return null;
+
+			List<Entity> entities = entityResponse.Object.Entities;
 
 			return GetEntityByListId(listId, entities);
 		}
@@ -5762,8 +6022,11 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByViewId(Guid viewId)
 		{
-			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-			List<Entity> entities = storageEntityList.MapTo<Entity>();
+			var entityResponse = ReadEntities();
+			if (!entityResponse.Success || entityResponse.Object == null)
+				return null;
+
+			List<Entity> entities = entityResponse.Object.Entities;
 
 			return GetEntityByViewId(viewId, entities);
 		}
@@ -5781,8 +6044,11 @@ namespace WebVella.ERP.Api
 
 		private Entity GetEntityByFieldId(Guid fieldId)
 		{
-			List<DbEntity> storageEntityList = DbContext.Current.EntityRepository.Read();
-			List<Entity> entities = storageEntityList.MapTo<Entity>();
+			var entityResponse = ReadEntities();
+			if (!entityResponse.Success || entityResponse.Object == null)
+				return null;
+
+			List<Entity> entities = entityResponse.Object.Entities;
 
 			return GetEntityByFieldId(fieldId, entities);
 		}
