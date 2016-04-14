@@ -2687,10 +2687,6 @@ table .btn-xs.btn-link {
 		color: #333;
 	}
 
-		.tabbable.spilled ul li.active a:hover {
-			border: none;
-		}
-
 @media screen and (max-width: 991px) {
 	#content .tabbable.spilled {
 		margin: 0;
@@ -2805,8 +2801,15 @@ table .btn-xs.btn-link {
 	width: 50px;
 	border-radius: 0;
 	text-align: center;
-	border: none;
+	border-right: none;
 }
+
+	.mini-sidebar .tabbable.spilled a:hover,
+	#sidebar a.back:hover {
+		border-right:none;
+	}
+
+
 
 	.mini-sidebar .tabbable.spilled a .text,
 	.mini-sidebar #sidebar a.back .text {
@@ -2816,14 +2819,10 @@ table .btn-xs.btn-link {
 	.mini-sidebar .tabbable.spilled a.back,
 	.mini-sidebar #sidebar a.back {
 		background-color: transparent !important;
+		right:0;
 	}
 
-	.mini-sidebar .tabbable.spilled a.back,
-	.mini-sidebar #sidebar a.back {
-		right: 0;
-	}
-
-		.mini-sidebar .tabbable.spilled a i,
+	.mini-sidebar .tabbable.spilled a i,
 		.mini-sidebar #sidebar a.back i {
 			font-size: 18px;
 			margin-right: 0 !important;
