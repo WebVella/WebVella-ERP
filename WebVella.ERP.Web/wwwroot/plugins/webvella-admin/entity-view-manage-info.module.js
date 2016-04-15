@@ -140,7 +140,8 @@
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
-		$rootScope.currentSectionName = "Entities";
+		$rootScope.adminSectionName = "Entities";
+		$rootScope.adminSubSectionName = contentData.entity.label;
     	//#endregion
 
     	//Awesome font icon names array 

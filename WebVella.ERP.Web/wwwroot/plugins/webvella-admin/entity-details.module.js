@@ -180,14 +180,15 @@
         var contentData = this;
         contentData.entity = resolvedCurrentEntityMeta;
         //Update page title
-        contentData.pageTitle = "Entity Details | " + pageTitle;
+        contentData.pageTitle = "Entity > " + contentData.entity.label +" > Details | " + pageTitle;
 		$timeout(function(){
 			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
-		$rootScope.currentSectionName = "Entities";
+		$rootScope.adminSectionName = "Entities";
+		$rootScope.adminSubSectionName = contentData.entity.label;
 
 		contentData.showSidebar = function(){
 		        //Show Sidemenu

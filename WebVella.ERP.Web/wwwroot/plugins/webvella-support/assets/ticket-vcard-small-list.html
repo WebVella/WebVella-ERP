@@ -41,11 +41,11 @@
 				</table>
 			</td>
 			<td>
-				<span ng-if="ticket.$field$project_1_n_ticket$code.length > 0">
-					<i class="fa fa-fw fa-{{ticket.$field$project_1_n_ticket$icon_name[0]}} fa-2x"></i>
-					{{ticket.$field$project_1_n_ticket$code[0]}}
+				<span ng-if="ticket.$field$project_1_n_ticket$name.length > 0">
+					<i class="fa fa-fw fa-{{ticket.$field$project_1_n_ticket$icon_name[0]}}"></i> 
+					{{ticket.$field$project_1_n_ticket$name[0]}}
 				</span>
-				<span ng-if="ticket.$field$project_1_n_ticket$code.length == 0" class="go-gray">
+				<span ng-if="ticket.$field$project_1_n_ticket$name.length == 0" class="go-gray">
 					unassigned
 				</span>
 			</td>
