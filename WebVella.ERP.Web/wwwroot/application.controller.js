@@ -128,6 +128,11 @@
 			}, 1);
 		});
 
+		$rootScope.$on("$stateChangeSuccess", function () {
+			$rootScope.adminSectionName = null;
+			$rootScope.adminSubSectionName = null;
+		});
+
 		$log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 

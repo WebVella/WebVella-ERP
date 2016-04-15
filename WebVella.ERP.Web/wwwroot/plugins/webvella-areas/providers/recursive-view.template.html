@@ -20,10 +20,10 @@
 			</div>
 			<div class="panel-body ng-hide" ng-hide="sectionCollapsedData[section.id][recordData.id] && section.showLabel">
 				<div class="panel-body-actions" ng-if="::(canRemove || canUpdate)">
-					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canUpdate">
+					<a href='javascript:void(0)' title="quick edit" class="btn btn-default btn-outline btn-sm" ng-click="manageRelatedRecordItem(recordData)" ng-if="::canUpdate">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href='javascript:void(0)' class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(recordData)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+					<a href='javascript:void(0)' title="remove relation" class="btn btn-default btn-outline btn-sm" confirmed-click="instantDetachRecord(recordData)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
 						<i class="fa fa-times go-red"></i>
 					</a>
 				</div>

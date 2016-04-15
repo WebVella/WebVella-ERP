@@ -22,12 +22,12 @@ function guid() {
         .module('webvellaAdmin')
         .service('webvellaAdminService', service);
 
-	service.$inject = ['$log', '$http', '$rootScope','$filter', 'wvAppConstants', 'Upload', 'ngToast'];
+	service.$inject = ['$log', '$http', '$rootScope', '$filter', 'wvAppConstants', 'Upload', 'ngToast', '$timeout'];
 
 
 
 	/* @ngInject */
-	function service($log, $http, $rootScope,$filter, wvAppConstants, Upload, ngToast) {
+	function service($log, $http, $rootScope, $filter, wvAppConstants, Upload, ngToast, $timeout) {
 		var serviceInstance = this;
 
 		//create a plug point in the rootScope
@@ -70,7 +70,7 @@ function guid() {
 		serviceInstance.getRowColumnCountVariationKey = getRowColumnCountVariationKey;
 		serviceInstance.convertRowColumnCountVariationKeyToArray = convertRowColumnCountVariationKeyToArray;
 		serviceInstance.calculateViewFieldColsFromGridColSize = calculateViewFieldColsFromGridColSize;
- 
+
 		//List
 		serviceInstance.initList = initList;
 		serviceInstance.getEntityLists = getEntityLists;
@@ -710,136 +710,136 @@ function guid() {
 		function getRowColumnCountVariationsArray() {
 			var rowColCountVariantions = [
 					  {
-	  					key: 1,
-						columns:1,
-	  					value: "One column"
+					  	key: 1,
+					  	columns: 1,
+					  	value: "One column"
 					  },
 					  {
-	  					key: 2,
-						columns:2,
-	  					value: "Two columns"
+					  	key: 2,
+					  	columns: 2,
+					  	value: "Two columns"
 					  },
 					  {
-	  					key: 3,
-						columns:3,
-	  					value: "Three columns"
+					  	key: 3,
+					  	columns: 3,
+					  	value: "Three columns"
 					  },
 					  {
-	  					key: 4,
-						columns:4,
-	  					value: "Four columns"
+					  	key: 4,
+					  	columns: 4,
+					  	value: "Four columns"
 					  },
 					  {
-	  					key: 12,
-						columns:2,
-	  					value: "1-2 columns"
+					  	key: 12,
+					  	columns: 2,
+					  	value: "1-2 columns"
 					  },
 					  {
-	  					key: 13,
-						columns:2,
-	  					value: "1-3 columns"
+					  	key: 13,
+					  	columns: 2,
+					  	value: "1-3 columns"
 					  },
 					  {
-	  					key: 15,
-						columns:2,
-	  					value: "1-5 columns"
+					  	key: 15,
+					  	columns: 2,
+					  	value: "1-5 columns"
 					  },
 					  {
-	  					key: 21,
-						columns:2,
-	  					value: "2-1 columns"
+					  	key: 21,
+					  	columns: 2,
+					  	value: "2-1 columns"
 					  },
 					  {
-	  					key: 31,
-						columns:2,
-	  					value: "3-1 columns"
+					  	key: 31,
+					  	columns: 2,
+					  	value: "3-1 columns"
 					  },
 					  {
-	  					key: 51,
-						columns:2,
-	  					value: "5-1 columns"
+					  	key: 51,
+					  	columns: 2,
+					  	value: "5-1 columns"
 					  }
 			];
 
 			return rowColCountVariantions;
 		}
 
-		function getRowColumnCountVariationKey(row){
+		function getRowColumnCountVariationKey(row) {
 			var gridColCountArray = [];
 			for (var j = 0; j < row.columns.length; j++) {
-				 gridColCountArray.push(row.columns[j].gridColCount);
+				gridColCountArray.push(row.columns[j].gridColCount);
 			}
 
-			if(arraysEqual(gridColCountArray,[12])){
+			if (arraysEqual(gridColCountArray, [12])) {
 				return 1;
 			}
-			else if(arraysEqual(gridColCountArray,[6,6])){
+			else if (arraysEqual(gridColCountArray, [6, 6])) {
 				return 2;
 			}
-			else if(arraysEqual(gridColCountArray,[4,4,4])){
+			else if (arraysEqual(gridColCountArray, [4, 4, 4])) {
 				return 3;
 			}
-			else if(arraysEqual(gridColCountArray,[3,3,3,3])){
+			else if (arraysEqual(gridColCountArray, [3, 3, 3, 3])) {
 				return 4;
 			}
-			else if(arraysEqual(gridColCountArray,[4,8])){
+			else if (arraysEqual(gridColCountArray, [4, 8])) {
 				return 12;
 			}
-			else if(arraysEqual(gridColCountArray,[3,9])){
+			else if (arraysEqual(gridColCountArray, [3, 9])) {
 				return 13;
 			}
-			else if(arraysEqual(gridColCountArray,[2,10])){
+			else if (arraysEqual(gridColCountArray, [2, 10])) {
 				return 15;
 			}
-			else if(arraysEqual(gridColCountArray,[8,4])){
+			else if (arraysEqual(gridColCountArray, [8, 4])) {
 				return 21;
 			}
-			else if(arraysEqual(gridColCountArray,[9,3])){
+			else if (arraysEqual(gridColCountArray, [9, 3])) {
 				return 31;
 			}
-			else if(arraysEqual(gridColCountArray,[10,2])){
+			else if (arraysEqual(gridColCountArray, [10, 2])) {
 				return 51;
 			}
 		}
 
-		function convertRowColumnCountVariationKeyToArray(key){
-			switch(key){
+		function convertRowColumnCountVariationKeyToArray(key) {
+			switch (key) {
 				case 1:
 					return [12];
 				case 2:
-					return [6,6];
+					return [6, 6];
 				case 3:
-					return [4,4,4];
+					return [4, 4, 4];
 				case 4:
-					return [3,3,3,3];
+					return [3, 3, 3, 3];
 				case 12:
-					return [4,8];
+					return [4, 8];
 				case 13:
-					return [3,9];
+					return [3, 9];
 				case 15:
-					return [2,10];		
+					return [2, 10];
 				case 21:
-					return [8,4];
+					return [8, 4];
 				case 31:
-					return [9,3];
+					return [9, 3];
 				case 51:
-					return [10,2];					
+					return [10, 2];
 			}
 		}
 
-		function calculateViewFieldColsFromGridColSize(elementType,gridColSize){
+		function calculateViewFieldColsFromGridColSize(elementType, gridColSize) {
 
-			if(12 % gridColSize != 0){
+			if (12 % gridColSize != 0) {
 				return "erp";
 			}
 			else {
-				if(elementType == "label"){
-				  return 12/gridColSize;
+				if (elementType == "label") {
+					return 12 / gridColSize;
 				}
-				else if(elementType == "field"){
-					return 12 - 12/gridColSize;
+				else if (elementType == "field") {
+					return 12 - 12 / gridColSize;
 				}
-				else{
+				else {
 					return 1;
 				}
 			}
@@ -1105,9 +1105,9 @@ function guid() {
 		}
 
 		///////////////////////
-		function getRecord(recordId,fields,entityName, successCallback, errorCallback) {
+		function getRecord(recordId, fields, entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAreas>providers>areas.service>getEntityRecord> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId + "?fields=" + fields}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId + "?fields=" + fields }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
@@ -1158,9 +1158,9 @@ function guid() {
 		}
 
 		/////////////////////
-		function getRecords(recordIds,fieldNames, entityName, successCallback, errorCallback) {
+		function getRecords(recordIds, fieldNames, entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getRecords> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" +  fieldNames}).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 
@@ -1266,8 +1266,11 @@ function guid() {
 				executeRegeneration();
 			}
 
+			//Wait for the next cycle before triggering the regeneration
 			//Get all entities meta
-			getMetaEntityList(rasGetEntityMetaListSuccessCallback, rasErrorCallback)
+			$timeout(function () {
+				getMetaEntityList(rasGetEntityMetaListSuccessCallback, rasErrorCallback);
+			}, 0);
 
 			//#endregion
 
@@ -1276,6 +1279,7 @@ function guid() {
 			function executeRegeneration() {
 				//Cycle entities and generate array of valid subscription for each
 				var validAttachmentsArray = [];
+				var entityValidatedDictionary = {};
 				entities.forEach(function (entity) {
 					var validAttachmentObj = {
 						name: null,
@@ -1332,6 +1336,7 @@ function guid() {
 
 					if (validAttachmentObj.view.name && validAttachmentObj.list.name) {
 						validAttachmentsArray.push(validAttachmentObj);
+						entityValidatedDictionary[entity.name] = validAttachmentObj;
 					}
 				});
 
@@ -1342,56 +1347,151 @@ function guid() {
 				}
 
 				//Cycle through areas and substitute each entity attachment with its new valid attachment
-				function checkIfEntityViewListExists(entityName, viewName, listName) {
-					var isEntityViewListExist = {};
-					isEntityViewListExist.view = false;
-					isEntityViewListExist.list = false;
+				function getAttachmentChangeObject(attachment) {
+					var updatedAttachmentObject = attachment;		 // null - no change, 404 - entity not found, {} - the new object that needs to be uploaded
+					var selectedEntity = null;
+					var attachmentUpdateIsNeeded = false;
 					for (var i = 0; i < entities.length; i++) {
-						if (entities[i].name == entityName) {
-							for (var j = 0; j < entities[i].recordViews.length; j++) {
-								if (entities[i].recordViews[j].name == viewName) {
-									isEntityViewListExist.view = true;
-									break;
-								}
-							}
-							for (var m = 0; m < entities[i].recordLists.length; m++) {
-								if (entities[i].recordLists[m].name == listName) {
-									isEntityViewListExist.list = true;
-									break;
-								}
-							}
+						if (entities[i].name == attachment.name) {
+							selectedEntity = entities[i];
 						}
 					}
-					return isEntityViewListExist;
+
+					if (selectedEntity == null) {
+						return 404;
+					}
+
+					//Check general attributes
+					if (selectedEntity.label != attachment.label) {
+						attachmentUpdateIsNeeded = true;
+						updatedAttachmentObject.label = selectedEntity.label;
+					}
+
+					if (selectedEntity.labelPlural != attachment.labelPlural) {
+						attachmentUpdateIsNeeded = true;
+						updatedAttachmentObject.labelPlural = selectedEntity.labelPlural;
+					}
+
+					if (selectedEntity.iconName != attachment.iconName) {
+						attachmentUpdateIsNeeded = true;
+						updatedAttachmentObject.iconName = selectedEntity.iconName;
+					}
+
+					if (selectedEntity.weight != attachment.weight) {
+						attachmentUpdateIsNeeded = true;
+						updatedAttachmentObject.weight = selectedEntity.weight;
+					}
+
+					//Check selected view
+					var selectedViewIndex = -1;
+					for (var n = 0; n < selectedEntity.recordViews.length; n++) {
+						if (selectedEntity.recordViews[n].name == attachment.view.name) {
+							selectedViewIndex = n;
+							if (selectedEntity.recordViews[n].label != attachment.view.label) {
+								attachmentUpdateIsNeeded = true;
+								updatedAttachmentObject.view.label = selectedEntity.recordViews[n].label;
+							}
+							break;
+						}
+					}
+
+					if (selectedViewIndex == -1) {
+						//Selected view exists no more
+						if (entityValidatedDictionary[selectedEntity.name] != null) {
+							attachmentUpdateIsNeeded = true;
+							var eligibleView = entityValidatedDictionary[selectedEntity.name].view;
+
+							if (eligibleView != null) {
+								updatedAttachmentObject.view.name = eligibleView.name;
+								updatedAttachmentObject.view.label = eligibleView.label;
+							}
+							else {
+								//Entity needs to have default view to be in an area
+								return 404;
+							}
+						}
+						else {
+							//Entity is not found in the dictionary
+							return 404;
+						}
+
+					}
+
+					//Check selected list
+					var selectedListIndex = -1;
+					for (var n = 0; n < selectedEntity.recordLists.length; n++) {
+						if (selectedEntity.recordLists[n].name == attachment.list.name) {
+							selectedListIndex = n;
+							if (selectedEntity.recordLists[n].label != attachment.list.label) {
+								attachmentUpdateIsNeeded = true;
+								updatedAttachmentObject.list.label = selectedEntity.recordLists[n].label;
+							}
+							break;
+						}
+					}
+
+
+					if (selectedListIndex == -1) {
+						//Selected list exists no more
+						if (entityValidatedDictionary[selectedEntity.name] != null) {
+							attachmentUpdateIsNeeded = true;
+							var eligibleList = entityValidatedDictionary[selectedEntity.name].list;
+
+							if (eligibleList != null) {
+								updatedAttachmentObject.list.name = eligibleList.name;
+								updatedAttachmentObject.list.label = eligibleList.label;
+							}
+							else {
+								//Entity needs to have default list to be in an area
+								return 404;
+							}
+						}
+						else {
+							//Entity is not found in the dictionary
+							return 404;
+						}
+					}
+
+					if (attachmentUpdateIsNeeded) {
+						return updatedAttachmentObject;
+					}
+					else {
+						return null;
+					}
 				}
 
 				areas.forEach(function (area) {
 					var attachments = angular.fromJson(area.attachments);
 					var newAttachments = [];
 					for (var n = 0; n < attachments.length; n++) {
-						//if attachment view or list exists do not change it. This will enable the manual selections not to be overwritten
-						var isEntityViewListExist = {};
-						isEntityViewListExist.view = false;
-						isEntityViewListExist.list = false;
-						isEntityViewListExist = checkIfEntityViewListExists(attachments[n].name, attachments[n].view.name, attachments[n].list.name);
-						if (isEntityViewListExist.view || isEntityViewListExist.list) {
-							for (var j = 0; j < validAttachmentsArray.length; j++) {
-								if (attachments[n].name === validAttachmentsArray[j].name) {
-									var newAttachmentObject = validAttachmentsArray[j];
-									if (isEntityViewListExist.view) {
-										newAttachmentObject.view = attachments[n].view;
-									}
-									if (isEntityViewListExist.list) {
-										newAttachmentObject.list = attachments[n].list;
-									}
-									newAttachments.push(newAttachmentObject);
-									break;
-								}
+
+						if (attachments[n].url != null && attachments[n].name == null) {
+							//If it is a url just add it
+							newAttachments.push(attachments[n]);
+						}
+						else if (attachments[n].name != null) {
+							//If this is an entity check if this is the most recent version
+							var newAttachmentObject = getAttachmentChangeObject(attachments[n]);
+							if (newAttachmentObject == null) {
+								//This attachment is not changed and is existing
+								newAttachments.push(attachments[n]);
 							}
+							else if (newAttachmentObject == 404) {
+								//the entity does not exist any more and should be removed
+							}
+							else {
+								//The attachment is change and the new one should be used
+								newAttachments.push(newAttachmentObject);
+							}
+
 						}
 					}
-					area.attachments = angular.toJson(newAttachments);
-					updateRecord(area.id, "area", area, rasAreaUpdateSuccessCallback, rasAreaUpdateErrorCallback);
+					if (area.attachments != angular.toJson(newAttachments)) {
+						//Need to sort the newAttachments first
+						newAttachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+						area.attachments = angular.toJson(newAttachments);
+						updateRecord(area.id, "area", area, rasAreaUpdateSuccessCallback, rasAreaUpdateErrorCallback);
+					}
 				});
 
 			}
