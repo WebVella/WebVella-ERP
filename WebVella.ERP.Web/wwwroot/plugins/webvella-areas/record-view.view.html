@@ -599,8 +599,7 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
-										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
+										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
 									</div>
 								</div>
 
@@ -626,8 +625,7 @@
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<div ng-if="item.meta.dynamicHtmlTemplate.startsWith('/') || item.meta.dynamicHtmlTemplate.startsWith('http')" ng-include="item.meta.dynamicHtmlTemplate"></div>
-										<div ng-if="!item.meta.dynamicHtmlTemplate.startsWith('/') && !item.meta.dynamicHtmlTemplate.startsWith('http')" bind-html-compile="item.meta.dynamicHtmlTemplate"></div>
+										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
 									</div>
 								</div>
 
@@ -657,7 +655,7 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && (contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == null || contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate == "")'>
+	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
 		<div class="records-details" ng-if="::contentData.selectedSidebarPage.isView">
 			<div ng-switch="::contentData.selectedSidebarPage.type">
 				<div ng-switch-when="view">

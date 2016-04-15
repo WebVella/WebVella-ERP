@@ -207,7 +207,7 @@
 							for (var j = 0; j < contentData.defaultRecordView.sidebar.items[i].meta.regions.length; j++) {
 								if (contentData.defaultRecordView.sidebar.items[i].meta.regions[j].name === "content") {
 									returnObject.isEdit = true;
-									returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i].meta;
+									returnObject.templateMeta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta);
 									returnObject.meta = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.regions[j]);
 									returnObject.meta.label = fastCopy(contentData.defaultRecordView.sidebar.items[i].meta.label);
 									break;
@@ -216,7 +216,7 @@
 						}
 						else {
 							returnObject = contentData.defaultRecordView.sidebar.items[i];
-							returnedObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i];
+							returnObject.templateMeta =  contentData.defaultRecordView.sidebar.items[i].meta;
 						}
 
 						//Set data
@@ -243,20 +243,20 @@
 			return returnObject;
 		};
 
-		var returnedObject = {};
+		var returnObject = {};
 		contentData.selectedSidebarPage = {};
 		if ($stateParams.auxPageName === "*") {
 			//The default view meta is active
-			returnedObject = getViewOrListMetaAndData("");
-			contentData.selectedSidebarPage = returnedObject;
+			returnObject = getViewOrListMetaAndData("");
+			contentData.selectedSidebarPage = returnObject;
 			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 		else {
 			//One of the sidebar view or lists is active
 			//Load the data
-			returnedObject = getViewOrListMetaAndData($stateParams.auxPageName);
-			contentData.selectedSidebarPage = returnedObject;
-			contentData.selectedSidebarPage.data = returnedObject.data;
+			returnObject = getViewOrListMetaAndData($stateParams.auxPageName);
+			contentData.selectedSidebarPage = returnObject;
+			contentData.selectedSidebarPage.data = returnObject.data;
 			contentData.viewSection.label = contentData.selectedSidebarPage.meta.label;
 		}
 
