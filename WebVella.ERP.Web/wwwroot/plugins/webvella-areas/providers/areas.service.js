@@ -24,9 +24,6 @@
 		serviceInstance.createEntityRecord = createEntityRecord;
 		serviceInstance.getListRecords = getListRecords;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
-		serviceInstance.createListFilter = createListFilter;
-		serviceInstance.getListFilter = getListFilter;
-		serviceInstance.deleteSelectedFilterRecords = deleteSelectedFilterRecords;
 		serviceInstance.getViewRecord = getViewRecord;
 		//Import & Export
 		serviceInstance.importEntityRecords = importEntityRecords;
@@ -87,15 +84,15 @@
 		}
 
 		/////////////////////
-		function getListRecords(listName, entityName, filter, page, search, successCallback, errorCallback) {
+		function getListRecords(listName, entityName, page, search, successCallback, errorCallback) {
 			//api/v1/en_US/record/{entityName}/list/{listName}
 			$log.debug('webvellaAreas>providers>areas.service>getListRecords> function called ' + moment().format('HH:mm:ss SSSS'));
 			if (!search || search == "") {
-				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 			}
 			else {
 				search = encodeURIComponent(search);
-				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page + '?search=' + search }).then(function getSuccessCallback(response){handleSuccessResult(response.data, response.status, successCallback, errorCallback);}, function getErrorCallback(response) {handleErrorResult(response.data, response.status, errorCallback);});
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + '?search=' + search }).then(function getSuccessCallback(response){handleSuccessResult(response.data, response.status, successCallback, errorCallback);}, function getErrorCallback(response) {handleErrorResult(response.data, response.status, errorCallback);});
 			}
 		}
 
@@ -113,35 +110,6 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
-		///////////////////////
-		function createListFilter(postObject, entityName, listName, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>createListFilter> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'filter/' + entityName + '/' + listName, data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
-
-		///////////////////////
-		function getListFilter(filterId, successCallback, errorCallback) {
-			$log.debug('webvellaAreas>providers>areas.service>getListFilter> function called ' + moment().format('HH:mm:ss SSSS'));
-			if (filterId != "all") {
-				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'filter/' + filterId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-			}
-			else {
-				var dummyData = {};
-				dummyData.errors = [];
-				dummyData.accessWarnings = [];
-				dummyData.message = "Success";
-				dummyData.object = null;
-				dummyData.success = true;
-				dummyData.timestamp = moment().utc();
-				handleSuccessResult(dummyData, 200, successCallback, errorCallback)
-			}
-		}
-
-		///////////////////////
-		function deleteSelectedFilterRecords(filter_id, postObject, successCallback, errorCallback) {
-			$log.debug('webvellaAdmin>providers>admin.service>deleteSelectedFilterRecords> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'filter/' + filter_id + '/delete-records', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
-		}
 		//#endregion
 
 		//#region << Field data presentation ///////////////////////////////////////////

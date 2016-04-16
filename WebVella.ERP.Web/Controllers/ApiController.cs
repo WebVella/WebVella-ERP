@@ -1759,8 +1759,8 @@ namespace WebVella.ERP.Web.Controllers
 
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{filter}/{page}")]
-		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, string filter = "all", string search = "", int? pageSize = null)
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{page}")]
+		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, string search = "", int? pageSize = null)
 		{
 
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
@@ -1793,7 +1793,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object.Data = GetListRecords(entities, entity, listName, page, null, filter, search, pageSize);
+				response.Object.Data = GetListRecords(entities, entity, listName, page, null, search, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -1943,193 +1943,7 @@ namespace WebVella.ERP.Web.Controllers
 				return EntityQuery.QueryContains(field.Name, search);
 		}
 
-		private QueryObject CreateFilterQuery(Entity currentEntity, string filterId, List<Entity> entities)
-		{
-			if (filterId == "all" || string.IsNullOrWhiteSpace(filterId))
-				return null;
-
-			QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filterId);
-			EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
-			QueryResponse resultFilters = recMan.Find(queryFilterEntity);
-			if (!resultFilters.Success)
-				throw new Exception(resultFilters.Message);
-
-			List<QueryObject> queries = new List<QueryObject>();
-			var filterFields = resultFilters.Object.Data;
-			foreach (var filter in filterFields)
-			{
-				List<string> values = new List<string>();
-				var jObject = JsonConvert.DeserializeObject("{ 'values' :" + (string)filter["values"] + " }") as JObject;
-				foreach (var value in ((JArray)jObject.Properties().First().First()).Values())
-					values.Add(WebUtility.UrlDecode(value.Value<string>()));
-
-				string relatedEntityName = (string)filter["entity_name"];
-				Entity relatedEntity = entities.Single(e => e.Name == relatedEntityName);
-
-				string relatedEntityFieldName = (string)filter["field_name"];
-				string relationName = (string)filter["relation_name"];
-				string matchType = (string)filter["match_type"];
-
-				if (matchType == "exact" && relationName == null)
-				{
-					queries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, values[0]));
-				}
-				else if (matchType == "exact" && relationName != null)
-				{
-
-					var relation = entityRelationManager.Read(relationName).Object;
-					if (relation.RelationType == EntityRelationType.OneToOne || relation.RelationType == EntityRelationType.OneToMany)
-					{
-						var currentEntityFilteredFieldId = Guid.Empty;
-						if (relation.OriginEntityId == relatedEntity.Id)
-						{
-							//if the relatedEntity is origin than the current on is target
-							currentEntityFilteredFieldId = relation.TargetFieldId;
-						}
-						else if (relation.TargetEntityId == relatedEntity.Id)
-						{
-							//if the relatedEntity is target than the current on is origin
-							currentEntityFilteredFieldId = relation.OriginFieldId;
-						}
-						else {
-							throw new Exception("Invalid relation name. The target entity is not present neither as origin or target.");
-						}
-						var targetFieldName = "";
-						try
-						{
-							targetFieldName = currentEntity.Fields.Single(x => x.Id == currentEntityFilteredFieldId).Name;
-						}
-						catch
-						{
-							throw new Exception("Field not found in the target entity");
-						}
-
-						queries.Add(EntityQuery.QueryEQ(targetFieldName, values[0]));
-					}
-					else {
-						//TODO RUMEN:   N:N relation, we should work with the relation table
-						throw new Exception("Search in N:N related entity is not yet implemented.");
-					}
-				}
-				else if (matchType == "exact_and")
-				{
-					MultiSelectField field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName) as MultiSelectField;
-					if (field == null)
-						throw new Exception("Missing filter field:" + relatedEntityFieldName);
-
-					foreach (string val in values)
-					{
-						//option is not found and because the match type is exact and we will put random GUID as text key, so it shouldn't be found
-						string optionKey = Guid.NewGuid().ToString();
-						var option = field.Options.SingleOrDefault(o => o.Value == val);
-						if (option != null)
-							optionKey = option.Key;
-
-						queries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, optionKey));
-					}
-				}
-				else if (matchType == "exact_or")
-				{
-					List<QueryObject> exactOrQueries = new List<QueryObject>();
-
-					MultiSelectField field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName) as MultiSelectField;
-					if (field == null)
-						throw new Exception("Missing filter field:" + relatedEntityFieldName);
-
-					foreach (string val in values)
-					{
-						//because the match type is exact OR if a value is missing from select field options, we just skip it
-						var option = field.Options.SingleOrDefault(o => o.Value == val);
-						if (option != null)
-							exactOrQueries.Add(EntityQuery.QueryEQ(relatedEntityFieldName, option.Key));
-					}
-
-					if (exactOrQueries.Count == 1)
-						queries.Add(exactOrQueries.First());
-					if (exactOrQueries.Count > 1)
-						queries.Add(EntityQuery.QueryOR(exactOrQueries.ToArray()));
-				}
-				else if (matchType == "range")
-				{
-					if (values.Count != 2)
-						throw new Exception("Range filter expects 2 values.");
-
-					Field field = relatedEntity.Fields.SingleOrDefault(x => x.Name == relatedEntityFieldName);
-					if (field is DateTimeField || field is DateField)
-					{
-						if (!string.IsNullOrWhiteSpace(values[0]))
-						{
-							DateTime value;
-							if (!DateTime.TryParse(values[0], out value))
-								throw new Exception("Invalid filter range value:" + values[0]);
-
-							queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, value));
-						}
-
-						if (!string.IsNullOrWhiteSpace(values[1]))
-						{
-							DateTime value;
-							if (!DateTime.TryParse(values[1], out value))
-								throw new Exception("Invalid filter range value:" + values[0]);
-
-							queries.Add(EntityQuery.QueryLTE(relatedEntityFieldName, value));
-						}
-					}
-					else
-					{
-						if (!string.IsNullOrWhiteSpace(values[0]))
-						{
-							decimal value;
-							if (!decimal.TryParse(values[0], out value))
-								throw new Exception("Invalid filter range value:" + values[0]);
-
-							queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, value));
-
-						}
-						if (!string.IsNullOrWhiteSpace(values[1]))
-						{
-							decimal value;
-							if (!decimal.TryParse(values[1], out value))
-								throw new Exception("Invalid filter range value:" + values[1]);
-							queries.Add(EntityQuery.QueryLTE(relatedEntityFieldName, value));
-						}
-					}
-
-				}
-				else if (matchType == "period")
-				{
-					var fromDate = DateTime.UtcNow;
-					if (values[0] == "hour")
-						fromDate = fromDate.AddHours(-1);
-					if (values[0] == "day")
-						fromDate = fromDate.AddDays(-1);
-					if (values[0] == "week")
-						fromDate = fromDate.AddDays(-7);
-					if (values[0] == "month")
-						fromDate = fromDate.AddMonths(-1);
-					if (values[0] == "year")
-						fromDate = fromDate.AddYears(-1);
-					else
-						throw new Exception("Invalid period filter value: " + values[0]);
-
-					queries.Add(EntityQuery.QueryGTE(relatedEntityFieldName, fromDate));
-				}
-				else if (matchType == "regex")
-					queries.Add(EntityQuery.QueryRegex(relatedEntityFieldName, values[0], QueryObjectRegexOperator.MatchCaseInsensitive));
-				else
-					throw new Exception("Not supported match type: " + matchType);
-
-			}
-
-			if (queries.Count == 1)
-				return queries[0];
-			else if (queries.Count > 1)
-				return EntityQuery.QueryAND(queries.ToArray());
-
-			return null;
-		}
-
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string filter = null, string search = null, int? pageSize = null, bool export = false)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string search = null, int? pageSize = null, bool export = false)
 		{
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
@@ -2144,26 +1958,12 @@ namespace WebVella.ERP.Web.Controllers
 					queryObj = searchQuery;
 			}
 
-			var filterQuery = CreateFilterQuery(entity, filter, entities);
-			if (filterQuery != null)
-			{
-				if (queryObj != null)
-					queryObj = EntityQuery.QueryAND(queryObj, filterQuery);
-				else
-					queryObj = filterQuery;
-			}
-
-
 			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
 			EntityRelationManager relManager = new EntityRelationManager();
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();
 			if (relListResponse.Object != null)
 				relationList = relListResponse.Object;
-
-
-
-
 
 			if (list != null)
 			{
@@ -3852,114 +3652,6 @@ namespace WebVella.ERP.Web.Controllers
 
 		#endregion
 
-		#region << List filters >>
-		// Create new filter
-		// POST: api/v1/en_US/filter/{entityName}/{listName}
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/filter/{entityName}/{listName}")]
-		public IActionResult CreateListFilter(string entityName, string listName, [FromBody]List<EntityRecord> postObj)
-		{
-			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
-			response.Message = "Filter successfully created";
-			using (var connection = DbContext.Current.CreateConnection())
-			{
-				connection.BeginTransaction();
-				try
-				{
-					foreach (var record in postObj)
-					{
-						if (record["id"] == null)
-						{
-							record["id"] = Guid.NewGuid();
-						}
-						var createResult = recMan.CreateRecord("filter", record);
-						if (!createResult.Success)
-						{
-							response.Errors = createResult.Errors;
-							response.Message = "Creating filter record for field " + record["field_name"] + " failed. Reason: " + createResult.Message;
-							response.Success = false;
-							connection.RollbackTransaction();
-							return DoResponse(response);
-						}
-					}
-
-					connection.CommitTransaction();
-				}
-				catch (Exception ex)
-				{
-					connection.RollbackTransaction();
-					response.Success = false;
-					response.Message = ex.Message;
-					return DoResponse(response);
-				}
-			}
-
-			return DoResponse(response);
-		}
-
-		// Get all filter records by filter_id
-		// GET: api/v1/en_US/filter/{filter_id}
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/filter/{filter_id}")]
-		public IActionResult GetListFilter(string filter_id)
-		{
-			QueryObject filterObj = EntityQuery.QueryEQ("filter_id", filter_id);
-			EntityQuery queryFilterEntity = new EntityQuery("filter", "*", filterObj, null, null, null);
-			QueryResponse resultFilters = recMan.Find(queryFilterEntity);
-			if (!resultFilters.Success)
-				return DoResponse(resultFilters);
-
-			List<EntityRecord> filterRecords = new List<EntityRecord>();
-			if (resultFilters.Object.Data != null && resultFilters.Object.Data.Any())
-			{
-				filterRecords = resultFilters.Object.Data;
-			}
-
-			var response = new QueryResponse();
-			response.Success = true;
-			response.Message = "Query successfully executed";
-			response.Object.Data = filterRecords;
-			return Json(response);
-		}
-
-		// Delete selected filter Records
-		// POST: api/v1/en_US/filter/{filter_id}/delete-records
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/filter/{filter_id}/delete-records")]
-		public IActionResult DeleteSelectedFilterRecords(string filter_id, [FromBody] Guid[] postObj)
-		{
-			BaseResponseModel response = new BaseResponseModel { Timestamp = DateTime.UtcNow, Success = true, Errors = new List<ErrorModel>() };
-			response.Message = "Filter successfully deleted";
-			using (var connection = DbContext.Current.CreateConnection())
-			{
-				connection.BeginTransaction();
-				try
-				{
-					foreach (var recordId in postObj)
-					{
-						var queryResult = recMan.DeleteRecord("filter", recordId);
-						if (!queryResult.Success)
-						{
-							response.Errors = queryResult.Errors;
-							response.Message = "Failed to delete filter record Reason: " + queryResult.Message;
-							response.Success = false;
-							connection.RollbackTransaction();
-							return DoResponse(response);
-						}
-					}
-
-					connection.CommitTransaction();
-				}
-				catch (Exception ex)
-				{
-					connection.RollbackTransaction();
-					response.Success = false;
-					response.Message = ex.Message;
-					return DoResponse(response);
-				}
-			}
-
-			return DoResponse(response);
-		}
-
-		#endregion
 	}
 }
 
