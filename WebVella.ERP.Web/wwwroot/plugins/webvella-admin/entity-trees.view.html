@@ -1,6 +1,13 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
+			<a class="btn btn-success btn-sm" ng-click="contentData.createTreeModal()"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="contentData.trees.length > 0">
+				<div class="left-inner-addon">
+					<i class="fa fa-search"></i>
+					<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="List Name">
+				</div>
+			</div>
 		</div>
 		<div class="meta-label">
 			<h4 class="no-link" title="Trees">Record trees</h4>
@@ -21,24 +28,6 @@
 
 	</div>
 
-
-	<form id="filters" class="form-inline">
-		<div class="form-group form-group-sm">
-			<div class="input-group">
-				<div class="btn-group">
-					<a class="btn btn-default btn-sm" ng-click="contentData.createTreeModal()"><i class="fa fa-fw fa-plus"></i>Create Tree</a>
-				</div>
-			</div>
-		</div>
-		<div class="form-group form-group-sm">
-			<div class="input-group">
-				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search list names">
-				<span class="input-group-addon" id="basic-addon1">
-					<i class="fa fa-search"></i>
-				</span>
-			</div>
-		</div>
-	</form>
 
 	<div id="page-text">
 		<div class="alert alert-info" ng-show="::contentData.trees.length == 0">This entity does not have any trees that match your query!</div>
