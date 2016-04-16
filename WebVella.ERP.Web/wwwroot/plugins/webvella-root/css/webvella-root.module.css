@@ -178,14 +178,6 @@ span.divider {
 		color: #333;
 	}
 
-#content .btn-default {
-	border-color: #ccc;
-	background: rgba(255,255,255,0.5);
-}
-
-	#content .btn-default:hover {
-		background: #fafafa;
-	}
 
 .display-block {
 	display: block !important;
@@ -253,6 +245,10 @@ span.divider {
 
 .width-4000 {
 	width: 4000px;
+}
+
+.dropdown-menu > li > a {
+	padding:7px 20px;
 }
 
 
@@ -334,6 +330,51 @@ ngToast
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 }
+
+
+/* Inline icons in input */
+
+.left-inner-addon {
+    position: relative;
+}
+.form-group-sm  .left-inner-addon input,
+.left-inner-addon input {
+    padding-left: 30px;    
+}
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+	color:#999;
+}
+
+.form-group-sm .left-inner-addon i {
+	padding: 9px 10px;
+    font-size: 12px;
+}
+
+.right-inner-addon {
+    position: relative;
+}
+
+form-group-sm .right-inner-addon input,
+.right-inner-addon input {
+    padding-right: 30px;    
+}
+
+.right-inner-addon i {
+    position: absolute;
+    right: 0;
+    padding: 10px 12px;
+    pointer-events: none;
+	color:#999;
+}
+
+.form-group-sm .right-inner-addon i {
+	padding: 9px 10px;
+    font-size: 12px;
+}
+
 
 /*#endregion */
 
@@ -1066,6 +1107,10 @@ body.hidden-sidebar #page-topnav {
 	height: 44px;
 }
 
+#page-title .btn-default {
+	color:#999;
+}
+
 #page-meta .meta-label h4 {
 	margin: 0;
 	line-height: 28px;
@@ -1075,8 +1120,6 @@ body.hidden-sidebar #page-topnav {
 
 #page-meta .meta-label .selector {
 	color: #999;
-	margin-left: 5px;
-	font-size: 16px;
 }
 
 	#page-meta .meta-label .selector:hover {
@@ -1267,13 +1310,15 @@ body.hidden-sidebar #page-topnav {
 #page-title .aux-actions {
 	float: right;
 	padding-top: 0;
-	margin-right: 18px;
-	margin-top: 4px;
+	margin-right: 5px;
+	/*margin-top: 4px;*/
 }
 
-	#page-title .aux-actions a {
-		margin-left: 15px;
-		color: #333;
+	#page-title .aux-actions .form-group {
+		width: 200px;
+		display: inline-block;
+		vertical-align: middle;
+		margin-bottom:0;
 	}
 
 #page-messages > .alert {
@@ -1284,6 +1329,10 @@ body.hidden-sidebar #page-topnav {
 	margin-top: 1em;
 }
 
+#page-title .aux-actions .dropdown li > a > .fa {
+	color:#999;
+	margin-right:5px;
+}
 
 /*#endregion */
 
@@ -1600,12 +1649,49 @@ body.hidden-sidebar #page-topnav {
 }
 
 .filter {
-	margin: 0 .5em;
-	background-color: #f5f5f5;
+	margin: 0 15px 0 0;
+	background-color: #fff;
 	padding: 5px 10px 5px 10px;
 	border: 1px solid #eee;
 }
 
+.filter-label {
+	padding: 12px 5px 12px 10px;
+    background: #ddd;
+    margin-right: 10px;
+	color:#555;
+	position:relative;
+}
+
+	.filter-label:after {
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 23px 0 23px 10px;
+		border-color: transparent transparent transparent #dddddd;
+		content:"";
+		position: absolute;
+		display: block;
+		right: -10px;
+		top: -1px;
+	}
+
+	.filter-label.filter-change {
+		color:#fff;
+		background:#5cb85c;
+	}
+
+	.filter-label.filter-change:after {
+		border-color: transparent transparent transparent #5cb85c;
+	}
+		.filter-label.filter-change:hover {
+			background:#449d44;
+			cursor:pointer;
+		}
+
+	.filter-label.filter-change:hover:after {
+		border-color: transparent transparent transparent #449d44;
+	}	
 
 	.filter .field {
 		text-transform: uppercase;
@@ -1946,10 +2032,6 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 
 .modal .modal-content {
 	border-radius: 0;
-}
-
-.modal .modal-body {
-	background: #f5f5f5;
 }
 
 .modal .modal-footer {
@@ -3015,10 +3097,7 @@ table .btn-xs.btn-link {
 
 /*#endregion */
 
-
 /*#region << Editable >>*/
-
-
 .editable-wrapper {
 	width: 100%;
 }
@@ -4396,7 +4475,6 @@ a.link-icon.link[href]:before {
 	}
 
 /*#endregion*/
-
 
 /*#region << Angular UI tree */
 

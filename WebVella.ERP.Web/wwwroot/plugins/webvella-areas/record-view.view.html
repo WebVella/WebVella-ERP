@@ -1,7 +1,21 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a ng-if="contentData.userHasRecordDeletePermission()" href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
+			<span uib-dropdown class="dropdown" ng-if="contentData.userHasRecordDeletePermission()">
+				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+				<ul class="dropdown-menu pull-right" uib-dropdown-menu style="margin-top:10px;">
+					<li ng-if="contentData.userHasRecordDeletePermission()">
+						<a href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="/#/admin/entities/{{::contentData.currentEntity.name}}/views/{{::contentData.stateParams.viewName}}">
+							<i class="fa fa-wrench"></i> Edit View
+						</a>
+					</li>
+				</ul>
+			</span>
+			
 		</div>
 		<div class="meta-label">
 			<h4>

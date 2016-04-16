@@ -1,7 +1,13 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-
+			<a class="btn btn-success btn-sm" ng-click="contentData.openManageRoleModal(null)"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="contentData.roles.length > 0">
+				<div class="left-inner-addon">
+					<i class="fa fa-search"></i>
+					<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Role Name">
+				</div>
+			</div>
 		</div>
 		<div class="meta-label">
 			<h4>System user roles</h4>
@@ -9,21 +15,6 @@
 	</div>
 </div>
 <div id="page-body">
-	<form id="filters" class="form-inline">
-		<div class="form-group form-group-sm">
-			<div class="input-group">
-				<a class="btn btn-success btn-sm" ng-click="contentData.openManageRoleModal(null)"><i class="fa fa-plus"></i> Create Role</a>
-			</div>
-		</div>
-		<div class="form-group form-group-sm">
-			<div class="input-group">
-				<span class="input-group-addon">
-					<i class="fa fa-search"></i>
-				</span>
-				<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Search name">
-			</div>
-		</div>
-	</form>
 	<div id="page-text">
 		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.roles.length > 0">
 			<thead>

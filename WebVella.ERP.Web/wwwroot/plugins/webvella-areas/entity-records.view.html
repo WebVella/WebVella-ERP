@@ -1,6 +1,43 @@
 ﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
+			<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
+			   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}">
+				<i class="fa fa-fw fa-plus"></i> Add New
+			</a>
+
+			<div class="form-group form-group-sm hidden-xs " ng-if="::contentData.defaultSearchField != null">
+				<div class="left-inner-addon">
+					<i class="fa fa-search"></i>
+					<input ng-model="contentData.searchQuery" type="text" class="form-control" placeholder="{{::contentData.searchQueryPlaceholder}}" ng-keydown="contentData.checkForSearchEnter($event)">
+				</div>
+			</div>
+			<span ng-if="::contentData.defaultSearchField != null" class="hidden-xs">
+				<a class="btn btn-default btn-sm" ng-click="contentData.openSetFiltersModal()">
+					<i class="fa fa-fw fa-filter"></i>
+				</a>
+			</span>
+			<span uib-dropdown class="dropdown">
+				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+				<ul class="dropdown-menu pull-right" uib-dropdown-menu style="margin-top:10px;">
+					<li ng-show="contentData.checkEntityPermissions('canCreate,canUpdate')">
+						<a ng-click="contentData.openImportModal()">
+							<i class="fa fa-upload"></i> Import CSV
+						</a>
+					</li>
+					<li>
+						<a ng-click="contentData.openExportModal()">
+							<i class="fa fa-download"></i> Export CSV
+						</a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="/#/admin/entities/{{::contentData.entity.name}}/lists/{{::contentData.stateParams.listName}}">
+							<i class="fa fa-wrench"></i> Edit List
+						</a>
+					</li>
+				</ul>
+			</span>
 		</div>
 		<div class="meta-label">
 			<h4>
@@ -26,44 +63,14 @@
 	</div>
 </div>
 <div id="page-body">
-	<form id="filters" class="form-inline hidden-xs hidden-sm" style="margin-bottom:-2em;">
-		<div class="form-group form-group-sm">
-			<div class="input-group">
-				<div class="btn-group">
-					<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
-					   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}"
-					   uib-tooltip="Create new record" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
-						<i class="fa fa-plus"></i> create new
-					</a>
-					<a class="btn btn-default btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate,canUpdate')"
-					   ng-click="contentData.openImportModal()"
-					   uib-tooltip="Import records from CSV by matching the column names as field names. Requires 'id' column." tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
-						<i class="fa fa-upload"></i> import CSV
-					</a>
-					<a class="btn btn-default btn-sm hidden-xs"
-					   ng-click="contentData.openExportModal()"
-					   uib-tooltip="Downloads a CSV export of the current list" tooltip-placement="bottom" tooltip-append-to-body="true" tooltip-popup-delay="1000">
-						<i class="fa fa-download"></i> export CSV
-					</a>
-				</div>
-			</div>
-		</div>
-
-		<div class="form-group form-group-sm" ng-if="::contentData.defaultSearchField != null">
-			<div class="input-group">
-				<input ng-model="contentData.searchQuery" type="text" class="form-control" placeholder="{{::contentData.searchQueryPlaceholder}}" ng-keydown="contentData.checkForSearchEnter($event)">
-				<span class="input-group-btn">
-					<a href="javascript:void(0)" class="btn btn-default btn-sm" ng-click="contentData.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
-				</span>
-			</div>
-		</div>
-		<div class="form-group  form-group-sm" ng-if="::contentData.defaultSearchField != null">
-			<a class="btn btn-default btn-sm" ng-click="contentData.openSetFiltersModal()" ng-hide="contentData.filterChangeRequested">
+	<form id="filters" class="form-inline hidden-xs hidden-sm">
+		<div class="form-group" ng-if="contentData.filterRecords.data.length > 0">
+			<div class="filter filter-label ng-hide" ng-show="!contentData.filterChangeRequested">
 				<i class="fa fa-fw fa-filter"></i>
-			</a>
-			<a class="btn btn-success btn-sm" ng-click="contentData.applyFilterChange()" ng-show="contentData.filterChangeRequested">
+			</div>
+			<div class="filter filter-label filter-change ng-hide" ng-show="contentData.filterChangeRequested"  ng-click="contentData.applyFilterChange()">
 				<i class="fa fa-fw fa-check"></i>
-			</a>
+			</div>
 		</div>
 		<div class="form-group" ng-repeat="filterRecord in contentData.filterRecords.data" ng-class="{'pending-removal': contentData.filtersPendingRemoval[filterRecord.field_name]}">
 			<div class="filter">
