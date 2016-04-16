@@ -62,7 +62,6 @@
 					"areaName": area.name,
 					"entityName": areaAttachments[0].name,
 					"listName": areaAttachments[0].list.name,
-					"filter": "all",
 					"page": 1
 				};
 			}

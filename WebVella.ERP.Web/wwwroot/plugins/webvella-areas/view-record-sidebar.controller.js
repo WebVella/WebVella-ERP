@@ -103,7 +103,6 @@
 				defaultParams.areaName = sidebarData.stateParams.areaName;
 				defaultParams.entityName = sidebarData.stateParams.entityName;
 				defaultParams.listName = sidebarData.defaultEntityAreaListName;
-				defaultParams.filter = "all";
 				defaultParams.page = 1;
 				defaultParams.search = null;
 

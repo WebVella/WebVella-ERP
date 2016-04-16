@@ -429,16 +429,13 @@
 				var resultStringStorage = fastCopy(contentData.selectedList.viewNameOverride);
 
 				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
-					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{filter}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
+					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
 						switch (arrayOfTemplateKeys[i]) {
 							case "{areaName}":
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
 								break;
 							case "{entityName}":
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.entityName));
-								break;
-							case "{filter}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.filter));
 								break;
 							case "{page}":
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.page));
@@ -551,7 +548,6 @@
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
 					listName: $stateParams.listName,
-					filter: $stateParams.filter,
 					page: $stateParams.page
 
 				}, { reload: true });
@@ -573,7 +569,6 @@
 					recordId: response.object.data[0].id,
 					viewName: detailsViewName,
 					auxPageName: "*",
-					filter: $stateParams.filter,
 					page: $stateParams.page
 
 				}, { reload: true });
@@ -592,7 +587,6 @@
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
 					listName: $stateParams.listName,
-					filter: $stateParams.filter,
 					page: $stateParams.page
 
 				}, { reload: true });
@@ -815,12 +809,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (contentData.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -892,7 +886,7 @@
 			if (popupData.searchQuery) {
 				popupData.searchQuery = popupData.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", 1, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, 1, popupData.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -908,7 +902,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page, null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, page, null, successCallback, errorCallback);
 		}
 
 		//#endregion

@@ -265,7 +265,7 @@
 				errorCallback(response.object);
 			}
 			else {
-				webvellaAreasService.getListRecords(defaultLookupList.name, contentData.entity.name, "all", 1, null, successCallback, errorCallback);
+				webvellaAreasService.getListRecords(defaultLookupList.name, contentData.entity.name, 1, null, successCallback, errorCallback);
 			}
 
 
@@ -391,7 +391,7 @@
 			if (popupData.searchQuery) {
 				popupData.searchQuery = popupData.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, "all", 1, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, 1, popupData.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -407,7 +407,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, "all", page, null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, page, null, successCallback, errorCallback);
 		}
 
 		//#endregion

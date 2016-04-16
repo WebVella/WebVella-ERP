@@ -82,37 +82,6 @@
     	$log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
         var contentData = this;
-
-        //Redirect to the first entity of the area
-        var requestedArea = resolvedCurrentArea;
-        var firstEntityName = null;
-        var firstEntitySectionName = null;
-
-        if (requestedArea == null) {
-        	$log.debug('webvellaAreas>view> the resolved object resolvedCurrentArea is null ' + moment().format('HH:mm:ss SSSS'));
-            alert("No area with this name is found");
-            return;
-        }
-
-        //Navigate to the first entity - the site meta Object is already sorted in the service
-        for (var i = 0; i < requestedArea.sections.length; i++) {
-            if (requestedArea.sections[i].entities.length > 0) {
-                firstEntityName = requestedArea.sections[i].entities[0].name;
-                firstEntitySectionName = requestedArea.sections[i].name;
-                break;
-            }
-        }
-        if (firstEntityName != null) {
-            $timeout(function () {
-            	$state.go('webvella-entity-records', { areaName: requestedArea.name, entityName: firstEntityName, listName: "boz", filter: "all", page: 1 });
-            }, 0);
-            
-        }
-        else {
-            //If no entities related raise error and cancel navigation
-            alert("This area has no entities attached");
-        }
-
         activate();
         $log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() { }

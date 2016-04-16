@@ -1099,9 +1099,9 @@ function guid() {
 		}
 
 		///////////////////////
-		function getRecordsByEntityName(listName, entityName, filter, page, successCallback, errorCallback) {
+		function getRecordsByEntityName(listName, entityName, page, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getRecordsByEntityName> function called ' + moment().format('HH:mm:ss SSSS'));
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + filter + '/' + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 
 		///////////////////////
@@ -1258,7 +1258,7 @@ function guid() {
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsByEntityName("null", "area", "null", "null", rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsByEntityName("null", "area", "null", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {

@@ -21,7 +21,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
-			url: '/:recordId/:viewName/:auxPageName/:filter/:page',
+			url: '/:recordId/:viewName/:auxPageName/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -1007,7 +1007,7 @@
 				}
 				//#endregion
 
-				webvellaRootService.GoToState("webvella-entity-records", { listName: contentData.defaultEntityAreaListName, filter: "all", page: 1, search: null });
+				webvellaRootService.GoToState("webvella-entity-records", { listName: contentData.defaultEntityAreaListName, page: 1, search: null });
 			}
 
 			function errorCallback(response) {
@@ -1285,12 +1285,12 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (contentData.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, "all", 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
@@ -1436,7 +1436,7 @@
 			if (popupData.searchQuery) {
 				popupData.searchQuery = popupData.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", 1, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, 1, popupData.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -1452,7 +1452,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, "all", page,null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, page,null, successCallback, errorCallback);
 		}
 
 		//#endregion

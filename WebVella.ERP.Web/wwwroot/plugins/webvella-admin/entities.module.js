@@ -130,7 +130,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaAdminService.getRecordsByEntityName("null", "role", "null", "null", successCallback, errorCallback);
+    	webvellaAdminService.getRecordsByEntityName("null", "role", "null", successCallback, errorCallback);
 
     	// Return
     	$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
