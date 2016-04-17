@@ -81,7 +81,7 @@
 					//'shopBase',
 					
                     //plugins
-                    'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', 'webvellaDevelopers',
+                    'webvellaRoot', 'webvellaAdmin', 'webvellaDesktop', 'webvellaAreas', //'webvellaDevelopers',
 
                     //Plug-in modules
                     @ViewBag.PluginModulesNameStringArray
@@ -176,8 +176,8 @@
 	<script src="~/plugins/webvella-areas/providers/dynamic-templates.directive.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-developers -->
-	<script src="~/plugins/webvella-developers/base.module.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-developers/providers/query.service.js?v=@ViewBag.CacheBreaker"></script>
+	@*<script src="~/plugins/webvella-developers/base.module.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-developers/providers/query.service.js?v=@ViewBag.CacheBreaker"></script>*@
 
 	<!-- external-plugin:shop -->
 	@*<script src="http://localhost:2201/plugins/shop-base/base.module.js?v=@ViewBag.CacheBreaker"></script>

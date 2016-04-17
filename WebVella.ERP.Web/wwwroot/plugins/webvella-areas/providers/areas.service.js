@@ -210,10 +210,10 @@
 			}
 			else {
 				if (data) {
-					return "TRUE";
+					return "true";
 				}
 				else {
-					return "FALSE";
+					return "false";
 				}
 
 			}

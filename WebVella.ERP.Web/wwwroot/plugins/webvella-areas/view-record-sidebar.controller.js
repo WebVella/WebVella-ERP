@@ -110,7 +110,7 @@
                     $state.go('webvella-entity-records',defaultParams);
                 }, 0);
 			}
-			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/all/1"
+			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"
 		}
 
 

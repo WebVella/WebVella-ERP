@@ -18,7 +18,7 @@
 </div>
 <ul class="nav nav-pills nav-stacked">
     <li role="presentation" ng-class="{active:sidebarData.isCurrentAttachmentActive(attachment)}" ng-repeat="attachment in sidebarData.currentArea.attachments">
-		<a ng-if="attachment.url == null" href='#/areas/{{::sidebarData.currentArea.name}}/{{::attachment.name}}/{{::attachment.list.name}}/all/1'><i class="fa fa-{{::attachment.iconName}} fa-fw"></i><span class="text">{{::attachment.labelPlural}}</span></a>
+		<a ng-if="attachment.url == null" href='#/areas/{{::sidebarData.currentArea.name}}/{{::attachment.name}}/{{::attachment.list.name}}/1'><i class="fa fa-{{::attachment.iconName}} fa-fw"></i><span class="text">{{::attachment.labelPlural}}</span></a>
 		<a ng-if="attachment.url != null" href='{{::attachment.url}}'><i class="fa fa-{{::attachment.iconName}} fa-fw"></i><span class="text">{{::attachment.label}}</span></a>
     </li>
 </ul>

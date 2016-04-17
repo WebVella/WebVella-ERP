@@ -84,14 +84,14 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService','webvellaAdminService',
+	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast','$sessionStorage'];
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast', '$sessionStorage', '$location', '$window'];
 
 	/* @ngInject */
-	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService,	webvellaAdminService,
+	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService, webvellaAdminService,
         resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,
-		resolvedEntityRelationsList, resolvedCurrentUser, ngToast, $sessionStorage) {
+		resolvedEntityRelationsList, resolvedCurrentUser, ngToast, $sessionStorage, $location, $window) {
 		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var contentData = this;
@@ -109,8 +109,8 @@
 		contentData.moreListsInputFocused = false;
 		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
 		contentData.generalLists = [];
-		contentData.entity.recordLists.forEach(function(list){
-			if(list.type == "general"){
+		contentData.entity.recordLists.forEach(function (list) {
+			if (list.type == "general") {
 				contentData.generalLists.push(list);
 			}
 		});
@@ -133,7 +133,6 @@
 				break;
 			}
 		}
-
 
 		//Slugify function
 		function convertToSlug(Text) {
@@ -177,11 +176,11 @@
 						if (record[dataName] != undefined) {
 							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
 							//Case 1 - data is not from relation (not starting with $)
-							if(!dataName.startsWith('$')){
+							if (!dataName.startsWith('$')) {
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
 							}
 							else {
-							//Case 2 - relation field
+								//Case 2 - relation field
 								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
 							}
 
@@ -216,8 +215,8 @@
 			}
 		}
 
-		 contentData.entity.recordLists = contentData.entity.recordLists.sort(function(a, b) {
-			 return parseFloat(a.weight) - parseFloat(b.weight);
+		contentData.entity.recordLists = contentData.entity.recordLists.sort(function (a, b) {
+			return parseFloat(a.weight) - parseFloat(b.weight);
 		});
 
 		//#endregion
@@ -252,6 +251,63 @@
 
 		}
 		//#endregion
+
+		//#region << filter Query >>
+		//contentData.recordsMeta.columns
+		contentData.filterQuery = {};
+		contentData.listIsFiltered = false;
+		contentData.columnDictionary = {};
+		contentData.columnDataNamesArray = [];
+		contentData.queryParametersArray = [];
+		//Extract the available columns
+		contentData.recordsMeta.columns.forEach(function (column) {
+			if (contentData.columnDataNamesArray.indexOf(column.dataName) == -1) {
+				contentData.columnDataNamesArray.push(column.dataName);
+			}
+			contentData.columnDictionary[column.dataName] = column;
+		});
+		//Extract available url query strings
+		var queryObject = $location.search();
+		for (var key in queryObject) {
+			if (contentData.queryParametersArray.indexOf(key) == -1) {
+				contentData.queryParametersArray.push(key);
+			}
+		}
+
+		contentData.columnDataNamesArray.forEach(function (dataName) {
+			if (contentData.queryParametersArray.indexOf(dataName) > -1) {
+				contentData.listIsFiltered = true;
+				var columnObj = contentData.columnDictionary[dataName];
+				//some data validations and conversions	
+				switch (columnObj.meta.fieldType) {
+					//TODO if percent convert to > 1 %
+					case 14:
+						if (checkDecimal(queryObject[dataName])) {
+							contentData.filterQuery[dataName] = queryObject[dataName] * 100;
+						}
+						break;
+					default:
+						contentData.filterQuery[dataName] = queryObject[dataName];
+						break;
+
+				}
+			}
+		});
+
+		contentData.clearQueryFilter = function () {
+			for (var activeFilter in contentData.filterQuery) {
+				$location.search(activeFilter, null);
+			}
+			$window.location.reload();
+		}
+
+		contentData.applyQueryFilter = function () {
+			//TODO - Convert percent into 0 < x < 1
+
+		}
+
+		//#endregion
+
 
 		//#region << Logic >> //////////////////////////////////////
 
@@ -310,10 +366,10 @@
 			return result;
 		}
 
-		contentData.isCurrentListAreaDefault = function(){
+		contentData.isCurrentListAreaDefault = function () {
 			for (var i = 0; i < contentData.area.attachments.length; i++) {
-				if(contentData.area.attachments[i].name == contentData.entity.name){
-					if(contentData.area.attachments[i].list.name == contentData.currentListView.name){
+				if (contentData.area.attachments[i].name == contentData.entity.name) {
+					if (contentData.area.attachments[i].list.name == contentData.currentListView.name) {
 						return true;
 					}
 					else {
@@ -323,9 +379,9 @@
 			}
 		}
 
-		contentData.exportModal	= undefined;
-		contentData.openExportModal = function(){
-		  contentData.exportModal =  $uibModal.open({
+		contentData.exportModal = undefined;
+		contentData.openExportModal = function () {
+			contentData.exportModal = $uibModal.open({
 				animation: false,
 				templateUrl: 'exportModalContent.html',
 				controller: 'exportModalController',
@@ -339,15 +395,15 @@
 			});
 		}
 		//Close the modal on state change
-		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
-		  if (contentData.exportModal) {
-			contentData.exportModal.dismiss();
-		  }
+		$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+			if (contentData.exportModal) {
+				contentData.exportModal.dismiss();
+			}
 		})
 
-		contentData.importModal	= undefined;
-		contentData.openImportModal = function(){
-		  contentData.importModal =  $uibModal.open({
+		contentData.importModal = undefined;
+		contentData.openImportModal = function () {
+			contentData.importModal = $uibModal.open({
 				animation: false,
 				templateUrl: 'importModalContent.html',
 				controller: 'importModalController',
@@ -361,34 +417,39 @@
 			});
 		}
 		//Close the modal on state change
-		$rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){ 
-		  if (contentData.importModal) {
-			contentData.importModal.dismiss();
-		  }
+		$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+			if (contentData.importModal) {
+				contentData.importModal.dismiss();
+			}
 		})
 
-		contentData.checkEntityPermissions = function(permissionsCsv){
-			return 	webvellaRootService.userHasEntityPermissions(contentData.entity,permissionsCsv);
+		contentData.checkEntityPermissions = function (permissionsCsv) {
+			return webvellaRootService.userHasEntityPermissions(contentData.entity, permissionsCsv);
 		}
 
-		contentData.saveStateParamsToSessionStorage = function(){
-		   contentData.$sessionStorage["last-list-params"] = $stateParams;
+		contentData.saveStateParamsToSessionStorage = function () {
+			contentData.$sessionStorage["last-list-params"] = $stateParams;
 		}
 
 
 		//#endregion
 
-		//Render field value general
+		//#region << Render >>
 		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		contentData.getAutoIncrementPrefix = function (column) {
+			var keyIndex = column.meta.displayFormat.indexOf('{0}');
+			return column.meta.displayFormat.slice(0, keyIndex);
+		}
 
+		//#endregion
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 	exportModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
- 	function exportModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+	function exportModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>exportModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
-		popupData.contentData = fastCopy(contentData);	
+		popupData.contentData = fastCopy(contentData);
 		popupData.loading = false;
 		popupData.hasError = false;
 		popupData.errorMessage = "";
@@ -406,7 +467,7 @@
 				content: '<span class="go-green">Success </span> Records successfully exported!'
 			});
 			popupData.downloadFilePath = response.object;
-			
+
 		}
 		popupData.exportErrorCallback = function (response) {
 			popupData.loading = false;
@@ -415,19 +476,19 @@
 		}
 
 		popupData.ok = function () {
-			popupData.loading = true;	
+			popupData.loading = true;
 			popupData.hasError = false;
 			popupData.errorMessage = "";
-			if(popupData.count == 0){
+			if (popupData.count == 0) {
 				popupData.hasError = true;
-				popupData.loading = false;	
-				popupData.errorMessage = "Records export count could not be 0";				
+				popupData.loading = false;
+				popupData.errorMessage = "Records export count could not be 0";
 			}
-			else{
-				if(!popupData.countHasSize){
+			else {
+				if (!popupData.countHasSize) {
 					popupData.count = -1;
 				}
-				webvellaAreasService.exportListRecords(popupData.contentData.entity.name, popupData.contentData.currentListView.name, popupData.count, popupData.exportSuccessCallback,popupData.exportErrorCallback);
+				webvellaAreasService.exportListRecords(popupData.contentData.entity.name, popupData.contentData.currentListView.name, popupData.count, popupData.exportSuccessCallback, popupData.exportErrorCallback);
 			}
 		};
 
@@ -439,10 +500,10 @@
 
 
 	importModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'contentData', '$stateParams', '$scope'];
- 	function importModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
+	function importModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, contentData, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>importModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupData = this;
-		popupData.contentData = fastCopy(contentData);	
+		popupData.contentData = fastCopy(contentData);
 		popupData.uploadedFile = null;
 		popupData.uploadedFilePath = null;
 		popupData.uploadProgress = 0;
@@ -467,17 +528,17 @@
 					}, 100);
 				}
 
-			webvellaAdminService.uploadFileToTemp(file, file.name, popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
+				webvellaAdminService.uploadFileToTemp(file, file.name, popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
 
 			}
 		}
 
-		popupData.deleteFileUpload = function(){
+		popupData.deleteFileUpload = function () {
 			$timeout(function () {
-			popupData.uploadedFile = null;
-			popupData.uploadedFilePath = null;
-			popupData.uploadProgress = 0;
-			},100);
+				popupData.uploadedFile = null;
+				popupData.uploadedFilePath = null;
+				popupData.uploadProgress = 0;
+			}, 100);
 		}
 
 		popupData.importSuccessCallback = function (response) {
@@ -496,22 +557,22 @@
 		}
 
 		popupData.ok = function () {
-			popupData.loading = true;	
+			popupData.loading = true;
 			popupData.hasError = false;
 			popupData.errorMessage = "";
 
-			if(popupData.uploadedFilePath == null || popupData.uploadedFilePath == ""){
+			if (popupData.uploadedFilePath == null || popupData.uploadedFilePath == "") {
 				popupData.loading = false;
 				popupData.hasError = true;
 				popupData.errorMessage = "You need to upload a CSV file first";
 			}
-			else if(!popupData.uploadedFile.name.endsWith(".csv")){
+			else if (!popupData.uploadedFile.name.endsWith(".csv")) {
 				popupData.loading = false;
 				popupData.hasError = true;
-				popupData.errorMessage = "This is not a CSV file";			
+				popupData.errorMessage = "This is not a CSV file";
 			}
-			else{
-				webvellaAreasService.importEntityRecords(popupData.contentData.entity.name, popupData.uploadedFilePath, popupData.importSuccessCallback,popupData.importErrorCallback);
+			else {
+				webvellaAreasService.importEntityRecords(popupData.contentData.entity.name, popupData.uploadedFilePath, popupData.importSuccessCallback, popupData.importErrorCallback);
 			}
 		};
 
