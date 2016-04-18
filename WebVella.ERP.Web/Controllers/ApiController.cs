@@ -767,6 +767,8 @@ namespace WebVella.ERP.Web.Controllers
 						list.VisibleColumnsCount = inputList.VisibleColumnsCount;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						list.DynamicHtmlTemplate = inputList.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "columnwidthscsv")
+						list.ColumnWidthsCSV = inputList.ColumnWidthsCSV;
 				}
 			}
 			catch (Exception e)

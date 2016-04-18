@@ -73,6 +73,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
 
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
+
 		public static InputRecordView Convert(JObject inputField)
 		{
 			JsonConverter itemConverter = new RecordViewItemConverter();
@@ -531,6 +534,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "actionItems")]
 		public List<ActionItem> ActionItems { get; set; }
+
+		[JsonProperty(PropertyName = "serviceCode")]
+		public string ServiceCode { get; set; }
 	}
 
     ////////////////////////
