@@ -70,6 +70,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
 
+		[JsonProperty(PropertyName = "actionItems")]
+		public List<ActionItem> ActionItems { get; set; }
+
 		public static InputRecordView Convert(JObject inputField)
 		{
 			JsonConverter itemConverter = new RecordViewItemConverter();
@@ -484,6 +487,7 @@ namespace WebVella.ERP.Api.Models
 			Sidebar = new RecordViewSidebar();
             RelationOptions = new List<EntityRelationOptions>();
 			DynamicHtmlTemplate = "";
+			ActionItems = new List<ActionItem>();
 		}
 
 		[JsonProperty(PropertyName = "id")]
@@ -524,6 +528,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "actionItems")]
+		public List<ActionItem> ActionItems { get; set; }
 	}
 
     ////////////////////////

@@ -61,6 +61,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "pageSize")]
 		public int? PageSize { get; set; }
 
+		[JsonProperty(PropertyName = "columnWidthsCSV")]
+		public string ColumnWidthsCSV { get; set; }
+
 		[JsonProperty(PropertyName = "columns")]
 		public List<InputRecordListItemBase> Columns { get; set; }
 
@@ -75,6 +78,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "actionItems")]
+		public List<ActionItem> ActionItems { get; set; }
 
 		public static InputRecordList Convert(JObject inputList)
 		{
@@ -309,6 +315,9 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "pageSize")]
 		public int PageSize { get; set; }
 
+		[JsonProperty(PropertyName = "columnWidthsCSV")]
+		public string ColumnWidthsCSV { get; set; }
+
 		[JsonProperty(PropertyName = "columns")]
 		public List<RecordListItemBase> Columns { get; set; }
 
@@ -323,6 +332,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "dynamicHtmlTemplate")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "actionItems")]
+		public List<ActionItem> ActionItems { get; set; }
 	}
 
 	public class RecordListQuery
