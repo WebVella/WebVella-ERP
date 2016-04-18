@@ -38,7 +38,7 @@
                 "contentView": {
                 	controller: 'WebVellaAdminRolesController',
                 	templateUrl: '/plugins/webvella-admin/roles.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -118,19 +118,19 @@
 						resolvedRolesList, $uibModal, webvellaAdminService) {
     	$log.debug('webvellaAdmin>roles> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var contentData = this;
-        contentData.search = {};
+        var ngCtrl = this;
+        ngCtrl.search = {};
 
         //#region << Update page title >>
-        contentData.pageTitle = "User List | " + pageTitle;
+        ngCtrl.pageTitle = "User List | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		},0);
 
     	//#endregion
 
-        contentData.roles = fastCopy(resolvedRolesList.data);
-        contentData.roles = contentData.roles.sort(function (a, b) {
+        ngCtrl.roles = fastCopy(resolvedRolesList.data);
+        ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
             return 0;
@@ -138,24 +138,24 @@
 
 
         //Create new entity modal
-        contentData.openManageRoleModal = function (role) {
+        ngCtrl.openManageRoleModal = function (role) {
         	if (role != null) {
-        		contentData.currentRole = role;
+        		ngCtrl.currentRole = role;
             }
             else {
-        		contentData.currentRole = {};
-        		contentData.currentRole.id = null;
-        		contentData.currentRole.name = "";
+        		ngCtrl.currentRole = {};
+        		ngCtrl.currentRole.id = null;
+        		ngCtrl.currentRole.name = "";
             }
         	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageRoleModal.html',
                 controller: 'ManageRoleModalController',
-                controllerAs: "popupData",
+                controllerAs: "popupCtrl",
                 //size: "lg",
                 resolve: {
-                    contentData: function () {
-                        return contentData;
+                    ngCtrl: function () {
+                        return ngCtrl;
                     }
                 }
             });
@@ -170,41 +170,41 @@
 
 
     //// Modal Controllers
-    manageRoleController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageRoleController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
     /* @ngInject */
-    function manageRoleController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageRoleController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var popupData = this;
-        popupData.modalInstance = $uibModalInstance;
-        popupData.role = fastCopy(contentData.currentRole);
-        popupData.isUpdate = true;
-        if (popupData.role.id == null) {
-        	popupData.isUpdate = false;
-            popupData.modalTitle = "Create new role";
+        var popupCtrl = this;
+        popupCtrl.modalInstance = $uibModalInstance;
+        popupCtrl.role = fastCopy(ngCtrl.currentRole);
+        popupCtrl.isUpdate = true;
+        if (popupCtrl.role.id == null) {
+        	popupCtrl.isUpdate = false;
+            popupCtrl.modalTitle = "Create new role";
         }
         else {
-            popupData.modalTitle ='Edit role <span class="go-green">' + popupData.role.name + '</span>';
+            popupCtrl.modalTitle ='Edit role <span class="go-green">' + popupCtrl.role.name + '</span>';
         }
 
-        popupData.deleteRoleModal = function () {
+        popupCtrl.deleteRoleModal = function () {
         	//Should block the ability to delete admin, guest, regular
 			//On delete should update -> areas, entities, entity fields, users and other relevant items which has roles relations.
         	alert("Not implemented yet");
 		}
 
         /// EXIT functions
-        popupData.ok = function () {
-        	popupData.validation = {};
-        	if (!popupData.isUpdate) {
-        		webvellaAdminService.createRecord("role",popupData.role, successCallback, errorCallback);
+        popupCtrl.ok = function () {
+        	popupCtrl.validation = {};
+        	if (!popupCtrl.isUpdate) {
+        		webvellaAdminService.createRecord("role",popupCtrl.role, successCallback, errorCallback);
             }
             else {
-        		webvellaAdminService.updateRecord(popupData.role.id, "role", popupData.role, successCallback, errorCallback);
+        		webvellaAdminService.updateRecord(popupCtrl.role.id, "role", popupCtrl.role, successCallback, errorCallback);
             } 
         };
 
-        popupData.cancel = function () {
+        popupCtrl.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
 
@@ -221,7 +221,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupData, popupData.user, location);
+            webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.user, location);
         }
 
 

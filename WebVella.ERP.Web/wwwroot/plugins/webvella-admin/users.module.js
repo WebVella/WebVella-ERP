@@ -38,7 +38,7 @@
                 "contentView": {
                 	controller: 'WebVellaAdminUsersController',
                 	templateUrl: '/plugins/webvella-admin/users.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -157,21 +157,21 @@
 						resolvedRolesList, $uibModal, webvellaAdminService,$timeout) {
     	$log.debug('webvellaAdmin>user-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var contentData = this;
-        contentData.search = {};
+        var ngCtrl = this;
+        ngCtrl.search = {};
 
         //#region << Update page title >>
-        contentData.pageTitle = "User List | " + pageTitle;
+        ngCtrl.pageTitle = "User List | " + pageTitle;
 		$timeout(function(){
-		 $rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		 $rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		},0);
     	//#endregion
 
-        contentData.users = fastCopy(resolvedUserRecordsList.data);
-        contentData.users = contentData.users.sort(function (a, b) { return parseFloat(a.email) - parseFloat(b.email) });
+        ngCtrl.users = fastCopy(resolvedUserRecordsList.data);
+        ngCtrl.users = ngCtrl.users.sort(function (a, b) { return parseFloat(a.email) - parseFloat(b.email) });
 
-        contentData.roles = fastCopy(resolvedRolesList.data);
-        contentData.roles = contentData.roles.sort(function (a, b) {
+        ngCtrl.roles = fastCopy(resolvedRolesList.data);
+        ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
             return 0;
@@ -179,22 +179,22 @@
 
 
         //Create new entity modal
-        contentData.openManageUserModal = function (user) {
+        ngCtrl.openManageUserModal = function (user) {
             if (user != null) {
-            	contentData.currentUser = user;
+            	ngCtrl.currentUser = user;
             }
             else {
-            	contentData.currentUser = webvellaAdminService.initUser();
+            	ngCtrl.currentUser = webvellaAdminService.initUser();
             }
             var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'manageUserModal.html',
                 controller: 'ManageUserModalController',
-                controllerAs: "popupData",
+                controllerAs: "popupCtrl",
                 size: "lg",
                 resolve: {
-                    contentData: function () {
-                        return contentData;
+                    ngCtrl: function () {
+                        return ngCtrl;
                     }
                 }
             });
@@ -208,77 +208,77 @@
 
 
     //// Modal Controllers
-    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
     /* @ngInject */
-    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var popupData = this;
-        popupData.modalInstance = $uibModalInstance;
-        popupData.user = fastCopy(contentData.currentUser);
-        popupData.roles = fastCopy(contentData.roles);
-        popupData.password = null;
+        var popupCtrl = this;
+        popupCtrl.modalInstance = $uibModalInstance;
+        popupCtrl.user = fastCopy(ngCtrl.currentUser);
+        popupCtrl.roles = fastCopy(ngCtrl.roles);
+        popupCtrl.password = null;
     	//Init user roles
-        popupData.userRoles = [];
+        popupCtrl.userRoles = [];
 
-        popupData.isUpdate = true;
-        if (popupData.user.id == null) {
-        	popupData.isUpdate = false;
-        	//popupData.user.$user_role = [];
-            popupData.modalTitle = "Create new area";
-            popupData.user.id = guid();
-            popupData.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
+        popupCtrl.isUpdate = true;
+        if (popupCtrl.user.id == null) {
+        	popupCtrl.isUpdate = false;
+        	//popupCtrl.user.$user_role = [];
+            popupCtrl.modalTitle = "Create new area";
+            popupCtrl.user.id = guid();
+            popupCtrl.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
         	//Guest role = 987148b1-afa8-4b33-8616-55861e5fd065
         }
         else {
-        	for (var i = 0; i < popupData.user.$user_role.length; i++) {
-        		popupData.userRoles.push(popupData.user.$user_role[i].id);
+        	for (var i = 0; i < popupCtrl.user.$user_role.length; i++) {
+        		popupCtrl.userRoles.push(popupCtrl.user.$user_role[i].id);
         	}
-            popupData.modalTitle ='Edit user <span class="go-green">' + popupData.user.email + '</span>';
+            popupCtrl.modalTitle ='Edit user <span class="go-green">' + popupCtrl.user.email + '</span>';
         }
 
 		//Image        
-        popupData.progress = {};
-        popupData.progress.image = 0;
-        popupData.files = {}
-        popupData.files.image = {}
-        popupData.uploadedFileName = "";
-        popupData.upload = function (file) {
+        popupCtrl.progress = {};
+        popupCtrl.progress.image = 0;
+        popupCtrl.files = {}
+        popupCtrl.files.image = {}
+        popupCtrl.uploadedFileName = "";
+        popupCtrl.upload = function (file) {
 
         	if (file != null) {
 
-        		popupData.moveSuccessCallback = function (response) {
+        		popupCtrl.moveSuccessCallback = function (response) {
         			$timeout(function () {
-        				popupData.user.image = response.object.url;
+        				popupCtrl.user.image = response.object.url;
         			}, 1);
         		}
 
-        		popupData.uploadSuccessCallback = function (response) {
+        		popupCtrl.uploadSuccessCallback = function (response) {
         			var tempPath = response.object.url;
         			var fileName = response.object.filename;
-        			var targetPath = "/fs/" + popupData.user.id + "/" + fileName;
+        			var targetPath = "/fs/" + popupCtrl.user.id + "/" + fileName;
         			var overwrite = true;
-        			webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupData.moveSuccessCallback, popupData.uploadErrorCallback);
+        			webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
         		}
-        		popupData.uploadErrorCallback = function (response) {
+        		popupCtrl.uploadErrorCallback = function (response) {
         			alert(response.message);
         		}
-        		popupData.uploadProgressCallback = function (response) {
+        		popupCtrl.uploadProgressCallback = function (response) {
         			$timeout(function () {
-        				popupData.progress.image= parseInt(100.0 * response.loaded / response.total);
+        				popupCtrl.progress.image= parseInt(100.0 * response.loaded / response.total);
         			}, 0);
         		}
-        		webvellaAdminService.uploadFileToTemp(file, "image", popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
+        		webvellaAdminService.uploadFileToTemp(file, "image", popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
         	}
         };
-        popupData.deleteImage = function () {
-        	var filePath = popupData.user.image;
+        popupCtrl.deleteImage = function () {
+        	var filePath = popupCtrl.user.image;
 
         	function deleteSuccessCallback(response) {
         		$timeout(function () {
-        			popupData.progress.image = 0;
-        			popupData.user.image = "";
-        			popupData.files.image = null;
+        			popupCtrl.progress.image = 0;
+        			popupCtrl.user.image = "";
+        			popupCtrl.files.image = null;
         		}, 0);
         		return true;
         	}
@@ -298,30 +298,30 @@
 
 
         /// EXIT functions
-        popupData.ok = function () {
-        	popupData.validation = {};
-        	if (!popupData.isUpdate) {
-        		popupData.user.password = popupData.password;
-				popupData.user["$user_role.id"] = [];
-        		popupData.userRoles.forEach(function(role){
-					 popupData.user["$user_role.id"].push(role);
+        popupCtrl.ok = function () {
+        	popupCtrl.validation = {};
+        	if (!popupCtrl.isUpdate) {
+        		popupCtrl.user.password = popupCtrl.password;
+				popupCtrl.user["$user_role.id"] = [];
+        		popupCtrl.userRoles.forEach(function(role){
+					 popupCtrl.user["$user_role.id"].push(role);
 				});
-				webvellaAdminService.createRecord("user",popupData.user, successCallback, errorCallback);
+				webvellaAdminService.createRecord("user",popupCtrl.user, successCallback, errorCallback);
             }
             else {
-        		popupData.user["$user_role.id"] = [];
-        		popupData.userRoles.forEach(function(role){
-					 popupData.user["$user_role.id"].push(role);
+        		popupCtrl.user["$user_role.id"] = [];
+        		popupCtrl.userRoles.forEach(function(role){
+					 popupCtrl.user["$user_role.id"].push(role);
 				});
-				delete popupData.user["$user_role"];
-        		if (popupData.password) {
-        			popupData.user.password = popupData.password;
+				delete popupCtrl.user["$user_role"];
+        		if (popupCtrl.password) {
+        			popupCtrl.user.password = popupCtrl.password;
         		}
-        		webvellaAdminService.updateRecord(popupData.user.id,"user",popupData.user, successCallback, errorCallback);
+        		webvellaAdminService.updateRecord(popupCtrl.user.id,"user",popupCtrl.user, successCallback, errorCallback);
             } 
         };
 
-        popupData.cancel = function () {
+        popupCtrl.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
 
@@ -338,7 +338,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupData, popupData.user, location);
+            webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.user, location);
         }
 
 

@@ -1,8 +1,8 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-success btn-sm" ng-click="contentData.createView()"><i class="fa fa-plus"></i> Add New</a>
-			<div class="form-group form-group-sm ng-hide" ng-show="contentData.views.length > 0">
+			<a class="btn btn-success btn-sm" ng-click="ngCtrl.createView()"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.views.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
 					<input ng-model="searchFilter" type="text" class="form-control" placeholder="View Name">
@@ -16,22 +16,22 @@
 </div>
 <div id="page-body">
     <div class="tabbable tabs-left spilled">
-		<a ng-click="contentData.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a ng-click="ngCtrl.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
     </div>
 
  
 	<div id="page-text">
-        <div class="alert alert-info ng-hide" ng-show="contentData.views.length == 0">No records found!</div>
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="contentData.views.length == 0">
+        <div class="alert alert-info ng-hide" ng-show="ngCtrl.views.length == 0">No records found!</div>
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="ngCtrl.views.length == 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
@@ -40,12 +40,12 @@
 					<th class="stats" style="width:200px;">Stats</th>
             </thead>
             <tbody>
-                <tr ng-repeat="view in contentData.views | filter: {name: searchFilter} track by view.id">
+                <tr ng-repeat="view in ngCtrl.views | filter: {name: searchFilter} track by view.id">
                     <td class="actions">
-                        <a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/views/{{::view.name}}/info">
+                        <a class="btn btn-default btn-sm" href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::view.name}}/info">
                             <i class="fa fa-eye"></i>
                         </a>
-                        <a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="contentData.copyView(view)">
+                        <a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.copyView(view)">
                             <i class="fa fa-files-o"></i>
                         </a>
                     </td>
@@ -58,7 +58,7 @@
                     <td class="type">
                         {{::view.type}}
                     </td>
-                    <td class="stats" ng-bind-html="contentData.calculateStats(view)"></td>
+                    <td class="stats" ng-bind-html="ngCtrl.calculateStats(view)"></td>
                 </tr>
             </tbody>
         </table>
@@ -71,19 +71,19 @@
 
 <script type="text/ng-template" id="createViewModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Create view</h3>
 	</div>
 	<div class="modal-body">
 		<form name="createView">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : createView.name.$invalid && !createView.name.$pristine || popupData.nameError}">
+					<div class="form-group" ng-class="{ 'has-error' : createView.name.$invalid && !createView.name.$pristine || popupCtrl.nameError}">
 						<label class="required" for="name">Name</label>
-						<input ng-model="popupData.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+						<input ng-model="popupCtrl.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error ng-hide" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupData.nameError">
-							<small class="error" ng-show="createView.name.$error.required && !popupData.nameError">
+						<div class="error ng-hide" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupCtrl.nameError">
+							<small class="error" ng-show="createView.name.$error.required && !popupCtrl.nameError">
 								required field
 							</small>
 							<small class="error" ng-show="createView.name.$error.pattern">
@@ -92,42 +92,42 @@
 							<small class="error" ng-show="createView.name.$error.maxlength">
 								must be less than 50 chars
 							</small>
-							<small class="error" ng-show="popupData.nameError">
-								{{popupData.nameMessage}}
+							<small class="error" ng-show="popupCtrl.nameError">
+								{{popupCtrl.nameMessage}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : createView.label.$invalid && !createView.label.$pristine || popupData.labelError }">
+					<div class="form-group" ng-class="{ 'has-error' : createView.label.$invalid && !createView.label.$pristine || popupCtrl.labelError }">
 						<label class="required" for="label">Label</label>
-						<input ng-model="popupData.view.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<input ng-model="popupCtrl.view.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error" ng-show="createView.label.$touched && createView.label.$dirty && createView.label.$invalid || popupData.labelError">
-							<small class="error" ng-show="createView.label.$error.required && !popupData.labelError">
+						<div class="error" ng-show="createView.label.$touched && createView.label.$dirty && createView.label.$invalid || popupCtrl.labelError">
+							<small class="error" ng-show="createView.label.$error.required && !popupCtrl.labelError">
 								Area label is required.
 							</small>
-							<small class="error" ng-show="popupData.labelError">
-								{{popupData.labelMessage}}
+							<small class="error" ng-show="popupCtrl.labelError">
+								{{popupCtrl.labelMessage}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="ng-hide">
-					<input ng-model="popupData.view.iconName" type="hidden" value="file-text-o">
+					<input ng-model="popupCtrl.view.iconName" type="hidden" value="file-text-o">
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.ok()">Create View</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Create View</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="copyModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Copy view</h3>
 	</div>
 	<div class="modal-body">
@@ -137,15 +137,15 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="new" ng-model="popupData.alternative"> Clone as new
+						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> Clone as new
 						</label>
 					  </div>
 					</div>
 				</td>
 				<td>
-					<div class="form-group"  ng-class="{ 'has-error' : popupData.viewNameValidationError}">
-					  <input type="text" class="form-control" placeholder="View name" ng-model="popupData.viewName">
-					  <div class="error ng-hide" ng-show="popupData.viewNameValidationError">
+					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.viewNameValidationError}">
+					  <input type="text" class="form-control" placeholder="View name" ng-model="popupCtrl.viewName">
+					  <div class="error ng-hide" ng-show="popupCtrl.viewNameValidationError">
 							required
 					  </div>
 					</div>
@@ -156,21 +156,21 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="copy" ng-model="popupData.alternative"> Clone in existing
+						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> Clone in existing
 						</label>
 					  </div>
 					</div>
 				</td>
 				<td>
 					<div class="form-group">
-					  <select class="form-control" ng-model="popupData.selectedView" ng-options="view as view.name for view in popupData.entityViews"></select>
+					  <select class="form-control" ng-model="popupCtrl.selectedView" ng-options="view as view.name for view in popupCtrl.entityViews"></select>
 					</div>
 				</td>
 			</tr>
 		</table>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.ok()">Copy view</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Copy view</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>

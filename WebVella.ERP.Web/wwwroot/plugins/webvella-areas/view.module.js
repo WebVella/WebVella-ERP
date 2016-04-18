@@ -25,7 +25,7 @@
                 "contentView": {
                     controller: 'WebVellaAreasViewController',
                     template: '<p>Area view screen, should redirect to the list of the first entity</p>',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -81,7 +81,7 @@
     function controller($log, $rootScope, $state, resolvedCurrentArea, $timeout) {
     	$log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var contentData = this;
+        var ngCtrl = this;
         activate();
         $log.debug('webvellaAreas>view> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() { }

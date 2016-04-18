@@ -38,7 +38,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityListManageController',
 					templateUrl: '/plugins/webvella-admin/entity-list-manage.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -243,26 +243,26 @@
 						resolvedViewLibrary, webvellaAdminService, webvellaAreasService, resolvedEntityRelationsList) {
 		$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
-		contentData.entity = resolvedCurrentEntityMeta;
+		var ngCtrl = this;
+		ngCtrl.entity = resolvedCurrentEntityMeta;
 		//Awesome font icon names array 
-		contentData.icons = getFontAwesomeIconNames();
+		ngCtrl.icons = getFontAwesomeIconNames();
 
 		//#region << Update page title & hide the side menu >>
-		contentData.pageTitle = "Entity Details | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
 		//#region << List types >>
-		contentData.listTypeOptions = [
+		ngCtrl.listTypeOptions = [
             {
             	key: "general",
             	value: "general"
@@ -279,7 +279,7 @@
 		//#endregion
 
 		//#region << Query comparison options >>
-		contentData.allQueryComparisonList = [
+		ngCtrl.allQueryComparisonList = [
 			{
 				key: "EQ",
 				value: "is equal to"
@@ -322,7 +322,7 @@
 			}
 		];
 
-		contentData.basicQueryComparisonList = [
+		ngCtrl.basicQueryComparisonList = [
 			{
 				key: "EQ",
 				value: "is equal to"
@@ -333,24 +333,24 @@
 			}
 		];
 
-		contentData.getQueryComparisonOptionsList = function (query) {
+		ngCtrl.getQueryComparisonOptionsList = function (query) {
 			var field = {};
-			for (var i = 0; i < contentData.library.items.length; i++) {
-				if (contentData.library.items[i].fieldName == query.fieldName) {
-					field = contentData.library.items[i];
+			for (var i = 0; i < ngCtrl.library.items.length; i++) {
+				if (ngCtrl.library.items[i].fieldName == query.fieldName) {
+					field = ngCtrl.library.items[i];
 				}
 			}
 			if (isEmpty(field)) {
-				return contentData.allQueryComparisonList;
+				return ngCtrl.allQueryComparisonList;
 			}
 			else {
 				switch (field.meta.fieldType) {
 					case 11:
-						return contentData.basicQueryComparisonList;
+						return ngCtrl.basicQueryComparisonList;
 					case 21:
-						return contentData.basicQueryComparisonList;
+						return ngCtrl.basicQueryComparisonList;
 					default:
-						return contentData.allQueryComparisonList;
+						return ngCtrl.allQueryComparisonList;
 				}
 			}
 
@@ -358,19 +358,19 @@
 		//#endregion
 
  		//#region << Initialize the list >>
-		contentData.list = fastCopy(resolvedCurrentEntityList);
-		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
+		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
 
-		contentData.defaultFieldName = null;
+		ngCtrl.defaultFieldName = null;
 		function calculateDefaultSearchFieldName() {
 			var name = null;
-			for (var k = 0; k < contentData.list.columns.length; k++) {
-				if (contentData.list.columns[k].type === "field") {
-					name = contentData.list.columns[k].meta.name;
+			for (var k = 0; k < ngCtrl.list.columns.length; k++) {
+				if (ngCtrl.list.columns[k].type === "field") {
+					name = ngCtrl.list.columns[k].meta.name;
 					break;
 				}
 			}
-			contentData.defaultFieldName = name;
+			ngCtrl.defaultFieldName = name;
 		}
 		calculateDefaultSearchFieldName();
 
@@ -387,8 +387,8 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
-			contentData.list = response.object;
-			contentData.generateAlreadyUsed();
+			ngCtrl.list = response.object;
+			ngCtrl.generateAlreadyUsed();
 		}
 		function patchErrorCallback(response) {
 			ngToast.create({
@@ -398,31 +398,31 @@
 			});
 		}
 
-		contentData.fieldUpdate = function (fieldName, data) {
+		ngCtrl.fieldUpdate = function (fieldName, data) {
 			var postObj = {};
 			postObj[fieldName] = data;
-			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchFieldSuccessCallback, patchErrorCallback)
+			webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchFieldSuccessCallback, patchErrorCallback)
 		}
 
-		contentData.updateColumns = function (orderChangedOnly) {
+		ngCtrl.updateColumns = function (orderChangedOnly) {
 			var postObj = {};
-			postObj.columns = contentData.list.columns;
+			postObj.columns = ngCtrl.list.columns;
 			calculateDefaultSearchFieldName();
-			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+			webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
-		contentData.updateQuery = function () {
+		ngCtrl.updateQuery = function () {
 			$timeout(function () {
 				var postObj = {};
-				postObj.query = fastCopy(contentData.list.query);
-				webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+				postObj.query = fastCopy(ngCtrl.list.query);
+				webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 			}, 1);
 		}
 
-		contentData.updateSorts = function () {
+		ngCtrl.updateSorts = function () {
 			var postObj = {};
-			postObj.sorts = contentData.list.sorts;
-			webvellaAdminService.patchEntityList(postObj, contentData.list.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+			postObj.sorts = ngCtrl.list.sorts;
+			webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
 
@@ -434,42 +434,42 @@
 
 		//Generate already used
 		var alreadyUsedItemDataNames = [];
-		contentData.generateAlreadyUsed = function () {
+		ngCtrl.generateAlreadyUsed = function () {
 			alreadyUsedItemDataNames = [];
-			for (var i = 0; i < contentData.list.columns.length; i++) {
-				if (contentData.list.columns[i].meta) {
-					alreadyUsedItemDataNames.push(contentData.list.columns[i].dataName);
+			for (var i = 0; i < ngCtrl.list.columns.length; i++) {
+				if (ngCtrl.list.columns[i].meta) {
+					alreadyUsedItemDataNames.push(ngCtrl.list.columns[i].dataName);
 				}
 			}
 		}
-		contentData.generateAlreadyUsed();
-		contentData.fullLibrary = {};
-		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.generateAlreadyUsed();
+		ngCtrl.fullLibrary = {};
+		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
 		//Fields list eligable to be options in the sort and query dropdowns
-		contentData.onlyFieldsLibrary = {};
-		contentData.onlyFieldsLibrary.items = [];
-		contentData.library = {};
-		contentData.library.relations = [];
-		contentData.library.items = [];
+		ngCtrl.onlyFieldsLibrary = {};
+		ngCtrl.onlyFieldsLibrary.items = [];
+		ngCtrl.library = {};
+		ngCtrl.library.relations = [];
+		ngCtrl.library.items = [];
 
-		contentData.sortLibrary = function () {
-			contentData.library.items = contentData.library.items.sort(function (a, b) {
+		ngCtrl.sortLibrary = function () {
+			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		contentData.sortOnlyFieldsLibrary = function () {
-			contentData.onlyFieldsLibrary.items = contentData.onlyFieldsLibrary.items.sort(function (a, b) {
+		ngCtrl.sortOnlyFieldsLibrary = function () {
+			ngCtrl.onlyFieldsLibrary.items = ngCtrl.onlyFieldsLibrary.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		contentData.checkIfRelationAddedToLibrary = function (relationName) {
-			if (contentData.library.relations.length > 0) {
-				for (var i = 0; i < contentData.library.relations.length; i++) {
-					if (contentData.library.relations[i].relationName === relationName && contentData.library.relations[i].addedToLibrary) {
+		ngCtrl.checkIfRelationAddedToLibrary = function (relationName) {
+			if (ngCtrl.library.relations.length > 0) {
+				for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+					if (ngCtrl.library.relations[i].relationName === relationName && ngCtrl.library.relations[i].addedToLibrary) {
 						return true;
 					}
 				}
@@ -481,83 +481,83 @@
 		}
 
 
-		contentData.generateLibrary = function (generateRelationOptions) {
-			contentData.library.items = [];
-			contentData.onlyFieldsLibrary = {};
-			contentData.onlyFieldsLibrary.items = [];
+		ngCtrl.generateLibrary = function (generateRelationOptions) {
+			ngCtrl.library.items = [];
+			ngCtrl.onlyFieldsLibrary = {};
+			ngCtrl.onlyFieldsLibrary.items = [];
 			if (generateRelationOptions) {
-				contentData.library.relations = [];
+				ngCtrl.library.relations = [];
 			}
-			contentData.fullLibrary.items.forEach(function (item) {
+			ngCtrl.fullLibrary.items.forEach(function (item) {
 				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) || !item.meta) {
 					switch (item.type) {
 						case "field":
-							contentData.library.items.push(item);
+							ngCtrl.library.items.push(item);
 							break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
 								item.sameOriginTargetEntity = false;
-								for (var r = 0; r < contentData.relationsList.length; r++) {
-									if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+								for (var r = 0; r < ngCtrl.relationsList.length; r++) {
+									if (item.relationName == ngCtrl.relationsList[r].name && ngCtrl.relationsList[r].originEntityId == ngCtrl.relationsList[r].targetEntityId) {
 										item.sameOriginTargetEntity = true;
 									}
 								}
-								contentData.library.relations.push(item);
+								ngCtrl.library.relations.push(item);
 							}
 							break;
 						case "view":
-							contentData.library.items.push(item);
+							ngCtrl.library.items.push(item);
 							break;
 						case "list":
-							if (item.listId != contentData.list.id) {
-								contentData.library.items.push(item);
+							if (item.listId != ngCtrl.list.id) {
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "fieldFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "viewFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "listFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "treeFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 					}
 				}
 				if (item.type == "field") {
-					contentData.onlyFieldsLibrary.items.push(item);
+					ngCtrl.onlyFieldsLibrary.items.push(item);
 				}
 			});
-			contentData.sortLibrary();
-			contentData.sortOnlyFieldsLibrary();
+			ngCtrl.sortLibrary();
+			ngCtrl.sortOnlyFieldsLibrary();
 		}
 
-		contentData.generateLibrary(true);
+		ngCtrl.generateLibrary(true);
 
 		//Extract the direction change information from the list if present
-		for (var k = 0; k < contentData.list.relationOptions.length; k++) {
-			for (var m = 0; m < contentData.library.relations.length; m++) {
-				if (contentData.list.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
-					contentData.library.relations[m].direction = contentData.list.relationOptions[k].direction;
+		for (var k = 0; k < ngCtrl.list.relationOptions.length; k++) {
+			for (var m = 0; m < ngCtrl.library.relations.length; m++) {
+				if (ngCtrl.list.relationOptions[k].relationName == ngCtrl.library.relations[m].relationName) {
+					ngCtrl.library.relations[m].direction = ngCtrl.list.relationOptions[k].direction;
 				}
 
 			}
 
 		}
 
-		contentData.library.relations = contentData.library.relations.sort(function (a, b) {
+		ngCtrl.library.relations = ngCtrl.library.relations.sort(function (a, b) {
 			if (a.relationName < b.relationName) return -1;
 			if (a.relationName > b.relationName) return 1;
 			return 0;
@@ -567,54 +567,54 @@
 		//#endregion
 
 		//#region << Regenerate library >>
-		contentData.regenerateLibrary = function () {
-			contentData.generateAlreadyUsed();
-			contentData.generateLibrary(false);
+		ngCtrl.regenerateLibrary = function () {
+			ngCtrl.generateAlreadyUsed();
+			ngCtrl.generateLibrary(false);
 		}
 
 		//#endregion
 
 		//#region << Logic >>
-		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 		//#region << Drag & Drop >>
-		contentData.moveToColumns = function (item, index) {
+		ngCtrl.moveToColumns = function (item, index) {
 			//Add Item at the end of the columns list
-			contentData.list.columns.push(item);
+			ngCtrl.list.columns.push(item);
 			//Remove from library
-			contentData.updateColumns(true);
-			contentData.regenerateLibrary();
+			ngCtrl.updateColumns(true);
+			ngCtrl.regenerateLibrary();
 		}
-		contentData.moveToLibrary = function (item, index) {
+		ngCtrl.moveToLibrary = function (item, index) {
 			//Remove from library
-			contentData.list.columns.splice(index, 1);
-			contentData.updateColumns(false);
-			contentData.regenerateLibrary();
+			ngCtrl.list.columns.splice(index, 1);
+			ngCtrl.updateColumns(false);
+			ngCtrl.regenerateLibrary();
 		}
-		contentData.dragControlListeners = {
+		ngCtrl.dragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				return true
 			},
 			itemMoved: function (eventObj) {
-				contentData.updateColumns(true);
-				contentData.regenerateLibrary();
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
 			},
 			orderChanged: function (eventObj) {
-				contentData.updateColumns(true);
-				contentData.regenerateLibrary();
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
 			}
 		};
 
-		contentData.dragLibraryListeners = {
+		ngCtrl.dragLibraryListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				return true
 			},
 			itemMoved: function (eventObj) {
-				contentData.updateColumns(false);
-				contentData.regenerateLibrary();
+				ngCtrl.updateColumns(false);
+				ngCtrl.regenerateLibrary();
 			},
 			orderChanged: function (eventObj) {
-				contentData.updateColumns(true);
-				contentData.regenerateLibrary();
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
 			}
 		};
 
@@ -622,12 +622,12 @@
 
 		//#region << Query & Sort>>
 
-		contentData.manageQueryDataLink = function(selectedQuery){
+		ngCtrl.manageQueryDataLink = function(selectedQuery){
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageDataLinkModal.html',
 				controller: 'ManageDataLinkModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {}
 			});
@@ -659,7 +659,7 @@
 			}
 			return null;
 		}
-		contentData.getIncludeFile = function (query) {
+		ngCtrl.getIncludeFile = function (query) {
 			switch (query.queryType) {
 				case "EQ":
 					return 'queryRule.html';
@@ -683,7 +683,7 @@
 					return 'querySection.html';
 			}
 		}
-		contentData.AddRule = function (query) {
+		ngCtrl.AddRule = function (query) {
 			var subquery = {
 				"queryType": "EQ",
 				"fieldName": "id",
@@ -691,9 +691,9 @@
 				"subQueries": []
 			};
 			query.subQueries.push(subquery);
-			contentData.updateQuery();
+			ngCtrl.updateQuery();
 		}
-		contentData.AddSection = function (query) {
+		ngCtrl.AddSection = function (query) {
 			var subquery = {
 				"queryType": "AND",
 				"fieldName": null,
@@ -711,56 +711,56 @@
 				query.subQueries.push(subquery);
 			}
 			else {
-				contentData.list.query = subquery;
+				ngCtrl.list.query = subquery;
 			}
-			contentData.updateQuery();
+			ngCtrl.updateQuery();
 		}
-		contentData.DeleteItem = function (parent, index) {
+		ngCtrl.DeleteItem = function (parent, index) {
 			if (parent != null) {
 				parent.subQueries.splice(index, 1);
 			}
 			else {
-				contentData.list.query = {};
-				contentData.list.query = null;
+				ngCtrl.list.query = {};
+				ngCtrl.list.query = null;
 			}
-			contentData.updateQuery();
+			ngCtrl.updateQuery();
 		}
-		contentData.DeleteSortRule = function (index) {
-			contentData.list.sorts.splice(index, 1);
-			if (contentData.list.sorts.length == 0) {
-				contentData.list.sorts = null;
+		ngCtrl.DeleteSortRule = function (index) {
+			ngCtrl.list.sorts.splice(index, 1);
+			if (ngCtrl.list.sorts.length == 0) {
+				ngCtrl.list.sorts = null;
 			}
-			contentData.updateSorts();
+			ngCtrl.updateSorts();
 		}
-		contentData.AddSortRule = function () {
-			if (contentData.list.sorts == null) {
-				contentData.list.sorts = [];
+		ngCtrl.AddSortRule = function () {
+			if (ngCtrl.list.sorts == null) {
+				ngCtrl.list.sorts = [];
 			}
 			var subrule = {
 				"fieldName": "id",
 				"sortType": "ascending"
 			};
-			contentData.list.sorts.push(subrule);
-			contentData.updateSorts();
+			ngCtrl.list.sorts.push(subrule);
+			ngCtrl.updateSorts();
 		}
 		//#endregion
 
 		//#region << Relations >>
 
-		contentData.changeRelationDirection = function (relation) {
+		ngCtrl.changeRelationDirection = function (relation) {
 			if (relation.direction == "origin-target") {
 				relation.direction = "target-origin";
 			}
 			else {
 				relation.direction = "origin-target";
 			}
-			contentData.list.relationOptions = [];
+			ngCtrl.list.relationOptions = [];
 
-			for (var i = 0; i < contentData.library.relations.length; i++) {
-				var relation = fastCopy(contentData.library.relations[i]);
+			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+				var relation = fastCopy(ngCtrl.library.relations[i]);
 				delete relation.addedToLibrary;
 				delete relation.sameOriginTargetEntity;
-				contentData.list.relationOptions.push(relation);
+				ngCtrl.list.relationOptions.push(relation);
 			}
 
 			function successCallback(response) {
@@ -777,40 +777,40 @@
 					timeout: 7000
 				});
 				//Undo change
-				for (var j = 0; j < contentData.library.relations.length; j++) {
-					if (contentData.library.relations[j].relationName == relation.relationName) {
-						if (contentData.library.relations[j].direction == "origin-target") {
-							contentData.library.relations[j].direction = "target-origin";
+				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
+					if (ngCtrl.library.relations[j].relationName == relation.relationName) {
+						if (ngCtrl.library.relations[j].direction == "origin-target") {
+							ngCtrl.library.relations[j].direction = "target-origin";
 						}
 						else {
-							contentData.library.relations[j].direction = "origin-target";
+							ngCtrl.library.relations[j].direction = "origin-target";
 						}
 					}
 				}
 			}
 
-			webvellaAdminService.updateEntityList(contentData.list, contentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.updateEntityList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
-		contentData.toggleRelationToLibrary = function (relation) {
+		ngCtrl.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.fullLibrary.items.forEach(function (item) {
+				ngCtrl.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
 						if (item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) {
 							switch (item.type) {
 								case "fieldFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 								case "viewFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 								case "listFromRelation":
-									if (item.listId != contentData.list.id) {
-										contentData.library.items.push(item);
+									if (item.listId != ngCtrl.list.id) {
+										ngCtrl.library.items.push(item);
 									}
 									break;
 								case "treeFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 							}
 						}
@@ -820,7 +820,7 @@
 			}
 			else {
 				var tempRelationChangeLibrary = [];
-				contentData.library.items.forEach(function (item) {
+				ngCtrl.library.items.forEach(function (item) {
 					if (!item.relationName) {
 						tempRelationChangeLibrary.push(item);
 					}
@@ -828,16 +828,16 @@
 						tempRelationChangeLibrary.push(item);
 					}
 				});
-				contentData.library.items = tempRelationChangeLibrary;
+				ngCtrl.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			contentData.sortLibrary();
+			ngCtrl.sortLibrary();
 		}
 
-		contentData.getRelationType = function (relationId) {
-			for (var i = 0; i < contentData.relationsList.length; i++) {
-				if (contentData.relationsList[i].id == relationId) {
-					return contentData.relationsList[i].relationType;
+		ngCtrl.getRelationType = function (relationId) {
+			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+				if (ngCtrl.relationsList[i].id == relationId) {
+					return ngCtrl.relationsList[i].relationType;
 				}
 			}
 			return 0;
@@ -846,15 +846,15 @@
 		//#endregion
 
 		//Delete list
-		contentData.deleteListModal = function () {
+		ngCtrl.deleteListModal = function () {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'deleteListModal.html',
 				controller: 'DeleteListModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					parentData: function () { return contentData; }
+					parentData: function () { return ngCtrl; }
 				}
 			});
 		}
@@ -871,16 +871,16 @@
 	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteListModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = parentData;
+		var popupCtrl = this;
+		popupCtrl.parentData = parentData;
 
-		popupData.ok = function () {
+		popupCtrl.ok = function () {
 
-			webvellaAdminService.deleteEntityList(popupData.parentData.list.name, popupData.parentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -892,13 +892,13 @@
 			});
 			$uibModalInstance.close('success');
 			$timeout(function () {
-				$state.go("webvella-admin-entity-lists", { entityName: popupData.parentData.entity.name }, { reload: true });
+				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
 			}, 0);
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 
 		}
@@ -911,9 +911,9 @@
 	function ManageDataLinkModalController($uibModalInstance, $log) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
+		var popupCtrl = this;
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -952,7 +952,7 @@
 	queryItemController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
 	function queryItemController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
-		$scope.contentData = $scope.pageScope;
+		$scope.ngCtrl = $scope.pageScope;
 		$scope.getTemplateUrl = function () {
 			switch ($scope.currentQuery.queryType) {
 				case "EQ":
@@ -981,22 +981,22 @@
 	//#endregion
 
 
-	DeleteAreaModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	DeleteAreaModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-	function DeleteAreaModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = parentPopupData;
+		var popupCtrl = this;
+		popupCtrl.parentData = parentpopupCtrl;
 
-		popupData.ok = function () {
+		popupCtrl.ok = function () {
 
-			webvellaAdminService.deleteRecord(popupData.parentData.area.id,"area", successCallback, errorCallback);
+			webvellaAdminService.deleteRecord(popupCtrl.parentData.area.id,"area", successCallback, errorCallback);
 
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -1007,13 +1007,13 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			popupData.parentData.modalInstance.close('success');
+			popupCtrl.parentData.modalInstance.close('success');
 			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 
 		}

@@ -1,11 +1,11 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-success btn-sm" ng-click="contentData.openAddEntityModal()"><i class="fa fa-plus"></i> Add New</a>
-			<div class="form-group form-group-sm ng-hide" ng-show="contentData.entities.length > 0">
+			<a class="btn btn-success btn-sm" ng-click="ngCtrl.openAddEntityModal()"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.entities.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Entity Name">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="Entity Name">
 				</div>
 			</div>
         </div>
@@ -27,7 +27,7 @@
                 <th class="lists" style="width:6em"># lists</th>
         </thead>
         <tbody>
-            <tr ng-repeat="entity in contentData.entities | filter: contentData.search track by entity.id">
+            <tr ng-repeat="entity in ngCtrl.entities | filter: ngCtrl.search track by entity.id">
                 <td class="actions ">
                     <a href="#/admin/entities/{{::entity.name}}" class="btn btn-default btn-sm">
                         <i class="fa fa-pencil"></i>
@@ -49,24 +49,24 @@
 </div>
 <script type="text/ng-template" id="createEntityModal.html">
     <div class="modal-header" id="modal-top">
-        <button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">Create new entity</h3>
     </div>
     <div class="modal-body">
         <form name="createEntity">
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || popupData.nameError}">
+                    <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || popupCtrl.nameError}">
                         <label class="required" for="entityName">Name</label>
-                        <input ng-model="popupData.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
+                        <input ng-model="popupCtrl.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="e.g. customer"
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-                        <ng-messages for="createEntity.name.$error" ng-if="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupData.nameError">
+                        <ng-messages for="createEntity.name.$error" ng-if="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupCtrl.nameError">
 							<ng-message when="required" class="error">required field</ng-message>
 							<ng-message when="pattern" class="error">only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars</ng-message>
 							<ng-message when="maxlength" class="error">must be less than 50 chars</ng-message>
                         </ng-messages>
-						<small class="error ng-hide" ng-show="popupData.nameError">
-							{{popupData.nameMessage}}
+						<small class="error ng-hide" ng-show="popupCtrl.nameError">
+							{{popupCtrl.nameMessage}}
 						</small>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         <label for="entitySystemStatus">System Status</label>
                         <div class="checkbox">
                             <label>
-                                <input ng-model="popupData.entity.system" type="checkbox" id="entitySystemStatus" value="true">
+                                <input ng-model="popupCtrl.entity.system" type="checkbox" id="entitySystemStatus" value="true">
                                 this is a system entity <span class="go-grey">(deletion is locked)</span>
                             </label>
                         </div>
@@ -84,31 +84,31 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createEntity.label.$invalid && !createEntity.label.$pristine || popupData.labelError }">
+                    <div class="form-group" ng-class="{ 'has-error' : createEntity.label.$invalid && !createEntity.label.$pristine || popupCtrl.labelError }">
                         <label class="required" for="label">Label</label>
-                        <input ng-model="popupData.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
+                        <input ng-model="popupCtrl.entity.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Customer"
                                required ng-model-options="{allowInvalid:true}">
-                        <div class="error ng-hide" ng-show="createEntity.label.$touched && createEntity.label.$dirty && createEntity.label.$invalid || popupData.labelError">
-                            <small class="error" ng-show="createEntity.label.$error.required && !popupData.labelError">
+                        <div class="error ng-hide" ng-show="createEntity.label.$touched && createEntity.label.$dirty && createEntity.label.$invalid || popupCtrl.labelError">
+                            <small class="error" ng-show="createEntity.label.$error.required && !popupCtrl.labelError">
                                 Entity label is required.
                             </small>
-                            <small class="error" ng-show="popupData.labelError">
-                                {{popupData.labelMessage}}
+                            <small class="error" ng-show="popupCtrl.labelError">
+                                {{popupCtrl.labelMessage}}
                             </small>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createEntity.labelPlural.$invalid && !createEntity.labelPlural.$pristine || popupData.labelPluralError }">
+                    <div class="form-group" ng-class="{ 'has-error' : createEntity.labelPlural.$invalid && !createEntity.labelPlural.$pristine || popupCtrl.labelPluralError }">
                         <label class="required" for="labelPlural">Label Plural</label>
-                        <input ng-model="popupData.entity.labelPlural" type="text" class="form-control" id="labelPlural" name="labelPlural" placeholder="e.g. Customers"
+                        <input ng-model="popupCtrl.entity.labelPlural" type="text" class="form-control" id="labelPlural" name="labelPlural" placeholder="e.g. Customers"
                                required ng-model-options="{allowInvalid:true}">
-                        <div class="error ng-hide" ng-show="createEntity.labelPlural.$touched && createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupData.labelPluralError">
-                            <small class="error" ng-show="createEntity.labelPlural.$error.required && !popupData.labelPluralError">
+                        <div class="error ng-hide" ng-show="createEntity.labelPlural.$touched && createEntity.labelPlural.$dirty && createEntity.labelPlural.$invalid || popupCtrl.labelPluralError">
+                            <small class="error" ng-show="createEntity.labelPlural.$error.required && !popupCtrl.labelPluralError">
                                 Entity plural label is required.
                             </small>
-                            <small class="error" ng-show="popupData.labelPluralError">
-                                {{popupData.labelPluralMessage}}
+                            <small class="error" ng-show="popupCtrl.labelPluralError">
+                                {{popupCtrl.labelPluralMessage}}
                             </small>
                         </div>
                     </div>
@@ -116,38 +116,38 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createEntity.iconName.$invalid && !createEntity.iconName.$pristine || popupData.iconNameError }">
+                    <div class="form-group" ng-class="{ 'has-error' : createEntity.iconName.$invalid && !createEntity.iconName.$pristine || popupCtrl.iconNameError }">
                         <label class="required" for="label">Icon name</label>
                         <div class="input-group clean-addon">
-                            <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupData.entity.iconName}}"></i></span>
-                            <input ng-model="popupData.entity.iconName" type="text" class="form-control" id="iconName" name="iconName" placeholder="e.g. database"
-                                   required uib-typeahead="icon for icon in popupData.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html" ng-model-options="{allowInvalid:true}">
+                            <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupCtrl.entity.iconName}}"></i></span>
+                            <input ng-model="popupCtrl.entity.iconName" type="text" class="form-control" id="iconName" name="iconName" placeholder="e.g. database"
+                                   required uib-typeahead="icon for icon in popupCtrl.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html" ng-model-options="{allowInvalid:true}">
                             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
                         </div>
-                        <div class="error ng-hide" ng-show="createEntity.iconName.$touched && createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupData.iconNameError">
-                            <small class="error" ng-show="createEntity.iconName.$error.required && !popupData.iconNameError">
+                        <div class="error ng-hide" ng-show="createEntity.iconName.$touched && createEntity.iconName.$dirty && createEntity.iconName.$invalid || popupCtrl.iconNameError">
+                            <small class="error" ng-show="createEntity.iconName.$error.required && !popupCtrl.iconNameError">
                                 Icon name is required.
                             </small>
-                            <small class="error" ng-show="popupData.iconNameError">
-                                {{popupData.iconNameMessage}}
+                            <small class="error" ng-show="popupCtrl.iconNameError">
+                                {{popupCtrl.iconNameMessage}}
                             </small>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-error' : createEntity.weight.$invalid && !createEntity.weight.$pristine || popupData.weightError }">
+                    <div class="form-group" ng-class="{ 'has-error' : createEntity.weight.$invalid && !createEntity.weight.$pristine || popupCtrl.weightError }">
                         <label class="required" for="weight">Sort Weight</label>
-                        <input ng-model="popupData.entity.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+                        <input ng-model="popupCtrl.entity.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
                                required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
-                        <div class="error ng-hide" ng-show="createEntity.weight.$touched && createEntity.weight.$dirty && createEntity.weight.$invalid || popupData.weightError">
-                            <small class="error" ng-show="createEntity.weight.$error.required && !popupData.weightError">
+                        <div class="error ng-hide" ng-show="createEntity.weight.$touched && createEntity.weight.$dirty && createEntity.weight.$invalid || popupCtrl.weightError">
+                            <small class="error" ng-show="createEntity.weight.$error.required && !popupCtrl.weightError">
                                 Entity weight is required
                             </small>
-                            <small class="error" ng-show="createEntity.weight.$error.pattern && !popupData.weightError">
+                            <small class="error" ng-show="createEntity.weight.$error.pattern && !popupCtrl.weightError">
                                 Weight should be a positive integer or decimal number, with two decimal places after the dot
                             </small>
-                            <small class="error" ng-show="popupData.weightError">
-                                {{popupData.weightMessage}}
+                            <small class="error" ng-show="popupCtrl.weightError">
+                                {{popupCtrl.weightMessage}}
                             </small>
                         </div>
                     </div>
@@ -155,11 +155,11 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group" ng-class="{ 'has-error' : popupData.permissionsError }">
+                    <div class="form-group" ng-class="{ 'has-error' : popupCtrl.permissionsError }">
                         <label>Record permissions</label>
-                        <div class="error ng-hide" ng-show="popupData.permissionsError">
+                        <div class="error ng-hide" ng-show="popupCtrl.permissionsError">
                             <small class="error">
-                                {{popupData.permissionsMessage}}
+                                {{popupCtrl.permissionsMessage}}
                             </small>
                         </div>
                         <table class="table table-bordered table-permissions">
@@ -173,29 +173,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="role in popupData.entity.roles">
+                                <tr ng-repeat="role in popupCtrl.entity.roles">
                                     <td>{{role.name}}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupData.toggleCanCreate(role.id)">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanCreate(role.id)">
                                             <i ng-show="role.canCreate" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canCreate" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canRead" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupData.toggleCanRead(role.id)">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canRead" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanRead(role.id)">
                                             <i ng-show="role.canRead" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canRead" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupData.toggleCanUpdate(role.id)">
+                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanUpdate(role.id)">
                                             <i ng-show="role.canUpdate" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canUpdate" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-default btn-sm" ng-model="role.canDelete" 
-											uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupData.toggleCanDelete(role.id)">
+											uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanDelete(role.id)">
                                             <i ng-show="role.canDelete" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canDelete" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
@@ -210,8 +210,8 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="popupData.ok()">Create New Entity</button>
-        <button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="popupCtrl.ok()">Create New Entity</button>
+        <button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
     </div>
 </script>
 

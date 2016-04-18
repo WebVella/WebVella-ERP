@@ -35,7 +35,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityTreesController',
 					templateUrl: '/plugins/webvella-admin/entity-trees.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -175,25 +175,25 @@
 					$uibModal, resolvedEntityRecordTrees,$timeout) {
 		$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 
 		//#region << Init >>
-		contentData.search = {};
-		contentData.allRelations = fastCopy(resolvedRelationsList);
-		contentData.currentEntityRelation = [];
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
+		ngCtrl.search = {};
+		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.currentEntityRelation = [];
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
 		//Update page title
-		contentData.pageTitle = "Entity Trees | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Trees | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
-		contentData.showSidebar = function () {
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
+		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
 			$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
@@ -204,12 +204,12 @@
 		//#endregion
 
 		//#region << Logic >>
-		contentData.getRelationHtml = function (tree) {
+		ngCtrl.getRelationHtml = function (tree) {
 			var result = "unknown";
 			var selectedRelation = {};
-			for (var i = 0; i < contentData.allRelations.length; i++) {
-				if (contentData.allRelations[i].id == tree.relationId) {
-					selectedRelation = contentData.allRelations[i];
+			for (var i = 0; i < ngCtrl.allRelations.length; i++) {
+				if (ngCtrl.allRelations[i].id == tree.relationId) {
+					selectedRelation = ngCtrl.allRelations[i];
 				}
 			}
 			if (selectedRelation) {
@@ -225,17 +225,17 @@
 		//#endregion
 
 		//#region << Modals >>
-		contentData.createTreeModal = function () {
+		ngCtrl.createTreeModal = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createTreeModal.html',
 				controller: 'CreateTreeModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					},
 					resolvedEligibleRelationsList: resolveEligibleRelationsList
 				}
@@ -244,10 +244,10 @@
 
 			function resolveEligibleRelationsList() {
 				var eligibleRelations = [];
-				for (var i = 0; i < contentData.allRelations.length; i++) {
-					if (contentData.allRelations[i].relationType == 2) {
-						if (contentData.allRelations[i].originEntityId == contentData.entity.id && contentData.allRelations[i].targetEntityId == contentData.entity.id) {
-							eligibleRelations.push(contentData.allRelations[i]);
+				for (var i = 0; i < ngCtrl.allRelations.length; i++) {
+					if (ngCtrl.allRelations[i].relationType == 2) {
+						if (ngCtrl.allRelations[i].originEntityId == ngCtrl.entity.id && ngCtrl.allRelations[i].targetEntityId == ngCtrl.entity.id) {
+							eligibleRelations.push(ngCtrl.allRelations[i]);
 						}
 					}
 				}
@@ -261,27 +261,27 @@
 	}
 
 	//#region << Modal Controllers >>
-	createTreeModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData',
+	createTreeModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl',
 						'resolvedEligibleRelationsList', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-	function createTreeModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData,
+	function createTreeModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl,
 						resolvedEligibleRelationsList, webvellaAdminService, webvellaRootService) {
 		$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.tree = webvellaAdminService.initTree();
-		popupData.entity = fastCopy(contentData.entity);
-		popupData.eligibleRelations = fastCopy(resolvedEligibleRelationsList);
-		if (popupData.eligibleRelations.length > 0) {
-			popupData.tree.relationId = popupData.eligibleRelations[0].id;
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.tree = webvellaAdminService.initTree();
+		popupCtrl.entity = fastCopy(ngCtrl.entity);
+		popupCtrl.eligibleRelations = fastCopy(resolvedEligibleRelationsList);
+		if (popupCtrl.eligibleRelations.length > 0) {
+			popupCtrl.tree.relationId = popupCtrl.eligibleRelations[0].id;
 		}
 
-		popupData.ok = function () {
-			webvellaAdminService.createEntityTree(popupData.tree, popupData.entity.name, successCallback, errorCallback);
+		popupCtrl.ok = function () {
+			webvellaAdminService.createEntityTree(popupCtrl.tree, popupCtrl.entity.name, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -298,7 +298,7 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.entity, location);
 		}
 
 		$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

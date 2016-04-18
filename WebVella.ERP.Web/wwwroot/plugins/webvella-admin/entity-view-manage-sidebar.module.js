@@ -34,7 +34,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityViewManageSidebarController',
 					templateUrl: '/plugins/webvella-admin/entity-view-manage-sidebar.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -218,64 +218,64 @@
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 		//#region << General init >>
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.pageTitle = "Entity Views | " + pageTitle;
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide side menu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
 		//#region << Initialize View >>
-		contentData.view = {};
-		for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-			if (contentData.entity.recordViews[i].name == $stateParams.viewName) {
-				contentData.view = fastCopy(contentData.entity.recordViews[i]);
+		ngCtrl.view = {};
+		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
+			if (ngCtrl.entity.recordViews[i].name == $stateParams.viewName) {
+				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
 			}
 		}
 		//#endregion
 
 		//#region << item Library init >>
 		var alreadyUsedItemDataNames = [];
-		contentData.generateAlreadyUsed = function () {
+		ngCtrl.generateAlreadyUsed = function () {
 			alreadyUsedItemDataNames = [];
-			for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
-				if (contentData.view.sidebar.items[i].meta) {
-					alreadyUsedItemDataNames.push(contentData.view.sidebar.items[i].dataName);
+			for (var i = 0; i < ngCtrl.view.sidebar.items.length; i++) {
+				if (ngCtrl.view.sidebar.items[i].meta) {
+					alreadyUsedItemDataNames.push(ngCtrl.view.sidebar.items[i].dataName);
 				}
 			}
 		}
-		contentData.generateAlreadyUsed();
-		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
-		contentData.fullLibrary = {};
-		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
-		contentData.fullLibrary.items = contentData.fullLibrary.items.sort(function (a, b) {
+		ngCtrl.generateAlreadyUsed();
+		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.fullLibrary = {};
+		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.fullLibrary.items = ngCtrl.fullLibrary.items.sort(function (a, b) {
 			if (a.type < b.type) return -1;
 			if (a.type > b.type) return 1;
 			return 0;
 		});
-		contentData.library = {};
-		contentData.library.relations = [];
-		contentData.library.items = [];
+		ngCtrl.library = {};
+		ngCtrl.library.relations = [];
+		ngCtrl.library.items = [];
 
-		contentData.sortLibrary = function () {
-			contentData.library.items = contentData.library.items.sort(function (a, b) {
+		ngCtrl.sortLibrary = function () {
+			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
 				if (a.dataName < b.dataName) return -1;
 				if (a.dataName > b.dataName) return 1;
 				return 0;
 			});
 		}
 
-		contentData.checkIfRelationAddedToLibrary = function (relationName) {
-			if (contentData.library.relations.length > 0) {
-				for (var i = 0; i < contentData.library.relations.length; i++) {
-					if (contentData.library.relations[i].relationName === relationName && contentData.library.relations[i].addedToLibrary) {
+		ngCtrl.checkIfRelationAddedToLibrary = function (relationName) {
+			if (ngCtrl.library.relations.length > 0) {
+				for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+					if (ngCtrl.library.relations[i].relationName === relationName && ngCtrl.library.relations[i].addedToLibrary) {
 						return true;
 					}
 				}
@@ -286,69 +286,69 @@
 			}
 		}
 
-		contentData.generateLibrary = function (generateRelationOptions) {
-			contentData.library.items = [];
+		ngCtrl.generateLibrary = function (generateRelationOptions) {
+			ngCtrl.library.items = [];
 			if (generateRelationOptions) {
-				contentData.library.relations = [];
+				ngCtrl.library.relations = [];
 			}
-			contentData.fullLibrary.items.forEach(function (item) {
+			ngCtrl.fullLibrary.items.forEach(function (item) {
 				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) || !item.meta) {
 					//Initially remove all items that are from relation or relationOptions
 					switch (item.type) {
 						//case "field":
-						//	contentData.library.items.push(item);
+						//	ngCtrl.library.items.push(item);
 						//	break;
 						case "view":
-							if (item.viewId != contentData.view.id) {
-								contentData.library.items.push(item);
+							if (item.viewId != ngCtrl.view.id) {
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						//case "list":
-						//	contentData.library.items.push(item);
+						//	ngCtrl.library.items.push(item);
 						//	break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
 								item.sameOriginTargetEntity = false;
-								for (var r = 0; r < contentData.relationsList.length; r++) {
-									if (item.relationName == contentData.relationsList[r].name && contentData.relationsList[r].originEntityId == contentData.relationsList[r].targetEntityId) {
+								for (var r = 0; r < ngCtrl.relationsList.length; r++) {
+									if (item.relationName == ngCtrl.relationsList[r].name && ngCtrl.relationsList[r].originEntityId == ngCtrl.relationsList[r].targetEntityId) {
 										item.sameOriginTargetEntity = true;
 									}
 								}
-								contentData.library.relations.push(item);
+								ngCtrl.library.relations.push(item);
 							}
 							break;
 						//case "viewFromRelation":
-						//	if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-						//		contentData.library.items.push(item);
+						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+						//		ngCtrl.library.items.push(item);
 						//	}
 						//	break;
 						//case "listFromRelation":
-						//	if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-						//		contentData.library.items.push(item);
+						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+						//		ngCtrl.library.items.push(item);
 						//	}
 						//	break;
 					}
 				}
 			});
-			contentData.sortLibrary();
+			ngCtrl.sortLibrary();
 		}
 
-		contentData.generateLibrary(true);
+		ngCtrl.generateLibrary(true);
 
 
 		//Extract the direction change information from the view if present
-		for (var k = 0; k < contentData.view.relationOptions.length; k++) {
-			for (var m = 0; m < contentData.library.relations.length; m++) {
-				if (contentData.view.relationOptions[k].relationName == contentData.library.relations[m].relationName) {
-					contentData.library.relations[m].direction = contentData.view.relationOptions[k].direction;
+		for (var k = 0; k < ngCtrl.view.relationOptions.length; k++) {
+			for (var m = 0; m < ngCtrl.library.relations.length; m++) {
+				if (ngCtrl.view.relationOptions[k].relationName == ngCtrl.library.relations[m].relationName) {
+					ngCtrl.library.relations[m].direction = ngCtrl.view.relationOptions[k].direction;
 				}
 
 			}
 
 		}
 
-		contentData.library.relations = contentData.library.relations.sort(function (a, b) {
+		ngCtrl.library.relations = ngCtrl.library.relations.sort(function (a, b) {
 			if (a.relationName < b.relationName) return -1;
 			if (a.relationName > b.relationName) return 1;
 			return 0;
@@ -357,9 +357,9 @@
 		//#endregion
  
 		//#region << Regenerate library >>
-		contentData.regenerateLibrary = function () {
-			contentData.generateAlreadyUsed();
-			contentData.generateLibrary(false);
+		ngCtrl.regenerateLibrary = function () {
+			ngCtrl.generateAlreadyUsed();
+			ngCtrl.generateLibrary(false);
 		}
 
 		//#endregion
@@ -369,9 +369,9 @@
 			//Init
 			var droppedItem = fastCopy(fieldItem);
 			var relation = null;
-			for (var j = 0; j < contentData.relationsList.length; j++) {
-				if (contentData.relationsList[j].id == droppedItem.relationId) {
-					relation = contentData.relationsList[j];
+			for (var j = 0; j < ngCtrl.relationsList.length; j++) {
+				if (ngCtrl.relationsList[j].id == droppedItem.relationId) {
+					relation = ngCtrl.relationsList[j];
 				}
 			}
 			if (relation == null) {
@@ -388,7 +388,7 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id != "library") {
-					contentData.regenerateLibrary();
+					ngCtrl.regenerateLibrary();
 				}
 				else {
 					//we need to destroy the dropped object
@@ -397,7 +397,7 @@
 			};
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			};
 
 			function successCallback(response) {
@@ -408,7 +408,7 @@
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
-							contentData.viewContentRegion = response.object.regions[i];
+							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}
 					if (eventObj != null) {
@@ -440,11 +440,11 @@
 					animation: false,
 					templateUrl: 'manageFromRelationModal.html',
 					controller: 'ManageFromRelationModalController',
-					controllerAs: "popupData",
+					controllerAs: "popupCtrl",
 					backdrop: 'static',
 					size: "",
 					resolve: {
-						parentData: function () { return contentData; },
+						parentData: function () { return ngCtrl; },
 						eventObj: eventObj,
 						relatedEntityMeta: response.object,
 						fieldObj: fieldItem,
@@ -453,15 +453,15 @@
 				});
 
 				modalInstance.result.then(function (fieldObject) {
-					for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
-						if (fieldObject.dataName == contentData.view.sidebar.items[i].dataName) {
-							contentData.view.sidebar.items[i] = fieldObject;
+					for (var i = 0; i < ngCtrl.view.sidebar.items.length; i++) {
+						if (fieldObject.dataName == ngCtrl.view.sidebar.items[i].dataName) {
+							ngCtrl.view.sidebar.items[i] = fieldObject;
 						}
 					}
 					//Remove service properties
-					contentData.view = fastCopy(contentData.view);
+					ngCtrl.view = fastCopy(ngCtrl.view);
 					////2. Call the service
-					webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+					webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 					return;
 				});
 			}
@@ -478,11 +478,11 @@
 
 			//Get the correct related entityMeta
 
-			if (droppedItem.entityName == contentData.entity.name) {
+			if (droppedItem.entityName == ngCtrl.entity.name) {
 				//the dropped item has relation to the current entity so no reason to make http request
 				var response = {};
 				response.success = true;
-				response.object = contentData.entity;
+				response.object = ngCtrl.entity;
 				getRelatedEntityMetaSuccessCallback(response);
 			}
 			else {
@@ -504,8 +504,8 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					contentData.view.sidebar.items = response.object.sidebar.items;
-					contentData.regenerateLibrary();
+					ngCtrl.view.sidebar.items = response.object.sidebar.items;
+					ngCtrl.regenerateLibrary();
 				}
 				else {
 					errorCallback(response);
@@ -519,7 +519,7 @@
 					content: '<span class="go-red">Error:</span> ' + response.message,
 					timeout: 7000
 				});
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			}
 			//#endregion
 
@@ -527,15 +527,15 @@
 				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
 			}
 			else {
-				//1. Clean contentData.view from system properties like $$hashKey
-				contentData.view.sidebar.items = fastCopy(contentData.view.sidebar.items);
-				//contentData.view = angular.fromJson(angular.toJson(contentData.view));
+				//1. Clean ngCtrl.view from system properties like $$hashKey
+				ngCtrl.view.sidebar.items = fastCopy(ngCtrl.view.sidebar.items);
+				//ngCtrl.view = angular.fromJson(angular.toJson(ngCtrl.view));
 				////2. Call the service
-				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 			}
 		}
 
-		contentData.dragControlListeners = {
+		ngCtrl.dragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				return true
 			},
@@ -549,7 +549,7 @@
 			}
 		};
 
-		contentData.libraryDragControlListeners = {
+		ngCtrl.libraryDragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				if (sourceItemHandleScope.itemScope.element[0].id != "library" && destSortableScope.element[0].id == "library") {
 					return false;
@@ -566,12 +566,12 @@
 			}
 		};
 
-		contentData.dragItemRemove = function (itemDataName) {
-			contentData.itemScheduledForRemoval = null;
+		ngCtrl.dragItemRemove = function (itemDataName) {
+			ngCtrl.itemScheduledForRemoval = null;
 			var index = -1;
-			for (var i = 0; i < contentData.view.sidebar.items.length; i++) {
-				if (contentData.view.sidebar.items[i].dataName === itemDataName) {
-					contentData.itemScheduledForRemoval = contentData.view.sidebar.items[i];
+			for (var i = 0; i < ngCtrl.view.sidebar.items.length; i++) {
+				if (ngCtrl.view.sidebar.items[i].dataName === itemDataName) {
+					ngCtrl.itemScheduledForRemoval = ngCtrl.view.sidebar.items[i];
 					index = i;
 				}
 			}
@@ -582,7 +582,7 @@
 					className: 'success',
 					content: '<span class="go-green">Success:</span> ' + response.message
 				});
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			}
 
 			function errorCallback(response) {
@@ -593,8 +593,8 @@
 				});
 				$state.reload();
 			}
-			contentData.view.sidebar.items.splice(index, 1);
-			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+			ngCtrl.view.sidebar.items.splice(index, 1);
+			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 
@@ -603,20 +603,20 @@
 
 		//#region << Relations >>
 
-		contentData.changeRelationDirection = function (relation) {
+		ngCtrl.changeRelationDirection = function (relation) {
 			if (relation.direction == "origin-target") {
 				relation.direction = "target-origin";
 			}
 			else {
 				relation.direction = "origin-target";
 			}
-			contentData.view.relationOptions = [];
+			ngCtrl.view.relationOptions = [];
 
-			for (var i = 0; i < contentData.library.relations.length; i++) {
-				var relation = fastCopy(contentData.library.relations[i]);
+			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+				var relation = fastCopy(ngCtrl.library.relations[i]);
 				delete relation.addedToLibrary;
 				delete relation.sameOriginTargetEntity;
-				contentData.view.relationOptions.push(relation);
+				ngCtrl.view.relationOptions.push(relation);
 			}
 
 			function successCallback(response) {
@@ -633,38 +633,38 @@
 					timeout: 7000
 				});
 				//Undo change
-				for (var j = 0; j < contentData.library.relations.length; j++) {
-					if (contentData.library.relations[j].relationName == relation.relationName) {
-						if (contentData.library.relations[j].direction == "origin-target") {
-							contentData.library.relations[j].direction = "target-origin";
+				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
+					if (ngCtrl.library.relations[j].relationName == relation.relationName) {
+						if (ngCtrl.library.relations[j].direction == "origin-target") {
+							ngCtrl.library.relations[j].direction = "target-origin";
 						}
 						else {
-							contentData.library.relations[j].direction = "origin-target";
+							ngCtrl.library.relations[j].direction = "origin-target";
 						}
 					}
 				}
 			}
-			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
-		contentData.toggleRelationToLibrary = function (relation) {
+		ngCtrl.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.fullLibrary.items.forEach(function (item) {
+				ngCtrl.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName == relation.relationName) {
 						switch (item.type) {
 							//case "fieldFromRelation":
-							//	contentData.library.items.push(item);
+							//	ngCtrl.library.items.push(item);
 							//	break;
 							case "viewFromRelation":
-								if (item.viewId != contentData.view.id) {
-									contentData.library.items.push(item);
+								if (item.viewId != ngCtrl.view.id) {
+									ngCtrl.library.items.push(item);
 								}
 								break;
 							case "listFromRelation":
-								contentData.library.items.push(item);
+								ngCtrl.library.items.push(item);
 								break;
 							case "treeFromRelation":
-								contentData.library.items.push(item);
+								ngCtrl.library.items.push(item);
 								break;
 						}
 					}
@@ -673,7 +673,7 @@
 			}
 			else {
 				var tempRelationChangeLibrary = [];
-				contentData.library.items.forEach(function (item) {
+				ngCtrl.library.items.forEach(function (item) {
 					if (!item.relationName) {
 						tempRelationChangeLibrary.push(item);
 					}
@@ -681,22 +681,22 @@
 						tempRelationChangeLibrary.push(item);
 					}
 				});
-				contentData.library.items = tempRelationChangeLibrary;
+				ngCtrl.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
 			sortLibrary();
 		}
 
-		contentData.getRelationType = function (relationId) {
-			for (var i = 0; i < contentData.relationsList.length; i++) {
-				if (contentData.relationsList[i].id == relationId) {
-					return contentData.relationsList[i].relationType;
+		ngCtrl.getRelationType = function (relationId) {
+			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+				if (ngCtrl.relationsList[i].id == relationId) {
+					return ngCtrl.relationsList[i].relationType;
 				}
 			}
 			return 0;
 		}
 
-		contentData.manageFieldFromRelation = function (item) {
+		ngCtrl.manageFieldFromRelation = function (item) {
 			openFromRelationSettingsModal(item, null);
 		}
 		//#endregion
@@ -711,80 +711,80 @@
 	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = fastCopy(parentData);
-		popupData.field = fastCopy(fieldObj);
-		popupData.entity = fastCopy(relatedEntityMeta);
-		popupData.quickCreateViews = [];
-		popupData.quickCreateDefaultIndex = -1;
-		popupData.lookupLists = [];
-		popupData.lookupDefaultIndex = -1;
+		var popupCtrl = this;
+		popupCtrl.parentData = fastCopy(parentData);
+		popupCtrl.field = fastCopy(fieldObj);
+		popupCtrl.entity = fastCopy(relatedEntityMeta);
+		popupCtrl.quickCreateViews = [];
+		popupCtrl.quickCreateDefaultIndex = -1;
+		popupCtrl.lookupLists = [];
+		popupCtrl.lookupDefaultIndex = -1;
 
-		popupData.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		popupData.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		popupCtrl.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		popupCtrl.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
 		//Lookup
 		var index = 0;
-		for (var i = 0; i < popupData.entity.recordLists.length; i++) {
-			if (popupData.entity.recordLists[i].type == "lookup") {
-				if (popupData.entity.recordLists[i].default && popupData.lookupDefaultIndex == -1) {
-					popupData.lookupDefaultIndex = index;
+		for (var i = 0; i < popupCtrl.entity.recordLists.length; i++) {
+			if (popupCtrl.entity.recordLists[i].type == "lookup") {
+				if (popupCtrl.entity.recordLists[i].default && popupCtrl.lookupDefaultIndex == -1) {
+					popupCtrl.lookupDefaultIndex = index;
 				}
-				popupData.lookupLists.push(popupData.entity.recordLists[i]);
+				popupCtrl.lookupLists.push(popupCtrl.entity.recordLists[i]);
 				index++;
 			}
 		}
 
-		if (popupData.field.fieldLookupList && popupData.field.fieldLookupList != "") {
+		if (popupCtrl.field.fieldLookupList && popupCtrl.field.fieldLookupList != "") {
 			//should stick with the selected value
 		}
-		else if (popupData.quickCreateDefaultIndex > -1 && popupData.lookupLists.length > 0) {
+		else if (popupCtrl.quickCreateDefaultIndex > -1 && popupCtrl.lookupLists.length > 0) {
 			//no selected so we should preselect the first default;
-			popupData.field.fieldLookupList = popupData.lookupLists[popupData.quickCreateDefaultIndex].name;
+			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[popupCtrl.quickCreateDefaultIndex].name;
 		}
-		else if (popupData.lookupLists.length > 0) {
-			popupData.field.fieldLookupList = popupData.lookupLists[0].name;
+		else if (popupCtrl.lookupLists.length > 0) {
+			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[0].name;
 		}
 		else {
 			//should alert for error
-			popupData.error = true;
-			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'lookup' lists. It should have at least one";
+			popupCtrl.error = true;
+			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'lookup' lists. It should have at least one";
 		}
 
 		//Quick create
 		index = 0;
-		for (var i = 0; i < popupData.entity.recordViews.length; i++) {
-			if (popupData.entity.recordViews[i].type == "quick_create") {
-				if (popupData.entity.recordViews[i].default && popupData.quickCreateDefaultIndex == -1) {
-					popupData.quickCreateDefaultIndex = index;
+		for (var i = 0; i < popupCtrl.entity.recordViews.length; i++) {
+			if (popupCtrl.entity.recordViews[i].type == "quick_create") {
+				if (popupCtrl.entity.recordViews[i].default && popupCtrl.quickCreateDefaultIndex == -1) {
+					popupCtrl.quickCreateDefaultIndex = index;
 				}
-				popupData.quickCreateViews.push(popupData.entity.recordViews[i]);
+				popupCtrl.quickCreateViews.push(popupCtrl.entity.recordViews[i]);
 				index++;
 			}
 		}
-		if (popupData.field.fieldManageView && popupData.field.fieldManageView != "") {
+		if (popupCtrl.field.fieldManageView && popupCtrl.field.fieldManageView != "") {
 			//should stick with the selected value
 		}
-		else if (popupData.lookupDefaultIndex > -1 && popupData.quickCreateViews.length > 0) {
+		else if (popupCtrl.lookupDefaultIndex > -1 && popupCtrl.quickCreateViews.length > 0) {
 			//no selected so we should preselect the first default;
-			popupData.field.fieldManageView = popupData.quickCreateViews[popupData.lookupDefaultIndex].name;
+			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[popupCtrl.lookupDefaultIndex].name;
 		}
-		else if (popupData.quickCreateViews.length > 0) {
-			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
+		else if (popupCtrl.quickCreateViews.length > 0) {
+			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[0].name;
 		}
-		else if (popupData.field.type == "listFromRelation" || popupData.field.type == "viewFromRelation") {
+		else if (popupCtrl.field.type == "listFromRelation" || popupCtrl.field.type == "viewFromRelation") {
 
 			//should alert for error if it is list or view
-			popupData.error = true;
-			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'quick_create' views. It should have at least one";
+			popupCtrl.error = true;
+			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'quick_create' views. It should have at least one";
 		}
 
 
-		popupData.ok = function () {
-			$uibModalInstance.close(popupData.field);
+		popupCtrl.ok = function () {
+			$uibModalInstance.close(popupCtrl.field);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			if (eventObj != null) {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				//we are currently copying so no need to return it back
@@ -803,8 +803,8 @@
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 		}
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

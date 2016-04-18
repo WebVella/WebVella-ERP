@@ -25,7 +25,7 @@
                 "rootView": {
                     'controller': 'WebVellaAdminBaseController',
                     'templateUrl': '/plugins/webvella-admin/base.view.html',
-                    'controllerAs': 'pluginData'
+                    'controllerAs': 'baseCtrl'
                 }
             },
             'params': {
@@ -114,8 +114,8 @@
     function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory,$timeout) {
     	$log.debug('webvellaAdmin>base> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var adminData = this;
-        adminData.sidebar = [];
+        var baseCtrl = this;
+        baseCtrl.sidebar = [];
         //Making topnav pluggable
         ////1. CONSTRUCTOR initialize the factory
         webvellaAdminSidebarFactory.initSidebar();
@@ -125,7 +125,7 @@
         });
         ////3. UPDATED hook listener
         var updateSidebarDestructor = $rootScope.$on("webvellaAdmin-sidebar-updated", function (event, data) {
-            adminData.sidebar = data;
+            baseCtrl.sidebar = data;
             activate();
         });
         ////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
@@ -145,7 +145,7 @@
             "color": "red",
             "iconName": "cog"
         };
-        adminData.sidebar.push(item);
+        baseCtrl.sidebar.push(item);
         item = {
             "label": "Users",
             "stateName": "webvella-admin-users",
@@ -156,7 +156,7 @@
             "color": "red",
             "iconName": "cog"
         };
-        adminData.sidebar.push(item);
+        baseCtrl.sidebar.push(item);
 		$timeout(function(){
 			$rootScope.$emit("webvellaAdmin-sidebar-ready");
 		},0);

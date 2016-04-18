@@ -35,7 +35,7 @@
                 "contentView": {
                 	controller: 'WebVellaAdminManageEntityTreeController',
                 	templateUrl: '/plugins/webvella-admin/entity-tree-manage.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -175,86 +175,86 @@
 					$uibModal, resolvedCurrentEntityRecordTree, webvellaAdminService, ngToast) {
     	$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-    	var contentData = this;
+    	var ngCtrl = this;
 
 		//#region << Init >>
-        contentData.search = {};
-        contentData.allRelations = fastCopy(resolvedRelationsList);
-        contentData.currentEntityRelation = [];
-        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-        contentData.tree = fastCopy(resolvedCurrentEntityRecordTree);
+        ngCtrl.search = {};
+        ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+        ngCtrl.currentEntityRelation = [];
+        ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+        ngCtrl.tree = fastCopy(resolvedCurrentEntityRecordTree);
     	//Awesome font icon names array 
-        contentData.icons = getFontAwesomeIconNames();
+        ngCtrl.icons = getFontAwesomeIconNames();
         //Update page title
-        contentData.pageTitle = "Entity Trees | " + pageTitle;
+        ngCtrl.pageTitle = "Entity Trees | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#region << Init selected relation >>
-        contentData.selectedRelation = {};
-        for (var i = 0; i < contentData.allRelations.length; i++) {
-        	if (contentData.allRelations[i].id == contentData.tree.relationId) {
-        		contentData.selectedRelation = contentData.allRelations[i];
+        ngCtrl.selectedRelation = {};
+        for (var i = 0; i < ngCtrl.allRelations.length; i++) {
+        	if (ngCtrl.allRelations[i].id == ngCtrl.tree.relationId) {
+        		ngCtrl.selectedRelation = ngCtrl.allRelations[i];
         	}
         }
 		//#endregion
 
     	//#region << Node options >>
-        contentData.nodeIdField = {};
-        contentData.nodeParentIdField = {};
-        contentData.nodeNameEligibleFields = [];
-        contentData.nodeLabelEligibleFields = [];
-		contentData.nodeWeightEligibleFields = [];
+        ngCtrl.nodeIdField = {};
+        ngCtrl.nodeParentIdField = {};
+        ngCtrl.nodeNameEligibleFields = [];
+        ngCtrl.nodeLabelEligibleFields = [];
+		ngCtrl.nodeWeightEligibleFields = [];
 
-        for (var i = 0; i < contentData.entity.fields.length; i++) {
-        	if (contentData.entity.fields[i].id == contentData.selectedRelation.originFieldId) {
-        		contentData.nodeIdField = contentData.entity.fields[i];
+        for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
+        	if (ngCtrl.entity.fields[i].id == ngCtrl.selectedRelation.originFieldId) {
+        		ngCtrl.nodeIdField = ngCtrl.entity.fields[i];
         	}
 
-        	if (contentData.entity.fields[i].id == contentData.selectedRelation.targetFieldId) {
-        		contentData.nodeParentIdField = contentData.entity.fields[i];
+        	if (ngCtrl.entity.fields[i].id == ngCtrl.selectedRelation.targetFieldId) {
+        		ngCtrl.nodeParentIdField = ngCtrl.entity.fields[i];
         	}
 			//Fill dictionaries
-        	switch (contentData.entity.fields[i].fieldType) {
+        	switch (ngCtrl.entity.fields[i].fieldType) {
         		case 1: //Auto-increment
-        			if (contentData.entity.fields[i].required) {
-        				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
-						contentData.nodeWeightEligibleFields.push(contentData.entity.fields[i]);
+        			if (ngCtrl.entity.fields[i].required) {
+        				ngCtrl.nodeLabelEligibleFields.push(ngCtrl.entity.fields[i]);
+       					ngCtrl.nodeNameEligibleFields.push(ngCtrl.entity.fields[i]);
+						ngCtrl.nodeWeightEligibleFields.push(ngCtrl.entity.fields[i]);
         			}
         			break;
         		case 12: //Guid
-        			if (contentData.entity.fields[i].required) {
-       					contentData.nodeWeightEligibleFields.push(contentData.entity.fields[i]);
+        			if (ngCtrl.entity.fields[i].required) {
+       					ngCtrl.nodeWeightEligibleFields.push(ngCtrl.entity.fields[i]);
         			}
         			break;
         		case 16: //Guid
-        			if (contentData.entity.fields[i].required) {
-        				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
+        			if (ngCtrl.entity.fields[i].required) {
+        				ngCtrl.nodeLabelEligibleFields.push(ngCtrl.entity.fields[i]);
+       					ngCtrl.nodeNameEligibleFields.push(ngCtrl.entity.fields[i]);
         			}
         			break;
         		case 18: // Text
-        			if (contentData.entity.fields[i].required) {
-        				contentData.nodeLabelEligibleFields.push(contentData.entity.fields[i]);
-       					contentData.nodeNameEligibleFields.push(contentData.entity.fields[i]);
+        			if (ngCtrl.entity.fields[i].required) {
+        				ngCtrl.nodeLabelEligibleFields.push(ngCtrl.entity.fields[i]);
+       					ngCtrl.nodeNameEligibleFields.push(ngCtrl.entity.fields[i]);
         			}
         			break;
         	}
         }
 
-        contentData.nodeNameEligibleFields = contentData.nodeNameEligibleFields.sort(function (a, b) {
+        ngCtrl.nodeNameEligibleFields = ngCtrl.nodeNameEligibleFields.sort(function (a, b) {
         	if (a.name < b.name) return -1;
         	if (a.name > b.name) return 1;
         	return 0;
         });
 
-        contentData.nodeLabelEligibleFields = contentData.nodeLabelEligibleFields.sort(function (a, b) {
+        ngCtrl.nodeLabelEligibleFields = ngCtrl.nodeLabelEligibleFields.sort(function (a, b) {
         	if (a.name < b.name) return -1;
         	if (a.name > b.name) return 1;
         	return 0;
@@ -262,59 +262,59 @@
     	//#endregion
 
 		//#region << nodeNameField >> - auxiliary object
-        contentData.nodeNameField = null;
-        if (!contentData.tree.nodeNameFieldId) {
-        	contentData.nodeNameField = contentData.nodeNameEligibleFields[0];
+        ngCtrl.nodeNameField = null;
+        if (!ngCtrl.tree.nodeNameFieldId) {
+        	ngCtrl.nodeNameField = ngCtrl.nodeNameEligibleFields[0];
         }
         else {
-        	for (var i = 0; i < contentData.nodeNameEligibleFields.length; i++) {
-        		if (contentData.nodeNameEligibleFields[i].id == contentData.tree.nodeNameFieldId) {
-        			contentData.nodeNameField = contentData.nodeNameEligibleFields[i];
+        	for (var i = 0; i < ngCtrl.nodeNameEligibleFields.length; i++) {
+        		if (ngCtrl.nodeNameEligibleFields[i].id == ngCtrl.tree.nodeNameFieldId) {
+        			ngCtrl.nodeNameField = ngCtrl.nodeNameEligibleFields[i];
         		}
         	}
         	//if old field id not found in the dictionary, it is probably changed or deleted. 
-        	if (contentData.nodeNameField == null) {
-        		contentData.tree.nodeNameFieldId = null;
-        		contentData.nodeNameField = contentData.nodeNameEligibleFields[0];
+        	if (ngCtrl.nodeNameField == null) {
+        		ngCtrl.tree.nodeNameFieldId = null;
+        		ngCtrl.nodeNameField = ngCtrl.nodeNameEligibleFields[0];
         	}
         }
     	//#endregion
 
     	//#region << nodeLabelField >> - auxiliary object
-        contentData.nodeLabelField = null;
-        if (!contentData.tree.nodeLabelFieldId) {
-        	contentData.nodeLabelField = contentData.nodeLabelEligibleFields[0];
+        ngCtrl.nodeLabelField = null;
+        if (!ngCtrl.tree.nodeLabelFieldId) {
+        	ngCtrl.nodeLabelField = ngCtrl.nodeLabelEligibleFields[0];
         }
         else {
-        	for (var i = 0; i < contentData.nodeLabelEligibleFields.length; i++) {
-        		if (contentData.nodeLabelEligibleFields[i].id == contentData.tree.nodeLabelFieldId) {
-        			contentData.nodeLabelField = contentData.nodeLabelEligibleFields[i];
+        	for (var i = 0; i < ngCtrl.nodeLabelEligibleFields.length; i++) {
+        		if (ngCtrl.nodeLabelEligibleFields[i].id == ngCtrl.tree.nodeLabelFieldId) {
+        			ngCtrl.nodeLabelField = ngCtrl.nodeLabelEligibleFields[i];
         		}
         	}
         	//if old field id not found in the dictionary, it is probably changed or deleted. 
-        	if (contentData.nodeLabelField == null) {
-        		contentData.tree.nodeLabelFieldId = null;
-        		contentData.nodeLabelField = contentData.nodeLabelEligibleFields[0];
+        	if (ngCtrl.nodeLabelField == null) {
+        		ngCtrl.tree.nodeLabelFieldId = null;
+        		ngCtrl.nodeLabelField = ngCtrl.nodeLabelEligibleFields[0];
         	}
         }
     	//#endregion
 
 
     	//#region << nodeWeightField >> - auxiliary object
-        contentData.nodeWeightField = null;
-        if (!contentData.tree.nodeWeightFieldId) {
-        	contentData.nodeWeightField = contentData.nodeWeightEligibleFields[0];
+        ngCtrl.nodeWeightField = null;
+        if (!ngCtrl.tree.nodeWeightFieldId) {
+        	ngCtrl.nodeWeightField = ngCtrl.nodeWeightEligibleFields[0];
         }
         else {
-        	for (var i = 0; i < contentData.nodeWeightEligibleFields.length; i++) {
-        		if (contentData.nodeWeightEligibleFields[i].id == contentData.tree.nodeWeightFieldId) {
-        			contentData.nodeWeightField = contentData.nodeWeightEligibleFields[i];
+        	for (var i = 0; i < ngCtrl.nodeWeightEligibleFields.length; i++) {
+        		if (ngCtrl.nodeWeightEligibleFields[i].id == ngCtrl.tree.nodeWeightFieldId) {
+        			ngCtrl.nodeWeightField = ngCtrl.nodeWeightEligibleFields[i];
         		}
         	}
         	//if old field id not found in the dictionary, it is probably changed or deleted. 
-        	if (contentData.nodeWeightField == null) {
-        		contentData.tree.nodeWeightFieldId = null;
-        		contentData.nodeWeightField = contentData.nodeWeightEligibleFields[0];
+        	if (ngCtrl.nodeWeightField == null) {
+        		ngCtrl.tree.nodeWeightFieldId = null;
+        		ngCtrl.nodeWeightField = ngCtrl.nodeWeightEligibleFields[0];
         	}
         }
     	//#endregion
@@ -322,13 +322,13 @@
 		//#endregion
 
     	//#region << Logic >>
-        contentData.getRelationBadgeHtml = function (tree) {
+        ngCtrl.getRelationBadgeHtml = function (tree) {
         	var result = "<span class=\"go-gray\" title=\"Unknown\">?</span>";
-        	if (contentData.selectedRelation) {
-        		if(contentData.selectedRelation.relationType == 2){
+        	if (ngCtrl.selectedRelation) {
+        		if(ngCtrl.selectedRelation.relationType == 2){
         			result ="<span title=\"One to Many\">1:n</span>";
         		}
-				else if(contentData.selectedRelation.relationType == 3) {
+				else if(ngCtrl.selectedRelation.relationType == 3) {
         			result = '<span title=\"Many to Many\">n:n</span>';
         		}
           	}
@@ -341,8 +341,8 @@
         		content: '<span class="go-green">Success:</span> ' + response.message
         	});
         	$timeout(function () { 
-        		contentData.tree = response.object;
-        		contentData.addRecordId = null;
+        		ngCtrl.tree = response.object;
+        		ngCtrl.addRecordId = null;
         	}, 0);
         }
         function patchErrorCallback(response) {
@@ -353,31 +353,31 @@
         	});
         }
 
-        contentData.fieldUpdate = function (fieldName, data) {
+        ngCtrl.fieldUpdate = function (fieldName, data) {
         	var postObj = {};
         	postObj[fieldName] = data;
-        	webvellaAdminService.patchEntityTree(postObj, contentData.tree.name, contentData.entity.name, patchSuccessCallback, patchErrorCallback)
+        	webvellaAdminService.patchEntityTree(postObj, ngCtrl.tree.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
         }
 
-        contentData.nodeNameUpdate = function (fieldObject) {
-        	contentData.fieldUpdate('nodeNameFieldId', fieldObject.id);
+        ngCtrl.nodeNameUpdate = function (fieldObject) {
+        	ngCtrl.fieldUpdate('nodeNameFieldId', fieldObject.id);
         }
 
-        contentData.nodeLabelUpdate = function (fieldObject) {
-        	contentData.fieldUpdate('nodeLabelFieldId', fieldObject.id);
+        ngCtrl.nodeLabelUpdate = function (fieldObject) {
+        	ngCtrl.fieldUpdate('nodeLabelFieldId', fieldObject.id);
         }
 
-        contentData.nodeWeightUpdate = function (fieldObject) {
-        	contentData.fieldUpdate('nodeWeightFieldId', fieldObject.id);
+        ngCtrl.nodeWeightUpdate = function (fieldObject) {
+        	ngCtrl.fieldUpdate('nodeWeightFieldId', fieldObject.id);
         }
 
-        contentData.checkForAddEnter = function (e) {
+        ngCtrl.checkForAddEnter = function (e) {
         	var code = (e.keyCode ? e.keyCode : e.which);
         	if (code == 13) { //Enter keycode
-        		contentData.addNewRootNodeById();
+        		ngCtrl.addNewRootNodeById();
         	}
         }
-        contentData.addNewRootNodeById = function () {
+        ngCtrl.addNewRootNodeById = function () {
         	function successGetRecordCallback(response) {
         		var rootNodeObject = {
         			"recordId": null,
@@ -386,14 +386,14 @@
         			"label": null,
         			"parentId": null
         		}
-        		rootNodeObject.recordId = contentData.addRecordId;
-        		rootNodeObject.id = response.object[contentData.nodeIdField.name];
-        		rootNodeObject.parentId = response.object[contentData.nodeParentIdField.name];
-        		rootNodeObject.name = response.object[contentData.nodeNameField.name];
-        		rootNodeObject.label = response.object[contentData.nodeLabelField.name];
-        		var rootNodes = fastCopy(contentData.tree.rootNodes);
+        		rootNodeObject.recordId = ngCtrl.addRecordId;
+        		rootNodeObject.id = response.object[ngCtrl.nodeIdField.name];
+        		rootNodeObject.parentId = response.object[ngCtrl.nodeParentIdField.name];
+        		rootNodeObject.name = response.object[ngCtrl.nodeNameField.name];
+        		rootNodeObject.label = response.object[ngCtrl.nodeLabelField.name];
+        		var rootNodes = fastCopy(ngCtrl.tree.rootNodes);
         		rootNodes.push(rootNodeObject);
-        		contentData.fieldUpdate('rootNodes', rootNodes);
+        		ngCtrl.fieldUpdate('rootNodes', rootNodes);
         	}
 
         	function errorGetRecordCallback(response) {
@@ -402,25 +402,25 @@
         			content: '<span class="go-red">Error:</span> ' + response.message,
         			timeout: 7000
         		});
-        		contentData.addRecordId = null;
+        		ngCtrl.addRecordId = null;
         	}
 
-        	webvellaAdminService.getRecord(contentData.addRecordId, "*", contentData.entity.name, successGetRecordCallback, errorGetRecordCallback);
+        	webvellaAdminService.getRecord(ngCtrl.addRecordId, "*", ngCtrl.entity.name, successGetRecordCallback, errorGetRecordCallback);
         }
 
-        contentData.removeRootNode = function (record, $index) {
-        	var rootNodes = fastCopy(contentData.tree.rootNodes);
+        ngCtrl.removeRootNode = function (record, $index) {
+        	var rootNodes = fastCopy(ngCtrl.tree.rootNodes);
         	rootNodes.splice($index, 1);
-        	contentData.fieldUpdate('rootNodes', rootNodes);
+        	ngCtrl.fieldUpdate('rootNodes', rootNodes);
         }
 
-        contentData.fieldSelectedBy = function (field) {
+        ngCtrl.fieldSelectedBy = function (field) {
         	//Check if field id is in array
-        	var index = contentData.tree.nodeObjectProperties.indexOf(field.id);
+        	var index = ngCtrl.tree.nodeObjectProperties.indexOf(field.id);
         	if (index > -1) {
         		//Check who selected it
-        		if (field.id == contentData.tree.nodeIdFieldId || field.id == contentData.tree.nodeParentIdFieldId ||
-				field.id == contentData.tree.nodeNameFieldId || field.id == contentData.tree.nodeLabelFieldId) {
+        		if (field.id == ngCtrl.tree.nodeIdFieldId || field.id == ngCtrl.tree.nodeParentIdFieldId ||
+				field.id == ngCtrl.tree.nodeNameFieldId || field.id == ngCtrl.tree.nodeLabelFieldId) {
         			return "system";
         		}
         		else {
@@ -433,7 +433,7 @@
        	
         }
 
-        contentData.getFieldType = function (field) {
+        ngCtrl.getFieldType = function (field) {
         	var fieldTypes = getFieldTypes();
         	for (var i = 0; i < fieldTypes.length; i++) {
         		if (fieldTypes[i].id == field.fieldType) {
@@ -443,36 +443,36 @@
         	return "";
         }
 
-        contentData.toggleFieldSelection = function (field) {
+        ngCtrl.toggleFieldSelection = function (field) {
         	//Check if field selected and by who
-        	switch (contentData.fieldSelectedBy(field)) {
+        	switch (ngCtrl.fieldSelectedBy(field)) {
         		case "user":
         			//We need to remove it from array
-        			var index = contentData.tree.nodeObjectProperties.indexOf(field.id);
-        			contentData.tree.nodeObjectProperties.splice(index, 1);
+        			var index = ngCtrl.tree.nodeObjectProperties.indexOf(field.id);
+        			ngCtrl.tree.nodeObjectProperties.splice(index, 1);
         			break;
         		case "system":
         			break;
         		case "none":
         			//we need to add it to the array
-        			contentData.tree.nodeObjectProperties.push(field.id);
+        			ngCtrl.tree.nodeObjectProperties.push(field.id);
         			break;
         	}
-        	contentData.fieldUpdate('nodeObjectProperties', contentData.tree.nodeObjectProperties);
+        	ngCtrl.fieldUpdate('nodeObjectProperties', ngCtrl.tree.nodeObjectProperties);
         }
 
 		//#endregion
 
 		//#region << Modals >>
-        contentData.deleteTreeModal = function () {
+        ngCtrl.deleteTreeModal = function () {
         	var modalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'deleteTreeModal.html',
         		controller: 'DeleteTreeModalController',
-        		controllerAs: "popupData",
+        		controllerAs: "popupCtrl",
         		size: "",
         		resolve: {
-        			parentData: function () { return contentData; }
+        			parentData: function () { return ngCtrl; }
         		}
         	});
         }
@@ -489,16 +489,16 @@
     function deleteTreeModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteListModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
-    	var popupData = this;
-    	popupData.parentData = parentData;
+    	var popupCtrl = this;
+    	popupCtrl.parentData = parentData;
 
-    	popupData.ok = function () {
+    	popupCtrl.ok = function () {
 
-    		webvellaAdminService.deleteEntityTree(popupData.parentData.tree.name, popupData.parentData.entity.name, successCallback, errorCallback);
+    		webvellaAdminService.deleteEntityTree(popupCtrl.parentData.tree.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 
     	};
 
-    	popupData.cancel = function () {
+    	popupCtrl.cancel = function () {
     		$uibModalInstance.dismiss('cancel');
     	};
 
@@ -510,13 +510,13 @@
     		});
     		$uibModalInstance.close('success');
     		$timeout(function () {
-    			$state.go("webvella-admin-entity-trees", { entityName: popupData.parentData.entity.name }, { reload: true });
+    			$state.go("webvella-admin-entity-trees", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
     		}, 0);
     	}
 
     	function errorCallback(response) {
-    		popupData.hasError = true;
-    		popupData.errorMessage = response.message;
+    		popupCtrl.hasError = true;
+    		popupCtrl.errorMessage = response.message;
 
 
     	}

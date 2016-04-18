@@ -35,7 +35,7 @@
                 "contentView": {
                     controller: 'WebVellaAdminEntityDetailsController',
                     templateUrl: '/plugins/webvella-admin/entity-details.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -177,20 +177,20 @@
         resolvedRolesList, webvellaAdminService, resolvedAreasList, $timeout,webvellaAreasService) {
     	$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var contentData = this;
-        contentData.entity = resolvedCurrentEntityMeta;
+        var ngCtrl = this;
+        ngCtrl.entity = resolvedCurrentEntityMeta;
         //Update page title
-        contentData.pageTitle = "Entity > " + contentData.entity.label +" > Details | " + pageTitle;
+        ngCtrl.pageTitle = "Entity > " + ngCtrl.entity.label +" > Details | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 
-		contentData.showSidebar = function(){
+		ngCtrl.showSidebar = function(){
 		        //Show Sidemenu
 				$timeout(function(){
 					$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
@@ -199,33 +199,33 @@
 		}
 
         //Create new entity modal
-        contentData.openDeleteEntityModal = function () {
+        ngCtrl.openDeleteEntityModal = function () {
         	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'deleteEntityModal.html',
                 controller: 'DeleteEntityModalController',
-                controllerAs: "popupData",
+                controllerAs: "popupCtrl",
                 size: "",
                 resolve: {
-                    parentData: function () { return contentData; }
+                    parentData: function () { return ngCtrl; }
                 }
             });
 
         }
 
         //Awesome font icon names array 
-        contentData.icons = getFontAwesomeIconNames();
+        ngCtrl.icons = getFontAwesomeIconNames();
 
         //Get Areas list and selected areas for the entity
-        contentData.areas = fastCopy(resolvedAreasList.data);
-        contentData.areas = contentData.areas.sort(function (a, b) {
+        ngCtrl.areas = fastCopy(resolvedAreasList.data);
+        ngCtrl.areas = ngCtrl.areas.sort(function (a, b) {
             if (a.label < b.label) return -1;
             if (a.label > b.label) return 1;
             return 0;
         });
 
         //Generate roles and checkboxes
-        contentData.entity.roles = [];
+        ngCtrl.entity.roles = [];
         for (var i = 0; i < resolvedRolesList.data.length; i++) {
 
             //Now create the new entity.roles array
@@ -233,32 +233,32 @@
             role.id = resolvedRolesList.data[i].id;
             role.label = resolvedRolesList.data[i].name;
             role.canRead = false;
-            if (contentData.entity.recordPermissions.canRead.indexOf(resolvedRolesList.data[i].id) > -1) {
+            if (ngCtrl.entity.recordPermissions.canRead.indexOf(resolvedRolesList.data[i].id) > -1) {
                 role.canRead = true;
             }
             role.canCreate = false;
-            if (contentData.entity.recordPermissions.canCreate.indexOf(resolvedRolesList.data[i].id) > -1) {
+            if (ngCtrl.entity.recordPermissions.canCreate.indexOf(resolvedRolesList.data[i].id) > -1) {
                 role.canCreate = true;
             }
             role.canUpdate = false;
-            if (contentData.entity.recordPermissions.canUpdate.indexOf(resolvedRolesList.data[i].id) > -1) {
+            if (ngCtrl.entity.recordPermissions.canUpdate.indexOf(resolvedRolesList.data[i].id) > -1) {
                 role.canUpdate = true;
             }
             role.canDelete = false;
-            if (contentData.entity.recordPermissions.canDelete.indexOf(resolvedRolesList.data[i].id) > -1) {
+            if (ngCtrl.entity.recordPermissions.canDelete.indexOf(resolvedRolesList.data[i].id) > -1) {
                 role.canDelete = true;
             }
-            contentData.entity.roles.push(role);
+            ngCtrl.entity.roles.push(role);
         }
 
-        contentData.fieldUpdate = function (key, data) {
-            contentData.patchObject = {};
-            contentData.patchObject[key] = data;
-            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+        ngCtrl.fieldUpdate = function (key, data) {
+            ngCtrl.patchObject = {};
+            ngCtrl.patchObject[key] = data;
+            webvellaAdminService.patchEntity(ngCtrl.entity.id, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
         }
 
         // Helper function
-		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 
         function removeValueFromArray(array, value) {
@@ -270,18 +270,18 @@
             }
         }
 
-        contentData.permissionPatch = function (roleId, key, isEnabled) {
-            contentData.patchObject = {};
-            contentData.patchObject.recordPermissions = {};
-            contentData.patchObject.recordPermissions = contentData.entity.recordPermissions;
+        ngCtrl.permissionPatch = function (roleId, key, isEnabled) {
+            ngCtrl.patchObject = {};
+            ngCtrl.patchObject.recordPermissions = {};
+            ngCtrl.patchObject.recordPermissions = ngCtrl.entity.recordPermissions;
             if (isEnabled) {
-                contentData.entity.recordPermissions[key].push(roleId);
+                ngCtrl.entity.recordPermissions[key].push(roleId);
             }
             else {
-                removeValueFromArray(contentData.entity.recordPermissions[key], roleId);
+                removeValueFromArray(ngCtrl.entity.recordPermissions[key], roleId);
             }
-            contentData.patchObject.recordPermissions[key] = contentData.entity.recordPermissions[key];
-            webvellaAdminService.patchEntity(contentData.entity.id, contentData.patchObject, patchSuccessCallback, patchFailedCallback);
+            ngCtrl.patchObject.recordPermissions[key] = ngCtrl.entity.recordPermissions[key];
+            webvellaAdminService.patchEntity(ngCtrl.entity.id, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
         }
 
 
@@ -313,14 +313,14 @@
     function deleteEntityController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var popupData = this;
-        popupData.entity = parentData.entity;
+        var popupCtrl = this;
+        popupCtrl.entity = parentData.entity;
 
-        popupData.ok = function () {
-            webvellaAdminService.deleteEntity(popupData.entity.id, successCallback, errorCallback)
+        popupCtrl.ok = function () {
+            webvellaAdminService.deleteEntity(popupCtrl.entity.id, successCallback, errorCallback)
         };
 
-        popupData.cancel = function () {
+        popupCtrl.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
 
@@ -337,8 +337,8 @@
         }
 
         function errorCallback(response) {
-            popupData.hasError = true;
-            popupData.errorMessage = response.message;
+            popupCtrl.hasError = true;
+            popupCtrl.errorMessage = response.message;
 
 
         }

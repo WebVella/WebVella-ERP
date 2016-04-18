@@ -1,11 +1,11 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success btn-sm" ng-click="contentData.createTreeModal()"><i class="fa fa-plus"></i> Add New</a>
-			<div class="form-group form-group-sm ng-hide" ng-show="contentData.trees.length > 0">
+			<a class="btn btn-success btn-sm" ng-click="ngCtrl.createTreeModal()"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.trees.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="List Name">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="List Name">
 				</div>
 			</div>
 		</div>
@@ -16,22 +16,22 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a ng-click="contentData.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a ng-click="ngCtrl.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
 
 
 	<div id="page-text">
-		<div class="alert alert-info" ng-show="::contentData.trees.length == 0">This entity does not have any trees that match your query!</div>
-		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::contentData.trees.length != 0">
+		<div class="alert alert-info" ng-show="::ngCtrl.trees.length == 0">This entity does not have any trees that match your query!</div>
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.trees.length != 0">
 			<thead>
 				<tr>
 					<th class="actions"></th>
@@ -40,17 +40,17 @@
 					<th>Root nodes</th>
 			</thead>
 			<tbody>
-				<tr ng-repeat="tree in contentData.trees | filter: contentData.search track by tree.id">
+				<tr ng-repeat="tree in ngCtrl.trees | filter: ngCtrl.search track by tree.id">
 					<td class="actions">
-						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}">
+						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::ngCtrl.entity.name}}/trees/{{::tree.name}}">
 							<i class="fa fa-pencil"></i>
 						</a>
-						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::contentData.entity.name}}/trees/{{::tree.name}}/nodes">
+						<a class="btn btn-default btn-sm" href="#/admin/entities/{{::ngCtrl.entity.name}}/trees/{{::tree.name}}/nodes">
 							<i class="fa fa-sitemap"></i>
 						</a>
 					</td>
 					<td>{{::tree.name}}</td>
-					<td ng-bind-html="::contentData.getRelationHtml(tree)"></td>
+					<td ng-bind-html="::ngCtrl.getRelationHtml(tree)"></td>
 					<td>{{::tree.rootNodes.length}}</td>
 				</tr>
 			</tbody>
@@ -62,47 +62,47 @@
 
 <script type="text/ng-template" id="createTreeModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Create tree</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="::popupData.eligibleRelations.length == 0">
+		<div class="alert alert-danger ng-hide" ng-show="::popupCtrl.eligibleRelations.length == 0">
 			There needs to be at least one relation matching the condition:<br/> - Only 1:N and N:N relations, where the current entity is both origin and target
 		</div>
-		<form name="createFrom" class="ng-hide" ng-show="::popupData.eligibleRelations.length > 0">
+		<form name="createFrom" class="ng-hide" ng-show="::popupCtrl.eligibleRelations.length > 0">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : createFrom.name.$invalid && !createFrom.name.$pristine || popupData.validation.name.state}">
+					<div class="form-group" ng-class="{ 'has-error' : createFrom.name.$invalid && !createFrom.name.$pristine || popupCtrl.validation.name.state}">
 						<label class="required" for="name">Name</label>
-						<input ng-model="popupData.tree.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+						<input ng-model="popupCtrl.tree.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
-						<div class="error ng-hide" ng-show="createFrom.name.$touched && createFrom.name.$dirty && createFrom.name.$invalid || popupData.validation.name.state">
-							<small class="error" ng-show="createFrom.name.$error.required && !popupData.validation.name.state">
+						<div class="error ng-hide" ng-show="createFrom.name.$touched && createFrom.name.$dirty && createFrom.name.$invalid || popupCtrl.validation.name.state">
+							<small class="error" ng-show="createFrom.name.$error.required && !popupCtrl.validation.name.state">
 								required field
 							</small>
-							<small class="error" ng-show="createFrom.name.$error.pattern && !popupData.validation.name.state">
+							<small class="error" ng-show="createFrom.name.$error.pattern && !popupCtrl.validation.name.state">
 								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
 							</small>
-							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupData.validation.name.state">
+							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupCtrl.validation.name.state">
 								must be less than 50 chars
 							</small>
-							<small class="error" ng-show="popupData.validation.name.state">
-								{{popupData.validation.name.message}}
+							<small class="error" ng-show="popupCtrl.validation.name.state">
+								{{popupCtrl.validation.name.message}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : createFrom.label.$invalid && !createFrom.label.$pristine || popupData.validation.label.state }">
+					<div class="form-group" ng-class="{ 'has-error' : createFrom.label.$invalid && !createFrom.label.$pristine || popupCtrl.validation.label.state }">
 						<label class="required" for="label">Label</label>
-						<input ng-model="popupData.tree.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<input ng-model="popupCtrl.tree.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
 							   required ng-model-options="{allowInvalid:true}">
-						<div class="error ng-hide" ng-show="createFrom.label.$touched && createFrom.label.$dirty && createFrom.label.$invalid || popupData.validation.label.state">
-							<small class="error" ng-show="createFrom.label.$error.required && !popupData.validation.label.state">
+						<div class="error ng-hide" ng-show="createFrom.label.$touched && createFrom.label.$dirty && createFrom.label.$invalid || popupCtrl.validation.label.state">
+							<small class="error" ng-show="createFrom.label.$error.required && !popupCtrl.validation.label.state">
 								Tree label is required.
 							</small>
-							<small class="error" ng-show="popupData.validation.label.state">
-								{{popupData.validation.label.message}}
+							<small class="error" ng-show="popupCtrl.validation.label.state">
+								{{popupCtrl.validation.label.message}}
 							</small>
 						</div>
 					</div>
@@ -110,9 +110,9 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="form-group" ng-class="{ 'has-error' : createFrom.relationId.$invalid && !createFrom.relationId.$pristine || popupData.validation.relationId.state}">
+					<div class="form-group" ng-class="{ 'has-error' : createFrom.relationId.$invalid && !createFrom.relationId.$pristine || popupCtrl.validation.relationId.state}">
 						<label class="required" for="name">Used Entity Relation</label>
-						<select class="form-control" ng-model="popupData.tree.relationId" ng-options="relation.id as relation.name for relation in popupData.eligibleRelations"></select>
+						<select class="form-control" ng-model="popupCtrl.tree.relationId" ng-options="relation.id as relation.name for relation in popupCtrl.eligibleRelations"></select>
 						<div class="form-description">allowed are 1:N relations, where the current entity is both origin and target</div>
 					</div>
 				</div>
@@ -120,7 +120,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-click="popupData.ok()" ng-show="::popupData.eligibleRelations.length > 0">Create Tree</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="::popupCtrl.eligibleRelations.length > 0">Create Tree</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>

@@ -36,7 +36,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityViewsController',
 					templateUrl: '/plugins/webvella-admin/entity-views.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -125,28 +125,28 @@
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
-		if (contentData.views === null) {
-			contentData.views = [];
+		var ngCtrl = this;
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.views = fastCopy(resolvedCurrentEntityMeta.recordViews);
+		if (ngCtrl.views === null) {
+			ngCtrl.views = [];
 		}
-		contentData.views.sort(function (a, b) {
+		ngCtrl.views.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
 		//Update page title
-		contentData.pageTitle = "Entity Views | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
 		$timeout(function () {
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		}, 0);
 		$rootScope.adminSectionName = "Entities";
-		contentData.showSidebar = function () {
+		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
 			$timeout(function () {
 				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
@@ -154,7 +154,7 @@
 			}, 0);
 		}
 
-		contentData.calculateStats = function (view) {
+		ngCtrl.calculateStats = function (view) {
 			var itemsCount = 0;
 			var sectionsCount = 0;
 			for (var i = 0; i < view.regions.length; i++) {
@@ -185,17 +185,17 @@
 
 
 		//Create new view modal
-		contentData.createView = function () {
+		ngCtrl.createView = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createViewModal.html',
 				controller: 'CreateViewModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					}
 				}
 			});
@@ -203,17 +203,17 @@
 		}
 
 		//Cppy new view modal
-		contentData.copyView = function (view) {
+		ngCtrl.copyView = function (view) {
 
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'copyModal.html',
 				controller: 'CopyViewModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					},
 					view: function () {
 						return view;
@@ -229,21 +229,21 @@
 
 
 	//// Modal Controllers
-	createViewModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
+	createViewModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-	function createViewModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
+	function createViewModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, webvellaAdminService, webvellaRootService) {
 		$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.view = webvellaAdminService.initView();
-		popupData.currentEntity = fastCopy(contentData.entity);
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.view = webvellaAdminService.initView();
+		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
 
-		popupData.ok = function () {
-			webvellaAdminService.createEntityView(popupData.view, popupData.currentEntity.name, successCallback, errorCallback);
+		popupCtrl.ok = function () {
+			webvellaAdminService.createEntityView(popupCtrl.view, popupCtrl.currentEntity.name, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -260,61 +260,61 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.entity, location);
 		}
 
 		$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
-	CopyViewModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'view', 'webvellaAdminService', 'webvellaRootService'];
+	CopyViewModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'view', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-	function CopyViewModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, view, webvellaAdminService, webvellaRootService) {
+	function CopyViewModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, view, webvellaAdminService, webvellaRootService) {
 		$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.view = fastCopy(view);
-		popupData.currentEntity = fastCopy(contentData.entity);
-		popupData.alternative = "new";
-		popupData.viewName = null;
-		popupData.viewNameValidationError = false;
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.view = fastCopy(view);
+		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
+		popupCtrl.alternative = "new";
+		popupCtrl.viewName = null;
+		popupCtrl.viewNameValidationError = false;
 
-		popupData.entityViews = []; //filter the current view
+		popupCtrl.entityViews = []; //filter the current view
 
-		for (var i = 0; i < popupData.currentEntity.recordViews.length; i++) {
-			if (popupData.currentEntity.recordViews[i].name != popupData.view.name) {
-				popupData.entityViews.push(popupData.currentEntity.recordViews[i]);
+		for (var i = 0; i < popupCtrl.currentEntity.recordViews.length; i++) {
+			if (popupCtrl.currentEntity.recordViews[i].name != popupCtrl.view.name) {
+				popupCtrl.entityViews.push(popupCtrl.currentEntity.recordViews[i]);
 			}
 		}
 
-		popupData.selectedView = popupData.entityViews[0];
+		popupCtrl.selectedView = popupCtrl.entityViews[0];
 
-		popupData.ok = function () {
-			popupData.viewNameValidationError = false;
-			if (popupData.alternative == "new") {
-				if (popupData.viewName == null || popupData.viewName == "") {
-					popupData.viewNameValidationError = true;
+		popupCtrl.ok = function () {
+			popupCtrl.viewNameValidationError = false;
+			if (popupCtrl.alternative == "new") {
+				if (popupCtrl.viewName == null || popupCtrl.viewName == "") {
+					popupCtrl.viewNameValidationError = true;
 				}
 				else {
-					var newView = fastCopy(popupData.view);
+					var newView = fastCopy(popupCtrl.view);
 					newView.id = null;
-					newView.name = popupData.viewName;
-					newView.label = popupData.viewName;
-					webvellaAdminService.createEntityView(newView, popupData.currentEntity.name, successCallback, errorCallback);
+					newView.name = popupCtrl.viewName;
+					newView.label = popupCtrl.viewName;
+					webvellaAdminService.createEntityView(newView, popupCtrl.currentEntity.name, successCallback, errorCallback);
 				}
 			}
 			else {
-				var newView = fastCopy(popupData.view);
-				var oldView = fastCopy(popupData.selectedView);
+				var newView = fastCopy(popupCtrl.view);
+				var oldView = fastCopy(popupCtrl.selectedView);
 				oldView.regions = newView.regions;
 				oldView.sidebar = newView.sidebar;
 				oldView.relationOptions = newView.relationOptions;
-				webvellaAdminService.updateEntityView(oldView, popupData.currentEntity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(oldView, popupCtrl.currentEntity.name, successCallback, errorCallback);
 			}
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 

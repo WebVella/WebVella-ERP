@@ -36,7 +36,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityFieldsController',
 					templateUrl: '/plugins/webvella-admin/entity-fields.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -177,29 +177,29 @@
 						resolvedRelationsList, $timeout, $q, webvellaAdminService) {
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 
 		//#region << Init >>
-		contentData.search = {};
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.rolesList = fastCopy(resolvedRolesList);
-		contentData.entity.fields = contentData.entity.fields.sort(function (a, b) {
+		ngCtrl.search = {};
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.rolesList = fastCopy(resolvedRolesList);
+		ngCtrl.entity.fields = ngCtrl.entity.fields.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
 		//#region << Update page title>> 
-		contentData.pageTitle = "Entity Fields | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Fields | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
-		contentData.showSidebar = function(){
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
+		ngCtrl.showSidebar = function(){
 		    //Show Sidemenu
 			$timeout(function(){
 				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
@@ -210,10 +210,10 @@
 		//#endregion
 
 
-		contentData.fieldTypes = getFieldTypes();
+		ngCtrl.fieldTypes = getFieldTypes();
 
 		//Currency meta - used in Create and Manage fields
-		contentData.currencyMetas =
+		ngCtrl.currencyMetas =
 		[
 			{
 				"symbol": "$",
@@ -1279,39 +1279,39 @@
 			}
 		];
 
-		contentData.relationsList = fastCopy(resolvedRelationsList);
+		ngCtrl.relationsList = fastCopy(resolvedRelationsList);
 		//#endregion
 
 		//Create new field modal
-		contentData.createFieldModal = function () {
+		ngCtrl.createFieldModal = function () {
 			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createFieldModal.html',
 				controller: 'CreateFieldModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () { return contentData; }
+					ngCtrl: function () { return ngCtrl; }
 				}
 			});
 		}
 
-		contentData.findFieldType = function (fieldTypeId) {
-			for (var typeIndex = 0; typeIndex < contentData.fieldTypes.length; typeIndex++) {
-				if (contentData.fieldTypes[typeIndex].id === fieldTypeId) {
-					return contentData.fieldTypes[typeIndex];
+		ngCtrl.findFieldType = function (fieldTypeId) {
+			for (var typeIndex = 0; typeIndex < ngCtrl.fieldTypes.length; typeIndex++) {
+				if (ngCtrl.fieldTypes[typeIndex].id === fieldTypeId) {
+					return ngCtrl.fieldTypes[typeIndex];
 				}
 			}
 			return null;
 		};
 
 		//Manage field modal
-		contentData.manageFieldModal = function (fieldId) {
+		ngCtrl.manageFieldModal = function (fieldId) {
 			var managedField = null;
-			for (var i = 0; i < contentData.entity.fields.length; i++) {
-				if (contentData.entity.fields[i].id === fieldId) {
-					managedField = contentData.entity.fields[i];
+			for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
+				if (ngCtrl.entity.fields[i].id === fieldId) {
+					managedField = ngCtrl.entity.fields[i];
 				}
 			}
 			// ReSharper disable once UnusedLocals
@@ -1319,10 +1319,10 @@
 				animation: false,
 				templateUrl: 'manageFieldModal.html',
 				controller: 'ManageFieldModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () { return contentData; },
+					ngCtrl: function () { return ngCtrl; },
 					resolvedField: function () {
 						return managedField;
 					},
@@ -1376,72 +1376,72 @@
 
 
 	//// Create Field Controllers
-	CreateFieldModalController.$inject = ['contentData', '$scope', '$uibModalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
+	CreateFieldModalController.$inject = ['ngCtrl', '$scope', '$uibModalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
 	/* @ngInject */
-	function CreateFieldModalController(contentData, $scope, $uibModalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
+	function CreateFieldModalController(ngCtrl, $scope, $uibModalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.validation = {};
-		popupData.contentData = contentData;
-		popupData.createFieldStep2Loading = false;
-		popupData.field = webvellaAdminService.initField();
+		var popupCtrl = this;
+		popupCtrl.validation = {};
+		popupCtrl.ngCtrl = ngCtrl;
+		popupCtrl.createFieldStep2Loading = false;
+		popupCtrl.field = webvellaAdminService.initField();
 
-		popupData.isEmpty = function(object){
+		popupCtrl.isEmpty = function(object){
 			return isEmpty(object)
 		}
 
-		popupData.fieldTypes = contentData.fieldTypes;
+		popupCtrl.fieldTypes = ngCtrl.fieldTypes;
 		// Inject a searchable field
-		for (var i = 0; i < popupData.fieldTypes.length; i++) {
-			popupData.fieldTypes[i].searchBox = popupData.fieldTypes[i].label + " " + popupData.fieldTypes[i].description;
+		for (var i = 0; i < popupCtrl.fieldTypes.length; i++) {
+			popupCtrl.fieldTypes[i].searchBox = popupCtrl.fieldTypes[i].label + " " + popupCtrl.fieldTypes[i].description;
 		}
 
 		//Generate roles and checkboxes
-		popupData.fieldPermissions = [];
-		for (var i = 0; i < popupData.contentData.rolesList.data.length; i++) {
+		popupCtrl.fieldPermissions = [];
+		for (var i = 0; i < popupCtrl.ngCtrl.rolesList.data.length; i++) {
 
 			//Now create the new entity.roles array
 			var role = {};
-			role.id = popupData.contentData.rolesList.data[i].id;
-			role.label = popupData.contentData.rolesList.data[i].name;
+			role.id = popupCtrl.ngCtrl.rolesList.data[i].id;
+			role.label = popupCtrl.ngCtrl.rolesList.data[i].name;
 			role.canRead = false;
 			role.canUpdate = false;
-			popupData.fieldPermissions.push(role);
+			popupCtrl.fieldPermissions.push(role);
 		}
 
-		popupData.togglePermissionRole = function (permission, roleId) {
+		popupCtrl.togglePermissionRole = function (permission, roleId) {
 			//Get the current state
 
 			var permissionArrayRoleIndex = -1;
-			if (popupData.field.permissions !== null) {
-				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
-					if (popupData.field.permissions[permission][k] === roleId) {
+			if (popupCtrl.field.permissions !== null) {
+				for (var k = 0; k < popupCtrl.field.permissions[permission].length; k++) {
+					if (popupCtrl.field.permissions[permission][k] === roleId) {
 						permissionArrayRoleIndex = k;
 					}
 				}
 			}
 
 			if (permissionArrayRoleIndex !== -1) {
-				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
+				popupCtrl.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
 			}
 			else {
-				if (popupData.field.permissions === null) {
-					popupData.field.permissions = {};
-					popupData.field.permissions.canRead = [];
-					popupData.field.permissions.canUpdate = [];
+				if (popupCtrl.field.permissions === null) {
+					popupCtrl.field.permissions = {};
+					popupCtrl.field.permissions.canRead = [];
+					popupCtrl.field.permissions.canUpdate = [];
 				}
-				popupData.field.permissions[permission].push(roleId);
+				popupCtrl.field.permissions[permission].push(roleId);
 			}
 
 		}
 
 		//#region << Selection Tree field >>
 
-		popupData.relationsList = fastCopy(popupData.contentData.relationsList);
+		popupCtrl.relationsList = fastCopy(popupCtrl.ngCtrl.relationsList);
 
 		//#region << Selection types >>
-		popupData.selectionTypes = [];
+		popupCtrl.selectionTypes = [];
 		var singleSelectType = {
 			key: "single-select",
 			value: "can select only one"
@@ -1458,7 +1458,7 @@
 		//#endregion
 
 		//#region << Selection targets >>
-		popupData.selectionTargets = [];
+		popupCtrl.selectionTargets = [];
 		var allNodesSelectTarget = {
 			key: "all",
 			value: "all nodes can be selected"
@@ -1467,52 +1467,52 @@
 			key: "leaves",
 			value: "only leaves - nodes with no children"
 		};
-		popupData.selectionTargets.push(allNodesSelectTarget);
-		popupData.selectionTargets.push(multiSelectTarget);
+		popupCtrl.selectionTargets.push(allNodesSelectTarget);
+		popupCtrl.selectionTargets.push(multiSelectTarget);
 		//#endregion
 
 		//#region << Tree selection >>
 		// ReSharper disable once UnusedParameter
-		popupData.getRelationHtml = function (treeId) {
+		popupCtrl.getRelationHtml = function (treeId) {
 
 
 			return result;
 		}
 
-		$scope.$watch("popupData.field.relatedEntityId", function (newValue) {
+		$scope.$watch("popupCtrl.field.relatedEntityId", function (newValue) {
 			if (newValue) {
-				popupData.SelectedInTreeRelationHtml = "unknown";
-				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", newValue);
+				popupCtrl.SelectedInTreeRelationHtml = "unknown";
+				var selectedEntity = findInArray(popupCtrl.eligibleEntitiesForTree, "id", newValue);
 				var selectedTree = selectedEntity.recordTrees[0];
 				var selectedRelation = selectedEntity.relations[0];
 
 				//Reinit dropdowns
-				popupData.selectedEntityRelations = selectedEntity.relations;
-				popupData.field.relationId = selectedRelation.id;
+				popupCtrl.selectedEntityRelations = selectedEntity.relations;
+				popupCtrl.field.relationId = selectedRelation.id;
 
-				popupData.selectedEntityTrees = selectedEntity.recordTrees;
-				popupData.field.selectedTreeId = selectedTree.id;
+				popupCtrl.selectedEntityTrees = selectedEntity.recordTrees;
+				popupCtrl.field.selectedTreeId = selectedTree.id;
 			}
 		});
 
-		$scope.$watch("popupData.field.relationId", function (newValue) {
+		$scope.$watch("popupCtrl.field.relationId", function (newValue) {
 			if (newValue) {
-				var selectedEntity = findInArray(popupData.eligibleEntitiesForTree, "id", popupData.field.relatedEntityId);
+				var selectedEntity = findInArray(popupCtrl.eligibleEntitiesForTree, "id", popupCtrl.field.relatedEntityId);
 				var selectedRelation = findInArray(selectedEntity.relations, "id", newValue);
 
-				popupData.selectionTypes = [];
-				popupData.selectionTypes.push(singleSelectType);
+				popupCtrl.selectionTypes = [];
+				popupCtrl.selectionTypes.push(singleSelectType);
 				if (selectedRelation) {
 					if (selectedRelation.relationType === 2) {
 						//Fix type selection if it was a multiselect option
-						popupData.field.selectionType = "single-select";
-						popupData.field.selectionTarget = "all";
+						popupCtrl.field.selectionType = "single-select";
+						popupCtrl.field.selectionTarget = "all";
 					}
 					else if (selectedRelation.relationType === 3) {
-						popupData.selectionTypes.push(multiSelectType);
-						popupData.selectionTypes.push(singleBranchSelectType);
-						popupData.field.selectionType = "single-select";
-						popupData.field.selectionTarget = "all";
+						popupCtrl.selectionTypes.push(multiSelectType);
+						popupCtrl.selectionTypes.push(singleBranchSelectType);
+						popupCtrl.field.selectionType = "single-select";
+						popupCtrl.field.selectionTarget = "all";
 					}
 				}
 			}
@@ -1523,103 +1523,103 @@
 		//#endregion
 
 		//Wizard
-		popupData.wizard = {};
-		popupData.wizard.steps = [];
+		popupCtrl.wizard = {};
+		popupCtrl.wizard.steps = [];
 		//Initialize steps
 		var step = fastCopy({ "active": false }, { "completed": false });
-		popupData.wizard.steps.push(step); // Dummy step
+		popupCtrl.wizard.steps.push(step); // Dummy step
 		step = fastCopy({ "active": false }, { "completed": false });
-		popupData.wizard.steps.push(step); // Step 1
+		popupCtrl.wizard.steps.push(step); // Step 1
 		step = fastCopy({ "active": false }, { "completed": false });
-		popupData.wizard.steps.push(step); // Step 2
+		popupCtrl.wizard.steps.push(step); // Step 2
 		// Set steps
-		popupData.wizard.steps[1].active = true;
-		popupData.wizard.selectedType = null;
+		popupCtrl.wizard.steps[1].active = true;
+		popupCtrl.wizard.selectedType = null;
 
-		popupData.selectType = function (typeId) {
+		popupCtrl.selectType = function (typeId) {
 			//find selected type
-			for (var typeIndex = 0; typeIndex < popupData.fieldTypes.length; typeIndex++) {
-				if (popupData.fieldTypes[typeIndex].id === typeId) {
-					popupData.wizard.selectedType = popupData.fieldTypes[typeIndex];
+			for (var typeIndex = 0; typeIndex < popupCtrl.fieldTypes.length; typeIndex++) {
+				if (popupCtrl.fieldTypes[typeIndex].id === typeId) {
+					popupCtrl.wizard.selectedType = popupCtrl.fieldTypes[typeIndex];
 					break;
 				}
 			}
 
-			if (popupData.wizard.selectedType === null) {
+			if (popupCtrl.wizard.selectedType === null) {
 				$log.debug('The selected field type [' + typeId + '] is missing in collection of field types');
 			}
 
-			popupData.field = webvellaAdminService.initField(popupData.wizard.selectedType.id);
-			popupData.wizard.steps[1].active = false;
-			popupData.wizard.steps[1].completed = true;
-			popupData.wizard.steps[2].active = true;
+			popupCtrl.field = webvellaAdminService.initField(popupCtrl.wizard.selectedType.id);
+			popupCtrl.wizard.steps[1].active = false;
+			popupCtrl.wizard.steps[1].completed = true;
+			popupCtrl.wizard.steps[2].active = true;
 			if (typeId === 17 || typeId === 11) //If dropdown || multiselect
 			{
-				popupData.field.options = [];
+				popupCtrl.field.options = [];
 			}
 			else if (typeId === 4) {// If date or datetime
-				popupData.field.format = "yyyy-MMM-dd";
+				popupCtrl.field.format = "yyyy-MMM-dd";
 			}
 			else if (typeId === 5) {// If date or datetime
-				popupData.field.format = "yyyy-MMM-dd HH:mm";
+				popupCtrl.field.format = "yyyy-MMM-dd HH:mm";
 			}
 			else if (typeId === 21) { //if tree field
-				popupData.createFieldStep2Loading = true;
+				popupCtrl.createFieldStep2Loading = true;
 				//Tree select
 				//List of entities eligible to be selected.Conditions:
 				//1.Have 1:N or N:N relation with the current entity as origin, and the target and origin entity are not the same(and equal to the current)
 				//2.Have existing trees
-				popupData.eligibleEntitiesForTreeProcessQueue = null;
-				popupData.eligibleEntitiesForTree = [];
-				for (var i = 0; i < popupData.relationsList.length; i++) {
-					if (popupData.relationsList[i].originEntityId !== popupData.relationsList[i].targetEntityId && popupData.relationsList[i].targetEntityId === popupData.contentData.entity.id) {
+				popupCtrl.eligibleEntitiesForTreeProcessQueue = null;
+				popupCtrl.eligibleEntitiesForTree = [];
+				for (var i = 0; i < popupCtrl.relationsList.length; i++) {
+					if (popupCtrl.relationsList[i].originEntityId !== popupCtrl.relationsList[i].targetEntityId && popupCtrl.relationsList[i].targetEntityId === popupCtrl.ngCtrl.entity.id) {
 
-						if (popupData.eligibleEntitiesForTreeProcessQueue === null) {
-							popupData.eligibleEntitiesForTreeProcessQueue = {};
+						if (popupCtrl.eligibleEntitiesForTreeProcessQueue === null) {
+							popupCtrl.eligibleEntitiesForTreeProcessQueue = {};
 						}
-						if (popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId]) {
+						if (popupCtrl.eligibleEntitiesForTreeProcessQueue[popupCtrl.relationsList[i].originEntityId]) {
 							//entity already added we need just to push the new relations
-							popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId].relations.push(popupData.relationsList[i]);
+							popupCtrl.eligibleEntitiesForTreeProcessQueue[popupCtrl.relationsList[i].originEntityId].relations.push(popupCtrl.relationsList[i]);
 						}
 						else {
 							//entity not yet registered
 							var processItem = {
-								entityId: popupData.relationsList[i].originEntityId,
+								entityId: popupCtrl.relationsList[i].originEntityId,
 								relations: [],
 								processed: false
 							}
-							processItem.relations.push(popupData.relationsList[i]);
-							popupData.eligibleEntitiesForTreeProcessQueue[popupData.relationsList[i].originEntityId] = processItem;
+							processItem.relations.push(popupCtrl.relationsList[i]);
+							popupCtrl.eligibleEntitiesForTreeProcessQueue[popupCtrl.relationsList[i].originEntityId] = processItem;
 						}
 
 					}
 				}
 
-				popupData.selectedEntityTrees = [];
-				popupData.selectedEntityRelations = [];
+				popupCtrl.selectedEntityTrees = [];
+				popupCtrl.selectedEntityRelations = [];
 
 				function reInitializeTreeAndRelationListBySelectedEntity(entity) {
-					popupData.selectedEntityTrees = entity.recordTrees;
-					popupData.selectedEntityRelations = entity.relations;
-					popupData.field.selectedTreeId = entity.recordTrees[0].id;
-					popupData.field.relationId = entity.relations[0].id;
+					popupCtrl.selectedEntityTrees = entity.recordTrees;
+					popupCtrl.selectedEntityRelations = entity.relations;
+					popupCtrl.field.selectedTreeId = entity.recordTrees[0].id;
+					popupCtrl.field.relationId = entity.relations[0].id;
 				}
 
 
 				function relatedEntitiesWithTreeSuccessCallback(response) {
-					popupData.eligibleEntitiesForTreeProcessQueue[response.object.id].processed = true;
+					popupCtrl.eligibleEntitiesForTreeProcessQueue[response.object.id].processed = true;
 					var entityTreeMeta = {};
 					entityTreeMeta.id = response.object.id;
 					entityTreeMeta.name = response.object.name;
 					entityTreeMeta.label = response.object.label;
 					entityTreeMeta.recordTrees = response.object.recordTrees;
-					entityTreeMeta.relations = popupData.eligibleEntitiesForTreeProcessQueue[response.object.id].relations;
-					popupData.eligibleEntitiesForTree.push(entityTreeMeta);
+					entityTreeMeta.relations = popupCtrl.eligibleEntitiesForTreeProcessQueue[response.object.id].relations;
+					popupCtrl.eligibleEntitiesForTree.push(entityTreeMeta);
 					var allProcessed = true;
 					var nextForProcess = {};
-					for (var entityProperty in popupData.eligibleEntitiesForTreeProcessQueue) {
-						if (popupData.eligibleEntitiesForTreeProcessQueue.hasOwnProperty(entityProperty)) {
-							var processedItem = popupData.eligibleEntitiesForTreeProcessQueue[entityProperty];
+					for (var entityProperty in popupCtrl.eligibleEntitiesForTreeProcessQueue) {
+						if (popupCtrl.eligibleEntitiesForTreeProcessQueue.hasOwnProperty(entityProperty)) {
+							var processedItem = popupCtrl.eligibleEntitiesForTreeProcessQueue[entityProperty];
 							if (!processedItem.processed) {
 								nextForProcess = processedItem;
 								allProcessed = false;
@@ -1633,22 +1633,22 @@
 						//All entities meta received
 						//Add only entities that have trees defined
 						var tempDictionaryOfEligibleEntities = [];
-						for (var m = 0; m < popupData.eligibleEntitiesForTree.length; m++) {
-							if (popupData.eligibleEntitiesForTree[m].recordTrees.length > 0) {
-								tempDictionaryOfEligibleEntities.push(popupData.eligibleEntitiesForTree[m]);
+						for (var m = 0; m < popupCtrl.eligibleEntitiesForTree.length; m++) {
+							if (popupCtrl.eligibleEntitiesForTree[m].recordTrees.length > 0) {
+								tempDictionaryOfEligibleEntities.push(popupCtrl.eligibleEntitiesForTree[m]);
 							}
 						}
-						popupData.eligibleEntitiesForTree = tempDictionaryOfEligibleEntities;
-						if (popupData.eligibleEntitiesForTree.length > 0) {
-							popupData.field.relatedEntityId = popupData.eligibleEntitiesForTree[0].id;
-							reInitializeTreeAndRelationListBySelectedEntity(popupData.eligibleEntitiesForTree[0]);
+						popupCtrl.eligibleEntitiesForTree = tempDictionaryOfEligibleEntities;
+						if (popupCtrl.eligibleEntitiesForTree.length > 0) {
+							popupCtrl.field.relatedEntityId = popupCtrl.eligibleEntitiesForTree[0].id;
+							reInitializeTreeAndRelationListBySelectedEntity(popupCtrl.eligibleEntitiesForTree[0]);
 
-							popupData.createFieldStep2Loading = false;
+							popupCtrl.createFieldStep2Loading = false;
 						}
 						else {
-							popupData.createFieldStep2Error = true;
-							popupData.createFieldStep2ErrorMessage = "There are other entities with proper relations, but they do not have existing trees defined";
-							popupData.createFieldStep2Loading = false;
+							popupCtrl.createFieldStep2Error = true;
+							popupCtrl.createFieldStep2ErrorMessage = "There are other entities with proper relations, but they do not have existing trees defined";
+							popupCtrl.createFieldStep2Loading = false;
 						}
 
 					}
@@ -1657,75 +1657,75 @@
 
 				}
 
-				if (popupData.eligibleEntitiesForTreeProcessQueue !== null) {
-					webvellaAdminService.getEntityMetaById(popupData.eligibleEntitiesForTreeProcessQueue[Object.keys(popupData.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
+				if (popupCtrl.eligibleEntitiesForTreeProcessQueue !== null) {
+					webvellaAdminService.getEntityMetaById(popupCtrl.eligibleEntitiesForTreeProcessQueue[Object.keys(popupCtrl.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
 				}
 				else {
-					popupData.createFieldStep2Error = true;
-					popupData.createFieldStep2ErrorMessage = "There are no other entities that has 1:N or N:N relation with the current entity being a target";
-					popupData.createFieldStep2Loading = false;
+					popupCtrl.createFieldStep2Error = true;
+					popupCtrl.createFieldStep2ErrorMessage = "There are no other entities that has 1:N or N:N relation with the current entity being a target";
+					popupCtrl.createFieldStep2Loading = false;
 				}
 			}
 		}
-		popupData.setActiveStep = function (stepIndex) {
-			popupData.createFieldStep2Error = false;
-			popupData.createFieldStep2ErrorMessage = "";
-			if (popupData.wizard.steps[stepIndex].completed) {
+		popupCtrl.setActiveStep = function (stepIndex) {
+			popupCtrl.createFieldStep2Error = false;
+			popupCtrl.createFieldStep2ErrorMessage = "";
+			if (popupCtrl.wizard.steps[stepIndex].completed) {
 				for (var i = 1; i < 3; i++) {
-					popupData.wizard.steps[i].active = false;
+					popupCtrl.wizard.steps[i].active = false;
 				}
-				popupData.wizard.steps[stepIndex].active = true;
+				popupCtrl.wizard.steps[stepIndex].active = true;
 			}
 		}
 
 		// Logic
-		popupData.completeStep2 = function () {
-			popupData.wizard.steps[2].active = false;
-			popupData.wizard.steps[2].completed = true;
+		popupCtrl.completeStep2 = function () {
+			popupCtrl.wizard.steps[2].active = false;
+			popupCtrl.wizard.steps[2].completed = true;
 		}
 
-		popupData.calendars = {};
-		popupData.openCalendar = function (event, name) {
-			popupData.calendars[name] = true;
+		popupCtrl.calendars = {};
+		popupCtrl.openCalendar = function (event, name) {
+			popupCtrl.calendars[name] = true;
 		}
 
 
 
 		//Currency
-		popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
+		popupCtrl.selectedCurrencyMeta = ngCtrl.currencyMetas[0].code;
 
 		//Identifier GUID field specific functions
-		popupData.uniqueGuidGenerateCheckboxEnabled = true;
-		popupData.defaultValueTextboxEnabled = true;
-		popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
-		popupData.defaultValueTextboxValue = null;
-		popupData.uniqueGuidGenerateToggle = function (newValue) {
-			if (popupData.field.fieldTypeId === 16) {
+		popupCtrl.uniqueGuidGenerateCheckboxEnabled = true;
+		popupCtrl.defaultValueTextboxEnabled = true;
+		popupCtrl.defaultValueTextboxPlaceholder = "fill in a GUID";
+		popupCtrl.defaultValueTextboxValue = null;
+		popupCtrl.uniqueGuidGenerateToggle = function (newValue) {
+			if (popupCtrl.field.fieldTypeId === 16) {
 				if (newValue) { // if it is checked
-					popupData.defaultValueTextboxEnabled = false;
-					popupData.defaultValueTextboxPlaceholder = "will be auto-generated";
-					popupData.defaultValueTextboxValue = popupData.field.defaultValue;
-					popupData.field.defaultValue = null;
+					popupCtrl.defaultValueTextboxEnabled = false;
+					popupCtrl.defaultValueTextboxPlaceholder = "will be auto-generated";
+					popupCtrl.defaultValueTextboxValue = popupCtrl.field.defaultValue;
+					popupCtrl.field.defaultValue = null;
 				}
 				else {
-					popupData.defaultValueTextboxEnabled = true;
-					popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
-					popupData.field.defaultValue = popupData.defaultValueTextboxValue;
-					popupData.defaultValueTextboxValue = null;
+					popupCtrl.defaultValueTextboxEnabled = true;
+					popupCtrl.defaultValueTextboxPlaceholder = "fill in a GUID";
+					popupCtrl.field.defaultValue = popupCtrl.defaultValueTextboxValue;
+					popupCtrl.defaultValueTextboxValue = null;
 				}
 			}
 		}
-		popupData.uniqueGuidPropertyChecked = function (newValue) {
-			if (popupData.field.fieldTypeId === 16) {
+		popupCtrl.uniqueGuidPropertyChecked = function (newValue) {
+			if (popupCtrl.field.fieldTypeId === 16) {
 				if (newValue) {
-					popupData.field.generateNewId = true;
-					popupData.uniqueGuidGenerateCheckboxEnabled = false;
-					popupData.uniqueGuidGenerateToggle(true);
+					popupCtrl.field.generateNewId = true;
+					popupCtrl.uniqueGuidGenerateCheckboxEnabled = false;
+					popupCtrl.uniqueGuidGenerateToggle(true);
 				}
 				else {
-					popupData.field.generateNewId = false;
-					popupData.uniqueGuidGenerateCheckboxEnabled = true;
-					popupData.uniqueGuidGenerateToggle(false);
+					popupCtrl.field.generateNewId = false;
+					popupCtrl.uniqueGuidGenerateCheckboxEnabled = true;
+					popupCtrl.uniqueGuidGenerateToggle(false);
 				}
 			}
 		}
@@ -1733,35 +1733,35 @@
 
 
 		//////
-		popupData.ok = function () {
-			popupData.validation = {};
-			switch (popupData.field.fieldType) {
+		popupCtrl.ok = function () {
+			popupCtrl.validation = {};
+			switch (popupCtrl.field.fieldType) {
 				case 3:
-					for (var i = 0; i < contentData.currencyMetas.length; i++) {
-						if (contentData.currencyMetas[i].code === popupData.selectedCurrencyMeta) {
-							popupData.field.currency.symbol = contentData.currencyMetas[i].symbol;
-							popupData.field.currency.symbolNative = contentData.currencyMetas[i].symbol_native;
-							popupData.field.currency.name = contentData.currencyMetas[i].name;
-							popupData.field.currency.namePlural = contentData.currencyMetas[i].name_plural;
-							popupData.field.currency.code = contentData.currencyMetas[i].code;
-							popupData.field.currency.decimalDigits = contentData.currencyMetas[i].decimal_digits;
-							popupData.field.currency.rounding = contentData.currencyMetas[i].rounding;
-							popupData.field.currency.symbolPlacement = 1;
+					for (var i = 0; i < ngCtrl.currencyMetas.length; i++) {
+						if (ngCtrl.currencyMetas[i].code === popupCtrl.selectedCurrencyMeta) {
+							popupCtrl.field.currency.symbol = ngCtrl.currencyMetas[i].symbol;
+							popupCtrl.field.currency.symbolNative = ngCtrl.currencyMetas[i].symbol_native;
+							popupCtrl.field.currency.name = ngCtrl.currencyMetas[i].name;
+							popupCtrl.field.currency.namePlural = ngCtrl.currencyMetas[i].name_plural;
+							popupCtrl.field.currency.code = ngCtrl.currencyMetas[i].code;
+							popupCtrl.field.currency.decimalDigits = ngCtrl.currencyMetas[i].decimal_digits;
+							popupCtrl.field.currency.rounding = ngCtrl.currencyMetas[i].rounding;
+							popupCtrl.field.currency.symbolPlacement = 1;
 						}
 					}
 					break;
 				case 4: //Date
-					if (popupData.field.defaultValue !== null) {
-						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					if (popupCtrl.field.defaultValue !== null) {
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if (popupData.field.defaultValue !== null) {
-						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					if (popupCtrl.field.defaultValue !== null) {
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;
 				case 11: //Multiselect
-					if (popupData.field.required && (!popupData.field.defaultValue || popupData.field.defaultValue.length == 0)) {
+					if (popupCtrl.field.required && (!popupCtrl.field.defaultValue || popupCtrl.field.defaultValue.length == 0)) {
 						ngToast.create({
 							className: 'error',
 							content: '<span class="go-red">Error:</span> You need to select at least one option as default, when the field is required'
@@ -1769,39 +1769,39 @@
 					}
 					break;
 			}
-			webvellaAdminService.createField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
+			webvellaAdminService.createField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
 		//Dropdown or Multiselect
-		popupData.addDropdownValue = function () {
+		popupCtrl.addDropdownValue = function () {
 			var option = {
 				key: null,
 				value: null
 			};
-			popupData.field.options.push(option);
+			popupCtrl.field.options.push(option);
 		}
 
-		popupData.deleteDropdownValue = function (index) {
+		popupCtrl.deleteDropdownValue = function (index) {
 			var defaultKeyIndex = -1;
-			if (popupData.isKeyDefault(popupData.field.options[index].key)) {
-				for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-					if (popupData.field.defaultValue[j] !== popupData.field.options[index].key) {
+			if (popupCtrl.isKeyDefault(popupCtrl.field.options[index].key)) {
+				for (var j = 0; j < popupCtrl.field.defaultValue.length; j++) {
+					if (popupCtrl.field.defaultValue[j] !== popupCtrl.field.options[index].key) {
 						defaultKeyIndex = j;
 						break;
 					}
 				}
 			}
-			if (popupData.field.defaultValue) {
-				popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+			if (popupCtrl.field.defaultValue) {
+				popupCtrl.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
 			}
-			popupData.field.options.splice(index, 1); // remove from options
+			popupCtrl.field.options.splice(index, 1); // remove from options
 		}
 
-		popupData.toggleKeyAsDefault = function (key) {
+		popupCtrl.toggleKeyAsDefault = function (key) {
 			if (!key || key == "") {
   				ngToast.create({
 					className: 'error',
@@ -1809,27 +1809,27 @@
 				});
 			}
 			else {
-				if (!popupData.field.defaultValue) {
-					popupData.field.defaultValue = [];
+				if (!popupCtrl.field.defaultValue) {
+					popupCtrl.field.defaultValue = [];
 				}
-				if (popupData.field.defaultValue.indexOf(key) > -1) {
+				if (popupCtrl.field.defaultValue.indexOf(key) > -1) {
 					//There could be multiple keys with the same key
 					var cleanArray = [];
-					for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-						if (popupData.field.defaultValue[j] !== key) {
-							cleanArray.push(popupData.field.defaultValue[j]);
+					for (var j = 0; j < popupCtrl.field.defaultValue.length; j++) {
+						if (popupCtrl.field.defaultValue[j] !== key) {
+							cleanArray.push(popupCtrl.field.defaultValue[j]);
 						}
 					}
-					popupData.field.defaultValue = fastCopy(cleanArray);
+					popupCtrl.field.defaultValue = fastCopy(cleanArray);
 				} else {
-					popupData.field.defaultValue.push(key);
+					popupCtrl.field.defaultValue.push(key);
 				}
 			}
 		}
 
-		popupData.isKeyDefault = function (key) {
+		popupCtrl.isKeyDefault = function (key) {
 
-			if (popupData.field.defaultValue && popupData.field.defaultValue.indexOf(key) > -1) {
+			if (popupCtrl.field.defaultValue && popupCtrl.field.defaultValue.indexOf(key) > -1) {
 				return true;
 			} else {
 				return false;
@@ -1849,42 +1849,42 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
 		}
 		$log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//// Create Field Controllers
-	ManageFieldModalController.$inject = ['contentData', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
+	ManageFieldModalController.$inject = ['ngCtrl', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
 						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce','$scope'];
 	/* @ngInject */
-	function ManageFieldModalController(contentData, resolvedField, $uibModal, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
+	function ManageFieldModalController(ngCtrl, resolvedField, $uibModal, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
 						webvellaRootService, $location, resolvedRelatedEntity, $sce, $scope) {
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.isEmpty = function(object){
+		var popupCtrl = this;
+		popupCtrl.isEmpty = function(object){
 			return isEmpty(object)
 		}
 		//#region << Init >>
-		popupData.modalInstance = $uibModalInstance;
-		popupData.contentData = contentData;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.ngCtrl = ngCtrl;
 
-		popupData.field = fastCopy(resolvedField);
-		if (popupData.field.permissions === null) {
-			popupData.field.permissions = {
+		popupCtrl.field = fastCopy(resolvedField);
+		if (popupCtrl.field.permissions === null) {
+			popupCtrl.field.permissions = {
 				canRead: [],
 				canUpdate: []
 			}
 		}
 
 
-		popupData.fieldTypes = contentData.fieldTypes;
-		popupData.fieldType = null;
+		popupCtrl.fieldTypes = ngCtrl.fieldTypes;
+		popupCtrl.fieldType = null;
 
-		for (var i = 0; i < popupData.fieldTypes.length; i++) {
-			if (popupData.fieldTypes[i].id === popupData.field.fieldType) {
-				popupData.fieldType = popupData.fieldTypes[i];
+		for (var i = 0; i < popupCtrl.fieldTypes.length; i++) {
+			if (popupCtrl.fieldTypes[i].id === popupCtrl.field.fieldType) {
+				popupCtrl.fieldType = popupCtrl.fieldTypes[i];
 			}
 		}
 
@@ -1893,125 +1893,125 @@
 		//#region << Logic >>
 
 		//Generate roles and checkboxes
-		popupData.fieldPermissions = [];
-		for (var i = 0; i < popupData.contentData.rolesList.data.length; i++) {
+		popupCtrl.fieldPermissions = [];
+		for (var i = 0; i < popupCtrl.ngCtrl.rolesList.data.length; i++) {
 
 			//Now create the new entity.roles array
 			var role = {};
-			role.id = popupData.contentData.rolesList.data[i].id;
-			role.label = popupData.contentData.rolesList.data[i].name;
+			role.id = popupCtrl.ngCtrl.rolesList.data[i].id;
+			role.label = popupCtrl.ngCtrl.rolesList.data[i].name;
 			role.canRead = false;
-			if (popupData.field.permissions !== null && popupData.field.permissions.canRead.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupCtrl.field.permissions !== null && popupCtrl.field.permissions.canRead.indexOf(popupCtrl.ngCtrl.rolesList.data[i].id) > -1) {
 				role.canRead = true;
 			}
 			role.canUpdate = false;
-			if (popupData.field.permissions !== null && popupData.field.permissions.canUpdate.indexOf(popupData.contentData.rolesList.data[i].id) > -1) {
+			if (popupCtrl.field.permissions !== null && popupCtrl.field.permissions.canUpdate.indexOf(popupCtrl.ngCtrl.rolesList.data[i].id) > -1) {
 				role.canUpdate = true;
 			}
-			popupData.fieldPermissions.push(role);
+			popupCtrl.fieldPermissions.push(role);
 		}
 
-		popupData.togglePermissionRole = function (permission, roleId) {
+		popupCtrl.togglePermissionRole = function (permission, roleId) {
 			//Get the current state
 
 			var permissionArrayRoleIndex = -1;
-			if (popupData.field.permissions !== null) {
-				for (var k = 0; k < popupData.field.permissions[permission].length; k++) {
-					if (popupData.field.permissions[permission][k] === roleId) {
+			if (popupCtrl.field.permissions !== null) {
+				for (var k = 0; k < popupCtrl.field.permissions[permission].length; k++) {
+					if (popupCtrl.field.permissions[permission][k] === roleId) {
 						permissionArrayRoleIndex = k;
 					}
 				}
 			}
 
 			if (permissionArrayRoleIndex !== -1) {
-				popupData.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
+				popupCtrl.field.permissions[permission].splice(permissionArrayRoleIndex, 1);
 			}
 			else {
-				if (popupData.field.permissions === null) {
-					popupData.field.permissions = {};
-					popupData.field.permissions.canRead = [];
-					popupData.field.permissions.canUpdate = [];
+				if (popupCtrl.field.permissions === null) {
+					popupCtrl.field.permissions = {};
+					popupCtrl.field.permissions.canRead = [];
+					popupCtrl.field.permissions.canUpdate = [];
 				}
-				popupData.field.permissions[permission].push(roleId);
+				popupCtrl.field.permissions[permission].push(roleId);
 			}
 
 		}
 
 		//Currency
-		if (popupData.field.fieldType === 3) {
-			popupData.selectedCurrencyMeta = contentData.currencyMetas[0].code;
-			if (popupData.field.currency !== null && popupData.field.currency !== {} && popupData.field.currency.code) {
-				for (var i = 0; i < contentData.currencyMetas.length; i++) {
-					if (popupData.field.currency.code === contentData.currencyMetas[i].code) {
-						popupData.selectedCurrencyMeta = contentData.currencyMetas[i].code;
+		if (popupCtrl.field.fieldType === 3) {
+			popupCtrl.selectedCurrencyMeta = ngCtrl.currencyMetas[0].code;
+			if (popupCtrl.field.currency !== null && popupCtrl.field.currency !== {} && popupCtrl.field.currency.code) {
+				for (var i = 0; i < ngCtrl.currencyMetas.length; i++) {
+					if (popupCtrl.field.currency.code === ngCtrl.currencyMetas[i].code) {
+						popupCtrl.selectedCurrencyMeta = ngCtrl.currencyMetas[i].code;
 					}
 				}
 			}
 		}
 
 		//Identifier GUID field specific functions
-		popupData.uniqueGuidGenerateCheckboxEnabled = true;
-		popupData.defaultValueTextboxEnabled = true;
-		popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
-		popupData.defaultValueTextboxValue = null;
-		popupData.uniqueGuidGenerateToggle = function (newValue) {
+		popupCtrl.uniqueGuidGenerateCheckboxEnabled = true;
+		popupCtrl.defaultValueTextboxEnabled = true;
+		popupCtrl.defaultValueTextboxPlaceholder = "fill in a GUID";
+		popupCtrl.defaultValueTextboxValue = null;
+		popupCtrl.uniqueGuidGenerateToggle = function (newValue) {
 			if (newValue) { // if it is checked
-				popupData.defaultValueTextboxEnabled = false;
-				popupData.defaultValueTextboxPlaceholder = "will be auto-generated";
-				popupData.defaultValueTextboxValue = popupData.field.defaultValue;
-				popupData.field.defaultValue = null;
+				popupCtrl.defaultValueTextboxEnabled = false;
+				popupCtrl.defaultValueTextboxPlaceholder = "will be auto-generated";
+				popupCtrl.defaultValueTextboxValue = popupCtrl.field.defaultValue;
+				popupCtrl.field.defaultValue = null;
 			}
 			else {
-				popupData.defaultValueTextboxEnabled = true;
-				popupData.defaultValueTextboxPlaceholder = "fill in a GUID";
-				popupData.field.defaultValue = popupData.defaultValueTextboxValue;
-				popupData.defaultValueTextboxValue = null;
+				popupCtrl.defaultValueTextboxEnabled = true;
+				popupCtrl.defaultValueTextboxPlaceholder = "fill in a GUID";
+				popupCtrl.field.defaultValue = popupCtrl.defaultValueTextboxValue;
+				popupCtrl.defaultValueTextboxValue = null;
 			}
 		}
 
-		popupData.uniqueGuidPropertyChecked = function (newValue) {
-			if (popupData.field.fieldType === 16) {
+		popupCtrl.uniqueGuidPropertyChecked = function (newValue) {
+			if (popupCtrl.field.fieldType === 16) {
 				if (newValue) {
-					popupData.field.generateNewId = true;
-					popupData.uniqueGuidGenerateCheckboxEnabled = false;
-					popupData.uniqueGuidGenerateToggle(true);
+					popupCtrl.field.generateNewId = true;
+					popupCtrl.uniqueGuidGenerateCheckboxEnabled = false;
+					popupCtrl.uniqueGuidGenerateToggle(true);
 				}
 				else {
-					popupData.field.generateNewId = false;
-					popupData.uniqueGuidGenerateCheckboxEnabled = true;
-					popupData.uniqueGuidGenerateToggle(false);
+					popupCtrl.field.generateNewId = false;
+					popupCtrl.uniqueGuidGenerateCheckboxEnabled = true;
+					popupCtrl.uniqueGuidGenerateToggle(false);
 				}
 			}
 		}
 
 		// Date and Date time
-		popupData.calendars = {};
-		popupData.openCalendar = function (event, name) {
-			popupData.calendars[name] = true;
+		popupCtrl.calendars = {};
+		popupCtrl.openCalendar = function (event, name) {
+			popupCtrl.calendars[name] = true;
 		}
 
 		//Tree select
-		var relationsList = fastCopy(popupData.contentData.relationsList);
+		var relationsList = fastCopy(popupCtrl.ngCtrl.relationsList);
 		var selectedRelation = {};
 		for (var i = 0; i < relationsList.length; i++) {
-			if (relationsList[i].id === popupData.field.relationId) {
+			if (relationsList[i].id === popupCtrl.field.relationId) {
 				selectedRelation = relationsList[i];
 			}
 		}
-		popupData.getTreeSelectRelatedEntityName = function () {
+		popupCtrl.getTreeSelectRelatedEntityName = function () {
 			var relatedEntity = fastCopy(resolvedRelatedEntity);
 			return "<i class='fa fa-fw fa-" + relatedEntity.iconName + "'></i> " + relatedEntity.name;
 		}
-		popupData.getTreeSelectRecordTreeName = function () {
+		popupCtrl.getTreeSelectRecordTreeName = function () {
 			var relatedEntity = fastCopy(resolvedRelatedEntity);
 			for (var i = 0; i < relatedEntity.recordTrees.length; i++) {
-				if (relatedEntity.recordTrees[i].id === popupData.field.selectedTreeId) {
+				if (relatedEntity.recordTrees[i].id === popupCtrl.field.selectedTreeId) {
 					return "<i class='fa fa-fw fa-sitemap'></i> " + relatedEntity.recordTrees[i].name;
 				}
 			}
 			return "";
 		}
-		popupData.getTreeSelectRelationHtml = function () {
+		popupCtrl.getTreeSelectRelationHtml = function () {
 			var result = "unknown";
 			if (selectedRelation) {
 				if (selectedRelation.relationType === 2) {
@@ -2025,7 +2025,7 @@
 		}
 
 		//#region << Selection types >>
-		popupData.selectionTypes = [];
+		popupCtrl.selectionTypes = [];
 		var singleSelectType = {
 			key: "single-select",
 			value: "can select only one"
@@ -2042,7 +2042,7 @@
 		//#endregion
 
 		//#region << Selection targets >>
-		popupData.selectionTargets = [];
+		popupCtrl.selectionTargets = [];
 		var allNodesSelectTarget = {
 			key: "all",
 			value: "all nodes can be selected"
@@ -2051,118 +2051,118 @@
 			key: "leaves",
 			value: "only leaves - nodes with no children"
 		};
-		popupData.selectionTargets.push(allNodesSelectTarget);
-		popupData.selectionTargets.push(multiSelectTarget);
+		popupCtrl.selectionTargets.push(allNodesSelectTarget);
+		popupCtrl.selectionTargets.push(multiSelectTarget);
 		//#endregion
 
-		popupData.selectionTypes = [];
-		popupData.selectionTypes.push(singleSelectType);
+		popupCtrl.selectionTypes = [];
+		popupCtrl.selectionTypes.push(singleSelectType);
 		if (selectedRelation && selectedRelation.relationType === 3) {
-			popupData.selectionTypes.push(multiSelectType);
-			popupData.selectionTypes.push(singleBranchSelectType);
+			popupCtrl.selectionTypes.push(multiSelectType);
+			popupCtrl.selectionTypes.push(singleBranchSelectType);
 		}
 		//#endregion
 
-		popupData.ok = function () {
-			switch (popupData.field.fieldType) {
+		popupCtrl.ok = function () {
+			switch (popupCtrl.field.fieldType) {
 				case 3:
-					for (var i = 0; i < contentData.currencyMetas.length; i++) {
-						if (contentData.currencyMetas[i].code === popupData.selectedCurrencyMeta) {
-							popupData.field.currency.symbol = contentData.currencyMetas[i].symbol;
-							popupData.field.currency.symbolNative = contentData.currencyMetas[i].symbol_native;
-							popupData.field.currency.name = contentData.currencyMetas[i].name;
-							popupData.field.currency.namePlural = contentData.currencyMetas[i].name_plural;
-							popupData.field.currency.code = contentData.currencyMetas[i].code;
-							popupData.field.currency.decimalDigits = contentData.currencyMetas[i].decimal_digits;
-							popupData.field.currency.rounding = contentData.currencyMetas[i].rounding;
-							popupData.field.currency.symbolPlacement = 1;
+					for (var i = 0; i < ngCtrl.currencyMetas.length; i++) {
+						if (ngCtrl.currencyMetas[i].code === popupCtrl.selectedCurrencyMeta) {
+							popupCtrl.field.currency.symbol = ngCtrl.currencyMetas[i].symbol;
+							popupCtrl.field.currency.symbolNative = ngCtrl.currencyMetas[i].symbol_native;
+							popupCtrl.field.currency.name = ngCtrl.currencyMetas[i].name;
+							popupCtrl.field.currency.namePlural = ngCtrl.currencyMetas[i].name_plural;
+							popupCtrl.field.currency.code = ngCtrl.currencyMetas[i].code;
+							popupCtrl.field.currency.decimalDigits = ngCtrl.currencyMetas[i].decimal_digits;
+							popupCtrl.field.currency.rounding = ngCtrl.currencyMetas[i].rounding;
+							popupCtrl.field.currency.symbolPlacement = 1;
 						}
 					}
 					break;
 				case 4: //Date
-					if (popupData.field.defaultValue !== null) {
-						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('day').utc().toISOString();
+					if (popupCtrl.field.defaultValue !== null) {
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('day').utc().toISOString();
 					}
 					break;
 				case 5: //Date & Time
-					if (popupData.field.defaultValue !== null) {
-						popupData.field.defaultValue = moment(popupData.field.defaultValue).startOf('minute').utc().toISOString();
+					if (popupCtrl.field.defaultValue !== null) {
+						popupCtrl.field.defaultValue = moment(popupCtrl.field.defaultValue).startOf('minute').utc().toISOString();
 					}
 					break;
 			}
-			webvellaAdminService.updateField(popupData.field, popupData.contentData.entity.id, successCallback, errorCallback);
+			webvellaAdminService.updateField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
 		//Delete field
 		//Create new field modal
-		popupData.deleteFieldModal = function () {
+		popupCtrl.deleteFieldModal = function () {
 			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'deleteFieldModal.html',
 				controller: 'DeleteFieldModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					parentPopupData: function () { return popupData; }
+					parentpopupCtrl: function () { return popupCtrl; }
 				}
 			});
 		}
 
 		//Dropdown or Multiselect
-		popupData.addDropdownValue = function () {
+		popupCtrl.addDropdownValue = function () {
 			var option = {
 				key: null,
 				value: null
 			};
-			popupData.field.options.push(option);
+			popupCtrl.field.options.push(option);
 		}
 
-		popupData.deleteDropdownValue = function (index) {
+		popupCtrl.deleteDropdownValue = function (index) {
 			//if the removed field is with the default value or in the default values list(multiselect)
-			if (popupData.field.defaultValue && popupData.field.fieldType == 11) { //Multiselect
+			if (popupCtrl.field.defaultValue && popupCtrl.field.fieldType == 11) { //Multiselect
 				var defaultKeyIndex = -1;
-				if (popupData.isKeyDefault(popupData.field.options[index].key)) {
-					for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-						if (popupData.field.defaultValue[j] === popupData.field.options[index].key) {
+				if (popupCtrl.isKeyDefault(popupCtrl.field.options[index].key)) {
+					for (var j = 0; j < popupCtrl.field.defaultValue.length; j++) {
+						if (popupCtrl.field.defaultValue[j] === popupCtrl.field.options[index].key) {
 							defaultKeyIndex = j;
 							break;
 						}
 					}
 				}
-				popupData.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
+				popupCtrl.field.defaultValue.splice(defaultKeyIndex, 1); //Remove from default
 			}
-			else if (popupData.field.defaultValue && popupData.field.fieldType == 17) {
-				if (popupData.field.options[index].key === popupData.field.defaultValue) {
-					popupData.field.defaultValue = ""; //Remove from default										
+			else if (popupCtrl.field.defaultValue && popupCtrl.field.fieldType == 17) {
+				if (popupCtrl.field.options[index].key === popupCtrl.field.defaultValue) {
+					popupCtrl.field.defaultValue = ""; //Remove from default										
 				}
 
 			}
 
-			popupData.field.options.splice(index, 1); // remove from options
+			popupCtrl.field.options.splice(index, 1); // remove from options
 		}
 
-		popupData.toggleKeyAsDefault = function (key) {
-			if (popupData.field.defaultValue.indexOf(key) > -1) {
+		popupCtrl.toggleKeyAsDefault = function (key) {
+			if (popupCtrl.field.defaultValue.indexOf(key) > -1) {
 				//There could be multiple keys with the same key
 				var cleanArray = [];
-				for (var j = 0; j < popupData.field.defaultValue.length; j++) {
-					if (popupData.field.defaultValue[j] !== key) {
-						cleanArray.push(popupData.field.defaultValue[j]);
+				for (var j = 0; j < popupCtrl.field.defaultValue.length; j++) {
+					if (popupCtrl.field.defaultValue[j] !== key) {
+						cleanArray.push(popupCtrl.field.defaultValue[j]);
 					}
 				}
-				popupData.field.defaultValue = fastCopy(cleanArray);
+				popupCtrl.field.defaultValue = fastCopy(cleanArray);
 			} else {
-				popupData.field.defaultValue.push(key);
+				popupCtrl.field.defaultValue.push(key);
 			}
 		}
 
-		popupData.isKeyDefault = function (key) {
-			if (popupData.field.defaultValue && popupData.field.defaultValue.indexOf(key) > -1) {
+		popupCtrl.isKeyDefault = function (key) {
+			if (popupCtrl.field.defaultValue && popupCtrl.field.defaultValue.indexOf(key) > -1) {
 				return true;
 			} else {
 				return false;
@@ -2182,27 +2182,27 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.field, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
 		}
 		$log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
 	//// Modal Controllers
-	DeleteFieldModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	DeleteFieldModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-	function DeleteFieldModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+	function DeleteFieldModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = parentPopupData;
+		var popupCtrl = this;
+		popupCtrl.parentData = parentpopupCtrl;
 
-		popupData.ok = function () {
-			webvellaAdminService.deleteField(popupData.parentData.field.id, popupData.parentData.contentData.entity.id, successCallback, errorCallback);
+		popupCtrl.ok = function () {
+			webvellaAdminService.deleteField(popupCtrl.parentData.field.id, popupCtrl.parentData.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -2213,15 +2213,15 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			popupData.parentData.modalInstance.close('success');
+			popupCtrl.parentData.modalInstance.close('success');
 			$timeout(function () {
-				$state.go("webvella-admin-entity-fields", { name: popupData.parentData.contentData.entity.name }, { reload: true });
+				$state.go("webvella-admin-entity-fields", { name: popupCtrl.parentData.ngCtrl.entity.name }, { reload: true });
 			}, 0);
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 
 		}

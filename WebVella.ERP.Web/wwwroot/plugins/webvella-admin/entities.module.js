@@ -35,7 +35,7 @@
                 "contentView": {
                     controller: 'WebVellaAdminEntitiesController',
                     templateUrl: '/plugins/webvella-admin/entities.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -146,33 +146,33 @@
     function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaAdminService,$timeout) {
     	$log.debug('webvellaAdmin>entities> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var contentData = this;
+        var ngCtrl = this;
         //Update page title
-        contentData.pageTitle = "Entities | " + pageTitle;
+        ngCtrl.pageTitle = "Entities | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		},0);
 
-        contentData.entities = resolvedEntityMetaList.entities;
-        contentData.entities = contentData.entities.sort(function (a, b) { 
+        ngCtrl.entities = resolvedEntityMetaList.entities;
+        ngCtrl.entities = ngCtrl.entities.sort(function (a, b) { 
             if(a.name < b.name) return -1;
             if(a.name > b.name) return 1;
             return 0; 
         });
 
-        contentData.roles = resolvedRolesList.data;
-        contentData.search = {};
+        ngCtrl.roles = resolvedRolesList.data;
+        ngCtrl.search = {};
         //Create new entity modal
-        contentData.openAddEntityModal = function () {
+        ngCtrl.openAddEntityModal = function () {
         	var modalInstance = $uibModal.open({
                 animation: false,
                 templateUrl: 'createEntityModal.html',
                 controller: 'CreateEntityModalController',
-                controllerAs: "popupData",
+                controllerAs: "popupCtrl",
                 size: "lg",
                 resolve: {
-                    contentData: function () {
-                        return contentData;
+                    ngCtrl: function () {
+                        return ngCtrl;
                     }
                 }
             });
@@ -184,49 +184,49 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
 
     /* @ngInject */
-    function createEntityController($uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+    function createEntityController($uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
     	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
         /* jshint validthis:true */
-        var popupData = this;
-        popupData.entity = webvellaAdminService.initEntity();
-        popupData.roles = contentData.roles;
+        var popupCtrl = this;
+        popupCtrl.entity = webvellaAdminService.initEntity();
+        popupCtrl.roles = ngCtrl.roles;
         
         //Processing the roles for generation the checkbox values
-        popupData.entity.roles = [];
+        popupCtrl.entity.roles = [];
 
-        for (var i = 0; i < popupData.roles.length; i++) {
+        for (var i = 0; i < popupCtrl.roles.length; i++) {
             //Enable all checkboxes for administrators
-            if (popupData.roles[i].name == "administrator") {
-                popupData.entity.recordPermissions.canRead.push(popupData.roles[i].id);
-                popupData.entity.recordPermissions.canCreate.push(popupData.roles[i].id);
-                popupData.entity.recordPermissions.canUpdate.push(popupData.roles[i].id);
-                popupData.entity.recordPermissions.canDelete.push(popupData.roles[i].id);
+            if (popupCtrl.roles[i].name == "administrator") {
+                popupCtrl.entity.recordPermissions.canRead.push(popupCtrl.roles[i].id);
+                popupCtrl.entity.recordPermissions.canCreate.push(popupCtrl.roles[i].id);
+                popupCtrl.entity.recordPermissions.canUpdate.push(popupCtrl.roles[i].id);
+                popupCtrl.entity.recordPermissions.canDelete.push(popupCtrl.roles[i].id);
             }
 
             //Now create the new entity.roles array
             var role = {};
-            role.id = popupData.roles[i].id;
-            role.name = popupData.roles[i].name;
+            role.id = popupCtrl.roles[i].id;
+            role.name = popupCtrl.roles[i].name;
             role.canRead = false;
-            if (popupData.entity.recordPermissions.canRead.indexOf(popupData.roles[i].id) > -1) {
+            if (popupCtrl.entity.recordPermissions.canRead.indexOf(popupCtrl.roles[i].id) > -1) {
                 role.canRead = true;
             }
             role.canCreate = false;
-            if (popupData.entity.recordPermissions.canCreate.indexOf(popupData.roles[i].id) > -1) {
+            if (popupCtrl.entity.recordPermissions.canCreate.indexOf(popupCtrl.roles[i].id) > -1) {
                 role.canCreate = true;
             }
             role.canUpdate = false;
-            if (popupData.entity.recordPermissions.canUpdate.indexOf(popupData.roles[i].id) > -1) {
+            if (popupCtrl.entity.recordPermissions.canUpdate.indexOf(popupCtrl.roles[i].id) > -1) {
                 role.canUpdate = true;
             }
             role.canDelete = false;
-            if (popupData.entity.recordPermissions.canDelete.indexOf(popupData.roles[i].id) > -1) {
+            if (popupCtrl.entity.recordPermissions.canDelete.indexOf(popupCtrl.roles[i].id) > -1) {
                 role.canDelete = true;
             }
-            popupData.entity.roles.push(role);
+            popupCtrl.entity.roles.push(role);
         }
         
         function removeValueFromArray(array, value) {
@@ -238,61 +238,61 @@
             }
         }
 
-        popupData.toggleCanRead = function (roleId) {
-            if (popupData.entity.recordPermissions.canRead.indexOf(roleId) > -1) {
+        popupCtrl.toggleCanRead = function (roleId) {
+            if (popupCtrl.entity.recordPermissions.canRead.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(popupData.entity.recordPermissions.canRead, roleId);
+                removeValueFromArray(popupCtrl.entity.recordPermissions.canRead, roleId);
             }
             else {
                 //Not Found - should be added
-                popupData.entity.recordPermissions.canRead.push(roleId);
+                popupCtrl.entity.recordPermissions.canRead.push(roleId);
             }
         }
 
-        popupData.toggleCanCreate = function (roleId) {
-            if (popupData.entity.recordPermissions.canCreate.indexOf(roleId) > -1) {
+        popupCtrl.toggleCanCreate = function (roleId) {
+            if (popupCtrl.entity.recordPermissions.canCreate.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(popupData.entity.recordPermissions.canCreate, roleId);
+                removeValueFromArray(popupCtrl.entity.recordPermissions.canCreate, roleId);
             }
             else {
                 //Not Found - should be added
-                popupData.entity.recordPermissions.canCreate.push(roleId);
+                popupCtrl.entity.recordPermissions.canCreate.push(roleId);
             }
         }
 
-        popupData.toggleCanUpdate = function (roleId) {
-            if (popupData.entity.recordPermissions.canUpdate.indexOf(roleId) > -1) {
+        popupCtrl.toggleCanUpdate = function (roleId) {
+            if (popupCtrl.entity.recordPermissions.canUpdate.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(popupData.entity.recordPermissions.canUpdate, roleId);
+                removeValueFromArray(popupCtrl.entity.recordPermissions.canUpdate, roleId);
             }
             else {
                 //Not Found - should be added
-                popupData.entity.recordPermissions.canUpdate.push(roleId);
+                popupCtrl.entity.recordPermissions.canUpdate.push(roleId);
             }
         }
 
-        popupData.toggleCanDelete = function (roleId) {
-            if (popupData.entity.recordPermissions.canDelete.indexOf(roleId) > -1) {
+        popupCtrl.toggleCanDelete = function (roleId) {
+            if (popupCtrl.entity.recordPermissions.canDelete.indexOf(roleId) > -1) {
                 //Found - should be removed
-                removeValueFromArray(popupData.entity.recordPermissions.canDelete, roleId);
+                removeValueFromArray(popupCtrl.entity.recordPermissions.canDelete, roleId);
             }
             else {
                 //Not Found - should be added
-                popupData.entity.recordPermissions.canDelete.push(roleId);
+                popupCtrl.entity.recordPermissions.canDelete.push(roleId);
             }
         }
 
         //Awesome font icon names array 
-        popupData.icons = getFontAwesomeIconNames();
+        popupCtrl.icons = getFontAwesomeIconNames();
 
   
 
 
-        popupData.ok = function () {
-            webvellaAdminService.createEntity(popupData.entity, successCallback, errorCallback)
+        popupCtrl.ok = function () {
+            webvellaAdminService.createEntity(popupCtrl.entity, successCallback, errorCallback)
         };
 
-        popupData.cancel = function () {
+        popupCtrl.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
 
@@ -311,7 +311,7 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupData,popupData.entity, location);
+            webvellaRootService.generateValidationMessages(response, popupCtrl,popupCtrl.entity, location);
         }
         $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };

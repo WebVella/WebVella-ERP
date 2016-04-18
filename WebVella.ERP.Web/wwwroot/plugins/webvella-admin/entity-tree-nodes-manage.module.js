@@ -35,7 +35,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminManageEntityTreeNodesController',
 					templateUrl: '/plugins/webvella-admin/entity-tree-nodes-manage.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -175,31 +175,31 @@
 					$uibModal, resolvedCurrentEntityRecordTree, webvellaAdminService, ngToast, webvellaAreasService) {
 		$log.debug('webvellaAdmin>entity-relations> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 
 		//#region << Init >>
-		contentData.search = {};
-		contentData.allRelations = fastCopy(resolvedRelationsList);
-		contentData.currentEntityRelation = [];
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.tree = fastCopy(resolvedCurrentEntityRecordTree);
+		ngCtrl.search = {};
+		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
+		ngCtrl.currentEntityRelation = [];
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.tree = fastCopy(resolvedCurrentEntityRecordTree);
 		//Awesome font icon names array 
-		contentData.icons = getFontAwesomeIconNames();
+		ngCtrl.icons = getFontAwesomeIconNames();
 		//Update page title
-		contentData.pageTitle = "Entity Trees | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Trees | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#region << Init selected relation >>
-		contentData.selectedRelation = {};
-		for (var i = 0; i < contentData.allRelations.length; i++) {
-			if (contentData.allRelations[i].id == contentData.tree.meta.relationId) {
-				contentData.selectedRelation = contentData.allRelations[i];
+		ngCtrl.selectedRelation = {};
+		for (var i = 0; i < ngCtrl.allRelations.length; i++) {
+			if (ngCtrl.allRelations[i].id == ngCtrl.tree.meta.relationId) {
+				ngCtrl.selectedRelation = ngCtrl.allRelations[i];
 			}
 		}
 		//#endregion
@@ -208,20 +208,20 @@
 
 		//#region << Manage tree >>
 
-		contentData.addButtonLoadingClass = {};
+		ngCtrl.addButtonLoadingClass = {};
 
-		contentData.attachHoverEffectClass = {};
+		ngCtrl.attachHoverEffectClass = {};
 
-		contentData.addNodeModal = function (node) {
+		ngCtrl.addNodeModal = function (node) {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'addNewTreeNodeModal.html',
 				controller: 'AddNewTreeNodeModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					},
 					resolvedLookupRecords: resolveLookupRecords,
 					resolvedAllRootNodeIds: resolveAllRootNodeIds
@@ -253,9 +253,9 @@
 
 			var defaultLookupList = null;
 			//Find the default lookup field if none return null.
-			for (var i = 0; i < contentData.entity.recordLists.length; i++) {
-				if (contentData.entity.recordLists[i].default && contentData.entity.recordLists[i].type == "lookup") {
-					defaultLookupList = contentData.entity.recordLists[i];
+			for (var i = 0; i < ngCtrl.entity.recordLists.length; i++) {
+				if (ngCtrl.entity.recordLists[i].default && ngCtrl.entity.recordLists[i].type == "lookup") {
+					defaultLookupList = ngCtrl.entity.recordLists[i];
 				}
 			}
 
@@ -265,7 +265,7 @@
 				errorCallback(response.object);
 			}
 			else {
-				webvellaAreasService.getListRecords(defaultLookupList.name, contentData.entity.name, 1, null, successCallback, errorCallback);
+				webvellaAreasService.getListRecords(defaultLookupList.name, ngCtrl.entity.name, 1, null, successCallback, errorCallback);
 			}
 
 
@@ -274,15 +274,15 @@
 
 		var resolveAllRootNodeIds = function () {
 			var rootNodeIds = [];
-			for (var i = 0; i < contentData.entity.recordTrees.length; i++) {
-				for (var j = 0; j < contentData.entity.recordTrees[i].rootNodes.length; j++) {
-					rootNodeIds.push(contentData.entity.recordTrees[i].rootNodes[j].recordId);
+			for (var i = 0; i < ngCtrl.entity.recordTrees.length; i++) {
+				for (var j = 0; j < ngCtrl.entity.recordTrees[i].rootNodes.length; j++) {
+					rootNodeIds.push(ngCtrl.entity.recordTrees[i].rootNodes[j].recordId);
 				}
 			}
 			return rootNodeIds;
 		}
 
-		contentData.removeNodeModal = function (node) {
+		ngCtrl.removeNodeModal = function (node) {
 			changeRecordParentAndRefreshTree(node.recordId, null);
 		}
 
@@ -294,7 +294,7 @@
 					content: '<span class="go-green">Success:</span> Tree refreshed'
 				});
 				//Get the whole tree data again to refresh as there could be sub-children
-				contentData.tree = response.object;
+				ngCtrl.tree = response.object;
 			}
 
 			function getTreeErrorCallback(response) {
@@ -322,20 +322,20 @@
 			//Update the selected record by setting the node as its parent
 			//Find the target field name 
 			var targetFieldName = null;
-			for (var i = 0; i < contentData.entity.fields.length; i++) {
-				if (contentData.selectedRelation.targetFieldId == contentData.entity.fields[i].id) {
-					targetFieldName = contentData.entity.fields[i].name;
+			for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
+				if (ngCtrl.selectedRelation.targetFieldId == ngCtrl.entity.fields[i].id) {
+					targetFieldName = ngCtrl.entity.fields[i].name;
 				}
 			}
 
 			var patchObject = {};
 			//Add to the tree as the node's child.
 			patchObject[targetFieldName] = parentId;
-			webvellaAdminService.patchRecord(selectedRecordId, contentData.entity.name, patchObject, successCallback, errorCallback);
+			webvellaAdminService.patchRecord(selectedRecordId, ngCtrl.entity.name, patchObject, successCallback, errorCallback);
 
 		}
 
-		contentData.treeOptions = {
+		ngCtrl.treeOptions = {
 			dropped: function (event) {
 				var parentSwitched = false;
 				if (event.dest.nodesScope.$parent.$modelValue.id != event.source.nodesScope.$parent.$modelValue.id) {
@@ -354,60 +354,60 @@
 
 	//#region << Modals >>
 
-	AddNewTreeNodeModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
+	AddNewTreeNodeModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'resolvedAllRootNodeIds', 'webvellaAreasService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function AddNewTreeNodeModalController(contentData, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+	function AddNewTreeNodeModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
        resolvedAllRootNodeIds,webvellaAreasService, ngToast, $timeout, $state) {
 
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
+		var popupCtrl = this;
 		//#region << Init >>
-		popupData.currentPage = 1;
-		popupData.hasWarning = false;
-		popupData.warningMessage = "";
-		popupData.contentData = fastCopy(contentData);
-		popupData.relationLookupList = fastCopy(resolvedLookupRecords);
-		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.currentPage = 1;
+		popupCtrl.hasWarning = false;
+		popupCtrl.warningMessage = "";
+		popupCtrl.ngCtrl = fastCopy(ngCtrl);
+		popupCtrl.relationLookupList = fastCopy(resolvedLookupRecords);
+		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 		//#endregion
 
 
 		//#region << Logic >>
 
 		//#region << Search >>
-		popupData.checkForSearchEnter = function (e) {
+		popupCtrl.checkForSearchEnter = function (e) {
 			var code = (e.keyCode ? e.keyCode : e.which);
 			if (code == 13) { //Enter keycode
-				popupData.submitSearchQuery();
+				popupCtrl.submitSearchQuery();
 			}
 		}
-		popupData.submitSearchQuery = function () {
+		popupCtrl.submitSearchQuery = function () {
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList = fastCopy(response.object);
 			}
 			function errorCallback(response) { }
 
-			if (popupData.searchQuery) {
-				popupData.searchQuery = popupData.searchQuery.trim();
+			if (popupCtrl.searchQuery) {
+				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, 1, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.ngCtrl.entity.name, 1, popupCtrl.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
 		//#region << Paging >>
-		popupData.selectPage = function (page) {
+		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
-				popupData.currentPage = page;
+				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.currentPage = page;
 			}
 
 			function errorCallback(response) {
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.contentData.entity.name, page, null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.ngCtrl.entity.name, page, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -415,25 +415,25 @@
 
 		//Find the target field name 
 		var targetFieldName = null;
-		for (var i = 0; i < popupData.contentData.entity.fields.length; i++) {
-			if (popupData.contentData.selectedRelation.targetFieldId == popupData.contentData.entity.fields[i].id) {
-				targetFieldName = popupData.contentData.entity.fields[i].name;
+		for (var i = 0; i < popupCtrl.ngCtrl.entity.fields.length; i++) {
+			if (popupCtrl.ngCtrl.selectedRelation.targetFieldId == popupCtrl.ngCtrl.entity.fields[i].id) {
+				targetFieldName = popupCtrl.ngCtrl.entity.fields[i].name;
 			}
 		}		
 		
 		//Only nodes that has no parents or not already root nodes to a tree can be selected
-		popupData.canSelectRecord = function(record) {
+		popupCtrl.canSelectRecord = function(record) {
 				if (record[targetFieldName] != null || resolvedAllRootNodeIds.indexOf(record.id) > -1) {
 					return false;
 				}
 				return true;
 		}
 
-		popupData.selectSingleRecord = function (record) {
+		popupCtrl.selectSingleRecord = function (record) {
 			$uibModalInstance.close(record);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion

@@ -1,50 +1,51 @@
 ﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="contentData.checkEntityPermissions('canCreate')"
-			   href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/create?listName={{::contentData.stateParams.listName}}&filter={{::contentData.stateParams.filter}}&page={{::contentData.stateParams.page}}">
+			<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="ngCtrl.checkEntityPermissions('canCreate')"
+			   href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/create?listName={{::ngCtrl.stateParams.listName}}&filter={{::ngCtrl.stateParams.filter}}&page={{::ngCtrl.stateParams.page}}">
 				<i class="fa fa-fw fa-plus"></i> Add New
 			</a>
 
-			<div class="form-group form-group-sm hidden-xs " ng-if="::contentData.defaultSearchField != null">
+			<div class="form-group form-group-sm hidden-xs " ng-if="::ngCtrl.defaultSearchField != null">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="contentData.searchQuery" type="text" class="form-control" placeholder="{{::contentData.searchQueryPlaceholder}}" ng-keydown="contentData.checkForSearchEnter($event)">
+					<input ng-model="ngCtrl.searchQuery" type="text" class="form-control" placeholder="{{::ngCtrl.searchQueryPlaceholder}}" ng-keydown="ngCtrl.checkForSearchEnter($event)">
 				</div>
 			</div>
 			<span uib-dropdown class="dropdown">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu pull-right" uib-dropdown-menu style="margin-top:10px;">
-					<li ng-show="contentData.checkEntityPermissions('canCreate,canUpdate')">
-						<a ng-click="contentData.openImportModal()">
+					<li ng-show="ngCtrl.checkEntityPermissions('canCreate,canUpdate')">
+						<a ng-click="ngCtrl.openImportModal()">
 							<i class="fa fa-upload"></i> Import CSV
 						</a>
 					</li>
 					<li>
-						<a ng-click="contentData.openExportModal()">
+						<a ng-click="ngCtrl.openExportModal()">
 							<i class="fa fa-download"></i> Export CSV
 						</a>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="/#/admin/entities/{{::contentData.entity.name}}/lists/{{::contentData.stateParams.listName}}">
+						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
 							<i class="fa fa-wrench"></i> Edit List
 						</a>
 					</li>
+					<li dynamic-html template="ngCtrl.actionTemplate"/>
 				</ul>
 			</span>
 		</div>
 		<div class="meta-label">
 			<h4>
-				{{::contentData.currentListView.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalLists.length > 1">
+				{{::ngCtrl.currentListView.label}}
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li><a href="javascript:void(0)"><i class="fa fa-fw fa-thumb-tack go-red"></i> set current as default</a></li>
 						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
 						<li class="divider"></li>
-						<li ng-repeat="list in contentData.generalLists track by $index">
-							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::list.name}}/1">
+						<li ng-repeat="list in ngCtrl.generalLists track by $index">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::list.name}}/1">
 								<i class="fa fa-fw fa-{{list.iconName}}"></i> {{::list.label}}
 							</a>
 						</li>
@@ -61,39 +62,39 @@
 
 	<div id="page-text">
 		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
-			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::contentData.recordsMeta.cssClass}}" ng-show='::contentData.records.length > 0' ng-if="!contentData.recordsMeta.dynamicHtmlTemplate">
+			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.recordsMeta.cssClass}}" ng-show='::ngCtrl.records.length > 0' ng-if="!ngCtrl.recordsMeta.dynamicHtmlTemplate">
 				<thead>
 					<tr>
 						<th class="actions text-center" style="padding:0;vertical-align:middle">
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="!show_filter && !contentData.listIsFiltered" ng-click="show_filter = !show_filter">
+							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
 								<i class="fa fa-fw fa-filter go-grey"></i>
 							</a>
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="contentData.listIsFiltered" ng-click="contentData.clearQueryFilter()">
+							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
 								<i class="fa fa-fw fa-times go-red"></i>
 							</a>
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="show_filter && !contentData.listIsFiltered" ng-click="show_filter = !show_filter">
+							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
 								<i class="fa fa-fw fa-times go-grey"></i>
 							</a>
 						</th>
-						<th class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
+						<th class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || contentData.listIsFiltered">
+					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
 						<td>
-							<a class="btn btn-default btn-sm" ng-click="contentData.applyQueryFilter()">
+							<a class="btn btn-default btn-sm" ng-click="ngCtrl.applyQueryFilter()">
 								<i class="fa fa-fw fa-filter"></i>
 							</a>
 						</td>
-						<td ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
+						<td ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">
 							<div ng-switch="column.type">
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div ng-switch-when="1">
 										<!--AutoNumber field-->
 										<div class="form-group form-group-sm" style="max-width:150px">
 											<div class="input-group">
-												<span class="input-group-addon" ng-bind="contentData.getAutoIncrementPrefix(column)"></span>
-												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="contentData.filterQuery[column.dataName]">
+												<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
+												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
@@ -102,7 +103,7 @@
 										<div class="form-group form-group-sm">
 											<div class="checkbox">
 												<label>
-													<input type="checkbox" ng-model="contentData.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
+													<input type="checkbox" ng-model="ngCtrl.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
 												</label>
 											</div>
 										</div>
@@ -112,7 +113,7 @@
 										<div class="form-group form-group-sm"  style="max-width:150px">
 											<div class="input-group">
 												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
 												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
 											</div>
 										</div>
@@ -122,7 +123,7 @@
 										<div class="form-group form-group-sm">
 											<div class="left-inner-addon">
 												<i class="fa fa-fw fa-calendar"></i>
-												<input type="date" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
@@ -132,13 +133,13 @@
 											<div class="col-sm-6" style="padding:0">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
-													<input type="date" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 											<div class="col-sm-6" style="padding: 0 0 0 5px">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-clock-o"></i>
-													<input type="time" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+													<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
@@ -148,7 +149,7 @@
 										<div class="form-group form-group-sm">
 											<div class="left-inner-addon">
 												<i class="fa fa-fw fa-envelope-o"></i>
-												<input type="email" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="email" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
@@ -157,14 +158,14 @@
 										<div class="form-group form-group-sm">
 											<div class="left-inner-addon">
 												<i class="fa fa-fw fa-link"></i>
-												<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
 									<div ng-switch-when="8">
 										<!--html field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="9">
@@ -172,27 +173,27 @@
 										<div class="form-group form-group-sm">
 											<div class="left-inner-addon">
 												<i class="fa fa-fw fa-link"></i>
-												<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
 									<div ng-switch-when="10">
 										<!--textarea field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="11">
 										<!--multiselect field-->
 										<div class="form-group form-group-sm">
-											<select class="form-control" ng-model="contentData.filterQuery[column.dataName]"
+											<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
 												ng-options="option.value as option.key for option in column.meta.options"></select>
 										</div>
 									</div>
 									<div ng-switch-when="12">
 										<!--number field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="13">
@@ -206,33 +207,33 @@
 										<div class="form-group form-group-sm">
 											<div class="right-inner-addon">
 												<i class="fa fa-fw fa-percent"></i>
-												<input type="text" class="form-control" style="padding-left:5px;" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="text" class="form-control" style="padding-left:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
 									<div ng-switch-when="15">
 										<!--phone field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="16">
 										<!--GUID field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="17">
 										<!--dropdown field-->
 										<div class="form-group form-group-sm">
-											<select class="form-control" ng-model="contentData.filterQuery[column.dataName]"
+											<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
 												ng-options="option.value as option.key for option in column.meta.options"></select>
 										</div>
 									</div>
 									<div ng-switch-when="18">
 										<!--text field-->
 										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 										</div>
 									</div>
 									<div ng-switch-when="19">
@@ -240,7 +241,7 @@
 										<div class="form-group form-group-sm">
 											<div class="left-inner-addon">
 												<i class="fa fa-fw fa-globe"></i>
-												<input type="text" class="form-control" ng-model="contentData.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
@@ -254,34 +255,34 @@
 							</div>
 						</td>
 					</tr>
-					<tr ng-repeat="record in contentData.records">
+					<tr ng-repeat="record in ngCtrl.records">
 						<td class="actions">
-							<a ng-click="contentData.saveStateParamsToSessionStorage()" href='#/areas/{{::contentData.currentArea.name}}/{{::contentData.entity.name}}/{{::record.id}}/{{::contentData.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
+							<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
 								<i class="fa fa-fw fa-eye"></i>
 							</a>
 						</td>
-						<td class="wv-{{::column.meta.name}}" ng-repeat="column in contentData.recordsMeta.columns | limitTo: contentData.recordsMeta.visibleColumnsCount">
-							<div ng-if="::contentData.currentUserHasReadPermission(column)" ng-switch="::column.type">
+						<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">
+							<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
 								<div ng-switch-when="field">
-									<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
 								</div>
 								<div ng-switch-when="fieldFromRelation">
-									<div ng-bind-html="::contentData.renderFieldValue(record[column.dataName],column.meta)"></div>
+									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
 								</div>
 								<div ng-switch-when="view">
-									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-view>
 								</div>
 								<div ng-switch-when="viewFromRelation">
-									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-view>
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-view>
 								</div>
 								<div ng-switch-when="list">
-									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-list>
 								</div>
 								<div ng-switch-when="listFromRelation">
-									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::contentData.relationsMeta"></recursive-list>
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-list>
 								</div>
 							</div>
-							<div ng-if="::!contentData.currentUserHasReadPermission(column)">
+							<div ng-if="::!ngCtrl.currentUserHasReadPermission(column)">
 								<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
 							</div>
 						</td>
@@ -289,20 +290,20 @@
 				</tbody>
 			</table>
 
-			<div class="ng-hide" ng-show='::contentData.records.length > 0' ng-if="contentData.recordsMeta.dynamicHtmlTemplate">
-				<dynamic-list template-url="contentData.recordsMeta.dynamicHtmlTemplate" template-data="contentData.records" template-meta="contentData.recordsMeta"></dynamic-list>
+			<div class="ng-hide" ng-show='::ngCtrl.records.length > 0' ng-if="ngCtrl.recordsMeta.dynamicHtmlTemplate">
+				<dynamic-list template-url="ngCtrl.recordsMeta.dynamicHtmlTemplate" template-data="ngCtrl.records" template-meta="ngCtrl.recordsMeta"></dynamic-list>
 			</div>
 		</div>
 
-		<div class="alert alert-info ng-hide" ng-show='::contentData.records.length == 0'>
+		<div class="alert alert-info ng-hide" ng-show='::ngCtrl.records.length == 0'>
 			There are no records matching your query
 		</div>
 
-		<ul class="pager ng-hide" ng-hide="::contentData.currentPage == 1 && contentData.currentListView.pageSize > contentData.records.length" ng-if="::contentData.currentListView.pageSize != 0">
-			<!--<li ng-if="::contentData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-			<li ng-if="::contentData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-			<li ng-if="::contentData.currentListView.pageSize <= contentData.records.length" class="next"><a href="javascript:void(0)" ng-click="contentData.selectPage(contentData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
-			<!--<li ng-if="::contentData.currentListView.pageSize > contentData.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
+		<ul class="pager ng-hide" ng-hide="::ngCtrl.currentPage == 1 && ngCtrl.currentListView.pageSize > ngCtrl.records.length" ng-if="::ngCtrl.currentListView.pageSize != 0">
+			<!--<li ng-if="::ngCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+			<li ng-if="::ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+			<li ng-if="::ngCtrl.currentListView.pageSize <= ngCtrl.records.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+			<!--<li ng-if="::ngCtrl.currentListView.pageSize > ngCtrl.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 		</ul>
 	</div>
 </div>
@@ -311,8 +312,8 @@
 	<div class="modal-header">
 		<h4 class="modal-title">Export records</h4>
 	</div>
-	<div class="modal-body ng-hide" ng-show="!popupData.downloadFilePath">
-		<div class="alert alert-danger ng-hide" ng-show="popupData.hasError" ng-bind="popupData.errorMessage"></div>
+	<div class="modal-body ng-hide" ng-show="!popupCtrl.downloadFilePath">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
 		<h4>Record fields & order</h4>
 		<ul class="list-inline">
 			<li class="go-green"><i class="fa fa-table"></i> id</li>
@@ -324,24 +325,24 @@
 		<div class="row">
 			<div class="col-xs-6">
 				<label class="radio-inline">
-					<input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupData.count" style="width:60px;display:inline-block;margin:0 5px;" /> records
+					<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="true" style="top:6px;"> get the first <input class="form-control" ng-model="popupCtrl.count" style="width:60px;display:inline-block;margin:0 5px;" /> records
 				</label>
 			</div>
 			<div class="col-xs-6" style="padding:6px;">
 				<label class="radio-inline">
-					<input type="radio" name="countOptions" ng-model="popupData.countHasSize" ng-value="false"> get all records
+					<input type="radio" name="countOptions" ng-model="popupCtrl.countHasSize" ng-value="false"> get all records
 				</label>
 			</div>
 		</div>
 	</div>
-	<div class="modal-body ng-hide" ng-show="popupData.downloadFilePath">
+	<div class="modal-body ng-hide" ng-show="popupCtrl.downloadFilePath">
 		<div class="go-green">Success!</div>
 		<p>Click on the link bellow in the next 1 hour to download the report. Please have in mind that this link is only for your personal use.</p>
-		<div class="form" style="margin:15px 0"><a href="{{popupData.downloadFilePath}}"><i class="fa fa-file"></i> click here to download the export file</a></div>
+		<div class="form" style="margin:15px 0"><a href="{{popupCtrl.downloadFilePath}}"><i class="fa fa-file"></i> click here to download the export file</a></div>
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupData.ok()" class="btn btn-primary ng-hide" ng-show="!popupData.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupData.loading, 'fa-spinner fa-spin':popupData.loading}"></i> Export</a>
-		<a href="javascript:void(0)" ng-click="popupData.cancel()" class="btn btn-default">Cancel</a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary ng-hide" ng-show="!popupCtrl.downloadFilePath"><i class="fa fa-fw" ng-class="{'fa-download': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Export</a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default">Cancel</a>
 	</div>
 </script>
 
@@ -350,7 +351,7 @@
 		<h4 class="modal-title">Import records</h4>
 	</div>
 	<div class="modal-body record-details">
-		<div class="alert alert-danger ng-hide" ng-show="popupData.hasError" ng-bind="popupData.errorMessage"></div>
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.hasError" ng-bind="popupCtrl.errorMessage"></div>
 		<h4>Import CSV</h4>
 		<p class="text-muted">
 			The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated.
@@ -360,25 +361,25 @@
 			<div class="editable-field field">
 				<label class="control-label">Uploaded CSV file</label>
 				<div>
-					<a ng-show='!popupData.uploadedFilePath && popupData.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-sm ng-hide' ngf-select="popupData.upload(popupData.uploadedFile)" ngf-max-size="20MB"
-					   ng-model='popupData.uploadedFile' ngf-multiple='false'>Browse</a>
-					<div class="progress ng-hide" ng-show="!popupData.uploadedFilePath && popupData.uploadProgress > 0 && popupData.uploadProgress <= 100">
-						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupData.uploadProgress+'%'}">
-							<span ng-show="popupData.uploadProgress < 100">{{popupData.uploadProgress || '0'}}%</span>
-							<span ng-show="popupData.uploadProgress == 100">almost done...</span>
+					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-sm ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
+					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false'>Browse</a>
+					<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
+						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">
+							<span ng-show="popupCtrl.uploadProgress < 100">{{popupCtrl.uploadProgress || '0'}}%</span>
+							<span ng-show="popupCtrl.uploadProgress == 100">almost done...</span>
 						</div>
 					</div>
-					<div class="input-group file-upload ng-hide" ng-show='popupData.uploadedFilePath'>
-						<span class="form-control"><a href="{{popupData.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupData.uploadedFile.name}}</a></span>
-						<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupData.upload(popupData.uploadedFile)" ngf-max-size="20MB" ng-model='popupData.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+					<div class="input-group file-upload ng-hide" ng-show='popupCtrl.uploadedFilePath'>
+						<span class="form-control"><a href="{{popupCtrl.uploadedFilePath}}"><i class="fa fa-file"></i> {{popupCtrl.uploadedFile.name}}</a></span>
+						<a class="input-group-addon update" href='javascript:void(0)' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB" ng-model='popupCtrl.uploadedFile' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
+						<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<a href="javascript:void(0)" ng-click="popupData.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupData.loading, 'fa-spinner fa-spin':popupData.loading}"></i> Import</a>
-		<a href="javascript:void(0)" ng-click="popupData.cancel()" class="btn btn-default">Cancel</a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.ok()" class="btn btn-primary"><i class="fa fa-fw" ng-class="{'fa-upload': !popupCtrl.loading, 'fa-spinner fa-spin':popupCtrl.loading}"></i> Import</a>
+		<a href="javascript:void(0)" ng-click="popupCtrl.cancel()" class="btn btn-default">Cancel</a>
 	</div>
 </script>

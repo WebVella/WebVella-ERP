@@ -1,28 +1,40 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-danger btn-sm" ng-click="contentData.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
+			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' list:</span> {{contentData.list.name}}</h4>
+			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
 		</div>
 	</div>
 
 </div>
 <div id="page-body" style="padding-bottom:3em; ">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
 	<div id="page-text">
+		<ul class="nav nav-pills">
+			<li role="presentation" class="active">
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic info</a>
+			</li>
+			<li role="presentation">
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/content">Content</a>
+			</li>
+			<li role="presentation">
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/action">Actions</a>
+			</li>
+		</ul>
+		<hr class="divider" />
 		<div class="view-manage-section">
 			<div class="panel panel-default">
 				<div class="panel-body">
@@ -34,7 +46,7 @@
 										<label class="control-label col-lg-2">Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::contentData.list.name}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.list.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -47,9 +59,9 @@
 										<label class="control-label col-lg-2">Type</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-select="contentData.list.type"
-													   value="{{contentData.list.type}}" e-ng-options="item.key as item.value for item in contentData.listTypeOptions"
-													   onbeforesave="contentData.fieldUpdate('type', $data)" e-form="fieldForm_type">
+												<input type="text" class="form-control" disabled editable-select="ngCtrl.list.type"
+													   value="{{ngCtrl.list.type}}" e-ng-options="item.key as item.value for item in ngCtrl.listTypeOptions"
+													   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
 												<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -64,9 +76,9 @@
 										<label class="control-label col-lg-2">Label</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.label"
-													   value="{{contentData.list.label}}"
-													   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.label"
+													   value="{{ngCtrl.list.label}}"
+													   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
 												<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -79,9 +91,9 @@
 										<label class="control-label col-lg-2">Weight</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.weight"
-													   value="{{contentData.list.weight}}"
-													   onbeforesave="contentData.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.weight"
+													   value="{{ngCtrl.list.weight}}"
+													   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
 												<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -96,15 +108,15 @@
 										<label class="control-label col-lg-2">Default</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<span class="input-group-addon hidden-xs" ng-if="contentData.list.default && !fieldForm_default.$visible">
+												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.list.default && !fieldForm_default.$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon hidden-xs" ng-if="!contentData.list.default && !fieldForm_default.$visible">
+												<span class="input-group-addon hidden-xs" ng-if="!ngCtrl.list.default && !fieldForm_default.$visible">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled editable-checkbox="contentData.list.default"
-													   e-title="Make this default list?" value="{{contentData.list.default}}"
-													   onbeforesave="contentData.fieldUpdate('default',$data)" e-form="fieldForm_default">
+												<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.list.default"
+													   e-title="Make this default list?" value="{{ngCtrl.list.default}}"
+													   onbeforesave="ngCtrl.fieldUpdate('default',$data)" e-form="fieldForm_default">
 												<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -117,13 +129,13 @@
 										<label class="control-label col-lg-2">System</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<span class="input-group-addon" ng-if="contentData.list.system">
+												<span class="input-group-addon" ng-if="ngCtrl.list.system">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon" ng-if="!contentData.list.system">
+												<span class="input-group-addon" ng-if="!ngCtrl.list.system">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled value="{{::contentData.list.system}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.list.system}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -138,9 +150,9 @@
 										<label class="control-label col-lg-2">CSS class</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.cssClass"
-													   value="{{contentData.list.cssClass}}"
-													   onbeforesave="contentData.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.cssClass"
+													   value="{{ngCtrl.list.cssClass}}"
+													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
 												<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000", "width-3500"</div>
@@ -154,10 +166,10 @@
 										<label class="control-label col-lg-2">Icon Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<span class="input-group-addon"><i class="fa fa-{{contentData.list.iconName}} fa-fw"></i></span>
-												<input type="text" class="form-control" disabled editable-text="contentData.list.iconName"
-													   value="{{contentData.list.iconName}}" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
-													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10">
+												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.list.iconName}} fa-fw"></i></span>
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.iconName"
+													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
@@ -173,9 +185,9 @@
 										<label class="control-label col-lg-2">Visible columns #</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.visibleColumnsCount"
-													   value="{{contentData.list.visibleColumnsCount}}"
-													   onbeforesave="contentData.fieldUpdate('visibleColumnsCount',$data)" e-form="fieldForm_visibleColumnsCount">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.visibleColumnsCount"
+													   value="{{ngCtrl.list.visibleColumnsCount}}"
+													   onbeforesave="ngCtrl.fieldUpdate('visibleColumnsCount',$data)" e-form="fieldForm_visibleColumnsCount">
 												<span class="input-group-addon" ng-click="fieldForm_visibleColumnsCount.$show()" ng-hide="fieldForm_visibleColumnsCount.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -188,9 +200,9 @@
 										<label class="control-label col-lg-2">Page size</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.pageSize"
-													   value="{{contentData.list.pageSize}}"
-													   onbeforesave="contentData.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.pageSize"
+													   value="{{ngCtrl.list.pageSize}}"
+													   onbeforesave="ngCtrl.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
 												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">zero for unlimited</div>
@@ -206,9 +218,9 @@
 										<label class="control-label col-lg-1">Details View Name</label>
 										<div class="col-lg-11">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.list.viewNameOverride"
-													   value="{{contentData.list.viewNameOverride}}"
-													   onbeforesave="contentData.fieldUpdate('viewNameOverride',$data)" e-form="fieldForm_viewNameOverride">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.viewNameOverride"
+													   value="{{ngCtrl.list.viewNameOverride}}"
+													   onbeforesave="ngCtrl.fieldUpdate('viewNameOverride',$data)" e-form="fieldForm_viewNameOverride">
 												<span class="input-group-addon" ng-click="fieldForm_viewNameOverride.$show()" ng-hide="fieldForm_viewNameOverride.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">Leave blank for the area selected one. You can generate view names on the fly, with "{fieldDataName}" in the string above. DataName needs to be present in the list's data. You can also use "{areaName}", "{entityName}", "{filter}", "{page}", "{searchQuery}". Fields data from relation is supported with the format of its DataName e.g. "{$field$relation_name$label}"</div>
@@ -225,11 +237,11 @@
 										<div class="col-lg-11">
 											<div class="editable-wrapper input-group editable-updatable">
 												<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
-													<a href="{{contentData.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+													<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 												</span>
-												<input type="text" class="form-control" disabled editable-text="contentData.list.dynamicHtmlTemplate"
-													   value="{{contentData.renderFieldValue(contentData.list.dynamicHtmlTemplate,{fieldType:18})}}"
-													   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.dynamicHtmlTemplate"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.list.dynamicHtmlTemplate,{fieldType:18})}}"
+													   onbeforesave="ngCtrl.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 												<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">URL to a customer HTML template file that should substitute the default view HTML template. It will be compiled by angular, and view data and meta are accessible.</div>
@@ -256,45 +268,45 @@
 				<div class="col-xs-6">
 					<div class="list-field-selection-box" style="height:250px;">
 						<div class="drop-zone">
-							<div as-sortable="contentData.dragLibraryListeners" ng-model="contentData.list.columns">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.list.columns track by item.dataName"
+							<div as-sortable="ngCtrl.dragLibraryListeners" ng-model="ngCtrl.list.columns">
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in ngCtrl.list.columns track by item.dataName"
 									 ng-switch="::item.type">
 									<div ng-switch-when="field" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 										<i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i>
-										<span class="note go-green" ng-show="contentData.defaultFieldName == item.meta.name">(default search)</span>
+										<span class="note go-green" ng-show="ngCtrl.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div ng-switch-when="fieldFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="view" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="viewFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="list" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="listFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="treeFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
-										<a href="javascript:void(0)" class="pull-right" ng-click="contentData.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
-										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > contentData.list.visibleColumnsCount"></i>
+										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 								</div>
 							</div>
@@ -306,51 +318,51 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.dataName" class="form-control" style="width:100%;">
+								<input type="text" ng-model="ngCtrl.search.dataName" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
 					<div style="height:200px;overflow-y:scroll;">
 						<div class="drop-zone-disabled">
-							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.library.items">
+							<div as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.library.items">
 								<div class="dropped-item" ng-model="item" data-as-sortable-item
-									 ng-repeat="item in contentData.library.items | filter: contentData.search track by item.dataName"
+									 ng-repeat="item in ngCtrl.library.items | filter: ngCtrl.search track by item.dataName"
 									 ng-switch="::item.type">
 									<div as-sortable-item-handle ng-switch-when="field" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="fieldFromRelation" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="view" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="viewFromRelation" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="list" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-list go-teal" style="margin-left: 10px;"></i> {{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="listFromRelation" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="treeFromRelation" class="clearfix">
-										<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+										<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 										<i class="fa fa-fw fa-sitemap go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div as-sortable-item-handle ng-switch-when="html" class="clearfix">
 										<div ng-if='item.tag == ""'>
-											<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+											<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 											<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> No tag
 										</div>
 										<div ng-if='item.tag != ""'>
-											<a href="javascript:void(0)" class="pull-left" ng-click="contentData.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
+											<a href="javascript:void(0)" class="pull-left" ng-click="ngCtrl.moveToColumns(item, $index)"><i class="fa fa-fw fa-arrow-left"></i></a>
 											<i class="fa fa-fw fa-code go-teal" style="margin-left:10px;"></i> {{::item.tag}}
 										</div>
 									</div>
@@ -368,24 +380,24 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
+							<tr ng-repeat="relation in ngCtrl.library.relations track by relation.relationId">
 								<td>
 									<div style="overflow-x: hidden; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis;">
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
 										{{::relation.relationName}}
 									</div>
 								</td>
 								<td>
-									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
+									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
 										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
 									</a>
 								</td>
 								<td>
 									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
-									<a ng-click="contentData.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
 										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
 										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
 									</a>
@@ -399,34 +411,34 @@
 
 
 			<h3 class="page-header">Query</h3>
-			<div ng-if="contentData.list.query == null"><a class="btn btn-default" ng-click="contentData.AddSection(null)">add query section</a></div>
-			<div ng-if="contentData.list.query != null">
-				<query-item current-query="contentData.list.query" parent-query="null" root-query="contentData.list.query" page-scope="contentData" query-index="0"></query-item>
+			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default" ng-click="ngCtrl.AddSection(null)">add query section</a></div>
+			<div ng-if="ngCtrl.list.query != null">
+				<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
 			</div>
 
 			<h3 class="page-header">Sort</h3>
-			<div ng-show="contentData.list.sorts == null || contentData.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="contentData.AddSortRule()">add new sort</a></div>
-			<div class="panel panel-default" ng-hide="contentData.list.sorts == null || contentData.list.sorts.length == 0">
+			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="ngCtrl.AddSortRule()">add new sort</a></div>
+			<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
-						<a class="btn btn-default btn-sm" ng-click="contentData.AddSortRule()">add new sort</a>
+						<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSortRule()">add new sort</a>
 					</span>
 				</div>
 				<div class="panel-body">
 					<table class="table table-noborder table-vertical-align-middle">
-						<tr ng-repeat="sortRule in contentData.list.sorts">
+						<tr ng-repeat="sortRule in ngCtrl.list.sorts">
 							<td style="width:60px"><span ng-if="$index == 0">first</span><span ng-if="$index != 0">than</span></td>
 							<td>
-								<select class="form-control" ng-model="sortRule.sortType" ng-change="contentData.updateSorts()">
+								<select class="form-control" ng-model="sortRule.sortType" ng-change="ngCtrl.updateSorts()">
 									<option value="ascending">sort from low to high by</option>
 									<option value="descending">sort from high to low by</option>
 								</select>
 							</td>
 							<td>
-								<select class="form-control" ng-model="sortRule.fieldName" ng-change="contentData.updateSorts()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
+								<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
 							</td>
 							<td style="width:60px;">
-								<a class="btn btn-default go-red" ng-click="contentData.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+								<a class="btn btn-default go-red" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -440,18 +452,18 @@
 
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Delete a list</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
+		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
 			<p>Are you sure that you need this list deleted?</p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete List</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 
@@ -466,13 +478,13 @@
 	<table class="table table-noborder table-vertical-align-middle">
 		<tr>
 			<td style="width:30px;">
-				<a class="btn btn-default" ng-click="contentData.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database go-grey"></i></a>
+				<a class="btn btn-default" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database go-grey"></i></a>
 			</td>
 			<td  width="250">
-				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="contentData.updateQuery()" ng-options="item.fieldName as item.meta.name for item in contentData.onlyFieldsLibrary.items"></select>
+				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="ngCtrl.updateQuery()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
 			</td>
 			<td  width="200">
-				<select class="form-control" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()" ng-options="item.key as item.value for item in contentData.getQueryComparisonOptionsList(currentQuery)"></select>
+				<select class="form-control" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()" ng-options="item.key as item.value for item in ngCtrl.getQueryComparisonOptionsList(currentQuery)"></select>
 			</td>
 			<!--<td  width="130">
 				<select class="form-control" disabled>
@@ -483,12 +495,12 @@
 				<div class="editable-wrapper input-group editable-updatable">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
 						   value="{{currentQuery.fieldValue}}"
-						   onaftersave="contentData.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
+						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
 					<span class="input-group-addon" ng-click="this['queryForm_' + queryIndex].$show()" ng-hide="this['queryForm_' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 				</div>
 			</td>
 			<td style="width:60px;">
-				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red" ng-click="contentData.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
 				<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
 			</td>
 		</tr>
@@ -499,21 +511,21 @@
 	<div class="panel panel-default">
 		<div class="panel-heading clearfix">
 			<span class="pull-right">
-				<a class="btn btn-default go-red btn-sm" ng-click="contentData.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-default btn-sm" ng-click="contentData.AddSection(currentQuery)">add section</a>
-				<a class="btn btn-default btn-sm" ng-click="contentData.AddRule(currentQuery)">add rule</a>
+				<a class="btn btn-default go-red btn-sm" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSection(currentQuery)">add section</a>
+				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddRule(currentQuery)">add rule</a>
 			</span>
-			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="contentData.updateQuery()">
+			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
 				<option value="AND">all</option>
 				<option value="OR">any</option>
 			</select>
 			<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
 		</div>
 		<div class="panel-body">
-			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="contentData.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
+			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="ngCtrl.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
 			<query-item ng-repeat="queryItem in currentQuery.subQueries"
 						current-query="queryItem" parent-query="currentQuery"
-						root-query="contentData.list.query" page-scope="contentData"
+						root-query="ngCtrl.list.query" page-scope="ngCtrl"
 						query-index="$index"></query-item>
 		</div>
 	</div>
@@ -522,7 +534,7 @@
 
 <script type="text/ng-template" id="manageDataLinkModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Manage data link for the rule</h3>
 	</div>
 	<div class="modal-body">
@@ -673,7 +685,7 @@
 		</table>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 

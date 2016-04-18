@@ -36,7 +36,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityViewManageController',
 					templateUrl: '/plugins/webvella-admin/entity-view-manage.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -215,31 +215,31 @@
 		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 		//#region << General init >>
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
-		contentData.pageTitle = "Entity Views | " + pageTitle;
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
 		$timeout(function(){
-		$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+		$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		//Hide side menu
 		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
 		//#region << Initialize View and Content Region >>
-		contentData.view = {};
-		for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-			if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
-				contentData.view = fastCopy(contentData.entity.recordViews[i]);
+		ngCtrl.view = {};
+		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
+			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
+				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
 			}
 		}
-		contentData.viewContentRegion = {};
-		for (var i = 0; i < contentData.view.regions.length; i++) {
-			if (contentData.view.regions[i].name === "content") {
-				contentData.viewContentRegion = contentData.view.regions[i];
+		ngCtrl.viewContentRegion = {};
+		for (var i = 0; i < ngCtrl.view.regions.length; i++) {
+			if (ngCtrl.view.regions[i].name === "content") {
+				ngCtrl.viewContentRegion = ngCtrl.view.regions[i];
 			}
 		}
 		//#endregion
@@ -247,38 +247,38 @@
 		//#region << item Library init >>
 		var alreadyUsedItemDataNames = [];
 		//Get all items from the view and add their dataNames in the already used 
-		contentData.generateAlreadyUsed = function () {
+		ngCtrl.generateAlreadyUsed = function () {
 			alreadyUsedItemDataNames = [];
-			for (var i = 0; i < contentData.viewContentRegion.sections.length; i++) {
-				for (var j = 0; j < contentData.viewContentRegion.sections[i].rows.length; j++) {
-					for (var k = 0; k < contentData.viewContentRegion.sections[i].rows[j].columns.length; k++) {
-						for (var m = 0; m < contentData.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
-							if (contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
-								alreadyUsedItemDataNames.push(contentData.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
+			for (var i = 0; i < ngCtrl.viewContentRegion.sections.length; i++) {
+				for (var j = 0; j < ngCtrl.viewContentRegion.sections[i].rows.length; j++) {
+					for (var k = 0; k < ngCtrl.viewContentRegion.sections[i].rows[j].columns.length; k++) {
+						for (var m = 0; m < ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
+							if (ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
+								alreadyUsedItemDataNames.push(ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
 							}
 						}
 					}
 				}
 			}
 		}
-		contentData.generateAlreadyUsed();
-		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
-		contentData.fullLibrary = {};
-		contentData.fullLibrary.items = fastCopy(resolvedViewLibrary);
-		contentData.library = {};
-		contentData.library.relations = [];
-		contentData.library.items = [];
-		contentData.sortLibrary = function () {
-			contentData.library.items = contentData.library.items.sort(function (a, b) {
+		ngCtrl.generateAlreadyUsed();
+		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.fullLibrary = {};
+		ngCtrl.fullLibrary.items = fastCopy(resolvedViewLibrary);
+		ngCtrl.library = {};
+		ngCtrl.library.relations = [];
+		ngCtrl.library.items = [];
+		ngCtrl.sortLibrary = function () {
+			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
 				if (a.fieldName < b.fieldName) return -1;
 				if (a.fieldName > b.fieldName) return 1;
 				return 0;
 			});
 		}
-		contentData.checkIfRelationAddedToLibrary = function(relationName){
-			if(contentData.library.relations.length > 0){
-				for (var i = 0; i < contentData.library.relations.length; i++) {
-					 if(contentData.library.relations[i].relationName ===  relationName  && contentData.library.relations[i].addedToLibrary){
+		ngCtrl.checkIfRelationAddedToLibrary = function(relationName){
+			if(ngCtrl.library.relations.length > 0){
+				for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+					 if(ngCtrl.library.relations[i].relationName ===  relationName  && ngCtrl.library.relations[i].addedToLibrary){
 						return true;
 					 }
 				}
@@ -289,78 +289,78 @@
 			}
 		}
 
-		contentData.generateLibrary = function (generateRelationOptions) {
-			contentData.library.items = [];
+		ngCtrl.generateLibrary = function (generateRelationOptions) {
+			ngCtrl.library.items = [];
 			if(generateRelationOptions){
-				contentData.library.relations = [];
+				ngCtrl.library.relations = [];
 			}
-			contentData.fullLibrary.items.forEach(function (item) {
+			ngCtrl.fullLibrary.items.forEach(function (item) {
 				//Initially remove all items that are from not activated relation and the relationOptions
 				if ((item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) === -1) || !item.meta) {
 					switch (item.type) {
 						case "field":
-							contentData.library.items.push(item);
+							ngCtrl.library.items.push(item);
 							break;
 						case "view":
-							if (item.viewId !== contentData.view.id) {
-								contentData.library.items.push(item);
+							if (item.viewId !== ngCtrl.view.id) {
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "list":
-							contentData.library.items.push(item);
+							ngCtrl.library.items.push(item);
 							break;
 						case "relationOptions":
 							if(generateRelationOptions){
 								item.addedToLibrary = false;
 								item.sameOriginTargetEntity = false;
-								for (var r = 0; r < contentData.relationsList.length; r++) {
-									if (item.relationName === contentData.relationsList[r].name && contentData.relationsList[r].originEntityId === contentData.relationsList[r].targetEntityId) {
+								for (var r = 0; r < ngCtrl.relationsList.length; r++) {
+									if (item.relationName === ngCtrl.relationsList[r].name && ngCtrl.relationsList[r].originEntityId === ngCtrl.relationsList[r].targetEntityId) {
 										item.sameOriginTargetEntity = true;
 									}
 								}
-								contentData.library.relations.push(item);
+								ngCtrl.library.relations.push(item);
 							}
 							break;
 						case "fieldFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "viewFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "listFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "treeFromRelation":
-							if(contentData.checkIfRelationAddedToLibrary(item.relationName)){
-								contentData.library.items.push(item);
+							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+								ngCtrl.library.items.push(item);
 							}
 							break;
 					}
 				}
 			});
-			contentData.sortLibrary();
+			ngCtrl.sortLibrary();
 		}
 
-		contentData.generateLibrary(true);
+		ngCtrl.generateLibrary(true);
 
 		//Extract the direction change information from the view if present
-		for (var k = 0; k < contentData.view.relationOptions.length; k++) {
-			for (var m = 0; m < contentData.library.relations.length; m++) {
-				if (contentData.view.relationOptions[k].relationName === contentData.library.relations[m].relationName) {
-					contentData.library.relations[m].direction = contentData.view.relationOptions[k].direction;
+		for (var k = 0; k < ngCtrl.view.relationOptions.length; k++) {
+			for (var m = 0; m < ngCtrl.library.relations.length; m++) {
+				if (ngCtrl.view.relationOptions[k].relationName === ngCtrl.library.relations[m].relationName) {
+					ngCtrl.library.relations[m].direction = ngCtrl.view.relationOptions[k].direction;
 				}
 
 			}
 
 		}
 
-		contentData.library.relations = contentData.library.relations.sort(function (a, b) {
+		ngCtrl.library.relations = ngCtrl.library.relations.sort(function (a, b) {
 			if (a.relationName < b.relationName) return -1;
 			if (a.relationName > b.relationName) return 1;
 			return 0;
@@ -369,9 +369,9 @@
 		//#endregion
  
 		//#region << Regenerate library >>
-		contentData.regenerateLibrary = function () {
-			contentData.generateAlreadyUsed();
-			contentData.generateLibrary(false);
+		ngCtrl.regenerateLibrary = function () {
+			ngCtrl.generateAlreadyUsed();
+			ngCtrl.generateLibrary(false);
 		}
 
 		//#endregion
@@ -379,16 +379,16 @@
 		//#region << Section Management >>
 
 		//Create or Update view section
-		contentData.manageSectionModalOpen = function (sectionObj, weight) {
+		ngCtrl.manageSectionModalOpen = function (sectionObj, weight) {
 			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageSectionModal.html',
 				controller: 'ManageSectionModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					parentData: function () { return contentData; },
+					parentData: function () { return ngCtrl; },
 					section: function () { return sectionObj },
 					weight: function () { return weight }
 				}
@@ -399,12 +399,12 @@
 		//Remove section
 		var tempCopyView = {};
 		var tempCopyViewRegion = {}
-		contentData.removeSection = function (id) {
+		ngCtrl.removeSection = function (id) {
 			var isConfirmed = confirm("Are you sure that you need to remove this section?");
 			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
-				tempCopyView = fastCopy(contentData.view);
-				tempCopyViewRegion = fastCopy(contentData.viewContentRegion);
+				tempCopyView = fastCopy(ngCtrl.view);
+				tempCopyViewRegion = fastCopy(ngCtrl.viewContentRegion);
 				// 2. Apply the change to the temp object
 				tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id);
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
@@ -414,7 +414,7 @@
 					}
 				}
 				//Try update with the new view
-				webvellaAdminService.updateEntityView(tempCopyView, contentData.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
+				webvellaAdminService.updateEntityView(tempCopyView, ngCtrl.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
 
 			}
 		}
@@ -426,9 +426,9 @@
 			});
 
 			//Initialize both view and the content region with the new value
-			contentData.view = tempCopyView;
-			contentData.viewContentRegion = tempCopyViewRegion;
-			contentData.regenerateLibrary();
+			ngCtrl.view = tempCopyView;
+			ngCtrl.viewContentRegion = tempCopyViewRegion;
+			ngCtrl.regenerateLibrary();
 		}
 		function errorSectionRemoveCallback(response) {
 			ngToast.create({
@@ -443,16 +443,16 @@
 		//#region << Row Management >>
 
 		//Create view row
-		contentData.manageRowModalOpen = function (rowObj, sectionObj, weight) {
+		ngCtrl.manageRowModalOpen = function (rowObj, sectionObj, weight) {
 			// ReSharper disable once UnusedLocals
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageRowModal.html',
 				controller: 'ManageRowModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					parentData: function () { return contentData; },
+					parentData: function () { return ngCtrl; },
 					row: function () { return rowObj },
 					section: function () { return sectionObj },
 					weight: function () { return weight }
@@ -462,12 +462,12 @@
 		}
 
 		//Remove row
-		contentData.removeRow = function (id, sectionId) {
+		ngCtrl.removeRow = function (id, sectionId) {
 			var isConfirmed = confirm("Are you sure that you need to remove this row?");
 			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
-				var tempCopyView = fastCopy(contentData.view);
-				var tempCopyViewRegion = fastCopy(contentData.viewContentRegion);
+				var tempCopyView = fastCopy(ngCtrl.view);
+				var tempCopyViewRegion = fastCopy(ngCtrl.viewContentRegion);
 				// 2. Apply the change to the temp object
 				for (var m = 0; m < tempCopyViewRegion.sections.length; m++) {
 					if (tempCopyViewRegion.sections[m].id === sectionId) {
@@ -481,7 +481,7 @@
 					}
 				}
 				//Try update with the new view
-				webvellaAdminService.updateEntityView(tempCopyView, contentData.entity.name, successRowRemoveCallback, errorRowRemoveCallback);
+				webvellaAdminService.updateEntityView(tempCopyView, ngCtrl.entity.name, successRowRemoveCallback, errorRowRemoveCallback);
 
 			}
 		}
@@ -493,13 +493,13 @@
 
 			//Initialize both view and the content region with the new value
 
-			contentData.view = response.object;
+			ngCtrl.view = response.object;
 			for (var i = 0; i < response.object.regions.length; i++) {
 				if (response.object.regions[i].name === "content") {
-					contentData.viewContentRegion = response.object.regions[i];
+					ngCtrl.viewContentRegion = response.object.regions[i];
 				}
 			}
-			contentData.regenerateLibrary();
+			ngCtrl.regenerateLibrary();
 		}
 		function errorRowRemoveCallback(response) {
 			ngToast.create({
@@ -516,14 +516,14 @@
 			//Init
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			};
 
 			var droppedItem = fastCopy(fieldItem);
 			var relation = null;
-			for (var j = 0; j < contentData.relationsList.length; j++) {
-				if (contentData.relationsList[j].id === droppedItem.relationId) {
-					relation = contentData.relationsList[j];
+			for (var j = 0; j < ngCtrl.relationsList.length; j++) {
+				if (ngCtrl.relationsList[j].id === droppedItem.relationId) {
+					relation = ngCtrl.relationsList[j];
 				}
 			}
 			if (relation === null) {
@@ -540,7 +540,7 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id !== "library") {
-					contentData.regenerateLibrary();
+					ngCtrl.regenerateLibrary();
 				}
 
 			};
@@ -551,10 +551,10 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					//Creates error - Unbinds the contentData.ViewContentRegion from the drop zone so it needs to be commented until fixed
+					//Creates error - Unbinds the ngCtrl.ViewContentRegion from the drop zone so it needs to be commented until fixed
 					//for (var i = 0; i < response.object.regions.length; i++) {
 					//	if (response.object.regions[i].name === "content") {
-					//		contentData.viewContentRegion = response.object.regions[i];
+					//		ngCtrl.viewContentRegion = response.object.regions[i];
 					//	}
 					//}
 					if (eventObj !== null) {
@@ -585,11 +585,11 @@
 					animation: false,
 					templateUrl: 'manageFromRelationModal.html',
 					controller: 'ManageFromRelationModalController',
-					controllerAs: "popupData",
+					controllerAs: "popupCtrl",
 					backdrop: 'static',
 					size: "",
 					resolve: {
-						parentData: function () { return contentData; },
+						parentData: function () { return ngCtrl; },
 						eventObj: eventObj,
 						relatedEntityMeta: response.object,
 						fieldObj: fieldItem,
@@ -598,46 +598,46 @@
 				});
 
 				modalInstance.result.then(function (fieldObject) {
-					for (var k = 0; k < contentData.viewContentRegion.sections.length; k++) {
-						for (var l = 0; l < contentData.viewContentRegion.sections[k].rows.length; l++) {
-							for (var m = 0; m < contentData.viewContentRegion.sections[k].rows[l].columns.length; m++) {
-								for (var n = 0; n < contentData.viewContentRegion.sections[k].rows[l].columns[m].items.length; n++) {
-									if (fieldObject.type === "fieldFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+					for (var k = 0; k < ngCtrl.viewContentRegion.sections.length; k++) {
+						for (var l = 0; l < ngCtrl.viewContentRegion.sections[k].rows.length; l++) {
+							for (var m = 0; m < ngCtrl.viewContentRegion.sections[k].rows[l].columns.length; m++) {
+								for (var n = 0; n < ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items.length; n++) {
+									if (fieldObject.type === "fieldFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 									}
-									else if (fieldObject.type === "viewFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									else if (fieldObject.type === "viewFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
-									else if (fieldObject.type === "listFromRelation" && contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										contentData.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									else if (fieldObject.type === "listFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
 								}
 							}
 						}
 					}
 
-					var tempView = fastCopy(contentData.view);
+					var tempView = fastCopy(ngCtrl.view);
 					for (var i = 0; i < tempView.regions.length; i++) {
 						if (tempView.regions[i].name == "content") {
-							tempView.regions[i] = contentData.viewContentRegion;
+							tempView.regions[i] = ngCtrl.viewContentRegion;
 						}
 					}
 					////2. Call the service
-					webvellaAdminService.updateEntityView(tempView, contentData.entity.name, successCallback, errorCallback);
+					webvellaAdminService.updateEntityView(tempView, ngCtrl.entity.name, successCallback, errorCallback);
 					//return;
 				});
 
@@ -659,11 +659,11 @@
 
 			//Get the correct related entityMeta
 
-			if (droppedItem.entityName === contentData.entity.name) {
+			if (droppedItem.entityName === ngCtrl.entity.name) {
 				//the dropped item has relation to the current entity so no reason to make http request
 				var response = {};
 				response.success = true;
-				response.object = contentData.entity;
+				response.object = ngCtrl.entity;
 				getRelatedEntityMetaSuccessCallback(response);
 			}
 			else {
@@ -679,13 +679,13 @@
 			var moveSuccess = function () {
 				// Prevent from dragging back to library use remove link instead
 				if (eventObj.dest.sortableScope.element[0].id !== "library") {
-	 				contentData.regenerateLibrary();
+	 				ngCtrl.regenerateLibrary();
 				}
 			};
 			var moveFailure = function () {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.item);
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			};
 
 			function successCallback(response) {
@@ -694,10 +694,10 @@
 						className: 'success',
 						content: '<span class="go-green">Success:</span> ' + response.message
 					});
-					//contentData.library.items = fastCopy(contentData.originalLibrary);
+					//ngCtrl.library.items = fastCopy(ngCtrl.originalLibrary);
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
-							contentData.viewContentRegion = response.object.regions[i];
+							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}
 					moveSuccess();
@@ -729,17 +729,17 @@
 			}
 			else {
 				//cannot be managed
-				for (var i = 0; i < contentData.view.regions.length; i++) {
-					if (contentData.view.regions[i].name === "content") {
-						contentData.view.regions[i] = fastCopy(contentData.viewContentRegion);
+				for (var i = 0; i < ngCtrl.view.regions.length; i++) {
+					if (ngCtrl.view.regions[i].name === "content") {
+						ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
 					}
 				}
-				webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 
 			}
 		}
 
-		contentData.dragControlListeners = {
+		ngCtrl.dragControlListeners = {
 			accept: function () {
 				//// Prevent from the same field in the same column
 				//var draggedDataName = sourceItemHandleScope.itemScope.modelValue.dataName;
@@ -762,7 +762,7 @@
 		};
 
 
-		contentData.libraryDragControlListeners = {
+		ngCtrl.libraryDragControlListeners = {
 			accept: function (sourceItemHandleScope, destSortableScope) {
 				if (sourceItemHandleScope.itemScope.element[0].id !== "library" && destSortableScope.element[0].id === "library") {
 					return false;
@@ -780,12 +780,12 @@
 			clone: false
 		};
 
-		contentData.dragItemRemove = function (column, itemDataName) {
-			contentData.itemScheduledForRemoval = null;
+		ngCtrl.dragItemRemove = function (column, itemDataName) {
+			ngCtrl.itemScheduledForRemoval = null;
 			var index = -1;
 			for (var i = 0; i < column.items.length; i++) {
 				if (column.items[i].dataName === itemDataName) {
-					contentData.itemScheduledForRemoval = column.items[i];
+					ngCtrl.itemScheduledForRemoval = column.items[i];
 					index = i;
 				}
 			}
@@ -794,7 +794,7 @@
 					className: 'success',
 					content: '<span class="go-green">Success:</span> ' + response.message
 				});
-				contentData.regenerateLibrary();
+				ngCtrl.regenerateLibrary();
 			}
 
 			function errorCallback(response) {
@@ -807,32 +807,32 @@
 			}
 
 			column.items.splice(index, 1);
-			for (var i = 0; i < contentData.view.regions.length; i++) {
-				if (contentData.view.regions[i].name === "content") {
-					contentData.view.regions[i] = fastCopy(contentData.viewContentRegion);
+			for (var i = 0; i < ngCtrl.view.regions.length; i++) {
+				if (ngCtrl.view.regions[i].name === "content") {
+					ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
 				}
 			}
-			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 		//#endregion
 
 		//#region << Relations >>
 
-		contentData.changeRelationDirection = function (relation) {
+		ngCtrl.changeRelationDirection = function (relation) {
 			if (relation.direction === "origin-target") {
 				relation.direction = "target-origin";
 			}
 			else {
 				relation.direction = "origin-target";
 			}
-			contentData.view.relationOptions = [];
+			ngCtrl.view.relationOptions = [];
 
-			for (var i = 0; i < contentData.library.relations.length; i++) {
-				var relation = fastCopy(contentData.library.relations[i]);
+			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+				var relation = fastCopy(ngCtrl.library.relations[i]);
 				delete relation.addedToLibrary;
 				delete relation.sameOriginTargetEntity;
-				contentData.view.relationOptions.push(relation);
+				ngCtrl.view.relationOptions.push(relation);
 			}
 
 			function successCallback(response) {
@@ -849,40 +849,40 @@
 					timeout: 7000
 				});
 				//Undo change
-				for (var j = 0; j < contentData.library.relations.length; j++) {
-					if (contentData.library.relations[j].relationName === relation.relationName) {
-						if (contentData.library.relations[j].direction === "origin-target") {
-							contentData.library.relations[j].direction = "target-origin";
+				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
+					if (ngCtrl.library.relations[j].relationName === relation.relationName) {
+						if (ngCtrl.library.relations[j].direction === "origin-target") {
+							ngCtrl.library.relations[j].direction = "target-origin";
 						}
 						else {
-							contentData.library.relations[j].direction = "origin-target";
+							ngCtrl.library.relations[j].direction = "origin-target";
 						}
 					}
 				}
 			}
 
-			webvellaAdminService.updateEntityView(contentData.view, contentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
-		contentData.toggleRelationToLibrary = function (relation) {
+		ngCtrl.toggleRelationToLibrary = function (relation) {
 			if (!relation.addedToLibrary) {
-				contentData.fullLibrary.items.forEach(function (item) {
+				ngCtrl.fullLibrary.items.forEach(function (item) {
 					if (item.relationName && item.relationName === relation.relationName) {
 						if (item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) === -1) {
 							switch (item.type) {
 								case "fieldFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 								case "viewFromRelation":
-									if (item.viewId !== contentData.view.id) {
-										contentData.library.items.push(item);
+									if (item.viewId !== ngCtrl.view.id) {
+										ngCtrl.library.items.push(item);
 									}
 									break;
 								case "listFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 								case "treeFromRelation":
-									contentData.library.items.push(item);
+									ngCtrl.library.items.push(item);
 									break;
 							}
 						}
@@ -892,7 +892,7 @@
 			}
 			else {
 				var tempRelationChangeLibrary = [];
-				contentData.library.items.forEach(function (item) {
+				ngCtrl.library.items.forEach(function (item) {
 					if (!item.relationName) {
 						tempRelationChangeLibrary.push(item);
 					}
@@ -900,22 +900,22 @@
 						tempRelationChangeLibrary.push(item);
 					}
 				});
-				contentData.library.items = tempRelationChangeLibrary;
+				ngCtrl.library.items = tempRelationChangeLibrary;
 				relation.addedToLibrary = false;
 			}
-			contentData.sortLibrary();
+			ngCtrl.sortLibrary();
 		}
 
-		contentData.getRelationType = function (relationId) {
-			for (var i = 0; i < contentData.relationsList.length; i++) {
-				if (contentData.relationsList[i].id === relationId) {
-					return contentData.relationsList[i].relationType;
+		ngCtrl.getRelationType = function (relationId) {
+			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+				if (ngCtrl.relationsList[i].id === relationId) {
+					return ngCtrl.relationsList[i].relationType;
 				}
 			}
 			return 0;
 		}
 
-		contentData.manageFieldFromRelation = function (item) {
+		ngCtrl.manageFieldFromRelation = function (item) {
 			openFromRelationSettingsModal(item, null, false);
 		}
 
@@ -938,41 +938,41 @@
 		/* jshint validthis:true */
 
 		//#region << Initialize >>
-		var popupData = this;
-		popupData.section = null;
-		popupData.isUpdate = true;
-		popupData.isValid = true;
+		var popupCtrl = this;
+		popupCtrl.section = null;
+		popupCtrl.isUpdate = true;
+		popupCtrl.isValid = true;
 		if (section === null) {
-			popupData.isUpdate = false;
-			popupData.section = fastCopy(webvellaAdminService.initViewSection());
-			popupData.section.weight = weight;
+			popupCtrl.isUpdate = false;
+			popupCtrl.section = fastCopy(webvellaAdminService.initViewSection());
+			popupCtrl.section.weight = weight;
 		}
 		else {
-			popupData.section = fastCopy(section);
+			popupCtrl.section = fastCopy(section);
 		}
 		//#endregion
 
-		popupData.ok = function () {
-			popupData.view = fastCopy(parentData.view);
+		popupCtrl.ok = function () {
+			popupCtrl.view = fastCopy(parentData.view);
 			//Find the content region, which is subject of this screen
-			popupData.viewContentRegion = {};
-			for (var i = 0; i < popupData.view.regions.length; i++) {
-				if (popupData.view.regions[i].name === "content") {
-					popupData.viewContentRegion = popupData.view.regions[i];
+			popupCtrl.viewContentRegion = {};
+			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+				if (popupCtrl.view.regions[i].name === "content") {
+					popupCtrl.viewContentRegion = popupCtrl.view.regions[i];
 				}
 			}
 			// Validate unique username on add. It cannot be managed on update
-			if (!popupData.isUpdate) {
-				popupData.isValid = true;
-				if (!popupData.viewContentRegion.sections) {
-					popupData.viewContentRegion.sections = []; //If the view was newly created the viewContentRegion will be an empty object
+			if (!popupCtrl.isUpdate) {
+				popupCtrl.isValid = true;
+				if (!popupCtrl.viewContentRegion.sections) {
+					popupCtrl.viewContentRegion.sections = []; //If the view was newly created the viewContentRegion will be an empty object
 				}
-				for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
-					if (popupData.viewContentRegion.sections[i].name === popupData.section.name) {
-						popupData.isValid = false;
+				for (var i = 0; i < popupCtrl.viewContentRegion.sections.length; i++) {
+					if (popupCtrl.viewContentRegion.sections[i].name === popupCtrl.section.name) {
+						popupCtrl.isValid = false;
 					}
 				}
-				if (!popupData.isValid) {
+				if (!popupCtrl.isValid) {
 					$scope.manageSection.name.$dirty = true;
 					$scope.manageSection.name.$invalid = true;
 					$scope.manageSection.name.$pristine = false;
@@ -980,27 +980,27 @@
 				}
 			}
 			//#region << Update the temporary view object for submission >>
-			if (popupData.isUpdate && popupData.isValid) {
-				popupData.viewContentRegion.sections = webvellaAdminService.safeUpdateArrayPlace(popupData.section, popupData.viewContentRegion.sections);
+			if (popupCtrl.isUpdate && popupCtrl.isValid) {
+				popupCtrl.viewContentRegion.sections = webvellaAdminService.safeUpdateArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
 			}
-			else if (popupData.isValid) {
-				popupData.viewContentRegion.sections = webvellaAdminService.safeAddArrayPlace(popupData.section, popupData.viewContentRegion.sections);
+			else if (popupCtrl.isValid) {
+				popupCtrl.viewContentRegion.sections = webvellaAdminService.safeAddArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
 			}
 			//#endregion
 
-			if (popupData.isValid) {
+			if (popupCtrl.isValid) {
 				//Update the view with the correct values for the content region
-				for (var i = 0; i < popupData.view.regions.length; i++) {
-					if (popupData.view.regions[i].name === "content") {
-						popupData.view.regions[i] = popupData.viewContentRegion;
+				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+					if (popupCtrl.view.regions[i].name === "content") {
+						popupCtrl.view.regions[i] = popupCtrl.viewContentRegion;
 					}
 				}
 
-				webvellaAdminService.updateEntityView(popupData.view, parentData.entity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
 			}
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -1023,8 +1023,8 @@
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 		}
 		$log.debug('webvellaAdmin>entities>createSectionModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -1038,45 +1038,45 @@
 				ngToast) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.section = fastCopy(section);
-		popupData.rowOptions = webvellaAdminService.getRowColumnCountVariationsArray();
+		var popupCtrl = this;
+		popupCtrl.section = fastCopy(section);
+		popupCtrl.rowOptions = webvellaAdminService.getRowColumnCountVariationsArray();
 
 
-		popupData.isUpdate = true;
+		popupCtrl.isUpdate = true;
 		if (row === null) {
-			popupData.isUpdate = false;
-			popupData.row = fastCopy(webvellaAdminService.initViewRow(1));
-			popupData.row.weight = fastCopy(weight);
-			popupData.selectedRowOption = popupData.rowOptions[0];
+			popupCtrl.isUpdate = false;
+			popupCtrl.row = fastCopy(webvellaAdminService.initViewRow(1));
+			popupCtrl.row.weight = fastCopy(weight);
+			popupCtrl.selectedRowOption = popupCtrl.rowOptions[0];
 		}
 		else {
-			popupData.row = fastCopy(row);
+			popupCtrl.row = fastCopy(row);
 			var selectedColVariationKey = webvellaAdminService.getRowColumnCountVariationKey(row)
-			for (var i = 0; i < popupData.rowOptions.length; i++) {
-				if (selectedColVariationKey === popupData.rowOptions[i].key) {
-					popupData.selectedRowOption = popupData.rowOptions[i];
+			for (var i = 0; i < popupCtrl.rowOptions.length; i++) {
+				if (selectedColVariationKey === popupCtrl.rowOptions[i].key) {
+					popupCtrl.selectedRowOption = popupCtrl.rowOptions[i];
 				}
 			}
 		}
 
-		popupData.ok = function () {
+		popupCtrl.ok = function () {
 			//#region << 1. Get the current view and currentContentRegion >>
-			popupData.view = fastCopy(parentData.view);
+			popupCtrl.view = fastCopy(parentData.view);
 			//Find the content region, which is subject of this screen
-			popupData.viewContentRegion = {};
-			for (var i = 0; i < popupData.view.regions.length; i++) {
-				if (popupData.view.regions[i].name === "content") {
-					popupData.viewContentRegion = popupData.view.regions[i];
+			popupCtrl.viewContentRegion = {};
+			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+				if (popupCtrl.view.regions[i].name === "content") {
+					popupCtrl.viewContentRegion = popupCtrl.view.regions[i];
 				}
 			}
 			//#endregion
 			//#region << 2. In the current section and recalculate the rows position in it based on the requested change >>
-			if (popupData.isUpdate) {
+			if (popupCtrl.isUpdate) {
 				//A. Check if the row's column differ from the original number
 				var originalRowColumns = 0;
 				for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
-					if (parentData.viewContentRegion.sections[i].name === popupData.section.name) {
+					if (parentData.viewContentRegion.sections[i].name === popupCtrl.section.name) {
 						for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
 							if (parseInt(parentData.viewContentRegion.sections[i].rows[j].weight) === parseInt(row.weight)) {
 								originalRowColumns = parentData.viewContentRegion.sections[i].rows[j].columns.length;
@@ -1086,53 +1086,53 @@
 				}
 
 				//B. If columns differ add to the end or remove from the end
-				if (originalRowColumns > popupData.selectedRowOption.columns) {
+				if (originalRowColumns > popupCtrl.selectedRowOption.columns) {
 					//Columns need to be removed
-					var columnsToRemove = originalRowColumns - popupData.selectedRowOption.columns;
-					popupData.row.columns.splice(columnsToRemove * -1);
+					var columnsToRemove = originalRowColumns - popupCtrl.selectedRowOption.columns;
+					popupCtrl.row.columns.splice(columnsToRemove * -1);
 
 				}
-				else if (originalRowColumns < popupData.selectedRowOption.columns) {
+				else if (originalRowColumns < popupCtrl.selectedRowOption.columns) {
 					//Columns need to be added
-					var columnsToAdd = popupData.selectedRowOption.columns - originalRowColumns;
+					var columnsToAdd = popupCtrl.selectedRowOption.columns - originalRowColumns;
 
 					for (var m = 0; m < columnsToAdd; m++) {
-						var column = webvellaAdminService.initViewRowColumn(popupData.selectedRowOption.columns);
-						popupData.row.columns.push(column);
+						var column = webvellaAdminService.initViewRowColumn(popupCtrl.selectedRowOption.columns);
+						popupCtrl.row.columns.push(column);
 					}
 				}
 				//C. Fix the gridColCount for each column
-				var columnsCountArray = webvellaAdminService.convertRowColumnCountVariationKeyToArray(popupData.selectedRowOption.key);
-				for (var i = 0; i < popupData.row.columns.length; i++) {
-					popupData.row.columns[i].gridColCount = columnsCountArray[i];
+				var columnsCountArray = webvellaAdminService.convertRowColumnCountVariationKeyToArray(popupCtrl.selectedRowOption.key);
+				for (var i = 0; i < popupCtrl.row.columns.length; i++) {
+					popupCtrl.row.columns[i].gridColCount = columnsCountArray[i];
 				}
 				//D. Update
-				popupData.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupData.row, popupData.section.rows);
+				popupCtrl.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupCtrl.row, popupCtrl.section.rows);
 			}
 			else {
-				popupData.row.columns = webvellaAdminService.initViewRow(popupData.selectedRowOption.key).columns;
-				popupData.section.rows = webvellaAdminService.safeAddArrayPlace(popupData.row, popupData.section.rows);
+				popupCtrl.row.columns = webvellaAdminService.initViewRow(popupCtrl.selectedRowOption.key).columns;
+				popupCtrl.section.rows = webvellaAdminService.safeAddArrayPlace(popupCtrl.row, popupCtrl.section.rows);
 			}
 			//#endregion
 			//#region << 3. Update the contentRegion & Feed in the updated ContentRegion in the view>>
-			for (var i = 0; i < popupData.viewContentRegion.sections.length; i++) {
-				if (popupData.viewContentRegion.sections[i].id === popupData.section.id) {
-					popupData.viewContentRegion.sections[i] = popupData.section;
+			for (var i = 0; i < popupCtrl.viewContentRegion.sections.length; i++) {
+				if (popupCtrl.viewContentRegion.sections[i].id === popupCtrl.section.id) {
+					popupCtrl.viewContentRegion.sections[i] = popupCtrl.section;
 				}
 			}
-			for (var i = 0; i < popupData.view.regions.length; i++) {
-				if (popupData.view.regions[i].name === "content") {
-					popupData.view.regions[i] = popupData.viewContentRegion;
+			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+				if (popupCtrl.view.regions[i].name === "content") {
+					popupCtrl.view.regions[i] = popupCtrl.viewContentRegion;
 				}
 			}
 
 			//#endregion
 			//#region << 4. Call the view update service >>
-			webvellaAdminService.updateEntityView(popupData.view, parentData.entity.name, successCallback, errorCallback);
+			webvellaAdminService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
 			//#endregion
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -1155,8 +1155,8 @@
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 		}
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -1170,79 +1170,79 @@
 			fieldObj, relatedEntityMeta, orderChangedOnly) {
 		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = fastCopy(parentData);
-		popupData.field = fastCopy(fieldObj);
-		popupData.entity = fastCopy(relatedEntityMeta);
-		popupData.quickCreateViews = [];
-		popupData.quickCreateDefaultIndex = -1;
-		popupData.lookupLists = [];
-		popupData.lookupDefaultIndex = -1;
-		popupData.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		popupData.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		var popupCtrl = this;
+		popupCtrl.parentData = fastCopy(parentData);
+		popupCtrl.field = fastCopy(fieldObj);
+		popupCtrl.entity = fastCopy(relatedEntityMeta);
+		popupCtrl.quickCreateViews = [];
+		popupCtrl.quickCreateDefaultIndex = -1;
+		popupCtrl.lookupLists = [];
+		popupCtrl.lookupDefaultIndex = -1;
+		popupCtrl.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		popupCtrl.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
 		//Lookup
 		var index = 0;
-		for (var i = 0; i < popupData.entity.recordLists.length; i++) {
-			if (popupData.entity.recordLists[i].type === "lookup") {
-				if (popupData.entity.recordLists[i].default && popupData.lookupDefaultIndex === -1) {
-					popupData.lookupDefaultIndex = index;
+		for (var i = 0; i < popupCtrl.entity.recordLists.length; i++) {
+			if (popupCtrl.entity.recordLists[i].type === "lookup") {
+				if (popupCtrl.entity.recordLists[i].default && popupCtrl.lookupDefaultIndex === -1) {
+					popupCtrl.lookupDefaultIndex = index;
 				}
-				popupData.lookupLists.push(popupData.entity.recordLists[i]);
+				popupCtrl.lookupLists.push(popupCtrl.entity.recordLists[i]);
 				index++;
 			}
 		}
 
-		if (popupData.field.fieldLookupList && popupData.field.fieldLookupList !== "") {
+		if (popupCtrl.field.fieldLookupList && popupCtrl.field.fieldLookupList !== "") {
 			//should stick with the selected value
 		}
-		else if (popupData.quickCreateDefaultIndex > -1 && popupData.lookupLists.length > 0) {
+		else if (popupCtrl.quickCreateDefaultIndex > -1 && popupCtrl.lookupLists.length > 0) {
 			//no selected so we should preselect the first default;
-			popupData.field.fieldLookupList = popupData.lookupLists[popupData.quickCreateDefaultIndex].name;
+			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[popupCtrl.quickCreateDefaultIndex].name;
 		}
-		else if (popupData.lookupLists.length > 0) {
-			popupData.field.fieldLookupList = popupData.lookupLists[0].name;
+		else if (popupCtrl.lookupLists.length > 0) {
+			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[0].name;
 		}
 		else {
 			//should alert for error
-			popupData.error = true;
-			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'lookup' lists. It should have at least one";
+			popupCtrl.error = true;
+			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'lookup' lists. It should have at least one";
 		}
 
 		//Quick create
 		index = 0;
-		for (var i = 0; i < popupData.entity.recordViews.length; i++) {
-			if (popupData.entity.recordViews[i].type === "quick_create") {
-				if (popupData.entity.recordViews[i].default && popupData.quickCreateDefaultIndex === -1) {
-					popupData.quickCreateDefaultIndex = index;
+		for (var i = 0; i < popupCtrl.entity.recordViews.length; i++) {
+			if (popupCtrl.entity.recordViews[i].type === "quick_create") {
+				if (popupCtrl.entity.recordViews[i].default && popupCtrl.quickCreateDefaultIndex === -1) {
+					popupCtrl.quickCreateDefaultIndex = index;
 				}
-				popupData.quickCreateViews.push(popupData.entity.recordViews[i]);
+				popupCtrl.quickCreateViews.push(popupCtrl.entity.recordViews[i]);
 				index++;
 			}
 		}
-		if (popupData.field.fieldManageView && popupData.field.fieldManageView !== "") {
+		if (popupCtrl.field.fieldManageView && popupCtrl.field.fieldManageView !== "") {
 			//should stick with the selected value
 		}
-		else if (popupData.lookupDefaultIndex > -1 && popupData.quickCreateViews.length > 0) {
+		else if (popupCtrl.lookupDefaultIndex > -1 && popupCtrl.quickCreateViews.length > 0) {
 			//no selected so we should preselect the first default;
-			popupData.field.fieldManageView = popupData.quickCreateViews[popupData.lookupDefaultIndex].name;
+			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[popupCtrl.lookupDefaultIndex].name;
 		}
-		else if (popupData.quickCreateViews.length > 0) {
-			popupData.field.fieldManageView = popupData.quickCreateViews[0].name;
+		else if (popupCtrl.quickCreateViews.length > 0) {
+			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[0].name;
 		}
-		else if (popupData.field.type === "listFromRelation" || popupData.field.type === "viewFromRelation") {
+		else if (popupCtrl.field.type === "listFromRelation" || popupCtrl.field.type === "viewFromRelation") {
 
 			//should alert for error if it is list or view
-			popupData.error = true;
-			popupData.errorMessage = "The target entity '" + popupData.entity.name + "' has no 'quick_create' views. It should have at least one";
+			popupCtrl.error = true;
+			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'quick_create' views. It should have at least one";
 		}
 
 
-		popupData.ok = function () {
-			$uibModalInstance.close(popupData.field);
+		popupCtrl.ok = function () {
+			$uibModalInstance.close(popupCtrl.field);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			if (eventObj !== null && !orderChangedOnly) {
 				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
 				//we are currently copying so no need to return it back
@@ -1261,8 +1261,8 @@
 		//}
 
 		//function errorCallback(response) {
-		//	popupData.hasError = true;
-		//	popupData.errorMessage = response.message;
+		//	popupCtrl.hasError = true;
+		//	popupCtrl.errorMessage = response.message;
 
 		//}
 		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

@@ -34,7 +34,7 @@
                 "contentView": {
                     controller: 'WebVellaAdminEntityViewManageInfoController',
                     templateUrl: '/plugins/webvella-admin/entity-view-manage-info.view.html',
-                    controllerAs: 'contentData'
+                    controllerAs: 'ngCtrl'
                 }
             },
             resolve: {
@@ -127,52 +127,52 @@
     	$log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
-        var contentData = this;
+        var ngCtrl = this;
         //#region << Initialize Current Entity >>
-        contentData.entity = fastCopy(resolvedCurrentEntityMeta);
+        ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
         //#endregion
 
         //#region << Update page title & Hide side menu>>
-        contentData.pageTitle = "Entity Views | " + pageTitle;
+        ngCtrl.pageTitle = "Entity Views | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide side menu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
-		$rootScope.adminSubSectionName = contentData.entity.label;
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
     	//#endregion
 
     	//Awesome font icon names array 
-        contentData.icons = getFontAwesomeIconNames();
+        ngCtrl.icons = getFontAwesomeIconNames();
 
     	//#region << Initialize View and Content Region >>
-        contentData.view = {};
-        contentData.originalView = {};
-        for (var i = 0; i < contentData.entity.recordViews.length; i++) {
-        	if (contentData.entity.recordViews[i].name === $stateParams.viewName) {
-        		contentData.view = fastCopy(contentData.entity.recordViews[i]);
-        		contentData.originalView = fastCopy(contentData.entity.recordViews[i]);
+        ngCtrl.view = {};
+        ngCtrl.originalView = {};
+        for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
+        	if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
+        		ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
+        		ngCtrl.originalView = fastCopy(ngCtrl.entity.recordViews[i]);
         	}
         }
         //#endregion
-        contentData.nameIsChanged = false;
-		contentData.renderFieldValue = webvellaAreasService.renderFieldValue;
+        ngCtrl.nameIsChanged = false;
+		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		
 		//#region << Html field >>
 		
 
-        contentData.fieldUpdate = function (key, data) {
-        	contentData.nameIsChanged = false;
-        	contentData.patchObject = {};
-        	contentData.patchObject[key] = data;
+        ngCtrl.fieldUpdate = function (key, data) {
+        	ngCtrl.nameIsChanged = false;
+        	ngCtrl.patchObject = {};
+        	ngCtrl.patchObject[key] = data;
         	if (key == 'name') {
-        		contentData.nameIsChanged = true;
+        		ngCtrl.nameIsChanged = true;
 
         	}
-        	webvellaAdminService.patchEntityView(contentData.patchObject, contentData.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
+        	webvellaAdminService.patchEntityView(ngCtrl.patchObject, ngCtrl.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
 
         }
 
@@ -182,9 +182,9 @@
         		content: '<span class="go-green">Success:</span> ' + response.message
         	});
         	webvellaAdminService.regenerateAllAreaAttachments();
-        	if (contentData.nameIsChanged) {
+        	if (ngCtrl.nameIsChanged) {
         		$timeout(function () {
-        			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:contentData.view.name }, { reload: true });
+        			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:ngCtrl.view.name }, { reload: true });
         		}, 0);
         	}
         	return true;
@@ -199,20 +199,20 @@
         }
 
     	//Delete view
-        contentData.deleteViewModal = function () {
+        ngCtrl.deleteViewModal = function () {
         	var modalInstance = $uibModal.open({
         		animation: false,
         		templateUrl: 'deleteViewModal.html',
         		controller: 'DeleteViewModalController',
-        		controllerAs: "popupData",
+        		controllerAs: "popupCtrl",
         		size: "",
         		resolve: {
-        			parentData: function () { return contentData; }
+        			parentData: function () { return ngCtrl; }
         		}
         	});
         }
 
-        contentData.viewTypes = [
+        ngCtrl.viewTypes = [
 		{
 			name: "general",
 			label: "general"
@@ -235,9 +235,9 @@
 		}
         ];
 
-        contentData.showViewType = function () {
-        	var selected = $filter('filter')(contentData.viewTypes, { name: contentData.view.type });
-        	return (contentData.view.type && selected.length) ? selected[0].label : 'empty';
+        ngCtrl.showViewType = function () {
+        	var selected = $filter('filter')(ngCtrl.viewTypes, { name: ngCtrl.view.type });
+        	return (ngCtrl.view.type && selected.length) ? selected[0].label : 'empty';
         };
 
         $log.debug('webvellaAdmin>entity-view-manage-info> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -252,16 +252,16 @@
     function deleteViewModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
     	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
     	/* jshint validthis:true */
-    	var popupData = this;
-    	popupData.parentData = parentData;
+    	var popupCtrl = this;
+    	popupCtrl.parentData = parentData;
 
-    	popupData.ok = function () {
+    	popupCtrl.ok = function () {
 
-    		webvellaAdminService.deleteEntityView(popupData.parentData.view.name, popupData.parentData.entity.name, successCallback, errorCallback);
+    		webvellaAdminService.deleteEntityView(popupCtrl.parentData.view.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 
     	};
 
-    	popupData.cancel = function () {
+    	popupCtrl.cancel = function () {
     		$uibModalInstance.dismiss('cancel');
     	};
 
@@ -273,13 +273,13 @@
     		});
     		$uibModalInstance.close('success');
     		$timeout(function () {
-    			$state.go("webvella-admin-entity-views", { entityName: popupData.parentData.entity.name }, { reload: true });
+    			$state.go("webvella-admin-entity-views", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
     		}, 0);
     	}
 
     	function errorCallback(response) {
-    		popupData.hasError = true;
-    		popupData.errorMessage = response.message;
+    		popupCtrl.hasError = true;
+    		popupCtrl.errorMessage = response.message;
 
 
     	}

@@ -39,7 +39,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminAreasController',
 					templateUrl: '/plugins/webvella-admin/areas.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -187,49 +187,49 @@
                         webvellaAdminService, $timeout) {
 		$log.debug('webvellaAdmin>areas-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
-		contentData.search = {};
+		var ngCtrl = this;
+		ngCtrl.search = {};
 		//#region << Update page title >>
-		contentData.pageTitle = "Areas List | " + pageTitle;
+		ngCtrl.pageTitle = "Areas List | " + pageTitle;
 		$timeout(function () {
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		}, 0);
 		//#endregion
 
-		contentData.areas = fastCopy(resolvedAreaRecordsList.data);
-		contentData.areas = contentData.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		ngCtrl.areas = fastCopy(resolvedAreaRecordsList.data);
+		ngCtrl.areas = ngCtrl.areas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-		contentData.roles = fastCopy(resolvedRolesList.data);
-		contentData.roles = contentData.roles.sort(function (a, b) {
+		ngCtrl.roles = fastCopy(resolvedRolesList.data);
+		ngCtrl.roles = ngCtrl.roles.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
 		});
 
-		contentData.entities = fastCopy(resolvedEntityMetaList.entities);
-		contentData.entities = contentData.entities.sort(function (a, b) {
+		ngCtrl.entities = fastCopy(resolvedEntityMetaList.entities);
+		ngCtrl.entities = ngCtrl.entities.sort(function (a, b) {
 			if (a.label < b.label) return -1;
 			if (a.label > b.label) return 1;
 			return 0;
 		});
 
 		//Create new entity modal
-		contentData.openManageAreaModal = function (currentArea) {
+		ngCtrl.openManageAreaModal = function (currentArea) {
 			if (currentArea != null) {
-				contentData.currentArea = currentArea;
+				ngCtrl.currentArea = currentArea;
 			}
 			else {
-				contentData.currentArea = webvellaAdminService.initArea();
+				ngCtrl.currentArea = webvellaAdminService.initArea();
 			}
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageAreaModal.html',
 				controller: 'ManageAreaModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					}
 				}
 			});
@@ -243,122 +243,122 @@
 
 
 	//// Modal Controllers
-	manageAreaController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'contentData'];
+	manageAreaController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
 
 	/* @ngInject */
-	function manageAreaController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, contentData) {
+	function manageAreaController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
 		$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.area = fastCopy(contentData.currentArea);
-		popupData.areaEntityRelations = fastCopy(contentData.areaEntityRelations);
-		popupData.roles = fastCopy(contentData.roles);
-		popupData.entities = fastCopy(contentData.entities);
-		popupData.attachments = [];
-		if (popupData.area.attachments != null && popupData.area.attachments.length > 0) {
-			popupData.attachments = angular.fromJson(popupData.area.attachments);
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.area = fastCopy(ngCtrl.currentArea);
+		popupCtrl.areaEntityRelations = fastCopy(ngCtrl.areaEntityRelations);
+		popupCtrl.roles = fastCopy(ngCtrl.roles);
+		popupCtrl.entities = fastCopy(ngCtrl.entities);
+		popupCtrl.attachments = [];
+		if (popupCtrl.area.attachments != null && popupCtrl.area.attachments.length > 0) {
+			popupCtrl.attachments = angular.fromJson(popupCtrl.area.attachments);
 		}
 
-		popupData.cleanEntities = [];
+		popupCtrl.cleanEntities = [];
 
 		//Add only entities that have default view and list
-		for (var i = 0; i < popupData.entities.length; i++) {
+		for (var i = 0; i < popupCtrl.entities.length; i++) {
 			var hasDefaultView = false;
 			var hasDefaultList = false;
 			//check if has default view
-			for (var v = 0; v < popupData.entities[i].recordViews.length; v++) {
-				if (popupData.entities[i].recordViews[v].default && popupData.entities[i].recordViews[v].type === "general") {
+			for (var v = 0; v < popupCtrl.entities[i].recordViews.length; v++) {
+				if (popupCtrl.entities[i].recordViews[v].default && popupCtrl.entities[i].recordViews[v].type === "general") {
 					hasDefaultView = true;
 				}
 			}
 			//check if has default list
-			for (var l = 0; l < popupData.entities[i].recordLists.length; l++) {
-				if (popupData.entities[i].recordLists[l].default && popupData.entities[i].recordLists[l].type === "general") {
+			for (var l = 0; l < popupCtrl.entities[i].recordLists.length; l++) {
+				if (popupCtrl.entities[i].recordLists[l].default && popupCtrl.entities[i].recordLists[l].type === "general") {
 					hasDefaultList = true;
 				}
 			}
 
 			if (hasDefaultView && hasDefaultList) {
-				popupData.cleanEntities.push(popupData.entities[i]);
+				popupCtrl.cleanEntities.push(popupCtrl.entities[i]);
 			}
 		}
 		//Soft alphabetically
-		popupData.cleanEntities = popupData.cleanEntities.sort(function (a, b) {
+		popupCtrl.cleanEntities = popupCtrl.cleanEntities.sort(function (a, b) {
 			if (a.label < b.label) return -1;
 			if (a.label > b.label) return 1;
 			return 0;
 		});
 
 
-		popupData.isUpdate = true;
-		if (popupData.area.id == null) {
-			popupData.isUpdate = false;
-			popupData.modalTitle = $sce.trustAsHtml("Create new area");
+		popupCtrl.isUpdate = true;
+		if (popupCtrl.area.id == null) {
+			popupCtrl.isUpdate = false;
+			popupCtrl.modalTitle = $sce.trustAsHtml("Create new area");
 			//Select "administrator" and "regular" roles by default
-			for (var i = 0; i < popupData.roles.length; i++) {
-				switch (popupData.roles[i].name) {
+			for (var i = 0; i < popupCtrl.roles.length; i++) {
+				switch (popupCtrl.roles[i].name) {
 					case "administrator":
-						popupData.area.roles.push(popupData.roles[i].id);
+						popupCtrl.area.roles.push(popupCtrl.roles[i].id);
 						break;
 					case "regular":
-						popupData.area.roles.push(popupData.roles[i].id);
+						popupCtrl.area.roles.push(popupCtrl.roles[i].id);
 						break;
 					default:
 						break;
 				}
 			}
-			popupData.rolesValues = angular.fromJson(popupData.area.roles);
+			popupCtrl.rolesValues = angular.fromJson(popupCtrl.area.roles);
 		}
 		else {
-			//popupData.area.roles = angular.fromJson(popupData.area.roles);
-			popupData.rolesValues = angular.fromJson(popupData.area.roles);
+			//popupCtrl.area.roles = angular.fromJson(popupCtrl.area.roles);
+			popupCtrl.rolesValues = angular.fromJson(popupCtrl.area.roles);
 			//Remove the already subscribed from the available for attachment list
-			popupData.tempEntitiesList = [];
-			for (var i = 0; i < popupData.cleanEntities.length; i++) {
+			popupCtrl.tempEntitiesList = [];
+			for (var i = 0; i < popupCtrl.cleanEntities.length; i++) {
 				var isSubscribed = false;
 				//check if subscribed
-				for (var j = 0; j < popupData.attachments.length; j++) {
-					if (popupData.cleanEntities[i].name === popupData.attachments[j].name) {
+				for (var j = 0; j < popupCtrl.attachments.length; j++) {
+					if (popupCtrl.cleanEntities[i].name === popupCtrl.attachments[j].name) {
 						isSubscribed = true;
 					}
 				}
 
 				if (!isSubscribed) {
-					popupData.tempEntitiesList.push(popupData.cleanEntities[i]);
+					popupCtrl.tempEntitiesList.push(popupCtrl.cleanEntities[i]);
 				}
 			}
 			//Soft alphabetically
-			popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
+			popupCtrl.cleanEntities = popupCtrl.tempEntitiesList.sort(function (a, b) {
 				if (a.name < b.name) return -1;
 				if (a.name > b.name) return 1;
 				return 0;
 			});
 
-			popupData.modalTitle = $sce.trustAsHtml('Edit area <span class="go-green">' + popupData.area.label + '</span>');
+			popupCtrl.modalTitle = $sce.trustAsHtml('Edit area <span class="go-green">' + popupCtrl.area.label + '</span>');
 		}
 
 		//Awesome font icon names array 
-		popupData.icons = getFontAwesomeIconNames();
+		popupCtrl.icons = getFontAwesomeIconNames();
 
 		//Manage inline edit
-		popupData.getViews = function (entityName) {
+		popupCtrl.getViews = function (entityName) {
 			var views = [];
 
-			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == entityName) {
-					views = popupData.entities[i].recordViews;
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == entityName) {
+					views = popupCtrl.entities[i].recordViews;
 					break;
 				}
 			}
 			return views;
 		}
-		popupData.updateattachmentView = function (attachment) {
-			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == attachment.name) {
-					for (var j = 0; j < popupData.entities[i].recordViews.length; j++) {
-						if (popupData.entities[i].recordViews[j].name == attachment.view.name) {
-							attachment.view.label = popupData.entities[i].recordViews[j].label;
+		popupCtrl.updateattachmentView = function (attachment) {
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == attachment.name) {
+					for (var j = 0; j < popupCtrl.entities[i].recordViews.length; j++) {
+						if (popupCtrl.entities[i].recordViews[j].name == attachment.view.name) {
+							attachment.view.label = popupCtrl.entities[i].recordViews[j].label;
 							break;
 						}
 					}
@@ -368,23 +368,23 @@
 			}
 		}
 
-		popupData.getLists = function (entityName) {
+		popupCtrl.getLists = function (entityName) {
 			var lists = [];
 
-			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == entityName) {
-					lists = popupData.entities[i].recordLists;
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == entityName) {
+					lists = popupCtrl.entities[i].recordLists;
 					break;
 				}
 			}
 			return lists;
 		}
-		popupData.updateattachmentList = function (attachment) {
-			for (var i = 0; i < popupData.entities.length; i++) {
-				if (popupData.entities[i].name == attachment.name) {
-					for (var j = 0; j < popupData.entities[i].recordLists.length; j++) {
-						if (popupData.entities[i].recordLists[j].name == attachment.list.name) {
-							attachment.list.label = popupData.entities[i].recordLists[j].label;
+		popupCtrl.updateattachmentList = function (attachment) {
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == attachment.name) {
+					for (var j = 0; j < popupCtrl.entities[i].recordLists.length; j++) {
+						if (popupCtrl.entities[i].recordLists[j].name == attachment.list.name) {
+							attachment.list.label = popupCtrl.entities[i].recordLists[j].label;
 							break;
 						}
 					}
@@ -395,7 +395,7 @@
 
 
 		//Attach entity
-		popupData.attachEntity = function (name) {
+		popupCtrl.attachEntity = function (name) {
 			//Find the entity
 			var selectedEntity = {
 				name: null,
@@ -415,45 +415,45 @@
 				label: null
 			};
 
-			for (var i = 0; i < popupData.cleanEntities.length; i++) {
-				if (popupData.cleanEntities[i].name == name) {
-					selectedEntity.name = popupData.cleanEntities[i].name;
-					selectedEntity.label = popupData.cleanEntities[i].label;
-					selectedEntity.labelPlural = popupData.cleanEntities[i].labelPlural;
-					selectedEntity.iconName = popupData.cleanEntities[i].iconName;
-					selectedEntity.weight = popupData.cleanEntities[i].weight;
-					for (var j = 0; j < popupData.cleanEntities[i].recordViews.length; j++) {
-						if (popupData.cleanEntities[i].recordViews[j].default && popupData.cleanEntities[i].recordViews[j].type == "general") {
-							selectedEntity.view.name = popupData.cleanEntities[i].recordViews[j].name;
-							selectedEntity.view.label = popupData.cleanEntities[i].recordViews[j].label;
+			for (var i = 0; i < popupCtrl.cleanEntities.length; i++) {
+				if (popupCtrl.cleanEntities[i].name == name) {
+					selectedEntity.name = popupCtrl.cleanEntities[i].name;
+					selectedEntity.label = popupCtrl.cleanEntities[i].label;
+					selectedEntity.labelPlural = popupCtrl.cleanEntities[i].labelPlural;
+					selectedEntity.iconName = popupCtrl.cleanEntities[i].iconName;
+					selectedEntity.weight = popupCtrl.cleanEntities[i].weight;
+					for (var j = 0; j < popupCtrl.cleanEntities[i].recordViews.length; j++) {
+						if (popupCtrl.cleanEntities[i].recordViews[j].default && popupCtrl.cleanEntities[i].recordViews[j].type == "general") {
+							selectedEntity.view.name = popupCtrl.cleanEntities[i].recordViews[j].name;
+							selectedEntity.view.label = popupCtrl.cleanEntities[i].recordViews[j].label;
 						}
 					}
-					for (var m = 0; m < popupData.cleanEntities[i].recordLists.length; m++) {
-						if (popupData.cleanEntities[i].recordLists[m].default && popupData.cleanEntities[i].recordLists[m].type == "general") {
-							selectedEntity.list.name = popupData.cleanEntities[i].recordLists[m].name;
-							selectedEntity.list.label = popupData.cleanEntities[i].recordLists[m].label;
+					for (var m = 0; m < popupCtrl.cleanEntities[i].recordLists.length; m++) {
+						if (popupCtrl.cleanEntities[i].recordLists[m].default && popupCtrl.cleanEntities[i].recordLists[m].type == "general") {
+							selectedEntity.list.name = popupCtrl.cleanEntities[i].recordLists[m].name;
+							selectedEntity.list.label = popupCtrl.cleanEntities[i].recordLists[m].label;
 						}
 					}
 				}
 			}
 			//Add to subscribed 
-			popupData.attachments.push(selectedEntity);
-			popupData.attachments = popupData.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-			popupData.pendingEntity = null;
+			popupCtrl.attachments.push(selectedEntity);
+			popupCtrl.attachments = popupCtrl.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+			popupCtrl.pendingEntity = null;
 			//Remove from cleanEntities
 			var attachedItemIndex = -1;
-			for (var i = 0; i < popupData.cleanEntities.length; i++) {
-				if (popupData.cleanEntities[i].name == selectedEntity.name) {
+			for (var i = 0; i < popupCtrl.cleanEntities.length; i++) {
+				if (popupCtrl.cleanEntities[i].name == selectedEntity.name) {
 					attachedItemIndex = i;
 					break;
 				}
 			}
 			if (attachedItemIndex != -1) {
-				popupData.cleanEntities.splice(attachedItemIndex, 1);
+				popupCtrl.cleanEntities.splice(attachedItemIndex, 1);
 			}
 		}
 
-		popupData.attachURL = function () {
+		popupCtrl.attachURL = function () {
 			var urlAttachmentObj = {
 				name: null,
 				label: null,
@@ -465,38 +465,38 @@
 				list: null
 			};
 
-			urlAttachmentObj.label = popupData.pendingUrlLabel;
-			urlAttachmentObj.url = popupData.pendingUrl;
-			urlAttachmentObj.iconName = popupData.pendingUrlIconName;
-			urlAttachmentObj.weight = popupData.pendingUrlWeight;
+			urlAttachmentObj.label = popupCtrl.pendingUrlLabel;
+			urlAttachmentObj.url = popupCtrl.pendingUrl;
+			urlAttachmentObj.iconName = popupCtrl.pendingUrlIconName;
+			urlAttachmentObj.weight = popupCtrl.pendingUrlWeight;
 
 			//Add to subscribed 
-			popupData.attachments.push(urlAttachmentObj);
-			popupData.attachments = popupData.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+			popupCtrl.attachments.push(urlAttachmentObj);
+			popupCtrl.attachments = popupCtrl.attachments.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 
-			popupData.pendingUrlLabel = null;
-			popupData.pendingUrl = null;
-			popupData.pendingUrlIconName = null;
-			popupData.pendingUrlWeight = null;
+			popupCtrl.pendingUrlLabel = null;
+			popupCtrl.pendingUrl = null;
+			popupCtrl.pendingUrlIconName = null;
+			popupCtrl.pendingUrlWeight = null;
 
 		}
 
 
 		//Delete subscribed entity
-		popupData.deleteAttachment = function (index) {
-			var attachment = popupData.attachments[index];
+		popupCtrl.deleteAttachment = function (index) {
+			var attachment = popupCtrl.attachments[index];
 			//If entity
 			if (attachment.url == null) {
 				var unsubscribedEntity = {};
-				for (var i = 0; i < popupData.entities.length; i++) {
-					if (popupData.entities[i].name == attachment.name) {
-						unsubscribedEntity = popupData.entities[i];
+				for (var i = 0; i < popupCtrl.entities.length; i++) {
+					if (popupCtrl.entities[i].name == attachment.name) {
+						unsubscribedEntity = popupCtrl.entities[i];
 						break;
 					}
 				}
-				popupData.cleanEntities.push(unsubscribedEntity);
+				popupCtrl.cleanEntities.push(unsubscribedEntity);
 				//Soft alphabetically
-				popupData.cleanEntities = popupData.tempEntitiesList.sort(function (a, b) {
+				popupCtrl.cleanEntities = popupCtrl.tempEntitiesList.sort(function (a, b) {
 					if (a.name < b.name) return -1;
 					if (a.name > b.name) return 1;
 					return 0;
@@ -504,53 +504,53 @@
 
 				//Remove attachment
 				var attachmentIndex = -1;
-				for (var i = 0; i < popupData.attachments.length; i++) {
-					if (popupData.attachments[i].name == attachment.name) {
+				for (var i = 0; i < popupCtrl.attachments.length; i++) {
+					if (popupCtrl.attachments[i].name == attachment.name) {
 						attachmentIndex = i;
 						break;
 					}
 				}
 				if (attachmentIndex != -1) {
-					popupData.attachments.splice(attachmentIndex, 1);
+					popupCtrl.attachments.splice(attachmentIndex, 1);
 				}
 			}
 			//if URL
 			else {
-				popupData.attachments.splice(index, 1);
+				popupCtrl.attachments.splice(index, 1);
 			}
 
 		}
 
 
 		/// EXIT functions
-		popupData.validation = {};
-		popupData.validation.hasError = false;
-		popupData.validation.errorMessage = "";
+		popupCtrl.validation = {};
+		popupCtrl.validation.hasError = false;
+		popupCtrl.validation.errorMessage = "";
 
-		popupData.ok = function () {
-			popupData.validation = {};
-			popupData.validation.hasError = false;
-			popupData.validation.errorMessage = "";
-			if (!popupData.area.name || popupData.area.name == "" || !popupData.area.label || popupData.area.label == "" ||
-				!popupData.area.icon_name || popupData.area.icon_name == "" || !popupData.area.color || popupData.area.color == "") {
-				popupData.validation.hasError = true;
-				popupData.validation.errorMessage = "Required fields are missing data";
+		popupCtrl.ok = function () {
+			popupCtrl.validation = {};
+			popupCtrl.validation.hasError = false;
+			popupCtrl.validation.errorMessage = "";
+			if (!popupCtrl.area.name || popupCtrl.area.name == "" || !popupCtrl.area.label || popupCtrl.area.label == "" ||
+				!popupCtrl.area.icon_name || popupCtrl.area.icon_name == "" || !popupCtrl.area.color || popupCtrl.area.color == "") {
+				popupCtrl.validation.hasError = true;
+				popupCtrl.validation.errorMessage = "Required fields are missing data";
 			}
-			if (!popupData.validation.hasError) {
-				if (!popupData.isUpdate) {
-					popupData.area.roles = angular.toJson(popupData.rolesValues);
-					popupData.area.attachments = angular.toJson(popupData.attachments);
-					webvellaAdminService.createRecord("area", popupData.area, successCallback, errorCallback);
+			if (!popupCtrl.validation.hasError) {
+				if (!popupCtrl.isUpdate) {
+					popupCtrl.area.roles = angular.toJson(popupCtrl.rolesValues);
+					popupCtrl.area.attachments = angular.toJson(popupCtrl.attachments);
+					webvellaAdminService.createRecord("area", popupCtrl.area, successCallback, errorCallback);
 				}
 				else {
-					popupData.area.roles = angular.toJson(popupData.rolesValues);
-					popupData.area.attachments = angular.toJson(popupData.attachments);
-					webvellaAdminService.updateRecord(popupData.area.id, "area", popupData.area, successCallback, errorCallback);
+					popupCtrl.area.roles = angular.toJson(popupCtrl.rolesValues);
+					popupCtrl.area.attachments = angular.toJson(popupCtrl.attachments);
+					webvellaAdminService.updateRecord(popupCtrl.area.id, "area", popupCtrl.area, successCallback, errorCallback);
 				}
 			}
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -567,21 +567,21 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.entity, location);
 		}
 
 		//Delete
 		//Delete field
 		//Create new field modal
-		popupData.deleteAreaModal = function () {
+		popupCtrl.deleteAreaModal = function () {
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'deleteAreaModal.html',
 				controller: 'DeleteAreaModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					parentPopupData: function () { return popupData; }
+					parentpopupCtrl: function () { return popupCtrl; }
 				}
 			});
 		}
@@ -591,22 +591,22 @@
 
 
 	//// Modal Controllers
-	DeleteAreaModalController.$inject = ['parentPopupData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	DeleteAreaModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
 	/* @ngInject */
-	function DeleteAreaModalController(parentPopupData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
+	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.parentData = parentPopupData;
+		var popupCtrl = this;
+		popupCtrl.parentData = parentpopupCtrl;
 
-		popupData.ok = function () {
+		popupCtrl.ok = function () {
 
-			webvellaAdminService.deleteRecord(popupData.parentData.area.id,"area", successCallback, errorCallback);
+			webvellaAdminService.deleteRecord(popupCtrl.parentData.area.id,"area", successCallback, errorCallback);
 
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -617,13 +617,13 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			popupData.parentData.modalInstance.close('success');
+			popupCtrl.parentData.modalInstance.close('success');
 			webvellaRootService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
-			popupData.hasError = true;
-			popupData.errorMessage = response.message;
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
 
 
 		}

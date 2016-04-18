@@ -2,7 +2,7 @@
 
 /**
 * @desc Recursive records list
-* @example 	<recursive-list list-meta="contentData.recordsMeta" list-data="contentData.records" relations-list="contentData.relationsMeta"></recursive-list>
+* @example 	<recursive-list list-meta="ngCtrl.recordsMeta" list-data="ngCtrl.records" relations-list="ngCtrl.relationsMeta"></recursive-list>
  * 
 */
 
@@ -212,10 +212,10 @@
 				animation: false,
 				templateUrl: 'addExistingModal.html',
 				controller: 'RLAddExistingModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () {
+					ngCtrl: function () {
 						return $scope;
 					},
 					resolvedLookupRecords: function () {
@@ -286,10 +286,10 @@
 				animation: false,
 				templateUrl: 'manageRelatedRecordModal.html',
 				controller: 'RLManageRelatedRecordModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () {
+					ngCtrl: function () {
 						return $scope;
 					},
 					resolvedManagedRecordQuickCreateView: resolveManagedRecordQuickCreateView(record)
@@ -370,10 +370,10 @@
 				animation: false,
 				templateUrl: 'viewRelatedRecordModal.html',
 				controller: 'ViewRelatedRecordModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () {
+					ngCtrl: function () {
 						return $scope;
 					},
 					resolvedQuickViewRecord: function () {
@@ -443,62 +443,62 @@
 
 	//#region < Modal Controllers >
 
-	RLAddExistingModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
+	RLAddExistingModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService'];
 	/* @ngInject */
-	function RLAddExistingModalController(contentData, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+	function RLAddExistingModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService) {
 
 		$log.debug('webvellaAdmin>recursive-list>RLAddExistingModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		//#region << Init >>
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.currentPage = 1;
-		popupData.relation = fastCopy(contentData.relation);
-		popupData.hasWarning = false;
-		popupData.warningMessage = "";
-		popupData.parentEntity = fastCopy(contentData.entity);
-		popupData.searchQuery = null;
-		popupData.parentRecordId = fastCopy(contentData.parentId);
-		popupData.listData = fastCopy(contentData.listData);
-		popupData.dataKind = fastCopy(contentData.dataKind);
+		var popupCtrl = this;
+		popupCtrl.currentPage = 1;
+		popupCtrl.relation = fastCopy(ngCtrl.relation);
+		popupCtrl.hasWarning = false;
+		popupCtrl.warningMessage = "";
+		popupCtrl.parentEntity = fastCopy(ngCtrl.entity);
+		popupCtrl.searchQuery = null;
+		popupCtrl.parentRecordId = fastCopy(ngCtrl.parentId);
+		popupCtrl.listData = fastCopy(ngCtrl.listData);
+		popupCtrl.dataKind = fastCopy(ngCtrl.dataKind);
 		//Get the default lookup list for the entity
 		if (resolvedLookupRecords.success) {
-			popupData.relationLookupList = fastCopy(resolvedLookupRecords.object);
+			popupCtrl.relationLookupList = fastCopy(resolvedLookupRecords.object);
 		}
 		else {
-			popupData.hasWarning = true;
-			popupData.warningMessage = resolvedLookupRecords.message;
+			popupCtrl.hasWarning = true;
+			popupCtrl.warningMessage = resolvedLookupRecords.message;
 		}
 		//#endregion
 
 		//#region << Paging >>
-		popupData.selectPage = function (page) {
+		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
-				popupData.currentPage = page;
+				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.currentPage = page;
 			}
 
 			function errorCallback(response) {
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.parentEntity.name, page, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, popupCtrl.searchQuery, successCallback, errorCallback);
 		}
 
 		//#endregion
 
 		//#region << Search >>
-		popupData.checkForSearchEnter = function (e) {
+		popupCtrl.checkForSearchEnter = function (e) {
 			var code = (e.keyCode ? e.keyCode : e.which);
 			if (code == 13) { //Enter keycode
-				popupData.submitSearchQuery();
+				popupCtrl.submitSearchQuery();
 			}
 		}
-		popupData.submitSearchQuery = function () {
+		popupCtrl.submitSearchQuery = function () {
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList = fastCopy(response.object);
 			}
 
 			function errorCallback(response) {
@@ -508,35 +508,35 @@
 					timeout: 7000
 				});
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.parentEntity.name, popupData.currentPage, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, popupCtrl.searchQuery, successCallback, errorCallback);
 
 		}
 		//#endregion
 
-		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 
 		//#region << Logic >>
-		popupData.instantAttachRecord = function (record) {
+		popupCtrl.instantAttachRecord = function (record) {
 			var returnObject = {
-				relationName: popupData.relation.name,
-				dataKind: popupData.dataKind,
+				relationName: popupCtrl.relation.name,
+				dataKind: popupCtrl.dataKind,
 				selectedRecordId: record.id,
 				operation: "attach"
 			}
-			popupData.processInstantSelection(returnObject);
+			popupCtrl.processInstantSelection(returnObject);
 			$uibModalInstance.close();
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
-		popupData.processInstantSelection = contentData.processInstantSelection;
+		popupCtrl.processInstantSelection = ngCtrl.processInstantSelection;
 
-		popupData.isSelected = function (record) {
-			for (var j = 0; j < popupData.listData.length; j++) {
-				if (popupData.listData[j].id == record.id) {
+		popupCtrl.isSelected = function (record) {
+			for (var j = 0; j < popupCtrl.listData.length; j++) {
+				if (popupCtrl.listData[j].id == record.id) {
 					return true;
 				}
 			}
@@ -548,124 +548,124 @@
 	};
 
 
-	RLManageRelatedRecordModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
+	RLManageRelatedRecordModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService','webvellaRootService', 'resolvedManagedRecordQuickCreateView'];
-	function RLManageRelatedRecordModalController(contentData, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
+	function RLManageRelatedRecordModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService,webvellaRootService, resolvedManagedRecordQuickCreateView) {
 		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		//#region << Init >>
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.isFromRelation = true;
-		if (!contentData.relation) {
-			popupData.isFromRelation = false;
+		var popupCtrl = this;
+		popupCtrl.isFromRelation = true;
+		if (!ngCtrl.relation) {
+			popupCtrl.isFromRelation = false;
 		}
 		else {
-			popupData.relation = fastCopy(contentData.relation);
-			popupData.dataKind = fastCopy(contentData.dataKind);
+			popupCtrl.relation = fastCopy(ngCtrl.relation);
+			popupCtrl.dataKind = fastCopy(ngCtrl.dataKind);
 		}
-		popupData.entity = fastCopy(contentData.entity);
-		popupData.relationsList = fastCopy(contentData.relationsList);
-		popupData.getRelationLabel = contentData.getRelationLabel;
+		popupCtrl.entity = fastCopy(ngCtrl.entity);
+		popupCtrl.relationsList = fastCopy(ngCtrl.relationsList);
+		popupCtrl.getRelationLabel = ngCtrl.getRelationLabel;
 
 		if (resolvedManagedRecordQuickCreateView.data == null) {
-			popupData.isEdit = false;
-			popupData.recordData = {};
+			popupCtrl.isEdit = false;
+			popupCtrl.recordData = {};
 		}
 		else {
-			popupData.recordData = fastCopy(resolvedManagedRecordQuickCreateView.data)[0];
-			popupData.isEdit = true;
+			popupCtrl.recordData = fastCopy(resolvedManagedRecordQuickCreateView.data)[0];
+			popupCtrl.isEdit = true;
 		}
 
-		popupData.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
-		popupData.contentRegion = {};
-		for (var j = 0; j < popupData.viewMeta.regions.length; j++) {
-			if (popupData.viewMeta.regions[j].name === "content") {
-				popupData.contentRegion = popupData.viewMeta.regions[j];
+		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
+		popupCtrl.contentRegion = {};
+		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
+			if (popupCtrl.viewMeta.regions[j].name === "content") {
+				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}
 
 		//#endregion
 
 		//#region << Fields init >>
-		popupData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
-		popupData.progress = {}; //Needed for file and image uploads
+		popupCtrl.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
+		popupCtrl.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
 		//Init default values of fields
-		if (popupData.contentRegion != null) {
-			availableViewFields = webvellaAdminService.getItemsFromRegion(popupData.contentRegion);
+		if (popupCtrl.contentRegion != null) {
+			availableViewFields = webvellaAdminService.getItemsFromRegion(popupCtrl.contentRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
-				if (!popupData.recordData[availableViewFields[j].meta.name] && availableViewFields[j].type === "field") {
+				if (!popupCtrl.recordData[availableViewFields[j].meta.name] && availableViewFields[j].type === "field") {
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
-							popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							break;
 
 						case 3: //Currency
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 4: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									popupData.recordData[availableViewFields[j].meta.name] = moment().toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									popupData.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
 						case 5: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									popupData.recordData[availableViewFields[j].meta.name] = moment().toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									popupData.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									popupCtrl.recordData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
 						case 6: //Email
 							break;
 						case 7: //File
-							popupData.progress[availableViewFields[j].meta.name] = 0;
+							popupCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 9: //Image
-							popupData.progress[availableViewFields[j].meta.name] = 0;
+							popupCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 11: //Multiselect
 							if (availableViewFields[j].meta.required) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 12: //Number
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 13: //Password
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								//Does not have default value
-								//popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								//popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 14: //Percent
@@ -677,32 +677,32 @@
 								//The way to correct this is to multiply the decimals before multiple their values,
 								//var resultPercentage = 0.00;
 								//resultPercentage = multiplyDecimals(availableViewFields[j].meta.defaultValue, 100, 3);
-								//popupData.recordData[availableViewFields[j].meta.name] = resultPercentage;
+								//popupCtrl.recordData[availableViewFields[j].meta.name] = resultPercentage;
 							}
 							break;
 						case 15: //Phone
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 16: //Guid
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 17: //Dropdown
 							if (availableViewFields[j].meta.required && availableViewFields[j].meta.defaultValue) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 18: //Text
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 19: //URL
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								popupData.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								popupCtrl.recordData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 					}
@@ -713,43 +713,43 @@
 		}
 
 		//#region << File >>
-		popupData.uploadedFileName = "";
-		popupData.upload = function (file, item) {
+		popupCtrl.uploadedFileName = "";
+		popupCtrl.upload = function (file, item) {
 			if (file != null) {
-				popupData.uploadedFileName = item.dataName;
-				popupData.moveSuccessCallback = function (response) {
+				popupCtrl.uploadedFileName = item.dataName;
+				popupCtrl.moveSuccessCallback = function (response) {
 					$timeout(function () {
-						popupData.recordData[popupData.uploadedFileName] = response.object.url;
+						popupCtrl.recordData[popupCtrl.uploadedFileName] = response.object.url;
 					}, 1);
 				}
 
-				popupData.uploadSuccessCallback = function (response) {
+				popupCtrl.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
 					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
 					var overwrite = true;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupData.moveSuccessCallback, popupData.uploadErrorCallback);
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
 				}
-				popupData.uploadErrorCallback = function (response) {
+				popupCtrl.uploadErrorCallback = function (response) {
 					alert(response.message);
 				}
-				popupData.uploadProgressCallback = function (response) {
+				popupCtrl.uploadProgressCallback = function (response) {
 					$timeout(function () {
-						popupData.progress[popupData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
+						popupCtrl.progress[popupCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, popupData.uploadProgressCallback, popupData.uploadSuccessCallback, popupData.uploadErrorCallback);
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 			}
 		};
 
-		popupData.deleteFileUpload = function (item) {
+		popupCtrl.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = popupData.recordData[fieldName];
+			var filePath = popupCtrl.recordData[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					popupData.recordData[fieldName] = null;
-					popupData.progress[fieldName] = 0;
+					popupCtrl.recordData[fieldName] = null;
+					popupCtrl.progress[fieldName] = 0;
 				}, 0);
 				return true;
 			}
@@ -769,7 +769,7 @@
 		//#endregion
 
 		//#region << Html >>
-		//Should use scope as it is not working with contentData
+		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
 			language: 'en',
 			'skin': 'moono',
@@ -794,13 +794,13 @@
 			]
 		};	
 
-		popupData.toggleSectionCollapse = function (section) {
+		popupCtrl.toggleSectionCollapse = function (section) {
 			section.collapsed = !section.collapsed;
 		}
 
-		popupData.calendars = {};
-		popupData.openCalendar = function (event, name) {
-			popupData.calendars[name] = true;
+		popupCtrl.calendars = {};
+		popupCtrl.openCalendar = function (event, name) {
+			popupCtrl.calendars[name] = true;
 		}
 
 		//#endregion
@@ -810,41 +810,41 @@
 
 
 		//#region << Render >>
-		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
 		//#endregion
 
 		//#region << Logic >>
-		popupData.ok = function () {
+		popupCtrl.ok = function () {
 			//We need to remove the unsupported field from relations that we display but do not want to submit
-			for(var property in popupData.recordData){
+			for(var property in popupCtrl.recordData){
 				if(property.startsWith("$field") || property.startsWith("$fieldFromRelation") || property.startsWith("$view") || property.startsWith("$viewFromRelation") || property.startsWith("$list") || property.startsWith("$listFromRelation")){
-					delete popupData.recordData[property];
+					delete popupCtrl.recordData[property];
 				}
 			}
-			if (!popupData.isEdit) {
-				webvellaAdminService.createRecord(popupData.entity.name, popupData.recordData, createSuccessCallback, manageErrorCallback);
+			if (!popupCtrl.isEdit) {
+				webvellaAdminService.createRecord(popupCtrl.entity.name, popupCtrl.recordData, createSuccessCallback, manageErrorCallback);
 			}
 			else {
-				webvellaAdminService.updateRecord(popupData.recordData.id, popupData.entity.name, popupData.recordData, successCallback, manageErrorCallback);
+				webvellaAdminService.updateRecord(popupCtrl.recordData.id, popupCtrl.entity.name, popupCtrl.recordData, successCallback, manageErrorCallback);
 			}
 		}
 
 		/// Aux
 		function createSuccessCallback(response) {
-			if (!popupData.isFromRelation) {
+			if (!popupCtrl.isFromRelation) {
 				$state.reload();
 				$uibModalInstance.close('success');
 			}
 			else {
 				var returnObject = {
-					relationName: popupData.relation.name,
-					dataKind: popupData.dataKind,
+					relationName: popupCtrl.relation.name,
+					dataKind: popupCtrl.dataKind,
 					selectedRecordId: response.object.data[0].id,
 					operation: "attach"
 				}
-				popupData.processInstantSelection = contentData.processInstantSelection;
-				popupData.processInstantSelection(returnObject);
+				popupCtrl.processInstantSelection = ngCtrl.processInstantSelection;
+				popupCtrl.processInstantSelection(returnObject);
 				$uibModalInstance.close('success');
 			}
 		}
@@ -861,10 +861,10 @@
 		function manageErrorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.recordData, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.recordData, location);
 		}
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion
@@ -873,31 +873,31 @@
 	};
 
 
-	ViewRelatedRecordModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
+	ViewRelatedRecordModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
         'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedQuickViewRecord'];
-	function ViewRelatedRecordModalController(contentData, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
+	function ViewRelatedRecordModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
         ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedQuickViewRecord) {
 		$log.debug('webvellaAdmin>recursive-list>RLManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		//#region << Init >>
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.entity = fastCopy(contentData.entity);
-		popupData.recordData = fastCopy(resolvedQuickViewRecord.data)[0];
- 		popupData.viewMeta = fastCopy(resolvedQuickViewRecord.meta);
+		var popupCtrl = this;
+		popupCtrl.entity = fastCopy(ngCtrl.entity);
+		popupCtrl.recordData = fastCopy(resolvedQuickViewRecord.data)[0];
+ 		popupCtrl.viewMeta = fastCopy(resolvedQuickViewRecord.meta);
 		
-		popupData.contentRegion = {};
-		for (var j = 0; j < popupData.viewMeta.regions.length; j++) {
-			if (popupData.viewMeta.regions[j].name === "content") {
-				popupData.contentRegion = popupData.viewMeta.regions[j];
+		popupCtrl.contentRegion = {};
+		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
+			if (popupCtrl.viewMeta.regions[j].name === "content") {
+				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}
 
 		//#endregion
 
-		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
-		popupData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
-		popupData.cancel = function () {
+		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 		//#endregion

@@ -189,11 +189,11 @@ function getFontAwesomeIconNames() {
 	//1. Get the raw json from the amazing work here https://github.com/Smartik89/SMK-Font-Awesome-PHP-JSON/blob/master/font-awesome/json/font-awesome-data.json
 
 	//2. Paste the raw json in the object below
-	//pluginData.faRaw = {}
+	//baseCtrl.faRaw = {}
 
 	//3. Execute the following script
 	//var iconNames = [];
-	//for (var name in pluginData.faRaw) {
+	//for (var name in baseCtrl.faRaw) {
 	//	iconNames.push(name);
 	//}
 	//$log.info(iconNames);

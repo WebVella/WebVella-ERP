@@ -24,7 +24,7 @@
 				"rootView": {
 					controller: 'WebVellaAreasBaseController',
 					templateUrl: '/plugins/webvella-areas/base.view.html',
-					controllerAs: 'pluginData'
+					controllerAs: 'baseCtrl'
 				}
 			},
 			resolve: {
@@ -219,7 +219,7 @@
 	function controller($log, $rootScope, $stateParams, webvellaRootService, resolvedCurrentUser, resolvedSitemap, ngToast, $window, $timeout) {
 		$log.debug('webvellaAreas>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var pluginData = this;
+		var baseCtrl = this;
 		//Show Sidemenu	always
 		$timeout(function () {
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);

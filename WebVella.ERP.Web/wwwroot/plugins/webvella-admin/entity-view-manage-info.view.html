@@ -1,23 +1,23 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-danger btn-sm" ng-click="contentData.deleteViewModal()"><i class="fa fa-trash-o"></i> Delete view</a>
+			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o"></i> Delete view</a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">View name: </span> {{contentData.view.name}}</h4>
+			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
 		</div>
 	</div>
 </div>
-<div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
+<div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
@@ -25,18 +25,21 @@
 	<div id="page-text">
 		<ul class="nav nav-pills">
 			<li role="presentation" class="active">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/info">Basic info</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/info">Basic info</a>
 			</li>
 			<li role="presentation">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}">Content</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Content</a>
 			</li>
 			<li role="presentation">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/sidebar">Sidebar</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar</a>
+			</li>
+			<li role="presentation">
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/action">Actions</a>
 			</li>
 		</ul>
 		<hr class="divider" />
 		<div class="view-manage-section">
-			<div class="alert alert-info ng-hide" ng-show="contentData.view.type == 'dynamic'">
+			<div class="alert alert-info ng-hide" ng-show="ngCtrl.view.type == 'dynamic'">
 				<strong>TIP:</strong> Dynamic views are automatically triggered by using a naming convention with the <span class="go-red">~</span> sign.
 				Example: A view with the name <span class="go-red">area_name~field_name~value123</span> will be used automatically to display the record details, when the area name is
 				<span class="go-red">area_name</span> and the record's field <span class="go-red">field_name</span> has the value of <span class="go-red">value123</span>.
@@ -51,9 +54,9 @@
 								<label class="control-label col-lg-2" for="name">Name</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-text="contentData.view.name"
-											   value="{{contentData.view.name}}"
-											   onbeforesave="contentData.fieldUpdate('name',$data)" e-form="fieldForm_name">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.name"
+											   value="{{ngCtrl.view.name}}"
+											   onbeforesave="ngCtrl.fieldUpdate('name',$data)" e-form="fieldForm_name">
 										<span class="input-group-addon" ng-click="fieldForm_name.$show()" ng-hide="fieldForm_name.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -66,9 +69,9 @@
 								<label class="control-label col-lg-2">Type</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-select="contentData.view.type"
-											   value="{{contentData.showViewType()}}" e-ng-options="s.name as s.label for s in contentData.viewTypes"
-											   onbeforesave="contentData.fieldUpdate('type', $data)" e-form="fieldForm_type">
+										<input type="text" class="form-control" disabled editable-select="ngCtrl.view.type"
+											   value="{{ngCtrl.showViewType()}}" e-ng-options="s.name as s.label for s in ngCtrl.viewTypes"
+											   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
 										<span class="input-group-addon" ng-click="fieldForm_type.$show()" ng-hide="fieldForm_type.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -83,9 +86,9 @@
 								<label class="control-label col-lg-2">Label</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-text="contentData.view.label"
-											   value="{{contentData.view.label}}"
-											   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.label"
+											   value="{{ngCtrl.view.label}}"
+											   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
 										<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -98,9 +101,9 @@
 								<label class="control-label col-lg-2">Weight</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-text="contentData.view.weight"
-											   value="{{contentData.view.weight}}"
-											   onbeforesave="contentData.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.weight"
+											   value="{{ngCtrl.view.weight}}"
+											   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
 										<span class="input-group-addon" ng-click="fieldForm_weight.$show()" ng-hide="fieldForm_weight.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -115,15 +118,15 @@
 								<label class="control-label col-lg-2">Default</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<span class="input-group-addon hidden-xs" ng-if="contentData.view.default && !fieldForm_default.$visible">
+										<span class="input-group-addon hidden-xs" ng-if="ngCtrl.view.default && !fieldForm_default.$visible">
 											<i class="fa fa-check fa-fw go-green"></i>
 										</span>
-										<span class="input-group-addon hidden-xs" ng-if="!contentData.view.default && !fieldForm_default.$visible">
+										<span class="input-group-addon hidden-xs" ng-if="!ngCtrl.view.default && !fieldForm_default.$visible">
 											<i class="fa fa-times fa-fw go-red"></i>
 										</span>
-										<input type="text" class="form-control" disabled editable-checkbox="contentData.view.default"
-											   e-title="Make this default view?" value="{{contentData.view.default}}"
-											   onbeforesave="contentData.fieldUpdate('default',$data)" e-form="fieldForm_default">
+										<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.view.default"
+											   e-title="Make this default view?" value="{{ngCtrl.view.default}}"
+											   onbeforesave="ngCtrl.fieldUpdate('default',$data)" e-form="fieldForm_default">
 										<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -136,13 +139,13 @@
 								<label class="control-label col-lg-2">System</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-readonly">
-										<span class="input-group-addon" ng-if="contentData.view.system">
+										<span class="input-group-addon" ng-if="ngCtrl.view.system">
 											<i class="fa fa-check fa-fw go-green"></i>
 										</span>
-										<span class="input-group-addon" ng-if="!contentData.view.system">
+										<span class="input-group-addon" ng-if="!ngCtrl.view.system">
 											<i class="fa fa-times fa-fw go-red"></i>
 										</span>
-										<input type="text" class="form-control" disabled value="{{::contentData.view.system}}"></input>
+										<input type="text" class="form-control" disabled value="{{::ngCtrl.view.system}}"></input>
 										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 									</div>
 								</div>
@@ -157,9 +160,9 @@
 								<label class="control-label col-lg-2">CSS class</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-text="contentData.view.cssClass"
-											   value="{{contentData.view.cssClass}}"
-											   onbeforesave="contentData.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.cssClass"
+											   value="{{ngCtrl.view.cssClass}}"
+											   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
 										<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
@@ -172,10 +175,10 @@
 								<label class="control-label col-lg-2">Icon Name</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable">
-										<span class="input-group-addon"><i class="fa fa-{{contentData.view.iconName}} fa-fw"></i></span>
-										<input type="text" class="form-control" disabled editable-text="contentData.view.iconName"
-											   value="{{contentData.view.iconName}}" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
-											   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10">
+										<span class="input-group-addon"><i class="fa fa-{{ngCtrl.view.iconName}} fa-fw"></i></span>
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.iconName"
+											   value="{{ngCtrl.view.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+											   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 										<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
@@ -192,11 +195,11 @@
 								<div class="col-lg-11">
 									<div class="editable-wrapper input-group editable-updatable">
 										<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
-											<a href="{{contentData.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+											<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 										</span>
-										<input type="text" class="form-control" disabled editable-text="contentData.view.dynamicHtmlTemplate"
-											   value="{{contentData.renderFieldValue(contentData.view.dynamicHtmlTemplate,{fieldType:18})}}"
-											   onbeforesave="contentData.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.dynamicHtmlTemplate"
+											   value="{{ngCtrl.renderFieldValue(ngCtrl.view.dynamicHtmlTemplate,{fieldType:18})}}"
+											   onbeforesave="ngCtrl.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 										<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 									<div class="form-description">URL to a customer html template file that should substitute the default view html template. It will be compiled by angular, and view data and meta are accessible.</div>
@@ -212,18 +215,18 @@
 
 <script type="text/ng-template" id="deleteViewModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Delete a view</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
+		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
 			<p>Are you sure that you need this view deleted?</p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete View</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete View</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 

@@ -25,7 +25,7 @@
 				"contentView": {
 					controller: 'WebVellaDesktopBrowseController',
 					templateUrl: '/plugins/webvella-desktop/browse.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -114,23 +114,23 @@
 					webvellaDesktopTopnavFactory, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
 		$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
-		contentData.browsenav = [];
-		contentData.folder = fastCopy($state.params.folder);
+		var ngCtrl = this;
+		ngCtrl.browsenav = [];
+		ngCtrl.folder = fastCopy($state.params.folder);
 		var localStorage = $localStorage;
-		if (contentData.folder) {
-			localStorage.folder = contentData.folder;
+		if (ngCtrl.folder) {
+			localStorage.folder = ngCtrl.folder;
 		}
 		else {
 			localStorage.folder = "Default";
 		}
-		contentData.topNav = [];
-		contentData.topNavDict = [];
+		ngCtrl.topNav = [];
+		ngCtrl.topNavDict = [];
 		webvellaDesktopTopnavFactory.initTopnav();
 
 		//#region << Set Page title >>
-		contentData.pageTitle = "Browse Desktop | " + pageTitle;
-		webvellaRootService.setPageTitle(contentData.pageTitle);
+		ngCtrl.pageTitle = "Browse Desktop | " + pageTitle;
+		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
 		//#endregion
 		//#region << Make the Browsenav pluggable & Initialize>>
 		////1. CONSTRUCTOR - initialize the factory
@@ -144,7 +144,7 @@
 			if (sitemapAreas[i].folder && sitemapAreas[i].folder != "") {
 				folderLabel = sitemapAreas[i].folder;
 			}
-			if (contentData.topNavDict.indexOf(folderLabel) == -1) {
+			if (ngCtrl.topNavDict.indexOf(folderLabel) == -1) {
 				var topNavItem = {
 					"label": folderLabel,
 					"stateName": "webvella-desktop-browse",
@@ -154,18 +154,18 @@
 					"weight": sitemapAreas[i].weight
 				}
 				topNavItem.nodes.push(sitemapAreas[i]);
-				contentData.topNav.push(topNavItem);
-				contentData.topNavDict.push(folderLabel);
+				ngCtrl.topNav.push(topNavItem);
+				ngCtrl.topNavDict.push(folderLabel);
 			}
 			else {
-				for (var j = 0; j < contentData.topNav.length; j++) {
-					if (contentData.topNav[j].label == folderLabel) {
-						var currentWeight = contentData.topNav[j].weight;
-						var currentNodes = contentData.topNav[j].nodes.length;
+				for (var j = 0; j < ngCtrl.topNav.length; j++) {
+					if (ngCtrl.topNav[j].label == folderLabel) {
+						var currentWeight = ngCtrl.topNav[j].weight;
+						var currentNodes = ngCtrl.topNav[j].nodes.length;
 
 						var newAvarageWeight = (currentWeight * currentNodes + sitemapAreas[i].weight) / (currentNodes + 1);
 						newAvarageWeight = Math.round(newAvarageWeight);
-						contentData.topNav[j].weight = newAvarageWeight;
+						ngCtrl.topNav[j].weight = newAvarageWeight;
 					}
 				}
 			}
@@ -189,8 +189,8 @@
 			}
 		};
 
-		for (var i = 0; i < contentData.topNav.length; i++) {
-			webvellaDesktopTopnavFactory.addItem(contentData.topNav[i]);
+		for (var i = 0; i < ngCtrl.topNav.length; i++) {
+			webvellaDesktopTopnavFactory.addItem(ngCtrl.topNav[i]);
 		}
 
 		////3. UPDATED hook listener
@@ -206,7 +206,7 @@
 				}
 
 			}
-			contentData.browsenav = browseNav;
+			ngCtrl.browsenav = browseNav;
 		});
 		////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
 		$scope.$on("$destroy", function () {
@@ -220,9 +220,9 @@
 
 
 		//Wait for the load and show non items messages if needed
-		contentData.loaded = false;
+		ngCtrl.loaded = false;
 		$timeout(function () {
-		  contentData.loaded = true;
+		  ngCtrl.loaded = true;
 		},250);
 
 		$log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));

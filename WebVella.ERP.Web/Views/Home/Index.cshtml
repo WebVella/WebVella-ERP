@@ -61,8 +61,9 @@
 	<script src="~/plugins/webvella-root/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-recursion/angular-recursion.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-loading-bar/build/loading-bar.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-root/lib/angular-ui-tree/dist/angular-ui-tree.js"></script>
-	<script src="~/plugins/webvella-root/lib/angular-bind-html-compile/angular-bind-html-compile.js"></script>
+	<script src="~/plugins/webvella-root/lib/angular-ui-tree/dist/angular-ui-tree.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-bind-html-compile/angular-bind-html-compile.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/oclazyload/dist/oclazyload.js?v=@ViewBag.CacheBreaker"></script>
 
 	@* Core Application module definition *@
 	<script>
@@ -76,7 +77,7 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
-					'doubleScrollBars','angular-bind-html-compile',
+					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 					
@@ -174,6 +175,7 @@
 	<script src="~/plugins/webvella-areas/providers/view-tree-select.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/scroll.directive.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-areas/providers/dynamic-templates.directive.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-areas/providers/dynamic-html.directive.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-developers -->
 	@*<script src="~/plugins/webvella-developers/base.module.js?v=@ViewBag.CacheBreaker"></script>

@@ -83,79 +83,79 @@
 
 <script type="text/ng-template" id="addExistingModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{::popupData.parentEntity.label}}</span></h3>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">{{::popupCtrl.parentEntity.label}}</span></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
-			<div ng-if="popupData.hasWarning">
-				<div class="alert alert-warning">{{::popupData.warningMessage}}</div>
+		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
+			<div ng-if="popupCtrl.hasWarning">
+				<div class="alert alert-warning">{{::popupCtrl.warningMessage}}</div>
 			</div>
-			<div ng-if="!popupData.hasWarning">
+			<div ng-if="!popupCtrl.hasWarning">
 				<form id="filters" class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
-							<input ng-model="popupData.searchQuery" type="text" class="form-control" placeholder="{{::popupData.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupData.checkForSearchEnter($event)">
+							<input ng-model="popupCtrl.searchQuery" type="text" class="form-control" placeholder="{{::popupCtrl.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupCtrl.checkForSearchEnter($event)">
 							<span class="input-group-btn">
-								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupData.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
+								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupCtrl.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
 							</span>
 						</div>
 					</div>
 				</form>
 
-				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
+				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 					<thead>
 						<tr>
 							<th class="actions" style="width:80px;"></th>
-							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">{{::column.meta.label}}</th>
+							<th class="wv-{{::column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{::column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="record in popupData.relationLookupList.data track by record.id">
+						<tr ng-repeat="record in popupCtrl.relationLookupList.data track by record.id">
 							<td>
-								<a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupData.isSelected(record)">
+								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-if="::!popupCtrl.isSelected(record)">
 									select
 								</a>
-								<span ng-if="::popupData.isSelected(record)" class="go-gray">
+								<span ng-if="::popupCtrl.isSelected(record)" class="go-gray">
 									selected
 								</span>
 							</td>
-							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">
-								<span ng-bind-html="::popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
+							<td class="wv-{{::column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">
+								<span ng-bind-html="::popupCtrl.renderFieldValue(record[column.dataName],column.meta)"></span>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<div class="alert alert-info" ng-show="popupData.relationLookupList.data.length == 0">
+				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0">
 					No records found
 				</div>
 				<ul class="pager">
-					<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-					<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-					<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
-					<!--<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
+					<!--<li ng-if="popupCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<!--<li ng-if="popupCtrl.relationLookupList.meta.pageSize > popupCtrl.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save change</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'">Save change</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 
 
 <script type="text/ng-template" id="manageRelatedRecordModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" ng-if="::!popupData.isEdit">Create & Add new</h3>
-		<h3 class="modal-title" ng-if="::popupData.isEdit">Quick edit</h3>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title" ng-if="::!popupCtrl.isEdit">Create & Add new</h3>
+		<h3 class="modal-title" ng-if="::popupCtrl.isEdit">Quick edit</h3>
 	</div>
 	<div class="modal-body">
 		<form name="createRecord">
-			<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in popupData.contentRegion.sections track by section.id" ng-if="popupData.contentRegion != null">
-				<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="popupData.toggleSectionCollapse(section)">
+			<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in popupCtrl.contentRegion.sections track by section.id" ng-if="popupCtrl.contentRegion != null">
+				<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel" ng-click="popupCtrl.toggleSectionCollapse(section)">
 					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
 					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
 					{{section.label}}
@@ -164,7 +164,7 @@
 					<div class="form">
 						<div class="row" ng-repeat="row in section.rows track by row.id">
 							<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
-								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupData[item.meta.name + 'Error'] }">
+								<div class="form-group" ng-repeat="item in column.items" ng-class="{ 'has-error' : createRecord.{{item.meta.name}}.$invalid && !createRecord.{{item.meta.name}}.$pristine || popupCtrl[item.meta.name + 'Error'] }">
 									<!--If item is field WITH NO relation-->
 									<div class="field" ng-if="item.type === 'field'">
 										<label class="control-label" ng-class="{'required':item.meta.required}">{{item.meta.label}}</label>
@@ -176,35 +176,35 @@
 
 											<!-- 2. Checkbox -->
 											<div class="checkbox" ng-switch-when="2">
-												<label><input type="checkbox" ng-model="popupData.recordData[item.dataName]" value="true"> selected</label>
+												<label><input type="checkbox" ng-model="popupCtrl.recordData[item.dataName]" value="true"> selected</label>
 											</div>
 
 											<!-- 3. Currency -->
 											<div ng-switch-when="3">
 												<div class="input-group">
 													<div class="input-group-addon">{{item.meta.currency.code}}</div>
-													<input type="number" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 														   ng-model-options="{allowInvalid:true}">
 												</div>
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 														Decimal, no comma allowed.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
 														Should be > = {{item.meta.minValue}}.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
 														Should be < = {{item.meta.maxValue}}.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
@@ -212,22 +212,22 @@
 											<!-- 4. Date -->
 											<div ng-switch-when="4">
 												<div class="input-group">
-													<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="popupData.calendars[item.meta.name]"
-														   enable-date="true" enable-time="false" ng-click="popupData.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars[item.meta.name]"
+														   enable-date="true" enable-time="false" ng-click="popupCtrl.openCalendar($event, item.meta.name)" ng-model-options="{allowInvalid:true}">
 													<span class="input-group-btn">
-														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+														<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
 													</span>
 												</div>
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
@@ -235,46 +235,46 @@
 											<!-- 5. DateTime -->
 											<div ng-switch-when="5">
 												<div class="input-group">
-													<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
-														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupData.calendars[item.meta.name]"
-														   enable-date="true" enable-time="true" ng-click="popupData.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
+													<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+														   ng-required="{{item.meta.required}}" datetime-picker="{{item.meta.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars[item.meta.name]"
+														   enable-date="true" enable-time="true" ng-click="popupCtrl.openCalendar($event, item.meta.name)" timepicker-options="{showMeridian:false}" ng-model-options="{allowInvalid:true}">
 													<span class="input-group-btn">
-														<button type="button" class="btn btn-default" ng-click="popupData.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
+														<button type="button" class="btn btn-default" ng-click="popupCtrl.openCalendar($event, item.meta.name)"><i class="fa fa-calendar"></i></button>
 													</span>
 												</div>
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 6. Email -->
 											<div ng-switch-when="6">
-												<input class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" type="text"
+												<input class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" type="text"
 													   ng-required="{{item.meta.required}}" placeholder="{{item.meta.placeholderText}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
 													   ng-maxlength="{{item.meta.maxLength}}" ng-model-options="{allowInvalid:true}" />
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 														Invalid email.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
 														Too long: must be < = {{item.meta.maxLength}} chars.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 
@@ -282,76 +282,76 @@
 
 											<!-- 7. File -->
 											<div ng-switch-when="7">
-												<a ng-show='!popupData.recordData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
-												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false'>Browse</a>
-												<div class="progress" ng-show="!popupData.recordData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
-													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
-														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
-														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
-														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+														 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
+														<span ng-show="popupCtrl.progress[item.dataName] < 100">{{popupCtrl.progress[item.dataName]}}%</span>
+														<span ng-show="popupCtrl.progress[item.dataName] == 100">almost done...</span>
 													</div>
 												</div>
-												<div class="input-group file-upload" ng-show='popupData.recordData[item.dataName]'>
-													<a class="form-control link-icon" href="{{popupData.recordData[item.dataName]}}" target="_blank">view file</a>
-													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<div class="input-group file-upload" ng-show='popupCtrl.recordData[item.dataName]'>
+													<a class="form-control link-icon" href="{{popupCtrl.recordData[item.dataName]}}" target="_blank">view file</a>
+													<a class="input-group-addon" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" style="margin-left:1em;" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 8. Html -->
 											<div ng-switch-when="8">
-												<textarea class="form-control" ng-model="popupData.recordData[item.dataName]" ckeditor="editorOptions" ng-change="popupData.validate(item)"></textarea>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<textarea class="form-control" ng-model="popupCtrl.recordData[item.dataName]" ckeditor="editorOptions" ng-change="popupCtrl.validate(item)"></textarea>
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 9. Image -->
 											<div ng-switch-when="9">
-												<a ng-show='!popupData.recordData[item.dataName] && popupData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
-												   ngf-select="popupData.upload(popupData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
-												<div class="progress" ng-show="!popupData.recordData[item.dataName] && popupData.progress[item.dataName] > 0 && popupData.progress[item.dataName] <= 100">
-													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
-														 ng-style="{'width': popupData.progress[item.dataName]+'%'}">
-														<span ng-show="popupData.progress[item.dataName] < 100">{{popupData.progress[item.dataName]}}%</span>
-														<span ng-show="popupData.progress[item.dataName] == 100">almost done...</span>
+												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
+														 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
+														<span ng-show="popupCtrl.progress[item.dataName] < 100">{{popupCtrl.progress[item.dataName]}}%</span>
+														<span ng-show="popupCtrl.progress[item.dataName] == 100">almost done...</span>
 													</div>
 												</div>
-												<div class="image-upload" ng-show='popupData.recordData[item.dataName]'>
-													<img class="img-thumbnail" ng-src="{{popupData.recordData[item.dataName]}}" />
-													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<div class="image-upload" ng-show='popupCtrl.recordData[item.dataName]'>
+													<img class="img-thumbnail" ng-src="{{popupCtrl.recordData[item.dataName]}}" />
+													<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 10. Textarea -->
 											<div ng-switch-when="10">
-												<textarea rows="{{::item.meta.visibleLineNumber}}" class="form-control" ng-model="popupData.recordData[item.dataName]"></textarea>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<textarea rows="{{::item.meta.visibleLineNumber}}" class="form-control" ng-model="popupCtrl.recordData[item.dataName]"></textarea>
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
@@ -359,41 +359,41 @@
 											<!-- 11. Multichoice -->
 											<div ng-switch-when="11">
 												<label ng-repeat="option in item.meta.options" class="checkbox-inline">
-													<input type="checkbox" checklist-model="popupData.recordData[item.dataName]" checklist-value="option.key"> {{option.value}}
+													<input type="checkbox" checklist-model="popupCtrl.recordData[item.dataName]" checklist-value="option.key"> {{option.value}}
 												</label>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 12. Number -->
 											<div ng-switch-when="12">
-												<input type="number" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 													   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 													   ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 														Decimal, no comma allowed.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
 														Should be > = {{item.meta.minValue}}.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
 														Should be < = {{item.meta.maxValue}}.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 
 												</div>
@@ -401,21 +401,21 @@
 
 											<!-- 13. Password -->
 											<div ng-switch-when="13">
-												<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
 													   ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
 														Too long: must be < = {{item.meta.maxLength}} chars.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 
 												</div>
@@ -424,50 +424,50 @@
 											<!-- 14. Percent -->
 											<div ng-switch-when="14">
 												<div class="input-group">
-													<input type="number" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													<input type="number" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 														   ng-required="{{item.meta.required}}" pattern="^\d+(\.\d{1,5})?$" min="{{item.meta.minValue}}" max="{{item.meta.maxValue}}"
 														   ng-model-options="{allowInvalid:true}">
 													<div class="input-group-addon">%</div>
 												</div>
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 														Decimal, no comma allowed.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.min && !popupCtrl[item.meta.name + 'Error']">
 														Should be > = {{item.meta.minValue}}.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.max && !popupCtrl[item.meta.name + 'Error']">
 														Should be < = {{item.meta.maxValue}}.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 15. Phone -->
 											<div ng-switch-when="15">
-												<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
 													   ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
 														Too long: must be < = {{item.meta.maxLength}} chars.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 
 												</div>
@@ -476,21 +476,21 @@
 											<!-- 16. Guid -->
 											<div ng-switch-when="16">
 												<div ng-if="!item.meta.generateNewId">
-													<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+													<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 														   ng-required="{{item.meta.required}}" ng-model-options="{allowInvalid:true}"
 														   pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$">
-													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+													<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 														{{item.meta.helpText}}
 													</div>
-													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+													<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 															Required.
 														</small>
-														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupData[item.meta.name + 'Error']">
+														<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.pattern && !popupCtrl[item.meta.name + 'Error']">
 															Invalid GUID.
 														</small>
-														<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-															{{popupData[item.meta.name+'ErrorMessage']}}
+														<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+															{{popupCtrl[item.meta.name+'ErrorMessage']}}
 														</small>
 													</div>
 												</div>
@@ -501,55 +501,55 @@
 											</div>
 											<!-- 17. Dropdown -->
 											<div ng-switch-when="17">
-												<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="popupData.recordData[item.dataName]"></select>
-												<div class="form-description" ng-hide="popupData[item.meta.name + 'Error']">
+												<select class="form-control" ng-options="option.key as option.value for option in item.meta.options" ng-model="popupCtrl.recordData[item.dataName]"></select>
+												<div class="form-description" ng-hide="popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+												<div class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 18. Text -->
 											<div ng-switch-when="18">
-												<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
 													   ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
 														Too long: must be < = {{item.meta.maxLength}} chars.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
 
 											<!-- 19. Url -->
 											<div ng-switch-when="19">
-												<input type="text" class="form-control" ng-model="popupData.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
+												<input type="text" class="form-control" ng-model="popupCtrl.recordData[item.dataName]" name="{{item.meta.name}}" placeholder="{{item.meta.placeholderText}}"
 													   ng-required="{{item.meta.required}}" ng-maxlength="{{item.meta.maxLength}}"
 													   ng-model-options="{allowInvalid:true}">
-												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
+												<div class="form-description" ng-hide="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
 													{{item.meta.helpText}}
 												</div>
-												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupData[item.meta.name + 'Error']">
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupData[item.meta.name + 'Error']">
+												<div class="error" ng-show="createRecord.{{item.meta.name}}.$touched && createRecord.{{item.meta.name}}.$dirty && createRecord.{{item.meta.name}}.$invalid ||  popupCtrl[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.required && !popupCtrl[item.meta.name + 'Error']">
 														Required.
 													</small>
-													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupData[item.meta.name + 'Error']">
+													<small class="error" ng-show="createRecord.{{item.meta.name}}.$error.maxlength && !popupCtrl[item.meta.name + 'Error']">
 														Too long: must be < = {{item.meta.maxLength}} chars.
 													</small>
-													<small class="error" ng-show="popupData[item.meta.name + 'Error']">
-														{{popupData[item.meta.name+'ErrorMessage']}}
+													<small class="error" ng-show="popupCtrl[item.meta.name + 'Error']">
+														{{popupCtrl[item.meta.name+'ErrorMessage']}}
 													</small>
 												</div>
 											</div>
@@ -566,8 +566,8 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="!popupData.isEdit">Create & Add</button>
-		<button class="btn btn-primary" ng-click="popupData.ok()" ng-hide="popupData.hasError" ng-if="popupData.isEdit">Save change</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit">Create & Add</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit">Save change</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>

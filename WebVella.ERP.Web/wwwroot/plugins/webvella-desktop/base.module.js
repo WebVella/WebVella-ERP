@@ -26,7 +26,7 @@
 				"rootView": {
 					controller: 'WebVellaDesktopBaseController',
 					templateUrl: '/plugins/webvella-desktop/base.view.html?v=' + htmlCacheBreaker,
-					controllerAs: 'pluginData'
+					controllerAs: 'baseCtrl'
 				}
 			},
 			resolve: {
@@ -83,9 +83,9 @@
 		$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		/* jshint validthis:true */
-		var pluginData = this;
-		pluginData.topnav = [];
-		pluginData.user = fastCopy(resolvedCurrentUser);
+		var baseCtrl = this;
+		baseCtrl.topnav = [];
+		baseCtrl.user = fastCopy(resolvedCurrentUser);
 
 		//Making topnav pluggable
 		////1. CONSTRUCTOR initialize the factory
@@ -96,7 +96,7 @@
 		})
 		////3. UPDATED hook listener
 		var updateTopnavDestructor = $rootScope.$on("webvellaDesktop-topnav-updated", function (event, data) {
-			pluginData.topnav = data;
+			baseCtrl.topnav = data;
 			activate();
 		});
 		////4. DESCTRUCTOR - hook listeners remove on scope destroy. This avoids duplication, as rootScope is never destroyed and new controller load will duplicate the listener
@@ -129,7 +129,7 @@
 			$rootScope.$emit("webvellaDesktop-topnav-ready");
 			$log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 		}, 0);
-		pluginData.logout = function () {
+		baseCtrl.logout = function () {
 			webvellaRootService.logout(
                     function (response) {
                     	//  $window.location = '#/login';
@@ -140,7 +140,7 @@
                     function (response) { });
 		}
 
-		pluginData.isNavActive = function (item) {
+		baseCtrl.isNavActive = function (item) {
 			if (item.label == $state.params.folder) {
 				return true;
 			}
@@ -152,10 +152,10 @@
 		$log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
 		function activate() {
-			if (pluginData.topnav.length > 0) {
+			if (baseCtrl.topnav.length > 0) {
 				$timeout(function () {
 					if (!$state.params.folder) {
-						$state.go(pluginData.topnav[0].stateName, pluginData.topnav[0].stateParams)
+						$state.go(baseCtrl.topnav[0].stateName, baseCtrl.topnav[0].stateParams)
 					}
 				}, 0);
 

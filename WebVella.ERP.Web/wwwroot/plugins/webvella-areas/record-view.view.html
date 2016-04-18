@@ -1,16 +1,21 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<span uib-dropdown class="dropdown" ng-if="contentData.userHasRecordDeletePermission()">
+			<span uib-dropdown class="dropdown" ng-if="ngCtrl.userHasRecordDeletePermission()">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu pull-right" uib-dropdown-menu style="margin-top:10px;">
-					<li ng-if="contentData.userHasRecordDeletePermission()">
-						<a href="javascript:void(0)" confirmed-click="contentData.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
+					<li ng-if="ngCtrl.userHasRecordDeletePermission()">
+						<a href="javascript:void(0)" confirmed-click="ngCtrl.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="/#/admin/entities/{{::contentData.currentEntity.name}}/views/{{::contentData.stateParams.viewName}}">
+						<a href="/#/admin/entities/{{::ngCtrl.currentEntity.name}}/views/{{::ngCtrl.stateParams.viewName}}">
 							<i class="fa fa-wrench"></i> Edit View
+						</a>
+					</li>
+					<li>
+						<a ng-click="ngCtrl.actionService.test(ngCtrl.currentEntity.name)">
+							<i class="fa fa-wrench"></i> Call test
 						</a>
 					</li>
 				</ul>
@@ -19,12 +24,12 @@
 		</div>
 		<div class="meta-label">
 			<h4>
-				{{::contentData.viewSection.label}}
-				<span uib-dropdown on-toggle="toggled(open)" ng-if="contentData.generalViews.length > 1">
+				{{::ngCtrl.viewSection.label}}
+				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalViews.length > 1">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
-						<li ng-repeat="view in contentData.generalViews track by $index">
-							<a href="#/areas/{{::contentData.currentArea.name}}/{{::contentData.currentEntity.name}}/{{contentData.stateParams.recordId}}/{{::view.name}}/*/*/*">
+						<li ng-repeat="view in ngCtrl.generalViews track by $index">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.currentEntity.name}}/{{ngCtrl.stateParams.recordId}}/{{::view.name}}/*/*/*">
 								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::view.label}}
 							</a>
 						</li>
@@ -35,11 +40,11 @@
 	</div>
 </div>
 
-<div id="page-body" ng-mousedown="contentData.viewCheckMouseButton($event)">
-	<div id="page-text" class="record-details" ng-if='::contentData.selectedSidebarPage.isEdit && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<div class="panel panel-default panel-section  {{::section.cssClass}}" ng-repeat="section in contentData.selectedSidebarPage.meta.sections track by section.id">
+<div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
+	<div id="page-text" class="record-details" ng-if='::ngCtrl.selectedSidebarPage.isEdit && !ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
+		<div class="panel panel-default panel-section  {{::section.cssClass}}" ng-repeat="section in ngCtrl.selectedSidebarPage.meta.sections track by section.id">
 			<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
-				<a href="javascript:void(0)" ng-click="contentData.toggleSectionCollapse(section)">
+				<a href="javascript:void(0)" ng-click="ngCtrl.toggleSectionCollapse(section)">
 					<span class="ng-hide" ng-show="!section.collapsed"><i class="fa fa-fw fa-caret-down"></i></span>
 					<span class="ng-hide" ng-show="section.collapsed"><i class="fa fa-fw fa-caret-right"></i></span>
 					{{::section.label}}
@@ -53,257 +58,257 @@
 								<!--If item is field WITH NO relation-->
 								<div class="editable-field field" ng-switch-when="field">
 									<label class="control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item)">
 										<div ng-switch="::item.meta.fieldType">
 											<!-- If type 1 - auto-increment -->
 											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="1">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 2 - checkbox -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="2" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<span class="input-group-addon" ng-if="contentData.selectedSidebarPage.data[item.dataName] && !this['fieldForm_' + item.dataName].$visible">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="2" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<span class="input-group-addon" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName] && !this['fieldForm_' + item.dataName].$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon" ng-if="!contentData.selectedSidebarPage.data[item.dataName] && !this['fieldForm_' + item.dataName].$visible">
+												<span class="input-group-addon" ng-if="!ngCtrl.selectedSidebarPage.data[item.dataName] && !this['fieldForm_' + item.dataName].$visible">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled editable-checkbox="contentData.selectedSidebarPage.data[item.dataName]"
-													   e-title="set as TRUE" value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+												<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   e-title="set as TRUE" value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="2" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<span class="input-group-addon" ng-if="contentData.selectedSidebarPage.data[item.dataName]">
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="2" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<span class="input-group-addon" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName]">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon" ng-if="!contentData.selectedSidebarPage.data[item.dataName]">
+												<span class="input-group-addon" ng-if="!ngCtrl.selectedSidebarPage.data[item.dataName]">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 3 - currency -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="3" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="3" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="3" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="3" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 4 - date -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="4" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
-													   e-datepicker-popup="yyyy-MMM-dd" e-is-open="contentData.opened[item.dataName]" e-init-date="false"
-													   onshow="contentData.open(item.dataName,true)" onhide="contentData.open(item.dataName,false)"
-													   value='{{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}'
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="4" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
+													   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
+													   value='{{ngCtrl.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}'
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="4" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="4" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 5 - datetime -->
 											<div class="row" ng-switch-when="5">
 												<div class="col-sm-6" style="padding-right: 10px;">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-														<input type="text" class="form-control" disabled editable-bsdate="contentData.selectedSidebarPage.data[item.dataName]"
-															   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="contentData.opened[item.dataName]" e-init-date="false"
-															   onshow="contentData.open(item.dataName,true)" onhide="contentData.open(item.dataName,false)"
-															   value='{{contentData.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}'
-															   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+														<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarPage.data[item.dataName]"
+															   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
+															   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
+															   value='{{ngCtrl.selectedSidebarPage.data[item.dataName] | date:"dd MMM yyyy"}}'
+															   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 														<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
 												<div class="col-sm-6" style="padding-left: 10px;">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-														<input type="text" class="form-control" disabled editable-bstime="contentData.selectedSidebarPage.data[item.dataName]"
-															   e-show-meridian="false" e-minute-step="10" e-is-open="contentData.opened[item.dataName]"
-															   onshow="contentData.open(item.dataName,true)" onhide="contentData.open(item.dataName,false)"
-															   value='{{contentData.getTimeString(item)}}'
-															   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+														<input type="text" class="form-control" disabled editable-bstime="ngCtrl.selectedSidebarPage.data[item.dataName]"
+															   e-show-meridian="false" e-minute-step="10" e-is-open="ngCtrl.opened[item.dataName]"
+															   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
+															   value='{{ngCtrl.getTimeString(item)}}'
+															   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 														<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-clock-o fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
 											</div>
 											<!-- If type 6 - email -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="6" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="6" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="6" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="6" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 7 - fileupload -->
-											<div ng-switch-when="7" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<a ng-if='!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'>Browse</a>
-												<div class="progress" ng-if="!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
-													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': contentData.progress[item.dataName]+'%'}">
-														<span ng-if="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
-														<span ng-if="contentData.progress[item.dataName] == 100">almost done...</span>
+											<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<a ng-if='!ngCtrl.selectedSidebarPage.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
+												<div class="progress" ng-if="!ngCtrl.selectedSidebarPage.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
+														<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
+														<span ng-if="ngCtrl.progress[item.dataName] == 100">almost done...</span>
 													</div>
 												</div>
-												<div class="editable-wrapper input-group file-upload" ng-if='contentData.selectedSidebarPage.data[item.dataName]'>
-													<span class="form-control" ng-bind-html="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
-													<a class="input-group-addon update" href='javascript:void(0)' ngf-select="contentData.updateFileUpload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-													<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<div class="editable-wrapper input-group file-upload" ng-if='ngCtrl.selectedSidebarPage.data[item.dataName]'>
+													<span class="form-control" ng-bind-html="ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)"></span>
+													<a class="input-group-addon update" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
+													<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 											</div>
-											<span ng-switch-when="7" class="not-editable" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></span>
+											<span ng-switch-when="7" class="not-editable" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)"></span>
 											<!-- If type 8 - html -->
-											<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<div ng-attr-id="{{::item.meta.name}}" class="form-control control-cke-editor" ng-model="contentData.selectedSidebarPage.data[item.dataName]" ckeditor="editorOptions" contenteditable="true"
-													 ng-focus="contentData.htmlFieldIsEnabled($event,item)" ng-keydown="contentData.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="contentData.preventMouseSave($event)"></div>
+											<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<div ng-attr-id="{{::item.meta.name}}" class="form-control control-cke-editor" ng-model="ngCtrl.selectedSidebarPage.data[item.dataName]" ckeditor="editorOptions" contenteditable="true"
+													 ng-focus="ngCtrl.htmlFieldIsEnabled($event,item)" ng-keydown="ngCtrl.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="ngCtrl.preventMouseSave($event)"></div>
 
 											</div>
-											<div ng-switch-when="8" class="not-editable" readonly ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-bind-html="::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)"></div>
+											<div ng-switch-when="8" class="not-editable" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)"></div>
 											<!-- If type 9 - image -->
-											<div ng-switch-when="9" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<a ng-if='!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="contentData.upload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
-												<div class="progress" ng-if="!contentData.selectedSidebarPage.data[item.dataName] && contentData.progress[item.dataName] > 0 && contentData.progress[item.dataName] <= 100">
-													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{contentData.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': contentData.progress[item.dataName]+'%'}">
-														<span ng-if="contentData.progress[item.dataName] < 100">{{contentData.progress[item.dataName] || '0'}}%</span>
-														<span ng-if="contentData.progress[item.dataName] == 100">almost done...</span>
+											<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<a ng-if='!ngCtrl.selectedSidebarPage.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
+												<div class="progress" ng-if="!ngCtrl.selectedSidebarPage.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
+														<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
+														<span ng-if="ngCtrl.progress[item.dataName] == 100">almost done...</span>
 													</div>
 												</div>
-												<div class="image-upload" ng-if='contentData.selectedSidebarPage.data[item.dataName]'>
-													<img class="img-thumbnail" ng-src="{{contentData.selectedSidebarPage.data[item.dataName] + contentData.cacheBreakers[item.dataName]}}" style="width:120px" />
-													<a class="update-link" href='javascript:void(0)' ngf-select="contentData.updateFileUpload(contentData.files[item.dataName],item)" ngf-max-size="20MB" ng-model='contentData.files[item.dataName]' ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
-													<a class="delete-link" href="javascript:void(0)" confirmed-click="contentData.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+												<div class="image-upload" ng-if='ngCtrl.selectedSidebarPage.data[item.dataName]'>
+													<img class="img-thumbnail" ng-src="{{ngCtrl.selectedSidebarPage.data[item.dataName] + ngCtrl.cacheBreakers[item.dataName]}}" style="width:120px" />
+													<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
+													<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
 												</div>
 											</div>
-											<img ng-switch-when="9" class="img-thumbnail" ng-if="::!contentData.currentUserHasUpdatePermission(item)" ng-src="{{contentData.selectedSidebarPage.data[item.dataName]}}" />
+											<img ng-switch-when="9" class="img-thumbnail" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-src="{{ngCtrl.selectedSidebarPage.data[item.dataName]}}" />
 											<!-- If type 10 - textarea -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="10" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<div class="form-control" disabled editable-textarea="contentData.selectedSidebarPage.data[item.dataName]" e-rows="3"
-													 onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}"
-													 ng-bind="contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="10" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<div class="form-control" disabled editable-textarea="ngCtrl.selectedSidebarPage.data[item.dataName]" e-rows="3"
+													 onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}"
+													 ng-bind="ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)">
 												</div>
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="10" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="10" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 
 											<!-- If type 11 - multichoice -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="11" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-checklist="contentData.selectedSidebarPage.data[item.dataName]"
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="11" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-checklist="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   e-ng-options="s.key as s.value for s in item.meta.options"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="11" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="11" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 12 - number -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="12" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="12" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="12" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="12" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 
 											<!-- If type 13 - password -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="13" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="13" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="13" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="13" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 14 - percent -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="14" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="14" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="14" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="14" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 15 - phone -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="15" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="15" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="15" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="15" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 16 - unique identifier -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="16" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="16" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="16" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="16" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 17 - dropdown -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="17" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-select="contentData.selectedSidebarPage.data[item.dataName]"
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="17" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-select="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   e-ng-options="s.key as s.value for s in item.meta.options"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="17" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="17" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 18 - textbox -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="18" ng-if="::contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="18" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="18" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="18" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 19 - url -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="19" ng-if="::contentData.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="19" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
 												<span class="input-group-addon" ng-if="!this['fieldForm_' + item.dataName].$visible">
-													<a href="{{contentData.selectedSidebarPage.data[item.dataName]}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+													<a href="{{ngCtrl.selectedSidebarPage.data[item.dataName]}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 												</span>
-												<input type="text" class="form-control" disabled editable-text="contentData.selectedSidebarPage.data[item.dataName]"
-													   value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="contentData.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
+													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="19" ng-if="::!contentData.currentUserHasUpdatePermission(item)">
-												<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="19" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -311,7 +316,7 @@
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}" ng-if="::!contentData.currentUserHasReadPermission(item)">
+									<div class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}" ng-if="::!ngCtrl.currentUserHasReadPermission(item)">
 										<div class="editable-wrapper input-group editable-hidden">
 											<input type="text" class="form-control" disabled value="value hidden"></input>
 											<span class="input-group-addon"><i class="fa fa-eye-slash fa-fw"></i></span>
@@ -321,27 +326,27 @@
 
 								<!--If item is field WITH relation-->
 								<div class="editable-field field" ng-switch-when="fieldFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)">
-										<div ng-switch="::contentData.getRelation(item.relationName).relationType">
-											<div ng-switch-when="1" ng-switch="::contentData.getRelation(item.relationName).currentEntityRole">
+									<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item)">
+										<div ng-switch="::ngCtrl.getRelation(item.relationName).relationType">
+											<div ng-switch-when="1" ng-switch="::ngCtrl.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1">
 													<div class="editable-wrapper input-group editable-readonly">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon" title="1:1 relations can be managed only from the target's side"><i class="fa fa-question fa-fw"></i></span>
 													</div>
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
-														<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
-														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.selectedSidebarPage.data[item.dataName].length > 0"
-															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
+															  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
@@ -353,30 +358,30 @@
 												<!-- Case 0 - Error -->
 												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 											</div>
-											<div ng-switch-when="2" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+											<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 														<input type="text" class="form-control" disabled value=""></input>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
@@ -385,41 +390,41 @@
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
-														<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
-														<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.selectedSidebarPage.data[item.dataName].length > 0"
-															  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
+															  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
-														<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 												</div>
 												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3" class="position-relative">
 													<div ng-if="item.relationDirection == 'origin-target'">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 															<input type="text" class="form-control" disabled value=""></input>
-															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																	<td>{{relationDataRecord}}</td>
 																</tr>
-																<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																	<td style="padding: 16px"></td>
 																</tr>
 															</table>
-															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 														</div>
-														<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 															<table class="table table-bordered editable origin lookup">
-																<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+																<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																	<td>{{relationDataRecord}}</td>
 																</tr>
-																<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+																<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																	<td style="padding: 16px"></td>
 																</tr>
 															</table>
@@ -427,44 +432,44 @@
 														</div>
 													</div>
 													<div ng-if="item.relationDirection == 'target-origin'">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="::contentData.currentUserHasUpdatePermissionRelation(item)">
-															<input type="text" class="form-control" disabled value="{{contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
-															<span class="input-group-addon remove-addon ng-hide" ng-show="contentData.selectedSidebarPage.data[item.dataName].length > 0"
-																  confirmed-click="contentData.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-															<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+														<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+															<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+															<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
+																  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
+															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
 														</div>
-														<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
-															<input type="text" class="form-control" disabled value="{{::contentData.renderFieldValue(contentData.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
+														<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+															<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 															<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 														</div>
 													</div>
 												</div>
 												<div ng-switch-when="0"><span class="go-red">Possible relation error</span></div>
 											</div>
-											<div ng-switch-when="3" ng-switch="contentData.getRelation(item.relationName).currentEntityRole">
+											<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<input type="text" class="form-control" disabled value=""></input>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
@@ -474,27 +479,27 @@
 
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<input type="text" class="form-control" disabled value=""></input>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
@@ -504,27 +509,27 @@
 
 												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<input type="text" class="form-control" disabled value=""></input>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="contentData.selectedSidebarPage.data[item.dataName].length > 0 && contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
-														<span class="input-group-addon" ng-click="contentData.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-readonly" ng-if="::!contentData.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
-															<tr ng-repeat="relationDataRecord in contentData.selectedSidebarPage.data[item.dataName]">
+															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
-															<tr ng-if="contentData.selectedSidebarPage.data[item.dataName].length == 0">
+															<tr ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
@@ -539,7 +544,7 @@
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 
@@ -548,11 +553,11 @@
 								<!--If item is view WITH NO relation-->
 								<div class="field" ng-switch-when="view">
 									<label class="control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-view view-meta="item"
-														view-data="contentData.selectedSidebarPage.data[item.dataName]"
-														relations-list="::contentData.relationsList"
-														parent-id="::contentData.stateParams.recordId"
+														view-data="ngCtrl.selectedSidebarPage.data[item.dataName]"
+														relations-list="::ngCtrl.relationsList"
+														parent-id="::ngCtrl.stateParams.recordId"
 														can-create="false"
 														can-update="false">
 										</recursive-view>
@@ -560,48 +565,48 @@
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
-									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
+									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
+										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
 									</div>
 								</div>
 
 								<!--If item is view WITH relation-->
 								<div class="field" ng-switch-when="viewFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-view view-meta="::item"
-														view-data="::contentData.selectedSidebarPage.data[item.dataName]"
-														relations-list="::contentData.relationsList"
-														relation="::contentData.getRelation(item.relationName)"
-														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
-														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)"
-														can-remove="contentData.recursiveObjectCanDo('can-remove',item.entityName)">
+														view-data="::ngCtrl.selectedSidebarPage.data[item.dataName]"
+														relations-list="::ngCtrl.relationsList"
+														relation="::ngCtrl.getRelation(item.relationName)"
+														parent-id="::ngCtrl.stateParams.recordId"
+														can-add-existing="ngCtrl.recursiveObjectCanDo('can-add-existing',item.entityName)"
+														can-create="ngCtrl.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="ngCtrl.recursiveObjectCanDo('can-edit',item.entityName)"
+														can-remove="ngCtrl.recursiveObjectCanDo('can-remove',item.entityName)">
 										</recursive-view>
 										<div ng-if="::item.meta.helpText" class="form-description">
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
-									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
+									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
+										<dynamic-view template-url="item.meta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data[item.dataName][0]" template-meta="item.meta"></dynamic-view>
 									</div>
 								</div>
 
 								<!--If item is list WITH NO relation-->
 								<div class="field" ng-switch-when="list">
 									<label class="control-label">{{::item.meta.label}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-list list-meta="::item"
-														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
-														relations-list="::contentData.relationsList"
-														parent-id="::contentData.stateParams.recordId"
+														list-data="::ngCtrl.selectedSidebarPage.data[item.dataName]"
+														relations-list="::ngCtrl.relationsList"
+														parent-id="::ngCtrl.stateParams.recordId"
 														can-create="false"
 														can-update="false">
 										</recursive-list>
@@ -609,52 +614,52 @@
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
-									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
+									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
+										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
 									</div>
 								</div>
 
 								<!--If item is list WITH relation-->
 								<div class="field" ng-switch-when="listFromRelation">
-									<label class="control-label">{{::contentData.getRelationLabel(item)}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<label class="control-label">{{::ngCtrl.getRelationLabel(item)}}</label>
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<recursive-list list-meta="::item"
-														list-data="::contentData.selectedSidebarPage.data[item.dataName]"
-														relations-list="::contentData.relationsList"
-														relation="::contentData.getRelation(item.relationName)"
-														parent-id="::contentData.stateParams.recordId"
-														can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',item.entityName)"
-														can-create="contentData.recursiveObjectCanDo('can-create',item.entityName)"
-														can-update="contentData.recursiveObjectCanDo('can-edit',item.entityName)"
-														can-remove="contentData.recursiveObjectCanDo('can-remove',item.entityName)">
+														list-data="::ngCtrl.selectedSidebarPage.data[item.dataName]"
+														relations-list="::ngCtrl.relationsList"
+														relation="::ngCtrl.getRelation(item.relationName)"
+														parent-id="::ngCtrl.stateParams.recordId"
+														can-add-existing="ngCtrl.recursiveObjectCanDo('can-add-existing',item.entityName)"
+														can-create="ngCtrl.recursiveObjectCanDo('can-create',item.entityName)"
+														can-update="ngCtrl.recursiveObjectCanDo('can-edit',item.entityName)"
+														can-remove="ngCtrl.recursiveObjectCanDo('can-remove',item.entityName)">
 										</recursive-list>
 										<div ng-if="::item.meta.helpText" class="form-description">
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item) && !item.meta.dynamicHtmlTemplate">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
-									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{contentData.calculatefieldWidths('field',column.gridColCount)}}">
-										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
+									<div ng-if='::item.meta.dynamicHtmlTemplate' class="col-lg-{{ngCtrl.calculatefieldWidths('field',column.gridColCount)}}">
+										<dynamic-list template-url="item.meta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data[item.dataName]" template-meta="item.meta"></dynamic-list>
 									</div>
 								</div>
 
 								<!--If item is tree WITH relation-->
 								<div class="field" ng-switch-when="treeFromRelation">
 									<label class="control-label">{{::item.fieldLabel}}</label>
-									<div ng-if="::contentData.currentUserHasReadPermission(item)" class="position-relative>
-										<span class="editable editable-click tree" ng-click="contentData.openSelectTreeNodesModal(item)">
-											<span ng-repeat="treeDataRow in contentData.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
+									<div ng-if="::ngCtrl.currentUserHasReadPermission(item)" class="position-relative>
+										<span class="editable editable-click tree" ng-click="ngCtrl.openSelectTreeNodesModal(item)">
+											<span ng-repeat="treeDataRow in ngCtrl.selectedSidebarPage.data[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
 										</span>
 										<div ng-if="::item.meta.helpText" class="form-description">
 											{{item.meta.helpText}}
 										</div>
 									</div>
-									<div ng-if="::!contentData.currentUserHasReadPermission(item)">
+									<div ng-if="::!ngCtrl.currentUserHasReadPermission(item)">
 										<span class="not-editable not-readable">hidden</span>
 									</div>
 
@@ -669,170 +674,170 @@
 		</div>
 	</div>
 
-	<div id="page-text" ng-if='::!contentData.selectedSidebarPage.isEdit  && !contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<div class="records-details" ng-if="::contentData.selectedSidebarPage.isView">
-			<div ng-switch="::contentData.selectedSidebarPage.type">
+	<div id="page-text" ng-if='::!ngCtrl.selectedSidebarPage.isEdit  && !ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
+		<div class="records-details" ng-if="::ngCtrl.selectedSidebarPage.isView">
+			<div ng-switch="::ngCtrl.selectedSidebarPage.type">
 				<div ng-switch-when="view">
-					<recursive-view view-meta="::contentData.selectedSidebarPage"
-									view-data="::contentData.selectedSidebarPage.data"
-									relations-list="::contentData.relationsList"
-									parent-id="::contentData.stateParams.recordId"
-									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
+					<recursive-view view-meta="::ngCtrl.selectedSidebarPage"
+									view-data="::ngCtrl.selectedSidebarPage.data"
+									relations-list="::ngCtrl.relationsList"
+									parent-id="::ngCtrl.stateParams.recordId"
+									can-create="ngCtrl.recursiveObjectCanDo('can-create',ngCtrl.selectedSidebarPage.entityName)"
+									can-update="ngCtrl.recursiveObjectCanDo('can-edit',ngCtrl.selectedSidebarPage.entityName)">
 					</recursive-view>
 				</div>
 				<div ng-switch-when="viewFromRelation">
-					<recursive-view view-meta="::contentData.selectedSidebarPage"
-									view-data="::contentData.selectedSidebarPage.data"
-									relations-list="::contentData.relationsList"
-									relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)"
-									parent-id="::contentData.stateParams.recordId"
+					<recursive-view view-meta="::ngCtrl.selectedSidebarPage"
+									view-data="::ngCtrl.selectedSidebarPage.data"
+									relations-list="::ngCtrl.relationsList"
+									relation="::ngCtrl.getRelation(ngCtrl.selectedSidebarPage.relationName)"
+									parent-id="::ngCtrl.stateParams.recordId"
 									can-add-existing="true"
-									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
-									can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)">
+									can-create="ngCtrl.recursiveObjectCanDo('can-create',ngCtrl.selectedSidebarPage.entityName)"
+									can-update="ngCtrl.recursiveObjectCanDo('can-edit',ngCtrl.selectedSidebarPage.entityName)"
+									can-remove="ngCtrl.recursiveObjectCanDo('can-remove',ngCtrl.selectedSidebarPage.entityName)">
 					</recursive-view>
 				</div>
 			</div>
 		</div>
-		<div class="records-list" ng-if="::!contentData.selectedSidebarPage.isView">
-			<div ng-switch="::contentData.selectedSidebarPage.type">
+		<div class="records-list" ng-if="::!ngCtrl.selectedSidebarPage.isView">
+			<div ng-switch="::ngCtrl.selectedSidebarPage.type">
 				<div ng-switch-when="list">
-					<recursive-list list-meta="::contentData.selectedSidebarPage"
-									list-data="::contentData.selectedSidebarPage.data"
-									relations-list="::contentData.relationsList"
-									parent-id="::contentData.stateParams.recordId"
-									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)">
+					<recursive-list list-meta="::ngCtrl.selectedSidebarPage"
+									list-data="::ngCtrl.selectedSidebarPage.data"
+									relations-list="::ngCtrl.relationsList"
+									parent-id="::ngCtrl.stateParams.recordId"
+									can-create="ngCtrl.recursiveObjectCanDo('can-create',ngCtrl.selectedSidebarPage.entityName)"
+									can-update="ngCtrl.recursiveObjectCanDo('can-edit',ngCtrl.selectedSidebarPage.entityName)">
 					</recursive-list>
 				</div>
 				<div ng-switch-when="listFromRelation">
-					<recursive-list list-meta="::contentData.selectedSidebarPage"
-									list-data="::contentData.selectedSidebarPage.data"
-									relations-list="::contentData.relationsList"
-									can-add-existing="contentData.recursiveObjectCanDo('can-add-existing',contentData.selectedSidebarPage.entityName)"
-									can-create="contentData.recursiveObjectCanDo('can-create',contentData.selectedSidebarPage.entityName)"
-									can-update="contentData.recursiveObjectCanDo('can-edit',contentData.selectedSidebarPage.entityName)"
-									can-remove="contentData.recursiveObjectCanDo('can-remove',contentData.selectedSidebarPage.entityName)"
-									relation="::contentData.getRelation(contentData.selectedSidebarPage.relationName)"
-									parent-id="::contentData.stateParams.recordId">
+					<recursive-list list-meta="::ngCtrl.selectedSidebarPage"
+									list-data="::ngCtrl.selectedSidebarPage.data"
+									relations-list="::ngCtrl.relationsList"
+									can-add-existing="ngCtrl.recursiveObjectCanDo('can-add-existing',ngCtrl.selectedSidebarPage.entityName)"
+									can-create="ngCtrl.recursiveObjectCanDo('can-create',ngCtrl.selectedSidebarPage.entityName)"
+									can-update="ngCtrl.recursiveObjectCanDo('can-edit',ngCtrl.selectedSidebarPage.entityName)"
+									can-remove="ngCtrl.recursiveObjectCanDo('can-remove',ngCtrl.selectedSidebarPage.entityName)"
+									relation="::ngCtrl.getRelation(ngCtrl.selectedSidebarPage.relationName)"
+									parent-id="::ngCtrl.stateParams.recordId">
 					</recursive-list>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div id="page-text" ng-if='::contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
-		<dynamic-view template-url="contentData.selectedSidebarPage.templateMeta.dynamicHtmlTemplate" template-data="contentData.selectedSidebarPage.data" template-meta="contentData.selectedSidebarPage.meta"></dynamic-view>
+	<div id="page-text" ng-if='::ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
+		<dynamic-view template-url="ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data" template-meta="ngCtrl.selectedSidebarPage.meta"></dynamic-view>
 	</div>
 </div>
 
 <script type="text/ng-template" id="manageRelationFieldModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupData.getRelationLabel(popupData.selectedItem.relationName)}}</span></h3>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
-			<div ng-if="popupData.hasWarning">
-				<div class="alert alert-warning">{{popupData.warningMessage}}</div>
+		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
+			<div ng-if="popupCtrl.hasWarning">
+				<div class="alert alert-warning">{{popupCtrl.warningMessage}}</div>
 			</div>
-			<div ng-if="!popupData.hasWarning">
+			<div ng-if="!popupCtrl.hasWarning">
 				<form id="filters" class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
-							<input ng-model="popupData.searchQuery" type="text" class="form-control" placeholder="{{::popupData.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupData.checkForSearchEnter($event)">
+							<input ng-model="popupCtrl.searchQuery" type="text" class="form-control" placeholder="{{::popupCtrl.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupCtrl.checkForSearchEnter($event)">
 							<span class="input-group-btn">
-								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupData.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
+								<a href="javascript:void(0)" class="btn btn-default" ng-click="popupCtrl.submitSearchQuery()"><i class="fa fa-fw fa-search"></i></a>
 							</span>
 						</div>
 					</div>
 				</form>
 
-				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupData.relationLookupList.data.length == 0">
+				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 					<thead>
 						<tr>
-							<th class="actions" style="width:80px;" ng-if="popupData.modalMode != 'single-trigger-selection'"></th>
-							<th class="actions" style="width:110px;" ng-if="popupData.modalMode == 'single-trigger-selection'"></th>
-							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
+							<th class="actions" style="width:80px;" ng-if="popupCtrl.modalMode != 'single-trigger-selection'"></th>
+							<th class="actions" style="width:110px;" ng-if="popupCtrl.modalMode == 'single-trigger-selection'"></th>
+							<th class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">{{column.meta.label}}</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="record in popupData.relationLookupList.data" ng-class="{'warning': popupData.isSelectedRecord(record.id)}">
-							<td ng-if="popupData.modalMode == 'single-selection'">
-								<a ng-click='popupData.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+						<tr ng-repeat="record in popupCtrl.relationLookupList.data" ng-class="{'warning': popupCtrl.isSelectedRecord(record.id)}">
+							<td ng-if="popupCtrl.modalMode == 'single-selection'">
+								<a ng-click='popupCtrl.selectSingleRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
 									select
 								</a>
-								<span class="go-red" ng-if="popupData.isSelectedRecord(record.id)">
+								<span class="go-red" ng-if="popupCtrl.isSelectedRecord(record.id)">
 									selected
 								</span>
 							</td>
-							<td ng-if="popupData.modalMode == 'multi-selection'">
-								<a ng-click='popupData.attachRecord(record)' href="javascript:void(0)" ng-if="!popupData.isSelectedRecord(record.id)">
+							<td ng-if="popupCtrl.modalMode == 'multi-selection'">
+								<a ng-click='popupCtrl.attachRecord(record)' href="javascript:void(0)" ng-if="!popupCtrl.isSelectedRecord(record.id)">
 									select
 								</a>
-								<a ng-click='popupData.detachRecord(record)' href="javascript:void(0)" ng-if="popupData.isSelectedRecord(record.id)">
+								<a ng-click='popupCtrl.detachRecord(record)' href="javascript:void(0)" ng-if="popupCtrl.isSelectedRecord(record.id)">
 									deselect
 								</a>
 							</td>
-							<td ng-if="popupData.modalMode == 'single-trigger-selection'">
-								<span class="go-gray" ng-show="popupData.processingRecordId == record.id">processing...</span>
-								<a ng-click='popupData.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupData.isSelectedRecord(record.id) && popupData.processingRecordId != record.id">
+							<td ng-if="popupCtrl.modalMode == 'single-trigger-selection'">
+								<span class="go-gray" ng-show="popupCtrl.processingRecordId == record.id">processing...</span>
+								<a ng-click='popupCtrl.instantAttachRecord(record)' href="javascript:void(0)" ng-show="!popupCtrl.isSelectedRecord(record.id) && popupCtrl.processingRecordId != record.id">
 									select now
 								</a>
-								<a ng-click='popupData.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupData.isSelectedRecord(record.id)  && popupData.processingRecordId != record.id">
+								<a ng-click='popupCtrl.instantDetachRecord(record)' href="javascript:void(0)" ng-show="popupCtrl.isSelectedRecord(record.id)  && popupCtrl.processingRecordId != record.id">
 									deselect now
 								</a>
 							</td>
-							<td class="wv-{{column.meta.name}}" ng-repeat="column in popupData.relationLookupList.meta.columns  | limitTo: popupData.relationLookupList.meta.visibleColumnsCount">
-								<span ng-bind-html="::popupData.renderFieldValue(record[column.dataName],column.meta)"></span>
+							<td class="wv-{{column.meta.name}}" ng-repeat="column in popupCtrl.relationLookupList.meta.columns  | limitTo: popupCtrl.relationLookupList.meta.visibleColumnsCount">
+								<span ng-bind-html="::popupCtrl.renderFieldValue(record[column.dataName],column.meta)"></span>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<div class="alert alert-info" ng-show="popupData.relationLookupList.data.length == 0">
+				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0">
 					No records found
 				</div>
 				<ul class="pager">
-					<!--<li ng-if="popupData.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-					<li ng-if="popupData.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-					<li ng-if="popupData.relationLookupList.meta.pageSize <= popupData.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupData.selectPage(popupData.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
-					<!--<li ng-if="popupData.relationLookupList.meta.pageSize > popupData.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
+					<!--<li ng-if="popupCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
+					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<!--<li ng-if="popupCtrl.relationLookupList.meta.pageSize > popupCtrl.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupData.saveRelationChanges()" ng-hide="popupData.hasError" ng-if="popupData.modalMode == 'multi-selection'">Save changes</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'">Save changes</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="selectTreeNodesModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupData.itemMeta.entityLabel}}</span></h3>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.itemMeta.entityLabel}}</span></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
+		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 
 		<p>
-			<a ng-show="popupData.userPermissionsForTreeEntity.canUpdate" class="btn btn-default btn-sm pull-right ng-hide" href="#/admin/entities/{{::popupData.itemMeta.entityName}}/trees/{{::popupData.itemMeta.treeName}}/nodes" target="_blank"><i class="fa fa-cog go-orange"></i> manage tree</a>
-			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.collapseAll()">collapse all</a>
-			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupData.expandAll()">expand all</a>
+			<a ng-show="popupCtrl.userPermissionsForTreeEntity.canUpdate" class="btn btn-default btn-sm pull-right ng-hide" href="#/admin/entities/{{::popupCtrl.itemMeta.entityName}}/trees/{{::popupCtrl.itemMeta.treeName}}/nodes" target="_blank"><i class="fa fa-cog go-orange"></i> manage tree</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupCtrl.collapseAll()">collapse all</a>
+			<a href="javascript:void(0)" class="btn btn-sm btn-default" ng-click="popupCtrl.expandAll()">expand all</a>
 		</p>
 
 		<view-tree-select class="tree"
-						  field-meta="::popupData.itemMeta"
-						  tree-meta="::popupData.tree.meta"
-						  tree-data="::popupData.tree.data"
-						  selected-tree-records="popupData.selectedTreeRecords"
-						  collapsed-tree-nodes="popupData.collapsedTreeNodes"
-						  selectable-node-ids="popupData.selectableNodeIds">
+						  field-meta="::popupCtrl.itemMeta"
+						  tree-meta="::popupCtrl.tree.meta"
+						  tree-data="::popupCtrl.tree.data"
+						  selected-tree-records="popupCtrl.selectedTreeRecords"
+						  collapsed-tree-nodes="popupCtrl.collapsedTreeNodes"
+						  selectable-node-ids="popupCtrl.selectableNodeIds">
 		</view-tree-select>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-default" ng-click="popupData.close()">Close</button>
+		<button class="btn btn-default" ng-click="popupCtrl.close()">Close</button>
 	</div>
 </script>

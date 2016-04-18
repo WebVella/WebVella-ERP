@@ -1,11 +1,11 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success btn-sm" ng-click="contentData.openManageRoleModal(null)"><i class="fa fa-plus"></i> Add New</a>
-			<div class="form-group form-group-sm ng-hide" ng-show="contentData.roles.length > 0">
+			<a class="btn btn-success btn-sm" ng-click="ngCtrl.openManageRoleModal(null)"><i class="fa fa-plus"></i> Add New</a>
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.roles.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="contentData.search.name" type="text" class="form-control" placeholder="Role Name">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="Role Name">
 				</div>
 			</div>
 		</div>
@@ -16,7 +16,7 @@
 </div>
 <div id="page-body">
 	<div id="page-text">
-		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="contentData.roles.length > 0">
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="ngCtrl.roles.length > 0">
 			<thead>
 				<tr>
 					<th width="50"></th>
@@ -24,10 +24,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="role in contentData.roles | filter: contentData.search">
+				<tr ng-repeat="role in ngCtrl.roles | filter: ngCtrl.search">
 
 					<td>
-						<a ng-click="contentData.openManageRoleModal(role)" class="btn btn-default btn-sm">
+						<a ng-click="ngCtrl.openManageRoleModal(role)" class="btn btn-default btn-sm">
 							<i class="fa fa-pencil"></i>
 						</a>
 					</td>
@@ -35,30 +35,30 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="alert alert-info" ng-show="contentData.roles.length == 0" style="margin-top:2em;">
+		<div class="alert alert-info" ng-show="ngCtrl.roles.length == 0" style="margin-top:2em;">
 			<strong>No items!</strong> There are no users created yet
 		</div>
 	</div>
 </div>
 <script type="text/ng-template" id="manageRoleModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" ng-bind-html="popupData.modalTitle"></h3>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title" ng-bind-html="popupCtrl.modalTitle"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="manageForm" class="form">
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.name.$invalid && !manageForm.name.$pristine || popupData.validation.name.state}">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.name.$invalid && !manageForm.name.$pristine || popupCtrl.validation.name.state}">
 						<label class="control-label">Name</label>
-						<input class="form-control" ng-model="popupData.role.name" name="name" type="text"  ng-model-options="{allowInvalid:true}" 
+						<input class="form-control" ng-model="popupCtrl.role.name" name="name" type="text"  ng-model-options="{allowInvalid:true}" 
 							   ng-required="true"/>
-						<div class="error" ng-show="manageForm.name.$touched && manageForm.name.$dirty && manageForm.name.$invalid ||  popupData.validation.name.state">
-							<small class="error" ng-show="manageForm.name.$error.required && !popupData.validation.name.state">
+						<div class="error" ng-show="manageForm.name.$touched && manageForm.name.$dirty && manageForm.name.$invalid ||  popupCtrl.validation.name.state">
+							<small class="error" ng-show="manageForm.name.$error.required && !popupCtrl.validation.name.state">
 								Required.
 							</small>							
-							<small class="error" ng-show="popupData.validation.name.state">
-								{{popupData.validation.name.message}}
+							<small class="error" ng-show="popupCtrl.validation.name.state">
+								{{popupCtrl.validation.name.message}}
 							</small>
 						</div>
 					</div>
@@ -67,8 +67,8 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button ng-show="popupData.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupData.deleteRoleModal()">[ Delete role ]</button>
-		<button class="btn btn-primary" ng-click="popupData.ok()">Save Role</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button ng-show="popupCtrl.isUpdate" class="btn btn-link pull-left go-red" ng-click="popupCtrl.deleteRoleModal()">[ Delete role ]</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Save Role</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>

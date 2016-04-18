@@ -36,7 +36,7 @@
 				"contentView": {
 					controller: 'WebVellaAdminEntityListsController',
 					templateUrl: '/plugins/webvella-admin/entity-lists.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
@@ -164,22 +164,22 @@
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedEntityRecordsList,$timeout) {
 		$log.debug('webvellaAdmin>entity-records-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
+		var ngCtrl = this;
 		//#region << Initialize the current entity >>
-		contentData.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		//#endregion
 
 		//#region << Update page title & hide the side menu >>
-		contentData.pageTitle = "Entity Details | " + pageTitle;
+		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
 		$timeout(function(){
-			$rootScope.$emit("application-pageTitle-update", contentData.pageTitle);
+			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
 
-		contentData.showSidebar = function () {
+		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
 			$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
@@ -189,8 +189,8 @@
 		//#endregion
 
 		//#region << Initialize the lists >>
-		contentData.lists = fastCopy(resolvedEntityRecordsList.recordLists);
-		contentData.lists.sort(function (a, b) {
+		ngCtrl.lists = fastCopy(resolvedEntityRecordsList.recordLists);
+		ngCtrl.lists.sort(function (a, b) {
 			if (a.name < b.name) return -1;
 			if (a.name > b.name) return 1;
 			return 0;
@@ -198,28 +198,28 @@
 		//#endregion
 
 		//Create new list modal
-		contentData.createListModalInstance = undefined;
-		contentData.createListModal = function () {
-			contentData.createListModalInstance = $uibModal.open({
+		ngCtrl.createListModalInstance = undefined;
+		ngCtrl.createListModal = function () {
+			ngCtrl.createListModalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'createListModal.html',
 				controller: 'createListModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
-					contentData: function () { return contentData; }
+					ngCtrl: function () { return ngCtrl; }
 				}
 			});
 		}
 		//Close the modal on state change
 		$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-			if (contentData.createListModalInstance) {
-				contentData.createListModalInstance.dismiss();
+			if (ngCtrl.createListModalInstance) {
+				ngCtrl.createListModalInstance.dismiss();
 			}
 		})
 
 
-		contentData.calculateStats = function (list) {
+		ngCtrl.calculateStats = function (list) {
 			var columnsCount = list.columns.length;
 
 			if (columnsCount != 0) {
@@ -233,20 +233,20 @@
 
 		//Check if the param createNewList is true if yes - open the modal
 		if ($state.params.createNew) {
-			contentData.createListModal();
+			ngCtrl.createListModal();
 		}
 
-		contentData.copyList = function (list) {
+		ngCtrl.copyList = function (list) {
 
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'copyModal.html',
 				controller: 'copyListModalController',
-				controllerAs: "popupData",
+				controllerAs: "popupCtrl",
 				size: "",
 				resolve: {
-					contentData: function () {
-						return contentData;
+					ngCtrl: function () {
+						return ngCtrl;
 					},
 					list: function () {
 						return list;
@@ -262,31 +262,31 @@
 	//#endregion
 
 	//// Modal Controllers
-	createListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'webvellaAdminService', 'webvellaRootService'];
+	createListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'webvellaAdminService', 'webvellaRootService'];
 
 	/* @ngInject */
-	function createListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, webvellaAdminService, webvellaRootService) {
+	function createListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, webvellaAdminService, webvellaRootService) {
 		$log.debug('webvellaAdmin>entities>createViewModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.contentData = fastCopy(contentData);
-		popupData.list = webvellaAdminService.initList();
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.ngCtrl = fastCopy(ngCtrl);
+		popupCtrl.list = webvellaAdminService.initList();
 		//Check if there is an id column set, if not include it as it always should be there
 
 		var idFieldGuid = null;
-		for (var j = 0; j < popupData.contentData.entity.fields.length; j++) {
-			if (popupData.contentData.entity.fields[j].name == "id") {
-				idFieldGuid = popupData.contentData.entity.fields[j].id;
+		for (var j = 0; j < popupCtrl.ngCtrl.entity.fields.length; j++) {
+			if (popupCtrl.ngCtrl.entity.fields[j].name == "id") {
+				idFieldGuid = popupCtrl.ngCtrl.entity.fields[j].id;
 			}
 		}
 		//The Record Id data is automatically injected by the server. If you want the field to be visible to users you need to add it in the view
 
-		popupData.ok = function () {
-			webvellaAdminService.createEntityList(popupData.list, popupData.contentData.entity.name, successCallback, errorCallback);
+		popupCtrl.ok = function () {
+			webvellaAdminService.createEntityList(popupCtrl.list, popupCtrl.ngCtrl.entity.name, successCallback, errorCallback);
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 
@@ -303,52 +303,52 @@
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupData, popupData.entity, location);
+			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.entity, location);
 		}
 
 		$log.debug('webvellaAdmin>entities>createViewModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
-	copyListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'contentData', 'list', 'webvellaAdminService', 'webvellaRootService'];
+	copyListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'list', 'webvellaAdminService', 'webvellaRootService'];
 	/* @ngInject */
-	function copyListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, contentData, list, webvellaAdminService, webvellaRootService) {
+	function copyListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, list, webvellaAdminService, webvellaRootService) {
 		$log.debug('webvellaAdmin>entities>copyListModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.modalInstance = $uibModalInstance;
-		popupData.list = fastCopy(list);
-		popupData.currentEntity = fastCopy(contentData.entity);
-		popupData.alternative = "new";
-		popupData.listName = null;
-		popupData.listNameValidationError = false;
+		var popupCtrl = this;
+		popupCtrl.modalInstance = $uibModalInstance;
+		popupCtrl.list = fastCopy(list);
+		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
+		popupCtrl.alternative = "new";
+		popupCtrl.listName = null;
+		popupCtrl.listNameValidationError = false;
 
-		popupData.entityLists = []; //filter the current view
+		popupCtrl.entityLists = []; //filter the current view
 
-		for (var i = 0; i < popupData.currentEntity.recordLists.length; i++) {
-			if (popupData.currentEntity.recordLists[i].name != popupData.list.name) {
-				popupData.entityLists.push(popupData.currentEntity.recordLists[i]);
+		for (var i = 0; i < popupCtrl.currentEntity.recordLists.length; i++) {
+			if (popupCtrl.currentEntity.recordLists[i].name != popupCtrl.list.name) {
+				popupCtrl.entityLists.push(popupCtrl.currentEntity.recordLists[i]);
 			}
 		}
 
-		popupData.selectedList = popupData.entityLists[0];
+		popupCtrl.selectedList = popupCtrl.entityLists[0];
 
-		popupData.ok = function () {
-			popupData.listNameValidationError = false;
-			if (popupData.alternative == "new") {
-				if (popupData.listName == null || popupData.listName == "") {
-					popupData.listNameValidationError = true;
+		popupCtrl.ok = function () {
+			popupCtrl.listNameValidationError = false;
+			if (popupCtrl.alternative == "new") {
+				if (popupCtrl.listName == null || popupCtrl.listName == "") {
+					popupCtrl.listNameValidationError = true;
 				}
 				else {
-					var newList = fastCopy(popupData.list);
+					var newList = fastCopy(popupCtrl.list);
 					newList.id = null;
-					newList.name = popupData.listName;
-					newList.label = popupData.listName;
-					webvellaAdminService.createEntityList(newList, popupData.currentEntity.name, successCallback, errorCallback);
+					newList.name = popupCtrl.listName;
+					newList.label = popupCtrl.listName;
+					webvellaAdminService.createEntityList(newList, popupCtrl.currentEntity.name, successCallback, errorCallback);
 				}
 			}
 			else {
-				var newList = fastCopy(popupData.list);
-				var oldList = fastCopy(popupData.selectedList);
+				var newList = fastCopy(popupCtrl.list);
+				var oldList = fastCopy(popupCtrl.selectedList);
 				oldList.viewNameOverride = newList.viewNameOverride;
 				oldList.visibleColumnsCount = newList.visibleColumnsCount;
 				oldList.pageSize = newList.pageSize;
@@ -356,11 +356,11 @@
 				oldList.query = newList.query;
 				oldList.sorts = newList.sorts;
 				oldList.relationOptions = newList.relationOptions;
-				webvellaAdminService.updateEntityList(oldList, popupData.currentEntity.name, successCallback, errorCallback);
+				webvellaAdminService.updateEntityList(oldList, popupCtrl.currentEntity.name, successCallback, errorCallback);
 			}
 		};
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 

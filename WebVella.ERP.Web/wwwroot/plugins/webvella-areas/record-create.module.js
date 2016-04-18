@@ -35,7 +35,7 @@
 				"contentView": {
 					controller: 'WebVellaAreasRecordCreateController',
 					templateUrl: '/plugins/webvella-areas/record-create.view.html',
-					controllerAs: 'contentData'
+					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {},
@@ -81,120 +81,120 @@
         resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location) {
 		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var contentData = this;
-		contentData.stateParams = $stateParams;
-		contentData.validation = {};
+		var ngCtrl = this;
+		ngCtrl.stateParams = $stateParams;
+		ngCtrl.validation = {};
 		//#region <<Set pageTitle>>
-		contentData.pageTitle = "Area Entities | " + pageTitle;
-		webvellaRootService.setPageTitle(contentData.pageTitle);
-		contentData.siteMap = fastCopy(resolvedSitemap);
-		contentData.currentArea = null;
-		for (var i = 0; i < contentData.siteMap.data.length; i++) {
-			if (contentData.siteMap.data[i].name == $state.params.areaName) {
-				contentData.currentArea = contentData.siteMap.data[i];
+		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
+		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.siteMap = fastCopy(resolvedSitemap);
+		ngCtrl.currentArea = null;
+		for (var i = 0; i < ngCtrl.siteMap.data.length; i++) {
+			if (ngCtrl.siteMap.data[i].name == $state.params.areaName) {
+				ngCtrl.currentArea = ngCtrl.siteMap.data[i];
 			};
 		}
-		webvellaRootService.setBodyColorClass(contentData.currentArea.color);
+		webvellaRootService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
 		//#region << Initialize current entity >>
-		contentData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.currentEntity = fastCopy(resolvedCurrentEntityMeta);
 		//#endregion
 
 		//#region << Set environment >> /////////////////////
 
-		contentData.createViewRegion = null;
-		contentData.createView = null;
-		for (var i = 0; i < contentData.currentEntity.recordViews.length; i++) {
-			if (contentData.currentEntity.recordViews[i].type === "create" && contentData.currentEntity.recordViews[i].default) {
-				contentData.createView = contentData.currentEntity.recordViews[i];
-				for (var j = 0; j < contentData.currentEntity.recordViews[i].regions.length; j++) {
-					if (contentData.currentEntity.recordViews[i].regions[j].name === "content") {
-						contentData.createViewRegion = contentData.currentEntity.recordViews[i].regions[j];
+		ngCtrl.createViewRegion = null;
+		ngCtrl.createView = null;
+		for (var i = 0; i < ngCtrl.currentEntity.recordViews.length; i++) {
+			if (ngCtrl.currentEntity.recordViews[i].type === "create" && ngCtrl.currentEntity.recordViews[i].default) {
+				ngCtrl.createView = ngCtrl.currentEntity.recordViews[i];
+				for (var j = 0; j < ngCtrl.currentEntity.recordViews[i].regions.length; j++) {
+					if (ngCtrl.currentEntity.recordViews[i].regions[j].name === "content") {
+						ngCtrl.createViewRegion = ngCtrl.currentEntity.recordViews[i].regions[j];
 					}
 				}
 			}
 		}
 
 		//Initialize entityRecordData
-		contentData.entityData = {};
-		contentData.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
-		contentData.progress = {}; //Needed for file and image uploads
+		ngCtrl.entityData = {};
+		ngCtrl.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
+		ngCtrl.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
 		//Init default values of fields
-		if (contentData.createViewRegion != null) {
-			availableViewFields = webvellaAdminService.getItemsFromRegion(contentData.createViewRegion);
+		if (ngCtrl.createViewRegion != null) {
+			availableViewFields = webvellaAdminService.getItemsFromRegion(ngCtrl.createViewRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
 				if (availableViewFields[j].type === "field") {
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
-							contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							break;
 
 						case 3: //Currency
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 4: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									contentData.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.entityData[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									contentData.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
 						case 5: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									contentData.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.entityData[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									contentData.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
 						case 6: //Email
 							break;
 						case 7: //File
-							contentData.progress[availableViewFields[j].meta.name] = 0;
+							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 9: //Image
-							contentData.progress[availableViewFields[j].meta.name] = 0;
+							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 11: //Multiselect
 							if (availableViewFields[j].meta.required) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 12: //Number
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 13: //Password
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								//Does not have default value
-								//contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								//ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 14: //Percent
@@ -206,32 +206,32 @@
 								//The way to correct this is to multiply the decimals before multiple their values,
 								//var resultPercentage = 0.00;
 								//resultPercentage = multiplyDecimals(availableViewFields[j].meta.defaultValue, 100, 3);
-								//contentData.entityData[availableViewFields[j].meta.name] = resultPercentage;
+								//ngCtrl.entityData[availableViewFields[j].meta.name] = resultPercentage;
 							}
 							break;
 						case 15: //Phone
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 16: //Guid
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 17: //Dropdown
 							if (availableViewFields[j].meta.required && availableViewFields[j].meta.defaultValue) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 18: //Text
 							//if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-							//	contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//	ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							//}
 							break;
 						case 19: //URL
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								contentData.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 					}
@@ -244,43 +244,43 @@
 
 
 		// << File >>
-		contentData.uploadedFileName = "";
-		contentData.upload = function (file, item) {
+		ngCtrl.uploadedFileName = "";
+		ngCtrl.upload = function (file, item) {
 			if (file != null) {
-				contentData.uploadedFileName = item.dataName;
-				contentData.moveSuccessCallback = function (response) {
+				ngCtrl.uploadedFileName = item.dataName;
+				ngCtrl.moveSuccessCallback = function (response) {
 					$timeout(function () {
-						contentData.entityData[contentData.uploadedFileName] = response.object.url;
+						ngCtrl.entityData[ngCtrl.uploadedFileName] = response.object.url;
 					}, 1);
 				}
 
-				contentData.uploadSuccessCallback = function (response) {
+				ngCtrl.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = "/fs/" + contentData.currentEntity.name + "/" + newGuid() + "/" + fileName;
+					var targetPath = "/fs/" + ngCtrl.currentEntity.name + "/" + newGuid() + "/" + fileName;
 					var overwrite = false;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, contentData.moveSuccessCallback, contentData.uploadErrorCallback);
+					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 				}
-				contentData.uploadErrorCallback = function (response) {
+				ngCtrl.uploadErrorCallback = function (response) {
 					alert(response.message);
 				}
-				contentData.uploadProgressCallback = function (response) {
+				ngCtrl.uploadProgressCallback = function (response) {
 					$timeout(function () {
-						contentData.progress[contentData.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
+						ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, contentData.uploadProgressCallback, contentData.uploadSuccessCallback, contentData.uploadErrorCallback);
+				webvellaAdminService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
-		contentData.deleteFileUpload = function (item) {
+		ngCtrl.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = contentData.entityData[fieldName];
+			var filePath = ngCtrl.entityData[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					contentData.entityData[fieldName] = null;
-					contentData.progress[fieldName] = 0;
+					ngCtrl.entityData[fieldName] = null;
+					ngCtrl.progress[fieldName] = 0;
 				}, 0);
 				return true;
 			}
@@ -300,7 +300,7 @@
 
 
 		// << Html >>
-		//Should use scope as it is not working with contentData
+		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
 			language: 'en',
 			'skin': 'moono',
@@ -326,45 +326,45 @@
 		};
 
 
-		contentData.toggleSectionCollapse = function (section) {
+		ngCtrl.toggleSectionCollapse = function (section) {
 			section.collapsed = !section.collapsed;
 		}
 
-		contentData.calendars = {};
-		contentData.openCalendar = function (event, name) {
-			contentData.calendars[name] = true;
+		ngCtrl.calendars = {};
+		ngCtrl.openCalendar = function (event, name) {
+			ngCtrl.calendars[name] = true;
 		}
 
 		//#endregion
 
 		//#region << Entity relations functions >>
-		contentData.relationsList = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
 
-		contentData.getRelation = function (relationName) {
-			for (var i = 0; i < contentData.relationsList.length; i++) {
-				if (contentData.relationsList[i].name == relationName) {
+		ngCtrl.getRelation = function (relationName) {
+			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+				if (ngCtrl.relationsList[i].name == relationName) {
 					//set current entity role
-					if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
-						contentData.relationsList[i].currentEntityRole = 3; //both origin and target
+					if (ngCtrl.currentEntity.id == ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id == ngCtrl.relationsList[i].originEntityId) {
+						ngCtrl.relationsList[i].currentEntityRole = 3; //both origin and target
 					}
-					else if (contentData.currentEntity.id == contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
-						contentData.relationsList[i].currentEntityRole = 2; //target
+					else if (ngCtrl.currentEntity.id == ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id != ngCtrl.relationsList[i].originEntityId) {
+						ngCtrl.relationsList[i].currentEntityRole = 2; //target
 					}
-					else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id == contentData.relationsList[i].originEntityId) {
-						contentData.relationsList[i].currentEntityRole = 1; //origin
+					else if (ngCtrl.currentEntity.id != ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id == ngCtrl.relationsList[i].originEntityId) {
+						ngCtrl.relationsList[i].currentEntityRole = 1; //origin
 					}
-					else if (contentData.currentEntity.id != contentData.relationsList[i].targetEntityId && contentData.currentEntity.id != contentData.relationsList[i].originEntityId) {
-						contentData.relationsList[i].currentEntityRole = 0; //possible problem
+					else if (ngCtrl.currentEntity.id != ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id != ngCtrl.relationsList[i].originEntityId) {
+						ngCtrl.relationsList[i].currentEntityRole = 0; //possible problem
 					}
-					return contentData.relationsList[i];
+					return ngCtrl.relationsList[i];
 				}
 			}
 			return null;
 		}
 
-		contentData.hasFieldFromRelationValue = function (itemDataName) {
+		ngCtrl.hasFieldFromRelationValue = function (itemDataName) {
 			var dataNameArray =  itemDataName.split('$');
-			if (contentData.entityData["$" + dataNameArray[2] + "." + "id"]) {
+			if (ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"]) {
 				return true;
 			}
 			else {
@@ -372,11 +372,11 @@
 			}
 		}
 
-		contentData.removeFieldFromRelationValue = function (itemDataName) {
+		ngCtrl.removeFieldFromRelationValue = function (itemDataName) {
 			var dataNameArray =  itemDataName.split('$');
 			$timeout(function () {
-				delete contentData.entityData["$" + dataNameArray[2] + "." + "id"];
-				delete contentData.dummyFields[itemDataName];
+				delete ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"];
+				delete ngCtrl.dummyFields[itemDataName];
 			}, 10);
 		}
 
@@ -384,19 +384,19 @@
 		//#endregion
 
 		//#region << Render >>
-		contentData.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
-		contentData.checkUserEntityPermissions = function (permissionsCsv) {
-			return fastCopy(webvellaRootService.userHasEntityPermissions(contentData.currentEntity, permissionsCsv));
+		ngCtrl.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
+		ngCtrl.checkUserEntityPermissions = function (permissionsCsv) {
+			return fastCopy(webvellaRootService.userHasEntityPermissions(ngCtrl.currentEntity, permissionsCsv));
 		}
 
 
-		contentData.getRelationLabel = function (item) {
+		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {
 				return item.fieldLabel
 			}
 			else {
 				var relationName = item.relationName;
-				var relation = findInArray(contentData.relationsList, "name", relationName);
+				var relation = findInArray(ngCtrl.relationsList, "name", relationName);
 				if (relation) {
 					return relation.label;
 				}
@@ -409,10 +409,10 @@
 		//#region << Methods to generate the record details view name >>
 
 		//Select default view for the area
-		contentData.selectedList = {};
-		for (var j = 0; j < contentData.currentEntity.recordLists.length; j++) {
-			if (contentData.currentEntity.recordLists[j].name === $stateParams.listName) {
-				contentData.selectedList = contentData.currentEntity.recordLists[j];
+		ngCtrl.selectedList = {};
+		for (var j = 0; j < ngCtrl.currentEntity.recordLists.length; j++) {
+			if (ngCtrl.currentEntity.recordLists[j].name === $stateParams.listName) {
+				ngCtrl.selectedList = ngCtrl.currentEntity.recordLists[j];
 				break;
 			}
 		}
@@ -420,13 +420,13 @@
 
 
 		//Generate the proper view name for the record details screen (needed in the redirect)
-		contentData.generateViewName = function (record) {
+		ngCtrl.generateViewName = function (record) {
 			//default is the selected view in the area
-			var result = fastCopy(contentData.selectedList.name);
+			var result = fastCopy(ngCtrl.selectedList.name);
 
-			if (contentData.selectedList.viewNameOverride && ccontentData.selectedList.viewNameOverride.length > 0) {
-				var arrayOfTemplateKeys = contentData.selectedList.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
-				var resultStringStorage = fastCopy(contentData.selectedList.viewNameOverride);
+			if (ngCtrl.selectedList.viewNameOverride && cngCtrl.selectedList.viewNameOverride.length > 0) {
+				var arrayOfTemplateKeys = ngCtrl.selectedList.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
+				var resultStringStorage = fastCopy(ngCtrl.selectedList.viewNameOverride);
 
 				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
 					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
@@ -478,31 +478,31 @@
 		//#endregion
 
 		//#region << Save >>
-		contentData.create = function (redirectTarget) {
+		ngCtrl.create = function (redirectTarget) {
 			//Validate 
-			contentData.validation = {};
+			ngCtrl.validation = {};
 			for (var k = 0; k < availableViewFields.length; k++) {
 				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
-					if (contentData.entityData[availableViewFields[k].dataName] == null || contentData.entityData[availableViewFields[k].dataName] == "") {
-						contentData.validation[availableViewFields[k].dataName] = true;
-						contentData.validation.hasError = true;
-						contentData.validation.errorMessage = "A required data is missing!";
+					if (ngCtrl.entityData[availableViewFields[k].dataName] == null || ngCtrl.entityData[availableViewFields[k].dataName] == "") {
+						ngCtrl.validation[availableViewFields[k].dataName] = true;
+						ngCtrl.validation.hasError = true;
+						ngCtrl.validation.errorMessage = "A required data is missing!";
 					}
 				}
 			}
-			if (!contentData.validation.hasError) {
+			if (!ngCtrl.validation.hasError) {
 				//Alter some data before save
 				for (var k = 0; k < availableViewFields.length; k++) {
 					if (availableViewFields[k].type === "field") {
 						switch (availableViewFields[k].meta.fieldType) {
 							case 4: //Date
-								if (contentData.entityData[availableViewFields[k].dataName] != null) {
-									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
+								if (ngCtrl.entityData[availableViewFields[k].dataName] != null) {
+									ngCtrl.entityData[availableViewFields[k].dataName] = moment(ngCtrl.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
 								}
 								break;
 							case 5: //Date & Time
-								if (contentData.entityData[availableViewFields[k].dataName] != null) {
-									contentData.entityData[availableViewFields[k].dataName] = moment(contentData.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
+								if (ngCtrl.entityData[availableViewFields[k].dataName] != null) {
+									ngCtrl.entityData[availableViewFields[k].dataName] = moment(ngCtrl.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
 								}
 								break;
 							case 14: //Percent
@@ -510,8 +510,8 @@
 								//Hack for proper javascript division
 								$scope.Math = window.Math;
 								var helpNumber = 10000000;
-								var multipliedValue = $scope.Math.round(contentData.entityData[availableViewFields[k].dataName] * helpNumber);
-								contentData.entityData[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
+								var multipliedValue = $scope.Math.round(ngCtrl.entityData[availableViewFields[k].dataName] * helpNumber);
+								ngCtrl.entityData[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
 								break;
 						}
 					}
@@ -519,14 +519,14 @@
 						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
 					}
 				}
-				contentData.entityData["created_on"] = moment().utc().toISOString();
-				//popupData.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
+				ngCtrl.entityData["created_on"] = moment().utc().toISOString();
+				//popupCtrl.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
 				switch (redirectTarget) {
 					case "details":
-						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallback, errorCallback);
+						webvellaAdminService.createRecord(ngCtrl.currentEntity.name, ngCtrl.entityData, successCallback, errorCallback);
 						break;
 					case "list":
-						webvellaAdminService.createRecord(contentData.currentEntity.name, contentData.entityData, successCallbackList, errorCallback);
+						webvellaAdminService.createRecord(ngCtrl.currentEntity.name, ngCtrl.entityData, successCallbackList, errorCallback);
 						break;
 				}
 			}
@@ -542,7 +542,7 @@
 			}
 		};
 
-		contentData.cancel = function () {
+		ngCtrl.cancel = function () {
 			$timeout(function () {
 				$state.go("webvella-entity-records", {
 					areaName: $stateParams.areaName,
@@ -561,7 +561,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				var detailsViewName = contentData.generateViewName(response.object);
+				var detailsViewName = ngCtrl.generateViewName(response.object);
 
 				$state.go("webvella-areas-record-view", {
 					areaName: $stateParams.areaName,
@@ -581,7 +581,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				var detailsViewName = contentData.generateViewName(response.object);
+				var detailsViewName = ngCtrl.generateViewName(response.object);
 
 				$state.go("webvella-entity-records", {
 					areaName: $stateParams.areaName,
@@ -603,10 +603,10 @@
 		//#region << Modals >>
 
 		//#region << Relation field >>
-		contentData.dummyFields = {};  //These fields will present data to the user that will not be submitted
+		ngCtrl.dummyFields = {};  //These fields will present data to the user that will not be submitted
 		////////////////////
 		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
-		contentData.openManageRelationFieldModal = function (item, relationType, dataKind) {
+		ngCtrl.openManageRelationFieldModal = function (item, relationType, dataKind) {
 			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
 			//dataKind - target, origin, origin-target
 
@@ -616,11 +616,11 @@
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
 					controller: 'CreateRelationFieldModalController',
-					controllerAs: "popupData",
+					controllerAs: "popupCtrl",
 					size: "lg",
 					resolve: {
-						contentData: function () {
-							return contentData;
+						ngCtrl: function () {
+							return ngCtrl;
 						},
 						selectedItem: function () {
 							return item;
@@ -649,9 +649,9 @@
 						var dummyFieldValue = null;
 						var dataNameArray =  item.dataName.split('$');
 						var dummyFieldName = dataNameArray[3];
-						contentData.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
+						ngCtrl.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
 						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-						contentData.entityData["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+						ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
 					}
 					function modalCase1ErrorCallback(response) {
 						ngToast.create({
@@ -669,11 +669,11 @@
 					animation: false,
 					templateUrl: 'manageRelationFieldModal.html',
 					controller: 'CreateRelationFieldModalController',
-					controllerAs: "popupData",
+					controllerAs: "popupCtrl",
 					size: "lg",
 					resolve: {
-						contentData: function () {
-							return contentData;
+						ngCtrl: function () {
+							return ngCtrl;
 						},
 						selectedItem: function () {
 							return item;
@@ -704,12 +704,12 @@
 					function modalCase1SuccessCallback(response) {
 						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
 						var dummyFieldValue = null;
-						contentData.dummyFields[item.dataName] = [];
-						contentData.entityData[idFieldPrefix + "id"] = [];
+						ngCtrl.dummyFields[item.dataName] = [];
+						ngCtrl.entityData[idFieldPrefix + "id"] = [];
 						for (var i = 0; i < response.object.data.length; i++) {
-							contentData.dummyFields[item.dataName].push(webvellaAreasService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
+							ngCtrl.dummyFields[item.dataName].push(webvellaAreasService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
 							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-							contentData.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
+							ngCtrl.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
 						}
 					}
 					function modalCase1ErrorCallback(response) {
@@ -723,8 +723,8 @@
 					fieldsArray.push(dummyFieldName);
 
 					if (returnObject.selectedRecordIdArray.length == 0) {
-					   	contentData.dummyFields[item.dataName] = [];
-						contentData.entityData[idFieldPrefix + "id"] = [];
+					   	ngCtrl.dummyFields[item.dataName] = [];
+						ngCtrl.entityData[idFieldPrefix + "id"] = [];
 					}
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
@@ -734,17 +734,17 @@
 				});
 			}
 		}
-		contentData.modalSelectedItem = {};
-		contentData.modalRelationType = -1;
-		contentData.modalDataKind = "";
+		ngCtrl.modalSelectedItem = {};
+		ngCtrl.modalRelationType = -1;
+		ngCtrl.modalDataKind = "";
 
 		//Resolve function lookup records
 		var resolveLookupRecords = function (item, relationType, dataKind) {
 			// Initialize
 			var defer = $q.defer();
-			contentData.modalSelectedItem = fastCopy(item);
-			contentData.modalRelationType = fastCopy(relationType);
-			contentData.modalDataKind = fastCopy(dataKind);
+			ngCtrl.modalSelectedItem = fastCopy(item);
+			ngCtrl.modalRelationType = fastCopy(relationType);
+			ngCtrl.modalDataKind = fastCopy(dataKind);
 			// Process
 			function errorCallback(response) {
 				ngToast.create({
@@ -761,7 +761,7 @@
 			function getEntityMetaSuccessCallback(response) {
 				var entityMeta = response.object;
 				var defaultLookupList = null;
-				var selectedLookupListName = contentData.modalSelectedItem.fieldLookupList;
+				var selectedLookupListName = ngCtrl.modalSelectedItem.fieldLookupList;
 				var selectedLookupList = null;
 				//Find the default lookup field if none return null.
 				for (var i = 0; i < entityMeta.recordLists.length; i++) {
@@ -781,24 +781,24 @@
 				}
 				else {
 
-					//var gg = contentData.modalSelectedItem;
-					//contentData.modalRelationType;
-					//contentData.modalDataKind;
+					//var gg = ngCtrl.modalSelectedItem;
+					//ngCtrl.modalRelationType;
+					//ngCtrl.modalDataKind;
 					if (selectedLookupList != null) {
 						defaultLookupList = selectedLookupList;
 					}
 
 					//Current record is Origin
-					if (contentData.modalDataKind == "origin") {
+					if (ngCtrl.modalDataKind == "origin") {
 						//Find if the target field is required
 						var targetRequiredField = false;
-						var modalCurrrentRelation = contentData.getRelation(contentData.modalSelectedItem.relationName);
+						var modalCurrrentRelation = ngCtrl.getRelation(ngCtrl.modalSelectedItem.relationName);
 						for (var m = 0; m < entityMeta.fields.length; m++) {
 							if (entityMeta.fields[m].id == modalCurrrentRelation.targetFieldId) {
 								targetRequiredField = entityMeta.fields[m].required;
 							}
 						}
-						if (targetRequiredField && contentData.modalRelationType == 1) {
+						if (targetRequiredField && ngCtrl.modalRelationType == 1) {
 							//Case 1 - Solves the problem when the target field is required, but we are currently looking on the origin field holding record. 
 							//In this case we cannot allow this relation to be managed from this origin record as the change will leave the old target record with null for its required field
 							var lockedChangeResponse = {
@@ -812,7 +812,7 @@
 							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
-					else if (contentData.modalDataKind == "target") {
+					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
 						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 					}
@@ -835,74 +835,74 @@
 
 	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
-	CreateRelationFieldModalController.$inject = ['contentData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
+	CreateRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function CreateRelationFieldModalController(contentData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+	function CreateRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
 
 		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var popupData = this;
-		popupData.currentPage = 1;
-		popupData.parentData = fastCopy(contentData);
-		popupData.selectedItem = fastCopy(selectedItem);
-		popupData.modalMode = fastCopy(modalMode);
-		popupData.hasWarning = false;
-		popupData.warningMessage = "";
+		var popupCtrl = this;
+		popupCtrl.currentPage = 1;
+		popupCtrl.parentData = fastCopy(ngCtrl);
+		popupCtrl.selectedItem = fastCopy(selectedItem);
+		popupCtrl.modalMode = fastCopy(modalMode);
+		popupCtrl.hasWarning = false;
+		popupCtrl.warningMessage = "";
 		//Init
 		var index = selectedItem.dataName.lastIndexOf('$') + 1;
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
-		popupData.currentlyAttachedIds = [];
-		if (popupData.parentData.entityData[idFieldPrefix + "id"] && popupData.parentData.entityData[idFieldPrefix + "id"].length > 0) {
-			popupData.currentlyAttachedIds = popupData.parentData.entityData[idFieldPrefix + "id"];
+		popupCtrl.currentlyAttachedIds = [];
+		if (popupCtrl.parentData.entityData[idFieldPrefix + "id"] && popupCtrl.parentData.entityData[idFieldPrefix + "id"].length > 0) {
+			popupCtrl.currentlyAttachedIds = popupCtrl.parentData.entityData[idFieldPrefix + "id"];
 		}
-		popupData.getRelationLabel = contentData.getRelationLabel;
+		popupCtrl.getRelationLabel = ngCtrl.getRelationLabel;
 
 
 		//Get the default lookup list for the entity
 		if (resolvedLookupRecords.success) {
-			popupData.relationLookupList = fastCopy(resolvedLookupRecords.object);
+			popupCtrl.relationLookupList = fastCopy(resolvedLookupRecords.object);
 		}
 		else {
-			popupData.hasWarning = true;
-			popupData.warningMessage = resolvedLookupRecords.message;
+			popupCtrl.hasWarning = true;
+			popupCtrl.warningMessage = resolvedLookupRecords.message;
 		}
 
 		//#region << Search >>
-		popupData.checkForSearchEnter = function (e) {
+		popupCtrl.checkForSearchEnter = function (e) {
 			var code = (e.keyCode ? e.keyCode : e.which);
 			if (code == 13) { //Enter keycode
-				popupData.submitSearchQuery();
+				popupCtrl.submitSearchQuery();
 			}
 		}
-		popupData.submitSearchQuery = function () {
+		popupCtrl.submitSearchQuery = function () {
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
+				popupCtrl.relationLookupList = fastCopy(response.object);
 			}
 			function errorCallback(response) { }
 
-			if (popupData.searchQuery) {
-				popupData.searchQuery = popupData.searchQuery.trim();
+			if (popupCtrl.searchQuery) {
+				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, 1, popupData.searchQuery, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, popupCtrl.searchQuery, successCallback, errorCallback);
 		}
 		//#endregion
 
 		//#region << Paging >>
-		popupData.selectPage = function (page) {
+		popupCtrl.selectPage = function (page) {
 			// Process
 			function successCallback(response) {
-				popupData.relationLookupList = fastCopy(response.object);
-				popupData.currentPage = page;
+				popupCtrl.relationLookupList = fastCopy(response.object);
+				popupCtrl.currentPage = page;
 			}
 
 			function errorCallback(response) {
 
 			}
 
-			webvellaAreasService.getListRecords(popupData.relationLookupList.meta.name, popupData.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -910,11 +910,11 @@
 		//#region << Logic >>
 
 		//Render field values
-		popupData.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
-		popupData.isSelectedRecord = function (recordId) {
-			if (popupData.currentlyAttachedIds) {
-				return popupData.currentlyAttachedIds.indexOf(recordId) > -1
+		popupCtrl.isSelectedRecord = function (recordId) {
+			if (popupCtrl.currentlyAttachedIds) {
+				return popupCtrl.currentlyAttachedIds.indexOf(recordId) > -1
 			}
 			else {
 				return false;
@@ -922,9 +922,9 @@
 		}
 
 		//Single record before save
-		popupData.selectSingleRecord = function (record) {
+		popupCtrl.selectSingleRecord = function (record) {
 			var returnObject = {
-				relationName: popupData.selectedItem.relationName,
+				relationName: popupCtrl.selectedItem.relationName,
 				dataKind: selectedDataKind,
 				selectedRecordId: record.id
 			};
@@ -932,34 +932,34 @@
 		};
 
 		// Multiple records before save
-		popupData.attachRecord = function (record) {
+		popupCtrl.attachRecord = function (record) {
 			//Update the currentlyAttachedIds
-			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			var elementIndex = popupCtrl.currentlyAttachedIds.indexOf(record.id);
 			if (elementIndex == -1) {
 				//this is the normal case
-				popupData.currentlyAttachedIds.push(record.id);
+				popupCtrl.currentlyAttachedIds.push(record.id);
 			}
 			else {
 				//if it is already in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 
 		}
-		popupData.detachRecord = function (record) {
+		popupCtrl.detachRecord = function (record) {
 			//Update the currentlyAttachedIds for highlight
-			var elementIndex = popupData.currentlyAttachedIds.indexOf(record.id);
+			var elementIndex = popupCtrl.currentlyAttachedIds.indexOf(record.id);
 			if (elementIndex > -1) {
 				//this is the normal case
-				popupData.currentlyAttachedIds.splice(elementIndex, 1);
+				popupCtrl.currentlyAttachedIds.splice(elementIndex, 1);
 			}
 			else {
 				//if it is already not in the highligted list there is probably some miscalculation from previous operation, but for now we will do nothing
 			}
 		}
-		popupData.saveRelationChanges = function () {
+		popupCtrl.saveRelationChanges = function () {
 			var returnObject = {
-				relationName: popupData.selectedItem.relationName,
+				relationName: popupCtrl.selectedItem.relationName,
 				dataKind: selectedDataKind,
-				selectedRecordIdArray: popupData.currentlyAttachedIds
+				selectedRecordIdArray: popupCtrl.currentlyAttachedIds
 			};
 			$uibModalInstance.close(returnObject);
 			//category_id
@@ -969,7 +969,7 @@
 		//#endregion
 
 
-		popupData.cancel = function () {
+		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
 

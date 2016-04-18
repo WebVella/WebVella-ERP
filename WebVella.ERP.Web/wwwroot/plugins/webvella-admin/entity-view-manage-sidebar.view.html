@@ -4,33 +4,33 @@
 
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">View name: </span> {{contentData.view.name}}</h4>
+			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
 		</div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
 	<div id="page-text">
 		<ul class="nav nav-pills">
 			<li role="presentation">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/info">Basic info</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/info">Basic info</a>
 			</li>
 			<li role="presentation">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}">Content</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Content</a>
 			</li>
 			<li role="presentation" class="active">
-				<a href="#/admin/entities/{{::contentData.entity.name}}/views/{{::contentData.view.name}}/sidebar">Sidebar</a>
+				<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar</a>
 			</li>
 		</ul>
 		<hr class="divider" />
@@ -39,31 +39,31 @@
 				<div class="col-sm-8">
 					<div class="panel panel-default wrapper">
 						<div class="drop-zone">
-							<div as-sortable="contentData.dragControlListeners" ng-model="contentData.view.sidebar.items">
-								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in contentData.view.sidebar.items track by item.dataName"
+							<div as-sortable="ngCtrl.dragControlListeners" ng-model="ngCtrl.view.sidebar.items">
+								<div class="dropped-item" ng-model="item" data-as-sortable-item ng-repeat="item in ngCtrl.view.sidebar.items track by item.dataName"
 									ng-switch="::item.type">
 									<div ng-switch-when="view">
-										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(item.dataName)"></i>
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(item.dataName)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}
 									</div>
 									<div ng-switch-when="viewFromRelation">
-										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(item.dataName)"></i>
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(item.dataName)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">
-										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div ng-switch-when="list">
-										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(item.dataName)"></i>
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(item.dataName)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}
 									</div>
 									<div ng-switch-when="listFromRelation">
-										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(item.dataName)"></i>
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(item.dataName)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">
-										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
 									</div>
 									<div ng-switch-when="treeFromRelation">
-										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="contentData.dragItemRemove(item.dataName)"></i>
+										<i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(item.dataName)"></i>
 										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">
-											<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="contentData.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span>
+											<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i>  {{::item.relationName}}<span class="divider">></span>
 										</span>{{::item.meta.name}}
 									</div>
 								</div>
@@ -76,15 +76,15 @@
 						<div class="form-group">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
-								<input type="text" ng-model="contentData.search.dataName" class="form-control" style="width:100%;">
+								<input type="text" ng-model="ngCtrl.search.dataName" class="form-control" style="width:100%;">
 							</div>
 						</div>
 					</form>
 					<div class="view-library section" style="height:200px;overflow-y:scroll;">
 						<div class="drop-zone-disabled" id="library-items-list">
-							<div as-sortable="contentData.libraryDragControlListeners" ng-model="contentData.library.items" id="library">
+							<div as-sortable="ngCtrl.libraryDragControlListeners" ng-model="ngCtrl.library.items" id="library">
 								<div class="dropped-item" data-as-sortable-item ng-model="item" 
-									ng-repeat="item in contentData.library.items | filter: contentData.search track by item.dataName"
+									ng-repeat="item in ngCtrl.library.items | filter: ngCtrl.search track by item.dataName"
 									ng-switch="::item.type">
 									<div ng-switch-when="view"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}</div>
 									<div ng-switch-when="viewFromRelation"><i class="fa fa-fw fa-arrows go-gray" as-sortable-item-handle></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}</div>
@@ -105,22 +105,22 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="relation in contentData.library.relations track by relation.relationId">
+							<tr ng-repeat="relation in ngCtrl.library.relations track by relation.relationId">
 								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
-										<span ng-show="::contentData.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>									
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+										<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>									
 									{{::relation.relationName}}
 									</div></td>
 								<td>
-									<a ng-click="contentData.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
+									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
 										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
 										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
 									</a>
 								</td>
 								<td>
 									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
-									<a ng-click="contentData.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
 										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
 										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
 									</a>
@@ -138,23 +138,23 @@
 
 <script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Relation Item settings</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="popupData.error">{{popupData.errorMessage}}</div>
-		<form class="form ng-hide" name="manageForm" ng-show="!popupData.error">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupCtrl.error">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupData.fieldLabelError}">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupCtrl.fieldLabelError}">
 						<label class="control-label required">Label</label>
-						<input class="form-control" ng-model="popupData.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required />
-						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupData.fieldLabelError">
-							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupData.fieldLabelError">
+						<input class="form-control" ng-model="popupCtrl.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required />
+						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
 								required field
 							</small>
-							<small class="error" ng-show="popupData.fieldLabelError">
-								{{popupData.fieldLabelMessage}}
+							<small class="error" ng-show="popupCtrl.fieldLabelError">
+								{{popupCtrl.fieldLabelMessage}}
 							</small>
 						</div>
 					</div>
@@ -164,7 +164,7 @@
 						<label for="requiredStatus" class="control-label">Required</label>
 						<div class="checkbox">
 							<label>
-								<input ng-model="popupData.field.fieldRequired" type="checkbox" value="true">
+								<input ng-model="popupCtrl.field.fieldRequired" type="checkbox" value="true">
 								this is a required field
 							</label>
 						</div>
@@ -173,23 +173,23 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldPlaceholder.$invalid && !manageForm.fieldPlaceholder.$pristine || popupData.fieldPlaceholderError}">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldPlaceholder.$invalid && !manageForm.fieldPlaceholder.$pristine || popupCtrl.fieldPlaceholderError}">
 						<label class="control-label">Placeholder text</label>
-						<input class="form-control" ng-model="popupData.field.fieldPlaceholder" name="fieldPlaceholder" type="text" ng-model-options="{allowInvalid:true}" />
-						<div class="error ng-hide" ng-show="manageForm.fieldPlaceholder.$touched && manageForm.fieldPlaceholder.$dirty && manageForm.fieldPlaceholder.$invalid || popupData.fieldPlaceholderError">
-							<small class="error" ng-show="popupData.fieldPlaceholderError">
-								{{popupData.fieldPlaceholderMessage}}
+						<input class="form-control" ng-model="popupCtrl.field.fieldPlaceholder" name="fieldPlaceholder" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldPlaceholder.$touched && manageForm.fieldPlaceholder.$dirty && manageForm.fieldPlaceholder.$invalid || popupCtrl.fieldPlaceholderError">
+							<small class="error" ng-show="popupCtrl.fieldPlaceholderError">
+								{{popupCtrl.fieldPlaceholderMessage}}
 							</small>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldHelpText.$invalid && !manageForm.fieldHelpText.$pristine || popupData.fieldHelpTextError}">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldHelpText.$invalid && !manageForm.fieldHelpText.$pristine || popupCtrl.fieldHelpTextError}">
 						<label class="control-label">Help text</label>
-						<input class="form-control" ng-model="popupData.field.fieldHelpText" name="fieldHelpText" type="text" ng-model-options="{allowInvalid:true}" />
-						<div class="error ng-hide" ng-show="manageForm.fieldHelpText.$touched && manageForm.fieldHelpText.$dirty && manageForm.fieldHelpText.$invalid || popupData.fieldHelpTextError">
-							<small class="error ng-hide" ng-show="popupData.fieldHelpTextError">
-								{{popupData.fieldHelpTextMessage}}
+						<input class="form-control" ng-model="popupCtrl.field.fieldHelpText" name="fieldHelpText" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldHelpText.$touched && manageForm.fieldHelpText.$dirty && manageForm.fieldHelpText.$invalid || popupCtrl.fieldHelpTextError">
+							<small class="error ng-hide" ng-show="popupCtrl.fieldHelpTextError">
+								{{popupCtrl.fieldHelpTextMessage}}
 							</small>
 						</div>
 					</div>
@@ -199,20 +199,20 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label class="control-label required">Lookup list</label>
-						<select class="form-control" ng-model="popupData.field.fieldLookupList" ng-options="item.name as item.name for item in popupData.lookupLists"></select>
+						<select class="form-control" ng-model="popupCtrl.field.fieldLookupList" ng-options="item.name as item.name for item in popupCtrl.lookupLists"></select>
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group" ng-if="popupData.field.type == 'viewFromRelation' || popupData.field.type == 'listFromRelation'">
+					<div class="form-group" ng-if="popupCtrl.field.type == 'viewFromRelation' || popupCtrl.field.type == 'listFromRelation'">
 						<label class="control-label required">Quick create</label>
-						<select class="form-control" ng-model="popupData.field.fieldManageView" ng-options="item.name as item.name for item in popupData.quickCreateViews"></select>
+						<select class="form-control" ng-model="popupCtrl.field.fieldManageView" ng-options="item.name as item.name for item in popupCtrl.quickCreateViews"></select>
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="!popupData.error" ng-click="popupData.ok()">Add Item</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()">Add Item</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>

@@ -25,7 +25,7 @@
 				"rootView": {
 					controller: 'WebVellaDevelopersBaseController',
 					templateUrl: '/plugins/webvella-developers/base.view.html',
-					controllerAs: 'pluginData'
+					controllerAs: 'baseCtrl'
 				}
 			},
 			resolve: {
@@ -75,17 +75,17 @@
 	function WebVellaDevelopersBaseController($log, $scope, $timeout,$rootScope, queryService, Upload, webvellaAdminService) {
 		$log.debug('webvellaDevelopers>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
-		var pluginData = this;
+		var baseCtrl = this;
 
-		pluginData.getGender = function(){
+		baseCtrl.getGender = function(){
 			return "male";
 		}
 
-		pluginData.getName = function(){
+		baseCtrl.getName = function(){
 			return "one";
 		}
 
-		pluginData.boz = "<a ng-click='click(1)' href='#'>Click me</a>";
+		baseCtrl.boz = "<a ng-click='click(1)' href='#'>Click me</a>";
 	}
 
 })();

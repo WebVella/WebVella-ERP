@@ -1,23 +1,23 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a ng-click="contentData.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i> Delete tree</a>
+			<a ng-click="ngCtrl.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i> Delete tree</a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' tree: </span>{{contentData.tree.meta.label}}</h4>
+			<h4><span class="go-gray">Records' tree: </span>{{ngCtrl.tree.meta.label}}</h4>
 		</div>
 	</div>
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::contentData.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
-			<li><a href="#/admin/entities/{{::contentData.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
@@ -35,7 +35,7 @@
 										<label class="control-label col-lg-2">Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::contentData.tree.name}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.tree.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -48,9 +48,9 @@
 										<label class="control-label col-lg-2">Label</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.tree.label"
-													   value="{{contentData.tree.label}}"
-													   onbeforesave="contentData.fieldUpdate('label',$data)" e-form="fieldForm_label">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.label"
+													   value="{{ngCtrl.tree.label}}"
+													   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
 												<span class="input-group-addon" ng-click="fieldForm_label.$show()" ng-hide="fieldForm_label.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -65,15 +65,15 @@
 										<label class="control-label col-lg-2">Default</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<span class="input-group-addon hidden-xs" ng-if="contentData.tree.default && !fieldForm_default.$visible">
+												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.tree.default && !fieldForm_default.$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon hidden-xs" ng-if="!contentData.tree.default && !fieldForm_default.$visible">
+												<span class="input-group-addon hidden-xs" ng-if="!ngCtrl.tree.default && !fieldForm_default.$visible">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled editable-checkbox="contentData.tree.default"
-													   e-title="Make this default tree?" value="{{contentData.tree.default}}"
-													   onbeforesave="contentData.fieldUpdate('default',$data)" e-form="fieldForm_default">
+												<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.tree.default"
+													   e-title="Make this default tree?" value="{{ngCtrl.tree.default}}"
+													   onbeforesave="ngCtrl.fieldUpdate('default',$data)" e-form="fieldForm_default">
 												<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -86,13 +86,13 @@
 										<label class="control-label col-lg-2">System</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<span class="input-group-addon" ng-if="contentData.tree.system">
+												<span class="input-group-addon" ng-if="ngCtrl.tree.system">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
-												<span class="input-group-addon" ng-if="!contentData.tree.system">
+												<span class="input-group-addon" ng-if="!ngCtrl.tree.system">
 													<i class="fa fa-times fa-fw go-red"></i>
 												</span>
-												<input type="text" class="form-control" disabled value="{{::contentData.tree.system}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.tree.system}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -107,9 +107,9 @@
 										<label class="control-label col-lg-2">CSS class</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.tree.cssClass"
-													   value="{{contentData.tree.cssClass}}"
-													   onbeforesave="contentData.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.cssClass"
+													   value="{{ngCtrl.tree.cssClass}}"
+													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
 												<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -122,10 +122,10 @@
 										<label class="control-label col-lg-2">Icon Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<span class="input-group-addon"><i class="fa fa-{{contentData.tree.iconName}} fa-fw"></i></span>
-												<input type="text" class="form-control" disabled editable-text="contentData.tree.iconName"
-													   value="{{contentData.tree.iconName}}" onbeforesave="contentData.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
-													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in contentData.icons | filter:$viewValue | limitTo:10">
+												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.tree.iconName}} fa-fw"></i></span>
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.iconName"
+													   value="{{ngCtrl.tree.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
@@ -150,8 +150,8 @@
 										<label class="control-label col-lg-2">Entity Relation</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<span class="input-group-addon hidden-xs" ng-bind-html="::contentData.getRelationBadgeHtml(contentData.tree)"></span>
-												<input type="text" class="form-control" disabled value="{{::contentData.selectedRelation.name}}"></input>
+												<span class="input-group-addon hidden-xs" ng-bind-html="::ngCtrl.getRelationBadgeHtml(ngCtrl.tree)"></span>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.selectedRelation.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 										</div>
@@ -164,9 +164,9 @@
 										<label class="control-label col-lg-2">Depth limit</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
-												<input type="text" class="form-control" disabled editable-text="contentData.tree.depthLimit"
-													   value="{{contentData.tree.depthLimit}}"
-													   onbeforesave="contentData.fieldUpdate('depthLimit',$data)" e-form="fieldForm_depthLimit">
+												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.depthLimit"
+													   value="{{ngCtrl.tree.depthLimit}}"
+													   onbeforesave="ngCtrl.fieldUpdate('depthLimit',$data)" e-form="fieldForm_depthLimit">
 												<span class="input-group-addon" ng-click="fieldForm_depthLimit.$show()" ng-hide="fieldForm_depthLimit.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -181,7 +181,7 @@
 										<label class="control-label col-lg-2">Node Id field</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::contentData.nodeIdField.name}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.nodeIdField.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<div class="form-description">relation's origin field</div>
@@ -195,7 +195,7 @@
 										<label class="control-label col-lg-2">Node Parent Id field</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
-												<input type="text" class="form-control" disabled value="{{::contentData.nodeParentIdField.name}}"></input>
+												<input type="text" class="form-control" disabled value="{{::ngCtrl.nodeParentIdField.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<div class="form-description">relation's target field</div>
@@ -210,14 +210,14 @@
 									<div class="editable-field field">
 										<label class="control-label col-lg-2">Node name field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">
-												<input type="text" class="form-control" disabled editable-select="contentData.nodeNameField"
-													   value="{{contentData.nodeNameField.name}}" e-ng-options="s as s.name for s in contentData.nodeNameEligibleFields"
-													   onbeforesave="contentData.nodeNameUpdate($data)" e-form="fieldForm_nodeNameField">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0">
+												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeNameField"
+													   value="{{ngCtrl.nodeNameField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeNameEligibleFields"
+													   onbeforesave="ngCtrl.nodeNameUpdate($data)" e-form="fieldForm_nodeNameField">
 												<span class="input-group-addon" ng-click="fieldForm_nodeNameField.$show()" ng-hide="fieldForm_nodeNameField.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::contentData.nodeNameEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
-											<div class="alert alert-danger ng-hide" ng-show="::contentData.nodeNameEligibleFields.length == 0">There are no eligible field.  only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
+											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length == 0">There are no eligible field.  only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
 										</div>
 									</div>
 								</div>
@@ -227,13 +227,13 @@
 									<div class="editable-field field">
 										<label class="control-label col-lg-2">Node label field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::contentData.nodeLabelEligibleFields.length > 0">
-												<input type="text" class="form-control" disabled editable-select="contentData.nodeLabelField"
-													   value="{{contentData.nodeLabelField.name}}" e-ng-options="s as s.name for s in contentData.nodeLabelEligibleFields"
-													   onbeforesave="contentData.nodeLabelUpdate($data)" e-form="fieldForm_nodeLabelField">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0">
+												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeLabelField"
+													   value="{{ngCtrl.nodeLabelField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeLabelEligibleFields"
+													   onbeforesave="ngCtrl.nodeLabelUpdate($data)" e-form="fieldForm_nodeLabelField">
 												<span class="input-group-addon" ng-click="fieldForm_nodeLabelField.$show()" ng-hide="fieldForm_nodeLabelField.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::contentData.nodeLabelEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields.</div>
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields.</div>
 										</div>
 									</div>
 								</div>
@@ -245,14 +245,14 @@
 									<div class="editable-field field">
 										<label class="control-label col-lg-2">Node weight field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length > 0">
-												<input type="text" class="form-control" disabled editable-select="contentData.nodeWeightField"
-													   value="{{contentData.nodeWeightField.name}}" e-ng-options="s as s.name for s in contentData.nodeWeightEligibleFields"
-													   onbeforesave="contentData.nodeWeightUpdate($data)" e-form="fieldForm_nodeWeightUpdate">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0">
+												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeWeightField"
+													   value="{{ngCtrl.nodeWeightField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeWeightEligibleFields"
+													   onbeforesave="ngCtrl.nodeWeightUpdate($data)" e-form="fieldForm_nodeWeightUpdate">
 												<span class="input-group-addon" ng-click="fieldForm_nodeWeightUpdate.$show()" ng-hide="fieldForm_nodeWeightUpdate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length > 0">only required "auto increment" and "number" fields. Sort is ascending</div>
-											<div class="alert alert-danger ng-hide" ng-show="::contentData.nodeWeightEligibleFields.length == 0">There are no eligible field.  Only required "auto increment" and "number" fields. Sort is ascending</div>											
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0">only required "auto increment" and "number" fields. Sort is ascending</div>
+											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length == 0">There are no eligible field.  Only required "auto increment" and "number" fields. Sort is ascending</div>											
 										</div>
 									</div>
 								</div>
@@ -268,14 +268,14 @@
 			<div class="row" style="margin:0;">
 				<div class="form-group col-sm-6" style="padding-left:0;">
 					<div class="input-group">
-						<input ng-model="contentData.addRecordId" type="text" class="form-control" placeholder="record id" ng-keydown="contentData.checkForAddEnter($event)">
+						<input ng-model="ngCtrl.addRecordId" type="text" class="form-control" placeholder="record id" ng-keydown="ngCtrl.checkForAddEnter($event)">
 						<span class="input-group-btn">
-							<a href="javascript:void(0)" class="btn btn-default" ng-click="contentData.addNewRootNodeById()"><i class="fa fa-fw fa-plus"></i> Add</a>
+							<a href="javascript:void(0)" class="btn btn-default" ng-click="ngCtrl.addNewRootNodeById()"><i class="fa fa-fw fa-plus"></i> Add</a>
 						</span>
 					</div>
 				</div>
 			</div>
-			<table class="table table-bordered ng-hide table-hover" ng-show="contentData.tree.rootNodes.length>0">
+			<table class="table table-bordered ng-hide table-hover" ng-show="ngCtrl.tree.rootNodes.length>0">
 				<thead>
 					<tr>
 						<th width="60">action</th>
@@ -287,8 +287,8 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="record in contentData.tree.rootNodes track by record.id">
-						<td><a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="contentData.removeRootNode(record, $index)"><i class="fa fa-fw fa-times go-red"></i></a></td>
+					<tr ng-repeat="record in ngCtrl.tree.rootNodes track by record.id">
+						<td><a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.removeRootNode(record, $index)"><i class="fa fa-fw fa-times go-red"></i></a></td>
 						<td>{{::record.recordId}}</td>
 						<td>{{::record.id}}</td>
 						<td>{{::record.name}}</td>
@@ -297,7 +297,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="alert alert-info ng-hide" ng-show="contentData.tree.rootNodes.length==0">No records are selected as root nodes yet</div>
+			<div class="alert alert-info ng-hide" ng-show="ngCtrl.tree.rootNodes.length==0">No records are selected as root nodes yet</div>
 
 			<h4 class="page-header" style="margin-top:2em">Node object properties</h4>
 			<table class="table table-bordered table-hover">
@@ -309,20 +309,20 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="field in contentData.entity.fields track by field.id">
-						<td ng-switch="contentData.fieldSelectedBy(field)">
+					<tr ng-repeat="field in ngCtrl.entity.fields track by field.id">
+						<td ng-switch="ngCtrl.fieldSelectedBy(field)">
 							<a ng-switch-when="system" class="btn btn-sm btn-success disabled">
 								<i class="fa fa-fw fa-lock"></i>
 							</a>
-							<a ng-switch-when="user" class="btn btn-sm btn-success" href="javascript:void(0)" ng-click="contentData.toggleFieldSelection(field)">
+							<a ng-switch-when="user" class="btn btn-sm btn-success" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
-							<a ng-switch-when="none" class="btn btn-sm btn-default" href="javascript:void(0)" ng-click="contentData.toggleFieldSelection(field)">
+							<a ng-switch-when="none" class="btn btn-sm btn-default" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
 						</td>
 						<td>{{::field.name}} </td>
-						<td><span class="go-gray">{{::contentData.getFieldType(field)}}</span></td>
+						<td><span class="go-gray">{{::ngCtrl.getFieldType(field)}}</span></td>
 					</tr>
 				</tbody>
 			</table>
@@ -335,18 +335,18 @@
 
 <script type="text/ng-template" id="deleteTreeModal.html">
 	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupData.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title">Delete a tree</h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupData.errorMessage" ng-show="popupData.hasError"></div>
-		<div ng-hide="popupData.hasError">
+		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
 			<p>Are you sure that you need this tree deleted?</p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupData.ok()" ng-hide="popupData.hasError">Delete Tree</button>
-		<button class="btn btn-default" ng-click="popupData.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete Tree</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
 
