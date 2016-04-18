@@ -349,7 +349,6 @@
 			else {
 				var newList = fastCopy(popupCtrl.list);
 				var oldList = fastCopy(popupCtrl.selectedList);
-				oldList.viewNameOverride = newList.viewNameOverride;
 				oldList.visibleColumnsCount = newList.visibleColumnsCount;
 				oldList.pageSize = newList.pageSize;
 				oldList.columns = newList.columns;

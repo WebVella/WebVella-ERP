@@ -10,20 +10,16 @@
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityListManageController', controller)
-        .controller('DeleteListModalController', deleteListModalController)			
-		.controller('ManageDataLinkModalController', ManageDataLinkModalController)
-		.directive('queryItem', queryItem)
-		.controller('queryItemController', queryItemController);
+        .controller('WebVellaAdminEntityListManageColumnsController', controller);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 
 	/* @ngInject */
 	function config($stateProvider) {
-		$stateProvider.state('webvella-admin-entity-list-manage', {
+		$stateProvider.state('webvella-admin-entity-list-manage-columns', {
 			parent: 'webvella-admin-base',
-			url: '/entities/:entityName/lists/:listName', //  /desktop/areas after the parent state is prepended
+			url: '/entities/:entityName/lists/:listName/columns', //  /desktop/areas after the parent state is prepended
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
@@ -36,8 +32,8 @@
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
-					controller: 'WebVellaAdminEntityListManageController',
-					templateUrl: '/plugins/webvella-admin/entity-list-manage.view.html',
+					controller: 'WebVellaAdminEntityListManageColumnsController',
+					templateUrl: '/plugins/webvella-admin/entity-list-manage-columns.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
@@ -245,8 +241,6 @@
 		/* jshint validthis:true */
 		var ngCtrl = this;
 		ngCtrl.entity = resolvedCurrentEntityMeta;
-		//Awesome font icon names array 
-		ngCtrl.icons = getFontAwesomeIconNames();
 
 		//#region << Update page title & hide the side menu >>
 		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
@@ -260,24 +254,7 @@
 		$rootScope.adminSectionName = "Entities";
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
-
-		//#region << List types >>
-		ngCtrl.listTypeOptions = [
-            {
-            	key: "general",
-            	value: "general"
-            },
-            {
-            	key: "lookup",
-            	value: "lookup"
-            },
-            {
-            	key: "hidden",
-            	value: "hidden"
-            }
-		];
-		//#endregion
-
+ 
  		//#region << Initialize the list >>
 		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
 		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
@@ -319,16 +296,16 @@
 			});
 		}
 
-		ngCtrl.fieldUpdate = function (fieldName, data) {
+		ngCtrl.updateColumns = function (orderChangedOnly) {
 			var postObj = {};
-			postObj[fieldName] = data;
-			webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchFieldSuccessCallback, patchErrorCallback)
+			postObj.columns = ngCtrl.list.columns;
+			calculateDefaultSearchFieldName();
+			webvellaAdminService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchSuccessCallback, patchErrorCallback)
 		}
 
-
 		//#endregion
-
-		//#region << Initialize the library >>
+	
+ 		//#region << Initialize the library >>
 
 		//Generate already used
 		var alreadyUsedItemDataNames = [];
@@ -473,9 +450,154 @@
 		//#endregion
 
 		//#region << Logic >>
-		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
-		//Delete list
+		//#region << Drag & Drop >>
+		ngCtrl.moveToColumns = function (item, index) {
+			//Add Item at the end of the columns list
+			ngCtrl.list.columns.push(item);
+			//Remove from library
+			ngCtrl.updateColumns(true);
+			ngCtrl.regenerateLibrary();
+		}
+		ngCtrl.moveToLibrary = function (item, index) {
+			//Remove from library
+			ngCtrl.list.columns.splice(index, 1);
+			ngCtrl.updateColumns(false);
+			ngCtrl.regenerateLibrary();
+		}
+		ngCtrl.dragControlListeners = {
+			accept: function (sourceItemHandleScope, destSortableScope) {
+				return true
+			},
+			itemMoved: function (eventObj) {
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
+			},
+			orderChanged: function (eventObj) {
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
+			}
+		};
+
+		ngCtrl.dragLibraryListeners = {
+			accept: function (sourceItemHandleScope, destSortableScope) {
+				return true
+			},
+			itemMoved: function (eventObj) {
+				ngCtrl.updateColumns(false);
+				ngCtrl.regenerateLibrary();
+			},
+			orderChanged: function (eventObj) {
+				ngCtrl.updateColumns(true);
+				ngCtrl.regenerateLibrary();
+			}
+		};
+
+		//#endregion
+
+		//#region << Relations >>
+
+		ngCtrl.changeRelationDirection = function (relation) {
+			if (relation.direction == "origin-target") {
+				relation.direction = "target-origin";
+			}
+			else {
+				relation.direction = "origin-target";
+			}
+			ngCtrl.list.relationOptions = [];
+
+			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+				var relation = fastCopy(ngCtrl.library.relations[i]);
+				delete relation.addedToLibrary;
+				delete relation.sameOriginTargetEntity;
+				ngCtrl.list.relationOptions.push(relation);
+			}
+
+			function successCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + response.message
+				});
+			}
+
+			function errorCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				//Undo change
+				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
+					if (ngCtrl.library.relations[j].relationName == relation.relationName) {
+						if (ngCtrl.library.relations[j].direction == "origin-target") {
+							ngCtrl.library.relations[j].direction = "target-origin";
+						}
+						else {
+							ngCtrl.library.relations[j].direction = "origin-target";
+						}
+					}
+				}
+			}
+
+			webvellaAdminService.updateEntityList(ngCtrl.list, ngCtrl.entity.name, successCallback, errorCallback);
+		}
+
+		ngCtrl.toggleRelationToLibrary = function (relation) {
+			if (!relation.addedToLibrary) {
+				ngCtrl.fullLibrary.items.forEach(function (item) {
+					if (item.relationName && item.relationName == relation.relationName) {
+						if (item.meta && alreadyUsedItemDataNames.indexOf(item.dataName) == -1) {
+							switch (item.type) {
+								case "fieldFromRelation":
+									ngCtrl.library.items.push(item);
+									break;
+								case "viewFromRelation":
+									ngCtrl.library.items.push(item);
+									break;
+								case "listFromRelation":
+									if (item.listId != ngCtrl.list.id) {
+										ngCtrl.library.items.push(item);
+									}
+									break;
+								case "treeFromRelation":
+									ngCtrl.library.items.push(item);
+									break;
+							}
+						}
+					}
+				});
+				relation.addedToLibrary = true;
+			}
+			else {
+				var tempRelationChangeLibrary = [];
+				ngCtrl.library.items.forEach(function (item) {
+					if (!item.relationName) {
+						tempRelationChangeLibrary.push(item);
+					}
+					else if (item.relationName != relation.relationName) {
+						tempRelationChangeLibrary.push(item);
+					}
+				});
+				ngCtrl.library.items = tempRelationChangeLibrary;
+				relation.addedToLibrary = false;
+			}
+			ngCtrl.sortLibrary();
+		}
+
+		ngCtrl.getRelationType = function (relationId) {
+			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+				if (ngCtrl.relationsList[i].id == relationId) {
+					return ngCtrl.relationsList[i].relationType;
+				}
+			}
+			return 0;
+		}
+
+		//#endregion
+
+		//#endregion
+
+		//#region << Modals >>
 		ngCtrl.deleteListModal = function () {
 			var modalInstance = $uibModal.open({
 				animation: false,
@@ -488,7 +610,6 @@
 				}
 			});
 		}
-
 		//#endregion
 
 		$log.debug('webvellaAdmin>entity-records-list> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -534,81 +655,6 @@
 		}
 		$log.debug('webvellaAdmin>entities>deleteListModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
-
-
-	ManageDataLinkModalController.$inject = ['$uibModalInstance', '$log'];
-	/* @ngInject */
-	function ManageDataLinkModalController($uibModalInstance, $log) {
-		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
-		var popupCtrl = this;
-
-		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-
-		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-	};
-
 	//#endregion
-
-	//#region << Query Directive >>
-	queryItem.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
-	/* @ngInject */
-	function queryItem($compile, $templateRequest, RecursionHelper) {
-		var directive = {
-			controller: queryItemController,
-			template: '<ng-include src="getTemplateUrl()"/>',
-			restrict: 'E',
-			scope: {
-				currentQuery: '=',
-				rootQuery: '=',
-				parentQuery: '=?',
-				pageScope: '=',
-				queryIndex: '='
-			},
-			compile: function (element) {
-				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
-					// Define your normal link function here.
-					// Alternative: instead of passing a function,
-					// you can also pass an object with 
-					// a 'pre'- and 'post'-link function.
-				});
-			}
-		};
-		return directive;
-	}
-
-	queryItemController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
-	/* @ngInject */
-	function queryItemController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
-		$scope.ngCtrl = $scope.pageScope;
-		$scope.getTemplateUrl = function () {
-			switch ($scope.currentQuery.queryType) {
-				case "EQ":
-					return 'queryRule.html';
-				case "NOT":
-					return 'queryRule.html';
-				case "LT":
-					return 'queryRule.html';
-				case "LTE":
-					return 'queryRule.html';
-				case "GT":
-					return 'queryRule.html';
-				case "GTE":
-					return 'queryRule.html';
-				case "CONTAINS":
-					return 'queryRule.html';
-				case "STARTSWITH":
-					return 'queryRule.html';
-				case "AND":
-					return 'querySection.html';
-				case "OR":
-					return 'querySection.html';
-			}
-		}
-	}
-	//#endregion
-
 
 })();

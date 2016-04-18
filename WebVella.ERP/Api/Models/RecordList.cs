@@ -52,9 +52,6 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "iconName")]
         public string IconName { get; set; }
 
-        [JsonProperty(PropertyName = "viewNameOverride")]
-        public string ViewNameOverride { get; set; }
-
         [JsonProperty(PropertyName = "visibleColumnsCount")]
         public int? VisibleColumnsCount { get; set; }
 
@@ -302,9 +299,6 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "iconName")]
         public string IconName { get; set; }
-
-        [JsonProperty(PropertyName = "viewNameOverride")]
-        public string ViewNameOverride { get; set; }
 
         [JsonProperty(PropertyName = "visibleColumnsCount")]
         public int VisibleColumnsCount { get; set; }

@@ -1,0 +1,47 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o"></i> Delete view</a>
+		</div>
+		<div class="meta-label">
+			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
+		</div>
+	</div>
+</div>
+<div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
+	<div class="tabbable tabs-left spilled">
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<ul class="nav nav-tabs">
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+		</ul>
+
+	</div>
+
+	<div id="page-text">
+		<nav class="navbar navbar-default navbar-erp">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Basic Attributes</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form">Main Form</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar Forms</a>
+					</li>
+					<li role="presentation" class="active">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/menu-items">Menu items</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+
+	</div>
+</div>

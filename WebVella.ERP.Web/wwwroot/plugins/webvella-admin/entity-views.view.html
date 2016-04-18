@@ -42,7 +42,7 @@
             <tbody>
                 <tr ng-repeat="view in ngCtrl.views | filter: {name: searchFilter} track by view.id">
                     <td class="actions">
-                        <a class="btn btn-default btn-sm" href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::view.name}}/info">
+                        <a class="btn btn-default btn-sm" href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::view.name}}">
                             <i class="fa fa-eye"></i>
                         </a>
                         <a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.copyView(view)">

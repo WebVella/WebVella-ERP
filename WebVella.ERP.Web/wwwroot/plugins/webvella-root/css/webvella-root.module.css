@@ -183,10 +183,25 @@ span.divider {
 	display: block !important;
 }
 
-.navbar {
+.navbar.desktop {
 	border-radius: 0;
 	background: #212121;
 }
+
+.navbar.navbar-default.navbar-erp {
+	background:#fff;
+	margin-bottom:2em;
+	min-height:40px;
+}
+
+	.navbar.navbar-default.navbar-erp li > a {
+		padding-top:10px;
+		padding-bottom:10px;
+	}
+
+	.navbar.navbar-default.navbar-erp li.active > a {
+		background-color:#ddd;
+	}
 
 .text-center {
 	text-align: center;

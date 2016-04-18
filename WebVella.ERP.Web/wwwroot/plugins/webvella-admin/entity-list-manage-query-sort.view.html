@@ -1,0 +1,315 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
+		</div>
+		<div class="meta-label">
+			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
+		</div>
+	</div>
+
+</div>
+<div id="page-body" style="padding-bottom:3em; ">
+	<div class="tabbable tabs-left spilled">
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<ul class="nav nav-tabs">
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+		</ul>
+
+	</div>
+	<div id="page-text">
+		<nav class="navbar navbar-default navbar-erp">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic Attributes</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns">Columns</a>
+					</li>
+					<li role="presentation" class="active">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort">Query & Sort</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/menu-items">Menu items</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="view-manage-section">
+			<h4 style="margin-bottom:1em">Query</h4>
+			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default" ng-click="ngCtrl.AddSection(null)">add query section</a></div>
+			<div ng-if="ngCtrl.list.query != null">
+				<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
+			</div>
+
+			<h4 style="margin-top:2em;margin-bottom:1em">Sort</h4>
+			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="ngCtrl.AddSortRule()">add new sort</a></div>
+			<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
+				<div class="panel-heading clearfix">
+					<span class="pull-right">
+						<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSortRule()">add new sort</a>
+					</span>
+				</div>
+				<div class="panel-body">
+					<table class="table table-noborder table-vertical-align-middle">
+						<tr ng-repeat="sortRule in ngCtrl.list.sorts">
+							<td style="width:60px"><span ng-if="$index == 0">first</span><span ng-if="$index != 0">than</span></td>
+							<td>
+								<select class="form-control" ng-model="sortRule.sortType" ng-change="ngCtrl.updateSorts()">
+									<option value="ascending">sort from low to high by</option>
+									<option value="descending">sort from high to low by</option>
+								</select>
+							</td>
+							<td>
+								<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
+							</td>
+							<td style="width:60px;">
+								<a class="btn btn-default go-red" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+<script type="text/ng-template" id="queryRule.html">
+	<table class="table table-noborder table-vertical-align-middle">
+		<tr>
+			<td style="width:30px;">
+				<a class="btn btn-default" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database go-grey"></i></a>
+			</td>
+			<td  width="250">
+				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="ngCtrl.updateQuery()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
+			</td>
+			<td  width="200">
+				<select class="form-control" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()" ng-options="item.key as item.value for item in ngCtrl.getQueryComparisonOptionsList(currentQuery)"></select>
+			</td>
+			<!--<td  width="130">
+				<select class="form-control" disabled>
+					<option value="val" selected="">the value</option>
+				</select>
+			</td>-->
+			<td class="position-relative">
+				<div class="editable-wrapper input-group editable-updatable">
+					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
+						   value="{{currentQuery.fieldValue}}"
+						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
+					<span class="input-group-addon" ng-click="this['queryForm_' + queryIndex].$show()" ng-hide="this['queryForm_' + queryIndex].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+				</div>
+			</td>
+			<td style="width:60px;">
+				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/ng-template" id="querySection.html">
+	<div class="panel panel-default">
+		<div class="panel-heading clearfix">
+			<span class="pull-right">
+				<a class="btn btn-default go-red btn-sm" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSection(currentQuery)">add section</a>
+				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddRule(currentQuery)">add rule</a>
+			</span>
+			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
+				<option value="AND">all</option>
+				<option value="OR">any</option>
+			</select>
+			<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
+		</div>
+		<div class="panel-body">
+			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="ngCtrl.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
+			<query-item ng-repeat="queryItem in currentQuery.subQueries"
+						current-query="queryItem" parent-query="currentQuery"
+						root-query="ngCtrl.list.query" page-scope="ngCtrl"
+						query-index="$index"></query-item>
+		</div>
+	</div>
+
+</script>
+
+<script type="text/ng-template" id="manageDataLinkModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Manage data link for the rule</h3>
+	</div>
+	<div class="modal-body">
+		<p>In the most right input of this query rule row, you can set a static value or a dynamic one. The static value will be used as is. You can dynamically pass values to the query rule by using predefined data-link JSON objects.</p>
+		<h4>current_user</h4>
+		<pre class="ng-binding">Example: {"name":"current_user", "option": "id", "default": null, "settings":{}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">current_user</span></td>
+					<td>Check the currently authenticated user, if there is such.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">id</span></td>
+					<td>The "id" field of the current user is the only option available for now</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"valid guid"</span></li>
+						</ul>
+					</td>
+					<td>if there is no authenticated user, the returned null value can be replaces with "guid" of your own. Set 'null', if you do not want a default value</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{}</span></td>
+					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+				</tr>
+			</tbody>
+		</table>
+		<h4>current_date</h4>
+		<pre class="ng-binding">Example: {"name":"current_date", "option": "datetime", "default": null, "settings":{year:null,month:null,day:-1,hour:null,minute:null}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">current_date</span></td>
+					<td>Get and manipulates the current date in UTC.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">date</span></li>
+							<li><span class="go-blue">datetime</span></li>
+						</ul>
+					</td>
+					<td>Sets the ZERO HOUR date or the exact current date and hour in UTC</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<span class="go-blue">null</span>
+					</td>
+					<td>No need for default value as current date is always available.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td>
+					<span class="go-blue">
+						{<br/>
+						"year":null,<br/>
+						"month":null,<br/>
+						"day":null,<br/>
+						"hour":null,<br/>
+						"minute":null,<br/>
+						}
+					</span>
+					</td>
+					<td>with the settings object you can manipulate the current date or datetime, by subtracting or adding periods to it.<br/> Example: "year":-1, will mean that you want the result date or datetime to be the current one minus 1 year.</td>
+				</tr>
+			</tbody>
+		</table>
+		<h4>url_query</h4>
+		<pre class="ng-binding">Example: {"name":"url_query", "option": "some_query_key", "default": "some_value", "settings":{}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100">attributes</th>
+					<th width="80">type</th>
+					<th width="150">value</th>
+					<th>description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">url_query</span></td>
+					<td>The list controller will check the query parameters for keys that match the set string in the "options" attribute. If no match is found, it will use the default value. 
+					More than one rule can match the same query parameter key. <strong>The query parameter value should be encoded.</strong> The same value needs to be converted without an error 
+					to the data format of the selected rule field. If an error occurs the default value will be returned instead.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-gray">user defined string</span></td>
+					<td>The query key that needs to be matched. t needs to comply with the rules for the url strings.</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"string"</span></li>
+						</ul>
+					</td>
+					<td>If not "null", the value needs to be converted without an error to the data format of the selected rule field. If an error occurs, it will not be used by the system, and will be 
+					equivalent to "null". The data and DateTime value format is expected to be in ISO 8601 format, in UTC and without timezone (e.g. '2016-04-13T12:23:46Z')</td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{}</span></td>
+					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="deleteListModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Delete a list</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
+			<p>Are you sure that you need this list deleted?</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>

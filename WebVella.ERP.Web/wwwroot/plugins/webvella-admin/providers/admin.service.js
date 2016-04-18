@@ -864,7 +864,6 @@ function guid() {
 					"cssClass": "",
 					"pageSize": 10,
 					"visibleColumnsCount": 7,
-					"viewNameOverride": null,
 					"columns": [],
 					"query": null,
 					"sorts": null

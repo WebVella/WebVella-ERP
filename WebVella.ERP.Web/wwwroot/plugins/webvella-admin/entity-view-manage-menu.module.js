@@ -10,16 +10,15 @@
     angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAdminEntityViewManageInfoController', controller)
-		.controller('DeleteViewModalController', deleteViewModalController);
+        .controller('WebVellaAdminEntityViewManageMenuController', controller);
 
     //#region << Configuration >> /////////////////////////
     config.$inject = ['$stateProvider'];
     /* @ngInject */
     function config($stateProvider) {
-        $stateProvider.state('webvella-admin-entity-view-manage-info', {
+        $stateProvider.state('webvella-admin-entity-view-manage-menu', {
             parent: 'webvella-admin-base',
-            url: '/entities/:entityName/views/:viewName/info',
+            url: '/entities/:entityName/views/:viewName/menu-items',
             views: {
                 "topnavView": {
                     controller: 'WebVellaAdminTopnavController',
@@ -32,8 +31,8 @@
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
-                    controller: 'WebVellaAdminEntityViewManageInfoController',
-                    templateUrl: '/plugins/webvella-admin/entity-view-manage-info.view.html',
+                    controller: 'WebVellaAdminEntityViewManageMenuController',
+                    templateUrl: '/plugins/webvella-admin/entity-view-manage-menu.view.html',
                     controllerAs: 'ngCtrl'
                 }
             },
@@ -124,7 +123,7 @@
     /* @ngInject */
     function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
                         resolvedCurrentEntityMeta, webvellaAdminService,webvellaAreasService, ngToast) {
-    	$log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+    	$log.debug('webvellaAdmin>entity-view-manage-menu> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         /* jshint validthis:true */
         var ngCtrl = this;
@@ -144,9 +143,6 @@
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
     	//#endregion
 
-    	//Awesome font icon names array 
-        ngCtrl.icons = getFontAwesomeIconNames();
-
     	//#region << Initialize View and Content Region >>
         ngCtrl.view = {};
         ngCtrl.originalView = {};
@@ -157,134 +153,14 @@
         	}
         }
         //#endregion
-        ngCtrl.nameIsChanged = false;
-		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
 
-		
-		//#region << Html field >>
-		
-
-        ngCtrl.fieldUpdate = function (key, data) {
-        	ngCtrl.nameIsChanged = false;
-        	ngCtrl.patchObject = {};
-        	ngCtrl.patchObject[key] = data;
-        	if (key == 'name') {
-        		ngCtrl.nameIsChanged = true;
-
-        	}
-        	webvellaAdminService.patchEntityView(ngCtrl.patchObject, ngCtrl.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
-
-        }
-
-        function patchSuccessCallback(response) {
-        	ngToast.create({
-        		className: 'success',
-        		content: '<span class="go-green">Success:</span> ' + response.message
-        	});
-        	webvellaAdminService.regenerateAllAreaAttachments();
-        	if (ngCtrl.nameIsChanged) {
-        		$timeout(function () {
-        			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:ngCtrl.view.name }, { reload: true });
-        		}, 0);
-        	}
-        	return true;
-        }
-        function patchFailedCallback(response) {
-        	ngToast.create({
-        		className: 'error',
-        		content: '<span class="go-red">Error:</span> ' + response.message,
-        		timeout: 7000
-        	});
-        	return false;
-        }
-
-    	//Delete view
-        ngCtrl.deleteViewModal = function () {
-        	var modalInstance = $uibModal.open({
-        		animation: false,
-        		templateUrl: 'deleteViewModal.html',
-        		controller: 'DeleteViewModalController',
-        		controllerAs: "popupCtrl",
-        		size: "",
-        		resolve: {
-        			parentData: function () { return ngCtrl; }
-        		}
-        	});
-        }
-
-        ngCtrl.viewTypes = [
-		{
-			name: "general",
-			label: "general"
-		},
-		{
-			name: "quick_view",
-			label: "quick view"
-		},
-		{
-			name: "create",
-			label: "create"
-		},
-		{
-			name: "quick_create",
-			label: "quick create"
-		},
-		{
-			name: "hidden",
-			label: "hidden"
-		}
-        ];
-
-        ngCtrl.showViewType = function () {
-        	var selected = $filter('filter')(ngCtrl.viewTypes, { name: ngCtrl.view.type });
-        	return (ngCtrl.view.type && selected.length) ? selected[0].label : 'empty';
-        };
-
-        $log.debug('webvellaAdmin>entity-view-manage-info> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+        $log.debug('webvellaAdmin>entity-view-manage-menu> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
     }
-    //#endregion
+
 
 	//#region << Modal Controllers >>
-    deleteViewModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
 
-	/* @ngInject */
-    function deleteViewModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
-    	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-    	/* jshint validthis:true */
-    	var popupCtrl = this;
-    	popupCtrl.parentData = parentData;
-
-    	popupCtrl.ok = function () {
-
-    		webvellaAdminService.deleteEntityView(popupCtrl.parentData.view.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
-
-    	};
-
-    	popupCtrl.cancel = function () {
-    		$uibModalInstance.dismiss('cancel');
-    	};
-
-    	/// Aux
-    	function successCallback(response) {
-    		ngToast.create({
-    			className: 'success',
-    			content: '<span class="go-green">Success:</span> ' + response.message
-    		});
-    		$uibModalInstance.close('success');
-    		$timeout(function () {
-    			$state.go("webvella-admin-entity-views", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
-    		}, 0);
-    	}
-
-    	function errorCallback(response) {
-    		popupCtrl.hasError = true;
-    		popupCtrl.errorMessage = response.message;
-
-
-    	}
-    	$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-    };
 
     //#endregion
 

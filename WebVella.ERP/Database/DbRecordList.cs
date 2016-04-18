@@ -31,9 +31,6 @@ namespace WebVella.ERP.Database
 		[JsonProperty(PropertyName = "icon_name")]
         public string IconName { get; set; }
 
-		[JsonProperty(PropertyName = "view_name_override")]
-        public string ViewNameOverride { get; set; }
-
 		[JsonProperty(PropertyName = "visible_columns_count")]
         public int VisibleColumnsCount { get; set; }
 

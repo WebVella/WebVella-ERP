@@ -1,0 +1,466 @@
+<div id="page-title">
+	<div id="page-meta">
+		<div class="aux-actions">
+
+		</div>
+		<div class="meta-label">
+			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
+		</div>
+	</div>
+</div>
+<div id="page-body">
+	<div class="tabbable tabs-left spilled">
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<ul class="nav nav-tabs">
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
+		</ul>
+	</div>
+
+	<div id="page-text">
+		<nav class="navbar navbar-default navbar-erp">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Basic Attributes</a>
+					</li>
+					<li role="presentation" class="active">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form">Main Form</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar Forms</a>
+					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/menu-items">Menu items</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="view-manage-section">
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="panel panel-default wrapper" style="height:700px;overflow-y:auto;">
+						<div class="view-divider section" ng-click="ngCtrl.manageSectionModalOpen(null,1)" title="click to add section"><span>add section here</span></div>
+						<div class="section-wrapper" ng-repeat="section in ngCtrl.viewContentRegion.sections track by section.id">
+							<div class="panel panel-default section">
+								<div class="panel-heading">
+									<span class="actions pull-right">
+										<a href="javascript:void(0)" ng-click="ngCtrl.removeSection(section.id)" title="remove section"><i class="fa fa-fw fa-close go-red"></i></a>
+										<a href="javascript:void(0)" ng-click="ngCtrl.manageSectionModalOpen(section,section.weight)" title="section settings"><i class="fa fa-fw fa-cog"></i></a>
+									</span>
+									<span class="go-gray">({{section.weight}})</span> {{section.label}} <span class="text-muted">({{section.name}})</span> <i class="fa fa-fw fa-eye-slash go-red" ng-show="!section.showLabel"></i>
+								</div>
+								<div class="panel-body">
+									<div title="click to add row" class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,1)"><span>add row here</span></div>
+									<div class="row-wrapper" ng-repeat="row in section.rows track by row.id">
+										<div class="row-actions clearfix">
+											<a title="row settings" class="pull-right" href="javascript:void(0)" ng-click="ngCtrl.manageRowModalOpen(row,section,row.weight)"><i class="fa fa-fw fa-cog"></i></a>
+											<a title="remove row" class="pull-right" href="javascript:void(0)" ng-click="ngCtrl.removeRow(row.id,section.id)"><i class="fa fa-fw fa-close go-red"></i></a>
+										</div>
+										<div class="row">
+											<div class="col-sm-{{column.gridColCount}}" ng-repeat="column in row.columns">
+												<div class="drop-zone">
+													<div as-sortable="ngCtrl.dragControlListeners" ng-model="column.items">
+														<div ng-model="item" class="dropped-item" data-as-sortable-item ng-repeat="item in column.items track by item.dataName"
+														     ng-switch="::item.type">
+															<div ng-switch-when="field">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.meta.name}} <i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i> <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
+															</div>
+															<div ng-switch-when="fieldFromRelation">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray"> {{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+															</div>
+															<div ng-switch-when="view">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.meta.name}}
+															</div>
+															<div ng-switch-when="viewFromRelation">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+															</div>
+															<div ng-switch-when="list">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.meta.name}}
+															</div>
+															<div ng-switch-when="listFromRelation">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+															</div>
+															<div ng-switch-when="treeFromRelation">
+																<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> <i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageFieldFromRelation(item)"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}}
+															</div>
+															<div ng-switch-when="html">
+																<div ng-if='item.tag == ""'>
+																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> No tag
+																</div>
+																<div ng-if='item.tag != ""'>
+																	<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i><i class="fa fa-fw fa-times go-red pull-right clickable" ng-click="ngCtrl.dragItemRemove(column,item.dataName)"></i> {{::item.tag}}
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div title="click to add row" class="view-divider" ng-click="ngCtrl.manageRowModalOpen(null,section,row.weight + 1)"><span>add row here</span></div>
+									</div>
+								</div>
+							</div>
+							<div class="view-divider section" title="click to add section" ng-click="ngCtrl.manageSectionModalOpen(null, section.weight + 1)"><span>add section here</span></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<!-- There are problems as the $index of the item is changed when filtered -->
+					<form class="form" style="margin-bottom:1em;padding:0;background:transparent;border:none;">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-fw fa-search"></i></span>
+								<input type="text" ng-model="ngCtrl.search.dataName" class="form-control" style="width:100%;">
+							</div>
+						</div>
+					</form>
+					<div class="view-library section" style="height:300px;overflow-y:scroll;">
+						<div class="drop-zone-disabled" id="library-items-list">
+							<div as-sortable="ngCtrl.libraryDragControlListeners" ng-model="ngCtrl.library.items" id="library">
+								<div class="dropped-item" data-as-sortable-item ng-model="item" 
+									ng-repeat="item in ngCtrl.library.items | filter: ngCtrl.search track by item.dataName"
+									ng-switch="item.type">
+									<div ng-switch-when="field">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> {{::item.meta.name}} <i class="fa fa-asterisk go-gray text-small" ng-show="::item.meta.required"></i>
+									</div>
+									<div ng-switch-when="fieldFromRelation">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-table go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="view">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="viewFromRelation">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-file-text-o go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="list">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="listFromRelation">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-list go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="treeFromRelation">
+										<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-sitemap go-teal"></i> <span class="go-gray">{{::item.relationName}} ></span> {{::item.meta.name}}
+									</div>
+									<div ng-switch-when="html">
+										<div ng-if='item.tag == ""'>
+											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> No tag
+										</div>
+										<div ng-if='item.tag != ""'>
+											<i as-sortable-item-handle class="fa fa-fw fa-arrows go-gray"></i> <i class="fa fa-fw fa-code go-teal"></i> {{::item.tag}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<table class="table table-bordered ng-hide" ng-show="ngCtrl.library.relations.length > 0">
+						<thead>
+							<tr>
+								<th class="go-bkg-white">relations</th>
+								<th width="90" class="go-bkg-white">in library</th>
+								<th width="125" class="go-bkg-white">direction</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="relation in ngCtrl.library.relations track by relation.relationId">
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
+									{{::relation.relationName}}
+								</div></td>
+								<td>
+									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
+										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
+										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
+									</a>
+								</td>
+								<td>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
+									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/ng-template" id="manageSectionModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.isUpdate">Manage section</h3>
+		<h3 class="modal-title ng-hide" ng-show="!popupCtrl.isUpdate">Create section</h3>
+	</div>
+	<div class="modal-body">
+		<form name="manageSection">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageSection.name.$invalid && !manageSection.name.$pristine}">
+						<label class="required" for="sectionName">Name</label>
+						<input ng-model="popupCtrl.section.name" name="name" type="text" class="form-control" id="sectionName" placeholder="e.g. details"
+							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}" autofocus ng-disabled="popupCtrl.isUpdate">
+						<div class="error ng-hide" ng-show="manageSection.name.$dirty && manageSection.name.$invalid">
+							<small class="error ng-hide" ng-show="manageSection.name.$error.required">
+								required field
+							</small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.pattern">
+								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
+							</small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.maxlength">
+								must be less than 50 chars
+							</small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.unique">
+								should be unique for this view
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageSection.label.$invalid && !manageSection.label.$pristine}">
+						<label class="required" for="title">Label</label>
+						<input ng-model="popupCtrl.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
+							   required maxlength="50" ng-model-options="{allowInvalid:true}">
+						<div class="error ng-hide" ng-show="manageSection.label.$dirty && manageSection.label.$invalid">
+							<small class="error ng-hide" ng-show="manageSection.label.$error.required">
+								required field
+							</small>
+							<small class="error ng-hide" ng-show="manageSection.label.$error.maxlength">
+								must be less than 50 chars
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageSection.cssClass.$invalid && !manageSection.cssClass.$pristine}">
+						<label for="cssClass">CSS Class</label>
+						<input ng-model="popupCtrl.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
+							   maxlength="50" ng-model-options="{allowInvalid:true}">
+						<div class="error ng-hide" ng-show="manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
+							<small class="error ng-hide" ng-show="manageSection.cssClass.$error.maxlength">
+								must be less than 50 chars
+							</small>
+						</div>
+						<div class="form-description">no-labels, col-lg-3, padding-left-zero, padding-right-zero</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageSection.weight.$invalid && !manageSection.weight.$pristine}">
+						<label for="place">Place</label>
+						<input ng-model="popupCtrl.section.weight" name="weight" type="text" class="form-control" id="weight" placeholder="e.g. 1, empty for last"
+							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
+						<div class="error ng-hide" ng-show="manageSection.weight.$dirty && manageSection.weight.$invalid">
+							<small class="error ng-hide" ng-show="manageSection.weight.$error.pattern">
+								should be a valid number
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="showLabel">Label Visibility</label>
+						<div class="checkbox">
+							<label>
+								<input ng-model="popupCtrl.section.showLabel" type="checkbox" id="showLabel" value="true">
+								show the section label
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="collapsed">Section collapsed</label>
+						<div class="checkbox">
+							<label>
+								<input ng-model="popupCtrl.section.collapsed" type="checkbox" id="collapsed" value="true">
+								section will be collapsed as default
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="tabOrder">Tab Order</label>
+						<select class="form-control" ng-model="popupCtrl.section.tabOrder">
+							<option value="left-right">Left to Right</option>
+							<option value="top-down">Top to Down</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()">Save Section</button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()">Add Section</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+<script type="text/ng-template" id="manageRowModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id == null">Add Row</h3>
+		<h3 class="modal-title ng-hide" ng-show="popupCtrl.row.id != null">Manage Row</h3>
+	</div>
+	<div class="modal-body">
+		<form name="manageRow">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="tabOrder">Row columns</label>
+						<select class="form-control" ng-model="popupCtrl.selectedRowOption" ng-options="option.value for option in popupCtrl.rowOptions"></select>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageRow.row.$invalid && !manageRow.row.$pristine}">
+						<label for="place">Weight</label>
+						<input ng-model="popupCtrl.row.weight" name="weight" type="text" class="form-control" id="row" placeholder="e.g. 1, empty for last"
+							   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}">
+						<div class="error ng-hide" ng-show="manageRow.weight.$dirty && manageRow.weight.$invalid">
+							<small class="error ng-hide" ng-show="manageRow.weight.$error.pattern">
+								should be a valid number
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary ng-hide" ng-show="popupCtrl.isUpdate" ng-click="popupCtrl.ok()">Save Row</button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.isUpdate" ng-click="popupCtrl.ok()">Add Row</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+<script type="text/ng-template" id="manageHtmlStringModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">HTML string contents</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupCtrl.error">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.content.$invalid && !manageForm.content.$pristine || popupCtrl.contentError}">
+						<label class="control-label">HTML contents</label>
+						<textarea class="form-control" ng-model="popupCtrl.field.content" name="content" ng-model-options="{allowInvalid:true}"></textarea>
+						<div class="error ng-hide" ng-show="manageForm.content.$touched && manageForm.content.$dirty && manageForm.content.$invalid || popupCtrl.contentError">
+							<small class="error" ng-show="popupCtrl.contentError">
+								{{popupCtrl.contentErrorMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Add Item</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+<script type="text/ng-template" id="manageFromRelationModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Relation Item settings</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupCtrl.error">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupCtrl.fieldLabelError}">
+						<label class="control-label required">Label</label>
+						<input class="form-control" ng-model="popupCtrl.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required/>
+						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
+								required field
+							</small>
+							<small class="error" ng-show="popupCtrl.fieldLabelError">
+								{{popupCtrl.fieldLabelMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="requiredStatus" class="control-label">Required</label>
+						<div class="checkbox">
+							<label>
+								<input ng-model="popupCtrl.field.fieldRequired" type="checkbox" value="true">
+								this is a required field
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldPlaceholder.$invalid && !manageForm.fieldPlaceholder.$pristine || popupCtrl.fieldPlaceholderError}">
+						<label class="control-label">Placeholder text</label>
+						<input class="form-control" ng-model="popupCtrl.field.fieldPlaceholder" name="fieldPlaceholder" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldPlaceholder.$touched && manageForm.fieldPlaceholder.$dirty && manageForm.fieldPlaceholder.$invalid || popupCtrl.fieldPlaceholderError">
+							<small class="error" ng-show="popupCtrl.fieldPlaceholderError">
+								{{popupCtrl.fieldPlaceholderMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldHelpText.$invalid && !manageForm.fieldHelpText.$pristine || popupCtrl.fieldHelpTextError}">
+						<label class="control-label">Help text</label>
+						<input class="form-control" ng-model="popupCtrl.field.fieldHelpText" name="fieldHelpText" type="text" ng-model-options="{allowInvalid:true}" />
+						<div class="error ng-hide" ng-show="manageForm.fieldHelpText.$touched && manageForm.fieldHelpText.$dirty && manageForm.fieldHelpText.$invalid || popupCtrl.fieldHelpTextError">
+							<small class="error ng-hide" ng-show="popupCtrl.fieldHelpTextError">
+								{{popupCtrl.fieldHelpTextMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label required">Lookup list</label>
+						<select class="form-control" ng-model="popupCtrl.field.fieldLookupList" ng-options="item.name as item.name for item in popupCtrl.lookupLists"></select>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group"  ng-if="popupCtrl.field.type == 'viewFromRelation' || popupCtrl.field.type == 'listFromRelation'">
+						<label class="control-label required">Quick create</label>
+						<select class="form-control" ng-model="popupCtrl.field.fieldManageView" ng-options="item.name as item.name for item in popupCtrl.quickCreateViews"></select>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()">Add Item</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="dataBindTemplate.html">
+    <div class="tooltip-description">You can get this field value in a dynamic template by:</div>
+	<div class="tooltip-databind"><span>{</span>{templateData.{{item.dataName}}<span>}</span>}</div>
+	<div class="tooltip-description">View meta is accessible via:</div>
+	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
+</script>
