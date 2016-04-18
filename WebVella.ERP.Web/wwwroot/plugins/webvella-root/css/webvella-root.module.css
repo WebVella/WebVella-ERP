@@ -266,6 +266,7 @@ span.divider {
 	padding:7px 20px;
 }
 
+.ace_editor { height: 200px; }
 
 /*
 ngToast

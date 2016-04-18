@@ -64,6 +64,9 @@
 	<script src="~/plugins/webvella-root/lib/angular-ui-tree/dist/angular-ui-tree.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/angular-bind-html-compile/angular-bind-html-compile.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-root/lib/oclazyload/dist/oclazyload.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/ace-builds/src-min-noconflict/ace.js?v=@ViewBag.CacheBreaker"></script>
+	<script src="~/plugins/webvella-root/lib/angular-ui-ace/ui-ace.js?v=@ViewBag.CacheBreaker"></script>
+
 
 	@* Core Application module definition *@
 	<script>
@@ -77,7 +80,7 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
-					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad',
+					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad','ui.ace',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 					

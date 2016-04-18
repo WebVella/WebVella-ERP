@@ -70,7 +70,8 @@ function guid() {
 		serviceInstance.getRowColumnCountVariationKey = getRowColumnCountVariationKey;
 		serviceInstance.convertRowColumnCountVariationKeyToArray = convertRowColumnCountVariationKeyToArray;
 		serviceInstance.calculateViewFieldColsFromGridColSize = calculateViewFieldColsFromGridColSize;
-
+		serviceInstance.getViewMenuOptions = getViewMenuOptions
+		serviceInstance.initViewMenuItem = initViewMenuItem;
 		//List
 		serviceInstance.initList = initList;
 		serviceInstance.getEntityLists = getEntityLists;
@@ -79,6 +80,8 @@ function guid() {
 		serviceInstance.patchEntityList = patchEntityList;
 		serviceInstance.updateEntityList = updateEntityList;
 		serviceInstance.deleteEntityList = deleteEntityList;
+		serviceInstance.getListMenuOptions = getListMenuOptions
+		serviceInstance.initListMenuItem = initListMenuItem;
 		//Tree
 		serviceInstance.initTree = initTree;
 		serviceInstance.getEntityTreesMeta = getEntityTreesMeta;
@@ -525,6 +528,54 @@ function guid() {
 			return column;
 		}
 		//////////////////////
+		function getViewMenuOptions() {
+			var menuOptions = [
+				{
+            		key: "hidden",
+            		value: "hidden",
+					description: ""
+				},
+				{
+            		key: "page-title",
+            		value: "page-title",
+					description: ""
+				},
+				{
+            		key: "page-title-dropdown",
+            		value: "page-title-dropdown",
+					description: ""
+				},
+				{
+            		key: "create-bottom",
+            		value: "create-bottom",
+					description: ""
+				},
+				{
+            		key: "sidebar-top",
+            		value: "sidebar-top",
+					description: ""
+				},
+				{
+            		key: "sidebar-bottom",
+            		value: "sidebar-bottom",
+					description: ""
+				}
+			];
+
+			return menuOptions;
+		}
+		/////////////////////
+		function initViewMenuItem(){
+			var menuItem = {
+				name: null,
+				weight:10,
+				menu:"hidden",
+				template: ""
+			}
+		   return menuItem;
+		}
+
+		//////////////////////
 		function getEntityViewLibrary(entityName, successCallback, errorCallback) {
 			$log.debug('webvellaAdmin>providers>admin.service>getEntityViewLibrary> function called ' + moment().format('HH:mm:ss SSSS'));
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/getEntityViewLibrary' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
@@ -940,6 +991,59 @@ function guid() {
             	]
             }
 			return list;
+		}
+
+		//////////////////////
+		function getListMenuOptions() {
+			var menuOptions = [
+				{
+            		key: "hidden",
+            		value: "hidden",
+					description: ""
+				},
+				{
+            		key: "page-title",
+            		value: "page-title",
+					description: ""
+				},
+				{
+            		key: "page-title-dropdown",
+            		value: "page-title-dropdown",
+					description: ""
+				},
+				{
+            		key: "record-row",
+            		value: "record-row",
+					description: ""
+				},
+				{
+            		key: "record-row-dropdown",
+            		value: "record-row-dropdown",
+					description: ""
+				},
+				{
+            		key: "sidebar-top",
+            		value: "sidebar-top",
+					description: ""
+				},
+				{
+            		key: "sidebar-bottom",
+            		value: "sidebar-bottom",
+					description: ""
+				}
+			];
+
+			return menuOptions;
+		}
+		/////////////////////
+		function initListMenuItem(){
+			var menuItem = {
+				name: null,
+				weight:10,
+				menu:"hidden",
+				template: ""
+			}
+		   return menuItem;
 		}
 
 		///////////////////////

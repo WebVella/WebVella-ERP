@@ -10,6 +10,7 @@
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
+		.controller('DeleteListModalController', deleteListModalController)
         .controller('WebVellaAdminEntityListManageMenuController', controller);
 
 	// Configuration ///////////////////////////////////
@@ -275,6 +276,33 @@
 				}
 			});
 		}
+
+		ngCtrl.manageServiceCodeModal = function () {
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageServiceCodeModal.html',
+				controller: 'ManageViewServiceCodeModalController',
+				controllerAs: "popupCtrl",
+				size: "lg",
+				resolve: {
+					parentData: function () { return ngCtrl; }
+				}
+			});
+		}
+
+		ngCtrl.addManageMenuItemModal = function (menuItem) {
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'addManageMenuItemModal.html',
+				controller: 'AddManageViewMenuItemModalController',
+				controllerAs: "popupCtrl",
+				size: "lg",
+				resolve: {
+					parentData: function () { return ngCtrl; },
+					menuItem: function () { return menuItem; }
+				}
+			});
+		}
 		//#endregion
 
 
@@ -322,6 +350,147 @@
 		}
 		$log.debug('webvellaAdmin>entities>deleteListModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
+	
+	ManageViewServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	/* @ngInject */
+	function ManageViewServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaRootService, ngToast, $timeout, $state) {
+		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		/* jshint validthis:true */
+		var popupCtrl = this;
+		popupCtrl.parentData = parentData;
+
+		//#region << Ace editor >>
+		popupCtrl.aceOptions = {
+			useWrapMode: true,
+			showGutter: true,
+			theme: 'twilight',
+			mode: 'javascript',
+			firstLineNumber: 1,
+			onLoad: popupCtrl.aceOnLoad,
+			onChange: popupCtrl.aceOnChange
+		}
+
+		popupCtrl.code = "/* ticket-general-view */\n";
+
+		popupCtrl.aceOnLoad = function (_editor) {
+			// Options
+			//_editor.setReadOnly(false);
+		};
+
+		popupCtrl.aceOnChange = function (event) {
+			// Options
+
+		};
+		//#endregion
+
+		popupCtrl.ok = function () {
+
+			//webvellaAdminService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+
+		};
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+		/// Aux
+		function successCallback(response) {
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> ' + response.message
+			});
+			$uibModalInstance.close('success');
+			$timeout(function () {
+				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
+			}, 0);
+		}
+
+		function errorCallback(response) {
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
+
+
+		}
+		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	};
+
+	AddManageViewMenuItemModalController.$inject = ['parentData','menuItem', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	/* @ngInject */
+	function AddManageViewMenuItemModalController(parentData,menuItem, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		/* jshint validthis:true */
+		var popupCtrl = this;
+		popupCtrl.parentData = parentData;
+		popupCtrl.menuItem = {};
+		popupCtrl.isEdit = false;
+		if(menuItem != null){
+			popupCtrl.isEdit = false;
+			popupCtrl.menuItem = fastCopy(menuItem);
+		}
+		else {
+		  popupCtrl.menuItem = webvellaAdminService.initListMenuItem();
+		  popupCtrl.menuItem.menu = "hidden";
+		  popupCtrl.menuItem.template = "";
+		}
+		
+
+		//#region << Ace editor >>
+		popupCtrl.aceOptions = {
+			useWrapMode: true,
+			showGutter: true,
+			theme: 'twilight',
+			mode: 'xml',
+			firstLineNumber: 1,
+			onLoad: popupCtrl.aceOnLoad,
+			onChange: popupCtrl.aceOnChange
+		}
+
+		popupCtrl.aceOnLoad = function (_editor) {
+			// Options
+			//_editor.setReadOnly(false);
+		};
+
+		popupCtrl.aceOnChange = function (event) {
+			// Options
+
+		};
+		//#endregion
+
+		//#region << List types >>
+		popupCtrl.menuOptions = webvellaAdminService.getListMenuOptions();
+		//#endregion
+
+		popupCtrl.ok = function () {
+
+			//webvellaAdminService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+
+		};
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+		/// Aux
+		function successCallback(response) {
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> ' + response.message
+			});
+			$uibModalInstance.close('success');
+			$timeout(function () {
+				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
+			}, 0);
+		}
+
+		function errorCallback(response) {
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
+
+
+		}
+		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	};	
+	
 	//#endregion
 
 })();

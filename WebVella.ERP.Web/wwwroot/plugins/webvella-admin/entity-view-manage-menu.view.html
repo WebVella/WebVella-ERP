@@ -1,7 +1,6 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o"></i> Delete view</a>
 		</div>
 		<div class="meta-label">
 			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
@@ -42,6 +41,107 @@
 			</div>
 		</nav>
 
+		<h4 style="margin-bottom:1em">Service Code</h4>
+		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a>
 
+		<h4 style="margin-bottom:1em;margin-top:2em;">Menu items</h4>
+		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.addManageMenuItemModal(null)">Add New</a>
+		<table class="table table-bordered table-hover table-vertical-align-middle" style="margin-top:1em;">
+			<thead>
+				<tr>
+					<th width="30"></th>
+					<th width="30"> weight</th>
+					<th>label</th>
+					<th>menu</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><a class="btn btn-default btn-sm"><i class="fa fa-fw fa-pencil"/></a></td>
+					<td>1</td>
+					<td>print_record</td>
+					<td>page title dropdown</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
+
+
+<script type="text/ng-template" id="manageServiceCodeModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Manage Service Code</h3>
+	</div>
+	<div class="modal-body">
+		<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.code" style="height:500px;"></div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Save</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="addManageMenuItemModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title" ng-if="popupCtrl.isEdit">Manage Menu item</h3>
+		<h3 class="modal-title" ng-if="!popupCtrl.isEdit">Add Menu item</h3>
+	</div>
+	<div class="modal-body">
+		<form class="form form-horizontal" name="formName">
+			<div class="form-group">
+				<div class="row">
+					<label class="control-label col-sm-1">Name</label>
+					<div class="col-sm-7">
+						<input ng-model="popupCtrl.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. print_record"
+							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
+						<ng-messages for="formName.name.$error" ng-if="formName.name.$touched && formName.name.$dirty && formName.name.$invalid || popupCtrl.nameError">
+							<ng-message when="required" class="error">required field</ng-message>
+							<ng-message when="pattern" class="error">only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars</ng-message>
+							<ng-message when="maxlength" class="error">must be less than 50 chars</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupCtrl.nameError">
+							{{popupCtrl.nameMessage}}
+						</small>						
+					</div>
+					<label class="control-label col-sm-1">Weight</label>
+					<div class="col-sm-3">
+						<input ng-model="popupCtrl.menuItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
+						<ng-messages for="formName.weight.$error" ng-if="formName.weight.$touched && formName.weight.$dirty && formName.weight.$invalid || popupCtrl.weightError">
+							<ng-message when="required" class="error">required field</ng-message>
+							<ng-message when="pattern" class="error">weight should be a positive integer or decimal number, with two decimal places after the dot</ng-message>
+						</ng-messages>
+						<small class="error ng-hide" ng-show="popupCtrl.weightError">
+							{{popupCtrl.weightMessage}}
+						</small>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
+					<label class="control-label col-sm-1">Menu</label>
+					<div class="col-sm-7">
+						<select class="form-control" ng-model="popupCtrl.menuItem.menu" ng-change="popupCtrl.menuChanged()"
+						ng-options="option.value as option.key for option in popupCtrl.menuOptions"></select>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
+					<label class="control-label col-sm-1">Name</label>
+					<div class="col-sm-11">
+						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.menuItem.template" style="height:100px;"></div>						
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.deleteMenuItemModal()">[ Delete ]</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit">Save</button>
+		<button class="btn btn-success" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit">Add</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>

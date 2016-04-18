@@ -10,6 +10,7 @@
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
+		.controller('DeleteListModalController', deleteListModalController)
         .controller('WebVellaAdminEntityListManageQuerySortController', controller);
 
 	// Configuration ///////////////////////////////////

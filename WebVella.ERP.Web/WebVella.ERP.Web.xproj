@@ -16,6 +16,9 @@
     <DevelopmentServerPort>2202</DevelopmentServerPort>
     <GruntGulpQueried>True</GruntGulpQueried>
   </PropertyGroup>
+  <ItemGroup>
+    <DnxInvisibleFolder Include="wwwroot\plugins\webvella-root\lib\ace-builds\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
   <ProjectExtensions>
     <VisualStudio>
