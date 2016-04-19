@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,7 @@ using WebVella.ERP.Api.Models;
 using WebVella.ERP.Api.Models.AutoMapper;
 using WebVella.ERP.Database;
 using WebVella.ERP.Storage;
+using WebVella.ERP.Utilities;
 using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Api
@@ -2550,7 +2552,12 @@ namespace WebVella.ERP.Api
 					}
 
 					#endregion
+
+					//compute hash code
+					entity.Hash = CryptoUtility.ComputeOddMD5Hash(JsonConvert.SerializeObject(entity));
 				}
+
+
 
 				EntityList entityList = new EntityList();
 				entityList.Entities = entities;

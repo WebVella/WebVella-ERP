@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using WebVella.ERP.Storage;
 
 namespace WebVella.ERP.Api.Models
 {
@@ -34,7 +33,8 @@ namespace WebVella.ERP.Api.Models
 
 	public class Entity
 	{
-		public Entity() {
+		public Entity()
+		{
 			RecordViews = new List<RecordView>();
 			RecordLists = new List<RecordList>();
 		}
@@ -74,6 +74,9 @@ namespace WebVella.ERP.Api.Models
 
 		[JsonProperty(PropertyName = "recordTrees")]
 		public List<RecordTree> RecordTrees { get; set; }
+
+		[JsonProperty(PropertyName = "hash")]
+		public string Hash { get; internal set; }
 	}
 
 	public class RecordPermissions
@@ -122,9 +125,9 @@ namespace WebVella.ERP.Api.Models
 		public EntityList Object { get; set; }
 	}
 
-    public class EntityLibraryItemsResponse : BaseResponseModel
-    {
-        [JsonProperty(PropertyName = "object")]
-        public List<object> Object { get; set; }
-    }
+	public class EntityLibraryItemsResponse : BaseResponseModel
+	{
+		[JsonProperty(PropertyName = "object")]
+		public List<object> Object { get; set; }
+	}
 }
