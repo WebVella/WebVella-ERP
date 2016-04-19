@@ -812,8 +812,7 @@ namespace WebVella.ERP.Web.Controllers
 			var code = list.Object.ServiceCode;
 			if (!string.IsNullOrWhiteSpace(code))
 			{
-				bytes = new byte[code.Length * sizeof(char)];
-				Buffer.BlockCopy(code.ToCharArray(), 0, bytes, 0, bytes.Length);
+				bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			}
 			return File(bytes, "text/javascript" );
 		}
@@ -1084,8 +1083,7 @@ namespace WebVella.ERP.Web.Controllers
 			var code = view.Object.ServiceCode;
 			if (!string.IsNullOrWhiteSpace(code))
 			{
-				bytes = new byte[code.Length * sizeof(char)];
-				Buffer.BlockCopy(code.ToCharArray(), 0, bytes, 0, bytes.Length);
+				bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			}
 			return File(bytes, "text/javascript");
 		}
