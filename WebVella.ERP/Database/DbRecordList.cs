@@ -54,6 +54,15 @@ namespace WebVella.ERP.Database
 
 		[JsonProperty(PropertyName = "dynamic_html_template")]
 		public string DynamicHtmlTemplate { get; set; }
+
+		[JsonProperty(PropertyName = "action_items")]
+		public List<ActionItem> ActionItems { get; set; }
+
+		[JsonProperty(PropertyName = "service_code")]
+		public string ServiceCode { get; set; }
+
+		[JsonProperty(PropertyName = "column_widths_csv")]
+		public string ColumnWidthsCSV { get; set; }
 	}
 
 	public class DbRecordListQuery

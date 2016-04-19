@@ -769,6 +769,10 @@ namespace WebVella.ERP.Web.Controllers
 						list.DynamicHtmlTemplate = inputList.DynamicHtmlTemplate;
 					if (prop.Name.ToLower() == "columnwidthscsv")
 						list.ColumnWidthsCSV = inputList.ColumnWidthsCSV;
+					if (prop.Name.ToLower() == "actionitems")
+						list.ActionItems = inputList.ActionItems;
+					if (prop.Name.ToLower() == "servicecode")
+						list.ServiceCode = inputList.ServiceCode;
 				}
 			}
 			catch (Exception e)
@@ -1211,6 +1215,10 @@ namespace WebVella.ERP.Web.Controllers
 						view.IconName = inputView.IconName;
 					if (prop.Name.ToLower() == "dynamichtmltemplate")
 						view.DynamicHtmlTemplate = inputView.DynamicHtmlTemplate;
+					if (prop.Name.ToLower() == "actionitems")
+						view.ActionItems = inputView.ActionItems;
+					if (prop.Name.ToLower() == "servicecode")
+						view.ServiceCode = inputView.ServiceCode;
 				}
 			}
 			catch (Exception e)
