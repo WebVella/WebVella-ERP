@@ -1160,6 +1160,12 @@ body.hidden-sidebar #page-topnav {
 		padding:0;
 	}
 
+
+.query-filter-row .form-control {
+	padding-left:5px;
+	padding-right:5px;
+}
+
 #page-meta .list-inline .active a i {
 	color: #d9534f;
 }

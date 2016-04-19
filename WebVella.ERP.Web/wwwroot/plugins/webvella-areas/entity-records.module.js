@@ -16,7 +16,7 @@
 
 
 
-	// Configuration ///////////////////////////////////
+	//#region << Configuration /////////////////////////////////// >>
 	config.$inject = ['$stateProvider'];
 
 	/* @ngInject */
@@ -51,7 +51,8 @@
 			}
 		});
 	};
-
+	
+	//#endregion
 
 	//#region << Resolve Function >>
 
@@ -103,7 +104,7 @@
 	//#endregion
 
 
-	// Controller ///////////////////////////////
+	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
         'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaActionService',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast', '$sessionStorage', '$location', '$window'];
@@ -119,6 +120,7 @@
 		ngCtrl.recordsMeta = fastCopy(resolvedListRecords.meta);
 		ngCtrl.relationsMeta = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.$sessionStorage = $sessionStorage;
+
 		//#region << Set Environment >>
 		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
 		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
@@ -241,6 +243,33 @@
 
 		//#endregion
 
+		//#region <<init the columns width array >>
+		ngCtrl.columnWidths = [];
+		var columnWidthsArray = [];
+		if(ngCtrl.recordsMeta.columnWidthsCSV){
+			columnWidthsArray = ngCtrl.recordsMeta.columnWidthsCSV.split(',');
+		}
+		var visibleColumns =  ngCtrl.recordsMeta.visibleColumnsCount;
+		if(columnWidthsArray.length > 0){
+		   	for (var i = 0; i < visibleColumns; i++) {
+				if(columnWidthsArray.length >= i +1){
+					ngCtrl.columnWidths.push(columnWidthsArray[i]);
+				}
+				else {
+					ngCtrl.columnWidths.push("auto");
+				}
+			}
+		}
+		else {
+			//set all to auto
+			for (var i = 0; i < visibleColumns; i++) {
+				ngCtrl.columnWidths.push("auto");
+			}
+		}
+
+		//#endregion
+
+
 		//#region << Search >>
 		ngCtrl.defaultSearchField = null;
 		for (var k = 0; k < ngCtrl.currentListView.columns.length; k++) {
@@ -273,6 +302,7 @@
 		//#endregion
 
 		//#region << filter Query >>
+
 		//ngCtrl.recordsMeta.columns
 		ngCtrl.filterQuery = {};
 		ngCtrl.listIsFiltered = false;
@@ -472,7 +502,9 @@
 
 		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
+	//#endregion
 
+	//#region << Modal Controller /////////////////////////////// >>
 	exportModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', '$stateParams', '$scope'];
 	function exportModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, ngCtrl, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>exportModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
@@ -525,9 +557,7 @@
 		};
 		$log.debug('webvellaAreas>records>exportModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
-
-
-	importModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', '$stateParams', '$scope'];
+ 	importModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', '$stateParams', '$scope'];
 	function importModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, ngCtrl, $stateParams, $scope) {
 		$log.debug('webvellaAreas>records>importModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		var popupCtrl = this;
@@ -609,4 +639,6 @@
 		};
 		$log.debug('webvellaAreas>records>importModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
+	//#endregion
+
 })();

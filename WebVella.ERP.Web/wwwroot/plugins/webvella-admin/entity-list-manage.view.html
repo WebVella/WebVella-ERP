@@ -218,29 +218,27 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="editable-field field">
-										<label class="control-label col-lg-1">Columns width CSV</label>
-										<div class="col-lg-11">
+										<label class="control-label col-lg-2">Columns width CSV</label>
+										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.columnWidthsCSV"
 													   value="{{ngCtrl.list.columnWidthsCSV}}"
 													   onbeforesave="ngCtrl.fieldUpdate('columnWidthsCSV',$data)" e-form="fieldForm_columnWidthsCSV">
 												<span class="input-group-addon" ng-click="fieldForm_columnWidthsCSV.$show()" ng-hide="fieldForm_columnWidthsCSV.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">Note: the actions column is always inserted as a first. e.g. "25%,auto,100px".</div>
+											<div class="form-description">Note: the actions column is ignored. e.g. "25%,auto,100px".</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="editable-field field">
-										<label class="control-label col-lg-1">Custom Template</label>
-										<div class="col-lg-11">
+										<label class="control-label col-lg-2">Custom Template</label>
+										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable">
 												<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
 													<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>

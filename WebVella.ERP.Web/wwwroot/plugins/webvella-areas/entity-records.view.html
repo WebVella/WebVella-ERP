@@ -76,7 +76,7 @@
 								<i class="fa fa-fw fa-times go-grey"></i>
 							</a>
 						</th>
-						<th class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
+						<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -91,10 +91,10 @@
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div ng-switch-when="1">
 										<!--AutoNumber field-->
-										<div class="form-group form-group-sm" style="max-width:150px">
+										<div class="form-group form-group-sm">
 											<div class="input-group">
 												<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
-												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
@@ -110,10 +110,10 @@
 									</div>
 									<div ng-switch-when="3">
 										<!--Currency field-->
-										<div class="form-group form-group-sm"  style="max-width:150px">
+										<div class="form-group form-group-sm">
 											<div class="input-group">
 												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-												<input type="text" class="form-control" style="padding-left:5px;padding-right:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
 											</div>
 										</div>
@@ -207,7 +207,7 @@
 										<div class="form-group form-group-sm">
 											<div class="right-inner-addon">
 												<i class="fa fa-fw fa-percent"></i>
-												<input type="text" class="form-control" style="padding-left:5px;" ng-model="ngCtrl.filterQuery[column.dataName]">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 									</div>
