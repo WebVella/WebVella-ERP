@@ -3,7 +3,7 @@
 		<div class="aux-actions">
 			<span uib-dropdown class="dropdown" ng-if="ngCtrl.userHasRecordDeletePermission()">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
-				<ul class="dropdown-menu pull-right" uib-dropdown-menu style="margin-top:10px;">
+				<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
 					<li ng-if="ngCtrl.userHasRecordDeletePermission()">
 						<a href="javascript:void(0)" confirmed-click="ngCtrl.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
 					</li>
@@ -29,7 +29,7 @@
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu" uib-dropdown-menu>
 						<li ng-repeat="view in ngCtrl.generalViews track by $index">
-							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.currentEntity.name}}/{{ngCtrl.stateParams.recordId}}/{{::view.name}}/*/*/*">
+							<a href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.currentEntity.name}}/{{ngCtrl.stateParams.recordId}}/{{::view.name}}/*/*">
 								<i class="fa fa-fw fa-{{view.iconName}}"></i> {{::view.label}}
 							</a>
 						</li>

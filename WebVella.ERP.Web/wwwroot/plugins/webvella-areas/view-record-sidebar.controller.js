@@ -104,7 +104,6 @@
 				defaultParams.entityName = sidebarData.stateParams.entityName;
 				defaultParams.listName = sidebarData.defaultEntityAreaListName;
 				defaultParams.page = 1;
-				defaultParams.search = null;
 
 			   	$timeout(function () {
                     $state.go('webvella-entity-records',defaultParams);

@@ -18,9 +18,9 @@
 
 	/* @ngInject */
 	function config($stateProvider) {
-		$stateProvider.state('webvella-admin-entity-list-manage-menu', {
+		$stateProvider.state('webvella-admin-entity-list-manage-actions', {
 			parent: 'webvella-admin-base',
-			url: '/entities/:entityName/lists/:listName/menu-items', //  /desktop/areas after the parent state is prepended
+			url: '/entities/:entityName/lists/:listName/actions', //  /desktop/areas after the parent state is prepended
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
@@ -34,7 +34,7 @@
 				},
 				"contentView": {
 					controller: 'WebVellaAdminEntityListManageMenuController',
-					templateUrl: '/plugins/webvella-admin/entity-list-manage-menu.view.html',
+					templateUrl: '/plugins/webvella-admin/entity-list-manage-actions.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
@@ -367,20 +367,12 @@
 			mode: 'javascript',
 			firstLineNumber: 1,
 			onLoad: popupCtrl.aceOnLoad,
-			onChange: popupCtrl.aceOnChange
+			onChange: popupCtrl.aceOnChange,
+			advanced:{
+				showPrintMargin:false
+			}
 		}
-
-		popupCtrl.code = "/* ticket-general-view */\n";
-
-		popupCtrl.aceOnLoad = function (_editor) {
-			// Options
-			//_editor.setReadOnly(false);
-		};
-
-		popupCtrl.aceOnChange = function (event) {
-			// Options
-
-		};
+		popupCtrl.aceOnChange = function (event) {};
 		//#endregion
 
 		popupCtrl.ok = function () {
@@ -442,18 +434,12 @@
 			mode: 'xml',
 			firstLineNumber: 1,
 			onLoad: popupCtrl.aceOnLoad,
-			onChange: popupCtrl.aceOnChange
+			onChange: popupCtrl.aceOnChange,
+			advanced:{
+				showPrintMargin:false
+			}
 		}
-
-		popupCtrl.aceOnLoad = function (_editor) {
-			// Options
-			//_editor.setReadOnly(false);
-		};
-
-		popupCtrl.aceOnChange = function (event) {
-			// Options
-
-		};
+		popupCtrl.aceOnChange = function (event) {};
 		//#endregion
 
 		//#region << List types >>

@@ -270,37 +270,6 @@
 		//#endregion
 
 
-		//#region << Search >>
-		ngCtrl.defaultSearchField = null;
-		for (var k = 0; k < ngCtrl.currentListView.columns.length; k++) {
-			if (ngCtrl.currentListView.columns[k].type == "field") {
-				ngCtrl.defaultSearchField = ngCtrl.currentListView.columns[k];
-				break;
-			}
-		}
-		if (ngCtrl.defaultSearchField != null) {
-			ngCtrl.searchQueryPlaceholder = "" + ngCtrl.defaultSearchField.meta.label;
-		}
-
-
-		ngCtrl.searchQuery = null;
-		if ($stateParams.search) {
-			ngCtrl.searchQuery = $stateParams.search;
-		}
-		ngCtrl.checkForSearchEnter = function (e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			if (code == 13) { //Enter keycode
-				ngCtrl.submitSearchQuery();
-			}
-		}
-		ngCtrl.submitSearchQuery = function () {
-			$timeout(function () {
-				$state.go("webvella-entity-records", { areaName: $stateParams.areaName, entityName: $stateParams.entityName, listName: $stateParams.listName, page: 1, search: ngCtrl.searchQuery }, { reload: true });
-			}, 1);
-
-		}
-		//#endregion
-
 		//#region << filter Query >>
 
 		//ngCtrl.recordsMeta.columns

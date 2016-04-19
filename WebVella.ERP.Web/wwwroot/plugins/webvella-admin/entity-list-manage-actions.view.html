@@ -1,46 +1,46 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
+			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
+			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
 		</div>
 	</div>
+
 </div>
-<div id="page-body" ng-mousedown="ngCtrl.viewCheckMouseButton($event)">
+<div id="page-body" style="padding-bottom:3em; ">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text">Details</span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text">Fields</span></a></li>
-			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
-			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
+			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/views"><i class="fa fa-fw fa-file-text-o"></i> <span class="text">Record Views</span></a></li>
+			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-list"></i> <span class="text">Records Lists</span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/trees"><i class="fa fa-fw fa-sitemap"></i> <span class="text">Records Trees</span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text">Relations</span></a></li>
 		</ul>
 
 	</div>
-
 	<div id="page-text">
 		<nav class="navbar navbar-default navbar-erp">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Basic Attributes</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic Attributes</a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form">Main Form</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns">Columns</a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar Forms</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort">Query & Sort</a>
 					</li>
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/menu-items">Menu items</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions">Actions</a>
 					</li>
 				</ul>
 			</div>
 		</nav>
-
 		<h4 style="margin-bottom:1em">Service Code</h4>
 		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a>
 
@@ -64,9 +64,27 @@
 				</tr>
 			</tbody>
 		</table>
+
 	</div>
 </div>
 
+
+<script type="text/ng-template" id="deleteListModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Delete a list</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
+		<div ng-hide="popupCtrl.hasError">
+			<p>Are you sure that you need this list deleted?</p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
 
 <script type="text/ng-template" id="manageServiceCodeModal.html">
 	<div class="modal-header" id="modal-top">
@@ -85,8 +103,8 @@
 <script type="text/ng-template" id="addManageMenuItemModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title" ng-if="popupCtrl.isEdit">Manage Menu item</h3>
-		<h3 class="modal-title" ng-if="!popupCtrl.isEdit">Add Menu item</h3>
+		<h3 class="modal-title" ng-if="popupCtrl.isEdit">Manage Action</h3>
+		<h3 class="modal-title" ng-if="!popupCtrl.isEdit">Add Action</h3>
 	</div>
 	<div class="modal-body">
 		<form class="form form-horizontal" name="formName">
@@ -130,7 +148,7 @@
 			</div>
 			<div class="form-group">
 				<div class="row">
-					<label class="control-label col-sm-1">Name</label>
+					<label class="control-label col-sm-1">Template</label>
 					<div class="col-sm-11">
 						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.menuItem.template" style="height:100px;"></div>						
 					</div>

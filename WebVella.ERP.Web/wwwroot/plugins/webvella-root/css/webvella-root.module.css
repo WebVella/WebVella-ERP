@@ -266,6 +266,7 @@ span.divider {
 	padding:7px 20px;
 }
 
+
 .ace_editor { height: 200px; }
 
 /*
@@ -1123,10 +1124,6 @@ body.hidden-sidebar #page-topnav {
 	height: 44px;
 }
 
-#page-title .btn-default {
-	color:#999;
-}
-
 #page-meta .meta-label h4 {
 	margin: 0;
 	line-height: 28px;
@@ -1282,10 +1279,6 @@ body.hidden-sidebar #page-topnav {
 	margin-top: 1em;
 }
 
-#page-title .aux-actions .dropdown li > a > .fa {
-	color:#999;
-	margin-right:5px;
-}
 
 /*#endregion */
 
