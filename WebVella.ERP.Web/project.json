@@ -27,12 +27,10 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
-    "mongocsharpdriver": "1.9.2",
     "morelinq": "2.0.0-alpha01",
     "Newtonsoft.Json": "8.0.1-beta3",
     "System.Linq": "4.0.1-beta-23516",
     "System.Threading": "4.0.11-beta-23516",
-    "WebVella.Email": "1.0.0",
     "WebVella.ERP": "1.0.0-*"
 
   },
