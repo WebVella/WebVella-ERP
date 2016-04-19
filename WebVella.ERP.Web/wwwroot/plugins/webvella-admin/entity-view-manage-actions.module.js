@@ -129,6 +129,7 @@
 
 		/* jshint validthis:true */
 		var ngCtrl = this;
+
 		//#region << Initialize Current Entity >>
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		//#endregion
@@ -193,14 +194,14 @@
 
 
 	//#region << Modal Controllers >>
-	ManageViewServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageViewServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function ManageViewServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageViewServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupCtrl = this;
 		popupCtrl.parentData = parentData;
-
+		popupCtrl.serviceCode = popupCtrl.parentData.originalView.serviceCode;
 		//#region << Ace editor >>
 		popupCtrl.aceOptions = {
 			useWrapMode: true,
@@ -218,10 +219,11 @@
 		popupCtrl.aceOnChange = function (event) {};
 		//#endregion
 
+ 
 		popupCtrl.ok = function () {
-
-			//webvellaAdminService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
-
+			var postObj = {};
+			postObj.serviceCode = fastCopy(popupCtrl.serviceCode);
+			webvellaAdminService.patchEntityView(postObj, popupCtrl.parentData.originalView.name, popupCtrl.parentData.entity.name, successCallback, errorCallback)
 		};
 
 		popupCtrl.cancel = function () {
@@ -234,10 +236,8 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
+			parentData.originalView.serviceCode = response.object.serviceCode;
 			$uibModalInstance.close('success');
-			$timeout(function () {
-				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
-			}, 0);
 		}
 
 		function errorCallback(response) {

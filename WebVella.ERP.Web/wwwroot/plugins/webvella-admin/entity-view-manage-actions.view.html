@@ -41,7 +41,7 @@
 			</div>
 		</nav>
 
-		<h4 style="margin-bottom:1em">Service Code</h4>
+		<h4 style="margin-bottom:1em">Service Javascript</h4>
 		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a>
 
 		<h4 style="margin-bottom:1em;margin-top:2em;">Action templates</h4>
@@ -74,7 +74,8 @@
 		<h3 class="modal-title">Manage Service Code</h3>
 	</div>
 	<div class="modal-body">
-		<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.code" style="height:500px;"></div>
+		<p>(Click to edit) The contents of the service javascript file, automatically loaded with the view.</p>
+		<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.serviceCode" style="height:400px;"></div>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Save</button>

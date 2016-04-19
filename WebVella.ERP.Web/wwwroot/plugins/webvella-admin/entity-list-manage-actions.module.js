@@ -11,6 +11,8 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
 		.controller('DeleteListModalController', deleteListModalController)
+		.controller('ManageListServiceCodeModalController', ManageListServiceCodeModalController)
+		.controller('AddManageListMenuItemModalController', AddManageListMenuItemModalController)
         .controller('WebVellaAdminEntityListManageMenuController', controller);
 
 	// Configuration ///////////////////////////////////
@@ -281,7 +283,7 @@
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageServiceCodeModal.html',
-				controller: 'ManageViewServiceCodeModalController',
+				controller: 'ManageListServiceCodeModalController',
 				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
@@ -294,7 +296,7 @@
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'addManageMenuItemModal.html',
-				controller: 'AddManageViewMenuItemModalController',
+				controller: 'AddManageListMenuItemModalController',
 				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {
@@ -351,13 +353,14 @@
 		$log.debug('webvellaAdmin>entities>deleteListModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 	
-	ManageViewServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+	ManageListServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function ManageViewServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaRootService, ngToast, $timeout, $state) {
+	function ManageListServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupCtrl = this;
 		popupCtrl.parentData = parentData;
+		popupCtrl.serviceCode = popupCtrl.parentData.list.serviceCode;
 
 		//#region << Ace editor >>
 		popupCtrl.aceOptions = {
@@ -376,9 +379,9 @@
 		//#endregion
 
 		popupCtrl.ok = function () {
-
-			//webvellaAdminService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
-
+			var postObj = {};
+			postObj.serviceCode = fastCopy(popupCtrl.serviceCode);
+			webvellaAdminService.patchEntityList(postObj, popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback)
 		};
 
 		popupCtrl.cancel = function () {
@@ -391,10 +394,8 @@
 				className: 'success',
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
+			parentData.list.serviceCode = response.object.serviceCode;
 			$uibModalInstance.close('success');
-			$timeout(function () {
-				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
-			}, 0);
 		}
 
 		function errorCallback(response) {
@@ -406,9 +407,9 @@
 		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
-	AddManageViewMenuItemModalController.$inject = ['parentData','menuItem', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	AddManageListMenuItemModalController.$inject = ['parentData','menuItem', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
 	/* @ngInject */
-	function AddManageViewMenuItemModalController(parentData,menuItem, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
+	function AddManageListMenuItemModalController(parentData,menuItem, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
 		$log.debug('webvellaAdmin>entities>ManageViewServiceCodeModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		/* jshint validthis:true */
 		var popupCtrl = this;
