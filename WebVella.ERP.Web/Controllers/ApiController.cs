@@ -801,6 +801,23 @@ namespace WebVella.ERP.Web.Controllers
 			return DoResponse(entityManager.ReadRecordLists(Name));
 		}
 
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}/service.js")]
+		public IActionResult GetRecordListServiceJSByName(string Name, string ListName)
+		{
+			var list = entityManager.ReadRecordList(Name, ListName);
+			if( list == null || list.Object == null || list.Success == false )
+				return DoPageNotFoundResponse();
+
+			byte[] bytes = new byte[0];
+			var code = list.Object.ServiceCode;
+			if (!string.IsNullOrWhiteSpace(code))
+			{
+				bytes = new byte[code.Length * sizeof(char)];
+				Buffer.BlockCopy(code.ToCharArray(), 0, bytes, 0, bytes.Length);
+			}
+			return File(bytes, "text/javascript" );
+		}
+
 		#endregion
 
 		#region << Record Views >>
@@ -1054,6 +1071,23 @@ namespace WebVella.ERP.Web.Controllers
 			}
 
 			return DoResponse(entityManager.CreateRecordView(Name, view));
+		}
+
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}/service.js")]
+		public IActionResult GetRecordViewServiceJSByName(string Name, string ViewName)
+		{
+			var view = entityManager.ReadRecordView(Name, ViewName);
+			if (view == null || view.Object == null || view.Success == false)
+				return DoPageNotFoundResponse();
+
+			byte[] bytes = new byte[0];
+			var code = view.Object.ServiceCode;
+			if (!string.IsNullOrWhiteSpace(code))
+			{
+				bytes = new byte[code.Length * sizeof(char)];
+				Buffer.BlockCopy(code.ToCharArray(), 0, bytes, 0, bytes.Length);
+			}
+			return File(bytes, "text/javascript");
 		}
 
 		//[AcceptVerbs(new[] { "PUT" }, Route = "api/v1/en_US/meta/entity/{Id}/view/{ViewId}")]
@@ -3274,7 +3308,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		// Import list records to csv
 		// POST: api/v1/en_US/record/{entityName}/list/{listName}/import
-		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
+//		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/record/{entityName}/import")]
 //		public IActionResult ImportEntityRecordsFromCsv(string entityName, [FromBody]JObject postObject)
 //		{
 //			//The import CSV should have column names matching the names of the imported fields. The first column should be "id" matching the id of the record to be updated. 
