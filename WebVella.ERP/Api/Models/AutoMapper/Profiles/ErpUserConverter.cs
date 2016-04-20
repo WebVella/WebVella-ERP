@@ -15,7 +15,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
             ErpUser dest = new ErpUser();
             dest.Id = (Guid)src["id"];
-            dest.Email = (string)src["email"];
+			dest.Email = (string)src["username"];
+			dest.Email = (string)src["email"];
             dest.Password = (string)src["password"];
             dest.FirstName = (string)src["first_name"];
             dest.LastName = (string)src["last_name"];

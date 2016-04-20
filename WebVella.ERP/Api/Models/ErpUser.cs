@@ -19,7 +19,10 @@ namespace WebVella.ERP.Api.Models
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
 
-        [JsonProperty(PropertyName = "email")]
+		[JsonProperty(PropertyName = "username")]
+		public string Username { get; set; }
+		
+		[JsonProperty(PropertyName = "email")]
         public string Email { get; set; }
 
         [JsonProperty(PropertyName = "password")]
