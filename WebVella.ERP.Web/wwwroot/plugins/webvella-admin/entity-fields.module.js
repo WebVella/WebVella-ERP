@@ -17,7 +17,7 @@
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
-	/* @ngInject */
+	
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-fields', {
 			parent: 'webvella-admin-base',
@@ -54,9 +54,8 @@
 
 	//#region << Resolve Function /////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
+	
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
 		var defer = $q.defer();
 		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
 		var accessPermission = false;
@@ -79,14 +78,12 @@
 			defer.reject("No access");
 		}
 
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 		// Initialize
 		var defer = $q.defer();
 
@@ -113,18 +110,16 @@
 			}
 		}
 
-		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
 		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
 	// Resolve Roles list /////////////////////////
-	resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
-	/* @ngInject */
-	function resolveRolesList($q, $log, webvellaAdminService) {
-		$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
+	
+	function resolveRolesList($q, $log, webvellaCoreService) {
 		// Initialize
 		var defer = $q.defer();
 
@@ -137,17 +132,15 @@
 			defer.reject(response.message);
 		}
 
-		webvellaAdminService.getRecordsByEntityName("null", "role", "null", successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListName("null","role", "null", successCallback, errorCallback);
 
-		// Return
-		$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
-	resolveRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveRelationsList($q, $log, webvellaAdminService) {
-		$log.debug('webvellaAdmin>entity-relations> BEGIN resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$timeout'];
+	
+	function resolveRelationsList($q, $log, webvellaCoreService) {
+
 		// Initialize
 		var defer = $q.defer();
 
@@ -160,10 +153,8 @@
 			defer.reject(response.message);
 		}
 
-		webvellaAdminService.getRelationsList(successCallback, errorCallback);
+		webvellaCoreService.getRelationsList(successCallback, errorCallback);
 
-		// Return
-		$log.debug('webvellaAdmin>entity-relations> END resolveRelationsList state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
@@ -171,12 +162,11 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedRolesList',
-						'resolvedRelationsList', '$timeout', '$q', 'webvellaAdminService'];
-	/* @ngInject */
+						'resolvedRelationsList', '$timeout', '$q', 'webvellaCoreService'];
+	
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedRolesList,
-						resolvedRelationsList, $timeout, $q, webvellaAdminService) {
-		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+						resolvedRelationsList, $timeout, $q, webvellaCoreService) {
+		
 		var ngCtrl = this;
 
 		//#region << Init >>
@@ -195,7 +185,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
@@ -203,7 +192,6 @@
 		    //Show Sidemenu
 			$timeout(function(){
 				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-				$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 			},0);
 		}	
 		
@@ -1331,7 +1319,6 @@
 			});
 
 			function resolveRelatedEntity() {
-				$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
 				// Initialize
 				var defer = $q.defer();
 
@@ -1359,33 +1346,30 @@
 				}
 
 				if (managedField.fieldType === 21) {
-					webvellaAdminService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
+					webvellaCoreService.getEntityMetaById(managedField.relatedEntityId, successCallback, errorCallback);
 				}
 				else {
 					defer.resolve(null);
 				}
 				// Return
-				$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 				return defer.promise;
 			}
 		}
 
-		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 
 
 
 	//// Create Field Controllers
-	CreateFieldModalController.$inject = ['ngCtrl', '$scope', '$uibModalInstance', '$log', '$sce', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'webvellaRootService', '$location'];
-	/* @ngInject */
-	function CreateFieldModalController(ngCtrl, $scope, $uibModalInstance, $log, $sce, webvellaAdminService, ngToast, $timeout, $state, webvellaRootService, $location) {
-		$log.debug('webvellaAdmin>entities>CreateFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	CreateFieldModalController.$inject = ['ngCtrl', '$scope', '$uibModalInstance', '$log', '$sce', 'ngToast', '$timeout', '$state', 'webvellaCoreService', '$location'];
+	
+	function CreateFieldModalController(ngCtrl, $scope, $uibModalInstance, $log, $sce, ngToast, $timeout, $state, webvellaCoreService, $location) {
+		
 		var popupCtrl = this;
 		popupCtrl.validation = {};
 		popupCtrl.ngCtrl = ngCtrl;
 		popupCtrl.createFieldStep2Loading = false;
-		popupCtrl.field = webvellaAdminService.initField();
+		popupCtrl.field = webvellaCoreService.initField();
 
 		popupCtrl.isEmpty = function(object){
 			return isEmpty(object)
@@ -1546,10 +1530,10 @@
 			}
 
 			if (popupCtrl.wizard.selectedType === null) {
-				$log.debug('The selected field type [' + typeId + '] is missing in collection of field types');
+				console.log('The selected field type [' + typeId + '] is missing in collection of field types');
 			}
 
-			popupCtrl.field = webvellaAdminService.initField(popupCtrl.wizard.selectedType.id);
+			popupCtrl.field = webvellaCoreService.initField(popupCtrl.wizard.selectedType.id);
 			popupCtrl.wizard.steps[1].active = false;
 			popupCtrl.wizard.steps[1].completed = true;
 			popupCtrl.wizard.steps[2].active = true;
@@ -1627,7 +1611,7 @@
 						}
 					}
 					if (!allProcessed) {
-						webvellaAdminService.getEntityMetaById(nextForProcess.entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
+						webvellaCoreService.getEntityMetaById(nextForProcess.entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
 					}
 					else {
 						//All entities meta received
@@ -1658,7 +1642,7 @@
 				}
 
 				if (popupCtrl.eligibleEntitiesForTreeProcessQueue !== null) {
-					webvellaAdminService.getEntityMetaById(popupCtrl.eligibleEntitiesForTreeProcessQueue[Object.keys(popupCtrl.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
+					webvellaCoreService.getEntityMetaById(popupCtrl.eligibleEntitiesForTreeProcessQueue[Object.keys(popupCtrl.eligibleEntitiesForTreeProcessQueue)[0]].entityId, relatedEntitiesWithTreeSuccessCallback, relatedEntitiesWithTreeErrorCallback);
 				}
 				else {
 					popupCtrl.createFieldStep2Error = true;
@@ -1769,7 +1753,7 @@
 					}
 					break;
 			}
-			webvellaAdminService.createField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
+			webvellaCoreService.createField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -1843,25 +1827,23 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state.current.name, {});
+			webvellaCoreService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
+			webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
 		}
-		$log.debug('webvellaAdmin>entities>CreateFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//// Create Field Controllers
-	ManageFieldModalController.$inject = ['ngCtrl', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state',
-						'webvellaRootService', '$location', 'resolvedRelatedEntity', '$sce','$scope'];
-	/* @ngInject */
-	function ManageFieldModalController(ngCtrl, resolvedField, $uibModal, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state,
-						webvellaRootService, $location, resolvedRelatedEntity, $sce, $scope) {
-		$log.debug('webvellaAdmin>entities>ManageFieldModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	ManageFieldModalController.$inject = ['ngCtrl', 'resolvedField', '$uibModal', '$uibModalInstance', '$log', 'ngToast', '$timeout', '$state',
+						'webvellaCoreService', '$location', 'resolvedRelatedEntity', '$sce','$scope'];
+	
+	function ManageFieldModalController(ngCtrl, resolvedField, $uibModal, $uibModalInstance, $log, ngToast, $timeout, $state,
+						webvellaCoreService, $location, resolvedRelatedEntity, $sce, $scope) {
+		
 		var popupCtrl = this;
 		popupCtrl.isEmpty = function(object){
 			return isEmpty(object)
@@ -2090,7 +2072,7 @@
 					}
 					break;
 			}
-			webvellaAdminService.updateField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
+			webvellaCoreService.updateField(popupCtrl.field, popupCtrl.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -2176,30 +2158,28 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$uibModalInstance.close('success');
-			webvellaRootService.GoToState($state.current.name, {});
+			webvellaCoreService.GoToState($state.current.name, {});
 		}
 
 		function errorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
+			webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.field, location);
 		}
-		$log.debug('webvellaAdmin>entities>ManageFieldModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
 	//// Modal Controllers
-	DeleteFieldModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state'];
+	DeleteFieldModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 
-	/* @ngInject */
-	function DeleteFieldModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state) {
-		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	
+	function DeleteFieldModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+		
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;
 
 		popupCtrl.ok = function () {
-			webvellaAdminService.deleteField(popupCtrl.parentData.field.id, popupCtrl.parentData.ngCtrl.entity.id, successCallback, errorCallback);
+			webvellaCoreService.deleteField(popupCtrl.parentData.field.id, popupCtrl.parentData.ngCtrl.entity.id, successCallback, errorCallback);
 		};
 
 		popupCtrl.cancel = function () {
@@ -2225,7 +2205,6 @@
 
 
 		}
-		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 

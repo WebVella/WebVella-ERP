@@ -16,7 +16,7 @@
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider']; 
     
-    /* @ngInject */
+    
     function config($stateProvider) {
     	$stateProvider.state('stateName', {
     		url: '/',
@@ -43,7 +43,7 @@
     // Resolve Function /////////////////////////
     resolingFunction.$inject = ['dependencies]'];
     
-    /* @ngInject */
+    
     function resolingFunction(dependencies) {
         return dependencies.getData();
     }    
@@ -52,9 +52,9 @@
     // Controller ///////////////////////////////
     controller.$inject = ['dependencies']; 
 
-    /* @ngInject */
+    
     function controller(dependencies) {
-        /* jshint validthis:true */
+        
         var vm = this;
         vm.title = 'controller';
 

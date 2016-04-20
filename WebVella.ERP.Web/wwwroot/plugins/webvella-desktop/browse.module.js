@@ -1,26 +1,18 @@
-﻿/* entities.module.js */
-
-/**
-* @desc this module manages the application home desktop screen
-*/
-
+﻿
 (function () {
 	'use strict';
 
 	angular
-        .module('webvellaDesktop') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
-        .run(run)
+        .module('webvellaDesktop')
         .config(config)
         .controller('WebVellaDesktopBrowseController', controller);
 
 	//#region << Configuration >>
 	config.$inject = ['$stateProvider'];
-
-	/* @ngInject */
 	function config($stateProvider) {
 		$stateProvider.state('webvella-desktop-browse', {
-			parent: "webvella-desktop-base", // the state is defined in the webvella-desktop-plugin
-			url: '/desktop/browse?folder', //  /desktop/browse after the parent state is prepended
+			parent: "webvella-desktop-base",
+			url: '/desktop/browse?folder',
 			views: {
 				"contentView": {
 					controller: 'WebVellaDesktopBrowseController',
@@ -29,7 +21,7 @@
 				}
 			},
 			resolve: {
-				resolvedSitemap: resolveSitemap,
+				resolvedAreas: resolveAreas,
 				resolvedLastUsedArea: resolveLastUsedArea
 			},
 			data: {}
@@ -37,86 +29,46 @@
 	};
 	//#endregion
 
-	//#region << Run >>
-	run.$inject = ['$log', '$rootScope', 'webvellaDesktopTopnavFactory', 'webvellaDesktopBrowsenavFactory'];
-
-	/* @ngInject */
-	function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
-		$log.debug('webvellaDesktop>browse> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-		//Initialize the pluggable object made with factories, always when state is changed. (it fixes the duplication problem with browser back and forward buttons)
-		//$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-		//    webvellaDesktopBrowsenavService.initBrowsenav();
-		//})
-
-		$log.debug('webvellaDesktop>browse> END module.run ' + moment().format('HH:mm:ss SSSS'));
-	};
-	//#endregion
-
 	//#region << Resolve Function >>
-	resolveSitemap.$inject = ['$q', '$log', 'webvellaRootService'];
-	/* @ngInject */
-	function resolveSitemap($q, $log, webvellaRootService) {
-		$log.debug('webvellaDesktop>browse> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
+	resolveAreas.$inject = ['$q', 'webvellaCoreService'];
+	function resolveAreas($q, webvellaCoreService) {
 		var defer = $q.defer();
-
-		// Process
 		function successCallback(response) {
 			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-
-		webvellaRootService.getSitemap(successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaDesktop>browse> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		webvellaCoreService.getRecordsByListName("null","area", "null", successCallback, errorCallback);
 		return defer.promise;
 	}
 
-	resolveLastUsedArea.$inject = ['$q', '$log', 'webvellaRootService', '$localStorage', '$stateParams', '$window'];
-	/* @ngInject */
-	function resolveLastUsedArea($q, $log, webvellaRootService, $localStorage, $stateParams, $window) {
-		$log.debug('webvellaDesktop>browse> BEGIN resolveLastUsedArea ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
+	resolveLastUsedArea.$inject = ['$q', 'webvellaCoreService', '$localStorage', '$stateParams'];
+	function resolveLastUsedArea($q, webvellaCoreService, $localStorage, $stateParams) {
 		var defer = $q.defer();
 		var currentFolderName = $stateParams.folder;
 		var localStorage = $localStorage;
 		if (!currentFolderName && localStorage.folder) {
-			webvellaRootService.GoToState("webvella-desktop-browse", { folder: localStorage.folder });
-			//$window.location = '#/desktop/browse?folder=' + localStorage.folder;
+			webvellaCoreService.GoToState("webvella-desktop-browse", { folder: localStorage.folder });
 		}
 		else if (!currentFolderName && !localStorage.folder) {
-			webvellaRootService.GoToState("webvella-desktop-browse", { folder: "Default" });
-			//$window.location = '#/desktop/browse?folder=Default';
+			webvellaCoreService.GoToState("webvella-desktop-browse", { folder: "Default" });
 		}
 		else {
-			//Do nothing
 			defer.resolve();
 		}
-
-		// Return
-		$log.debug('webvellaDesktop>browse> END resolveLastUsedArea ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 	//#endregion
-
-
+ 
 	//#region << Controller >>
-	controller.$inject = ['$log', '$rootScope', '$scope', '$state', 'pageTitle', '$localStorage', '$timeout',
-					'webvellaDesktopTopnavFactory', 'webvellaRootService', 'resolvedSitemap', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
-
-	/* @ngInject */
-	function controller($log, $rootScope, $scope, $state, pageTitle, $localStorage, $timeout,
-					webvellaDesktopTopnavFactory, webvellaRootService, resolvedSitemap, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
-		$log.debug('webvellaDesktop>browse> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	controller.$inject = ['$rootScope', '$scope', '$state', 'pageTitle', '$localStorage', '$timeout',
+					'webvellaDesktopTopnavFactory', 'webvellaCoreService', 'resolvedAreas', 'webvellaDesktopBrowsenavFactory', 'resolvedCurrentUser'];
+	function controller($rootScope, $scope, $state, pageTitle, $localStorage, $timeout,
+					webvellaDesktopTopnavFactory, webvellaCoreService, resolvedAreas, webvellaDesktopBrowsenavFactory, resolvedCurrentUser) {
 		var ngCtrl = this;
 		ngCtrl.browsenav = [];
-		ngCtrl.folder = fastCopy($state.params.folder);
+		ngCtrl.folder = $state.params.folder;
 		var localStorage = $localStorage;
 		if (ngCtrl.folder) {
 			localStorage.folder = ngCtrl.folder;
@@ -130,13 +82,14 @@
 
 		//#region << Set Page title >>
 		ngCtrl.pageTitle = "Browse Desktop | " + pageTitle;
-		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
 		//#endregion
+
 		//#region << Make the Browsenav pluggable & Initialize>>
 		////1. CONSTRUCTOR - initialize the factory
 		webvellaDesktopBrowsenavFactory.initBrowsenav();
 
-		var sitemapAreas = fastCopy(resolvedSitemap.data);
+		var sitemapAreas = fastCopy(resolvedAreas.data);
 		sitemapAreas.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 		for (var i = 0; i < sitemapAreas.length; i++) {
 			//Generate topnav
@@ -224,8 +177,6 @@
 		$timeout(function () {
 		  ngCtrl.loaded = true;
 		},250);
-
-		$log.debug('webvellaDesktop>browse> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 	//#endregion
 })();

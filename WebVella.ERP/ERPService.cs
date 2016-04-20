@@ -94,7 +94,7 @@ namespace WebVella.ERP
 							firstName.PlaceholderText = "";
 							firstName.Description = "First name of the user";
 							firstName.HelpText = "";
-							firstName.Required = true;
+							firstName.Required = false;
 							firstName.Unique = false;
 							firstName.Searchable = false;
 							firstName.Auditable = false;
@@ -113,7 +113,7 @@ namespace WebVella.ERP
 							lastName.PlaceholderText = "";
 							lastName.Description = "Last name of the user";
 							lastName.HelpText = "";
-							lastName.Required = true;
+							lastName.Required = false;
 							lastName.Unique = false;
 							lastName.Searchable = false;
 							lastName.Auditable = false;

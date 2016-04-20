@@ -15,7 +15,7 @@
 
     provider.$inject = ['$stateProvider'];
 
-    /* @ngInject */
+    
     function providerProvider() {
         var configValue = false;
 

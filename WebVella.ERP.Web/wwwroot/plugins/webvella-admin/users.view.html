@@ -21,7 +21,7 @@
 				<tr>
 					<th width="50"></th>
 					<th>email</th>
-                    <th>name</th>
+                    <th>username</th>
 					<th>roles</th>
 				</tr>
 			</thead>
@@ -34,7 +34,7 @@
 						</a>
 					</td>
 					<td>{{user.email}}</td>
-                    <td>{{user.first_name}} {{user.last_name}}</td>
+                    <td>{{user.username}}</td>
 					<td>
 						<span ng-repeat="role in user.$user_role">{{role.name}} <span ng-hide="$last">,</span></span>
 					</td>
@@ -92,6 +92,48 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.username.$invalid && !manageForm.username.$pristine || popupCtrl.validation.username.state}">
+						<label class="required control-label">Username</label>
+						<input class="form-control" ng-model="popupCtrl.user.username" name="username" type="text"  ng-model-options="{allowInvalid:true}" 
+							   ng-required="true"/>
+						<div class="error" ng-show="manageForm.username.$touched && manageForm.username.$dirty && manageForm.username.$invalid ||  popupCtrl.validation.username.state">
+							<small class="error" ng-show="manageForm.username.$error.required && !popupCtrl.validation.username.state">
+								Required.
+							</small>							
+							<small class="error" ng-show="popupCtrl.validation.username.state">
+								{{popupCtrl.validation.username.message}}
+							</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupCtrl.validation.image.state }">
+						<label class="control-label">Image</label>
+						<div>
+							<a ng-show='!popupCtrl.user.image && popupCtrl.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+							   ngf-select="popupCtrl.upload(popupCtrl.files.image)" ngf-max-size="20MB" ng-model='popupCtrl.files.image' accept="image/*"  ngf-multiple="false">Browse</a>
+						</div>
+						<div class="progress" ng-show="!popupCtrl.user.image && popupCtrl.progress.image > 0 && popupCtrl.progress.image <= 100">
+							<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress.image}}" aria-valuemin="0" aria-valuemax="100"
+								 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
+								<span ng-show="popupCtrl.progress.image < 100">{{popupCtrl.progress.image}}%</span>
+								<span ng-show="popupCtrl.progress.image == 100">almost done...</span>
+							</div>
+						</div>
+						<div class="image-upload" ng-show='popupCtrl.user.image'>
+							<img class="img-thumbnail" ng-src="{{popupCtrl.user.image}}" />
+							<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteImage()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+						</div>
+						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupCtrl.validation.image.state">
+							<small class="error" ng-show="popupCtrl.validation.image.state">
+								{{popupCtrl.validation.image.message}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.first_name.$invalid && !manageForm.first_name.$pristine || popupCtrl.validation.first_name.state}">
 						<label class="control-label">First name</label>
 						<input class="form-control" ng-model="popupCtrl.user.first_name" name="first_name" type="text"  ng-model-options="{allowInvalid:true}" 
@@ -122,35 +164,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-6">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupCtrl.validation.image.state }">
-						<label class="control-label">Image</label>
-						<div>
-							<a ng-show='!popupCtrl.user.image && popupCtrl.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
-							   ngf-select="popupCtrl.upload(popupCtrl.files.image)" ngf-max-size="20MB" ng-model='popupCtrl.files.image' accept="image/*"  ngf-multiple="false">Browse</a>
-						</div>
-						<div class="progress" ng-show="!popupCtrl.user.image && popupCtrl.progress.image > 0 && popupCtrl.progress.image <= 100">
-							<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress.image}}" aria-valuemin="0" aria-valuemax="100"
-								 ng-style="{'width': popupCtrl.progress[item.dataName]+'%'}">
-								<span ng-show="popupCtrl.progress.image < 100">{{popupCtrl.progress.image}}%</span>
-								<span ng-show="popupCtrl.progress.image == 100">almost done...</span>
-							</div>
-						</div>
-						<div class="image-upload" ng-show='popupCtrl.user.image'>
-							<img class="img-thumbnail" ng-src="{{popupCtrl.user.image}}" />
-							<a class="delete-link" href="javascript:void(0)" confirmed-click="popupCtrl.deleteImage()" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
-						</div>
-						<div class="error" ng-show="manageForm.image.$touched && manageForm.image.$dirty && manageForm.image.$invalid ||  popupCtrl.validation.image.state">
-							<small class="error" ng-show="popupCtrl.validation.image.state">
-								{{popupCtrl.validation.image.message}}
-							</small>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-				</div>
-			</div>
+
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">

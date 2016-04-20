@@ -17,10 +17,10 @@
 		.controller('RVAddExistingModalController', RVAddExistingModalController)
 		.controller('RVManageRelatedRecordModalController', RVManageRelatedRecordModalController);
 
-	recursiveView.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaAdminService'];
+	recursiveView.$inject = ['$compile', '$templateRequest', 'RecursionHelper', 'webvellaCoreService'];
 
-	/* @ngInject */
-	function recursiveView($compile, $templateRequest, RecursionHelper, webvellaAdminService) {
+	
+	function recursiveView($compile, $templateRequest, RecursionHelper, webvellaCoreService) {
 		//Text Binding (Prefix: @) - only strings
 		//One-way Binding (Prefix: &) - $scope functions
 		//Two-way Binding (Prefix: =) -$scope.properties
@@ -52,9 +52,9 @@
 	}
 
 
-	DirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService'];
-	/* @ngInject */
-	function DirectiveController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService) {
+	DirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaCoreService'];
+	
+	function DirectiveController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaCoreService) {
 		//#region << Init >>
 		//$scope.relation = $scope.relation();
 		//$scope.viewMeta = $scope.viewMeta();
@@ -153,7 +153,7 @@
 		//#endregion
 
 		//Columns render 
-		$scope.renderFieldValue = webvellaAreasService.renderFieldValue;
+		$scope.renderFieldValue = webvellaCoreService.renderFieldValue;
 
 		//#region << Logic >>
 		$scope.instantDetachRecord = function (record) {
@@ -199,7 +199,7 @@
 				else if (returnObject.operation == "detach") {
 					recordsToBeDetached.push(selectedRecordId);
 				}
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, $scope.parentId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
+				webvellaCoreService.updateRecordRelation(returnObject.relationName, $scope.parentId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 			else {
 				//The list entity is origin
@@ -210,7 +210,7 @@
 				else if (returnObject.operation == "detach") {
 					recordsToBeDetached.push($scope.parentId);
 				}
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
+				webvellaCoreService.updateRecordRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 		}
 		//#endregion
@@ -281,11 +281,11 @@
 					if (selectedLookupList != null) {
 						defaultLookupList = selectedLookupList;
 					}
-					webvellaAreasService.getListRecords(defaultLookupList.name, $scope.entity.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+					webvellaCoreService.getRecordsByListName(defaultLookupList.name, $scope.entity.name, 1, getListRecordsSuccessCallback, errorCallback);
 				}
 			}
 
-			webvellaAdminService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
+			webvellaCoreService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
 
 			return defer.promise;
 		}
@@ -362,15 +362,15 @@
 					}
 
 					if (managedRecord == null) {
-						webvellaAreasService.getViewByName(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
+						webvellaCoreService.getEntityView(defaultQuickCreateView.name, $scope.entity.name, getViewMetaSuccessCallback, errorCallback);
 					}
 					else {
-						webvellaAreasService.getViewRecord(managedRecord.id, defaultQuickCreateView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordByViewName(managedRecord.id, defaultQuickCreateView.name, $scope.entity.name, getViewRecordSuccessCallback, errorCallback);
 					}
 				}
 			}
 
-			webvellaAdminService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
+			webvellaCoreService.getEntityMeta($scope.entity.name, getEntityMetaSuccessCallback, errorCallback);
 
 			return defer.promise;
 		}
@@ -382,14 +382,13 @@
 	//#region < Modal Controllers >
 
 	RVAddExistingModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
-        'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService'];
-	/* @ngInject */
+        'ngToast', '$timeout', '$state', 'webvellaCoreService'];
+	
 	function RVAddExistingModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
-        ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService) {
+        ngToast, $timeout, $state, webvellaCoreService) {
 
-		$log.debug('webvellaAdmin>recursive-list>RVAddExistingModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
 		//#region << Init >>
-		/* jshint validthis:true */
+		
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.relation = fastCopy(ngCtrl.relation);
@@ -422,7 +421,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, popupCtrl.searchQuery, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -446,13 +445,13 @@
 					timeout: 7000
 				});
 			}
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, popupCtrl.searchQuery, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, successCallback, errorCallback);
 
 		}
 		//#endregion
 
 		//Render
-		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 
 		//#region << Logic >>
 		popupCtrl.instantAttachRecord = function (record) {
@@ -482,18 +481,16 @@
 		}
 		//#endregion
 
-		$log.debug('webvellaAdmin>recursive-list>RVAddExistingModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
 	RVManageRelatedRecordModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', '$scope', '$location',
-        'ngToast', '$timeout', '$state', 'webvellaAreasService', 'webvellaAdminService', 'resolvedManagedRecordQuickCreateView'];
+        'ngToast', '$timeout', '$state', 'webvellaCoreService', 'resolvedManagedRecordQuickCreateView'];
 	function RVManageRelatedRecordModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, $scope, $location,
-        ngToast, $timeout, $state, webvellaAreasService, webvellaAdminService, resolvedManagedRecordQuickCreateView) {
-		$log.debug('webvellaAdmin>recursive-list>RVManageRelatedRecordModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+        ngToast, $timeout, $state, webvellaCoreService, resolvedManagedRecordQuickCreateView) {
 
 		//#region << Init >>
-		/* jshint validthis:true */
+		
 		var popupCtrl = this;
 		popupCtrl.isFromRelation = true;
 		if (!ngCtrl.relation) {
@@ -529,7 +526,7 @@
 		var availableViewFields = [];
 		//Init default values of fields
 		if (popupCtrl.contentRegion != null) {
-			availableViewFields = webvellaAdminService.getItemsFromRegion(popupCtrl.contentRegion);
+			availableViewFields = webvellaCoreService.getItemsFromRegion(popupCtrl.contentRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
 				if (!popupCtrl.recordData[availableViewFields[j].meta.name] && availableViewFields[j].type === "field") {
 					switch (availableViewFields[j].meta.fieldType) {
@@ -663,7 +660,7 @@
 					var fileName = response.object.filename;
 					var targetPath = "/fs/" + item.fieldId + "/" + fileName;
 					var overwrite = true;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
+					webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
 				}
 				popupCtrl.uploadErrorCallback = function (response) {
 					alert(response.message);
@@ -673,7 +670,7 @@
 						popupCtrl.progress[popupCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, item.meta.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 			}
 		};
 
@@ -698,7 +695,7 @@
 				return "validation error";
 			}
 
-			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+			webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
 
 		}
 		//#endregion
@@ -746,10 +743,10 @@
 		//#region << Logic >>
 		popupCtrl.ok = function () {
 			if (!popupCtrl.isEdit) {
-				webvellaAdminService.createRecord(popupCtrl.entity.name, popupCtrl.recordData, createSuccessCallback, manageErrorCallback);
+				webvellaCoreService.createRecord(popupCtrl.entity.name, popupCtrl.recordData, createSuccessCallback, manageErrorCallback);
 			}
 			else {
-				webvellaAdminService.updateRecord(popupCtrl.recordData.id, popupCtrl.entity.name, popupCtrl.recordData, successCallback, manageErrorCallback);
+				webvellaCoreService.updateRecord(popupCtrl.recordData.id, popupCtrl.entity.name, popupCtrl.recordData, successCallback, manageErrorCallback);
 			}
 		}
 
@@ -784,7 +781,7 @@
 		function manageErrorCallback(response) {
 			var location = $location;
 			//Process the response and generate the validation Messages
-			webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.recordData, location);
+			webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.recordData, location);
 		}
 
 		popupCtrl.cancel = function () {
@@ -792,7 +789,6 @@
 		};
 		//#endregion
 
-		$log.debug('webvellaAdmin>recursive-list>RVManageRelatedRecordModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//#endregion

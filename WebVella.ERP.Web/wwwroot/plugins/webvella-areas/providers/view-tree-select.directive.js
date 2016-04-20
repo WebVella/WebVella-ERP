@@ -20,7 +20,7 @@
 
 	viewTreeSelect.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
 
-	/* @ngInject */
+	
 	function viewTreeSelect($compile, $templateRequest, RecursionHelper) {
 		var directive = {
 			controller: viewTreeSelectDirectiveController,
@@ -46,9 +46,9 @@
 		return directive;
 	}
 
-	viewTreeSelectDirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$rootScope', '$q', '$uibModal', 'ngToast', 'webvellaAreasService', 'webvellaAdminService','$timeout'];
-	/* @ngInject */
-	function viewTreeSelectDirectiveController($filter, $log, $state, $scope, $rootScope, $q, $uibModal, ngToast, webvellaAreasService, webvellaAdminService,$timeout) {
+	viewTreeSelectDirectiveController.$inject = ['$filter', '$log', '$state', '$scope', '$rootScope', '$q', '$uibModal', 'ngToast', 'webvellaCoreService','$timeout'];
+	
+	function viewTreeSelectDirectiveController($filter, $log, $state, $scope, $rootScope, $q, $uibModal, ngToast, webvellaCoreService,$timeout) {
 
 		$scope.isRecordSelected = function (nodeRecordId) {
 			return $scope.selectedTreeRecords.indexOf(nodeRecordId) > -1

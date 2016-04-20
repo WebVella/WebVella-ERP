@@ -48,7 +48,7 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -61,10 +61,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Type</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.list.type"
 													   value="{{ngCtrl.list.type}}" e-ng-options="item.key as item.value for item in ngCtrl.listTypeOptions"
 													   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
@@ -78,10 +78,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Label</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.label"
 													   value="{{ngCtrl.list.label}}"
 													   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
@@ -93,10 +93,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Weight</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.weight"
 													   value="{{ngCtrl.list.weight}}"
 													   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
@@ -110,10 +110,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Default</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_default.$show()">
 												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.list.default && !fieldForm_default.$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
@@ -131,7 +131,7 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">System</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -152,10 +152,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">CSS class</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.cssClass"
 													   value="{{ngCtrl.list.cssClass}}"
 													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
@@ -168,10 +168,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Icon Name</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.list.iconName}} fa-fw"></i></span>
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.iconName"
 													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
@@ -187,10 +187,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Visible columns #</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_visibleColumnsCount.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.visibleColumnsCount"
 													   value="{{ngCtrl.list.visibleColumnsCount}}"
 													   onbeforesave="ngCtrl.fieldUpdate('visibleColumnsCount',$data)" e-form="fieldForm_visibleColumnsCount">
@@ -202,10 +202,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Page size</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_pageSize.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.pageSize"
 													   value="{{ngCtrl.list.pageSize}}"
 													   onbeforesave="ngCtrl.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
@@ -220,10 +220,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Columns width CSV</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_columnWidthsCSV.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.columnWidthsCSV"
 													   value="{{ngCtrl.list.columnWidthsCSV}}"
 													   onbeforesave="ngCtrl.fieldUpdate('columnWidthsCSV',$data)" e-form="fieldForm_columnWidthsCSV">
@@ -236,10 +236,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Custom Template</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dynamicHtmlTemplate.$show()">
 												<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
 													<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 												</span>

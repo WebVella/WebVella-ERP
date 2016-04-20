@@ -13,14 +13,13 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', '$timeout','webvellaRootService', 'webvellaAreasService', 'resolvedCurrentEntityMeta'];
+    controller.$inject = ['$localStorage', '$log', '$rootScope', '$state', '$stateParams', 'resolvedAreas', '$timeout','webvellaCoreService', 'resolvedCurrentEntityMeta'];
 
-    /* @ngInject */
-    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedSitemap, $timeout,webvellaRootService, webvellaAreasService, resolvedCurrentEntityMeta) {
-    	$log.debug('webvellaAreas>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function controller($localStorage, $log, $rootScope, $state, $stateParams, resolvedAreas, $timeout,webvellaCoreService, resolvedCurrentEntityMeta) {
+        
         var topnavData = this;
-        topnavData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
+        topnavData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		topnavData.currentEntity = fastCopy(resolvedCurrentEntityMeta);
         topnavData.$storage = $localStorage;
         topnavData.toggleSideNav = function () {
@@ -28,17 +27,15 @@
         }
 
         topnavData.logout = function () {
-        	webvellaRootService.logout(
+        	webvellaCoreService.logout(
                     function (response) {
                     	//  $window.location = '#/login';
                     	$timeout(function () {
-                    		$state.go('webvella-root-login');
+                    		$state.go('webvella-core-login');
                     	}, 0);
                     },
                     function (response) { });
         }
-
-        $log.debug('webvellaAreas>topnav> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

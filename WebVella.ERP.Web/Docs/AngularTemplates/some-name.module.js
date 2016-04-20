@@ -16,7 +16,7 @@
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
-    /* @ngInject */
+    
     function config($stateProvider) {
         $stateProvider.state('stateName', {
             url: '/',
@@ -37,20 +37,16 @@
     // Run //////////////////////////////////////
     run.$inject = ['$log'];
 
-    /* @ngInject */
+    
     function run($log) {
-    	$log.debug('pluginName>moduleName> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-    	$log.debug('pluginName>moduleName> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
 
     // Resolve Function /////////////////////////
     resolvingFunction.$inject = ['$q'];
 
-    /* @ngInject */
+    
     function resolvingFunction($q) {
-    	$log.debug('pluginName>moduleName> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
         // Initialize
         var defer = $q.defer();
 
@@ -65,8 +61,6 @@
 
         siteMetaService.getUpdateSiteMeta(successCallback, errorCallback);
 
-        // Return
-        $log.debug('pluginName>moduleName> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
 
     }
@@ -75,15 +69,11 @@
     // Controller ///////////////////////////////
     controller.$inject = ['$rootScope'];
 
-    /* @ngInject */
     function controller($rootScope) {
-    	$log.debug('pluginName>moduleName> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
         var vm = this;
         vm.title = 'controller';
 
         activate();
-        $log.debug('pluginName>moduleName> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 
         ///////////
         function activate() { }

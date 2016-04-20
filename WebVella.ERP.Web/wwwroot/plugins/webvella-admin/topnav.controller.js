@@ -12,12 +12,11 @@
         .controller('WebVellaAdminTopnavController', controller);
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$localStorage', '$log', '$state', '$rootScope', '$timeout', '$window', 'webvellaRootService'];
+    controller.$inject = ['$localStorage', '$log', '$state', '$rootScope', '$timeout', '$window', 'webvellaCoreService'];
 
-    /* @ngInject */
-    function controller($localStorage, $log, $state, $rootScope, $timeout, $window, webvellaRootService) {
-    	$log.debug('webvellaAdmin>topnav> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function controller($localStorage, $log, $state, $rootScope, $timeout, $window, webvellaCoreService) {
+        
         var topnavData = this;
         topnavData.currentArea = null;
 
@@ -27,11 +26,11 @@
         }
 
         topnavData.logout = function () {
-        	webvellaRootService.logout(
+        	webvellaCoreService.logout(
                     function (response) {
                         //  $window.location = '#/login';
                         $timeout(function () {
-                            $state.go('webvella-root-login');
+                            $state.go('webvella-core-login');
                         }, 0);
                     },
                     function (response) {});
@@ -46,9 +45,6 @@
 		$rootScope.$watch("adminSubSectionName",function(newValue,oldValue){
 			topnavData.adminSubSectionName = newValue;		
 		});
-
-        $log.debug('webvellaAdmin>topnav> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
     }
     
 })();

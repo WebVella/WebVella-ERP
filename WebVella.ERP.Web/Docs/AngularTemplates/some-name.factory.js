@@ -12,7 +12,7 @@
 
             factory.$inject = ['dependencies'];
 
-            /* @ngInject */
+            
             function factory(dependencies){
                 var exports = {
                     func: func

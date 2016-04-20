@@ -17,7 +17,7 @@
 
 	//#region << Configuration >> /////////////////////////
 	config.$inject = ['$stateProvider'];
-	/* @ngInject */
+	
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-view-manage', {
 			parent: 'webvella-admin-base',
@@ -54,9 +54,8 @@
 
 	//#region << Resolve >> ///////////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
+	
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
 		var defer = $q.defer();
 		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
 		var accessPermission = false;
@@ -79,14 +78,12 @@
 			defer.reject("No access");
 		}
 
-		$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 		// Initialize
 		var defer = $q.defer();
 
@@ -113,17 +110,15 @@
 			}
 		}
 
-		webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
-		// Return
-		$log.debug('webvellaAdmin>entity-details> END resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
-	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveViewLibrary($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	
+	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+
 		// Initialize
 		var defer = $q.defer();
 		// Process
@@ -160,17 +155,13 @@
 			}
 		}
 
-		webvellaAdminService.getEntityViewLibrary($stateParams.entityName, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-views>resolveViewAvailableItems END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		webvellaCoreService.getEntityViewLibrary($stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-	/* @ngInject */
-	function resolveEntityRelationsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-		$log.debug('webvellaAdmin>entity-details> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	
+	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 		// Initialize
 		var defer = $q.defer();
 
@@ -197,10 +188,7 @@
 			}
 		}
 
-		webvellaAdminService.getRelationsList(successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAdmin>entity-details> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
+		webvellaCoreService.getRelationsList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -208,13 +196,12 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', '$timeout', 'pageTitle', '$uibModal',
-                            'resolvedCurrentEntityMeta', 'webvellaAdminService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
-	/* @ngInject */
+                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
+	
 	function controller($scope, $log, $rootScope, $state, $stateParams, $timeout, pageTitle, $uibModal,
-                        resolvedCurrentEntityMeta, webvellaAdminService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
-		$log.debug('webvellaAdmin>entity-details> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
 
-		/* jshint validthis:true */
+		
 		var ngCtrl = this;
 		//#region << General init >>
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
@@ -223,7 +210,6 @@
 		$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 		//Hide side menu
 		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
@@ -406,7 +392,7 @@
 				tempCopyView = fastCopy(ngCtrl.view);
 				tempCopyViewRegion = fastCopy(ngCtrl.viewContentRegion);
 				// 2. Apply the change to the temp object
-				tempCopyViewRegion.sections = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id);
+				tempCopyViewRegion.sections = webvellaCoreService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id);
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
 				for (var i = 0; i < tempCopyView.regions.length; i++) {
 					if (tempCopyView.regions[i].name === "content") {
@@ -414,7 +400,7 @@
 					}
 				}
 				//Try update with the new view
-				webvellaAdminService.updateEntityView(tempCopyView, ngCtrl.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
+				webvellaCoreService.updateEntityView(tempCopyView, ngCtrl.entity.name, successSectionRemoveCallback, errorSectionRemoveCallback);
 
 			}
 		}
@@ -471,7 +457,7 @@
 				// 2. Apply the change to the temp object
 				for (var m = 0; m < tempCopyViewRegion.sections.length; m++) {
 					if (tempCopyViewRegion.sections[m].id === sectionId) {
-						tempCopyViewRegion.sections[m].rows = webvellaAdminService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, id);
+						tempCopyViewRegion.sections[m].rows = webvellaCoreService.safeRemoveArrayPlace(tempCopyViewRegion.sections[m].rows, id);
 					}
 				}
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
@@ -481,7 +467,7 @@
 					}
 				}
 				//Try update with the new view
-				webvellaAdminService.updateEntityView(tempCopyView, ngCtrl.entity.name, successRowRemoveCallback, errorRowRemoveCallback);
+				webvellaCoreService.updateEntityView(tempCopyView, ngCtrl.entity.name, successRowRemoveCallback, errorRowRemoveCallback);
 
 			}
 		}
@@ -637,7 +623,7 @@
 						}
 					}
 					////2. Call the service
-					webvellaAdminService.updateEntityView(tempView, ngCtrl.entity.name, successCallback, errorCallback);
+					webvellaCoreService.updateEntityView(tempView, ngCtrl.entity.name, successCallback, errorCallback);
 					//return;
 				});
 
@@ -667,7 +653,7 @@
 				getRelatedEntityMetaSuccessCallback(response);
 			}
 			else {
-				webvellaAdminService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
+				webvellaCoreService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
 			}
 		};
 		//#endregion
@@ -734,7 +720,7 @@
 						ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
 					}
 				}
-				webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+				webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 
 			}
 		}
@@ -812,7 +798,7 @@
 					ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
 				}
 			}
-			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -861,7 +847,7 @@
 				}
 			}
 
-			webvellaAdminService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
 		}
 
 		ngCtrl.toggleRelationToLibrary = function (relation) {
@@ -920,22 +906,17 @@
 		}
 
 		//#endregion
-
-
-
-		$log.debug('webvellaAdmin>entity-details> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
 	}
 	//#endregion
 
 	//#region << Modal Controllers >> /////////////////////
 
 	//Section Modal
-	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$scope'];
-	/* @ngInject */
-	function ManageSectionModalController(parentData, section, weight, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, $scope) {
-		$log.debug('webvellaAdmin>entities>createSectionModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$scope'];
+	
+	function ManageSectionModalController(parentData, section, weight, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $scope) {
+
+		
 
 		//#region << Initialize >>
 		var popupCtrl = this;
@@ -944,7 +925,7 @@
 		popupCtrl.isValid = true;
 		if (section === null) {
 			popupCtrl.isUpdate = false;
-			popupCtrl.section = fastCopy(webvellaAdminService.initViewSection());
+			popupCtrl.section = fastCopy(webvellaCoreService.initViewSection());
 			popupCtrl.section.weight = weight;
 		}
 		else {
@@ -981,10 +962,10 @@
 			}
 			//#region << Update the temporary view object for submission >>
 			if (popupCtrl.isUpdate && popupCtrl.isValid) {
-				popupCtrl.viewContentRegion.sections = webvellaAdminService.safeUpdateArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
+				popupCtrl.viewContentRegion.sections = webvellaCoreService.safeUpdateArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
 			}
 			else if (popupCtrl.isValid) {
-				popupCtrl.viewContentRegion.sections = webvellaAdminService.safeAddArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
+				popupCtrl.viewContentRegion.sections = webvellaCoreService.safeAddArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
 			}
 			//#endregion
 
@@ -996,7 +977,7 @@
 					}
 				}
 
-				webvellaAdminService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
+				webvellaCoreService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
 			}
 		};
 
@@ -1027,32 +1008,30 @@
 			popupCtrl.errorMessage = response.message;
 
 		}
-		$log.debug('webvellaAdmin>entities>createSectionModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//Row Modal
-	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaAdminService',
+	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaCoreService',
 				'ngToast'];
-	/* @ngInject */
-	function ManageRowModalController(parentData, row, section, weight, $uibModalInstance, $log, webvellaAdminService,
+	
+	function ManageRowModalController(parentData, row, section, weight, $uibModalInstance, $log, webvellaCoreService,
 				ngToast) {
-		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+		
 		var popupCtrl = this;
 		popupCtrl.section = fastCopy(section);
-		popupCtrl.rowOptions = webvellaAdminService.getRowColumnCountVariationsArray();
+		popupCtrl.rowOptions = webvellaCoreService.getRowColumnCountVariationsArray();
 
 
 		popupCtrl.isUpdate = true;
 		if (row === null) {
 			popupCtrl.isUpdate = false;
-			popupCtrl.row = fastCopy(webvellaAdminService.initViewRow(1));
+			popupCtrl.row = fastCopy(webvellaCoreService.initViewRow(1));
 			popupCtrl.row.weight = fastCopy(weight);
 			popupCtrl.selectedRowOption = popupCtrl.rowOptions[0];
 		}
 		else {
 			popupCtrl.row = fastCopy(row);
-			var selectedColVariationKey = webvellaAdminService.getRowColumnCountVariationKey(row)
+			var selectedColVariationKey = webvellaCoreService.getRowColumnCountVariationKey(row)
 			for (var i = 0; i < popupCtrl.rowOptions.length; i++) {
 				if (selectedColVariationKey === popupCtrl.rowOptions[i].key) {
 					popupCtrl.selectedRowOption = popupCtrl.rowOptions[i];
@@ -1097,21 +1076,21 @@
 					var columnsToAdd = popupCtrl.selectedRowOption.columns - originalRowColumns;
 
 					for (var m = 0; m < columnsToAdd; m++) {
-						var column = webvellaAdminService.initViewRowColumn(popupCtrl.selectedRowOption.columns);
+						var column = webvellaCoreService.initViewRowColumn(popupCtrl.selectedRowOption.columns);
 						popupCtrl.row.columns.push(column);
 					}
 				}
 				//C. Fix the gridColCount for each column
-				var columnsCountArray = webvellaAdminService.convertRowColumnCountVariationKeyToArray(popupCtrl.selectedRowOption.key);
+				var columnsCountArray = webvellaCoreService.convertRowColumnCountVariationKeyToArray(popupCtrl.selectedRowOption.key);
 				for (var i = 0; i < popupCtrl.row.columns.length; i++) {
 					popupCtrl.row.columns[i].gridColCount = columnsCountArray[i];
 				}
 				//D. Update
-				popupCtrl.section.rows = webvellaAdminService.safeUpdateArrayPlace(popupCtrl.row, popupCtrl.section.rows);
+				popupCtrl.section.rows = webvellaCoreService.safeUpdateArrayPlace(popupCtrl.row, popupCtrl.section.rows);
 			}
 			else {
-				popupCtrl.row.columns = webvellaAdminService.initViewRow(popupCtrl.selectedRowOption.key).columns;
-				popupCtrl.section.rows = webvellaAdminService.safeAddArrayPlace(popupCtrl.row, popupCtrl.section.rows);
+				popupCtrl.row.columns = webvellaCoreService.initViewRow(popupCtrl.selectedRowOption.key).columns;
+				popupCtrl.section.rows = webvellaCoreService.safeAddArrayPlace(popupCtrl.row, popupCtrl.section.rows);
 			}
 			//#endregion
 			//#region << 3. Update the contentRegion & Feed in the updated ContentRegion in the view>>
@@ -1128,7 +1107,7 @@
 
 			//#endregion
 			//#region << 4. Call the view update service >>
-			webvellaAdminService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
+			webvellaCoreService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
 			//#endregion
 		};
 
@@ -1159,17 +1138,15 @@
 			popupCtrl.errorMessage = response.message;
 
 		}
-		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 
-	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'ngToast', '$timeout', '$state', 'eventObj',
+	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'eventObj',
 			'fieldObj', 'relatedEntityMeta', 'orderChangedOnly'];
-	/* @ngInject */
-	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaAdminService, ngToast, $timeout, $state, eventObj,
+	
+	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, eventObj,
 			fieldObj, relatedEntityMeta, orderChangedOnly) {
-		$log.debug('webvellaAdmin>entities>createRowModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+		
 		var popupCtrl = this;
 		popupCtrl.parentData = fastCopy(parentData);
 		popupCtrl.field = fastCopy(fieldObj);
@@ -1265,7 +1242,6 @@
 		//	popupCtrl.errorMessage = response.message;
 
 		//}
-		$log.debug('webvellaAdmin>entities>createRowModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 
 	//#endregion

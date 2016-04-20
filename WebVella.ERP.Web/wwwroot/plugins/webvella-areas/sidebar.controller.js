@@ -13,14 +13,13 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedSitemap', 'webvellaAreasService', 'resolvedCurrentUser','$timeout','$location'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedAreas', 'webvellaCoreService', 'resolvedCurrentUser','$timeout','$location'];
 
-    /* @ngInject */
-    function controller($log, $rootScope, $state, $stateParams, resolvedSitemap, webvellaAreasService, resolvedCurrentUser,$timeout,$location) {
-    	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function controller($log, $rootScope, $state, $stateParams, resolvedAreas, webvellaCoreService, resolvedCurrentUser,$timeout,$location) {
+        
         var sidebarData = this;
-        sidebarData.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
+        sidebarData.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
         sidebarData.currentArea.attachments = angular.fromJson(sidebarData.currentArea.attachments);
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
 
@@ -35,8 +34,6 @@
 				return false;
 			}
 		}
-
-        $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

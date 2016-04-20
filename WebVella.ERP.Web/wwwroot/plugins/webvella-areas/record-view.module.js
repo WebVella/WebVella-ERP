@@ -17,7 +17,7 @@
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 
-	/* @ngInject */
+	
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-areas-base',
@@ -50,22 +50,12 @@
 		});
 	};
 
-	//#region << Run >> //////////////////////////////////////
-	run.$inject = ['$log'];
-	/* @ngInject */
-	function run($log) {
-		$log.debug('webvellaAreas>entities> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-		$log.debug('webvellaAreas>entities> END module.run ' + moment().format('HH:mm:ss SSSS'));
-	};
-	//#endregion
-
 	//#region << Resolve Function >> /////////////////////////
 
-	resolveCurrentView.$inject = ['$q', '$log','webvellaRootService', 'webvellaAreasService', '$stateParams', '$state', '$timeout','resolvedCurrentEntityMeta'];
-	/* @ngInject */
-	function resolveCurrentView($q, $log,webvellaRootService, webvellaAreasService, $stateParams, $state, $timeout,resolvedCurrentEntityMeta) {
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+	resolveCurrentView.$inject = ['$q', '$log','webvellaCoreService', '$stateParams', '$state', '$timeout','resolvedCurrentEntityMeta'];
+	
+	function resolveCurrentView($q, $log,webvellaCoreService, $stateParams, $state, $timeout,resolvedCurrentEntityMeta) {
+
 		// Initialize
 		var defer = $q.defer();
 
@@ -90,28 +80,29 @@
 			}
 		}
 
-		var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(resolvedCurrentEntityMeta,"canRead");
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasEntityPermissions(resolvedCurrentEntityMeta,"canRead");
 		if(!userHasUpdateEntityPermission){
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
 
-		webvellaAreasService.getViewRecord($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
+		webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
 
-		// Return
-		$log.debug('webvellaAdmin>entity-views>resolveCurrentView END state.resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
 
-   	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams'];
-	function loadDependency($ocLazyLoad, $q, $http,$stateParams){
+   	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','wvAppConstants','resolvedCurrentEntityMeta'];
+	function loadDependency($ocLazyLoad, $q, $http,$stateParams,wvAppConstants,resolvedCurrentEntityMeta){
         var lazyDeferred = $q.defer();
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
+		var loadFilesArray = [];
+		loadFilesArray.push(listServiceJavascriptPath);
 
         return $ocLazyLoad.load ({
           name: 'webvellaAreas.recordsList',
-          files: ['/plugins/webvella-support/assets/' +  $stateParams.entityName + '/view/' + $stateParams.viewName + '/file.js']
+          files: loadFilesArray
         }).then(function() {
-           return lazyDeferred.resolve();
+           return lazyDeferred.resolve("ready");
         });	
 	
 	}
@@ -132,16 +123,15 @@
 	}
 
 
-	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
+        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
 		'resolvedCurrentUserEntityPermissions','webvellaActionService'];
 
-	/* @ngInject */
-	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+	
+	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
+        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
 		resolvedCurrentUserEntityPermissions,webvellaActionService) {
-		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+		
 		var ngCtrl = this;
 		ngCtrl.selectedSidebarPage = {};
 		ngCtrl.selectedSidebarPage.label = "";
@@ -156,15 +146,15 @@
 
 		//#region <<Set pageTitle>>
 		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
-		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
-		ngCtrl.siteMap = fastCopy(resolvedSitemap);
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.siteMap = fastCopy(resolvedAreas);
 		ngCtrl.currentArea = null;
 		for (var i = 0; i < ngCtrl.siteMap.data.length; i++) {
 			if (ngCtrl.siteMap.data[i].name == $state.params.areaName) {
 				ngCtrl.currentArea = ngCtrl.siteMap.data[i];
 			};
 		}
-		webvellaRootService.setBodyColorClass(ngCtrl.currentArea.color);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
 		//#region << Initialize current entity >>
@@ -304,11 +294,8 @@
 
 		//#region << Render >>
 		ngCtrl.userHasRecordDeletePermission = function(){
-			return fastCopy(webvellaRootService.userHasEntityPermissions(ngCtrl.currentEntity,"canDelete"));
+			return fastCopy(webvellaCoreService.userHasEntityPermissions(ngCtrl.currentEntity,"canDelete"));
 		}
-
-		ngCtrl.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
-
 		//#endregion
 
 
@@ -540,7 +527,7 @@
 					//We cannot reload the data from the response object as there is missing data for any 
 					//view or list or trees, or viewFromRelation etc.
 
-					//webvellaRootService.GoToState($state.current.name, ngCtrl.stateParams);
+					//webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
 
 					defer.resolve();
 				}
@@ -554,7 +541,7 @@
 					defer.resolve("validation error");
 				}
 
-				webvellaAdminService.patchRecord($stateParams.recordId, ngCtrl.currentEntity.name, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
+				webvellaCoreService.patchRecord($stateParams.recordId, ngCtrl.currentEntity.name, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
 
 				return defer.promise;
 			}
@@ -609,7 +596,7 @@
 						var fileName = response.object.filename;
 						var targetPath = "/fs/" + ngCtrl.currentEntity.name + "/" + newGuid() + "/" + fileName;
 						var overwrite = false;
-						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
+						webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 					}
 					ngCtrl.uploadErrorCallback = function (response) {
 						alert(response.message);
@@ -619,7 +606,7 @@
 							ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 						}, 1);
 					}
-					webvellaAdminService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+					webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 				}
 			};
 
@@ -641,7 +628,7 @@
 						var fileName = response.object.filename;
 						var targetPath = file.name;
 						var overwrite = true;
-						webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
+						webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 					}
 					ngCtrl.uploadErrorCallback = function (response) {
 						alert(response.message);
@@ -651,7 +638,7 @@
 							ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 						}, 1);
 					}
-					webvellaAdminService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+					webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 				}
 			};
 
@@ -677,7 +664,7 @@
 					return "validation error";
 				}
 
-				webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+				webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
 
 			}
 
@@ -725,7 +712,7 @@
 			ngCtrl.currentUserHasUpdatePermission = function (item) {
 				var result = false;
 				//Check first if the entity allows it
-				var userHasUpdateEntityPermission = webvellaRootService.userHasEntityPermissions(ngCtrl.currentEntity,"canUpdate");
+				var userHasUpdateEntityPermission = webvellaCoreService.userHasEntityPermissions(ngCtrl.currentEntity,"canUpdate");
 				if(!userHasUpdateEntityPermission){
 					return false;
 				}
@@ -923,7 +910,7 @@
 		}
 
 		//Render
-		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {
 				return item.fieldLabel
@@ -1009,9 +996,9 @@
 				//#region << Select default list >>
 				ngCtrl.defaultEntityAreaListName = "";
 				//get the current area meta
-				for (var j = 0; j < resolvedSitemap.data.length; j++) {
-					if (resolvedSitemap.data[j].name === $stateParams.areaName) {
-						var areaAttachments = angular.fromJson(resolvedSitemap.data[j].attachments);
+				for (var j = 0; j < resolvedAreas.data.length; j++) {
+					if (resolvedAreas.data[j].name === $stateParams.areaName) {
+						var areaAttachments = angular.fromJson(resolvedAreas.data[j].attachments);
 						for (var k = 0; k < areaAttachments.length; k++) {
 							if (areaAttachments[k].name === $stateParams.entityName) {
 								ngCtrl.defaultEntityAreaListName = areaAttachments[k].list.name;
@@ -1021,14 +1008,14 @@
 				}
 				//#endregion
 
-				webvellaRootService.GoToState("webvella-entity-records", { listName: ngCtrl.defaultEntityAreaListName, page: 1, search: null });
+				webvellaCoreService.GoToState("webvella-entity-records", { listName: ngCtrl.defaultEntityAreaListName, page: 1, search: null });
 			}
 
 			function errorCallback(response) {
 				popupCtrl.hasError = true;
 				popupCtrl.errorMessage = response.message;
 			}
-			webvellaAdminService.deleteRecord($stateParams.recordId, $stateParams.entityName, successCallback, errorCallback);
+			webvellaCoreService.deleteRecord($stateParams.recordId, $stateParams.entityName, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -1087,7 +1074,7 @@
 							className: 'success',
 							content: '<span class="go-green">Success:</span> Change applied'
 						});
-						webvellaRootService.GoToState($state.current.name, ngCtrl.stateParams);
+						webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
 					}
 
 					function errorCallback(response) {
@@ -1114,11 +1101,11 @@
 						if (oldRelationRecordId != null) {
 							recordsToBeDetached.push(oldRelationRecordId);
 						}
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
+						webvellaCoreService.updateRecordRelation(returnObject.relationName, displayedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else if (returnObject.dataKind == "target") {
 						recordsToBeAttached.push(displayedRecordId);
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
+						webvellaCoreService.updateRecordRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 					}
 					else {
 						alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1165,7 +1152,7 @@
 							className: 'success',
 							content: '<span class="go-green">Success:</span> Change applied'
 						});
-						webvellaRootService.GoToState($state.current.name, ngCtrl.stateParams);
+						webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
 					}
 
 					function errorCallback(response) {
@@ -1186,7 +1173,7 @@
 
 					// There are currently cases just for origin, error on else
 					if (returnObject.dataKind == "origin") {
-						webvellaAdminService.manageRecordsRelation(returnObject.relationName, displayedRecordId, returnObject.attachDelta, returnObject.detachDelta, successCallback, errorCallback);
+						webvellaCoreService.updateRecordRelation(returnObject.relationName, displayedRecordId, returnObject.attachDelta, returnObject.detachDelta, successCallback, errorCallback);
 					}
 					else {
 						alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1299,17 +1286,17 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
 
-			webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+			webvellaCoreService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
 
 			return defer.promise;
 		}
@@ -1366,7 +1353,7 @@
 				defer.resolve(response.object);
 			}
 
-			webvellaAdminService.getRecordsByTreeName(item.treeName, item.entityName, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByTreeName(item.treeName, item.entityName, successCallback, errorCallback);
 
 			return defer.promise;
 		}
@@ -1397,7 +1384,10 @@
 		ngCtrl.actionService = webvellaActionService;
 		//#endregion
 
-		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+
+		ngCtrl.test = function(){
+		alert("test");
+		}
 	}
 
 
@@ -1406,13 +1396,11 @@
 	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
 	ManageRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
-	/* @ngInject */
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	
 	function ManageRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
-
-		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
+		
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.parentData = fastCopy(ngCtrl);
@@ -1454,7 +1442,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, popupCtrl.searchQuery, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -1470,7 +1458,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page,null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -1478,7 +1466,7 @@
 		//#region << Logic >>
 
 		//Render field values
-		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 
 		popupCtrl.isSelectedRecord = function (recordId) {
 			if (popupCtrl.currentlyAttachedIds) {
@@ -1582,7 +1570,7 @@
 					popupCtrl.currentlyAttachedIds.splice(elementIndex, 1);
 					popupCtrl.processingRecordId = "";
 				}
-				webvellaRootService.GoToState($state.current.name, popupCtrl.parentData.stateParams);
+				webvellaCoreService.GoToState($state.current.name, popupCtrl.parentData.stateParams);
 				ngToast.create({
 					className: 'success',
 					content: '<span class="go-green">Success:</span> Change applied'
@@ -1609,7 +1597,7 @@
 
 			// ** Post relation change between the two records
 			if (returnObject.dataKind == "target") {
-				webvellaAdminService.manageRecordsRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
+				webvellaCoreService.updateRecordRelation(returnObject.relationName, returnObject.selectedRecordId, recordsToBeAttached, recordsToBeDetached, successCallback, errorCallback);
 			}
 			else {
 				alert("the <<origin-target>> dataKind is still not implemented. Contact the system administrator");
@@ -1654,7 +1642,7 @@
 		//	});
 		//	$uibModalInstance.close('success');
 		//	popupCtrl.parentData.modalInstance.close('success');
-		//	//webvellaRootService.GoToState($state.current.name, {});
+		//	//webvellaCoreService.GoToState($state.current.name, {});
 		//}
 
 		//function errorCallback(response) {
@@ -1666,17 +1654,15 @@
 
 
 		//#endregion
-
-		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
 	//#endregion 
 
 	//#region << Select Tree >>
 	SelectTreeNodesModalController.$inject = ['ngCtrl', '$uibModalInstance', '$rootScope','$scope', '$log', '$q', '$stateParams', 'resolvedTree',
-        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$uibModal',
+        'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$uibModal',
 		'resolvedCurrentUserPermissions'];
 	function SelectTreeNodesModalController(ngCtrl, $uibModalInstance,$rootScope,$scope, $log, $q, $stateParams, resolvedTree,
-			selectedItem, resolvedTreeRelation, selectedItemData, webvellaAdminService, ngToast, $timeout, $state, $uibModal, 
+			selectedItem, resolvedTreeRelation, selectedItemData, webvellaCoreService, ngToast, $timeout, $state, $uibModal, 
 			resolvedCurrentUserPermissions) {
 		var popupCtrl = this;
 
@@ -1852,12 +1838,12 @@
 			//Node should be unselected. Relations should be severed
 			if (nodeIndex > -1) {
 				recordsToBeDetached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupCtrl.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				webvellaCoreService.updateRecordRelation(popupCtrl.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, removeRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 				//Node should be selected. Relations should be created
 			else {
 				recordsToBeAttached.push($stateParams.recordId);
-				webvellaAdminService.manageRecordsRelation(popupCtrl.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
+				webvellaCoreService.updateRecordRelation(popupCtrl.relation.name, node.recordId, recordsToBeAttached, recordsToBeDetached, createRelationChangeSuccessCallback, applyRelationChangeErrorCallback);
 			}
 		}
 

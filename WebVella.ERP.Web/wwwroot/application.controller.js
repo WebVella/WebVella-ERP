@@ -13,10 +13,8 @@
         .controller('ApplicationController', controller);
 
 
-	// Configuration ///////////////////////////////////
+	//#region << Configuration  >> ///////////////////////////////////
 	config.$inject = ['$httpProvider', 'wvAppConstants'];
-
-	/* @ngInject */
 	function config($httpProvider, wvAppConstants) {
 
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope) {
@@ -85,15 +83,11 @@
 			}, false);
 		}
 	}
+	//#endregion
 
-
-	// Controller ///////////////////////////////
-	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaRootService'];
-
-	/* @ngInject */
-	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaRootService) {
-		$log.debug('vwApp> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	//#region << Controller >> ///////////////////////////////
+	controller.$inject = ['$rootScope', '$log', '$cookies', '$localStorage', '$timeout', '$state', 'webvellaCoreService'];
+	function controller($rootScope, $log, $cookies, $localStorage, $timeout, $state, webvellaCoreService) {
 		var appData = this;
 		//Set page title
 		appData.pageTitle = 'WebVella ERP';
@@ -132,8 +126,7 @@
 			$rootScope.adminSectionName = null;
 			$rootScope.adminSubSectionName = null;
 		});
-
-		$log.debug('wvApp> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
+	//#endregion
 
 })();

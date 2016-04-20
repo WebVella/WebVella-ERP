@@ -20,7 +20,7 @@
 					</li>
 				</ul>
 			</span>
-			
+
 		</div>
 		<div class="meta-label">
 			<h4>
@@ -66,7 +66,7 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 2 - checkbox -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="2" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="2" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<span class="input-group-addon" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName] && !this['fieldForm_' + item.dataName].$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
@@ -89,7 +89,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 3 - currency -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="3" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="3" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -100,7 +101,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 4 - date -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="4" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="4" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 													   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
@@ -115,7 +117,8 @@
 											<!-- If type 5 - datetime -->
 											<div class="row" ng-switch-when="5">
 												<div class="col-sm-6" style="padding-right: 10px;">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+														 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 														<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarPage.data[item.dataName]"
 															   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 															   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
@@ -144,7 +147,8 @@
 												</div>
 											</div>
 											<!-- If type 6 - email -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="6" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="6" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -194,10 +198,10 @@
 											</div>
 											<img ng-switch-when="9" class="img-thumbnail" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-src="{{ngCtrl.selectedSidebarPage.data[item.dataName]}}" />
 											<!-- If type 10 - textarea -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="10" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="10" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-bind="ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)">
 												<div class="form-control" disabled editable-textarea="ngCtrl.selectedSidebarPage.data[item.dataName]" e-rows="3"
-													 onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}"
-													 ng-bind="ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)">
+													 onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												</div>
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
@@ -207,7 +211,8 @@
 											</div>
 
 											<!-- If type 11 - multichoice -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="11" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="11" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-checklist="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   e-ng-options="s.key as s.value for s in item.meta.options"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
@@ -219,7 +224,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 12 - number -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="12" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="12" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -231,7 +237,8 @@
 											</div>
 
 											<!-- If type 13 - password -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="13" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="13" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -242,7 +249,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 14 - percent -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="14" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="14" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -253,7 +261,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 15 - phone -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="15" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="15" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -264,7 +273,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 16 - unique identifier -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="16" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="16" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -275,7 +285,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 17 - dropdown -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="17" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="17" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   e-ng-options="s.key as s.value for s in item.meta.options"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
@@ -287,7 +298,8 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 18 - textbox -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="18" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="18" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 ng-dblclick="this['fieldForm_' + item.dataName].$show();$event.preventDefault()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
 													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
 													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -298,13 +310,13 @@
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
 											<!-- If type 19 - url -->
-											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="19" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
+											<div class="editable-wrapper input-group editable-updatable" ng-switch-when="19" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
+												 onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 												<span class="input-group-addon" ng-if="!this['fieldForm_' + item.dataName].$visible">
 													<a href="{{ngCtrl.selectedSidebarPage.data[item.dataName]}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 												</span>
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarPage.data[item.dataName]"
-													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"
-													   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}">
 												<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 											<div class="editable-wrapper input-group editable-readonly" ng-switch-when="19" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -339,7 +351,8 @@
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target')">
 														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
 															  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
@@ -361,11 +374,13 @@
 											<div ng-switch-when="2" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 														<input type="text" class="form-control" disabled value=""></input>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 														<table class="table table-bordered editable origin lookup">
 															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
@@ -390,7 +405,8 @@
 												</div>
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target')">
 														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
 															  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
@@ -404,11 +420,13 @@
 												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3" class="position-relative">
 													<div ng-if="item.relationDirection == 'origin-target'">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+															 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 															<input type="text" class="form-control" disabled value=""></input>
 															<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 														</div>
-														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+															 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
 															<table class="table table-bordered editable origin lookup">
 																<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																	<td>{{relationDataRecord}}</td>
@@ -432,7 +450,8 @@
 														</div>
 													</div>
 													<div ng-if="item.relationDirection == 'target-origin'">
-														<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+														<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+															 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target')">
 															<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarPage.data[item.dataName],item.meta)}}"></input>
 															<span class="input-group-addon remove-addon ng-hide" ng-show="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0"
 																  confirmed-click="ngCtrl.emptyField(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
@@ -449,12 +468,13 @@
 											<div ng-switch-when="3" ng-switch="ngCtrl.getRelation(item.relationName).currentEntityRole">
 												<!-- Case 1 - Current Entity is Origin -->
 												<div ng-switch-when="1" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 														<input type="text" class="form-control" disabled value=""></input>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
-														<table class="table table-bordered editable origin lookup">
+														<table class="table table-bordered editable origin lookup" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
 															</tr>
@@ -479,11 +499,13 @@
 
 												<!-- Case 2 - Current Entity is Target -->
 												<div ng-switch-when="2" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
 														<input type="text" class="form-control" disabled value=""></input>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
 														<table class="table table-bordered editable origin lookup">
 															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>
@@ -509,11 +531,13 @@
 
 												<!-- Case 3 - Current Entity is both Origin and Target -->
 												<div ng-switch-when="3" class="position-relative">
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 														<input type="text" class="form-control" disabled value=""></input>
 														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
-													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
+													<div class="editable-wrapper input-group editable-updatable" ng-if="ngCtrl.selectedSidebarPage.data[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 														<table class="table table-bordered editable origin lookup">
 															<tr ng-repeat="relationDataRecord in ngCtrl.selectedSidebarPage.data[item.dataName]">
 																<td>{{relationDataRecord}}</td>

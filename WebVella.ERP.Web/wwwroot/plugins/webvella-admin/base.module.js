@@ -16,7 +16,7 @@
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
-    /* @ngInject */
+    
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-base', {
             'abstract': true,
@@ -39,20 +39,19 @@
                	resolvedCurrentUser: resolveCurrentUser
             },
             'data': {
-                //Custom data is inherited by the parent state 'webvella-root', but it can be overwritten if necessary. Available for all child states in this plugin
+                //Custom data is inherited by the parent state 'webvella-core', but it can be overwritten if necessary. Available for all child states in this plugin
             }
         });
     };
 
     // Run //////////////////////////////////////
-    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory','webvellaDesktopTopnavFactory', 'webvellaRootService'];
+    run.$inject = ['$log', '$rootScope', 'webvellaDesktopBrowsenavFactory','webvellaDesktopTopnavFactory', 'webvellaCoreService'];
 
-    /* @ngInject */
-    function run($log, $rootScope, webvellaDesktopBrowsenavFactory,webvellaDesktopTopnavFactory, webvellaRootService) {
-    	$log.debug('webvellaAdmin>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
+    
+    function run($log, $rootScope, webvellaDesktopBrowsenavFactory,webvellaDesktopTopnavFactory, webvellaCoreService) {
         $rootScope.$on('webvellaDesktop-browsenav-ready', function () {
 			//Allow visible only to admins
-        	var currentUser = webvellaRootService.getCurrentUser();
+        	var currentUser = webvellaCoreService.getCurrentUser();
             if (currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") > -1) {
             	var item = {
             		"label": "Administration",
@@ -80,19 +79,16 @@
 				webvellaDesktopTopnavFactory.addItem(topNavItem);
             }
         });
-
-        $log.debug('webvellaAdmin>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
     };
 
 	// Resolve ///////////////////////////////////
-    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams','$timeout'];
-	/* @ngInject */
-    function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams,$timeout) {
-    	$log.debug('webvellaAdmin>base>resolveCurrentUser> BEGIN user resolved ' + moment().format('HH:mm:ss SSSS'));
+    resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams','$timeout'];
+	
+    function resolveCurrentUser($q, $log, webvellaCoreService, $state, $stateParams,$timeout) {
     	// Initialize
     	var defer = $q.defer();
     	// Process
-    	var currentUser = webvellaRootService.getCurrentUser();
+    	var currentUser = webvellaCoreService.getCurrentUser();
 
     	if (currentUser != null) {
     		defer.resolve(currentUser);
@@ -101,19 +97,16 @@
     		defer.reject(null);
     	}
 
-    	// Return
-    	$log.debug('webvellaAdmin>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaRootService', 'webvellaAdminSidebarFactory','$timeout'];
+    controller.$inject = ['$log', '$scope','$state', '$rootScope','$stateParams', 'webvellaCoreService', 'webvellaAdminSidebarFactory','$timeout'];
 
-    /* @ngInject */
-    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaRootService, webvellaAdminSidebarFactory,$timeout) {
-    	$log.debug('webvellaAdmin>base> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function controller($log, $scope,$state, $rootScope,$stateParams, webvellaCoreService, webvellaAdminSidebarFactory,$timeout) {
+        
         var baseCtrl = this;
         baseCtrl.sidebar = [];
         //Making topnav pluggable
@@ -160,13 +153,11 @@
 		$timeout(function(){
 			$rootScope.$emit("webvellaAdmin-sidebar-ready");
 		},0);
-        $log.debug('rootScope>events> "webvellaAdmin-sidebar-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         activate();
-        $log.debug('webvellaAdmin>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
         function activate() {
             // Change the body color to all child states to red
-            webvellaRootService.setBodyColorClass("red");
+            webvellaCoreService.setBodyColorClass("red");
             
         }
     }

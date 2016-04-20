@@ -1,8 +1,8 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<span class="go-gray" title="System entities cannot be deleted" ng-show="ngCtrl.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
-			<a class="go-red" href="javascript:void(0)" ng-click="ngCtrl.openDeleteEntityModal()" ng-show="!ngCtrl.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
+			<span class="btn btn-default btn-sm go-grey disabled" title="System entities cannot be deleted" ng-show="ngCtrl.entity.system"><i class="fa fa-lock"></i> Delete locked</span>
+			<a class="btn btn-danger btn-sm" href="javascript:void(0)" ng-click="ngCtrl.openDeleteEntityModal()" ng-show="!ngCtrl.entity.system"><i class="fa fa-trash"></i> Delete entity</a>
 		</div>
 		<div class="meta-label">
 			<h4>Details</h4>
@@ -28,7 +28,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">Name</label>
 							<div class="col-lg-10">
 								<div class="editable-wrapper input-group editable-readonly">
@@ -41,10 +41,10 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">System</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-updatable">
+								<div class="editable-wrapper input-group editable-updatable"  ng-dblclick="fieldForm_system.$show()">
 									<span class="input-group-addon" ng-if="ngCtrl.entity.system && !fieldForm_system.$visible">
 										<i class="fa fa-check fa-fw go-green"></i>
 									</span>
@@ -65,10 +65,10 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">Label</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-updatable">
+								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.label"
 										   value="{{ngCtrl.entity.label}}"
 										   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
@@ -80,10 +80,10 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">Label Plural</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-updatable">
+								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_labelPlural.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.labelPlural"
 										   value="{{ngCtrl.entity.labelPlural}}"
 										   onbeforesave="ngCtrl.fieldUpdate('labelPlural',$data)" e-form="fieldForm_labelPlural">
@@ -98,10 +98,10 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">Icon name</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-updatable">
+								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
 										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"
@@ -115,10 +115,10 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-2">Weight</label>
 							<div class="col-lg-10">
-								<div class="editable-wrapper input-group editable-updatable">
+								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.weight"
 										   value="{{ngCtrl.entity.weight}}"
 										   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
@@ -133,7 +133,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<div class="editable-field field">
+						<div class="row editable-field field">
 							<label class="control-label col-lg-1">Permissions</label>
 							<div class="col-lg-11">
 								<table class="table table-bordered table-permissions">
@@ -151,7 +151,7 @@
 										<tr ng-repeat="role in ngCtrl.entity.roles track by role.id">
 											<td>{{::role.label}}</td>
 											<td class="position-relative">
-												<div class="editable-wrapper input-group editable-updatable">
+												<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormCreate_' + role.name].$show()">
 													<span class="input-group-addon hidden-xs" ng-if="role.canCreate && !this['fieldFormCreate_' + role.name].$visible">
 														<i class="fa fa-check fa-fw go-green"></i>
 													</span>
@@ -165,7 +165,7 @@
 												</div>
 											</td>
 											<td class="position-relative">
-												<div class="editable-wrapper input-group editable-updatable">
+												<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormRead_' + role.name].$show()">
 													<span class="input-group-addon hidden-xs" ng-if="role.canRead && !this['fieldFormRead_' + role.name].$visible">
 														<i class="fa fa-check fa-fw go-green"></i>
 													</span>
@@ -179,7 +179,7 @@
 												</div>
 											</td>
 											<td class="position-relative">
-												<div class="editable-wrapper input-group editable-updatable">
+												<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormUpdate_' + role.name].$show()">
 													<span class="input-group-addon hidden-xs" ng-if="role.canUpdate && !this['fieldFormUpdate_' + role.name].$visible">
 														<i class="fa fa-check fa-fw go-green"></i>
 													</span>
@@ -193,7 +193,7 @@
 												</div>
 											</td>
 											<td class="position-relative">
-												<div class="editable-wrapper input-group editable-updatable">
+												<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormDelete_' + role.name].$show()">
 													<span class="input-group-addon hidden-xs" ng-if="role.canDelete && !this['fieldFormDelete_' + role.name].$visible">
 														<i class="fa fa-check fa-fw go-green"></i>
 													</span>

@@ -1800,7 +1800,7 @@ namespace WebVella.ERP.Web.Controllers
 		// Get an entity record list
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list/{listName}/{page}")]
-		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, string search = "", int? pageSize = null)
+		public IActionResult GetRecordListByEntityName(string entityName, string listName, int page, int? pageSize = null)
 		{
 
 			EntityListResponse entitiesResponse = entityManager.ReadEntities();
@@ -1833,7 +1833,7 @@ namespace WebVella.ERP.Web.Controllers
 			}
 			try
 			{
-				response.Object.Data = GetListRecords(entities, entity, listName, page, null, search, pageSize);
+				response.Object.Data = GetListRecords(entities, entity, listName, page, null, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -1983,20 +1983,21 @@ namespace WebVella.ERP.Web.Controllers
 				return EntityQuery.QueryContains(field.Name, search);
 		}
 
-		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, string search = null, int? pageSize = null, bool export = false)
+		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, int? pageSize = null, bool export = false)
 		{
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
 				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
 
-			var searchQuery = CreateSearchQuery(search, list, entity);
-			if (searchQuery != null)
-			{
-				if (queryObj != null)
-					queryObj = EntityQuery.QueryAND(queryObj, searchQuery);
-				else
-					queryObj = searchQuery;
-			}
+			//Boz -> I removed the search parameter as it is obsolete
+			//var searchQuery = CreateSearchQuery(search, list, entity);
+			//if (searchQuery != null)
+			//{
+			//	if (queryObj != null)
+			//		queryObj = EntityQuery.QueryAND(queryObj, searchQuery);
+			//	else
+			//		queryObj = searchQuery;
+			//}
 
 			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
 			EntityRelationManager relManager = new EntityRelationManager();
@@ -3519,66 +3520,6 @@ namespace WebVella.ERP.Web.Controllers
 //				return DoResponse(response);
 //			}
 //		}
-
-		#endregion
-
-		#region << Area Specific >>
-		// Get area meta by name
-		// GET: api/v1/en_US/area/{name}
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/area/{name}")]
-		public IActionResult GetAreaByName(string name)
-		{
-
-			QueryObject areaFilterObj = EntityQuery.QueryEQ("name", name);
-
-			EntityQuery query = new EntityQuery("area", "*", areaFilterObj, null, null, null);
-
-			QueryResponse result = recMan.Find(query);
-			if (!result.Success)
-				return DoResponse(result);
-			return Json(result);
-		}
-
-
-		// Get all entities that has relation to an area
-		// GET: api/v1/en_US/area/entity/list
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/sitemap")]
-		public IActionResult GetSitemap()
-		{
-			var columnsNeeded = "id,name,label,color,icon_name,folder,weight,roles,attachments";
-			EntityQuery queryAreas = new EntityQuery("area", columnsNeeded, null, null, null, null);
-			QueryResponse resultAreas = recMan.Find(queryAreas);
-			if (!resultAreas.Success)
-				return DoResponse(resultAreas);
-
-			List<EntityRecord> areas = new List<EntityRecord>();
-			List<EntityRecord> responseAreas = new List<EntityRecord>();
-			if (resultAreas.Object.Data != null && resultAreas.Object.Data.Any())
-			{
-				areas = resultAreas.Object.Data;
-
-				foreach (EntityRecord area in areas)
-				{
-					if ((string)area["attachments"] != "[]")
-					{
-						responseAreas.Add(area);
-					}
-				}
-			}
-
-			var response = new QueryResponse();
-			response.Success = true;
-			response.Message = "Query successfully executed";
-			if (responseAreas == new List<EntityRecord>())
-			{
-				response.Object.Data = null;
-			}
-			else
-			{
-				response.Object.Data = responseAreas;
-			}
-			return Json(response);
-		}
 
 		#endregion
 

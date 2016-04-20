@@ -15,7 +15,7 @@
 
     //#region << Configuration >> /////////////////////////
     config.$inject = ['$stateProvider'];
-    /* @ngInject */
+    
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entity-view-manage-info', {
             parent: 'webvella-admin-base',
@@ -50,9 +50,8 @@
 
 	//#region << Resolve >> ///////////////////////////////
     checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
+	
     function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	var defer = $q.defer();
     	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
     	var accessPermission = false;
@@ -75,14 +74,12 @@
     		defer.reject("No access");
     	}
 
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
-    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-    /* @ngInject */
-    function resolveCurrentEntityMeta($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-    	$log.debug('webvellaAdmin>entity-details> BEGIN resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+    
+    function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
         // Initialize
         var defer = $q.defer();
 
@@ -109,10 +106,8 @@
             }
         }
 
-        webvellaAdminService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
+        webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 
-        // Return
-        $log.debug('webvellaAdmin>entity-details> END resolveCurrentEntityMeta state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -120,13 +115,12 @@
 
     //#region << Controller >> ////////////////////////////
     controller.$inject = ['$filter', '$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaAdminService','webvellaAreasService', 'ngToast'];
-    /* @ngInject */
+                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast'];
+    
     function controller($filter, $scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
-                        resolvedCurrentEntityMeta, webvellaAdminService,webvellaAreasService, ngToast) {
-    	$log.debug('webvellaAdmin>entity-view-manage-info> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast) {
 
-        /* jshint validthis:true */
+        
         var ngCtrl = this;
         //#region << Initialize Current Entity >>
         ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
@@ -138,7 +132,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide side menu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-			$log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 		},0);
 		$rootScope.adminSectionName = "Entities";
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
@@ -158,7 +151,7 @@
         }
         //#endregion
         ngCtrl.nameIsChanged = false;
-		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 
 		
 		//#region << Html field >>
@@ -172,7 +165,7 @@
         		ngCtrl.nameIsChanged = true;
 
         	}
-        	webvellaAdminService.patchEntityView(ngCtrl.patchObject, ngCtrl.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
+        	webvellaCoreService.patchEntityView(ngCtrl.patchObject, ngCtrl.originalView.name, $stateParams.entityName, patchSuccessCallback, patchFailedCallback);
 
         }
 
@@ -181,7 +174,7 @@
         		className: 'success',
         		content: '<span class="go-green">Success:</span> ' + response.message
         	});
-        	webvellaAdminService.regenerateAllAreaAttachments();
+        	webvellaCoreService.regenerateAllAreaAttachments();
         	if (ngCtrl.nameIsChanged) {
         		$timeout(function () {
         			$state.go("webvella-admin-entity-view-manage-info", { entityName: $stateParams.entityName,viewName:ngCtrl.view.name }, { reload: true });
@@ -240,24 +233,21 @@
         	return (ngCtrl.view.type && selected.length) ? selected[0].label : 'empty';
         };
 
-        $log.debug('webvellaAdmin>entity-view-manage-info> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
     }
     //#endregion
 
 	//#region << Modal Controllers >>
-    deleteViewModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
+    deleteViewModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 
-	/* @ngInject */
-    function deleteViewModalController(parentData, $uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state) {
-    	$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-    	/* jshint validthis:true */
+	
+    function deleteViewModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+    	
     	var popupCtrl = this;
     	popupCtrl.parentData = parentData;
 
     	popupCtrl.ok = function () {
 
-    		webvellaAdminService.deleteEntityView(popupCtrl.parentData.view.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
+    		webvellaCoreService.deleteEntityView(popupCtrl.parentData.view.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
 
     	};
 
@@ -283,7 +273,6 @@
 
 
     	}
-    	$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
     //#endregion

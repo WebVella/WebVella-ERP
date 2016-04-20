@@ -5,7 +5,6 @@
 			   href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/create?listName={{::ngCtrl.stateParams.listName}}&filter={{::ngCtrl.stateParams.filter}}&page={{::ngCtrl.stateParams.page}}">
 				<i class="fa fa-fw fa-plus"></i> Add New
 			</a>
-
 			<span uib-dropdown class="dropdown">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
@@ -25,13 +24,13 @@
 							<i class="fa fa-fw fa-wrench"></i> Edit List
 						</a>
 					</li>
-					<li dynamic-html template="ngCtrl.actionTemplate"/>
+					<li dynamic-html template="ngCtrl.actionTemplate" />
 				</ul>
 			</span>
 		</div>
 		<div class="meta-label">
 			<h4>
-				{{::ngCtrl.currentListView.label}}
+				{{::ngCtrl.list.meta.label}}
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1">
 					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
@@ -53,252 +52,252 @@
 	</div>
 </div>
 <div id="page-body">
-
 	<div id="page-text">
-		<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
-			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.recordsMeta.cssClass}}" ng-show='::ngCtrl.records.length > 0' ng-if="!ngCtrl.recordsMeta.dynamicHtmlTemplate">
-				<thead>
-					<tr>
-						<th class="actions text-center" style="padding:0;vertical-align:middle">
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
-								<i class="fa fa-fw fa-filter go-grey"></i>
-							</a>
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
-								<i class="fa fa-fw fa-times go-red"></i>
-							</a>
-							<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
-								<i class="fa fa-fw fa-times go-grey"></i>
-							</a>
-						</th>
-						<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">{{::column.meta.label}}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
-						<td>
-							<a class="btn btn-default btn-sm" ng-click="ngCtrl.applyQueryFilter()">
-								<i class="fa fa-fw fa-filter"></i>
-							</a>
-						</td>
-						<td ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">
-							<div ng-switch="column.type">
-								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
-									<div ng-switch-when="1">
-										<!--AutoNumber field-->
-										<div class="form-group form-group-sm">
-											<div class="input-group">
-												<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+		<div ng-if="!ngCtrl.validation.hasError">
+			<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
+				<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.list.meta.cssClass}}" ng-show='::ngCtrl.list.data.length > 0' ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
+					<thead>
+						<tr>
+							<th class="actions text-center" style="padding:0;vertical-align:middle">
+								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+									<i class="fa fa-fw fa-filter go-grey"></i>
+								</a>
+								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
+									<i class="fa fa-fw fa-times go-red"></i>
+								</a>
+								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+									<i class="fa fa-fw fa-times go-grey"></i>
+								</a>
+							</th>
+							<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">{{::column.meta.label}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
+							<td>
+								<a class="btn btn-default btn-sm" ng-click="ngCtrl.applyQueryFilter()">
+									<i class="fa fa-fw fa-filter"></i>
+								</a>
+							</td>
+							<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
+								<div ng-switch="column.type">
+									<div ng-switch-when="field" ng-switch="column.meta.fieldType">
+										<div ng-switch-when="1">
+											<!--AutoNumber field-->
+											<div class="form-group form-group-sm">
+												<div class="input-group">
+													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												</div>
 											</div>
 										</div>
-									</div>
-									<div ng-switch-when="2">
-										<!--checkbox field-->
-										<div class="form-group form-group-sm">
-											<div class="checkbox">
-												<label>
-													<input type="checkbox" ng-model="ngCtrl.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
-												</label>
+										<div ng-switch-when="2">
+											<!--checkbox field-->
+											<div class="form-group form-group-sm">
+												<div class="checkbox">
+													<label>
+														<input type="checkbox" ng-model="ngCtrl.filterQuery[column.dataName]" ng-true-value="'true'" ng-false-value="'false'" /> true
+													</label>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div ng-switch-when="3">
-										<!--Currency field-->
-										<div class="form-group form-group-sm">
-											<div class="input-group">
-												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-												<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
+										<div ng-switch-when="3">
+											<!--Currency field-->
+											<div class="form-group form-group-sm">
+												<div class="input-group">
+													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
+												</div>
 											</div>
 										</div>
-									</div>
-									<div ng-switch-when="4">
-										<!--date field-->
-										<div class="form-group form-group-sm">
-											<div class="left-inner-addon">
-												<i class="fa fa-fw fa-calendar"></i>
-												<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
-									</div>
-									<div ng-switch-when="5">
-										<!--datetime field-->
-										<div class="form-group form-group-sm">
-											<div class="col-sm-6" style="padding:0">
+										<div ng-switch-when="4">
+											<!--date field-->
+											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
 													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
-											<div class="col-sm-6" style="padding: 0 0 0 5px">
+										</div>
+										<div ng-switch-when="5">
+											<!--datetime field-->
+											<div class="form-group form-group-sm">
+												<div class="col-sm-6" style="padding:0">
+													<div class="left-inner-addon">
+														<i class="fa fa-fw fa-calendar"></i>
+														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													</div>
+												</div>
+												<div class="col-sm-6" style="padding: 0 0 0 5px">
+													<div class="left-inner-addon">
+														<i class="fa fa-fw fa-clock-o"></i>
+														<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													</div>
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="6">
+											<!--email field-->
+											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
-													<i class="fa fa-fw fa-clock-o"></i>
-													<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+													<i class="fa fa-fw fa-envelope-o"></i>
+													<input type="email" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="7">
+											<!--file field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-link"></i>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="8">
+											<!--html field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="9">
+											<!--image field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-link"></i>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="10">
+											<!--textarea field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="11">
+											<!--multiselect field-->
+											<div class="form-group form-group-sm">
+												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
+													ng-options="option.value as option.key for option in column.meta.options"></select>
+											</div>
+										</div>
+										<div ng-switch-when="12">
+											<!--number field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="13">
+											<!--password field-->
+											<div class="form-group form-group-sm">
+												<p class="form-control-static" style="padding:6px 0">*******</p>
+											</div>
+										</div>
+										<div ng-switch-when="14">
+											<!--percent field-->
+											<div class="form-group form-group-sm">
+												<div class="right-inner-addon">
+													<i class="fa fa-fw fa-percent"></i>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+												</div>
+											</div>
+										</div>
+										<div ng-switch-when="15">
+											<!--phone field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="16">
+											<!--GUID field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="17">
+											<!--dropdown field-->
+											<div class="form-group form-group-sm">
+												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
+													ng-options="option.value as option.key for option in column.meta.options"></select>
+											</div>
+										</div>
+										<div ng-switch-when="18">
+											<!--text field-->
+											<div class="form-group form-group-sm">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+											</div>
+										</div>
+										<div ng-switch-when="19">
+											<!--url field-->
+											<div class="form-group form-group-sm">
+												<div class="left-inner-addon">
+													<i class="fa fa-fw fa-globe"></i>
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
 									</div>
-									<div ng-switch-when="6">
-										<!--email field-->
-										<div class="form-group form-group-sm">
-											<div class="left-inner-addon">
-												<i class="fa fa-fw fa-envelope-o"></i>
-												<input type="email" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
+									<div ng-switch-when="fieldFromRelation">field from relation</div>
+									<div ng-switch-when="view">view</div>
+									<div ng-switch-when="viewFromRelation">view from relation</div>
+									<div ng-switch-when="list">list</div>
+									<div ng-switch-when="listFromRelation">list from relation</div>
+									<div ng-switch-when="treeFromRelation">tree from relation</div>
+								</div>
+							</td>
+						</tr>
+						<tr ng-repeat="record in ngCtrl.list.data">
+							<td class="actions">
+								<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
+									<i class="fa fa-fw fa-eye"></i>
+								</a>
+							</td>
+							<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
+								<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
+									<div ng-switch-when="field">
+										<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
 									</div>
-									<div ng-switch-when="7">
-										<!--file field-->
-										<div class="form-group form-group-sm">
-											<div class="left-inner-addon">
-												<i class="fa fa-fw fa-link"></i>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
+									<div ng-switch-when="fieldFromRelation">
+										<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
 									</div>
-									<div ng-switch-when="8">
-										<!--html field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
+									<div ng-switch-when="view">
+										<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
 									</div>
-									<div ng-switch-when="9">
-										<!--image field-->
-										<div class="form-group form-group-sm">
-											<div class="left-inner-addon">
-												<i class="fa fa-fw fa-link"></i>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
+									<div ng-switch-when="viewFromRelation">
+										<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
 									</div>
-									<div ng-switch-when="10">
-										<!--textarea field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
+									<div ng-switch-when="list">
+										<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
 									</div>
-									<div ng-switch-when="11">
-										<!--multiselect field-->
-										<div class="form-group form-group-sm">
-											<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-												ng-options="option.value as option.key for option in column.meta.options"></select>
-										</div>
-									</div>
-									<div ng-switch-when="12">
-										<!--number field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
-									</div>
-									<div ng-switch-when="13">
-										<!--password field-->
-										<div class="form-group form-group-sm">
-											<p class="form-control-static" style="padding:6px 0">*******</p>
-										</div>
-									</div>
-									<div ng-switch-when="14">
-										<!--percent field-->
-										<div class="form-group form-group-sm">
-											<div class="right-inner-addon">
-												<i class="fa fa-fw fa-percent"></i>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
-									</div>
-									<div ng-switch-when="15">
-										<!--phone field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
-									</div>
-									<div ng-switch-when="16">
-										<!--GUID field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
-									</div>
-									<div ng-switch-when="17">
-										<!--dropdown field-->
-										<div class="form-group form-group-sm">
-											<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-												ng-options="option.value as option.key for option in column.meta.options"></select>
-										</div>
-									</div>
-									<div ng-switch-when="18">
-										<!--text field-->
-										<div class="form-group form-group-sm">
-											<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-										</div>
-									</div>
-									<div ng-switch-when="19">
-										<!--url field-->
-										<div class="form-group form-group-sm">
-											<div class="left-inner-addon">
-												<i class="fa fa-fw fa-globe"></i>
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
-											</div>
-										</div>
+									<div ng-switch-when="listFromRelation">
+										<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
 									</div>
 								</div>
-								<div ng-switch-when="fieldFromRelation">field from relation</div>
-								<div ng-switch-when="view">view</div>
-								<div ng-switch-when="viewFromRelation">view from relation</div>
-								<div ng-switch-when="list">list</div>
-								<div ng-switch-when="listFromRelation">list from relation</div>
-								<div ng-switch-when="treeFromRelation">tree from relation</div>
-							</div>
-						</td>
-					</tr>
-					<tr ng-repeat="record in ngCtrl.records">
-						<td class="actions">
-							<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
-								<i class="fa fa-fw fa-eye"></i>
-							</a>
-						</td>
-						<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.recordsMeta.columns | limitTo: ngCtrl.recordsMeta.visibleColumnsCount">
-							<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
-								<div ng-switch-when="field">
-									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
+								<div ng-if="::!ngCtrl.currentUserHasReadPermission(column)">
+									<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
 								</div>
-								<div ng-switch-when="fieldFromRelation">
-									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
-								</div>
-								<div ng-switch-when="view">
-									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-view>
-								</div>
-								<div ng-switch-when="viewFromRelation">
-									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-view>
-								</div>
-								<div ng-switch-when="list">
-									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-list>
-								</div>
-								<div ng-switch-when="listFromRelation">
-									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relationsMeta"></recursive-list>
-								</div>
-							</div>
-							<div ng-if="::!ngCtrl.currentUserHasReadPermission(column)">
-								<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 
-			<div class="ng-hide" ng-show='::ngCtrl.records.length > 0' ng-if="ngCtrl.recordsMeta.dynamicHtmlTemplate">
-				<dynamic-list template-url="ngCtrl.recordsMeta.dynamicHtmlTemplate" template-data="ngCtrl.records" template-meta="ngCtrl.recordsMeta"></dynamic-list>
+				<div class="ng-hide" ng-show='::ngCtrl.list.data.length > 0' ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
+					<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
+				</div>
 			</div>
-		</div>
 
-		<div class="alert alert-info ng-hide" ng-show='::ngCtrl.records.length == 0'>
-			There are no records matching your query
-		</div>
+			<div class="alert alert-info ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
+				There are no records matching your query
+			</div>
 
-		<ul class="pager ng-hide" ng-hide="::ngCtrl.currentPage == 1 && ngCtrl.currentListView.pageSize > ngCtrl.records.length" ng-if="::ngCtrl.currentListView.pageSize != 0">
-			<!--<li ng-if="::ngCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-			<li ng-if="::ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-			<li ng-if="::ngCtrl.currentListView.pageSize <= ngCtrl.records.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
-			<!--<li ng-if="::ngCtrl.currentListView.pageSize > ngCtrl.records.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
-		</ul>
+			<ul class="pager ng-hide" ng-hide="::ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
+				<li ng-if="::ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
+				<li ng-if="::ngCtrl.list.meta.pageSize <= ngCtrl.list.data.length" class="next"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+			</ul>
+		</div>
+		<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
 	</div>
 </div>
 

@@ -13,14 +13,12 @@
 		.controller('CreateRelationFieldModalController', CreateRelationFieldModalController)
         .controller('WebVellaAreasRecordCreateController', controller);
 
-	// Configuration ///////////////////////////////////
+	//#region << Configuration >> ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
-
-	/* @ngInject */
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-create', {
 			parent: 'webvella-areas-base',
-			url: '/create?listName&filter&page',
+			url: '/:viewName?listName&filter&page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -38,122 +36,150 @@
 					controllerAs: 'ngCtrl'
 				}
 			},
-			resolve: {},
+			resolve: {
+				loadDependency: loadDependency,
+				loadPreloadScript: loadPreloadScript,			
+			},
 			data: {
 
 			}
 		});
 	};
-
-
-	//#region << Run >> //////////////////////////////////////
-	run.$inject = ['$log'];
-	/* @ngInject */
-	function run($log) {
-		$log.debug('webvellaAreas>record-create> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-		$log.debug('webvellaAreas>record-create> END module.run ' + moment().format('HH:mm:ss SSSS'));
-	};
 	//#endregion
 
-	//#region << Resolve Function >> /////////////////////////
+	//#region << Resolve Function >>
 
-	//#endregion
+	////////////////////////
+ 	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','resolvedCurrentEntityMeta','wvAppConstants'];
+	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants){
+        var lazyDeferred = $q.defer();
 
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 
-	// Controller ///////////////////////////////
-	function multiplyDecimals(val1, val2, decimalPlaces) {
-		var helpNumber = 100;
-		for (var i = 0; i < decimalPlaces; i++) {
-			helpNumber = helpNumber * 10;
+		var loadFilesArray = [];
+		loadFilesArray.push(listServiceJavascriptPath);
+
+        return $ocLazyLoad.load ({
+          name: 'webvellaAreas.recordsList',
+          files: loadFilesArray
+        }).then(function() {
+           return lazyDeferred.resolve("ready");
+        });	
+	
+	}
+	////////////////////////
+ 	loadPreloadScript.$inject = ['loadDependency','webvellaActionService','$q','$http','$state'];
+	function loadPreloadScript(loadDependency,webvellaActionService, $q, $http,$state){
+        var defer = $q.defer();
+
+		if (webvellaActionService.preload === undefined || typeof (webvellaActionService.preload) != "function") {
+			console.log("No webvellaActionService.preload function. Skipping");
+			defer.resolve();
+			return defer.promise;
 		}
-		var temp1 = $scope.Math.round(val1 * helpNumber);
-		var temp2 = $scope.Math.round(val2 * helpNumber);
-		return (temp1 * temp2) / (helpNumber * helpNumber);
+		else {
+			webvellaActionService.preload(defer,$state);
+		}
 	}
 
+	//#endregion
 
-	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaRootService', 'webvellaAdminService', 'webvellaAreasService',
-        'resolvedSitemap', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location'];
-
-	/* @ngInject */
-	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaRootService, webvellaAdminService, webvellaAreasService,
-        resolvedSitemap, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location) {
-		$log.debug('webvellaAreas>record-create> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	//#region << Controller  >> ///////////////////////////////
+	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService','webvellaActionService',
+        'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location','$sessionStorage',
+		'resolvedCurrentUser'];
+	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService,webvellaActionService,
+        resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location,$sessionStorage,
+		resolvedCurrentUser) {
+		
+		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
-		ngCtrl.stateParams = $stateParams;
 		ngCtrl.validation = {};
-		//#region <<Set pageTitle>>
-		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
-		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
-		ngCtrl.siteMap = fastCopy(resolvedSitemap);
-		ngCtrl.currentArea = null;
-		for (var i = 0; i < ngCtrl.siteMap.data.length; i++) {
-			if (ngCtrl.siteMap.data[i].name == $state.params.areaName) {
-				ngCtrl.currentArea = ngCtrl.siteMap.data[i];
-			};
-		}
-		webvellaRootService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
 
-		//#region << Initialize current entity >>
-		ngCtrl.currentEntity = fastCopy(resolvedCurrentEntityMeta);
+		//#region <<Set Page meta>>
+		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
+		//#endregion
+
+		//#region << Initialize main objects >>
+		ngCtrl.view = {};
+		ngCtrl.view.data = {}; //Initially now, will be later filled in by the user
+		ngCtrl.view.meta = {}; //will be initialized in the following function
+		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.areas = fastCopy(resolvedAreas.data);
+		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.$sessionStorage = $sessionStorage;
+		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
 		//#region << Set environment >> /////////////////////
-
-		ngCtrl.createViewRegion = null;
-		ngCtrl.createView = null;
-		for (var i = 0; i < ngCtrl.currentEntity.recordViews.length; i++) {
-			if (ngCtrl.currentEntity.recordViews[i].type === "create" && ngCtrl.currentEntity.recordViews[i].default) {
-				ngCtrl.createView = ngCtrl.currentEntity.recordViews[i];
-				for (var j = 0; j < ngCtrl.currentEntity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.currentEntity.recordViews[i].regions[j].name === "content") {
-						ngCtrl.createViewRegion = ngCtrl.currentEntity.recordViews[i].regions[j];
+ 		ngCtrl.createViewRegion = null;
+		for (var i = 0; i < ngCtrl.entity.recordViews.length; i++) {
+			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
+				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
+				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
+					if (ngCtrl.entity.recordViews[i].regions[j].name === "content") {
+						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
 					}
 				}
 			}
 		}
+		//#endregion
 
-		//Initialize entityRecordData
-		ngCtrl.entityData = {};
+		//#region << Run  webvellaActionService.onload >>
+		if (webvellaActionService.onload === undefined || typeof (webvellaActionService.onload) != "function") {
+			$log.warn("No webvellaActionService.onload function. Skipping");
+		}
+		else {
+			var actionsOnLoadResult = webvellaActionService.onload(ngCtrl,$rootScope,$state);
+			if(actionsOnLoadResult != true){
+				ngCtrl.validation.hasError = true;
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+			}
+		}
+		//#endregion
+
+		//#region << Initialize fields defaults >>
 		ngCtrl.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		ngCtrl.progress = {}; //Needed for file and image uploads
 		var availableViewFields = [];
 		//Init default values of fields
 		if (ngCtrl.createViewRegion != null) {
-			availableViewFields = webvellaAdminService.getItemsFromRegion(ngCtrl.createViewRegion);
+			availableViewFields = webvellaCoreService.getItemsFromRegion(ngCtrl.createViewRegion);
 			for (var j = 0; j < availableViewFields.length; j++) {
 				if (availableViewFields[j].type === "field") {
 					switch (availableViewFields[j].meta.fieldType) {
 
 						case 2: //Checkbox
-							ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							break;
 
 						case 3: //Currency
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 4: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									ngCtrl.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									ngCtrl.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
 						case 5: //Date
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								if (availableViewFields[j].meta.useCurrentTimeAsDefaultValue) {
-									ngCtrl.entityData[availableViewFields[j].meta.name] = moment().toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment().toISOString();
 								}
 								else if (availableViewFields[j].meta.defaultValue) {
-									ngCtrl.entityData[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
+									ngCtrl.view.data[availableViewFields[j].meta.name] = moment(availableViewFields[j].meta.defaultValue).toISOString();
 								}
 							}
 							break;
@@ -162,39 +188,39 @@
 						case 7: //File
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 8: //HTML
 							if (availableViewFields[j].meta.required) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 9: //Image
 							ngCtrl.progress[availableViewFields[j].meta.name] = 0;
 							if (availableViewFields[j].meta.required) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 10: //TextArea
 							if (availableViewFields[j].meta.required) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 11: //Multiselect
 							if (availableViewFields[j].meta.required) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 12: //Number
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 13: //Password
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
 								//Does not have default value
-								//ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								//ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 14: //Percent
@@ -206,32 +232,32 @@
 								//The way to correct this is to multiply the decimals before multiple their values,
 								//var resultPercentage = 0.00;
 								//resultPercentage = multiplyDecimals(availableViewFields[j].meta.defaultValue, 100, 3);
-								//ngCtrl.entityData[availableViewFields[j].meta.name] = resultPercentage;
+								//ngCtrl.view.data[availableViewFields[j].meta.name] = resultPercentage;
 							}
 							break;
 						case 15: //Phone
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 16: //Guid
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 17: //Dropdown
 							if (availableViewFields[j].meta.required && availableViewFields[j].meta.defaultValue) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 						case 18: //Text
 							//if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-							//	ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+							//	ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							//}
 							break;
 						case 19: //URL
 							if (availableViewFields[j].meta.required || (!availableViewFields[j].meta.required && !availableViewFields[j].meta.placeholderText)) {
-								ngCtrl.entityData[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
+								ngCtrl.view.data[availableViewFields[j].meta.name] = fastCopy(availableViewFields[j].meta.defaultValue);
 							}
 							break;
 					}
@@ -240,9 +266,7 @@
 				}
 			}
 		}
-
-
-
+ 
 		// << File >>
 		ngCtrl.uploadedFileName = "";
 		ngCtrl.upload = function (file, item) {
@@ -250,16 +274,16 @@
 				ngCtrl.uploadedFileName = item.dataName;
 				ngCtrl.moveSuccessCallback = function (response) {
 					$timeout(function () {
-						ngCtrl.entityData[ngCtrl.uploadedFileName] = response.object.url;
+						ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
 					}, 1);
 				}
 
 				ngCtrl.uploadSuccessCallback = function (response) {
 					var tempPath = response.object.url;
 					var fileName = response.object.filename;
-					var targetPath = "/fs/" + ngCtrl.currentEntity.name + "/" + newGuid() + "/" + fileName;
+					var targetPath = "/fs/" + ngCtrl.entity.name + "/" + newGuid() + "/" + fileName;
 					var overwrite = false;
-					webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
+					webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, ngCtrl.moveSuccessCallback, ngCtrl.uploadErrorCallback);
 				}
 				ngCtrl.uploadErrorCallback = function (response) {
 					alert(response.message);
@@ -269,17 +293,17 @@
 						ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
 					}, 1);
 				}
-				webvellaAdminService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
 		ngCtrl.deleteFileUpload = function (item) {
 			var fieldName = item.dataName;
-			var filePath = ngCtrl.entityData[fieldName];
+			var filePath = ngCtrl.view.data[fieldName];
 
 			function deleteSuccessCallback(response) {
 				$timeout(function () {
-					ngCtrl.entityData[fieldName] = null;
+					ngCtrl.view.data[fieldName] = null;
 					ngCtrl.progress[fieldName] = 0;
 				}, 0);
 				return true;
@@ -294,11 +318,10 @@
 				return "validation error";
 			}
 
-			webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+			webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
 
 		}
-
-
+ 
 		// << Html >>
 		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
@@ -325,7 +348,6 @@
 			]
 		};
 
-
 		ngCtrl.toggleSectionCollapse = function (section) {
 			section.collapsed = !section.collapsed;
 		}
@@ -338,33 +360,32 @@
 		//#endregion
 
 		//#region << Entity relations functions >>
-		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
-
+ 
 		ngCtrl.getRelation = function (relationName) {
-			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
-				if (ngCtrl.relationsList[i].name == relationName) {
+			for (var i = 0; i < ngCtrl.entityRelations.length; i++) {
+				if (ngCtrl.entityRelations[i].name == relationName) {
 					//set current entity role
-					if (ngCtrl.currentEntity.id == ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id == ngCtrl.relationsList[i].originEntityId) {
-						ngCtrl.relationsList[i].currentEntityRole = 3; //both origin and target
+					if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+						ngCtrl.entityRelations[i].currentEntityRole = 3; //both origin and target
 					}
-					else if (ngCtrl.currentEntity.id == ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id != ngCtrl.relationsList[i].originEntityId) {
-						ngCtrl.relationsList[i].currentEntityRole = 2; //target
+					else if (ngCtrl.entity.id == ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+						ngCtrl.entityRelations[i].currentEntityRole = 2; //target
 					}
-					else if (ngCtrl.currentEntity.id != ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id == ngCtrl.relationsList[i].originEntityId) {
-						ngCtrl.relationsList[i].currentEntityRole = 1; //origin
+					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id == ngCtrl.entityRelations[i].originEntityId) {
+						ngCtrl.entityRelations[i].currentEntityRole = 1; //origin
 					}
-					else if (ngCtrl.currentEntity.id != ngCtrl.relationsList[i].targetEntityId && ngCtrl.currentEntity.id != ngCtrl.relationsList[i].originEntityId) {
-						ngCtrl.relationsList[i].currentEntityRole = 0; //possible problem
+					else if (ngCtrl.entity.id != ngCtrl.entityRelations[i].targetEntityId && ngCtrl.entity.id != ngCtrl.entityRelations[i].originEntityId) {
+						ngCtrl.entityRelations[i].currentEntityRole = 0; //possible problem
 					}
-					return ngCtrl.relationsList[i];
+					return ngCtrl.entityRelations[i];
 				}
 			}
 			return null;
 		}
 
 		ngCtrl.hasFieldFromRelationValue = function (itemDataName) {
-			var dataNameArray =  itemDataName.split('$');
-			if (ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"]) {
+			var dataNameArray = itemDataName.split('$');
+			if (ngCtrl.view.data["$" + dataNameArray[2] + "." + "id"]) {
 				return true;
 			}
 			else {
@@ -373,9 +394,9 @@
 		}
 
 		ngCtrl.removeFieldFromRelationValue = function (itemDataName) {
-			var dataNameArray =  itemDataName.split('$');
+			var dataNameArray = itemDataName.split('$');
 			$timeout(function () {
-				delete ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"];
+				delete ngCtrl.view.data["$" + dataNameArray[2] + "." + "id"];
 				delete ngCtrl.dummyFields[itemDataName];
 			}, 10);
 		}
@@ -384,19 +405,16 @@
 		//#endregion
 
 		//#region << Render >>
-		ngCtrl.calculatefieldWidths = webvellaAdminService.calculateViewFieldColsFromGridColSize;
 		ngCtrl.checkUserEntityPermissions = function (permissionsCsv) {
-			return fastCopy(webvellaRootService.userHasEntityPermissions(ngCtrl.currentEntity, permissionsCsv));
+			return fastCopy(webvellaCoreService.userHasEntityPermissions(ngCtrl.entity, permissionsCsv));
 		}
-
-
-		ngCtrl.getRelationLabel = function (item) {
+ 		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {
 				return item.fieldLabel
 			}
 			else {
 				var relationName = item.relationName;
-				var relation = findInArray(ngCtrl.relationsList, "name", relationName);
+				var relation = findInArray(ngCtrl.entityRelations, "name", relationName);
 				if (relation) {
 					return relation.label;
 				}
@@ -405,77 +423,7 @@
 				}
 			}
 		}
-
-		//#region << Methods to generate the record details view name >>
-
-		//Select default view for the area
-		ngCtrl.selectedList = {};
-		for (var j = 0; j < ngCtrl.currentEntity.recordLists.length; j++) {
-			if (ngCtrl.currentEntity.recordLists[j].name === $stateParams.listName) {
-				ngCtrl.selectedList = ngCtrl.currentEntity.recordLists[j];
-				break;
-			}
-		}
-
-
-
-		//Generate the proper view name for the record details screen (needed in the redirect)
-		ngCtrl.generateViewName = function (record) {
-			//default is the selected view in the area
-			var result = fastCopy(ngCtrl.selectedList.name);
-
-			if (ngCtrl.selectedList.viewNameOverride && cngCtrl.selectedList.viewNameOverride.length > 0) {
-				var arrayOfTemplateKeys = ngCtrl.selectedList.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
-				var resultStringStorage = fastCopy(ngCtrl.selectedList.viewNameOverride);
-
-				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
-					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
-						switch (arrayOfTemplateKeys[i]) {
-							case "{areaName}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
-								break;
-							case "{entityName}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.entityName));
-								break;
-							case "{page}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.page));
-								break;
-							case "{searchQuery}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.searchQuery));
-								break;
-						}
-					}
-					else {
-						//Extract the dataName from string by removing the leading and the closing {}
-						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
-						//Check template has corresponding list data value
-						if (record[dataName] != undefined) {
-							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
-							//Case 1 - data is not from relation (not starting with $)
-							if (!dataName.startsWith('$')) {
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
-							}
-							else {
-								//Case 2 - relation field
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
-							}
-
-						}
-						else {
-							//NO -> substitute the template key with the dataName only, as no value could be extracted
-							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(dataName));
-						}
-					}
-
-				}
-				result = resultStringStorage;
-			}
-
-			return result;
-		}
-		//#endregion
-
-		//#endregion
+ 		//#endregion
 
 		//#region << Save >>
 		ngCtrl.create = function (redirectTarget) {
@@ -483,7 +431,7 @@
 			ngCtrl.validation = {};
 			for (var k = 0; k < availableViewFields.length; k++) {
 				if (availableViewFields[k].type === "field" && availableViewFields[k].meta.required) {
-					if (ngCtrl.entityData[availableViewFields[k].dataName] == null || ngCtrl.entityData[availableViewFields[k].dataName] == "") {
+					if (ngCtrl.view.data[availableViewFields[k].dataName] == null || ngCtrl.view.data[availableViewFields[k].dataName] == "") {
 						ngCtrl.validation[availableViewFields[k].dataName] = true;
 						ngCtrl.validation.hasError = true;
 						ngCtrl.validation.errorMessage = "A required data is missing!";
@@ -496,13 +444,13 @@
 					if (availableViewFields[k].type === "field") {
 						switch (availableViewFields[k].meta.fieldType) {
 							case 4: //Date
-								if (ngCtrl.entityData[availableViewFields[k].dataName] != null) {
-									ngCtrl.entityData[availableViewFields[k].dataName] = moment(ngCtrl.entityData[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
+								if (ngCtrl.view.data[availableViewFields[k].dataName] != null) {
+									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).startOf('day').utc().toISOString();
 								}
 								break;
 							case 5: //Date & Time
-								if (ngCtrl.entityData[availableViewFields[k].dataName] != null) {
-									ngCtrl.entityData[availableViewFields[k].dataName] = moment(ngCtrl.entityData[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
+								if (ngCtrl.view.data[availableViewFields[k].dataName] != null) {
+									ngCtrl.view.data[availableViewFields[k].dataName] = moment(ngCtrl.view.data[availableViewFields[k].dataName]).startOf('minute').utc().toISOString();
 								}
 								break;
 							case 14: //Percent
@@ -510,8 +458,8 @@
 								//Hack for proper javascript division
 								$scope.Math = window.Math;
 								var helpNumber = 10000000;
-								var multipliedValue = $scope.Math.round(ngCtrl.entityData[availableViewFields[k].dataName] * helpNumber);
-								ngCtrl.entityData[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
+								var multipliedValue = $scope.Math.round(ngCtrl.view.data[availableViewFields[k].dataName] * helpNumber);
+								ngCtrl.view.data[availableViewFields[k].dataName] = multipliedValue / (100 * helpNumber);
 								break;
 						}
 					}
@@ -519,14 +467,14 @@
 						//Currently no need to remove field from relations that are not id, as they are not attached to the entityData anyway
 					}
 				}
-				ngCtrl.entityData["created_on"] = moment().utc().toISOString();
+				ngCtrl.view.data["created_on"] = moment().utc().toISOString();
 				//popupCtrl.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
 				switch (redirectTarget) {
 					case "details":
-						webvellaAdminService.createRecord(ngCtrl.currentEntity.name, ngCtrl.entityData, successCallback, errorCallback);
+						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
 						break;
 					case "list":
-						webvellaAdminService.createRecord(ngCtrl.currentEntity.name, ngCtrl.entityData, successCallbackList, errorCallback);
+						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
 						break;
 				}
 			}
@@ -561,17 +509,18 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				var detailsViewName = ngCtrl.generateViewName(response.object);
+				
+				alert("the details view name should be generated")
 
-				$state.go("webvella-areas-record-view", {
-					areaName: $stateParams.areaName,
-					entityName: $stateParams.entityName,
-					recordId: response.object.data[0].id,
-					viewName: detailsViewName,
-					auxPageName: "*",
-					page: $stateParams.page
+				//$state.go("webvella-areas-record-view", {
+				//	areaName: $stateParams.areaName,
+				//	entityName: $stateParams.entityName,
+				//	recordId: response.object.data[0].id,
+				//	viewName: detailsViewName,
+				//	auxPageName: "*",
+				//	page: $stateParams.page
 
-				}, { reload: true });
+				//}, { reload: true });
 			}, 0);
 		}
 
@@ -581,8 +530,6 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				var detailsViewName = ngCtrl.generateViewName(response.object);
-
 				$state.go("webvella-entity-records", {
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
@@ -594,8 +541,7 @@
 		}
 
 		function errorCallback(response) {
-
-
+			alert(response.message);
 		}
 
 		//#endregion
@@ -647,11 +593,11 @@
 					function modalCase1SuccessCallback(response) {
 						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
 						var dummyFieldValue = null;
-						var dataNameArray =  item.dataName.split('$');
+						var dataNameArray = item.dataName.split('$');
 						var dummyFieldName = dataNameArray[3];
-						ngCtrl.dummyFields[item.dataName] = webvellaAreasService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
+						ngCtrl.dummyFields[item.dataName] = webvellaCoreService.renderFieldValue(response.object.data[0][dummyFieldName], item.meta);
 						//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-						ngCtrl.entityData["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
+						ngCtrl.view.data["$" + dataNameArray[2] + "." + "id"] = returnObject.selectedRecordId;
 					}
 					function modalCase1ErrorCallback(response) {
 						ngToast.create({
@@ -660,7 +606,7 @@
 							timeout: 7000
 						});
 					}
-					webvellaAdminService.getRecord(returnObject.selectedRecordId,"*", item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+					webvellaCoreService.getRecord(returnObject.selectedRecordId, "*", item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 				});
 			}
 				//Select MULTIPLE item modal
@@ -695,7 +641,7 @@
 				//On modal exit
 				modalInstance.result.then(function (returnObject) {
 					var selectedRecords = [];
-					var dataNameArray =  item.dataName.split('$');
+					var dataNameArray = item.dataName.split('$');
 					var dummyFieldName = dataNameArray[3];
 					var idFieldPrefix = "$" + dataNameArray[2] + ".";
 					//1.the field name needed for the view (item.fieldName) and the other's entity name	(item.entityName)
@@ -705,11 +651,11 @@
 						//3.set the value of the dummy field (dummyFields[item.dataName] in the create to match the found view field value
 						var dummyFieldValue = null;
 						ngCtrl.dummyFields[item.dataName] = [];
-						ngCtrl.entityData[idFieldPrefix + "id"] = [];
+						ngCtrl.view.data[idFieldPrefix + "id"] = [];
 						for (var i = 0; i < response.object.data.length; i++) {
-							ngCtrl.dummyFields[item.dataName].push(webvellaAreasService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
+							ngCtrl.dummyFields[item.dataName].push(webvellaCoreService.renderFieldValue(response.object.data[i][dummyFieldName], item.meta));
 							//4.set in the create model $field$relation_name$id -> is this is the only way to be sure that the value will be unique and the api will not produce error
-							ngCtrl.entityData[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
+							ngCtrl.view.data[idFieldPrefix + "id"].push(response.object.data[i]["id"]);
 						}
 					}
 					function modalCase1ErrorCallback(response) {
@@ -723,13 +669,13 @@
 					fieldsArray.push(dummyFieldName);
 
 					if (returnObject.selectedRecordIdArray.length == 0) {
-					   	ngCtrl.dummyFields[item.dataName] = [];
-						ngCtrl.entityData[idFieldPrefix + "id"] = [];
+						ngCtrl.dummyFields[item.dataName] = [];
+						ngCtrl.view.data[idFieldPrefix + "id"] = [];
 					}
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
 						var fieldCSV = fieldsArray.join(',');
-						webvellaAdminService.getRecords(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaCoreService.getRecordsWithLimitations(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}
@@ -809,40 +755,35 @@
 							getListRecordsSuccessCallback(lockedChangeResponse);
 						}
 						else {
-							webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+							webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, getListRecordsSuccessCallback, errorCallback);
 						}
 					}
 					else if (ngCtrl.modalDataKind == "target") {
 						//Current records is Target
-						webvellaAreasService.getListRecords(defaultLookupList.name, entityMeta.name, 1, null, getListRecordsSuccessCallback, errorCallback);
+						webvellaCoreService.getRecordsByListName(defaultLookupList.name, entityMeta.name, 1, getListRecordsSuccessCallback, errorCallback);
 					}
 				}
 			}
 
-			webvellaAdminService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
+			webvellaCoreService.getEntityMeta(item.entityName, getEntityMetaSuccessCallback, errorCallback);
 
 			return defer.promise;
 		}
 
 		//#endregion
+
+
 		//#endregion
-
-		$log.debug('webvellaAreas>record-create> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
-
+	//#endregion
 
 	//#region < Modal Controllers >
-
-	//#region << Manage relation Modal >>
-	//Test to unify all modals - Single select, multiple select, click to select
 	CreateRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
-        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaAdminService', 'webvellaAreasService', 'webvellaRootService', 'ngToast', '$timeout', '$state'];
-	/* @ngInject */
+        'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 	function CreateRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
-        selectedDataKind, selectedItem, selectedRelationType, webvellaAdminService, webvellaAreasService, webvellaRootService, ngToast, $timeout, $state) {
+        selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
 
-		$log.debug('webvellaAdmin>entities>deleteFieldModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+		
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.parentData = fastCopy(ngCtrl);
@@ -886,7 +827,7 @@
 			if (popupCtrl.searchQuery) {
 				popupCtrl.searchQuery = popupCtrl.searchQuery.trim();
 			}
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, popupCtrl.searchQuery, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, 1, successCallback, errorCallback);
 		}
 		//#endregion
 
@@ -902,7 +843,7 @@
 
 			}
 
-			webvellaAreasService.getListRecords(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, null, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.selectedItem.entityName, page, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -910,7 +851,7 @@
 		//#region << Logic >>
 
 		//Render field values
-		popupCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		popupCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 
 		popupCtrl.isSelectedRecord = function (recordId) {
 			if (popupCtrl.currentlyAttachedIds) {
@@ -973,12 +914,7 @@
 			$uibModalInstance.dismiss('cancel');
 		};
 
-		//#endregion
-
-		$log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	};
-	//#endregion 
-
 	//#endregion
 
 

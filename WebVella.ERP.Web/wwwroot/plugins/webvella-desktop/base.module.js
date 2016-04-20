@@ -10,18 +10,14 @@
 	angular
         .module('webvellaDesktop', ['ui.router'])
         .config(config)
-        .run(run)
         .controller('WebVellaDesktopBaseController', controller);
 
-	// Configuration ///////////////////////////////////
+	//#region << Configuration >> ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
-
-	/* @ngInject */
 	function config($stateProvider) {
 		$stateProvider.state('webvella-desktop-base', {
 			abstract: true,
-			//parent: 'webvella-root',
-			url: '', //will be added to all children states
+			url: '',
 			views: {
 				"rootView": {
 					controller: 'WebVellaDesktopBaseController',
@@ -30,7 +26,6 @@
 				}
 			},
 			resolve: {
-				//here you can resolve any plugin wide data you need. It will be available for all children states. Parent resolved objects can be injected in the functions too
 				pageTitle: function () {
 					return "Webvella ERP";
 				},
@@ -39,50 +34,27 @@
 			data: {}
 		});
 	};
+	//#endregion
 
-
-	// Run //////////////////////////////////////
-	run.$inject = ['$log', '$rootScope', 'webvellaDesktopTopnavFactory', 'webvellaDesktopBrowsenavFactory'];
-
-	/* @ngInject */
-	function run($log, $rootScope, webvellaDesktopTopnavFactory, webvellaDesktopBrowsenavFactory) {
-		$log.debug('webvellaDesktop>base> BEGIN module.run ' + moment().format('HH:mm:ss SSSS'));
-
-		$log.debug('webvellaDesktop>base> END module.run ' + moment().format('HH:mm:ss SSSS'));
-	};
-
-	// Resolve /////////////////////////////////
-	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaAdminService', 'webvellaRootService', '$state', '$stateParams'];
-	/* @ngInject */
-	function resolveCurrentUser($q, $log, webvellaAdminService, webvellaRootService, $state, $stateParams) {
-		$log.debug('webvellaAreas>base>resolveCurrentUser> BEGIN user resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
+	//#region << Resolve >> /////////////////////////////////
+	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	
+	function resolveCurrentUser($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
-		// Process
-		var currentUser = webvellaRootService.getCurrentUser();
+		var currentUser = webvellaCoreService.getCurrentUser();
 		if (currentUser != null) {
 			defer.resolve(currentUser);
 		}
 		else {
 			defer.reject(null);
 		}
-
-		// Return
-		$log.debug('webvellaAreas>base>resolveCurrentUser> END user resolved ' + moment().format('HH:mm:ss SSSS'));
 		return defer.promise;
 	}
+	//#endregion
 
-
-
-
-	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout', 'webvellaRootService', 'resolvedCurrentUser'];
-
-	/* @ngInject */
-	function controller($scope, $log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout, webvellaRootService, resolvedCurrentUser) {
-		$log.debug('webvellaDesktop>base> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
-		/* jshint validthis:true */
+	//#region << Controller >> ///////////////////////////////
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'webvellaDesktopTopnavFactory', '$timeout', 'webvellaCoreService', 'resolvedCurrentUser'];
+	function controller($scope, $log, $rootScope, $state, $stateParams, webvellaDesktopTopnavFactory, $timeout, webvellaCoreService, resolvedCurrentUser) {
 		var baseCtrl = this;
 		baseCtrl.topnav = [];
 		baseCtrl.user = fastCopy(resolvedCurrentUser);
@@ -105,36 +77,14 @@
 			updateTopnavDestructor();
 		});
 
-		////5. Bootstrap the pluggable element and cast the Ready hook
-		//Push the Browse area menu
-		//var item = {
-		//    "label": "TTG",
-		//    "stateName": "webvella-desktop-browse",
-		//    "stateParams": {},
-		//    "parentName": "",
-		//    "nodes": [],
-		//    "weight": 1.0
-		//};
-		//webvellaDesktopTopnavFactory.addItem(item);
-		//item = {
-		//    "label": "CRM",
-		//    "stateName": "webvella-desktop-browse",
-		//    "stateParams": {},
-		//    "parentName": "",
-		//    "nodes": [],
-		//    "weight": 1.0
-		//};
-		//webvellaDesktopTopnavFactory.addItem(item);
 		$timeout(function () {
 			$rootScope.$emit("webvellaDesktop-topnav-ready");
-			$log.debug('rootScope>events> "webvellaDesktop-topnav-ready" emitted ' + moment().format('HH:mm:ss SSSS'));
 		}, 0);
 		baseCtrl.logout = function () {
-			webvellaRootService.logout(
+			webvellaCoreService.logout(
                     function (response) {
-                    	//  $window.location = '#/login';
                     	$timeout(function () {
-                    		$state.go('webvella-root-login');
+                    		$state.go('webvella-core-login');
                     	}, 0);
                     },
                     function (response) { });
@@ -149,8 +99,6 @@
 			}
 		}
 
-		$log.debug('webvellaDesktop>base> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
 		function activate() {
 			if (baseCtrl.topnav.length > 0) {
 				$timeout(function () {
@@ -162,5 +110,5 @@
 			}
 		}
 	}
-
+	//#endregion
 })();

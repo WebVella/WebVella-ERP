@@ -14,13 +14,12 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 
-						'resolvedSitemap', 'resolvedCurrentUser', 'pluginAuxPageName','$sessionStorage','$timeout'];
+						'resolvedAreas', 'resolvedCurrentUser', 'pluginAuxPageName','$sessionStorage','$timeout'];
 
-    /* @ngInject */
+    
     function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, 
-						resolvedSitemap, resolvedCurrentUser, pluginAuxPageName,$sessionStorage,$timeout) {
-    	$log.debug('webvellaAreas>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+						resolvedAreas, resolvedCurrentUser, pluginAuxPageName,$sessionStorage,$timeout) {
+        
         var sidebarData = this;
         sidebarData.view = resolvedCurrentView.meta;
         sidebarData.stateParams = $stateParams;
@@ -31,9 +30,9 @@
     	//#region << Select default list >>
         sidebarData.defaultEntityAreaListName = "";
     	//get the current area meta
-	    for (var j = 0; j < resolvedSitemap.data.length; j++) {
-	    	if (resolvedSitemap.data[j].name === $stateParams.areaName) {
-	    		var areaAttachments = angular.fromJson(resolvedSitemap.data[j].attachments);
+	    for (var j = 0; j < resolvedAreas.data.length; j++) {
+	    	if (resolvedAreas.data[j].name === $stateParams.areaName) {
+	    		var areaAttachments = angular.fromJson(resolvedAreas.data[j].attachments);
 	    		for (var k = 0; k < areaAttachments.length; k++) {
 				    if (areaAttachments[k].name === $stateParams.entityName) {
 					    sidebarData.defaultEntityAreaListName = areaAttachments[k].list.name;
@@ -111,9 +110,6 @@
 			}
 			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"
 		}
-
-
-        $log.debug('webvellaAreas>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 })();

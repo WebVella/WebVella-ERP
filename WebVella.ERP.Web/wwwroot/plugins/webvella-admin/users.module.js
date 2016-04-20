@@ -19,7 +19,7 @@
 
     config.$inject = ['$stateProvider'];
 
-    /* @ngInject */
+    
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-users', {
             parent: 'webvella-admin-base',
@@ -55,9 +55,8 @@
 
     //#region << Resolve Functions >>/////////////////////////
     checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
+	
     function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	var defer = $q.defer();
     	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
     	var accessPermission = false;
@@ -79,16 +78,14 @@
     		});
     		defer.reject("No access");
     	}
-
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
 
-    resolveUserRecordsList.$inject = ['$q', '$log', 'webvellaAdminService', '$stateParams', '$state', '$timeout'];
-    /* @ngInject */
-    function resolveUserRecordsList($q, $log, webvellaAdminService, $stateParams, $state, $timeout) {
-    	$log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    resolveUserRecordsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+    
+    function resolveUserRecordsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+
         // Initialize
         var defer = $q.defer();
         
@@ -115,19 +112,15 @@
             }
         }
 
-        webvellaAdminService.getRecords("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithLimitations("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
 
-
-        // Return
-        $log.debug('webvellaAdmin>areas-list>resolveAreaRecordsList END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
     // Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
-    /* @ngInject */
-    function resolveRolesList($q, $log, webvellaAdminService) {
-    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
+    
+    function resolveRolesList($q, $log, webvellaCoreService) {
         // Initialize
         var defer = $q.defer();
 
@@ -140,10 +133,8 @@
         	defer.reject(response.message);
         }
 
-        webvellaAdminService.getRecordsByEntityName("null", "role", "null", successCallback, errorCallback);
+        webvellaCoreService.getRecordsByListName("null","role", "null", successCallback, errorCallback);
 
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
@@ -151,12 +142,11 @@
 
     //#region << Controller >> ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedUserRecordsList',
-							'resolvedRolesList', '$uibModal', 'webvellaAdminService','$timeout'];
-    /* @ngInject */
+							'resolvedRolesList', '$uibModal', 'webvellaCoreService','$timeout'];
+    
     function controller($scope, $log, $rootScope, $state, pageTitle, resolvedUserRecordsList,
-						resolvedRolesList, $uibModal, webvellaAdminService,$timeout) {
-    	$log.debug('webvellaAdmin>user-list> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+						resolvedRolesList, $uibModal, webvellaCoreService,$timeout) {
+        
         var ngCtrl = this;
         ngCtrl.search = {};
 
@@ -184,7 +174,7 @@
             	ngCtrl.currentUser = user;
             }
             else {
-            	ngCtrl.currentUser = webvellaAdminService.initUser();
+            	ngCtrl.currentUser = webvellaCoreService.initUser();
             }
             var modalInstance = $uibModal.open({
                 animation: false,
@@ -200,19 +190,15 @@
             });
 
         }
-
-
-        $log.debug('webvellaAdmin>areas-list> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
     //#endregion
 
 
     //// Modal Controllers
-    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
-    /* @ngInject */
-    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
-    	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    manageUserController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+    
+    function manageUserController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
+        
         var popupCtrl = this;
         popupCtrl.modalInstance = $uibModalInstance;
         popupCtrl.user = fastCopy(ngCtrl.currentUser);
@@ -226,7 +212,7 @@
         	popupCtrl.isUpdate = false;
         	//popupCtrl.user.$user_role = [];
             popupCtrl.modalTitle = "Create new area";
-            popupCtrl.user.id = guid();
+            popupCtrl.user.id = null;
             popupCtrl.userRoles.push("f16ec6db-626d-4c27-8de0-3e7ce542c55f"); //Push regular role by default
         	//Guest role = 987148b1-afa8-4b33-8616-55861e5fd065
         }
@@ -258,7 +244,7 @@
         			var fileName = response.object.filename;
         			var targetPath = "/fs/" + popupCtrl.user.id + "/" + fileName;
         			var overwrite = true;
-        			webvellaAdminService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
+        			webvellaCoreService.moveFileFromTempToFS(tempPath, targetPath, overwrite, popupCtrl.moveSuccessCallback, popupCtrl.uploadErrorCallback);
         		}
         		popupCtrl.uploadErrorCallback = function (response) {
         			alert(response.message);
@@ -268,7 +254,7 @@
         				popupCtrl.progress.image= parseInt(100.0 * response.loaded / response.total);
         			}, 0);
         		}
-        		webvellaAdminService.uploadFileToTemp(file, "image", popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+        		webvellaCoreService.uploadFileToTemp(file, "image", popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
         	}
         };
         popupCtrl.deleteImage = function () {
@@ -292,7 +278,7 @@
         		return "validation error";
         	}
 
-        	webvellaAdminService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+        	webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
 
         }
 
@@ -306,7 +292,7 @@
         		popupCtrl.userRoles.forEach(function(role){
 					 popupCtrl.user["$user_role.id"].push(role);
 				});
-				webvellaAdminService.createRecord("user",popupCtrl.user, successCallback, errorCallback);
+				webvellaCoreService.createRecord("user",popupCtrl.user, successCallback, errorCallback);
             }
             else {
         		popupCtrl.user["$user_role.id"] = [];
@@ -317,7 +303,7 @@
         		if (popupCtrl.password) {
         			popupCtrl.user.password = popupCtrl.password;
         		}
-        		webvellaAdminService.updateRecord(popupCtrl.user.id,"user",popupCtrl.user, successCallback, errorCallback);
+        		webvellaCoreService.updateRecord(popupCtrl.user.id,"user",popupCtrl.user, successCallback, errorCallback);
             } 
         };
 
@@ -332,17 +318,14 @@
                 content: '<span class="go-green">Success:</span> ' + 'The user was successfully saved'
             });
             $uibModalInstance.close('success');
-            webvellaRootService.GoToState($state.current.name, {});
+            webvellaCoreService.GoToState($state.current.name, {});
         }
 
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupCtrl, popupCtrl.user, location);
+            webvellaCoreService.generateValidationMessages(response, popupCtrl, popupCtrl.user, location);
         }
-
-
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
 

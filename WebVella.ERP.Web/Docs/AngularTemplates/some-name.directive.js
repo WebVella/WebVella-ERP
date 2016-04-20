@@ -14,7 +14,7 @@
 
     directive.$inject = ['dependencies'];
     
-    /* @ngInject */
+    
     function directive (dependencies) {
         // Usage:
         //
@@ -36,7 +36,7 @@
         
         DirectiveController.$inject = ['dependencies'];
 
-        /* @ngInject */
+        
         function DirectiveController(dependencies) {
         }
     }

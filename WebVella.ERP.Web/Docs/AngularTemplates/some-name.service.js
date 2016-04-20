@@ -13,7 +13,7 @@
 
     service.$inject = ['$http'];
     
-    /* @ngInject */
+    
     function service($http) {
         var self = this;
 

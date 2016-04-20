@@ -15,10 +15,9 @@
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', 'resolvedCurrentUser'];
 
-    /* @ngInject */
+    
     function controller($log, $rootScope, $state, resolvedCurrentUser) {
-    	$log.debug('webvellaAdmin>sidebar> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+        
         var sidebarData = this;
         sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
 
@@ -26,8 +25,6 @@
         	sidebarData.isMiniSidebar = $rootScope.isMiniSidebar;
         });
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
-        $log.debug('webvellaAdmin>sidebar> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
-
     }
 
 })();

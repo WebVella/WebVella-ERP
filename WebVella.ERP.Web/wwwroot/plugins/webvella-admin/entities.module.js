@@ -16,7 +16,7 @@
     // Configuration ///////////////////////////////////
     config.$inject = ['$stateProvider'];
 
-    /* @ngInject */
+    
     function config($stateProvider) {
         $stateProvider.state('webvella-admin-entities', {
             parent: 'webvella-admin-base',
@@ -51,9 +51,8 @@
 
 	//#region << Resolve >>
     checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	/* @ngInject */
+	
     function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-    	$log.debug('webvellaAreas>entities> BEGIN check access permission ' + moment().format('HH:mm:ss SSSS'));
     	var defer = $q.defer();
     	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
     	var accessPermission = false;
@@ -76,17 +75,15 @@
     		defer.reject("No access");
     	}
 
-    	$log.debug('webvellaAreas>entities> END check access permission ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
 
     // Resolve EntityMetaList /////////////////////////
-    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaAdminService','$timeout'];
+    resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaCoreService','$timeout'];
 
-    /* @ngInject */
-    function resolveEntityMetaList($rootScope,$q, $log, webvellaAdminService,$timeout) {
-    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    
+    function resolveEntityMetaList($rootScope,$q, $log, webvellaCoreService,$timeout) {
         // Initialize
         var defer = $q.defer();
 
@@ -94,7 +91,6 @@
 		$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
 		},0);
-        $log.debug('rootScope>events> "application-body-sidebar-menu-isVisible-update" emitted ' + moment().format('HH:mm:ss SSSS'));
 
         // Process
         function successCallback(response) {
@@ -105,19 +101,16 @@
         	defer.reject(response.message);
         }
 
-        webvellaAdminService.getMetaEntityList(successCallback, errorCallback);
+        webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 
-        // Return
-        $log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
         return defer.promise;
     }
 
 
 	// Resolve Roles list /////////////////////////
-    resolveRolesList.$inject = ['$q', '$log', 'webvellaAdminService'];
-	/* @ngInject */
-    function resolveRolesList($q, $log, webvellaAdminService) {
-    	$log.debug('webvellaAdmin>entities> BEGIN state.resolved ' + moment().format('HH:mm:ss SSSS'));
+    resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
+	
+    function resolveRolesList($q, $log, webvellaCoreService) {
     	// Initialize
     	var defer = $q.defer();
 
@@ -130,22 +123,19 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaAdminService.getRecordsByEntityName("null", "role", "null", successCallback, errorCallback);
+    	webvellaCoreService.getRecordsByListName("null","role", "null", successCallback, errorCallback);
 
-    	// Return
-    	$log.debug('webvellaAdmin>entities> END state.resolved ' + moment().format('HH:mm:ss SSSS'));
     	return defer.promise;
     }
 
 	//#endregion
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaAdminService','$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaCoreService','$timeout'];
 
-    /* @ngInject */
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaAdminService,$timeout) {
-    	$log.debug('webvellaAdmin>entities> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaCoreService,$timeout) {
+        
         var ngCtrl = this;
         //Update page title
         ngCtrl.pageTitle = "Entities | " + pageTitle;
@@ -179,19 +169,18 @@
 
         }
 
-        $log.debug('webvellaAdmin>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     }
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaAdminService', 'webvellaRootService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
 
-    /* @ngInject */
-    function createEntityController($uibModalInstance, $log, webvellaAdminService, webvellaRootService, ngToast, $timeout, $state, $location, ngCtrl) {
-    	$log.debug('webvellaAdmin>entities>createEntityModal> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
-        /* jshint validthis:true */
+    
+    function createEntityController($uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
+
+        
         var popupCtrl = this;
-        popupCtrl.entity = webvellaAdminService.initEntity();
+        popupCtrl.entity = webvellaCoreService.initEntity();
         popupCtrl.roles = ngCtrl.roles;
         
         //Processing the roles for generation the checkbox values
@@ -289,7 +278,7 @@
 
 
         popupCtrl.ok = function () {
-            webvellaAdminService.createEntity(popupCtrl.entity, successCallback, errorCallback)
+            webvellaCoreService.createEntity(popupCtrl.entity, successCallback, errorCallback)
         };
 
         popupCtrl.cancel = function () {
@@ -311,9 +300,8 @@
         function errorCallback(response) {
             var location = $location;
             //Process the response and generate the validation Messages
-            webvellaRootService.generateValidationMessages(response, popupCtrl,popupCtrl.entity, location);
+            webvellaCoreService.generateValidationMessages(response, popupCtrl,popupCtrl.entity, location);
         }
-        $log.debug('webvellaAdmin>entities>createEntityModal> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
     };
 
 })();

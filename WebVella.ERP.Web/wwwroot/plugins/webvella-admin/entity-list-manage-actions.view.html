@@ -45,26 +45,25 @@
 		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a>
 
 		<h4 style="margin-bottom:1em;margin-top:2em;">Menu items</h4>
-		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.addManageMenuItemModal(null)">Add New</a>
-		<table class="table table-bordered table-hover table-vertical-align-middle" style="margin-top:1em;">
+		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)">Add New</a>
+		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.list.actionItems.length > 0">
 			<thead>
 				<tr>
 					<th width="30"></th>
+					<th width="100">menu</th>
 					<th width="30"> weight</th>
-					<th>label</th>
-					<th>menu</th>
+					<th>name</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td><a class="btn btn-default btn-sm"><i class="fa fa-fw fa-pencil"/></a></td>
-					<td>1</td>
-					<td>print_record</td>
-					<td>page title dropdown</td>
+				<tr ng-repeat="actionItem in ngCtrl.list.actionItems track by actionItem.name">
+					<td><a class="btn btn-default btn-sm"  href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(actionItem)"><i class="fa fa-fw fa-pencil"/></a></td>
+					<td ng-bind="actionItem.menu"></td>
+					<td ng-bind="actionItem.weight"></td>
+					<td ng-bind="actionItem.name"></td>
 				</tr>
 			</tbody>
 		</table>
-
 	</div>
 </div>
 
@@ -92,7 +91,7 @@
 		<h3 class="modal-title">Manage Service Code</h3>
 	</div>
 	<div class="modal-body">
-		<p>(Click to edit) The contents of the service javascript file, automatically loaded with the list.</p>
+		<p>(Click below to edit) The contents of the service javascript file, automatically loaded with the list.</p>
 		<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.serviceCode" style="height:400px;"></div>
 	</div>
 	<div class="modal-footer">
@@ -101,7 +100,7 @@
 	</div>
 </script>
 
-<script type="text/ng-template" id="addManageMenuItemModal.html">
+<script type="text/ng-template" id="addManageActionItemModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		<h3 class="modal-title" ng-if="popupCtrl.isEdit">Manage Action</h3>
@@ -113,7 +112,7 @@
 				<div class="row">
 					<label class="control-label col-sm-1">Name</label>
 					<div class="col-sm-7">
-						<input ng-model="popupCtrl.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. print_record"
+						<input ng-model="popupCtrl.actionItem.name" name="name" type="text" class="form-control" id="areaName" placeholder="e.g. print_record"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.name.$error" ng-if="formName.name.$touched && formName.name.$dirty && formName.name.$invalid || popupCtrl.nameError">
 							<ng-message when="required" class="error">required field</ng-message>
@@ -126,7 +125,7 @@
 					</div>
 					<label class="control-label col-sm-1">Weight</label>
 					<div class="col-sm-3">
-						<input ng-model="popupCtrl.menuItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
+						<input ng-model="popupCtrl.actionItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
 							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.weight.$error" ng-if="formName.weight.$touched && formName.weight.$dirty && formName.weight.$invalid || popupCtrl.weightError">
 							<ng-message when="required" class="error">required field</ng-message>
@@ -142,7 +141,7 @@
 				<div class="row">
 					<label class="control-label col-sm-1">Menu</label>
 					<div class="col-sm-7">
-						<select class="form-control" ng-model="popupCtrl.menuItem.menu" ng-change="popupCtrl.menuChanged()"
+						<select class="form-control" ng-model="popupCtrl.actionItem.menu" ng-change="popupCtrl.menuChanged()"
 						ng-options="option.value as option.key for option in popupCtrl.menuOptions"></select>
 					</div>
 				</div>
@@ -151,14 +150,14 @@
 				<div class="row">
 					<label class="control-label col-sm-1">Template</label>
 					<div class="col-sm-11">
-						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.menuItem.template" style="height:100px;"></div>						
+						<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.actionItem.template" style="height:100px;"></div>						
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.deleteMenuItemModal()">[ Delete ]</button>
+		<button ng-if="popupCtrl.isEdit" class="btn btn-link pull-left go-red" ng-click="popupCtrl.delete()">[ Delete ]</button>
 		<button class="btn btn-primary" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.isEdit">Save</button>
 		<button class="btn btn-success" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" ng-if="!popupCtrl.isEdit">Add</button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>

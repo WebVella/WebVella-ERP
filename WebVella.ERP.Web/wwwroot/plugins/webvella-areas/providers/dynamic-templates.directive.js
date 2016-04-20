@@ -9,7 +9,7 @@
 
 	dynamicView.$inject = ['$compile', '$templateRequest','RecursionHelper'];
 
-	/* @ngInject */
+	
 	function dynamicView($compile, $templateRequest, RecursionHelper) {
 		//Text Binding (Prefix: @) - only strings
 		//One-way Binding (Prefix: &) - $scope functions
@@ -37,7 +37,7 @@
 
 
 	DirectiveController.$inject = ['$scope'];
-	/* @ngInject */
+	
 	function DirectiveController($scope) {
 		$scope.templateData = $scope.templateData;
 		$scope.templateMeta = $scope.templateMeta;
@@ -65,7 +65,7 @@
 
 	dynamicView.$inject = ['$compile', '$templateRequest','RecursionHelper'];
 
-	/* @ngInject */
+	
 	function dynamicView($compile, $templateRequest, RecursionHelper) {
 		//Text Binding (Prefix: @) - only strings
 		//One-way Binding (Prefix: &) - $scope functions
@@ -93,7 +93,7 @@
 
 
 	DirectiveController.$inject = ['$scope'];
-	/* @ngInject */
+	
 	function DirectiveController($scope) {
 		$scope.templateData = $scope.templateData;
 		$scope.templateMeta = $scope.templateMeta;

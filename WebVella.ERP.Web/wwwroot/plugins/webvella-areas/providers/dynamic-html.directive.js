@@ -9,7 +9,7 @@
 
 	dynamicHtml.$inject = ['$compile', '$templateRequest','RecursionHelper'];
 
-	/* @ngInject */
+	
 	function dynamicHtml($compile, $templateRequest, RecursionHelper) {
 		var directive = {
 			restrict: 'A',

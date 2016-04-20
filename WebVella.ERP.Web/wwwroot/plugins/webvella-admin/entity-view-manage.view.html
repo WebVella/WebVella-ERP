@@ -43,21 +43,14 @@
 		</nav>
 
 		<div class="view-manage-section">
-			<div class="alert alert-info ng-hide" ng-show="ngCtrl.view.type == 'dynamic'">
-				<strong>TIP:</strong> Dynamic views are automatically triggered by using a naming convention with the <span class="go-red">~</span> sign.
-				Example: A view with the name <span class="go-red">area_name~field_name~value123</span> will be used automatically to display the record details, when the area name is
-				<span class="go-red">area_name</span> and the record's field <span class="go-red">field_name</span> has the value of <span class="go-red">value123</span>.
-				The only drawback is that the values of the field should be only alphanumeric chars.
-			</div>
-
 			<div class="form-horizontal">
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2" for="name">Name</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_name.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.name"
 											   value="{{ngCtrl.view.name}}"
 											   onbeforesave="ngCtrl.fieldUpdate('name',$data)" e-form="fieldForm_name">
@@ -69,10 +62,10 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">Type</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
 										<input type="text" class="form-control" disabled editable-select="ngCtrl.view.type"
 											   value="{{ngCtrl.showViewType()}}" e-ng-options="s.name as s.label for s in ngCtrl.viewTypes"
 											   onbeforesave="ngCtrl.fieldUpdate('type', $data)" e-form="fieldForm_type">
@@ -86,10 +79,10 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">Label</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.label"
 											   value="{{ngCtrl.view.label}}"
 											   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
@@ -101,10 +94,10 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">Weight</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.weight"
 											   value="{{ngCtrl.view.weight}}"
 											   onbeforesave="ngCtrl.fieldUpdate('weight',$data)" e-form="fieldForm_weight">
@@ -118,10 +111,10 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">Default</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_default.$show()">
 										<span class="input-group-addon hidden-xs" ng-if="ngCtrl.view.default && !fieldForm_default.$visible">
 											<i class="fa fa-check fa-fw go-green"></i>
 										</span>
@@ -139,7 +132,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">System</label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-readonly">
@@ -160,10 +153,10 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">CSS class</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.cssClass"
 											   value="{{ngCtrl.view.cssClass}}"
 											   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
@@ -175,10 +168,10 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-2">Icon Name</label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 										<span class="input-group-addon"><i class="fa fa-{{ngCtrl.view.iconName}} fa-fw"></i></span>
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.iconName"
 											   value="{{ngCtrl.view.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
@@ -194,10 +187,10 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<div class="editable-field field">
+							<div class="row editable-field field">
 								<label class="control-label col-lg-1">Custom Template</label>
 								<div class="col-lg-11">
-									<div class="editable-wrapper input-group editable-updatable">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dynamicHtmlTemplate.$show()">
 										<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
 											<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 										</span>

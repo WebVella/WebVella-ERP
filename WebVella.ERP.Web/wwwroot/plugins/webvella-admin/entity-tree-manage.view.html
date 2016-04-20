@@ -31,7 +31,7 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Name</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -44,10 +44,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Label</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.label"
 													   value="{{ngCtrl.tree.label}}"
 													   onbeforesave="ngCtrl.fieldUpdate('label',$data)" e-form="fieldForm_label">
@@ -61,10 +61,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Default</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_default.$show()">
 												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.tree.default && !fieldForm_default.$visible">
 													<i class="fa fa-check fa-fw go-green"></i>
 												</span>
@@ -82,7 +82,7 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">System</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -103,10 +103,10 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">CSS class</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.cssClass"
 													   value="{{ngCtrl.tree.cssClass}}"
 													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
@@ -118,10 +118,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Icon Name</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.tree.iconName}} fa-fw"></i></span>
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.iconName"
 													   value="{{ngCtrl.tree.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
@@ -146,7 +146,7 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Entity Relation</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -160,10 +160,10 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Depth limit</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable">
+											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_depthLimit.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.depthLimit"
 													   value="{{ngCtrl.tree.depthLimit}}"
 													   onbeforesave="ngCtrl.fieldUpdate('depthLimit',$data)" e-form="fieldForm_depthLimit">
@@ -177,7 +177,7 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Node Id field</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -191,7 +191,7 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Node Parent Id field</label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
@@ -207,10 +207,11 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Node name field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0"
+												ng-dblclick="fieldForm_nodeNameField.$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeNameField"
 													   value="{{ngCtrl.nodeNameField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeNameEligibleFields"
 													   onbeforesave="ngCtrl.nodeNameUpdate($data)" e-form="fieldForm_nodeNameField">
@@ -224,10 +225,11 @@
 							</div>
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Node label field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0"
+											ng-dblclick="fieldForm_nodeLabelField.$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeLabelField"
 													   value="{{ngCtrl.nodeLabelField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeLabelEligibleFields"
 													   onbeforesave="ngCtrl.nodeLabelUpdate($data)" e-form="fieldForm_nodeLabelField">
@@ -242,10 +244,11 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<div class="form-group">
-									<div class="editable-field field">
+									<div class="row editable-field field">
 										<label class="control-label col-lg-2">Node weight field</label>
 										<div class="col-lg-10">
-											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0">
+											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0"
+											 ng-dblclick="fieldForm_nodeWeightUpdate.$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.nodeWeightField"
 													   value="{{ngCtrl.nodeWeightField.name}}" e-ng-options="s as s.name for s in ngCtrl.nodeWeightEligibleFields"
 													   onbeforesave="ngCtrl.nodeWeightUpdate($data)" e-form="fieldForm_nodeWeightUpdate">

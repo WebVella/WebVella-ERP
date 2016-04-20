@@ -1,29 +1,19 @@
-/* entities.module.js */
-
-/**
-* @desc this module manages the application home desktop screen
-*/
-
 (function () {
 	'use strict';
 
 	angular
-        .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
+        .module('webvellaAreas')
         .config(config)
         .controller('WebVellaAreaEntityRecordsController', controller)
 		.controller('exportModalController', exportModalController)
 		.controller('importModalController', importModalController);
-
-
-
+  
 	//#region << Configuration /////////////////////////////////// >>
 	config.$inject = ['$stateProvider'];
-
-	/* @ngInject */
 	function config($stateProvider) {
 		$stateProvider.state('webvella-entity-records', {
 			parent: 'webvella-areas-base',
-			url: '/:listName/:page?search',
+			url: '/:listName/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -61,7 +51,7 @@
 	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants){
         var lazyDeferred = $q.defer();
 
-		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.modifiedOn;
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 
 		var loadFilesArray = [];
 		loadFilesArray.push(listServiceJavascriptPath);
@@ -75,66 +65,85 @@
 	
 	}
 
- 	loadPreloadScript.$inject = ['loadDependency','webvellaActionService','$q','$http','$stateParams'];
-	function loadPreloadScript(loadDependency,webvellaActionService, $q, $http,$stateParams){
+ 	loadPreloadScript.$inject = ['loadDependency','webvellaActionService','$q','$http','$state'];
+	function loadPreloadScript(loadDependency,webvellaActionService, $q, $http,$state){
         var defer = $q.defer();
-		webvellaActionService.preload(defer,$stateParams);
+
+		if (webvellaActionService.preload === undefined || typeof (webvellaActionService.preload) != "function") {
+			console.log("No webvellaActionService.preload function. Skipping");
+			defer.resolve();
+			return defer.promise;
+		}
+		else {
+			webvellaActionService.preload(defer,$state);
+		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaAreasService', '$state', '$stateParams', '$timeout', 'ngToast'];
-	/* @ngInject */
-	function resolveListRecords($q, $log, webvellaAreasService, $state, $stateParams, $timeout, ngToast) {
-		$log.debug('webvellaAreas>entity-records> BEGIN entity list resolved ' + moment().format('HH:mm:ss SSSS'));
-		// Initialize
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast'];
+	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast) {
 		var defer = $q.defer();
-		// Process get list success
 		function successCallback(response) {
 			defer.resolve(response.object);
 		}
-
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-
-		if (!$stateParams.search) {
-			$stateParams.search = null;
-		}
-
-		webvellaAreasService.getListRecords($stateParams.listName, $stateParams.entityName, $stateParams.page, $stateParams.search, successCallback, errorCallback);
-
-		// Return
-		$log.debug('webvellaAreas>entity-records> END entity list resolved ' + moment().format('HH:mm:ss SSSS'));
+		webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, successCallback, errorCallback);
 		return defer.promise;
 	}
+
 	//#endregion
 
-
 	//#region << Controller /////////////////////////////// >>
-	controller.$inject = ['$filter', '$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaRootService', 'webvellaAdminService',
-        'resolvedSitemap', '$timeout', 'webvellaAreasService', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaActionService',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', 'ngToast', '$sessionStorage', '$location', '$window'];
+	controller.$inject = ['$log', '$uibModal', '$rootScope','$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
+        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaActionService',
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window','$sce'];
 
-	/* @ngInject */
-	function controller($filter, $log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaRootService, webvellaAdminService,
-        resolvedSitemap, $timeout, webvellaAreasService, resolvedListRecords, resolvedCurrentEntityMeta,webvellaActionService,
-		resolvedEntityRelationsList, resolvedCurrentUser, ngToast, $sessionStorage, $location, $window) {
-		$log.debug('webvellaAreas>entities> BEGIN controller.exec ' + moment().format('HH:mm:ss SSSS'));
-		/* jshint validthis:true */
+	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
+        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta,webvellaActionService,
+		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
+
+		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
-		ngCtrl.records = fastCopy(resolvedListRecords.data);
-		ngCtrl.recordsMeta = fastCopy(resolvedListRecords.meta);
-		ngCtrl.relationsMeta = fastCopy(resolvedEntityRelationsList);
-		ngCtrl.$sessionStorage = $sessionStorage;
+		ngCtrl.validation = {};
+		ngCtrl.validation.hasError = false;
+		ngCtrl.validation.errorMessage = "";
+		ngCtrl.currentPage = parseInt($stateParams.page);
+		//#endregion
 
-		//#region << Set Environment >>
+		//#region << Set Page meta >>
 		ngCtrl.pageTitle = "Area Entities | " + pageTitle;
-		webvellaRootService.setPageTitle(ngCtrl.pageTitle);
-		ngCtrl.currentArea = webvellaAreasService.getCurrentAreaFromSitemap($stateParams.areaName, resolvedSitemap.data);
-		ngCtrl.stateParams = $stateParams;
-		webvellaRootService.setBodyColorClass(ngCtrl.currentArea.color);
-		ngCtrl.moreListsOpened = false;
-		ngCtrl.moreListsInputFocused = false;
+		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
+		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
+		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
+		//#endregion
+		
+		//#region << Initialize main objects >>
+		ngCtrl.list = {};
+		ngCtrl.list.data = fastCopy(resolvedListRecords.data);
+		ngCtrl.list.meta = fastCopy(resolvedListRecords.meta);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
+		ngCtrl.areas = fastCopy(resolvedAreas.data);
+		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
+		ngCtrl.$sessionStorage = $sessionStorage;
+		ngCtrl.stateParams = $stateParams;
+		//#endregion
+
+		//#region << Run  webvellaActionService.onload >>
+		if (webvellaActionService.onload === undefined || typeof (webvellaActionService.onload) != "function") {
+			$log.warn("No webvellaActionService.onload function. Skipping");
+		}
+		else {
+			var actionsOnLoadResult = webvellaActionService.onload(ngCtrl,$rootScope,$state);
+			if(actionsOnLoadResult != true){
+				ngCtrl.validation.hasError = true;
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+			}
+		}
+		//#endregion
+
+		//#region << Alternative general lists dropdown >>
 		ngCtrl.generalLists = [];
 		ngCtrl.entity.recordLists.forEach(function (list) {
 			if (list.type == "general") {
@@ -142,119 +151,15 @@
 			}
 		});
 		ngCtrl.generalLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-
-
-		ngCtrl.area = {};
-		for (var i = 0; i < resolvedSitemap.data.length; i++) {
-			if (resolvedSitemap.data[i].name == $stateParams.areaName) {
-				ngCtrl.area = resolvedSitemap.data[i];
-			}
-		}
-
-
-		ngCtrl.area.attachments = angular.fromJson(ngCtrl.area.attachments);
-		ngCtrl.areaEntityAttachments = {};
-		for (var i = 0; i < ngCtrl.area.attachments.length; i++) {
-			if (ngCtrl.area.attachments[i].name === ngCtrl.entity.name) {
-				ngCtrl.areaEntityAttachments = ngCtrl.area.attachments[i];
-				break;
-			}
-		}
-
-		//Slugify function
-		function convertToSlug(Text) {
-			return Text
-				.toLowerCase()
-				.replace(/ /g, '-')
-				.replace(/[^\w-]+/g, '')
-			;
-		}
-
-		ngCtrl.generateViewName = function (record) {
-			//default is the selected view in the area
-			var result = fastCopy(ngCtrl.selectedView.name);
-
-			if (ngCtrl.recordsMeta.viewNameOverride && ngCtrl.recordsMeta.viewNameOverride.length > 0) {
-				//var arrayOfTemplateKeys = ngCtrl.recordsMeta.viewNameOverride.match(/\{(\w+)\}/g); 
-				var arrayOfTemplateKeys = ngCtrl.recordsMeta.viewNameOverride.match(/\{([\$\w]+)\}/g); //Include support for matching also data from relations which include $ symbol
-				var resultStringStorage = fastCopy(ngCtrl.recordsMeta.viewNameOverride);
-
-				for (var i = 0; i < arrayOfTemplateKeys.length; i++) {
-					if (arrayOfTemplateKeys[i] === "{areaName}" || arrayOfTemplateKeys[i] === "{entityName}" || arrayOfTemplateKeys[i] === "{page}" || arrayOfTemplateKeys[i] === "{searchQuery}") {
-						switch (arrayOfTemplateKeys[i]) {
-							case "{areaName}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.areaName));
-								break;
-							case "{entityName}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.entityName));
-								break;
-							case "{page}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.page));
-								break;
-							case "{searchQuery}":
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug($stateParams.searchQuery));
-								break;
-						}
-					}
-					else {
-						//Extract the dataName from string by removing the leading and the closing {}
-						var dataName = arrayOfTemplateKeys[i].replace('{', '').replace('}', '');
-						//Check template has corresponding list data value
-						if (record[dataName] != undefined) {
-							//YES -> check the value of this dataName and substitute with it in the string, even if it is null (toString)
-							//Case 1 - data is not from relation (not starting with $)
-							if (!dataName.startsWith('$')) {
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName].toString()));
-							}
-							else {
-								//Case 2 - relation field
-								resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(record[dataName][0].toString()));
-							}
-
-						}
-						else {
-							//NO -> substitute the template key with the dataName only, as no value could be extracted
-							resultStringStorage = resultStringStorage.replace(arrayOfTemplateKeys[i], convertToSlug(dataName));
-						}
-					}
-
-				}
-				result = resultStringStorage;
-			}
-
-			return result;
-		}
-
-		//Select default details view
-		ngCtrl.selectedView = {};
-		for (var j = 0; j < ngCtrl.entity.recordViews.length; j++) {
-			if (ngCtrl.entity.recordViews[j].name === ngCtrl.areaEntityAttachments.view.name) {
-				ngCtrl.selectedView = ngCtrl.entity.recordViews[j];
-				break;
-			}
-		}
-		ngCtrl.currentPage = parseInt($stateParams.page);
-		//Select the current list view details
-		ngCtrl.currentListView = {};
-		for (var i = 0; i < ngCtrl.entity.recordLists.length; i++) {
-			if (ngCtrl.entity.recordLists[i].name === $stateParams.listName) {
-				ngCtrl.currentListView = ngCtrl.entity.recordLists[i];
-			}
-		}
-
-		ngCtrl.entity.recordLists = ngCtrl.entity.recordLists.sort(function (a, b) {
-			return parseFloat(a.weight) - parseFloat(b.weight);
-		});
-
 		//#endregion
-
-		//#region <<init the columns width array >>
+  
+		//#region << Column widths from CSV >>
 		ngCtrl.columnWidths = [];
 		var columnWidthsArray = [];
-		if(ngCtrl.recordsMeta.columnWidthsCSV){
-			columnWidthsArray = ngCtrl.recordsMeta.columnWidthsCSV.split(',');
+		if(ngCtrl.list.meta.columnWidthsCSV){
+			columnWidthsArray = ngCtrl.list.meta.columnWidthsCSV.split(',');
 		}
-		var visibleColumns =  ngCtrl.recordsMeta.visibleColumnsCount;
+		var visibleColumns =  ngCtrl.list.meta.visibleColumnsCount;
 		if(columnWidthsArray.length > 0){
 		   	for (var i = 0; i < visibleColumns; i++) {
 				if(columnWidthsArray.length >= i +1){
@@ -274,17 +179,14 @@
 
 		//#endregion
 
-
-		//#region << filter Query >>
-
-		//ngCtrl.recordsMeta.columns
+  		//#region << List filter row >>
 		ngCtrl.filterQuery = {};
 		ngCtrl.listIsFiltered = false;
 		ngCtrl.columnDictionary = {};
 		ngCtrl.columnDataNamesArray = [];
 		ngCtrl.queryParametersArray = [];
 		//Extract the available columns
-		ngCtrl.recordsMeta.columns.forEach(function (column) {
+		ngCtrl.list.meta.columns.forEach(function (column) {
 			if (ngCtrl.columnDataNamesArray.indexOf(column.dataName) == -1) {
 				ngCtrl.columnDataNamesArray.push(column.dataName);
 			}
@@ -302,7 +204,7 @@
 			if (ngCtrl.queryParametersArray.indexOf(dataName) > -1) {
 				ngCtrl.listIsFiltered = true;
 				var columnObj = ngCtrl.columnDictionary[dataName];
-				//some data validations and convertions	
+				//some data validations and conversions	
 				switch (columnObj.meta.fieldType) {
 					//TODO if percent convert to > 1 %
 					case 14:
@@ -331,35 +233,8 @@
 		}
 
 		//#endregion
-
-
-		//#region << Logic >> //////////////////////////////////////
-
-		ngCtrl.getRelation = function (relationName) {
-			for (var i = 0; i < ngCtrl.relationsMeta.length; i++) {
-				if (ngCtrl.relationsMeta[i].name == relationName) {
-					//set current entity role
-					if (ngCtrl.entity.id == ngCtrl.relationsMeta[i].targetEntityId && ngCtrl.entity.id == ngCtrl.relationsMeta[i].originEntityId) {
-						ngCtrl.relationsMeta[i].currentEntityRole = 3; //both origin and target
-					}
-					else if (ngCtrl.entity.id == ngCtrl.relationsMeta[i].targetEntityId && ngCtrl.entity.id != ngCtrl.relationsMeta[i].originEntityId) {
-						ngCtrl.relationsMeta[i].currentEntityRole = 2; //target
-					}
-					else if (ngCtrl.entity.id != ngCtrl.relationsMeta[i].targetEntityId && ngCtrl.entity.id == ngCtrl.relationsMeta[i].originEntityId) {
-						ngCtrl.relationsMeta[i].currentEntityRole = 1; //origin
-					}
-					else if (ngCtrl.entity.id != ngCtrl.relationsMeta[i].targetEntityId && ngCtrl.entity.id != ngCtrl.relationsMeta[i].originEntityId) {
-						ngCtrl.relationsMeta[i].currentEntityRole = 0; //possible problem
-					}
-					return ngCtrl.relationsMeta[i];
-				}
-			}
-			return null;
-		}
-
-		ngCtrl.goDesktopBrowse = function () {
-			webvellaRootService.GoToState("webvella-desktop-browse", {});
-		}
+  
+		//#region << Logic >> 
 
 		ngCtrl.selectPage = function (page) {
 			var params = {
@@ -368,10 +243,8 @@
 				listName: $stateParams.listName,
 				page: page
 			};
-			webvellaRootService.GoToState($state, $state.current.name, params);
+			webvellaCoreService.GoToState($state, $state.current.name, params);
 		}
-
-		ngCtrl.currentUser = fastCopy(resolvedCurrentUser);
 
 		ngCtrl.currentUserRoles = ngCtrl.currentUser.roles;
 
@@ -390,18 +263,16 @@
 			return result;
 		}
 
-		ngCtrl.isCurrentListAreaDefault = function () {
-			for (var i = 0; i < ngCtrl.area.attachments.length; i++) {
-				if (ngCtrl.area.attachments[i].name == ngCtrl.entity.name) {
-					if (ngCtrl.area.attachments[i].list.name == ngCtrl.currentListView.name) {
-						return true;
-					}
-					else {
-						return false;
-					}
-				}
-			}
+ 		ngCtrl.checkEntityPermissions = function (permissionsCsv) {
+			return webvellaCoreService.userHasEntityPermissions(ngCtrl.entity, permissionsCsv);
 		}
+
+		ngCtrl.saveStateParamsToSessionStorage = function () {
+			ngCtrl.$sessionStorage["last-list-params"] = $stateParams;
+		}
+		//#endregion
+
+		//#region << Modals >>
 
 		ngCtrl.exportModal = undefined;
 		ngCtrl.openExportModal = function () {
@@ -446,20 +317,10 @@
 				ngCtrl.importModal.dismiss();
 			}
 		})
-
-		ngCtrl.checkEntityPermissions = function (permissionsCsv) {
-			return webvellaRootService.userHasEntityPermissions(ngCtrl.entity, permissionsCsv);
-		}
-
-		ngCtrl.saveStateParamsToSessionStorage = function () {
-			ngCtrl.$sessionStorage["last-list-params"] = $stateParams;
-		}
-
-
 		//#endregion
 
 		//#region << Render >>
-		ngCtrl.renderFieldValue = webvellaAreasService.renderFieldValue;
+		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 		ngCtrl.getAutoIncrementPrefix = function (column) {
 			var keyIndex = column.meta.displayFormat.indexOf('{0}');
 			return column.meta.displayFormat.slice(0, keyIndex);
@@ -467,21 +328,38 @@
 
 		//#endregion
 
-		//#region << External Template methods >>
+		//#region << List actions and webvellaActionService bind >>
 		ngCtrl.actionService = webvellaActionService;
+		ngCtrl.pageTitleActions = [];
+		ngCtrl.pageTitleDropdownActions = [];
+		ngCtrl.recordRowActions = [];
+		ngCtrl.recordRowDropdownActions = [];
+		ngCtrl.sidebarTopActions = [];
+		ngCtrl.sidebarBottomActions = [];
+
 		ngCtrl.actionTemplate = '<a ng-click="ngCtrl.actionService.test(ngCtrl.entity.name)">'+
 							'<i class="fa fa-wrench"></i> Call test'+
 							'</a>'
 		//#endregion
 
-		$log.debug('webvellaAreas>entities> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
+		//#region << Run  webvellaActionService.postload >>
+		if (webvellaActionService.postload === undefined || typeof (webvellaActionService.postload) != "function") {
+			$log.warn("No webvellaActionService.postload function. Skipping");
+		}
+		else {
+			var actionsOnLoadResult = webvellaActionService.postload(ngCtrl,$rootScope,$state);
+			if(actionsOnLoadResult != true){
+				ngCtrl.validation.hasError = true;
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+			}
+		}
+		//#endregion
 	}
 	//#endregion
 
 	//#region << Modal Controller /////////////////////////////// >>
-	exportModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', '$stateParams', '$scope'];
-	function exportModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, ngCtrl, $stateParams, $scope) {
-		$log.debug('webvellaAreas>records>exportModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+	exportModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', 'ngCtrl'];
+	function exportModalController($uibModalInstance, webvellaCoreService, ngToast, ngCtrl) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);
 		popupCtrl.loading = false;
@@ -491,8 +369,7 @@
 		popupCtrl.countHasSize = true;
 		popupCtrl.downloadFilePath = null;
 
-		popupCtrl.count = popupCtrl.ngCtrl.currentListView.pageSize;
-
+		popupCtrl.count = popupCtrl.ngCtrl.list.meta.pageSize;
 
 		popupCtrl.exportSuccessCallback = function (response) {
 			//popupCtrl.loading = false;
@@ -522,18 +399,16 @@
 				if (!popupCtrl.countHasSize) {
 					popupCtrl.count = -1;
 				}
-				webvellaAreasService.exportListRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.ngCtrl.currentListView.name, popupCtrl.count, popupCtrl.exportSuccessCallback, popupCtrl.exportErrorCallback);
+				webvellaCoreService.exportListRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.ngCtrl.list.meta.name, popupCtrl.count, popupCtrl.exportSuccessCallback, popupCtrl.exportErrorCallback);
 			}
 		};
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
-		$log.debug('webvellaAreas>records>exportModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
- 	importModalController.$inject = ['$uibModalInstance', '$log', 'webvellaAreasService', 'webvellaAdminService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', '$stateParams', '$scope'];
-	function importModalController($uibModalInstance, $log, webvellaAreasService, webvellaAdminService, ngToast, $timeout, $state, $location, ngCtrl, $stateParams, $scope) {
-		$log.debug('webvellaAreas>records>importModalController> START controller.exec ' + moment().format('HH:mm:ss SSSS'));
+ 	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl'];
+	function importModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);
 		popupCtrl.uploadedFile = null;
@@ -560,7 +435,7 @@
 					}, 100);
 				}
 
-				webvellaAdminService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, file.name, popupCtrl.uploadProgressCallback, popupCtrl.uploadSuccessCallback, popupCtrl.uploadErrorCallback);
 
 			}
 		}
@@ -604,14 +479,13 @@
 				popupCtrl.errorMessage = "This is not a CSV file";
 			}
 			else {
-				webvellaAreasService.importEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath, popupCtrl.importSuccessCallback, popupCtrl.importErrorCallback);
+				webvellaCoreService.importEntityRecords(popupCtrl.ngCtrl.entity.name, popupCtrl.uploadedFilePath, popupCtrl.importSuccessCallback, popupCtrl.importErrorCallback);
 			}
 		};
 
 		popupCtrl.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 		};
-		$log.debug('webvellaAreas>records>importModalController> END controller.exec ' + moment().format('HH:mm:ss SSSS'));
 	}
 	//#endregion
 

@@ -14,7 +14,7 @@
 
     directive.$inject = ['$window'];
 
-    /* @ngInject */
+    
     function directive($window) {
         // Usage:
         //
