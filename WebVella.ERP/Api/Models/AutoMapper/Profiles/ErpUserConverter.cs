@@ -47,7 +47,8 @@ namespace WebVella.ERP.Api.Models.AutoMapper.Profiles
 
             EntityRecord dest = new EntityRecord();
             dest["id"] = src.Id;
-            dest["email"] = src.Email;
+			dest["username"] = src.Username;
+			dest["email"] = src.Email;
             dest["password"] = src.Password;
             dest["first_name"] = src.FirstName;
             dest["last_name"] = src.LastName;
