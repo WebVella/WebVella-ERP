@@ -9,7 +9,7 @@ namespace WebVella.ERP.Api
 {
     public class SecurityManager
     {
-        const string fieldsToQuery = @"id,email,password,first_name,last_name,image,created_on,created_by,last_modified_on,last_modified_by, last_logged_in,enabled, $user_role.id, $user_role.name";
+        const string fieldsToQuery = @"id,username,email,password,first_name,last_name,image,created_on,created_by,last_modified_on,last_modified_by, last_logged_in,enabled, $user_role.id, $user_role.name";
 
         public SecurityManager()
         {
