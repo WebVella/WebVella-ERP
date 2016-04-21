@@ -1627,8 +1627,7 @@
 			postObject.fileTempPath = fileTempPath;
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
-
-		///////////////////////
+ 		///////////////////////
 		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
@@ -1666,6 +1665,7 @@
 		function patchRecord(recordId, entityName, patchObject, successCallback, errorCallback) {
 			$http({ method: 'PATCH', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId, data: patchObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+		//////////////////////
 		function deleteRecord(recordId, entityName, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
@@ -2182,33 +2182,88 @@
 		//#endregion
 
 		//#region << Default action services >>
+
 		function listAction_getRecordDetailsUrl(record, ngCtrl) {
-			//Get the selected view in the area
-
-			//Check if it exists
 			
-			//If not sort and get the first default and general
-			//var currentEntityLists = fastCopy(ngCtrl.entity.recordLists);
-			//currentEntityLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
-			//var selectedGeneralViewForTheArea = null;
-			//for (var i = 0; i < currentEntityLists.length; i++) {
-			//	if (currentEntityLists[i].default && currentEntityLists[i].type == "general") {
-			//		selectedGeneralViewForTheArea = currentEntityLists[i];
-			//		break;
-			//	}
-			//}
+			//#region << Init >>
+			var currentRecord = fastCopy(record);
+			var siteAreas = fastCopy(ngCtrl.areas);
+			var currentEntity = fastCopy(ngCtrl.entity);
+			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
+			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
+			var currentArea = null;
+			var targetViewName = null;
+			var targetViewExists = false;
+			//#endregion
 
-			////If not sort and get the first general
-			//if(selectedGeneralViewForTheAreaselectedGeneralViewForTheArea == null){
-			//	if (currentEntityLists[i].type == "general") {
-			//			selectedGeneralViewForTheArea = currentEntityLists[i];
-			//		//break;
-			//	}
-			//}
+			//#region << Get the selected view in the area >>
+			for (var i = 0; i < siteAreas.length; i++) {
+			   if(siteAreas[i].name == currentAreaName){
+				  currentArea = siteAreas[i];
+				  break;
+			   }
+			}
+			if(currentArea == null){
+				alert("Error: No area with such name found");
+			}
+			currentArea.attachments = angular.fromJson(currentArea.attachments);
+			for (var i = 0; i < currentArea.attachments.length; i++) {
+				if(currentArea.attachments[i].name == currentEntityName){
+					targetViewName =  currentArea.attachments[i].view.name;
+					break;
+				}
+			}
+			if(targetViewName == null){
+				alert("Error: The current entity is either not attached to the area or the view name is missing");
+			}
+			//#endregion
 
-		   //If not 
+			//#region << Check if it target view exists >>
+			for (var i = 0; i < currentEntity.recordViews.length; i++) {
+			   if(currentEntity.recordViews[i].name === targetViewName){
+			   	   targetViewExists = true;
+				   break;
+			   }
+			}
 
-			return "#/areas/" + ngCtrl.stateParams.areaName + "/" + ngCtrl.stateParams.entityName + "/" + record.id + "/" + "general" + "/*/*";
+			//#endregion
+			
+			//#region << Calculate what the view name should be and return >>
+			if(targetViewExists){
+				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+			}
+			//The target name does not exist. Fallback to default
+			else {
+				targetViewName = null;				
+				//If not sort and get the first default and general
+				currentEntity.recordViews.sort(sort_by({name:'weight', primer: parseInt, reverse:false}));
+				for (var i = 0; i < currentEntity.recordViews.length; i++) {
+				   if(currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general"){
+				   		targetViewName = currentEntity.recordViews[i].name;
+						break;
+				   }
+				}
+				if(targetViewName != null){
+					//there is a default and general view fallback option available
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+				}
+				else {
+					//If there is default general take the first general
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+					   if(currentEntity.recordViews[i].type == "general"){
+				   			targetViewName = currentEntity.recordViews[i].name;
+							break;
+					   }
+					}
+					if(targetViewName != null){
+						 return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+					}
+					else {
+						alert("Error: Cannot find suitable details view for this entity records");
+					}
+			   }
+			}
+			//#endregion
 		}
 
 		//#endregion

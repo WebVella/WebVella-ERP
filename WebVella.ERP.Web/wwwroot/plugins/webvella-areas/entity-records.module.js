@@ -333,11 +333,25 @@
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.recordRowActions = [];
-		ngCtrl.recordRowActions = fastCopy(ngCtrl.list.meta.actionItems);
 		ngCtrl.recordRowDropdownActions = [];
-		ngCtrl.sidebarTopActions = [];
-		ngCtrl.sidebarBottomActions = [];
 
+		ngCtrl.list.meta.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
+		ngCtrl.list.meta.actionItems.forEach(function(actionItem){
+			switch(actionItem.menu){
+				case "page-title":
+					ngCtrl.pageTitleActions.push(actionItem);
+					break;
+				case "page-title-dropdown":
+					ngCtrl.pageTitleDropdownActions.push(actionItem);
+					break;
+				case "record-row":
+					ngCtrl.recordRowActions.push(actionItem);
+					break;
+				case "record-row-dropdown":
+					ngCtrl.recordRowDropdownActions.push(actionItem);
+					break;
+			}
+		});		
 		//#endregion
 
 		//#region << Run  webvellaActionService.postload >>

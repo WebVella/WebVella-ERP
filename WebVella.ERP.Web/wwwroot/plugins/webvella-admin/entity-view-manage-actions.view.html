@@ -49,13 +49,13 @@
 		<span class="ng-hide" ng-show="ngCtrl.view.serviceCode">status: <span class="go-orange">custom service code is loaded</span></span>
 
 		<h4 style="margin-bottom:1em;margin-top:2em;">Action templates</h4>
-		<p>Here are defined what actions the user can perform with the view or its fields. At any moment you can <a href="javascript:void(0)" ng-click="ngCtrl.restoreActionTemplatesDefault()">restore the default</a></p>
+		<p>Here are defined what actions the user can perform with the view or its fields.</p>
 		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)">Add New</a>
 		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.view.actionItems.length > 0">
 			<thead>
 				<tr>
 					<th width="30"></th>
-					<th width="100">menu</th>
+					<th width="200">menu</th>
 					<th width="30"> weight</th>
 					<th>name</th>
 				</tr>
@@ -79,7 +79,7 @@
 		<h3 class="modal-title">Manage Service Code</h3>
 	</div>
 	<div class="modal-body">
-		<p>Leave <b>empty</b> for the default service to be loaded. If you want to customize it, <a href="javascript:void(0)" ng-click="popupCtrl.loadDefaultScript()">click here</a> to fill with the default code.</p>
+		<p>Leave <b>empty</b> for the default service to be loaded. If you want to customize it, <a href="javascript:void(0)" ng-click="popupCtrl.loadDefaultScript()">click here</a> to prefill with the current default code.</p>
 		<div ui-ace="popupCtrl.aceOptions" ng-model="popupCtrl.serviceCode" style="height:400px;"></div>
 	</div>
 	<div class="modal-footer">
