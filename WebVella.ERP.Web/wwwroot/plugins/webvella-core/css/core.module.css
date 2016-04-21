@@ -618,10 +618,10 @@ body.hidden-sidebar #page-topnav {
     User box
 *****************************/
 #userbox {
-	padding: 5px 15px;
+	padding: 5px 5px;
 	background: #212121;
 	position: relative;
-	height: 46px;
+	height: 39px;
 	white-space: nowrap;
 }
 
@@ -630,12 +630,13 @@ body.hidden-sidebar #page-topnav {
 	}
 
 	#userbox .avatar {
-		width: 2.5em;
-		height: 2.5em;
-		border-radius: 2.5em;
+		width: 40px;
+		height: 40px;
+		border-radius: 40px;
 		float: left;
 		margin-right: 10px;
 		display: block;
+		box-shadow: 0 0 3px #fff;
 	}
 
 	#userbox .username {
@@ -989,31 +990,30 @@ body.hidden-sidebar #page-topnav {
 
 */
 #page-topnav #search-wrapper {
-	margin-left: 10px;
+	margin-left: 40px;
 	margin-right: 10px;
-	padding-left: 15px;
-	border-left: 2px solid #eee;
-	height: 40px;
-	line-height: 40px;
+	border-left: 1px solid #ddd;
+	height: 38px;
+	line-height: 38px;
 	position: relative;
-	top: -5px;
+	top: -12px;
+	width: 300px;
 }
 
 	#page-topnav #search-wrapper .fa {
-		position: absolute;
-		color: #eee;
-		top: 12px;
-		left: -1px;
+		color: #ccc;
 	}
 
 	#page-topnav #search-wrapper input {
 		border: none;
-		font-size: 16px;
-		height: 40px;
-		line-height: 40px;
-		width: 200px;
-		padding: 0;
+		font-size: 13px;
+		height: 38px;
+		line-height: 38px;
+		width:100%;
+		padding: 0 10px 0 35px;
 		box-shadow: none;
+		border-radius:0;
+		background:#f2f2f2;
 	}
 
 		#page-topnav #search-wrapper input:active,
@@ -1021,6 +1021,7 @@ body.hidden-sidebar #page-topnav {
 		#page-topnav #search-wrapper input::selection {
 			outline: none;
 			border: none;
+			background:#fff;
 		}
 
 #page-topnav #area-title {
@@ -2693,7 +2694,7 @@ table .btn-xs.btn-link {
 	width: 177px;
 	background: #555;
 	background: rgba(255,255,255,0.2);
-	padding: 1em 0 1em 1em;
+	padding: 5px 0 5px 1em;
 	border-left: 3px solid #90A4AE;
 	border-right: none;
 }
@@ -2704,6 +2705,7 @@ table .btn-xs.btn-link {
 
 	.tabbable.spilled ul a {
 		color: #ccc;
+		border-right:none;
 	}
 
 		.tabbable.spilled ul a i {

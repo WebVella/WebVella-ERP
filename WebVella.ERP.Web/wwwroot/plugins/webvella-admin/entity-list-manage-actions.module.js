@@ -254,6 +254,13 @@
 		}
 		//#endregion
 
+		//#region << Restore defaults >>
+
+		ngCtrl.restoreActionTemplatesDefault = function(){
+			alert("Not implemented yet");
+		}
+
+		//#endregion
 
 		//#region << Modals >>
 		ngCtrl.deleteListModal = function () {
@@ -275,7 +282,7 @@
 				templateUrl: 'manageServiceCodeModal.html',
 				controller: 'ManageListServiceCodeModalController',
 				controllerAs: "popupCtrl",
-				size: "lg",
+				size: "width-100p",
 				backdrop:"static",
 				resolve: {
 					parentData: function () { return ngCtrl; }
@@ -289,7 +296,7 @@
 				templateUrl: 'addManageActionItemModal.html',
 				controller: 'AddManageListActionItemModalController',
 				controllerAs: "popupCtrl",
-				size: "lg",
+				size: "width-100p",
 				backdrop:"static",
 				resolve: {
 					parentData: function () { return ngCtrl; },
@@ -347,8 +354,8 @@
 
 		
 		var popupCtrl = this;
-		popupCtrl.parentData = parentData;
-		popupCtrl.serviceCode = popupCtrl.parentData.list.serviceCode;
+		popupCtrl.parentData = fastCopy(parentData);
+		popupCtrl.serviceCode = fastCopy(popupCtrl.parentData.list.serviceCode);
 
 		//#region << Ace editor >>
 		popupCtrl.aceOptions = {
@@ -360,11 +367,16 @@
 			onLoad: popupCtrl.aceOnLoad,
 			onChange: popupCtrl.aceOnChange,
 			advanced:{
-				showPrintMargin:false
+				showPrintMargin:false,
+				fontSize:"16px"
 			}
 		}
 		popupCtrl.aceOnChange = function (event) {};
 		//#endregion
+
+		popupCtrl.loadDefaultScript = function(){
+			webvellaCoreService.getFileContent("/api/v1/en_US/meta/entity/" + popupCtrl.parentData.entity.name +"/list/" + popupCtrl.parentData.list.name +"/service.js?defaultScript=true",getDefaultScriptSuccessCallback,getDefaultScriptErrorCallback);
+		}
 
 		popupCtrl.ok = function () {
 			var postObj = {};
@@ -391,6 +403,22 @@
 			popupCtrl.errorMessage = response.message;
 
 
+		}
+
+		function getDefaultScriptSuccessCallback(response) {
+			ngToast.create({
+				className: 'success',
+				content: '<span class="go-green">Success:</span> Contents loaded'
+			});
+
+			popupCtrl.serviceCode = response.data;
+		}
+
+		function getDefaultScriptErrorCallback(response) {
+			ngToast.create({
+				className: 'danger',
+				content: '<span class="go-green">Error:</span> ' + response.message
+			});
 		}
 	};
 
@@ -424,7 +452,8 @@
 			onLoad: popupCtrl.aceOnLoad,
 			onChange: popupCtrl.aceOnChange,
 			advanced:{
-				showPrintMargin:false
+				showPrintMargin:false,
+				fontSize:"16px"
 			}
 		}
 		popupCtrl.aceOnChange = function (event) {};

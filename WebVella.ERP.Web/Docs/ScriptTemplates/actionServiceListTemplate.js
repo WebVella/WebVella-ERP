@@ -25,44 +25,70 @@
 	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter','webvellaCoreService'];
 	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter,webvellaCoreService) {
 		var serviceInstance = this;
-		//PRELOAD
+		
+		// PRELOAD
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Preload function. Here you can place script that will be executed BEFORE the page load (while resolving the state)
+		// Execution: This script will be executed BEFORE the page load (while resolving the state)
+		// Parameters: defer, state
 		serviceInstance.preload = preload;
 		function preload(defer,state){
-
 			defer.resolve();
 			return defer.promise;
 		}
-		//ONLOAD
+
+		// ONLOAD
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Onload function. Here you can place script that will be executed as the FIRST function from the controller after
-		// the main objects are initialized. With the ngCtrl you can access the scope of the controller
+		// Execution: This script will be executed as the FIRST function from the controller after the main objects are initialized.
+		//			  With the ngCtrl you can access the scope of the controller
+		// Parameters: ngCtrl, rootScope, state
 		serviceInstance.onload = onload;
 		function onload(ngCtrl,rootScope, state){
 
 			return true; //true for success, or string for an error message to be presented to the user
 		}
-		//POSTLOAD
+		
+		// POSTLOAD
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Postload function. Here you can place script that will be executed as the LAST function from the controller
-		//with the ngCtrl you can access the scope of the controller
+		// Execution: This script will be executed as the LAST function from the controller
+		// Parameters: ngCtrl, rootScope, state
 		serviceInstance.postload = postload;
 		function postload(ngCtrl,rootScope, state){
 
 			return true; //true for success, or string for an error message to be presented to the user
 		}
-		//CUSTOM
+
+		// PAGE TITLE ACTIONS
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 
-		//They can be used inside your actions or custom views with ngCtrl.actionService.function_name(params). As params
-		//you can use all data from the controller scope
+		// Execution: This block should contain functions for the user actions rendered inside the page title above the list.
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
 		
-		serviceInstance.test = test;
-		function test(entityName) {
-			alert("test called with " + entityName);
+		// <<<<< No functions defined yet >>>>>>
+
+		// PAGE TITLE DROPDOWN ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain functions for the user actions rendered inside the page title dropdown above the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
+		
+		// <<<<< No functions defined yet >>>>>>
+
+		// RECORD ROW ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain functions for the user actions rendered on each record row of the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
+		//			   and the ngCtrl
+		
+		serviceInstance.getRecordDetailsUrl = getRecordDetailsUrl;
+		function getRecordDetailsUrl(record,ngCtrl) {
+			return webvellaCoreService.listAction_getRecordDetailsUrl(record,ngCtrl);
 		}
 
+		// RECORD ROW DROPDOWN ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain methods for the user actions rendered on the dropdown in each record row of the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
+		//			   and the ngCtrl
+		
+		// Define your functions here
 
 	}
 })();

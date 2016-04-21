@@ -13,7 +13,7 @@
 
 	service.$inject = ['$cookies', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast', '$timeout', 'Upload', ];
 
-	
+
 	function service($cookies, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast, $timeout, Upload) {
 		var serviceInstance = this;
 
@@ -183,6 +183,17 @@
 		serviceInstance.applyAreaAccessPolicy = applyAreaAccessPolicy;
 		serviceInstance.userHasEntityPermissions = userHasEntityPermissions;
 		//#endregion
+
+		//#region << Default list actions >>
+		serviceInstance.listAction_getRecordDetailsUrl = listAction_getRecordDetailsUrl;
+
+		//#endregion
+
+		//#region << Helpers >>
+		serviceInstance.getFileContent = getFileContent;
+
+		//#endregion
+
 
 		//#endregion
 
@@ -857,7 +868,7 @@
 		}
 		//#endregion
 
- 		///////////////////////
+		///////////////////////
 		function initField(typeId) {
 			var field = {
 				id: null,
@@ -1100,16 +1111,6 @@
 				{
 					key: "create-bottom",
 					value: "create-bottom",
-					description: ""
-				},
-				{
-					key: "sidebar-top",
-					value: "sidebar-top",
-					description: ""
-				},
-				{
-					key: "sidebar-bottom",
-					value: "sidebar-bottom",
 					description: ""
 				}
 			];
@@ -1472,16 +1473,6 @@
 				{
 					key: "record-row-dropdown",
 					value: "record-row-dropdown",
-					description: ""
-				},
-				{
-					key: "sidebar-top",
-					value: "sidebar-top",
-					description: ""
-				},
-				{
-					key: "sidebar-bottom",
-					value: "sidebar-bottom",
 					description: ""
 				}
 			];
@@ -2158,6 +2149,9 @@
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
 			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
+			if(getCurrentUser() == null){
+				return false;
+			}
 
 			var userRoles = fastCopy(getCurrentUser().roles);
 
@@ -2187,7 +2181,45 @@
 
 		//#endregion
 
+		//#region << Default action services >>
+		function listAction_getRecordDetailsUrl(record, ngCtrl) {
+			//Get the selected view in the area
+
+			//Check if it exists
+			
+			//If not sort and get the first default and general
+			//var currentEntityLists = fastCopy(ngCtrl.entity.recordLists);
+			//currentEntityLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight); });
+			//var selectedGeneralViewForTheArea = null;
+			//for (var i = 0; i < currentEntityLists.length; i++) {
+			//	if (currentEntityLists[i].default && currentEntityLists[i].type == "general") {
+			//		selectedGeneralViewForTheArea = currentEntityLists[i];
+			//		break;
+			//	}
+			//}
+
+			////If not sort and get the first general
+			//if(selectedGeneralViewForTheAreaselectedGeneralViewForTheArea == null){
+			//	if (currentEntityLists[i].type == "general") {
+			//			selectedGeneralViewForTheArea = currentEntityLists[i];
+			//		//break;
+			//	}
+			//}
+
+		   //If not 
+
+			return "#/areas/" + ngCtrl.stateParams.areaName + "/" + ngCtrl.stateParams.entityName + "/" + record.id + "/" + "general" + "/*/*";
+		}
+
 		//#endregion
 
+		//#region << Helpers >>
+		function getFileContent(url,successCallback, errorCallback){
+			$http({ method: 'GET', url: url }).then(function getSuccessCallback(response) { successCallback(response); }, function getErrorCallback(response) { errorCallback(response); });
+		}
+
+		//#endregion
+
+		//#endregion
 	}
 })();

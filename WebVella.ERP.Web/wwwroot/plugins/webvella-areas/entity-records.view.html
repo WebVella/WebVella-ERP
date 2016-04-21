@@ -59,13 +59,13 @@
 					<thead>
 						<tr>
 							<th class="actions text-center" style="padding:0;vertical-align:middle">
-								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
 									<i class="fa fa-fw fa-filter go-grey"></i>
 								</a>
-								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
+								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
 									<i class="fa fa-fw fa-times go-red"></i>
 								</a>
-								<a class="btn btn-link btn-sm ng-hide" style="color:#999" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
 									<i class="fa fa-fw fa-times go-grey"></i>
 								</a>
 							</th>
@@ -75,7 +75,7 @@
 					<tbody>
 						<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
 							<td>
-								<a class="btn btn-default btn-sm" ng-click="ngCtrl.applyQueryFilter()">
+								<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
 									<i class="fa fa-fw fa-filter"></i>
 								</a>
 							</td>
@@ -250,9 +250,10 @@
 						</tr>
 						<tr ng-repeat="record in ngCtrl.list.data">
 							<td class="actions">
-								<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
+								<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"/>
+								<!--<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
 									<i class="fa fa-fw fa-eye"></i>
-								</a>
+								</a>-->
 							</td>
 							<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">

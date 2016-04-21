@@ -802,7 +802,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/list/{ListName}/service.js")]
-		public IActionResult GetRecordListServiceJSByName(string Name, string ListName)
+		public IActionResult GetRecordListServiceJSByName(string Name, string ListName, bool defaultScript = false)
 		{
 			var list = entityManager.ReadRecordList(Name, ListName);
 			if( list == null || list.Object == null || list.Success == false )
@@ -810,10 +810,107 @@ namespace WebVella.ERP.Web.Controllers
 
 			byte[] bytes = new byte[0];
 			var code = list.Object.ServiceCode;
-			if (!string.IsNullOrWhiteSpace(code))
+			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 			{
-				bytes = System.Text.Encoding.UTF8.GetBytes(code);
+			#region
+				code = @"// IMPORTANT: You must always have at least webvellaActionService defined or the page will not load
+// The methods inside it are optional 
+// For usage in action items, the service is bound to the controller with ngCtrl.actionService. So if 
+// what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Objects accessible through the ngCtrl:
+// ngCtrl.list.data => the records' data array
+// ngCtrl.list.meta => the records' list meta
+// ngCtrl.entity    => the current entity's meta
+// ngCtrl.entityRelations => list of all relations of the entity
+// ngCtrl.areas		=> the current areas in the site and their meta, attached entities and etc.
+// ngCtrl.currentUser => the current user
+// ngCtrl.$sessionStorage => copy of the session local storage service
+// ngCtrl.stateParams => all state parameters
+
+// IMPORTANT: all data is two way bound, which means it will be watched by angular and any changes propagated. If you want to get a copy of one of the objects, without the binding
+// use the var copyObject = fastCopy(originalObject); . This will break the binding.
+
+(function () {
+	'use strict';
+	angular
+    .module('webvellaAreas')
+	.service('webvellaActionService', service);
+	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter','webvellaCoreService'];
+	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter,webvellaCoreService) {
+		var serviceInstance = this;
+		
+		// PRELOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This script will be executed BEFORE the page load (while resolving the state)
+		// Parameters: defer, state
+		serviceInstance.preload = preload;
+		function preload(defer,state){
+			defer.resolve();
+			return defer.promise;
+		}
+
+		// ONLOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This script will be executed as the FIRST function from the controller after the main objects are initialized.
+		//			  With the ngCtrl you can access the scope of the controller
+		// Parameters: ngCtrl, rootScope, state
+		serviceInstance.onload = onload;
+		function onload(ngCtrl,rootScope, state){
+
+			return true; //true for success, or string for an error message to be presented to the user
+		}
+		
+		// POSTLOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This script will be executed as the LAST function from the controller
+		// Parameters: ngCtrl, rootScope, state
+		serviceInstance.postload = postload;
+		function postload(ngCtrl,rootScope, state){
+
+			return true; //true for success, or string for an error message to be presented to the user
+		}
+
+		// PAGE TITLE ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain functions for the user actions rendered inside the page title above the list.
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
+		
+		// <<<<< No functions defined yet >>>>>>
+
+		// PAGE TITLE DROPDOWN ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain functions for the user actions rendered inside the page title dropdown above the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
+		
+		// <<<<< No functions defined yet >>>>>>
+
+		// RECORD ROW ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain functions for the user actions rendered on each record row of the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
+		//			   and the ngCtrl
+		
+		serviceInstance.getRecordDetailsUrl = getRecordDetailsUrl;
+		function getRecordDetailsUrl(record,ngCtrl) {
+			return webvellaCoreService.listAction_getRecordDetailsUrl(record,ngCtrl);
+		}
+
+		// RECORD ROW DROPDOWN ACTIONS
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Execution: This block should contain methods for the user actions rendered on the dropdown in each record row of the list
+		// Parameters: It is up to the action template what will be passed as parameter. Accessible are the record object
+		//			   and the ngCtrl
+		
+		// Define your functions here
+
+	}
+})();";
+
+				#endregion
 			}
+			bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript" );
 		}
 
@@ -867,7 +964,7 @@ namespace WebVella.ERP.Web.Controllers
 				{
 					TreeSelectField treeField = field as TreeSelectField;
 					var treeRelation = relations.SingleOrDefault(x => x.Id == treeField.RelationId);
-					if (treeRelation == null) //skip if missing rellation is used // simple protection
+					if (treeRelation == null) //skip if missing relation is used // simple protection
 						continue;
 
 					Entity relatedEntity = entityManager.ReadEntity(treeField.RelatedEntityId).Object;
@@ -1073,7 +1170,7 @@ namespace WebVella.ERP.Web.Controllers
 		}
 
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/meta/entity/{Name}/view/{ViewName}/service.js")]
-		public IActionResult GetRecordViewServiceJSByName(string Name, string ViewName)
+		public IActionResult GetRecordViewServiceJSByName(string Name, string ViewName, bool defaultScript = false)
 		{
 			var view = entityManager.ReadRecordView(Name, ViewName);
 			if (view == null || view.Object == null || view.Success == false)
@@ -1081,10 +1178,80 @@ namespace WebVella.ERP.Web.Controllers
 
 			byte[] bytes = new byte[0];
 			var code = view.Object.ServiceCode;
-			if (!string.IsNullOrWhiteSpace(code))
+			if (string.IsNullOrWhiteSpace(code) || defaultScript)
 			{
-				bytes = System.Text.Encoding.UTF8.GetBytes(code);
+				#region
+				code = @"// IMPORTANT: You must always have at least webvellaActionService defined or the page will not load
+// The methods inside it are optional 
+// For usage in action items, the service is bound to the controller with ngCtrl.actionService. So if 
+// what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Objects accessible through the ngCtrl:
+// ngCtrl.list.data => the records' data array
+// ngCtrl.list.meta => the records' list meta
+// ngCtrl.entity    => the current entity's meta
+// ngCtrl.entityRelations => list of all relations of the entity
+// ngCtrl.areas		=> the current areas in the site and their meta, attached entities and etc.
+// ngCtrl.currentUser => the current user
+// ngCtrl.$sessionStorage => copy of the session local storage service
+// ngCtrl.stateParams => all state parameters
+
+// IMPORTANT: all data is two way bound, which means it will be watched by angular and any changes propagated. If you want to get a copy of one of the objects, without the binding
+// use the var copyObject = fastCopy(originalObject); . This will break the binding.
+
+(function () {
+	'use strict';
+	angular
+    .module('webvellaAreas')
+	.service('webvellaActionService', service);
+	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter','webvellaCoreService'];
+	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter,webvellaCoreService) {
+		var serviceInstance = this;
+		//PRELOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Preload function. Here you can place script that will be executed BEFORE the page load (while resolving the state)
+		serviceInstance.preload = preload;
+		function preload(defer,state){
+
+			defer.resolve();
+			return defer.promise;
+		}
+		//ONLOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Onload function. Here you can place script that will be executed as the FIRST function from the controller after
+		// the main objects are initialized. With the ngCtrl you can access the scope of the controller
+		serviceInstance.onload = onload;
+		function onload(ngCtrl,rootScope, state){
+
+			return true; //true for success, or string for an error message to be presented to the user
+		}
+		//POSTLOAD
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Postload function. Here you can place script that will be executed as the LAST function from the controller
+		//with the ngCtrl you can access the scope of the controller
+		serviceInstance.postload = postload;
+		function postload(ngCtrl,rootScope, state){
+
+			return true; //true for success, or string for an error message to be presented to the user
+		}
+		//CUSTOM
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 
+		//They can be used inside your actions or custom views with ngCtrl.actionService.function_name(params). As params
+		//you can use all data from the controller scope
+		
+		serviceInstance.test = test;
+		function test(entityName) {
+			alert(""test called with "" + entityName);
+		}
+
+
+	}
+})();";
+				#endregion
 			}
+			bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript");
 		}
 

@@ -40,12 +40,12 @@
 				}
 			},
 			resolve: {
+				loadDependency:loadDependency,
 				resolvedCurrentView: resolveCurrentView,
 				pluginAuxPageName: function () {
 					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
 					return "";
-				},
-				loadDependency:loadDependency
+				}
 			}
 		});
 	};
@@ -91,8 +91,8 @@
 		return defer.promise;
 	}
 
-   	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','wvAppConstants','resolvedCurrentEntityMeta'];
-	function loadDependency($ocLazyLoad, $q, $http,$stateParams,wvAppConstants,resolvedCurrentEntityMeta){
+   	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$state','$timeout','$stateParams','wvAppConstants','resolvedCurrentEntityMeta'];
+	function loadDependency($ocLazyLoad, $q, $http,$state,$timeout,$stateParams,wvAppConstants,resolvedCurrentEntityMeta){
         var lazyDeferred = $q.defer();
 		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		var loadFilesArray = [];
@@ -103,7 +103,14 @@
           files: loadFilesArray
         }).then(function() {
            return lazyDeferred.resolve("ready");
-        });	
+        },
+		function error(err) {
+            $timeout(function () {
+                $state.go('webvella-core-error', { 'code': '404', 'url': "some-url-error" });
+            }, 0);
+			lazyDeferred.reject(err);
+			//return err;
+		});	
 	
 	}
 

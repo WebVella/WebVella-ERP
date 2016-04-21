@@ -333,13 +333,11 @@
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.recordRowActions = [];
+		ngCtrl.recordRowActions = fastCopy(ngCtrl.list.meta.actionItems);
 		ngCtrl.recordRowDropdownActions = [];
 		ngCtrl.sidebarTopActions = [];
 		ngCtrl.sidebarBottomActions = [];
 
-		ngCtrl.actionTemplate = '<a ng-click="ngCtrl.actionService.test(ngCtrl.entity.name)">'+
-							'<i class="fa fa-wrench"></i> Call test'+
-							'</a>'
 		//#endregion
 
 		//#region << Run  webvellaActionService.postload >>
