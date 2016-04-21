@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> Delete list</a>
 		</div>
 		<div class="meta-label">
 			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
@@ -43,14 +43,14 @@
 		</nav>
 		<h4 style="margin-bottom:1em">Service Javascript</h4>
 		<p>Click the button below to review or manage the script that is used with the action templates.</p>
-		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a> 
+		<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.manageServiceCodeModal()">Manage Code</a> 
 		<span class="divider">|</span>
 		<span class="ng-hide" ng-show="!ngCtrl.list.serviceCode">status: <span class="go-green">the default service code is loaded</span></span>
 		<span class="ng-hide" ng-show="ngCtrl.list.serviceCode">status: <span class="go-orange">custom service code is loaded</span></span>
 
 		<h4 style="margin-bottom:1em;margin-top:2em;">Actions templates</h4>
 		<p>Here are defined what actions the user can perform with the list or its records.</p>
-		<a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)">Add New</a>
+		<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(null)">Add New</a>
 		<table class="table table-bordered table-hover table-vertical-align-middle ng-hide" style="margin-top:1em;" ng-show="ngCtrl.list.actionItems.length > 0">
 			<thead>
 				<tr>
@@ -62,7 +62,7 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="actionItem in ngCtrl.list.actionItems track by actionItem.name">
-					<td><a class="btn btn-default btn-sm"  href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(actionItem)"><i class="fa fa-fw fa-pencil"/></a></td>
+					<td><a class="btn btn-default btn-outline"  href="javascript:void(0)" ng-click="ngCtrl.addManageActionItemModal(actionItem)"><i class="fa fa-fw fa-pencil"/></a></td>
 					<td ng-bind="actionItem.menu"></td>
 					<td ng-bind="actionItem.weight"></td>
 					<td ng-bind="actionItem.name"></td>

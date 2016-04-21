@@ -1060,13 +1060,13 @@
 					"name":"wv_create_and_details",
 					"menu":"create-bottom",
 					"weight":2,
-					"template":"<a class=\"btn btn-default\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
+					"template":"<a class=\"btn btn-default  btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
 					},
 					{
 					"name":"wv_create_cancel",
 					"menu":"create-bottom",
 					"weight":3,
-					"template":"<a class=\"btn btn-default\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
+					"template":"<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
 					}]
 			};
 			return view;
@@ -1479,7 +1479,7 @@
 						"name":"wv_create_record",
 						"menu":"page-title",
 						"weight":1,
-						"template":"<a class=\"btn btn-success btn-sm hidden-xs\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+						"template":"<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
 						"name":"wv_import_records",
@@ -1497,7 +1497,7 @@
 						"name":"wv_record_details",
 						"menu":"record-row",
 						"weight":1,
-						"template":"<a class=\"btn btn-default btn-sm\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+						"template":"<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
 						}
 					],
 				}

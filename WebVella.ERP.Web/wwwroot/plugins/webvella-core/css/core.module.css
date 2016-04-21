@@ -172,12 +172,12 @@ span.divider {
 
 .btn-outline {
 	border: none;
-	background: transparent;
+	background: rgba(0,0,0,0.08);
 	color: #333;
 }
 
 	.btn-outline:hover {
-		background: rgba(0,0,0,0.05);
+		background: rgba(0,0,0,0.12);
 		color: #333;
 	}
 
@@ -1145,10 +1145,12 @@ body.hidden-sidebar #page-topnav {
 
 #page-meta .meta-label .selector {
 	color: #999;
+	background:transparent;
 }
 
 	#page-meta .meta-label .selector:hover {
 		color: #555;
+		background:rgba(0,0,0,0.08)
 	}
 
 .query-filter-row .form-group {
@@ -1274,7 +1276,7 @@ body.hidden-sidebar #page-topnav {
 	float: right;
 	padding-top: 0;
 	margin-right: 5px;
-	/*margin-top: 4px;*/
+	margin-top: -1px;
 }
 
 	#page-title .aux-actions .form-group {
@@ -1283,6 +1285,11 @@ body.hidden-sidebar #page-topnav {
 		vertical-align: middle;
 		margin-bottom: 0;
 	}
+
+#page-title .form-control {
+	box-shadow:none;
+	border:none;
+}
 
 #page-messages > .alert {
 	margin-bottom: 0;
@@ -2098,6 +2105,15 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	padding-left: 7px;
 	padding-right: 7px;
 	border-color: #ccc;
+}
+
+.first-background-transparent > .input-group-addon:first-child {
+	background:#fafafa;
+}
+
+.first-background-transparent > .form-control {
+	border-left:none;
+	padding-left:0;
 }
 
 .panel-body .form,
@@ -3072,6 +3088,7 @@ table .btn-xs.btn-link {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		user-select: none;
+		box-shadow:none;
 	}
 
 		.editable-wrapper .form-control:focus {

@@ -3,7 +3,7 @@
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name"></span>
 			<span uib-dropdown class="dropdown"  ng-if="::ngCtrl.pageTitleDropdownActions.length > 0">
-				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+				<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
 					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name"/>
 					<li class="divider"></li>
@@ -239,7 +239,7 @@
 							<td class="actions">
 								<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
 								<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
-									<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+									<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 									<ul class="dropdown-menu" uib-dropdown-menu style="margin-top:10px;">
 										<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowDropdownActions track by actionItem.name"/>
 									</ul>

@@ -5887,7 +5887,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-success btn-sm hidden-xs"" ng-show=""ngCtrl.checkEntityPermissions('canCreate')"" 
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.checkEntityPermissions('canCreate')"" 
     ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
 	<i class=""fa fa-fw fa-plus""></i> Add New
 </a>";
@@ -5915,7 +5915,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-sm"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+@"<a class=""btn btn-default btn-outline"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
     <i class=""fa fa-fw fa-eye""></i>
 </a>";
 					break;
@@ -5997,14 +5997,14 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 2;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+@"<a class=""btn btn-default btn-outline"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
 					break;
 				case "wv_create_cancel":
 					actionItem.Name = "wv_create_cancel";
 					actionItem.Menu = "create-bottom";
 					actionItem.Weight = 3;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+@"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
 					break;
 				default:
 					throw new Exception("no such action type");

@@ -1,7 +1,7 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-success btn-sm" ng-click="ngCtrl.manageRelationModal(null)"><i class="fa fa-plus"></i> Add New</a>
+			<a class="btn btn-success btn-outline" ng-click="ngCtrl.manageRelationModal(null)"><i class="fa fa-plus"></i> Add New</a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.currentEntityRelation.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
@@ -41,7 +41,7 @@
             <tbody>
                 <tr ng-repeat="relation in ngCtrl.currentEntityRelation | filter: ngCtrl.search track by relation.id">
                     <td class="actions">
-                        <a class="btn btn-default btn-sm" ng-click="ngCtrl.manageRelationModal(relation)">
+                        <a class="btn btn-default btn-outline" ng-click="ngCtrl.manageRelationModal(relation)">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>

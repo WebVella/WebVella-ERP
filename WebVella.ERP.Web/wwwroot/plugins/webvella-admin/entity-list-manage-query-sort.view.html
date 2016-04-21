@@ -1,7 +1,7 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-danger btn-sm" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o"></i> Delete list</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> Delete list</a>
 		</div>
 		<div class="meta-label">
 			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
@@ -43,17 +43,17 @@
 		</nav>
 		<div class="view-manage-section">
 			<h4 style="margin-bottom:1em">Query</h4>
-			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default" ng-click="ngCtrl.AddSection(null)">add query section</a></div>
+			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(null)">add query section</a></div>
 			<div ng-if="ngCtrl.list.query != null">
 				<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
 			</div>
 
 			<h4 style="margin-top:2em;margin-bottom:1em">Sort</h4>
-			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default" ng-click="ngCtrl.AddSortRule()">add new sort</a></div>
+			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()">add new sort</a></div>
 			<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
-						<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSortRule()">add new sort</a>
+						<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()">add new sort</a>
 					</span>
 				</div>
 				<div class="panel-body">
@@ -70,7 +70,7 @@
 								<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
 							</td>
 							<td style="width:60px;">
-								<a class="btn btn-default go-red" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+								<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
 							</td>
 						</tr>
 					</table>
@@ -86,7 +86,7 @@
 	<table class="table table-noborder table-vertical-align-middle">
 		<tr>
 			<td style="width:30px;">
-				<a class="btn btn-default" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database go-grey"></i></a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
 			</td>
 			<td  width="250">
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="ngCtrl.updateQuery()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
@@ -108,7 +108,7 @@
 				</div>
 			</td>
 			<td style="width:60px;">
-				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<a ng-hide="parentQuery.subQueries.length <= 1" class="btn btn-default btn-outline go-red" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
 				<span ng-hide="parentQuery.subQueries.length > 1" class="btn go-red " uib-tooltip="section needs to have at least one rule"><i class="fa fa-fw fa-lock"></i></span>
 			</td>
 		</tr>
@@ -119,9 +119,9 @@
 	<div class="panel panel-default">
 		<div class="panel-heading clearfix">
 			<span class="pull-right">
-				<a class="btn btn-default go-red btn-sm" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddSection(currentQuery)">add section</a>
-				<a class="btn btn-default btn-sm" ng-click="ngCtrl.AddRule(currentQuery)">add rule</a>
+				<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)">add section</a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)">add rule</a>
 			</span>
 			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
 				<option value="AND">all</option>
