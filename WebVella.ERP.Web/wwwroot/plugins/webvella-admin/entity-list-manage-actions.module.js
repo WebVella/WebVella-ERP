@@ -250,16 +250,10 @@
 	
 		//#region << Order actionItems >>
 		ngCtrl.orderActionItems = function () {
-			ngCtrl.list.actionItems.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		}
-		//#endregion
-
-		//#region << Restore defaults >>
-
-		ngCtrl.restoreActionTemplatesDefault = function(){
-			alert("Not implemented yet");
+			ngCtrl.list.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
 		}
 
+		ngCtrl.orderActionItems();
 		//#endregion
 
 		//#region << Modals >>
@@ -406,11 +400,6 @@
 		}
 
 		function getDefaultScriptSuccessCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> Contents loaded'
-			});
-
 			popupCtrl.serviceCode = response.data;
 		}
 

@@ -1,10 +1,11 @@
 ﻿<div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="ngCtrl.checkEntityPermissions('canCreate')"
+			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name"></span>
+			<!--<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="ngCtrl.checkEntityPermissions('canCreate')"
 			   href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/create?listName={{::ngCtrl.stateParams.listName}}&filter={{::ngCtrl.stateParams.filter}}&page={{::ngCtrl.stateParams.page}}">
 				<i class="fa fa-fw fa-plus"></i> Add New
-			</a>
+			</a>-->
 			<span uib-dropdown class="dropdown">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
@@ -54,7 +55,7 @@
 <div id="page-body">
 	<div id="page-text">
 		<div ng-if="!ngCtrl.validation.hasError">
-			<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>
+			<!--<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>-->
 				<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.list.meta.cssClass}}" ng-show='::ngCtrl.list.data.length > 0' ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
 					<thead>
 						<tr>
@@ -250,10 +251,13 @@
 						</tr>
 						<tr ng-repeat="record in ngCtrl.list.data">
 							<td class="actions">
-								<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"/>
-								<!--<a ng-click="ngCtrl.saveStateParamsToSessionStorage()" href='#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/{{::record.id}}/{{::ngCtrl.generateViewName(record)}}/*/*' class="btn btn-default btn-sm">
-									<i class="fa fa-fw fa-eye"></i>
-								</a>-->
+								<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
+								<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
+									<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+									<ul class="dropdown-menu" uib-dropdown-menu style="margin-top:10px;">
+										<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowDropdownActions track by actionItem.name"/>
+									</ul>
+								</span>
 							</td>
 							<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
@@ -283,11 +287,10 @@
 						</tr>
 					</tbody>
 				</table>
-
 				<div class="ng-hide" ng-show='::ngCtrl.list.data.length > 0' ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
 					<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
 				</div>
-			</div>
+			<!--</div>-->
 
 			<div class="alert alert-info ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
 				There are no records matching your query

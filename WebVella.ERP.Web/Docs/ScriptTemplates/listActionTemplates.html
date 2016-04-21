@@ -1,0 +1,14 @@
+﻿<!-- wv_record_details -->
+<!-- weight:1, menu: record-row -->
+
+<a class="btn btn-default btn-sm" ng-href="{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}">
+    <i class="fa fa-fw fa-eye"></i>
+</a>
+
+
+<!-- wv_create_record -->
+<!-- weight:1, menu: page-title -->
+
+<a class="btn btn-success btn-sm hidden-xs" ng-show="ngCtrl.checkEntityPermissions('canCreate')" ng-href="{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}">
+	<i class="fa fa-fw fa-plus"></i> Add New
+</a>
