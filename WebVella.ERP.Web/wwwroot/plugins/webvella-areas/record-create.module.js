@@ -774,6 +774,44 @@
 
 
 		//#endregion
+
+		//#region << List actions and webvellaActionService bind >>
+		ngCtrl.actionService = webvellaActionService;
+		ngCtrl.pageTitleActions = [];
+		ngCtrl.pageTitleDropdownActions = [];
+		ngCtrl.createBottomActions = [];
+		ngCtrl.pageBottomActions = [];
+		ngCtrl.view.meta.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
+		ngCtrl.view.meta.actionItems.forEach(function(actionItem){
+			switch(actionItem.menu){
+				case "page-title":
+					ngCtrl.pageTitleActions.push(actionItem);
+					break;
+				case "page-title-dropdown":
+					ngCtrl.pageTitleDropdownActions.push(actionItem);
+					break;
+				case "create-bottom":
+					ngCtrl.createBottomActions.push(actionItem);
+					break;
+				case "page-bottom":
+					ngCtrl.pageBottomActions.push(actionItem);
+					break;
+			}
+		});		
+		//#endregion
+
+		//#region << Run  webvellaActionService.postload >>
+		if (webvellaActionService.postload === undefined || typeof (webvellaActionService.postload) != "function") {
+			$log.warn("No webvellaActionService.postload function. Skipping");
+		}
+		else {
+			var actionsOnLoadResult = webvellaActionService.postload(ngCtrl,$rootScope,$state);
+			if(actionsOnLoadResult != true){
+				ngCtrl.validation.hasError = true;
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+			}
+		}
+		//#endregion
 	}
 	//#endregion
 

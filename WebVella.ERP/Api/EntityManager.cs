@@ -5877,9 +5877,11 @@ namespace WebVella.ERP.Api
 			return fields;
 		}
 
-		private ActionItem GenerateListActionItem(string name) {
+		private ActionItem GenerateListActionItem(string name)
+		{
 			var actionItem = new ActionItem();
-			switch(name) {
+			switch (name)
+			{
 				case "wv_create_record":
 					actionItem.Name = "wv_create_record";
 					actionItem.Menu = "page-title";
@@ -5894,7 +5896,7 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_import_records";
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
-					actionItem.Template = ""+
+					actionItem.Template = "" +
 @"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.checkEntityPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-upload""></i> Import CSV
 </a>";
@@ -5912,11 +5914,13 @@ namespace WebVella.ERP.Api
 					actionItem.Name = "wv_record_details";
 					actionItem.Menu = "record-row";
 					actionItem.Weight = 1;
-					actionItem.Template = ""+
+					actionItem.Template = "" +
 @"<a class=""btn btn-default btn-sm"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
     <i class=""fa fa-fw fa-eye""></i>
 </a>";
 					break;
+				default:
+					throw new Exception("no such action type");
 			}
 			return actionItem;
 		}
@@ -5966,6 +5970,48 @@ namespace WebVella.ERP.Api
 			return recordLists;
 		}
 
+		private ActionItem GenerateViewActionItem(string name)
+		{
+			var actionItem = new ActionItem();
+			switch (name)
+			{
+				case "wv_record_delete":
+					actionItem.Name = "wv_record_delete";
+					actionItem.Menu = "page-title-dropdown";
+					actionItem.Weight = 1;
+					actionItem.Template = "" +
+@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord()"" ng-confirm-click=""Are you sure?""
+		ng-if=""ngCtrl.userHasRecordDeletePermission()"">
+	<i class=""fa fa-trash go-red""></i> Delete Record
+</a>";
+					break;
+				case "wv_create_and_list":
+					actionItem.Name = "wv_create_and_list";
+					actionItem.Menu = "create-bottom";
+					actionItem.Weight = 1;
+					actionItem.Template = "" +
+@"<a class=""btn btn-primary"" ng-click='ngCtrl.create(""list"")' ng-if=""ngCtrl.createViewRegion != null"">Create & List</a>";
+					break;
+				case "wv_create_and_details":
+					actionItem.Name = "wv_create_and_details";
+					actionItem.Menu = "create-bottom";
+					actionItem.Weight = 2;
+					actionItem.Template = "" +
+@"<a class=""btn btn-default"" ng-click='ngCtrl.create(""details"")' ng-if=""ngCtrl.createViewRegion != null"">Create & Details</a>";
+					break;
+				case "wv_create_cancel":
+					actionItem.Name = "wv_create_cancel";
+					actionItem.Menu = "create-bottom";
+					actionItem.Weight = 3;
+					actionItem.Template = "" +
+@"<a class=""btn btn-default"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
+					break;
+				default:
+					throw new Exception("no such action type");
+			}
+			return actionItem;
+		}
+
 		private List<RecordView> CreateEntityDefaultRecordViews(Entity entity)
 		{
 			List<RecordView> recordViewList = new List<RecordView>();
@@ -5985,6 +6031,12 @@ namespace WebVella.ERP.Api
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(contentRegion);
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(create);
 
 			var quickCreate = new RecordView();
@@ -5998,6 +6050,12 @@ namespace WebVella.ERP.Api
 			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(quickCreate);
 
 			var quickView = new RecordView();
@@ -6011,6 +6069,12 @@ namespace WebVella.ERP.Api
 			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(quickView);
 
 			var general = new RecordView();
@@ -6024,6 +6088,12 @@ namespace WebVella.ERP.Api
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(general);
 
 

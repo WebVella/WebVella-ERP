@@ -74,6 +74,10 @@ form.form-signin {
 	padding: 10px;
 }
 
+	.page-buttons > span + span {
+		margin-left:15px;
+	}
+
 span.divider {
 	color: #bdbdbd;
 	margin: 0 1em;

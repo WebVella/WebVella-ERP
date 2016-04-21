@@ -1026,7 +1026,6 @@
 				"cssClass": "",
 				"dynamicHtmlTemplate": null,
 				"relationOptions": [],
-				"serviceCode": null,
 				"type": "general",
 				"iconName": "file-text-o",
 				"regions": [
@@ -1042,7 +1041,32 @@
 					"cssClass": "",
 					"items": []
 				},
-				"actionItems": []
+				"serviceCode": null,
+				"actionItems": [
+					{
+					"name":"wv_record_delete",
+					"menu":"page-title-dropdown",
+					"weight":1,
+					"template":"<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord()\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordDeletePermission()\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+					},
+					{
+					"name":"wv_create_and_list",
+					"menu":"create-bottom",
+					"weight":1,
+					"template":"<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
+					},
+					{
+					"name":"wv_create_and_details",
+					"menu":"create-bottom",
+					"weight":2,
+					"template":"<a class=\"btn btn-default\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
+					},
+					{
+					"name":"wv_create_cancel",
+					"menu":"create-bottom",
+					"weight":3,
+					"template":"<a class=\"btn btn-default\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
+					}]
 			};
 			return view;
 		}

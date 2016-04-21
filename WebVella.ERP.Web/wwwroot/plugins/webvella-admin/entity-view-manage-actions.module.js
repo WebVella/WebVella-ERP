@@ -153,7 +153,7 @@
 
 		//#region << Order actionItems >>
 		ngCtrl.orderActionItems = function () {
-			ngCtrl.list.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
+			ngCtrl.view.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
 		}
 		ngCtrl.orderActionItems();
 		//#endregion

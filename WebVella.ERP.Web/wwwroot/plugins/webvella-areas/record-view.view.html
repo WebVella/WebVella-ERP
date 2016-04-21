@@ -1,26 +1,19 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<span uib-dropdown class="dropdown" ng-if="ngCtrl.userHasRecordDeletePermission()">
+			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name"></span>
+			<span uib-dropdown class="dropdown"  ng-if="::ngCtrl.pageTitleDropdownActions.length > 0">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
-				<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
-					<li ng-if="ngCtrl.userHasRecordDeletePermission()">
-						<a href="javascript:void(0)" confirmed-click="ngCtrl.deleteRecord()" ng-confirm-click="Are you sure?"><i class="fa fa-trash go-red"></i> Delete Record</a>
-					</li>
+				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
+					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name"/>
 					<li class="divider"></li>
 					<li>
 						<a href="/#/admin/entities/{{::ngCtrl.currentEntity.name}}/views/{{::ngCtrl.stateParams.viewName}}">
-							<i class="fa fa-wrench"></i> Edit View
-						</a>
-					</li>
-					<li>
-						<a ng-click="ngCtrl.actionService.test(ngCtrl.currentEntity.name)">
-							<i class="fa fa-wrench"></i> Call test
+							<i class="fa fa-fw fa-wrench"></i> Manage List
 						</a>
 					</li>
 				</ul>
 			</span>
-
 		</div>
 		<div class="meta-label">
 			<h4>
@@ -696,6 +689,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 
 	<div id="page-text" ng-if='::!ngCtrl.selectedSidebarPage.isEdit  && !ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
@@ -749,11 +743,14 @@
 				</div>
 			</div>
 		</div>
+		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
 
 	<div id="page-text" ng-if='::ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate'>
 		<dynamic-view template-url="ngCtrl.selectedSidebarPage.templateMeta.dynamicHtmlTemplate" template-data="ngCtrl.selectedSidebarPage.data" template-meta="ngCtrl.selectedSidebarPage.meta"></dynamic-view>
+		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
+
 </div>
 
 <script type="text/ng-template" id="manageRelationFieldModal.html">

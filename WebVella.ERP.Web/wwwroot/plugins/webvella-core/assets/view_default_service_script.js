@@ -60,7 +60,7 @@
 		
 		serviceInstance.test = test;
 		function test(entityName) {
-			alert(""test called with "" + entityName);
+			alert("test called with" + entityName);
 		}
 
 
