@@ -185,6 +185,7 @@
 		//#endregion
 
 		//#region << Default list actions >>
+		serviceInstance.listAction_getRecordCreateUrl = listAction_getRecordCreateUrl;
 		serviceInstance.listAction_getRecordDetailsUrl = listAction_getRecordDetailsUrl;
 
 		//#endregion
@@ -1099,6 +1100,16 @@
 					description: ""
 				},
 				{
+					key: "create-bottom",
+					value: "create-bottom",
+					description: ""
+				},
+				{
+					key: "page-bottom",
+					value: "page-bottom",
+					description: ""
+				},
+				{
 					key: "page-title",
 					value: "page-title",
 					description: ""
@@ -1106,11 +1117,6 @@
 				{
 					key: "page-title-dropdown",
 					value: "page-title-dropdown",
-					description: ""
-				},
-				{
-					key: "create-bottom",
-					value: "create-bottom",
 					description: ""
 				}
 			];
@@ -1440,10 +1446,35 @@
 					"query": null,
 					"sorts": null,
 					"dynamicHtmlTemplate": null,
-					"actionItems": [],
 					"columnWidthsCSV": null,
 					"relationOptions": [],
-					"serviceCode": null
+					"serviceCode": null,
+					"actionItems": [
+						{
+						"name":"wv_create_record",
+						"menu":"page-title",
+						"weight":1,
+						"template":"<a class=\"btn btn-success btn-sm hidden-xs\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+						},
+						{
+						"name":"wv_import_records",
+						"menu":"page-title-dropdown",
+						"weight":10,
+						"template":"<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
+						},
+						{
+						"name":"wv_export_records",
+						"menu":"page-title-dropdown",
+						"weight":11,
+						"template":"<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
+						},
+						{
+						"name":"wv_record_details",
+						"menu":"record-row",
+						"weight":1,
+						"template":"<a class=\"btn btn-default btn-sm\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+						}
+					],
 				}
 			return list;
 		}
@@ -1453,6 +1484,11 @@
 				{
 					key: "hidden",
 					value: "hidden",
+					description: ""
+				},
+				{
+					key: "page-bottom",
+					value: "page-bottom",
 					description: ""
 				},
 				{
@@ -2182,6 +2218,88 @@
 		//#endregion
 
 		//#region << Default action services >>
+		function listAction_getRecordCreateUrl(ngCtrl) {
+			//#region << Init >>
+			var siteAreas = fastCopy(ngCtrl.areas);
+			var currentEntity = fastCopy(ngCtrl.entity);
+			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
+			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
+			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentPage = fastCopy(ngCtrl.stateParams.page);
+			var currentArea = null;
+			var targetCreateName = null;
+			var targetCreateExists = false;
+			//#endregion		
+
+			//#region << Get the selected create view in the area >>
+			for (var i = 0; i < siteAreas.length; i++) {
+			   if(siteAreas[i].name == currentAreaName){
+				  currentArea = siteAreas[i];
+				  break;
+			   }
+			}
+			if(currentArea == null){
+				alert("Error: No area with such name found");
+			}
+			currentArea.attachments = angular.fromJson(currentArea.attachments);
+			for (var i = 0; i < currentArea.attachments.length; i++) {
+				if(currentArea.attachments[i].name == currentEntityName){
+					targetCreateName =  currentArea.attachments[i].create.name;
+					break;
+				}
+			}
+			if(targetCreateName == null){
+				alert("Error: The current entity is either not attached to the area or the view name is missing");
+			}
+			//#endregion
+
+			//#region << Check if it target view exists >>
+			for (var i = 0; i < currentEntity.recordViews.length; i++) {
+			   if(currentEntity.recordViews[i].name === targetCreateName){
+			   	   targetCreateExists = true;
+				   break;
+			   }
+			}
+			//#endregion
+
+			//#region << Calculate what the view name should be and return >>
+			if(targetCreateExists){
+				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+			}
+			//The target name does not exist. Fallback to default
+			else {
+				targetCreateName = null;				
+				//If not sort and get the first default and general
+				currentEntity.recordViews.sort(sort_by({name:'weight', primer: parseInt, reverse:false}));
+				for (var i = 0; i < currentEntity.recordViews.length; i++) {
+				   if(currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general"){
+				   		targetCreateName = currentEntity.recordViews[i].name;
+						break;
+				   }
+				}
+				if(targetCreateName != null){
+					//there is a default and general view fallback option available
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+				}
+				else {
+					//If there is default general take the first general
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+					   if(currentEntity.recordViews[i].type == "general"){
+				   			targetCreateName = currentEntity.recordViews[i].name;
+							break;
+					   }
+					}
+					if(targetCreateName != null){
+						 return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+					}
+					else {
+						alert("Error: Cannot find suitable details view for this entity records");
+					}
+			   }
+			}
+			//#endregion
+
+		}
 
 		function listAction_getRecordDetailsUrl(record, ngCtrl) {
 			

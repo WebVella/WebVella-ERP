@@ -2,30 +2,16 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name"></span>
-			<!--<a class="btn btn-success btn-sm hidden-xs ng-hide" ng-show="ngCtrl.checkEntityPermissions('canCreate')"
-			   href="#/areas/{{::ngCtrl.currentArea.name}}/{{::ngCtrl.entity.name}}/create?listName={{::ngCtrl.stateParams.listName}}&filter={{::ngCtrl.stateParams.filter}}&page={{::ngCtrl.stateParams.page}}">
-				<i class="fa fa-fw fa-plus"></i> Add New
-			</a>-->
-			<span uib-dropdown class="dropdown">
+			<span uib-dropdown class="dropdown"  ng-if="::ngCtrl.pageTitleDropdownActions.length > 0">
 				<a class="btn btn-default btn-sm" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
-				<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
-					<li ng-show="ngCtrl.checkEntityPermissions('canCreate,canUpdate')">
-						<a ng-click="ngCtrl.openImportModal()">
-							<i class="fa fa-fw fa-upload"></i> Import CSV
-						</a>
-					</li>
-					<li>
-						<a ng-click="ngCtrl.openExportModal()">
-							<i class="fa fa-fw fa-download"></i> Export CSV
-						</a>
-					</li>
+				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
+					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name"/>
 					<li class="divider"></li>
 					<li>
 						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
-							<i class="fa fa-fw fa-wrench"></i> Edit List
+							<i class="fa fa-fw fa-wrench"></i> Manage List
 						</a>
 					</li>
-					<li dynamic-html template="ngCtrl.actionTemplate" />
 				</ul>
 			</span>
 		</div>
@@ -302,7 +288,9 @@
 			</ul>
 		</div>
 		<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
+		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
+
 </div>
 
 <script type="text/ng-template" id="exportModalContent.html">

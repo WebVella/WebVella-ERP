@@ -334,7 +334,7 @@
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.recordRowActions = [];
 		ngCtrl.recordRowDropdownActions = [];
-
+		ngCtrl.pageBottomActions = [];
 		ngCtrl.list.meta.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
 		ngCtrl.list.meta.actionItems.forEach(function(actionItem){
 			switch(actionItem.menu){
@@ -349,6 +349,9 @@
 					break;
 				case "record-row-dropdown":
 					ngCtrl.recordRowDropdownActions.push(actionItem);
+					break;
+				case "page-bottom":
+					ngCtrl.pageBottomActions.push(actionItem);
 					break;
 			}
 		});		

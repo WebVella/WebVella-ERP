@@ -5877,6 +5877,50 @@ namespace WebVella.ERP.Api
 			return fields;
 		}
 
+		private ActionItem GenerateListActionItem(string name) {
+			var actionItem = new ActionItem();
+			switch(name) {
+				case "wv_create_record":
+					actionItem.Name = "wv_create_record";
+					actionItem.Menu = "page-title";
+					actionItem.Weight = 1;
+					actionItem.Template = "" +
+@"<a class=""btn btn-success btn-sm hidden-xs"" ng-show=""ngCtrl.checkEntityPermissions('canCreate')"" 
+    ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
+	<i class=""fa fa-fw fa-plus""></i> Add New
+</a>";
+					break;
+				case "wv_import_records":
+					actionItem.Name = "wv_import_records";
+					actionItem.Menu = "page-title-dropdown";
+					actionItem.Weight = 10;
+					actionItem.Template = ""+
+@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.checkEntityPermissions('canCreate,canUpdate')"">
+	<i class=""fa fa-fw fa-upload""></i> Import CSV
+</a>";
+					break;
+				case "wv_export_records":
+					actionItem.Name = "wv_export_records";
+					actionItem.Menu = "page-title-dropdown";
+					actionItem.Weight = 11;
+					actionItem.Template = "" +
+@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.checkEntityPermissions('canCreate,canUpdate')"">
+	<i class=""fa fa-fw fa-download""></i> Export CSV
+</a>";
+					break;
+				case "wv_record_details":
+					actionItem.Name = "wv_record_details";
+					actionItem.Menu = "record-row";
+					actionItem.Weight = 1;
+					actionItem.Template = ""+
+@"<a class=""btn btn-default btn-sm"" ng-href=""{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}"">
+    <i class=""fa fa-fw fa-eye""></i>
+</a>";
+					break;
+			}
+			return actionItem;
+		}
+
 		private List<RecordList> CreateEntityDefaultRecordLists(Entity entity)
 		{
 			List<RecordList> recordLists = new List<RecordList>();
@@ -5892,6 +5936,12 @@ namespace WebVella.ERP.Api
 			create.PageSize = 10;
 			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
+			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
+			create.ActionItems.Add(GenerateListActionItem("wv_export_records"));
+			create.ActionItems.Add(GenerateListActionItem("wv_record_details"));
 			recordLists.Add(create);
 
 			var lookup = new RecordList();
@@ -5905,6 +5955,12 @@ namespace WebVella.ERP.Api
 			lookup.PageSize = 10;
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
+			create.ServiceCode = null;
+			create.ActionItems = new List<ActionItem>();
+			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
+			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
+			create.ActionItems.Add(GenerateListActionItem("wv_export_records"));
+			create.ActionItems.Add(GenerateListActionItem("wv_record_details"));
 			recordLists.Add(lookup);
 
 			return recordLists;

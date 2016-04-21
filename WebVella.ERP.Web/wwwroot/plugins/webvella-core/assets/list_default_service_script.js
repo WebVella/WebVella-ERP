@@ -62,7 +62,10 @@
 		// Execution: This block should contain functions for the user actions rendered inside the page title above the list.
 		// Parameters: It is up to the action template what will be passed as parameter. Accessible is the ngCtrl object.
 
-		// <<<<< No functions defined yet >>>>>>
+		serviceInstance.getRecordCreateUrl = getRecordCreateUrl;
+		function getRecordCreateUrl(ngCtrl) {
+			return webvellaCoreService.listAction_getRecordCreateUrl(ngCtrl);
+		}
 
 		// PAGE TITLE DROPDOWN ACTIONS
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

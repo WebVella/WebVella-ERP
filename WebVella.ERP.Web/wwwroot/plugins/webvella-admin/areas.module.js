@@ -332,7 +332,12 @@
 
 			for (var i = 0; i < popupCtrl.entities.length; i++) {
 				if (popupCtrl.entities[i].name == entityName) {
-					views = popupCtrl.entities[i].recordViews;
+					var selectedEntity = popupCtrl.entities[i];
+					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
+					 	if(selectedEntity.recordViews[k].type == "general"){
+							views.push(selectedEntity.recordViews[k]);
+						}
+					}
 					break;
 				}
 			}
@@ -353,12 +358,48 @@
 			}
 		}
 
+		popupCtrl.getCreates = function (entityName) {
+			var creates = [];
+
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == entityName) {
+					var selectedEntity = popupCtrl.entities[i];
+					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
+					 	if(selectedEntity.recordViews[k].type == "create"){
+							creates.push(selectedEntity.recordViews[k]);
+						}
+					}
+					break;
+				}
+			}
+			return creates;
+		}
+		popupCtrl.updateattachmentCreate = function (attachment) {
+			for (var i = 0; i < popupCtrl.entities.length; i++) {
+				if (popupCtrl.entities[i].name == attachment.name) {
+					for (var j = 0; j < popupCtrl.entities[i].recordViews.length; j++) {
+						if (popupCtrl.entities[i].recordViews[j].name == attachment.create.name) {
+							attachment.create.label = popupCtrl.entities[i].recordViews[j].label;
+							break;
+						}
+					}
+
+					break;
+				}
+			}
+		}
+
 		popupCtrl.getLists = function (entityName) {
 			var lists = [];
 
 			for (var i = 0; i < popupCtrl.entities.length; i++) {
 				if (popupCtrl.entities[i].name == entityName) {
-					lists = popupCtrl.entities[i].recordLists;
+					var selectedEntity = popupCtrl.entities[i];
+					for (var k = 0; k < selectedEntity.recordLists.length; k++) {
+					 	if(selectedEntity.recordLists[k].type == "general"){
+							lists.push(selectedEntity.recordLists[k]);
+						}
+					}
 					break;
 				}
 			}
@@ -395,6 +436,11 @@
 				label: null
 			};
 
+			selectedEntity.create = {
+				name: null,
+				label: null
+			};
+
 			selectedEntity.list = {
 				name: null,
 				label: null
@@ -411,6 +457,12 @@
 						if (popupCtrl.cleanEntities[i].recordViews[j].default && popupCtrl.cleanEntities[i].recordViews[j].type == "general") {
 							selectedEntity.view.name = popupCtrl.cleanEntities[i].recordViews[j].name;
 							selectedEntity.view.label = popupCtrl.cleanEntities[i].recordViews[j].label;
+						}
+					}
+					for (var j = 0; j < popupCtrl.cleanEntities[i].recordViews.length; j++) {
+						if (popupCtrl.cleanEntities[i].recordViews[j].default && popupCtrl.cleanEntities[i].recordViews[j].type == "create") {
+							selectedEntity.create.name = popupCtrl.cleanEntities[i].recordViews[j].name;
+							selectedEntity.create.label = popupCtrl.cleanEntities[i].recordViews[j].label;
 						}
 					}
 					for (var m = 0; m < popupCtrl.cleanEntities[i].recordLists.length; m++) {
@@ -447,7 +499,8 @@
 				iconName: null,
 				weight: null,
 				view: null,
-				list: null
+				list: null,
+				create:null
 			};
 
 			urlAttachmentObj.label = popupCtrl.pendingUrlLabel;

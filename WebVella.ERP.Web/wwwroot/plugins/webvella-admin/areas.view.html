@@ -248,7 +248,7 @@
 							<tr>
 								<th width="40">w.</th>
 								<th>item</th>
-								<th colspan="2"></th>
+								<th></th>
 								<th width="40">action</th>
 							</tr>
 						</thead>
@@ -256,23 +256,61 @@
 							<tr ng-repeat="attachment in popupCtrl.attachments track by $index">
 								<td>{{attachment.weight}}</td>
 								<td><i class="fa fa-fw fa-{{attachment.iconName}}"></i> {{attachment.label}}</td>
-								<td ng-if="attachment.url == null" width="35%">
-									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-select="attachment.view.name"
-											   value="{{attachment.view.name}}" e-ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"
-											   onaftersave="popupCtrl.updateattachmentView(attachment)" e-form="{{'fieldFormView_' + attachment.name}}">
-										<span class="input-group-addon" ng-click="this['fieldFormView_' + attachment.name].$show()" ng-hide="this['fieldFormView_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								<td ng-if="attachment.url == null" width="70%">
+									<div class="form-horizontal">
+										<div class="row">
+											<div class="form-group">
+												<label class="control-label col-sm-2">Details</label>
+												<div class="col-sm-10">
+													<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormView_' + attachment.name].$show()">
+														<input type="text" class="form-control" disabled editable-select="attachment.view.name"
+															   value="{{attachment.view.name}}" e-ng-options="view.name as view.name for view in popupCtrl.getViews(attachment.name)"
+															   onaftersave="popupCtrl.updateattachmentView(attachment)" e-form="{{'fieldFormView_' + attachment.name}}">
+														<span class="input-group-addon" ng-click="this['fieldFormView_' + attachment.name].$show()" ng-hide="this['fieldFormView_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="form-group">
+												<label class="control-label col-sm-2">Create</label>
+												<div class="col-sm-10">
+													<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormCreate_' + attachment.name].$show()">
+														<input type="text" class="form-control" disabled editable-select="attachment.create.name"
+															   value="{{attachment.create.name}}" e-ng-options="create.name as create.name for create in popupCtrl.getCreates(attachment.name)"
+															   onaftersave="popupCtrl.updateattachmentCreate(attachment)" e-form="{{'fieldFormCreate_' + attachment.name}}">
+														<span class="input-group-addon" ng-click="this['fieldFormCreate_' + attachment.name].$show()" ng-hide="this['fieldFormCreate_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="form-group" style="margin-bottom:0;">
+												<label class="control-label col-sm-2">List</label>
+												<div class="col-sm-10">
+													<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldFormList_' + attachment.name].$show()">
+														<input type="text" class="form-control" disabled editable-select="attachment.list.name"
+															   value="{{attachment.list.name}}" e-ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"
+															   onaftersave="popupCtrl.updateattachmentList(attachment)" e-form="{{'fieldFormList_' + attachment.name}}">
+														<span class="input-group-addon" ng-click="this['fieldFormList_' + attachment.name].$show()" ng-hide="this['fieldFormList_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 								</td>
-								<td ng-if="attachment.url == null" width="35%">
-									<div class="editable-wrapper input-group editable-updatable">
-										<input type="text" class="form-control" disabled editable-select="attachment.list.name"
-											   value="{{attachment.list.name}}" e-ng-options="list.name as list.name for list in popupCtrl.getLists(attachment.name)"
-											   onaftersave="popupCtrl.updateattachmentList(attachment)" e-form="{{'fieldFormList_' + attachment.name}}">
-										<span class="input-group-addon" ng-click="this['fieldFormList_' + attachment.name].$show()" ng-hide="this['fieldFormList_' + attachment.name].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								<td ng-if="attachment.url != null">
+									<div class="form-horizontal">
+										<div class="row">
+											<div class="form-group" style="margin-bottom:0;">
+												<label class="control-label col-sm-2">URL</label>
+												<div class="col-sm-10">
+													<p class="form-control-static">{{attachment.url}}</p>
+												</div>
+											</div>
+										</div>
 									</div>
 								</td>
-								<td colspan="2" ng-if="attachment.url != null">{{attachment.url}}</td>
 								<td><a href="javascript:void(0)" ng-click="popupCtrl.deleteAttachment($index)" class="btn btn-default btn-sm"><i class="fa fa-fw fa-trash go-red"></i></a></td>
 							</tr>
 						</tbody>
