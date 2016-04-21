@@ -1,8 +1,7 @@
 ﻿/*#region << General >> */
 
 body {
-	background: #212121;
-	background: #000;
+	background: #151517;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -452,9 +451,7 @@ ngToast
 
 			#sidebar .nav.nav-pills > li > a:hover,
 			#sidebar .nav.nav-pills > li > a:focus {
-				background: #424242;
-				background: rgba(255,255,255,0.13);
-				background: rgba(255,255,255,0.1);
+				background: rgba(255,255,255,0.03);
 			}
 
 			#sidebar .nav.nav-pills > li > a > .fa {
@@ -623,7 +620,7 @@ body.hidden-sidebar #page-topnav {
 *****************************/
 #userbox {
 	padding: 5px 5px;
-	background: #212121;
+	background: #151517;
 	position: relative;
 	height: 39px;
 	white-space: nowrap;
@@ -996,7 +993,7 @@ body.hidden-sidebar #page-topnav {
 #page-topnav #search-wrapper {
 	margin-left: 40px;
 	margin-right: 10px;
-	border-left: 1px solid #ddd;
+	border-left: 1px solid rgba(137,137,137,0.3);
 	height: 38px;
 	line-height: 38px;
 	position: relative;
@@ -1099,7 +1096,7 @@ body.hidden-sidebar #page-topnav {
 
 #content {
 	margin-left: 180px;
-	background-color: #f2f2f2;
+	background-color: #f3f5f6;
 }
 
 .no-sidebar #content {
@@ -1308,7 +1305,7 @@ body.hidden-sidebar #page-topnav {
 	.area.thumbnail:hover,
 	.area.thumbnail:active,
 	.area.thumbnail:focus {
-		border-color: #ddd;
+		border-color: rgba(137,137,137,0.3);
 		text-decoration: none;
 		box-shadow: 0 0 10px #ccc;
 	}
@@ -2100,7 +2097,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 	color: #999;
 	padding-left: 7px;
 	padding-right: 7px;
-	border-color: #bbb;
+	border-color: #ccc;
 }
 
 .panel-body .form,
@@ -2110,7 +2107,7 @@ body.mini-sidebar #loading-bar-spinner .spinner-icon {
 }
 
 .form-control {
-	border-color: #bbb;
+	border-color: #ccc;
 	background-color: #fafafa;
 }
 
@@ -2236,11 +2233,11 @@ form .error,
 
 .table {
 	background-color: white;
-	border-color: #aaa !important;
+	border-color: rgba(137,137,137,0.3) !important;
 }
 
 	.table th, .table td {
-		border-color: #aaa !important;
+		border-color: rgba(137,137,137,0.3) !important;
 	}
 
 		.table td .table {
@@ -2682,12 +2679,12 @@ table .btn-xs.btn-link {
 	position: absolute;
 	left: -206px;
 	z-index: 10;
-	top: 56px;
+	top: 37px;
 }
 
 #sidebar .tabbable.spilled {
 	left: -26px;
-	top: 95px;
+	top: 67px;
 }
 
 	#sidebar .tabbable.spilled .back {
@@ -2696,8 +2693,7 @@ table .btn-xs.btn-link {
 
 .tabbable.spilled ul {
 	width: 177px;
-	background: #555;
-	background: rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.05);
 	padding: 5px 0 5px 1em;
 	border-left: 3px solid #90A4AE;
 	border-right: none;
@@ -2718,7 +2714,7 @@ table .btn-xs.btn-link {
 
 	.tabbable.spilled ul li:not(.active) a:hover {
 		background: #ffffff;
-		background: rgba(255,255,255,0.15);
+		background: rgba(255,255,255,0.05);
 		border-color: transparent;
 		border-right: none;
 		color: #eee;
@@ -3015,8 +3011,7 @@ table .btn-xs.btn-link {
 	height: 40px;
 	top: -64px;
 	right: 18px;
-	background: #ffffff;
-	background: rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.05);
 	width: 90px;
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
@@ -3027,8 +3022,7 @@ table .btn-xs.btn-link {
 #sidebar a.back {
 	line-height: 40px;
 	height: 40px;
-	background: #ffffff;
-	background: rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.05);
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
 	display: block;
@@ -3045,14 +3039,14 @@ table .btn-xs.btn-link {
 
 .tabbable.spilled .back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.30);
+	background: rgba(255,255,255,0.08);
 	text-decoration: none;
 	color: #eee;
 }
 
 #sidebar a.back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.30);
+	background: rgba(255,255,255,0.08);
 	text-decoration: none;
 	color: #eee;
 }
@@ -4690,8 +4684,7 @@ a.link-icon.link[href]:before {
      #home-tiles .thumbnail:active,
      #home-tiles .thumbnail:focus {
         box-shadow:none;
-        background:rgba(255,255,255,0.15);
-        background:rgba(255,255,255,0.1);
+        background:rgba(255,255,255,0.03);
     }
 
     #home-tiles .thumbnail .caption {
@@ -4805,5 +4798,12 @@ a.link-icon.link[href]:before {
     max-height: 18px;
 	/*margin-right:5px;*/
 }
+
+.navbar-inverse.desktop li.active a,
+.navbar-inverse.desktop li.active a:hover{
+	background:rgba(255,255,255,0.05);
+}
+
+
 
 /*#endregion */
