@@ -52,6 +52,14 @@
 
 			return true; //true for success, or string for an error message to be presented to the user
 		}
+		//FIELD UPDATE
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		serviceInstance.fieldUpdate = fieldUpdate;
+		function fieldUpdate(item,data,ngCtrl){
+			console.log("action service called");
+			 webvellaCoreService.fieldUpdate(item,data,ngCtrl);
+		}
+
 		//CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 

@@ -56,7 +56,7 @@
 	<script src="~/plugins/webvella-core/lib/oclazyload/dist/oclazyload.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-core/lib/ace-builds/src-min-noconflict/ace.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-core/lib/angular-ui-ace/ui-ace.js?v=@ViewBag.CacheBreaker"></script>
-
+	<script src="~/plugins/webvella-core/lib/angular-translate/angular-translate.js?v=@ViewBag.CacheBreaker"></script>
 
 	@* Core Application module definition *@
 	<script>
@@ -70,7 +70,7 @@
                      // 3rd Party Modules
                     'ui.router', 'ngMessages','ngToast', 'xeditable', 'ui.bootstrap', 'as.sortable', 'checklist-model','ui.tree',
 					'ngCkeditor', 'ngFileUpload', 'ngStorage', 'ui.bootstrap.datetimepicker','RecursionHelper','angular-loading-bar',
-					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad','ui.ace',
+					'doubleScrollBars','angular-bind-html-compile','oc.lazyLoad','ui.ace','pascalprecht.translate',
 					//External plugins - should be defined before the platform ones to provide ability for state overrides for specific routes
 					//'shopBase',
 					
@@ -92,7 +92,7 @@
 				$urlRouterProvider.otherwise('/login');
 				$httpProvider.useApplyAsync("true");
 				$logProvider.debugEnabled(wvAppConstants.debugEnabled);
-				moment.locale('en');
+				moment.locale('@ViewBag.Lang');
 				ngToastProvider.configure({
 					animation: 'fade',
 					horizontalPosition: 'center',
@@ -180,6 +180,15 @@
 	<script src="http://localhost:2201/plugins/shop-base/migration-index.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/plugins/shop-base/migration-women-category.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/plugins/shop-base/migration-material-category.module.js?v=@ViewBag.CacheBreaker"></script>*@
+
+	<!-- translation -->
+	@{
+	var languageFile = "~/plugins/webvella-core/lang/" + ViewBag.Lang +".js?v=" + ViewBag.CacheBreaker;
+	}
+	<script src="@languageFile"></script>
+	<script>
+	var GlobalLanguage = '@ViewBag.Lang';
+	</script>
 
 
 	@ViewBag.PluginModulesJsFileStringArray

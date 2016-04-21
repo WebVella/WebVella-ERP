@@ -286,7 +286,6 @@
 		}
 		//#endregion
 
-
 		//#region << Entity relations functions >>
 		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
 
@@ -318,7 +317,6 @@
 			return fastCopy(webvellaCoreService.userHasEntityPermissions(ngCtrl.currentEntity,"canDelete"));
 		}
 		//#endregion
-
 
 		//#region << Logic >>
 
@@ -417,155 +415,166 @@
  					ngCtrl.opened[dataName] = isOpen;			
 			}
 
-			ngCtrl.fieldUpdate = function (item, data) {
-				var defer = $q.defer();
-				ngCtrl.patchObject = {};
-				var validation = {
-					success: true,
-					message: "successful validation"
-				};
-				if (data != null) {
-					data = data.toString().trim();
-					switch (item.meta.fieldType) {
-
-						//Auto increment number
-						case 1:
-							//Readonly
-							break;
-							//Checkbox
-						case 2:
-							data = (data === "true"); // convert string to boolean
-							break;
-							//Auto increment number
-						case 3: //Currency
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkDecimal(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
-								return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
-							}
-							break;
-						case 4: //Date
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
-							
-							break;
-						case 5: //Datetime
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
-							break;
-						case 6: //Email
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkEmail(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							break;
-						case 11: // Multiselect
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							//We need to convert data which is "2,3" comma separated string to string array
-							if (data !== '[object Array]') {
-								data = data.split(',');
-							}
-							break;
-							//Number
-						case 12:
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkDecimal(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (!data) {
-								data = null;
-							}
-							break;
-							//Percent
-						case 14:
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkPercent(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (!data) {
-								data = null;
-							}
-							break;
-						case 15: //Phone
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkPhone(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							break;
-						case 17: // Dropdown
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							break;
-					}
-				}
-				ngCtrl.patchObject[item.meta.name] = data;
-
-				function patchSuccessCallback(response) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
-					});
- 
-					//we need to add a cache breaker for the browser to get the new version of files and images
-					switch (item.meta.fieldType) {
-					   case 7: //file
-						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
-						  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
-						}
-						break;
-					   case 9: //image
-						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
-							response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
-						}
-						break;
-					}
-
-					//We cannot reload the data from the response object as there is missing data for any 
-					//view or list or trees, or viewFromRelation etc.
-
-					//webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
-
-					defer.resolve();
-				}
-
-				function patchFailedCallback(response) {
-					ngToast.create({
-						className: 'error',
-						content: '<span class="go-red">Error:</span> ' + response.message,
-						timeout: 7000
-					});
-					defer.resolve("validation error");
-				}
-
-				webvellaCoreService.patchRecord($stateParams.recordId, ngCtrl.currentEntity.name, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
-
-				return defer.promise;
+			ngCtrl.fieldUpdate =  function(item,data){
+				webvellaActionService.fieldUpdate(item,data,ngCtrl);
 			}
+
+			//ngCtrl.fieldUpdate = function (item, data) {
+			//	var defer = $q.defer();
+			//	ngCtrl.patchObject = {};
+			//	var validation = {
+			//		success: true,
+			//		message: "successful validation"
+			//	};
+			//	if (data != null) {
+			//		data = data.toString().trim();
+			//		switch (item.meta.fieldType) {
+
+			//			//Auto increment number
+			//			case 1:
+			//				//Readonly
+			//				break;
+			//				//Checkbox
+			//			case 2:
+			//				data = (data === "true"); // convert string to boolean
+			//				break;
+			//				//Auto increment number
+			//			case 3: //Currency
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				validation = checkDecimal(data);
+			//				if (!validation.success) {
+			//					return validation.message;
+			//				}
+			//				if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+			//					return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
+			//				}
+			//				break;
+			//			case 4: //Date
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+			//				data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
+							
+			//				break;
+			//			case 5: //Datetime
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+			//				break;
+			//			case 6: //Email
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				validation = checkEmail(data);
+			//				if (!validation.success) {
+			//					return validation.message;
+			//				}
+			//				break;
+			//			case 11: // Multiselect
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				//We need to convert data which is "2,3" comma separated string to string array
+			//				if (data !== '[object Array]') {
+			//					data = data.split(',');
+			//				}
+			//				break;
+			//				//Number
+			//			case 12:
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				validation = checkDecimal(data);
+			//				if (!validation.success) {
+			//					return validation.message;
+			//				}
+			//				if (!data) {
+			//					data = null;
+			//				}
+			//				break;
+			//				//Percent
+			//			case 14:
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				validation = checkPercent(data);
+			//				if (!validation.success) {
+			//					return validation.message;
+			//				}
+			//				if (!data) {
+			//					data = null;
+			//				}
+			//				break;
+			//			case 15: //Phone
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				validation = checkPhone(data);
+			//				if (!validation.success) {
+			//					return validation.message;
+			//				}
+			//				break;
+			//			case 17: // Dropdown
+			//				if (!data && item.meta.required) {
+			//					return "This is a required field";
+			//				}
+			//				break;
+			//		}
+			//	}
+			//	ngCtrl.patchObject[item.meta.name] = data;
+
+			//	function patchSuccessCallback(response) {
+			//		ngToast.create({
+			//			className: 'success',
+			//			content: '<span class="go-green">Success:</span> ' + response.message
+			//		});
+ 
+			//		//we need to add a cache breaker for the browser to get the new version of files and images
+			//		switch (item.meta.fieldType) {
+			//		   case 7: //file
+			//			if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+			//			  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+			//			}
+			//			break;
+			//		   case 9: //image
+			//			if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+			//				response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+			//			}
+			//			break;
+			//		}
+
+			//		//We cannot reload the data from the response object as there is missing data for any 
+			//		//view or list or trees, or viewFromRelation etc.
+
+			//		//webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
+
+			//		defer.resolve();
+			//	}
+
+			//	function patchFailedCallback(response) {
+			//		ngToast.create({
+			//			className: 'error',
+			//			content: '<span class="go-red">Error:</span> ' + response.message,
+			//			timeout: 7000
+			//		});
+			//		defer.resolve("validation error");
+			//	}
+
+			//	webvellaCoreService.patchRecord($stateParams.recordId, ngCtrl.currentEntity.name, ngCtrl.patchObject, patchSuccessCallback, patchFailedCallback);
+
+			//	return defer.promise;
+			//}
+
+
+
+
+
+
+
 
 			//$scope.picker = { opened: false };
 			//$scope.openPicker = function () {

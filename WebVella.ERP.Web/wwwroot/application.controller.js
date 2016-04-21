@@ -14,9 +14,10 @@
 
 
 	//#region << Configuration  >> ///////////////////////////////////
-	config.$inject = ['$httpProvider', 'wvAppConstants'];
-	function config($httpProvider, wvAppConstants) {
+	config.$inject = ['$httpProvider', 'wvAppConstants', '$translateProvider'];
+	function config($httpProvider, wvAppConstants, $translateProvider) {
 
+		//#region << Request interceptors >>
 		$httpProvider.interceptors.push(function ($q, $location, ngToast, $cookies, $rootScope) {
 			return {
 				'request': function (request) {
@@ -76,12 +77,29 @@
 			}
 		});
 		delete $httpProvider.defaults.headers.common["X-Requested-With"];
+		//#endregion
 
+		//#region << FastClick attach >>
 		if ('addEventListener' in document) {
-			document.addEventListener('DOMContentLoaded', function() {
+			document.addEventListener('DOMContentLoaded', function () {
 				FastClick.attach(document.body);
 			}, false);
 		}
+		//#endregion
+
+		//#region << Translation >>
+		switch (GlobalLanguage) {
+			case "en":
+				$translateProvider.preferredLanguage("en");
+				$translateProvider.translations("en", translationsEN);
+				break;
+			case "bg":
+				$translateProvider.preferredLanguage("bg");
+				$translateProvider.translations("bg", translationsBG);
+				break;
+		}
+
+		//#endregion
 	}
 	//#endregion
 

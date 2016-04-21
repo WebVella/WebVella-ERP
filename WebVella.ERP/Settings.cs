@@ -10,11 +10,13 @@ namespace WebVella.ERP
     {
         public static string EncriptionKey { get; private set; }
 		public static string ConnectionString { get; private set; }
+		public static string Lang { get; private set; }
 
 		public static void Initialize(IConfiguration configuration)
         {
             EncriptionKey = configuration["Settings:EncriptionKey"];
 			ConnectionString = configuration["Settings:ConnectionString"];
+			Lang = configuration["Settings:Lang"];
 		}
     }
 }

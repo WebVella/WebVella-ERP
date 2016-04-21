@@ -144,11 +144,8 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageArea.folder.$invalid && !manageArea.folder.$pristine || popupCtrl.folderError }">
 						<label for="folder">Folder name</label>
 						<input ng-model="popupCtrl.area.folder" type="text" class="form-control" id="folder" name="folder" placeholder="e.g. CRM"
-							   required ng-model-options="{allowInvalid:true}">
+							   ng-model-options="{allowInvalid:true}">
 						<div class="form-description">areas with the same folder label will be grouped</div>
-						<ng-messages for="manageArea.folder.$error" ng-if="manageArea.folder.$touched && manageArea.folder.$dirty && manageArea.folder.$invalid || popupCtrl.folderError">
-							<ng-message when="required" class="error">required field</ng-message>
-						</ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.folderError">
 							{{popupCtrl.folderMessage}}
 						</small>
