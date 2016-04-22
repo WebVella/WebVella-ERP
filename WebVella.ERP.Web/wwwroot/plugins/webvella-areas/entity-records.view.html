@@ -56,7 +56,15 @@
 									<i class="fa fa-fw fa-times go-grey"></i>
 								</a>
 							</th>
-							<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">{{::column.meta.label}}</th>
+							<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
+								ng-switch="::column.type">
+								<span ng-switch-when="field">{{::column.meta.label}}</span>
+								<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
+								<span ng-switch-when="view">{{::column.meta.label}}</span>
+								<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
+								<span ng-switch-when="list">{{::column.meta.label}}</span>
+								<span ng-switch-when="listFromRelation">{{::column.fieldLabel}}</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>

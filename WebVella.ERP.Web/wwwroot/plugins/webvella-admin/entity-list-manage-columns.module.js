@@ -11,12 +11,13 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
 		.controller('DeleteListModalController', deleteListModalController)
+		.controller('ManageListItemFromRelationModalController', ManageListItemFromRelationModalController)
         .controller('WebVellaAdminEntityListManageColumnsController', controller);
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 
-	
+
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-list-manage-columns', {
 			parent: 'webvella-admin-base',
@@ -54,7 +55,7 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	
+
 	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
 		var defer = $q.defer();
 		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
@@ -82,7 +83,7 @@
 	}
 
 	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
+
 	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 		// Initialize
 		var defer = $q.defer();
@@ -116,7 +117,7 @@
 	}
 
 	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
+
 	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 
 		// Initialize
@@ -150,7 +151,7 @@
 	}
 
 	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
+
 	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 
 		// Initialize
@@ -185,7 +186,7 @@
 	}
 
 	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
+
 	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
 
 		// Initialize
@@ -223,27 +224,27 @@
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
 						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList'];
-	
+
 	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
 						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList) {
 
-		
+
 		var ngCtrl = this;
 		ngCtrl.entity = resolvedCurrentEntityMeta;
 
 		//#region << Update page title & hide the side menu >>
 		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
-		$timeout(function(){
+		$timeout(function () {
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			//Hide Sidemenu
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
+		}, 0);
 
 		$rootScope.adminSectionName = "Entities";
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
- 
- 		//#region << Initialize the list >>
+
+		//#region << Initialize the list >>
 		ngCtrl.list = fastCopy(resolvedCurrentEntityList);
 		ngCtrl.relationsList = fastCopy(resolvedEntityRelationsList);
 
@@ -292,8 +293,8 @@
 		}
 
 		//#endregion
-	
- 		//#region << Initialize the library >>
+
+		//#region << Initialize the library >>
 
 		//Generate already used
 		var alreadyUsedItemDataNames = [];
@@ -378,22 +379,22 @@
 							}
 							break;
 						case "fieldFromRelation":
-							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							if (ngCtrl.checkIfRelationAddedToLibrary(item.relationName)) {
 								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "viewFromRelation":
-							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							if (ngCtrl.checkIfRelationAddedToLibrary(item.relationName)) {
 								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "listFromRelation":
-							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							if (ngCtrl.checkIfRelationAddedToLibrary(item.relationName)) {
 								ngCtrl.library.items.push(item);
 							}
 							break;
 						case "treeFromRelation":
-							if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							if (ngCtrl.checkIfRelationAddedToLibrary(item.relationName)) {
 								ngCtrl.library.items.push(item);
 							}
 							break;
@@ -441,6 +442,9 @@
 
 		//#region << Drag & Drop >>
 		ngCtrl.moveToColumns = function (item, index) {
+			if(item.type == "fieldFromRelation" || item.type == "viewFromRelation" || item.type == "listFromRelation"){
+				item.fieldLabel = item.meta.label;
+			}
 			//Add Item at the end of the columns list
 			ngCtrl.list.columns.push(item);
 			//Remove from library
@@ -598,15 +602,46 @@
 				}
 			});
 		}
+
+		//#region << Manage from relation modal >>
+
+		ngCtrl.manageItemFromRelation = function (item) {
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageFromRelationModal.html',
+				controller: 'ManageListItemFromRelationModalController',
+				controllerAs: "popupCtrl",
+				backdrop: 'static',
+				size: "",
+				resolve: {
+					parentData: function () { return ngCtrl; },
+					selectedColumn: item
+				}
+			});
+
+			modalInstance.result.then(function (columnObject) {
+				//find the columnItem
+				for (var i = 0; i < ngCtrl.list.columns.length; i++) {
+					if(ngCtrl.list.columns[i].dataName == columnObject.dataName){
+						ngCtrl.list.columns[i].fieldLabel = columnObject.fieldLabel;
+					} 
+				}
+				ngCtrl.updateColumns(false);
+			});
+
+		}
+		//#endregion
+
+
 		//#endregion
 	}
 	//#endregion
 
 	//#region << Modal Controllers >>
 	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
-	
+
 	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
-		
+
 		var popupCtrl = this;
 		popupCtrl.parentData = parentData;
 
@@ -639,6 +674,24 @@
 
 		}
 	};
+
+	ManageListItemFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'selectedColumn'];
+
+	function ManageListItemFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, selectedColumn) {
+
+		var popupCtrl = this;
+		popupCtrl.item = fastCopy(selectedColumn);
+		popupCtrl.ok = function () {
+			$uibModalInstance.close(popupCtrl.item);
+		};
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+	};
+
+
 	//#endregion
 
 })();

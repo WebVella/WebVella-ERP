@@ -349,34 +349,7 @@
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
-<script type="text/ng-template" id="manageHtmlStringModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">HTML string contents</h3>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
-		<form class="form ng-hide" name="manageForm" ng-show="!popupCtrl.error">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="form-group" ng-class="{ 'has-error' : manageForm.content.$invalid && !manageForm.content.$pristine || popupCtrl.contentError}">
-						<label class="control-label">HTML contents</label>
-						<textarea class="form-control" ng-model="popupCtrl.field.content" name="content" ng-model-options="{allowInvalid:true}"></textarea>
-						<div class="error ng-hide" ng-show="manageForm.content.$touched && manageForm.content.$dirty && manageForm.content.$invalid || popupCtrl.contentError">
-							<small class="error" ng-show="popupCtrl.contentError">
-								{{popupCtrl.contentErrorMessage}}
-							</small>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Add Item</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
-	</div>
-</script>
+
 <script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>

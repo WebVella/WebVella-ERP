@@ -67,6 +67,7 @@
 									<div ng-switch-when="fieldFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageItemFromRelation(item)" style="margin-right:5px;"></i> 
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="view" class="clearfix">
@@ -77,6 +78,7 @@
 									<div ng-switch-when="viewFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageItemFromRelation(item)" style="margin-right:5px;"></i> 
 										<i class="fa fa-fw fa-file-text-o go-teal" style="margin-left: 10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="list" class="clearfix">
@@ -87,6 +89,7 @@
 									<div ng-switch-when="listFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
 										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
+										<i class="fa fa-fw fa-cog pull-right clickable go-gray" ng-click="ngCtrl.manageItemFromRelation(item)" style="margin-right:5px;"></i> 
 										<i class="fa fa-fw fa-list go-teal" style="margin-left:10px;"></i> <span class="go-gray">{{::item.relationName}}<span class="divider">></span></span>{{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 									</div>
 									<div ng-switch-when="treeFromRelation" class="clearfix">
@@ -238,6 +241,38 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="manageFromRelationModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title">Relation Item settings</h3>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
+		<form class="form ng-hide" name="manageForm" ng-show="!popupCtrl.error">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupCtrl.fieldLabelError}">
+						<label class="control-label required">Label</label>
+						<input class="form-control" ng-model="popupCtrl.item.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required/>
+						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
+								required field
+							</small>
+							<small class="error" ng-show="popupCtrl.fieldLabelError">
+								{{popupCtrl.fieldLabelMessage}}
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()">Save</button>
 		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
 	</div>
 </script>
