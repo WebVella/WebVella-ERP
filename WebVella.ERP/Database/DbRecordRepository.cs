@@ -1503,9 +1503,9 @@ namespace WebVella.ERP.Database
 					throw new Exception("Url query key not specified in json.");
 
 				var queryParameterKey = optionToken.ToString().ToLowerInvariant();
-				if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == queryParameterKey))
+				if (overwriteArgs != null && overwriteArgs.Any(x => x.Key.ToLowerInvariant() == queryParameterKey))
 				{
-					KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == queryParameterKey);
+					KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key.ToLowerInvariant() == queryParameterKey);
 					return pair.Value;
 				}
 
@@ -1560,9 +1560,9 @@ namespace WebVella.ERP.Database
 			string sortOrder = string.Empty;
 
 			var sortParameterKey = optionToken.ToString().ToLowerInvariant();
-			if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == sortParameterKey))
+			if (overwriteArgs != null && overwriteArgs.Any(x => x.Key.ToLowerInvariant() == sortParameterKey))
 			{
-				KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == sortParameterKey);
+				KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key.ToLowerInvariant() == sortParameterKey);
 				sortField = pair.Value;
 			}
 
@@ -1574,10 +1574,10 @@ namespace WebVella.ERP.Database
 				var orderProperty = settingsToken.Children<JProperty>().SingleOrDefault(x => x.Name == "order");
 				if (orderProperty != null && orderProperty.Value.Type != JTokenType.Null)
 				{
-					var sortOrderParameterKey = optionToken.ToString().ToLowerInvariant();
-					if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == sortOrderParameterKey))
+					var sortOrderParameterKey = orderProperty.Value.ToString().ToLowerInvariant();
+					if (overwriteArgs != null && overwriteArgs.Any(x => x.Key.ToLowerInvariant() == sortOrderParameterKey))
 					{
-						KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == sortOrderParameterKey);
+						KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key.ToLowerInvariant() == sortOrderParameterKey);
 						sortOrder = (pair.Value ?? "ascending").Trim().ToLowerInvariant();
 						if (!(sortOrder == "ascending" || sortOrder == "descending"))
 							sortOrder = null;
