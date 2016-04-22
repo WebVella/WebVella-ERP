@@ -1,4 +1,4 @@
-﻿// IMPORTANT: You must always have at least webvellaActionService defined or the page will not load
+﻿// IMPORTANT: You must always have at least webvellaListActionService defined or the page will not load
 // The methods inside it are optional 
 // For usage in action items, the service is bound to the controller with ngCtrl.actionService. So if 
 // what to use a test method from this service in an action you need to call like 'ng-click=""ngCtrl.actionService.test()""'
@@ -21,7 +21,7 @@
 	'use strict';
 	angular
     .module('webvellaAreas')
-	.service('webvellaActionService', service);
+	.service('webvellaListActionService', service);
 	service.$inject = ['$log', '$http', 'wvAppConstants', '$timeout', 'ngToast', '$filter', 'webvellaCoreService'];
 	function service($log, $http, wvAppConstants, $timeout, ngToast, $filter, webvellaCoreService) {
 		var serviceInstance = this;
@@ -92,6 +92,14 @@
 		//			   and the ngCtrl
 
 		// Define your functions here
+
+
+		// TEST FUNCTIONS
+ 		serviceInstance.test = test;
+		function test() {
+			return true;
+		}
+
 
 	}
 })();

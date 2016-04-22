@@ -132,12 +132,12 @@
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions','webvellaActionService'];
+		'resolvedCurrentUserEntityPermissions','webvellaViewActionService'];
 
 	
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions,webvellaActionService) {
+		resolvedCurrentUserEntityPermissions,webvellaViewActionService) {
 		
 		var ngCtrl = this;
 		ngCtrl.selectedSidebarPage = {};
@@ -273,12 +273,12 @@
 
 		//#endregion
 
-		//#region << Run  webvellaActionService.onload >>
-		if (webvellaActionService.onload === undefined || typeof (webvellaActionService.onload) != "function") {
-			$log.warn("No webvellaActionService.onload function. Skipping");
+		//#region << Run  webvellaViewActionService.onload >>
+		if (webvellaViewActionService.onload === undefined || typeof (webvellaViewActionService.onload) != "function") {
+			$log.warn("No webvellaViewActionService.onload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.onload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaViewActionService.onload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
@@ -416,7 +416,7 @@
 			}
 
 			ngCtrl.fieldUpdate =  function(item,data){
-				webvellaActionService.fieldUpdate(item,data,ngCtrl);
+				webvellaViewActionService.fieldUpdate(item,data,ngCtrl);
 			}
 
 			//ngCtrl.fieldUpdate = function (item, data) {
@@ -1410,8 +1410,8 @@
 		ngCtrl.data = ngCtrl.selectedSidebarPage.data;
 		//#endregion
 
-		//#region << List actions and webvellaActionService bind >>
-		ngCtrl.actionService = webvellaActionService;
+		//#region << List actions and webvellaViewActionService bind >>
+		ngCtrl.actionService = webvellaViewActionService;
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
@@ -1435,12 +1435,12 @@
 		});		
 		//#endregion
 
-		//#region << Run  webvellaActionService.postload >>
-		if (webvellaActionService.postload === undefined || typeof (webvellaActionService.postload) != "function") {
-			$log.warn("No webvellaActionService.postload function. Skipping");
+		//#region << Run  webvellaViewActionService.postload >>
+		if (webvellaViewActionService.postload === undefined || typeof (webvellaViewActionService.postload) != "function") {
+			$log.warn("No webvellaViewActionService.postload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.postload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaViewActionService.postload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				

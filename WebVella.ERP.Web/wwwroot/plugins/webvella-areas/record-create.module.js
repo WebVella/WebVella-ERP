@@ -68,27 +68,27 @@
 	
 	}
 	////////////////////////
- 	loadPreloadScript.$inject = ['loadDependency','webvellaActionService','$q','$http','$state'];
-	function loadPreloadScript(loadDependency,webvellaActionService, $q, $http,$state){
+ 	loadPreloadScript.$inject = ['loadDependency','webvellaViewActionService','$q','$http','$state'];
+	function loadPreloadScript(loadDependency,webvellaViewActionService, $q, $http,$state){
         var defer = $q.defer();
 
-		if (webvellaActionService.preload === undefined || typeof (webvellaActionService.preload) != "function") {
-			console.log("No webvellaActionService.preload function. Skipping");
+		if (webvellaViewActionService.preload === undefined || typeof (webvellaViewActionService.preload) != "function") {
+			console.log("No webvellaViewActionService.preload function. Skipping");
 			defer.resolve();
 			return defer.promise;
 		}
 		else {
-			webvellaActionService.preload(defer,$state);
+			webvellaViewActionService.preload(defer,$state);
 		}
 	}
 
 	//#endregion
 
 	//#region << Controller  >> ///////////////////////////////
-	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService','webvellaActionService',
+	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', 'pageTitle', 'webvellaCoreService','webvellaViewActionService',
         'resolvedAreas', '$timeout', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', '$anchorScroll', '$location','$sessionStorage',
 		'resolvedCurrentUser'];
-	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService,webvellaActionService,
+	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, pageTitle, webvellaCoreService,webvellaViewActionService,
         resolvedAreas, $timeout, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, $anchorScroll, $location,$sessionStorage,
 		resolvedCurrentUser) {
 		
@@ -130,12 +130,12 @@
 		}
 		//#endregion
 
-		//#region << Run  webvellaActionService.onload >>
-		if (webvellaActionService.onload === undefined || typeof (webvellaActionService.onload) != "function") {
-			$log.warn("No webvellaActionService.onload function. Skipping");
+		//#region << Run  webvellaViewActionService.onload >>
+		if (webvellaViewActionService.onload === undefined || typeof (webvellaViewActionService.onload) != "function") {
+			$log.warn("No webvellaViewActionService.onload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.onload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaViewActionService.onload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
@@ -775,8 +775,8 @@
 
 		//#endregion
 
-		//#region << List actions and webvellaActionService bind >>
-		ngCtrl.actionService = webvellaActionService;
+		//#region << List actions and webvellaViewActionService bind >>
+		ngCtrl.actionService = webvellaViewActionService;
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
@@ -800,12 +800,12 @@
 		});		
 		//#endregion
 
-		//#region << Run  webvellaActionService.postload >>
-		if (webvellaActionService.postload === undefined || typeof (webvellaActionService.postload) != "function") {
-			$log.warn("No webvellaActionService.postload function. Skipping");
+		//#region << Run  webvellaViewActionService.postload >>
+		if (webvellaViewActionService.postload === undefined || typeof (webvellaViewActionService.postload) != "function") {
+			$log.warn("No webvellaViewActionService.postload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.postload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaViewActionService.postload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				

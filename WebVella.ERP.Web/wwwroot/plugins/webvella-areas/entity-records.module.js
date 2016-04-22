@@ -47,8 +47,8 @@
 	//#region << Resolve Function >>
 
 	////////////////////////
- 	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','resolvedCurrentEntityMeta','wvAppConstants'];
-	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants){
+ 	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','resolvedCurrentEntityMeta','wvAppConstants','$timeout'];
+	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants,$timeout){
         var lazyDeferred = $q.defer();
 
 		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
@@ -60,22 +60,22 @@
           name: 'webvellaAreas.recordsList',
           files: loadFilesArray
         }).then(function() {
-           return lazyDeferred.resolve("ready");
+			return lazyDeferred.resolve("ready");
         });	
 	
 	}
 
- 	loadPreloadScript.$inject = ['loadDependency','webvellaActionService','$q','$http','$state'];
-	function loadPreloadScript(loadDependency,webvellaActionService, $q, $http,$state){
+ 	loadPreloadScript.$inject = ['loadDependency','webvellaListActionService','$q','$http','$state'];
+	function loadPreloadScript(loadDependency,webvellaListActionService, $q, $http,$state){
         var defer = $q.defer();
 
-		if (webvellaActionService.preload === undefined || typeof (webvellaActionService.preload) != "function") {
-			console.log("No webvellaActionService.preload function. Skipping");
+		if (webvellaListActionService.preload === undefined || typeof (webvellaListActionService.preload) != "function") {
+			console.log("No webvellaListActionService.preload function. Skipping");
 			defer.resolve();
 			return defer.promise;
 		}
 		else {
-			webvellaActionService.preload(defer,$state);
+			webvellaListActionService.preload(defer,$state);
 		}
 	}
 
@@ -96,11 +96,11 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope','$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaActionService',
+        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaListActionService','$timeout',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window','$sce'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta,webvellaActionService,
+        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta,webvellaListActionService,$timeout,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -130,12 +130,12 @@
 		ngCtrl.stateParams = $stateParams;
 		//#endregion
 
-		//#region << Run  webvellaActionService.onload >>
-		if (webvellaActionService.onload === undefined || typeof (webvellaActionService.onload) != "function") {
-			$log.warn("No webvellaActionService.onload function. Skipping");
+		//#region << Run  webvellaListActionService.onload >>
+		if (webvellaListActionService.onload === undefined || typeof (webvellaListActionService.onload) != "function") {
+			$log.warn("No webvellaListActionService.onload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.onload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaListActionService.onload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
@@ -328,8 +328,8 @@
 
 		//#endregion
 
-		//#region << List actions and webvellaActionService bind >>
-		ngCtrl.actionService = webvellaActionService;
+		//#region << List actions and webvellaListActionService bind >>
+		ngCtrl.actionService = webvellaListActionService;
 		ngCtrl.pageTitleActions = [];
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.recordRowActions = [];
@@ -357,12 +357,12 @@
 		});		
 		//#endregion
 
-		//#region << Run  webvellaActionService.postload >>
-		if (webvellaActionService.postload === undefined || typeof (webvellaActionService.postload) != "function") {
-			$log.warn("No webvellaActionService.postload function. Skipping");
+		//#region << Run  webvellaListActionService.postload >>
+		if (webvellaListActionService.postload === undefined || typeof (webvellaListActionService.postload) != "function") {
+			$log.warn("No webvellaListActionService.postload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaActionService.postload(ngCtrl,$rootScope,$state);
+			var actionsOnLoadResult = webvellaListActionService.postload(ngCtrl,$rootScope,$state);
 			if(actionsOnLoadResult != true){
 				ngCtrl.validation.hasError = true;
 				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
