@@ -5,8 +5,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Objects accessible through the ngCtrl:
-// ngCtrl.list.data => the records' data array
-// ngCtrl.list.meta => the records' list meta
+// ngCtrl.view.data => the data of the main view
+// ngCtrl.view.meta => the meta of the main view
+// ngCtrl.selectedSidebarItem.data => the data of the current sidebar view / list
+// ngCtrl.selectedSidebarItem.meta => the meta of the current sidebar view / list
 // ngCtrl.entity    => the current entity's meta
 // ngCtrl.entityRelations => list of all relations of the entity
 // ngCtrl.areas		=> the current areas in the site and their meta, attached entities and etc.
@@ -58,23 +60,19 @@
 		function fieldUpdate(item,data,ngCtrl){
 			 webvellaCoreService.viewAction_fieldUpdate(item,data,ngCtrl);
 		}
-		//FIELD UPDATE
+		//DELETE RECORD
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		serviceInstance.deleteRecord = deleteRecord;
 		function deleteRecord(ngCtrl){
 			 webvellaCoreService.viewAction_deleteRecord(ngCtrl);
 		}
+
 		//CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 
 		//They can be used inside your actions or custom views with ngCtrl.actionService.function_name(params). As params
 		//you can use all data from the controller scope
-		
-		serviceInstance.test = test;
-		function test(entityName) {
-			alert("test called with" + entityName);
-		}
-
+	
 
 	}
 })();

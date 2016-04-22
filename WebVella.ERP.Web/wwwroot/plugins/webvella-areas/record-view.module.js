@@ -80,7 +80,7 @@
 			}
 		}
 
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasEntityPermissions(resolvedCurrentEntityMeta, "canRead");
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
 		if (!userHasUpdateEntityPermission) {
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
@@ -151,12 +151,12 @@
 		//#endregion
 
 		//#region << Initialize main objects >>
-		ngCtrl.view = {}; //will be initialized based on the selected sidebar item
-		ngCtrl.view.data = {};
-		ngCtrl.view.meta = {};
-		ngCtrl.mainView = {};
-		ngCtrl.mainView.meta = fastCopy(resolvedCurrentView.meta);
-		ngCtrl.mainView.data = fastCopy(resolvedCurrentView.data[0]);
+		ngCtrl.selectedSidebarItem = {}; //will be initialized based on the selected sidebar item
+		ngCtrl.selectedSidebarItem.data = {};
+		ngCtrl.selectedSidebarItem.meta = {};
+		ngCtrl.view = {};
+		ngCtrl.view.meta = fastCopy(resolvedCurrentView.meta);
+		ngCtrl.view.data = fastCopy(resolvedCurrentView.data[0]);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.areas = fastCopy(resolvedAreas.data);
@@ -194,36 +194,36 @@
 			if (name === "") {
 				returnObject.isView = true;
 				returnObject.isEdit = true;
-				returnObject.data = fastCopy(ngCtrl.mainView.data);
-				returnObject.meta = fastCopy(ngCtrl.mainView.meta);
+				returnObject.data = fastCopy(ngCtrl.view.data);
+				returnObject.meta = fastCopy(ngCtrl.view.meta);
 			} else {
 				returnObject.isEdit = false;
-				for (var i = 0; i < ngCtrl.mainView.meta.sidebar.items.length; i++) {
-					if (ngCtrl.mainView.meta.sidebar.items[i].dataName === name) {
+				for (var i = 0; i < ngCtrl.view.meta.sidebar.items.length; i++) {
+					if (ngCtrl.view.meta.sidebar.items[i].dataName === name) {
 						//Set meta
 						// If in edit mode (view from the current entity) the data should be different -> we need the content region meta, not the view meta as in recursive-view directive
-						if (ngCtrl.mainView.meta.sidebar.items[i].type === "view") {
+						if (ngCtrl.view.meta.sidebar.items[i].type === "view") {
 							returnObject.isEdit = true;
-							returnObject.meta = fastCopy(ngCtrl.mainView.meta.sidebar.items[i].meta);
+							returnObject.meta = fastCopy(ngCtrl.view.meta.sidebar.items[i].meta);
 						}
 						else {
-							returnObject = ngCtrl.mainView.meta.sidebar.items[i];
+							returnObject = ngCtrl.view.meta.sidebar.items[i];
 						}
 
 						//Set data
-						if (ngCtrl.mainView.meta.sidebar.items[i].type === "view") {
+						if (ngCtrl.view.meta.sidebar.items[i].type === "view") {
 							returnObject.isView = true;
-							returnObject.data = fastCopy(ngCtrl.mainView.data[name][0]);
+							returnObject.data = fastCopy(ngCtrl.view.data[name][0]);
 						}
-						else if (ngCtrl.mainView.meta.sidebar.items[i].type === "viewFromRelation") {
+						else if (ngCtrl.view.meta.sidebar.items[i].type === "viewFromRelation") {
 							returnObject.isView = true;
-							returnObject.data = fastCopy(ngCtrl.mainView.data[name]);
-						} else if (ngCtrl.mainView.meta.sidebar.items[i].type === "list") {
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
+						} else if (ngCtrl.view.meta.sidebar.items[i].type === "list") {
 							returnObject.isView = false;
-							returnObject.data = fastCopy(ngCtrl.mainView.data[name]);
-						} else if (ngCtrl.mainView.meta.sidebar.items[i].type === "listFromRelation") {
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
+						} else if (ngCtrl.view.meta.sidebar.items[i].type === "listFromRelation") {
 							returnObject.isView = false;
-							returnObject.data = fastCopy(ngCtrl.mainView.data[name]);
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
 						}
 					}
 				}
@@ -237,8 +237,8 @@
 		if ($stateParams.auxPageName === "*") {
 			//The default view meta is active
 			returnObject = getViewOrListMetaAndData("");
-			ngCtrl.view.meta = returnObject.meta;
-			ngCtrl.view.data = returnObject.data;
+			ngCtrl.selectedSidebarItem.meta = returnObject.meta;
+			ngCtrl.selectedSidebarItem.data = returnObject.data;
 			ngCtrl.isView = returnObject.isView;
 			ngCtrl.isEdit = returnObject.isEdit;
 		}
@@ -246,8 +246,8 @@
 			//One of the sidebar view or lists is active
 			//Load the data
 			returnObject = getViewOrListMetaAndData($stateParams.auxPageName);
-			ngCtrl.view.meta = returnObject.meta;
-			ngCtrl.view.data = returnObject.data;
+			ngCtrl.selectedSidebarItem.meta = returnObject.meta;
+			ngCtrl.selectedSidebarItem.data = returnObject.data;
 			ngCtrl.isView = returnObject.isView;
 			ngCtrl.isEdit = returnObject.isEdit;
 		}
@@ -310,7 +310,7 @@
 		ngCtrl.currentUserHasUpdatePermission = function (item) {
 			var result = false;
 			//Check first if the entity allows it
-			var userHasUpdateEntityPermission = webvellaCoreService.userHasEntityPermissions(ngCtrl.entity, "canUpdate");
+			var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, "canUpdate");
 			if (!userHasUpdateEntityPermission) {
 				return false;
 			}
@@ -328,8 +328,14 @@
 		}
 
 		ngCtrl.userHasRecordDeletePermission = function () {
-			return webvellaCoreService.userHasEntityPermissions(ngCtrl.entity, "canDelete");
+			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, "canDelete");
 		}
+
+		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
+			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
+		}
+
+
 
 		//The goal for this method is to check the permissions that this user has to change either the current record or the related record in the N:N case
 		//The reason is:	when relation type 1:N or 1:1 only the target's record data is changed
@@ -576,8 +582,8 @@
 		}
 		//Date & DateTime 
 		ngCtrl.getTimeString = function (item) {
-			if (item && item.dataName && ngCtrl.view.data[item.dataName]) {
-				var fieldValue = ngCtrl.view.data[item.dataName];
+			if (item && item.dataName && ngCtrl.selectedSidebarItem.data[item.dataName]) {
+				var fieldValue = ngCtrl.selectedSidebarItem.data[item.dataName];
 				if (!fieldValue) {
 					return "";
 				} else {
@@ -627,9 +633,9 @@
 			};
 
 			//on #content check if mouse is clicked outside the editor, so to perform a possible field update
-			ngCtrl.viewCheckMouseButton = function ($event) {
+			ngCtrl.selectedSidebarItemCheckMouseButton = function ($event) {
 				if (ngCtrl.lastEnabledHtmlField != null) {
-					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.selectedSidebarItem.data[ngCtrl.lastEnabledHtmlField.dataName]);
 					ngCtrl.lastEnabledHtmlFieldData = null;
 					ngCtrl.lastEnabledHtmlField = null;
 				}
@@ -652,7 +658,7 @@
 
 							CKEDITOR.instances[property].editable().$.blur();
 							//reinit the field
-							ngCtrl.view.data[item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
+							ngCtrl.selectedSidebarItem.data[item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
 							ngCtrl.lastEnabledHtmlField = null;
 							ngCtrl.lastEnabledHtmlFieldData = null;
 							return false;
@@ -670,7 +676,7 @@
 
 							$event.preventDefault();
 							$timeout(function () {
-								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.selectedSidebarItem.data[ngCtrl.lastEnabledHtmlField.dataName]);
 							}, 500);
 							return false;
 							break;
@@ -683,31 +689,9 @@
 			ngCtrl.lastEnabledHtmlFieldData = null;
 			ngCtrl.htmlFieldIsEnabled = function ($event, item) {
 				ngCtrl.lastEnabledHtmlField = item;
-				ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.view.data[item.dataName]);
+				ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.selectedSidebarItem.data[item.dataName]);
 			}
 
-			//#endregion
-
-			//#region << Make field empty >>
-			ngCtrl.emptyField = function (item) {
-				var relation = ngCtrl.getRelation(item.relationName);
-				var presentedFieldId = item.meta.id;
-				var currentEntityId = ngCtrl.entity.id;
-				//Currently it is implemented only for 1:N relation type and the current entity should be target and field is required
-				if (relation.relationType == 2 && relation.targetEntityId == currentEntityId) {
-					var itemObject = {};
-					itemObject.meta = null;
-					for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
-						if (ngCtrl.entity.fields[i].id == relation.targetFieldId) {
-							itemObject.meta = ngCtrl.entity.fields[i];
-						}
-					}
-					if (itemObject.meta != null && !itemObject.meta.required) {
-						ngCtrl.view.data[item.dataName] = [];
-						ngCtrl.fieldUpdate(itemObject, null);
-					}
-				}
-			}
 			//#endregion
 
 			//#region << Date time helpers >>
@@ -722,14 +706,14 @@
 			ngCtrl.progress = {}; //data wrapper for the progress percentage for each upload
 
 			/////////Register variables
-			for (var regionIndex = 0; regionIndex < ngCtrl.view.meta.regions.length; regionIndex++) {
-				for (var sectionIndex = 0; sectionIndex < ngCtrl.view.meta.regions[regionIndex].sections.length; sectionIndex++) {
-					for (var rowIndex = 0; rowIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-						for (var columnIndex = 0; columnIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-							for (var itemIndex = 0; itemIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-								if (ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
-									|| ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
-									var item = ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
+			for (var regionIndex = 0; regionIndex < ngCtrl.selectedSidebarItem.meta.regions.length; regionIndex++) {
+				for (var sectionIndex = 0; sectionIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections.length; sectionIndex++) {
+					for (var rowIndex = 0; rowIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
+						for (var columnIndex = 0; columnIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+							for (var itemIndex = 0; itemIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+								if (ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
+									|| ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
+									var item = ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
 									var FieldName = item.dataName;
 									ngCtrl.progress[FieldName] = 0;
 								}
@@ -748,7 +732,7 @@
 					ngCtrl.uploadedFileName = item.dataName;
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
-							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
+							ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName] = response.object.url;
 							ngCtrl.fieldUpdate(item, response.object.url);
 						}, 1);
 					}
@@ -776,10 +760,10 @@
 			ngCtrl.updateFileUpload = function (file, item) {
 				if (file != null) {
 					ngCtrl.uploadedFileName = item.dataName;
-					var oldFileName = ngCtrl.view.data[ngCtrl.uploadedFileName];
+					var oldFileName = ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName];
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
-							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
+							ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName] = response.object.url;
 							ngCtrl.fieldUpdate(item, response.object.url);
 							ngCtrl.cacheBreakers[item.dataName] = "?v=" + moment().toISOString();
 						}, 1);
@@ -806,11 +790,11 @@
 
 			ngCtrl.deleteFileUpload = function (item) {
 				var fieldName = item.dataName;
-				var filePath = ngCtrl.view.data[fieldName];
+				var filePath = ngCtrl.selectedSidebarItem.data[fieldName];
 
 				function deleteSuccessCallback(response) {
 					$timeout(function () {
-						ngCtrl.view.data[fieldName] = null;
+						ngCtrl.selectedSidebarItem.data[fieldName] = null;
 						ngCtrl.progress[fieldName] = 0;
 						ngCtrl.fieldUpdate(item, null);
 					}, 0);
@@ -838,10 +822,27 @@
 			webvellaViewActionService.fieldUpdate(item, data, ngCtrl);
 		}
 
-		//Delete
-		ngCtrl.deleteRecord = function () {
-			webvellaViewActionService.deleteRecord(ngCtrl);
+		//#region << Remove relation >>
+		ngCtrl.removeRelation = function (item) {
+			var relation = ngCtrl.getRelation(item.relationName);
+			var presentedFieldId = item.meta.id;
+			var currentEntityId = ngCtrl.entity.id;
+			//Currently it is implemented only for 1:N relation type and the current entity should be target and field is required
+			if (relation.relationType == 2 && relation.targetEntityId == currentEntityId) {
+				var itemObject = {};
+				itemObject.meta = null;
+				for (var i = 0; i < ngCtrl.entity.fields.length; i++) {
+					if (ngCtrl.entity.fields[i].id == relation.targetFieldId) {
+						itemObject.meta = ngCtrl.entity.fields[i];
+					}
+				}
+				if (itemObject.meta != null && !itemObject.meta.required) {
+					ngCtrl.selectedSidebarItem.data[item.dataName] = [];
+					ngCtrl.fieldUpdate(itemObject, null);
+				}
+			}
 		}
+		//#endregion
 
 		//#endregion
 
@@ -890,8 +891,8 @@
 					// Initialize
 					var displayedRecordId = $stateParams.recordId;
 					var oldRelationRecordId = null;
-					if (ngCtrl.view.data["$field$" + returnObject.relationName + "$id"]) {
-						oldRelationRecordId = ngCtrl.view.data["$field$" + returnObject.relationName + "$id"][0];
+					if (ngCtrl.selectedSidebarItem.data["$field$" + returnObject.relationName + "$id"]) {
+						oldRelationRecordId = ngCtrl.selectedSidebarItem.data["$field$" + returnObject.relationName + "$id"][0];
 					}
 
 					function successCallback(response) {
@@ -1145,7 +1146,7 @@
 						return item;
 					},
 					selectedItemData: function () {
-						return ngCtrl.view.data[item.dataName];
+						return ngCtrl.selectedSidebarItem.data[item.dataName];
 					},
 					resolvedTree: resolveTree(item),
 					resolvedTreeRelation: resolveTreeRelation(item),
@@ -1207,8 +1208,8 @@
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
 		ngCtrl.pageBottomActions = [];
-		ngCtrl.view.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
-		ngCtrl.view.meta.actionItems.forEach(function (actionItem) {
+		ngCtrl.selectedSidebarItem.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
+		ngCtrl.selectedSidebarItem.meta.actionItems.forEach(function (actionItem) {
 			switch (actionItem.menu) {
 				case "page-title":
 					ngCtrl.pageTitleActions.push(actionItem);
@@ -1240,7 +1241,6 @@
 		//#endregion
 
 	}
-
 
 	//#region < Modal Controllers >
 

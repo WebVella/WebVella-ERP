@@ -94,12 +94,5 @@
 		// Define your functions here
 
 
-		// TEST FUNCTIONS
- 		serviceInstance.test = test;
-		function test() {
-			return true;
-		}
-
-
 	}
 })();

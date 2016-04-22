@@ -405,8 +405,8 @@
 		//#endregion
 
 		//#region << Render >>
-		ngCtrl.checkUserEntityPermissions = function (permissionsCsv) {
-			return fastCopy(webvellaCoreService.userHasEntityPermissions(ngCtrl.entity, permissionsCsv));
+		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
+			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
 		}
  		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {

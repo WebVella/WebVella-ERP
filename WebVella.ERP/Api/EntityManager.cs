@@ -5887,7 +5887,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.checkEntityPermissions('canCreate')"" 
+@"<a class=""btn btn-default btn-outline hidden-xs"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate')"" 
     ng-href=""{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}"">
 	<i class=""fa fa-fw fa-plus""></i> Add New
 </a>";
@@ -5897,7 +5897,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 10;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.checkEntityPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openImportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-upload""></i> Import CSV
 </a>";
 					break;
@@ -5906,7 +5906,7 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 11;
 					actionItem.Template = "" +
-@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.checkEntityPermissions('canCreate,canUpdate')"">
+@"<a ng-click=""ngCtrl.openExportModal()"" class=""ng-hide"" ng-show=""ngCtrl.userHasRecordPermissions('canCreate,canUpdate')"">
 	<i class=""fa fa-fw fa-download""></i> Export CSV
 </a>";
 					break;
@@ -5980,8 +5980,8 @@ namespace WebVella.ERP.Api
 					actionItem.Menu = "page-title-dropdown";
 					actionItem.Weight = 1;
 					actionItem.Template = "" +
-@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.deleteRecord()"" ng-confirm-click=""Are you sure?""
-		ng-if=""ngCtrl.userHasRecordDeletePermission()"">
+@"<a href=""javascript:void(0)"" confirmed-click=""ngCtrl.actionService.deleteRecord(ngCtrl)"" ng-confirm-click=""Are you sure?""
+		ng-if=""ngCtrl.userHasRecordPermissions('canDelete')"">
 	<i class=""fa fa-trash go-red""></i> Delete Record
 </a>";
 					break;

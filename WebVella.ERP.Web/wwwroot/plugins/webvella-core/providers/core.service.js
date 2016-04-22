@@ -181,7 +181,7 @@
 		serviceInstance.getCurrentUser = getCurrentUser;
 		serviceInstance.getCurrentUserPermissions = getCurrentUserPermissions;
 		serviceInstance.applyAreaAccessPolicy = applyAreaAccessPolicy;
-		serviceInstance.userHasEntityPermissions = userHasEntityPermissions;
+		serviceInstance.userHasRecordPermissions = userHasRecordPermissions;
 		//#endregion
 
 		//#region << Default list actions >>
@@ -1050,7 +1050,7 @@
 					"name":"wv_record_delete",
 					"menu":"page-title-dropdown",
 					"weight":1,
-					"template":"<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord()\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordDeletePermission()\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+					"template":"<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 					},
 					{
 					"name":"wv_create_and_list",
@@ -1481,19 +1481,19 @@
 						"name":"wv_create_record",
 						"menu":"page-title",
 						"weight":1,
-						"template":"<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+						"template":"<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
 						"name":"wv_import_records",
 						"menu":"page-title-dropdown",
 						"weight":10,
-						"template":"<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
+						"template":"<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
 						},
 						{
 						"name":"wv_export_records",
 						"menu":"page-title-dropdown",
 						"weight":11,
-						"template":"<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.checkEntityPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
+						"template":"<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
 						},
 						{
 						"name":"wv_record_details",
@@ -2209,7 +2209,7 @@
 			}
 		}
 		////////////////////////
-		function userHasEntityPermissions(entityMeta, permissionsCsv) {
+		function userHasRecordPermissions(entityMeta, permissionsCsv) {
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
 			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
@@ -2541,11 +2541,6 @@
 						break;
 					}
 
-					//We cannot reload the data from the response object as there is missing data for any 
-					//view or list or trees, or viewFromRelation etc.
-
-					//webvellaCoreService.GoToState($state.current.name, ngCtrl.stateParams);
-
 					defer.resolve();
 				}
 
@@ -2558,7 +2553,7 @@
 					defer.resolve("validation error");
 				}
 
-				patchRecord(ngCtrl.stateParams.recordId, item.entityName, patchObject, patchSuccessCallback, patchFailedCallback);
+				patchRecord(ngCtrl.stateParams.recordId, ngCtrl.entity.name, patchObject, patchSuccessCallback, patchFailedCallback);
 
 				return defer.promise;
 
