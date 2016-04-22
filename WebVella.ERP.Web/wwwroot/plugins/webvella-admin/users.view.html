@@ -109,7 +109,7 @@
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.image.$invalid && !manageForm.image.$pristine || popupCtrl.validation.image.state }">
 						<label class="control-label">Image</label>
 						<div>
-							<a ng-show='!popupCtrl.user.image && popupCtrl.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+							<a ng-show='!popupCtrl.user.image && popupCtrl.progress.image == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
 							   ngf-select="popupCtrl.upload(popupCtrl.files.image)" ngf-max-size="20MB" ng-model='popupCtrl.files.image' accept="image/*"  ngf-multiple="false">Browse</a>
 						</div>
 						<div class="progress" ng-show="!popupCtrl.user.image && popupCtrl.progress.image > 0 && popupCtrl.progress.image <= 100">

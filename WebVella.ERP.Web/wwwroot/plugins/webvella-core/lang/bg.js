@@ -1,3 +1,5 @@
 ﻿ var translationsBG = {
-  HEADLINE: 'Какъв прекрасен модул!',
+  ADMINISTRATION_ABBR: 'Админ',
+  ADMINISTRATION: 'Администрация',
+  LOG_OUT: 'Изход',
 };

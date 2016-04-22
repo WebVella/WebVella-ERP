@@ -9,7 +9,7 @@
 					<li class="divider"></li>
 					<li>
 						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
-							<i class="fa fa-fw fa-wrench"></i> Manage List <!--{{ 'HEADLINE' | translate }}-->
+							<i class="fa fa-fw fa-wrench"></i> Manage List <span translate="{{ 'HEADLINE'}}"></span>
 						</a>
 					</li>
 				</ul>
@@ -19,7 +19,7 @@
 			<h4>
 				{{::ngCtrl.list.meta.label}}
 				<span uib-dropdown on-toggle="toggled(open)" ng-if="ngCtrl.generalLists.length > 1">
-					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-sm btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
+					<a uib-dropdown-toggle href="javascript:void(0)" class="selector btn btn-default btn-outline"><i class="fa fa-fw fa-caret-down"></i></a>
 					<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
 						<!--<li><a href="javascript:void(0)"><i class="fa fa-fw fa-thumb-tack go-red"></i> set current as default</a></li>
 						<li class="ng-hide"><a href="javascript:void(0)"><span class="go-grey">This is your default list</span></a></li>
@@ -42,7 +42,7 @@
 	<div id="page-text">
 		<div ng-if="!ngCtrl.validation.hasError">
 			<!--<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>-->
-			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.list.meta.cssClass}}" ng-show='::ngCtrl.list.data.length > 0' ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
+			<table class="table table-bordered table-hover table-vertical-align-middle {{::ngCtrl.list.meta.cssClass}}" ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
@@ -260,7 +260,7 @@
 							</div>
 						</td>
 					</tr>
-					<tr ng-repeat="record in ngCtrl.list.data">
+					<tr ng-repeat="record in ngCtrl.list.data" ng-if="ngCtrl.list.data.length > 0">
 						<td class="actions">
 							<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
 							<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
@@ -296,16 +296,20 @@
 							</div>
 						</td>
 					</tr>
+					<tr class="ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
+						<td colspan="{{ngCtrl.list.meta.columns.length + 1}}">
+							<div class="alert alert-info">
+								There are no records matching your query
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
-			<div class="ng-hide" ng-show='::ngCtrl.list.data.length > 0' ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
+			<div ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
 				<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
 			</div>
 			<!--</div>-->
 
-			<div class="alert alert-info ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
-				There are no records matching your query
-			</div>
 
 			<ul class="pager ng-hide" ng-hide="::ngCtrl.currentPage == 1 && ngCtrl.list.meta.pageSize > ngCtrl.list.data.length" ng-if="::ngCtrl.list.meta.pageSize != 0">
 				<li ng-if="::ngCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="ngCtrl.selectPage(ngCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
@@ -371,7 +375,7 @@
 			<div class="editable-field field">
 				<label class="control-label">Uploaded CSV file</label>
 				<div>
-					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-sm ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
+					<a ng-show='!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress == 0' href='javascript:void(0)' class='btn btn-default btn-outline ng-hide' ngf-select="popupCtrl.upload(popupCtrl.uploadedFile)" ngf-max-size="20MB"
 					   ng-model='popupCtrl.uploadedFile' ngf-multiple='false'>Browse</a>
 					<div class="progress ng-hide" ng-show="!popupCtrl.uploadedFilePath && popupCtrl.uploadProgress > 0 && popupCtrl.uploadProgress <= 100">
 						<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.uploadProgress}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': popupCtrl.uploadProgress+'%'}">

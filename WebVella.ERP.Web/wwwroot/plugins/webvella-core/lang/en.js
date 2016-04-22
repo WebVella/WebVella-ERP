@@ -1,3 +1,5 @@
 ﻿ var translationsEN = {
-  HEADLINE: 'What an awesome module!',
+  ADMINISTRATION_ABBR: 'Admin',
+  ADMINISTRATION: 'Administration',
+  LOG_OUT: 'Log out',
 };

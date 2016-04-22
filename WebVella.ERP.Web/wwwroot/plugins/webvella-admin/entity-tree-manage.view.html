@@ -291,7 +291,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="record in ngCtrl.tree.rootNodes track by record.id">
-						<td><a class="btn btn-default btn-sm" href="javascript:void(0)" ng-click="ngCtrl.removeRootNode(record, $index)"><i class="fa fa-fw fa-times go-red"></i></a></td>
+						<td><a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.removeRootNode(record, $index)"><i class="fa fa-fw fa-times go-red"></i></a></td>
 						<td>{{::record.recordId}}</td>
 						<td>{{::record.id}}</td>
 						<td>{{::record.name}}</td>
@@ -314,13 +314,13 @@
 				<tbody>
 					<tr ng-repeat="field in ngCtrl.entity.fields track by field.id">
 						<td ng-switch="ngCtrl.fieldSelectedBy(field)">
-							<a ng-switch-when="system" class="btn btn-sm btn-success disabled">
+							<a ng-switch-when="system" class="btn btn-outline btn-success disabled">
 								<i class="fa fa-fw fa-lock"></i>
 							</a>
-							<a ng-switch-when="user" class="btn btn-sm btn-success" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
+							<a ng-switch-when="user" class="btn btn-outline btn-success" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
-							<a ng-switch-when="none" class="btn btn-sm btn-default" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
+							<a ng-switch-when="none" class="btn btn-outline btn-default" href="javascript:void(0)" ng-click="ngCtrl.toggleFieldSelection(field)">
 								<i class="fa fa-fw fa-check"></i>
 							</a>
 						</td>

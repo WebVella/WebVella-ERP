@@ -176,25 +176,25 @@
                                 <tr ng-repeat="role in popupCtrl.entity.roles">
                                     <td>{{role.name}}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canCreate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanCreate(role.id)">
+                                        <button type="button" class="btn btn-default btn-outline" ng-model="role.canCreate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanCreate(role.id)">
                                             <i ng-show="role.canCreate" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canCreate" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canRead" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanRead(role.id)">
+                                        <button type="button" class="btn btn-default btn-outline" ng-model="role.canRead" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanRead(role.id)">
                                             <i ng-show="role.canRead" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canRead" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canUpdate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanUpdate(role.id)">
+                                        <button type="button" class="btn btn-default btn-outline" ng-model="role.canUpdate" uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanUpdate(role.id)">
                                             <i ng-show="role.canUpdate" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canUpdate" class="fa fa-fw fa-close go-red ng-hide"></i>
                                         </button>
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-default btn-sm" ng-model="role.canDelete" 
+                                        <button type="button" class="btn btn-default btn-outline" ng-model="role.canDelete" 
 											uib-btn-checkbox="" btn-checkbox-true="true" btn-checkbox-false="false" ng-change="popupCtrl.toggleCanDelete(role.id)">
                                             <i ng-show="role.canDelete" class="fa fa-fw fa-check go-green ng-hide"></i>
                                             <i ng-show="!role.canDelete" class="fa fa-fw fa-close go-red ng-hide"></i>

@@ -735,72 +735,89 @@ body.hidden-sidebar #page-topnav {
 /* Theming */
 .theme-red #page-topnav {
 	border-bottom: 2px solid #F44336;
+	border-bottom: 2px solid #FFCDD2;
 }
 
 .theme-pink #page-topnav {
 	border-bottom: 2px solid #E91E63;
+	border-bottom: 2px solid #F8BBD0;
 }
 
 .theme-purple #page-topnav {
 	border-bottom: 2px solid #9C27B0;
+	border-bottom: 2px solid #E1BEE7;
 }
 
 
 .theme-deep-purple #page-topnav {
 	border-bottom: 2px solid #673AB7;
+	border-bottom: 2px solid #D1C4E9;
 }
 
 .theme-indigo #page-topnav {
 	border-bottom: 2px solid #3F51B5;
+	border-bottom: 2px solid #C5CAE9;
 }
 
 .theme-blue #page-topnav {
 	border-bottom: 2px solid #2196F3;
+	border-bottom: 2px solid #BBDEFB;
 }
 
 .theme-light-blue #page-topnav {
 	border-bottom: 2px solid #03A9F4;
+	border-bottom: 2px solid #B3E5FC;
 }
 
 .theme-cyan #page-topnav {
 	border-bottom: 2px solid #00BCD4;
+	border-bottom: 2px solid #B2EBF2;
 }
 
 .theme-teal #page-topnav {
 	border-bottom: 2px solid #009688;
+	border-bottom: 2px solid #B2DFDB;
 }
 
 .theme-green #page-topnav {
 	border-bottom: 2px solid #4CAF50;
+	border-bottom: 2px solid #C8E6C9;
 }
 
 
 .theme-light-green #page-topnav {
 	border-bottom: 2px solid #8BC34A;
+	border-bottom: 2px solid #DCEDC8;
 }
 
 .theme-lime #page-topnav {
 	border-bottom: 2px solid #CDDC39;
+	border-bottom: 2px solid #F0F4C3;
 }
 
 .theme-yellow #page-topnav {
 	border-bottom: 2px solid #FDD835;
+	border-bottom: 2px solid #FFF9C4;
 }
 
 .theme-amber #page-topnav {
 	border-bottom: 2px solid #FFC107;
+	border-bottom: 2px solid #FFECB3;
 }
 
 .theme-orange #page-topnav {
 	border-bottom: 2px solid #FF9800;
+	border-bottom: 2px solid #FFE0B2;
 }
 
 .theme-deep-orange #page-topnav {
 	border-bottom: 2px solid #FF5722;
+	border-bottom: 2px solid #FFCCBC;
 }
 
 .theme-brown #page-topnav {
 	border-bottom: 2px solid #795548;
+	border-bottom: 2px solid #D7CCC8;
 }
 
 #page-topnav #switcher {
@@ -1276,7 +1293,7 @@ body.hidden-sidebar #page-topnav {
 	float: right;
 	padding-top: 0;
 	margin-right: 5px;
-	margin-top: -1px;
+	margin-top: -2px;
 }
 
 	#page-title .aux-actions .form-group {

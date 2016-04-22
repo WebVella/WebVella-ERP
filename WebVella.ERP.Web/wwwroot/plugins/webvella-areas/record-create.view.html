@@ -146,7 +146,7 @@
 
 												<!-- 7. File -->
 												<div ng-switch-when="7">
-													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
 													   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
 													<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
@@ -184,7 +184,7 @@
 
 												<!-- 9. Image -->
 												<div ng-switch-when="9">
-													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+													<a ng-show='!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
 													   ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
 													<div class="progress" ng-show="!ngCtrl.view.data[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
 														<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"

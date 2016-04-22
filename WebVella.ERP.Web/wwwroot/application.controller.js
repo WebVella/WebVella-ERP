@@ -98,7 +98,7 @@
 				$translateProvider.translations("bg", translationsBG);
 				break;
 		}
-		$translateProvider.useSanitizeValueStrategy('sanitize');
+		$translateProvider.useSanitizeValueStrategy(null);
 		//#endregion
 	}
 	//#endregion

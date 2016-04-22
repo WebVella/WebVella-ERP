@@ -3,10 +3,10 @@
 </div>
 <div ng-if='::!listMeta.meta.dynamicHtmlTemplate'>
 	<p ng-if="::(canAddExisting || canCreate) && !hasError">
-		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canAddExisting" ng-click="addExistingItem()">
+		<a href='javascript:void(0)' class="btn btn-default btn-outline" ng-if="::canAddExisting" ng-click="addExistingItem()">
 			<i class="fa fa-download"></i> Add existing
 		</a>
-		<a href='javascript:void(0)' class="btn btn-default btn-sm" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
+		<a href='javascript:void(0)' class="btn btn-default btn-outline" ng-if="::canCreate" ng-click="manageRelatedRecordItem(null)">
 			<i class="fa fa-plus"></i> Create & Add
 		</a>
 
@@ -22,13 +22,13 @@
 		<tbody>
 			<tr ng-repeat="record in listData track by record.id">
 				<td style="width:1%;white-space:nowrap;">
-					<a href='javascript:void(0)' title="quick view this record" class="btn btn-default btn-sm" ng-click="viewRelatedRecordItem(record)">
+					<a href='javascript:void(0)' title="quick view this record" class="btn btn-default btn-outline" ng-click="viewRelatedRecordItem(record)">
 						<i class="fa fa-eye"></i>
 					</a>
-					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-default btn-sm" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
+					<a href='javascript:void(0)' title="quick edit this record" class="btn btn-default btn-outline" ng-click="manageRelatedRecordItem(record)" ng-if="::canUpdate">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-default btn-sm" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
+					<a href='javascript:void(0)' title="Detach records relation" class="btn btn-default btn-outline" confirmed-click="instantDetachRecord(record)" ng-confirm-click="Are you sure that you need this relation broken?" ng-if="::canRemove">
 						<i class="fa fa-times go-red"></i>
 					</a>
 				</td>
@@ -274,7 +274,7 @@
 
 											<!-- 7. File -->
 											<div ng-switch-when="7">
-												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
 												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
 												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
@@ -312,7 +312,7 @@
 
 											<!-- 9. Image -->
 											<div ng-switch-when="9">
-												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-sm'
+												<a ng-show='!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline'
 												   ngf-select="popupCtrl.upload(popupCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='popupCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
 												<div class="progress" ng-show="!popupCtrl.recordData[item.dataName] && popupCtrl.progress[item.dataName] > 0 && popupCtrl.progress[item.dataName] <= 100">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{popupCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100"
