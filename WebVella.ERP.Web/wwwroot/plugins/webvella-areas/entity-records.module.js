@@ -231,7 +231,12 @@
 		ngCtrl.applyQueryFilter = function () {
 			//TODO - Convert percent into 0 < x < 1
 			for(var filter in ngCtrl.filterQuery){
-				$location.search(filter, ngCtrl.filterQuery[filter]);
+				if(ngCtrl.filterQuery[filter] == ""){
+					$location.search(filter, null);
+				}
+				else {
+					$location.search(filter, ngCtrl.filterQuery[filter]);
+				}
 			}
 			$window.location.reload();
 		}
