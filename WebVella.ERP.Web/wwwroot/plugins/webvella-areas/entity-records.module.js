@@ -236,6 +236,13 @@
 			$window.location.reload();
 		}
 
+		ngCtrl.checkForSearchEnter = function (e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if (code == 13) { //Enter keycode
+				ngCtrl.applyQueryFilter();
+			}
+		}
+
 		//#endregion
   
 		//#region << Logic >> 

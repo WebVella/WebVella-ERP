@@ -792,17 +792,17 @@ body.hidden-sidebar #page-topnav {
 
 .theme-lime #page-topnav {
 	border-bottom: 2px solid #CDDC39;
-	border-bottom: 2px solid #F0F4C3;
+	border-bottom: 2px solid #E6EE9C;
 }
 
 .theme-yellow #page-topnav {
 	border-bottom: 2px solid #FDD835;
-	border-bottom: 2px solid #FFF9C4;
+	border-bottom: 2px solid #FFF176;
 }
 
 .theme-amber #page-topnav {
 	border-bottom: 2px solid #FFC107;
-	border-bottom: 2px solid #FFECB3;
+	border-bottom: 2px solid #FFE082;
 }
 
 .theme-orange #page-topnav {
@@ -1261,17 +1261,17 @@ body.hidden-sidebar #page-topnav {
 
 .theme-lime #page-title #page-meta {
 	background: #F9FBE7;
-	border-bottom: 2px solid #F0F4C3;
+	border-bottom: 2px solid #E6EE9C;
 }
 
 .theme-yellow #page-title #page-meta {
 	background: #FFFDE7;
-	border-bottom: 2px solid #FFF9C4;
+	border-bottom: 2px solid #FFF176;
 }
 
 .theme-amber #page-title #page-meta {
 	background: #FFF8E1;
-	border-bottom: 2px solid #FFECB3;
+	border-bottom: 2px solid #FFE082;
 }
 
 .theme-orange #page-title #page-meta {
