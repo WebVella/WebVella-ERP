@@ -1998,7 +1998,12 @@ namespace WebVella.ERP.Web.Controllers
 			//		queryObj = searchQuery;
 			//}
 
-			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null);
+			List<KeyValuePair<string, string>> queryStringOverwriteParameters = new List<KeyValuePair<string, string>>();
+			foreach (var key in Request.Query.Keys)
+				queryStringOverwriteParameters.Add(new KeyValuePair<string, string>(key, Request.Query[key]));
+			
+
+			EntityQuery resultQuery = new EntityQuery(entity.Name, "*", queryObj, null, null, null, queryStringOverwriteParameters);
 			EntityRelationManager relManager = new EntityRelationManager();
 			EntityRelationListResponse relListResponse = relManager.Read();
 			List<EntityRelation> relationList = new List<EntityRelation>();

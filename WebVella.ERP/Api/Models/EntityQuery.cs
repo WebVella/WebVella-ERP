@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
@@ -11,9 +12,11 @@ namespace WebVella.ERP.Api.Models
 		public QuerySortObject[] Sort { get; set; }
 		public int? Skip { get; set; }
 		public int? Limit { get; set; }
+		[JsonIgnore]
+		public List<KeyValuePair<string,string>> OverwriteArgs { get; set; }
 
 		public EntityQuery(string entityName, string fields = "*", QueryObject query = null, 
-			QuerySortObject[] sort = null, int? skip = null, int? limit = null )
+			QuerySortObject[] sort = null, int? skip = null, int? limit = null, List<KeyValuePair<string, string>> overwriteArgs = null )
 		{
 			if (string.IsNullOrWhiteSpace(entityName))
 				throw new ArgumentException("Invalid entity name.");
@@ -27,6 +30,7 @@ namespace WebVella.ERP.Api.Models
 			Sort = sort;
 			Skip = skip;
 			Limit = limit;
+			OverwriteArgs = overwriteArgs;
 		}
 
 		#region <=== Static Methods ===>
