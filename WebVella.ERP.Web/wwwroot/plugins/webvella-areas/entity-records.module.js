@@ -230,6 +230,8 @@
 
 		ngCtrl.applyQueryFilter = function () {
 			//TODO - Convert percent into 0 < x < 1
+
+			//TODO - Convert date to ISO
 			for(var filter in ngCtrl.filterQuery){
 				if(ngCtrl.filterQuery[filter] == ""){
 					$location.search(filter, null);
@@ -247,6 +249,8 @@
 				ngCtrl.applyQueryFilter();
 			}
 		}
+
+
 
 		//#endregion
   
