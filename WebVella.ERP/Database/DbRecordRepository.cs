@@ -21,7 +21,7 @@ namespace WebVella.ERP.Database
 	public class DbRecordRepository
 	{
 		#region <--- Constants --->
-		
+
 		private const string WILDCARD_SYMBOL = "*";
 		private const char FIELDS_SEPARATOR = ',';
 		private const char RELATION_SEPARATOR = '.';
@@ -143,7 +143,7 @@ namespace WebVella.ERP.Database
 					{
 
 						for (int index = 0; index < fieldcount; index++)
-							record[reader.GetName(index)] = reader[index] == DBNull.Value ? null: reader[index];
+							record[reader.GetName(index)] = reader[index] == DBNull.Value ? null : reader[index];
 
 					}
 					else {
@@ -167,15 +167,15 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		public void CreateRecordField(string entityName, Field field )
+		public void CreateRecordField(string entityName, Field field)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
-		
-			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetDefaultValue(), !field.Required, field.Unique );
-			if( field.Unique )
-				DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name } );
+
+			DbRepository.CreateColumn(tableName, field.Name, field.GetFieldType(), false, field.GetDefaultValue(), !field.Required, field.Unique);
+			if (field.Unique)
+				DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
 			if (field.Searchable)
-				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name );
+				DbRepository.CreateIndex("idx_s_" + entityName + "_" + field.Name, tableName, field.Name);
 		}
 
 		public void UpdateRecordField(string entityName, Field field)
@@ -187,7 +187,7 @@ namespace WebVella.ERP.Database
 			if (field.Unique)
 				DbRepository.CreateUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName, new List<string> { field.Name });
 			else
-				DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName );
+				DbRepository.DropUniqueConstraint("idx_u_" + entityName + "_" + field.Name, tableName);
 
 
 			if (field.Searchable)
@@ -196,7 +196,7 @@ namespace WebVella.ERP.Database
 				DbRepository.DropIndex("idx_s_" + entityName + "_" + field.Name);
 		}
 
-		public void RemoveRecordField(string entityName, Field field )
+		public void RemoveRecordField(string entityName, Field field)
 		{
 			string tableName = RECORD_COLLECTION_PREFIX + entityName;
 
@@ -406,7 +406,7 @@ namespace WebVella.ERP.Database
 			return results.FirstOrDefault();
 		}
 
-		public List<EntityRecord> Find( EntityQuery query )
+		public List<EntityRecord> Find(EntityQuery query)
 		{
 			Entity entity = entMan.ReadEntity(query.EntityName).Object;
 			var fields = ExtractQueryFieldsMeta(query);
@@ -421,14 +421,15 @@ namespace WebVella.ERP.Database
 				#region no relations 
 
 				var tableName = GetTableNameForEntity(entity);
-				string columnNames = String.Join(",", fields.Select(x => tableName + ".\"" + x.Name +"\"" ));
+				string columnNames = String.Join(",", fields.Select(x => tableName + ".\"" + x.Name + "\""));
 				sql.AppendLine("SELECT " + columnNames + " FROM " + tableName);
 
 				string whereSql = string.Empty;
 				if (query.Query != null)
 				{
-					GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters);
-					sql.AppendLine("WHERE " + whereSql);
+					GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters, query.OverwriteArgs);
+					if (whereSql.Length > 0)
+						sql.AppendLine("WHERE " + whereSql);
 				}
 
 				//sorting
@@ -438,15 +439,50 @@ namespace WebVella.ERP.Database
 
 					foreach (var s in query.Sort)
 					{
-						sortSql = sortSql + " " + tableName + ".\"" + s.FieldName +"\"";
-						if (s.SortType == QuerySortType.Ascending)
-							sortSql = sortSql + " ASC,";
+						if (s.FieldName.Trim().StartsWith("{"))
+						{
+							//process json
+							dynamic parametrizedSort = ExtractSortFieldJsonValue(s.FieldName, query.OverwriteArgs);
+							if (parametrizedSort != null)
+							{
+								var sortField = parametrizedSort.Field;
+								var sortOrder = parametrizedSort.Order;
+
+								//field not found - skip
+								if (!entity.Fields.Any(x => x.Name == sortField))
+									continue;
+
+								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
+								if (sortOrder == null)
+								{
+									if (s.SortType == QuerySortType.Ascending)
+										sortSql = sortSql + " ASC,";
+									else
+										sortSql = sortSql + " DESC,";
+								}
+								else
+								{
+									if (sortOrder == "ascending")
+										sortSql = sortSql + " ASC,";
+									else
+										sortSql = sortSql + " DESC,";
+								}
+
+							}
+						}
 						else
-							sortSql = sortSql + " DESC,";
+						{
+							sortSql = sortSql + " " + tableName + ".\"" + s.FieldName + "\"";
+							if (s.SortType == QuerySortType.Ascending)
+								sortSql = sortSql + " ASC,";
+							else
+								sortSql = sortSql + " DESC,";
+						}
 					}
 
 					sortSql = sortSql.Remove(sortSql.Length - 1, 1);
-					sql.AppendLine(sortSql);
+					if(sortSql.Trim() != "ORDER BY")
+						sql.AppendLine(sortSql);
 				}
 
 				//paging 
@@ -752,8 +788,9 @@ namespace WebVella.ERP.Database
 				string whereSql = string.Empty;
 				if (query.Query != null)
 				{
-					GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters);
-					sql.AppendLine("WHERE " + whereSql);
+					GenerateWhereClause(query.Query, entity, ref whereSql, ref parameters, query.OverwriteArgs);
+					if (whereSql.Length > 0)
+						sql.AppendLine("WHERE " + whereSql);
 				}
 
 				//sorting
@@ -763,15 +800,50 @@ namespace WebVella.ERP.Database
 
 					foreach (var s in query.Sort)
 					{
-						sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + s.FieldName;
-						if (s.SortType == QuerySortType.Ascending)
-							sortSql = sortSql + " ASC,";
+						if (s.FieldName.Trim().StartsWith("{"))
+						{
+							//process json
+							dynamic parametrizedSort = ExtractSortFieldJsonValue(s.FieldName, query.OverwriteArgs);
+							if(parametrizedSort != null )
+							{
+								var sortField = parametrizedSort.Field;
+								var sortOrder = parametrizedSort.Order;
+
+								//field not found - skip
+								if (!entity.Fields.Any(x => x.Name == sortField))
+									continue;
+
+								sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + sortField;
+								if( sortOrder == null )
+								{
+									if (s.SortType == QuerySortType.Ascending)
+										sortSql = sortSql + " ASC,";
+									else
+										sortSql = sortSql + " DESC,";
+								}
+								else
+								{
+									if (sortOrder == "ascending" )
+										sortSql = sortSql + " ASC,";
+									else
+										sortSql = sortSql + " DESC,";
+								}
+
+							}
+						}
 						else
-							sortSql = sortSql + " DESC,";
+						{
+							sortSql = sortSql + " " + GetTableNameForEntity(entity) + "." + s.FieldName;
+							if (s.SortType == QuerySortType.Ascending)
+								sortSql = sortSql + " ASC,";
+							else
+								sortSql = sortSql + " DESC,";
+						}
 					}
 
 					sortSql = sortSql.Remove(sortSql.Length - 1, 1);
-					sql.AppendLine(sortSql);
+					if (sortSql.Trim() != "ORDER BY")
+						sql.AppendLine(sortSql);
 				}
 
 				//paging 
@@ -814,10 +886,9 @@ namespace WebVella.ERP.Database
 			}
 		}
 
-		private void GenerateWhereClause(QueryObject query, Entity entity, ref string sql, ref List<NpgsqlParameter> parameters)
+		private void GenerateWhereClause(QueryObject query, Entity entity, ref string sql, ref List<NpgsqlParameter> parameters,
+										List<KeyValuePair<string, string>> overwriteArgs = null)
 		{
-			if (sql.Length > 0)
-				sql = sql + " AND ";
 
 			Field field = null;
 			FieldType fieldType = FieldType.GuidField;
@@ -830,15 +901,22 @@ namespace WebVella.ERP.Database
 				string entityTablePrefix = GetTableNameForEntity(entity) + ".";
 				completeFieldName = entityTablePrefix + query.FieldName;
 				paramName = "@" + query.FieldName + "_" + Guid.NewGuid().ToString().Replace("-", "");
-				parameters.Add(new NpgsqlParameter(paramName, ExtractQueryFieldValue(query.FieldValue, field)??DBNull.Value));
+
+				bool skipClause;
+				var value = ExtractQueryFieldValue(query.FieldValue, field, overwriteArgs, out skipClause) ?? DBNull.Value;
+				if (skipClause)
+					return;
+
+				parameters.Add(new NpgsqlParameter(paramName, value));
 
 
 				if ((fieldType == FieldType.MultiSelectField || fieldType == FieldType.TreeSelectField) &&
 					  !(query.QueryType == QueryType.EQ || query.QueryType == QueryType.NOT))
 					throw new Exception("The query operator is not supported on field '" + fieldType.ToString() + "'");
-
-				
 			}
+
+			if (sql.Length > 0)
+				sql = sql + " AND ";
 
 			switch (query.QueryType)
 			{
@@ -875,7 +953,7 @@ namespace WebVella.ERP.Database
 						//	sql = sql + " " + paramName + " NOT IN ( " + completeFieldName + " )";
 						//}
 						//else
-							sql = sql + " " + completeFieldName + "<>" + paramName;
+						sql = sql + " " + completeFieldName + "<>" + paramName;
 
 						return;
 					}
@@ -950,40 +1028,44 @@ namespace WebVella.ERP.Database
 				case QueryType.AND:
 					{
 						if (query.SubQueries.Count == 1)
-							GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters);
+							GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters, overwriteArgs);
 						else
 						{
 							string andSql = string.Empty;
 							foreach (var q in query.SubQueries)
 							{
 								string subQuerySql = string.Empty;
-								GenerateWhereClause(q, entity, ref subQuerySql, ref parameters);
+								GenerateWhereClause(q, entity, ref subQuerySql, ref parameters, overwriteArgs);
 								if (andSql.Length == 0)
 									andSql = subQuerySql;
-								else
+								else if (subQuerySql.Length > 0)
 									andSql = andSql + " AND " + subQuerySql;
 							}
-							sql = sql + " ( " + andSql + " )";
+
+							if (andSql.Length > 0)
+								sql = sql + " ( " + andSql + " )";
 						}
 						return;
 					}
 				case QueryType.OR:
 					{
 						if (query.SubQueries.Count == 1)
-							GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters);
+							GenerateWhereClause(query.SubQueries[0], entity, ref sql, ref parameters, overwriteArgs);
 						else
 						{
-							string andSql = string.Empty;
+							string orSql = string.Empty;
 							foreach (var q in query.SubQueries)
 							{
 								string subQuerySql = string.Empty;
-								GenerateWhereClause(q, entity, ref subQuerySql, ref parameters);
-								if (andSql.Length == 0)
-									andSql = subQuerySql;
-								else
-									andSql = andSql + " OR " + subQuerySql;
+								GenerateWhereClause(q, entity, ref subQuerySql, ref parameters, overwriteArgs);
+								if (orSql.Length == 0)
+									orSql = subQuerySql;
+								else if (subQuerySql.Length > 0)
+									orSql = orSql + " OR " + subQuerySql;
 							}
-							sql = sql + " ( " + andSql + " )";
+
+							if (orSql.Length > 0)
+								sql = sql + " ( " + orSql + " )";
 						}
 						return;
 					}
@@ -1082,8 +1164,8 @@ namespace WebVella.ERP.Database
 					}
 					else
 						relationFieldMeta = (RelationFieldMeta)field;
-					
-					
+
+
 					relationFieldMeta.Relation = relations.SingleOrDefault(x => x.Name == relationName);
 					if (relationFieldMeta.Relation == null)
 						throw new Exception(string.Format("Invalid relation '{0}'. The relation does not exist.", token));
@@ -1148,13 +1230,22 @@ namespace WebVella.ERP.Database
 		}
 
 
-		private object ExtractQueryFieldValue(object value, Field field)
+		private object ExtractQueryFieldValue(object value, Field field, List<KeyValuePair<string, string>> overwriteArgs, out bool skipClause)
 		{
+			skipClause = false;
+
 			if (value == null)
 				return null;
 
 			if (value is JToken)
 				value = ((JToken)value).ToObject<object>();
+
+			if (value is string && ((string)value).Trim().StartsWith("{"))
+			{
+				value = ExtractQueryFieldJsonValue((string)value, field, overwriteArgs, out skipClause);
+				if (skipClause)
+					return null;
+			}
 
 			if (field is AutoNumberField)
 			{
@@ -1310,6 +1401,195 @@ namespace WebVella.ERP.Database
 
 			throw new Exception("System Error. A field type is not supported in field value extraction process.");
 		}
-	}
 
+
+		private object ExtractQueryFieldJsonValue(string value, Field field, List<KeyValuePair<string, string>> overwriteArgs, out bool skipClause)
+		{
+			skipClause = false;
+			JObject jObj = null;
+			try
+			{
+				jObj = JObject.Parse(value);
+			}
+			catch
+			{
+				throw new Exception("Invalid query agrument json.");
+			}
+
+
+			JToken nameToken;
+			if (!jObj.TryGetValue("name", out nameToken))
+				throw new Exception("Invalid query agrument json. Missing name.");
+
+			JToken optionToken;
+			if (!jObj.TryGetValue("option", out optionToken))
+				throw new Exception("Invalid query agrument json. Missing option.");
+
+			JToken defaultToken;
+			if (!jObj.TryGetValue("default", out defaultToken))
+				throw new Exception("Invalid query agrument json. Missing default.");
+
+			JToken settingsToken;
+			if (!jObj.TryGetValue("settings", out settingsToken))
+				throw new Exception("Invalid query agrument json. Missing settings.");
+
+			if (nameToken.ToString().ToLowerInvariant() == "current_user")
+			{
+				//currently we have only id option so ignore options check for now
+				ErpUser currentUser = SecurityContext.CurrentUser;
+				if (currentUser != null)
+					return currentUser.Id;
+
+				if (string.IsNullOrWhiteSpace(defaultToken.ToString()))
+					return null;
+
+				return new Guid(defaultToken.ToString());
+			}
+			else if (nameToken.ToString().ToLowerInvariant() == "current_date")
+			{
+				DateTime currentDate = DateTime.UtcNow;
+
+				if (optionToken.ToString().ToLowerInvariant() == "date")
+				{
+					currentDate = currentDate.Date;
+				}
+				else if (optionToken.ToString().ToLowerInvariant() == "datetime")
+				{
+					//already initialized, do nothing
+				}
+				else
+					throw new Exception("Not supported json query option:" + optionToken.ToString().ToLowerInvariant());
+
+				int yearOffset = 0;
+				int monthOffset = 0;
+				int dayOffset = 0;
+				int hourOffset = 0;
+				int minuteOffset = 0;
+
+				if (settingsToken.Type == JTokenType.Object)
+				{
+					foreach (JProperty child in settingsToken.Children<JProperty>())
+					{
+						//skip null properties
+						if (child.Value.Type == JTokenType.Null)
+							continue;
+
+						switch (child.Name)
+						{
+							case "year":
+								Int32.TryParse(child.Value.ToString(), out yearOffset);
+								break;
+							case "month":
+								Int32.TryParse(child.Value.ToString(), out monthOffset);
+								break;
+							case "day":
+								Int32.TryParse(child.Value.ToString(), out dayOffset);
+								break;
+							case "hour":
+								Int32.TryParse(child.Value.ToString(), out hourOffset);
+								break;
+							case "minute":
+								Int32.TryParse(child.Value.ToString(), out minuteOffset);
+								break;
+						}
+					}
+				}
+
+				return currentDate.AddYears(yearOffset).AddMonths(monthOffset).AddDays(dayOffset).AddHours(hourOffset).AddMonths(minuteOffset);
+			}
+			else if (nameToken.ToString().ToLowerInvariant() == "url_query")
+			{
+				if (optionToken.Type == JTokenType.Null)
+					throw new Exception("Url query key not specified in json.");
+
+				var queryParameterKey = optionToken.ToString().ToLowerInvariant();
+				if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == queryParameterKey))
+				{
+					KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == queryParameterKey);
+					return pair.Value;
+				}
+
+				if (defaultToken.Type != JTokenType.Null)
+					return defaultToken.ToString();
+
+				//if no query parameter and default value is null, then skip this query clause
+				skipClause = true;
+				return null;
+			}
+			else
+				throw new Exception("Not supported name '" + nameToken.ToString() + "' in query json clause");
+
+		}
+
+		private dynamic ExtractSortFieldJsonValue(string value, List<KeyValuePair<string, string>> overwriteArgs)
+		{
+			JObject jObj = null;
+			try
+			{
+				jObj = JObject.Parse(value);
+			}
+			catch
+			{
+				throw new Exception("Invalid query agrument json.");
+			}
+
+
+			JToken nameToken;
+			if (!jObj.TryGetValue("name", out nameToken))
+				throw new Exception("Invalid query agrument json. Missing name.");
+
+			JToken optionToken;
+			if (!jObj.TryGetValue("option", out optionToken))
+				throw new Exception("Invalid query agrument json. Missing option.");
+
+			JToken defaultToken;
+			if (!jObj.TryGetValue("default", out defaultToken))
+				throw new Exception("Invalid query agrument json. Missing default.");
+
+			JToken settingsToken;
+			if (!jObj.TryGetValue("settings", out settingsToken))
+				throw new Exception("Invalid query agrument json. Missing settings.");
+
+			if (nameToken.ToString().ToLowerInvariant() != "url_sort")
+				throw new Exception("Not supported name '" + nameToken.ToString() + "' in sort json definition.");
+
+			if (optionToken.Type == JTokenType.Null)
+				throw new Exception("Url sort key not specified in json.");
+
+			string sortField = string.Empty;
+			string sortOrder = string.Empty;
+
+			var sortParameterKey = optionToken.ToString().ToLowerInvariant();
+			if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == sortParameterKey))
+			{
+				KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == sortParameterKey);
+				sortField = pair.Value;
+			}
+
+			if (defaultToken.Type != JTokenType.Null)
+				sortField = defaultToken.ToString();
+
+			if (settingsToken.Type == JTokenType.Object)
+			{
+				var orderProperty = settingsToken.Children<JProperty>().SingleOrDefault(x => x.Name == "order");
+				if (orderProperty != null && orderProperty.Value.Type != JTokenType.Null)
+				{
+					var sortOrderParameterKey = optionToken.ToString().ToLowerInvariant();
+					if (overwriteArgs != null && overwriteArgs.Any(x => x.Key == sortOrderParameterKey))
+					{
+						KeyValuePair<string, string> pair = overwriteArgs.Single(x => x.Key == sortOrderParameterKey);
+						sortOrder = (pair.Value ?? "ascending").Trim().ToLowerInvariant();
+						if (!(sortOrder == "ascending" || sortOrder == "descending"))
+							sortOrder = null;
+					}
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(sortField))
+				return null;
+
+			return new { Field = sortField, Order = sortOrder };
+		}
+	}
 }
+
