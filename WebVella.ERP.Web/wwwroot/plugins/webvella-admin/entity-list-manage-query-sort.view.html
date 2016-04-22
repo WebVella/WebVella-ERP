@@ -66,8 +66,14 @@
 									<option value="descending">sort from high to low by</option>
 								</select>
 							</td>
-							<td>
-								<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
+							<td width="400" class="editable-field">
+								<!--<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>-->
+								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldForm_sortRule' + $index].$show()">
+								<input type="text" class="form-control" disabled editable-text="sortRule.fieldName"
+										   value="{{sortRule.fieldName}}" onbeforesave="ngCtrl.updateSorts()" e-form="{{'fieldForm_sortRule' + $index}}"
+										   e-uib-typeahead="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items | filter:$viewValue | limitTo:8">
+									<span class="input-group-addon" ng-click="this['fieldForm_sortRule' + $index].$show()" ng-hide="this['fieldForm_sortRule' + $index].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+								</div>
 							</td>
 							<td style="width:60px;">
 								<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
