@@ -87,7 +87,7 @@
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
-							<div ng-switch="column.type">
+							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate>
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">
@@ -95,7 +95,7 @@
 											<div class="form-group form-group-sm">
 												<div class="input-group">
 													<span class="input-group-addon" ng-bind="ngCtrl.getAutoIncrementPrefix(column)"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="popupCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
@@ -114,7 +114,7 @@
 											<div class="form-group form-group-sm">
 												<div class="input-group">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 1"></span>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="popupCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 													<span class="input-group-addon" ng-bind="::column.meta.currency.symbol" ng-if="::column.meta.currency.symbolPlacement == 2"></span>
 												</div>
 											</div>
@@ -124,7 +124,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-calendar"></i>
-													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
@@ -134,13 +134,13 @@
 												<div class="col-sm-6" style="padding:0">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-calendar"></i>
-														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+														<input type="date" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 													</div>
 												</div>
 												<div class="col-sm-6" style="padding: 0 0 0 5px">
 													<div class="left-inner-addon">
 														<i class="fa fa-fw fa-clock-o"></i>
-														<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+														<input type="time" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 													</div>
 												</div>
 											</div>
@@ -150,7 +150,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-envelope-o"></i>
-													<input type="email" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
@@ -159,14 +159,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="8">
 											<!--html field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="9">
@@ -174,14 +174,14 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-link"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="10">
 											<!--textarea field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="11">
@@ -194,7 +194,7 @@
 										<div ng-switch-when="12">
 											<!--number field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]" ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="13">
@@ -208,20 +208,20 @@
 											<div class="form-group form-group-sm">
 												<div class="right-inner-addon">
 													<i class="fa fa-fw fa-percent"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
 										<div ng-switch-when="15">
 											<!--phone field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="16">
 											<!--GUID field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="17">
@@ -234,7 +234,7 @@
 										<div ng-switch-when="18">
 											<!--text field-->
 											<div class="form-group form-group-sm">
-												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+												<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 											</div>
 										</div>
 										<div ng-switch-when="19">
@@ -242,7 +242,7 @@
 											<div class="form-group form-group-sm">
 												<div class="left-inner-addon">
 													<i class="fa fa-fw fa-globe"></i>
-													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"  ng-keydown="ngCtrl.checkForSearchEnter($event)">
+													<input type="text" class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
 												</div>
 											</div>
 										</div>
@@ -257,7 +257,7 @@
 								<div ng-switch-when="list">list</div>
 								<div ng-switch-when="listFromRelation">list from relation</div>
 								<div ng-switch-when="treeFromRelation">tree from relation</div>
-							</div>
+							</form>
 						</td>
 					</tr>
 					<tr ng-repeat="record in ngCtrl.list.data" ng-if="ngCtrl.list.data.length > 0">
@@ -319,7 +319,6 @@
 		<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
 		<div class="page-bottom-actions" dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageBottomActions track by actionItem.name"></div>
 	</div>
-
 </div>
 
 <script type="text/ng-template" id="exportModalContent.html">
