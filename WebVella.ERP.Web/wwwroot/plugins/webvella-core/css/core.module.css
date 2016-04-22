@@ -4004,6 +4004,10 @@ table.editable td {
 		padding-top: 20px !important;
 	}
 
+.panel-section .panel-heading {
+	margin-bottom:1em;
+}
+
 .editable-field {
 	line-height: 20px;
 	min-height: 34px;

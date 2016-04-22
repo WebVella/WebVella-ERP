@@ -57,7 +57,7 @@
 		loadFilesArray.push(listServiceJavascriptPath);
 
         return $ocLazyLoad.load ({
-          name: 'webvellaAreas.recordsList',
+          cache: false,
           files: loadFilesArray
         }).then(function() {
 			return lazyDeferred.resolve("ready");

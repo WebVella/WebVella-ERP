@@ -54,13 +54,13 @@
 	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants){
         var lazyDeferred = $q.defer();
 
-		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 
 		var loadFilesArray = [];
 		loadFilesArray.push(listServiceJavascriptPath);
 
         return $ocLazyLoad.load ({
-          name: 'webvellaAreas.recordsList',
+          cache: false,
           files: loadFilesArray
         }).then(function() {
            return lazyDeferred.resolve("ready");

@@ -56,10 +56,14 @@
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		serviceInstance.fieldUpdate = fieldUpdate;
 		function fieldUpdate(item,data,ngCtrl){
-			console.log("action service called");
-			 webvellaCoreService.fieldUpdate(item,data,ngCtrl);
+			 webvellaCoreService.viewAction_fieldUpdate(item,data,ngCtrl);
 		}
-
+		//FIELD UPDATE
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		serviceInstance.deleteRecord = deleteRecord;
+		function deleteRecord(ngCtrl){
+			 webvellaCoreService.viewAction_deleteRecord(ngCtrl);
+		}
 		//CUSTOM
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//User functions. Here you can place all action functions that you need to be executed on action item interaction. 
