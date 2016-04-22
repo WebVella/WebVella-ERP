@@ -2,10 +2,10 @@
 	<div id="page-meta">
 		<div class="aux-actions">
 			<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleActions track by actionItem.name"></span>
-			<span uib-dropdown class="dropdown"  ng-if="::ngCtrl.pageTitleDropdownActions.length > 0">
+			<span uib-dropdown class="dropdown" ng-if="::ngCtrl.pageTitleDropdownActions.length > 0">
 				<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
 				<ul class="dropdown-menu  dropdown-menu-right" uib-dropdown-menu style="margin-top:10px;">
-					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name"/>
+					<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.pageTitleDropdownActions track by actionItem.name" />
 					<li class="divider"></li>
 					<li>
 						<a href="/#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.stateParams.listName}}">
@@ -42,41 +42,54 @@
 	<div id="page-text">
 		<div ng-if="!ngCtrl.validation.hasError">
 			<!--<div class="table-scroll-wrapper" data-double-scroll-bar-horizontal>-->
-				<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.list.meta.cssClass}}" ng-show='::ngCtrl.list.data.length > 0' ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
-					<thead>
-						<tr>
-							<th class="actions text-center" style="padding:0;vertical-align:middle">
-								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
-									<i class="fa fa-fw fa-filter go-grey"></i>
+			<table class="table table-bordered table-hover table-vertical-align-middle ng-hide {{::ngCtrl.list.meta.cssClass}}" ng-show='::ngCtrl.list.data.length > 0' ng-if="!ngCtrl.list.meta.dynamicHtmlTemplate">
+				<thead>
+					<tr>
+						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+								<i class="fa fa-fw fa-filter"></i>
+								<em></em>
+							</a>
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
+								<i class="fa fa-fw fa-times go-red"></i>
+								<em></em>
+							</a>
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+								<i class="fa fa-fw fa-times"></i>
+								<em></em>
+							</a>
+						</th>
+						<th ng-style="{'width': ngCtrl.columnWidths[$index]}" class="wv-{{::column.meta.name}} position-relative" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
+							ng-switch="::column.type">
+							<span ng-switch-when="field">
+								<a class="sort-link" ng-click="ngCtrl.toggleSort(column)" ng-if="::column.meta.searchable">
+									<span class="sort-marker {{ngCtrl.sortObject[column.dataName]}}">
+										<i class="fa fa-caret-up"></i>
+										<i class="fa fa-caret-down"></i>
+									</span>
+									<em></em>
 								</a>
-								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered" ng-click="ngCtrl.clearQueryFilter()">
-									<i class="fa fa-fw fa-times go-red"></i>
-								</a>
-								<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
-									<i class="fa fa-fw fa-times go-grey"></i>
-								</a>
-							</th>
-							<th ng-style="{'width': ngCtrl.columnWidths[$index]}"  class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount"
-								ng-switch="::column.type">
-								<span ng-switch-when="field">{{::column.meta.label}}</span>
-								<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
-								<span ng-switch-when="view">{{::column.meta.label}}</span>
-								<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
-								<span ng-switch-when="list">{{::column.meta.label}}</span>
-								<span ng-switch-when="listFromRelation">{{::column.fieldLabel}}</span>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
-							<td>
-								<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
-									<i class="fa fa-fw fa-filter"></i>
-								</a>
-							</td>
-							<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
-								<div ng-switch="column.type">
-									<div ng-switch-when="field" ng-switch="column.meta.fieldType">
+								{{::column.meta.label}}
+							</span>
+							<span ng-switch-when="fieldFromRelation">{{::column.fieldLabel}}</span>
+							<span ng-switch-when="view">{{::column.meta.label}}</span>
+							<span ng-switch-when="viewFromRelation">{{::column.fieldLabel}}</span>
+							<span ng-switch-when="list">{{::column.meta.label}}</span>
+							<span ng-switch-when="listFromRelation">{{::column.fieldLabel}}</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
+						<td>
+							<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
+								<i class="fa fa-fw fa-filter"></i>
+							</a>
+						</td>
+						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
+							<div ng-switch="column.type">
+								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
+									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">
 											<!--AutoNumber field-->
 											<div class="form-group form-group-sm">
@@ -175,7 +188,7 @@
 											<!--multiselect field-->
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-													ng-options="option.value as option.key for option in column.meta.options"></select>
+														ng-options="option.value as option.key for option in column.meta.options"></select>
 											</div>
 										</div>
 										<div ng-switch-when="12">
@@ -215,7 +228,7 @@
 											<!--dropdown field-->
 											<div class="form-group form-group-sm">
 												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-													ng-options="option.value as option.key for option in column.meta.options"></select>
+														ng-options="option.value as option.key for option in column.meta.options"></select>
 											</div>
 										</div>
 										<div ng-switch-when="18">
@@ -234,56 +247,60 @@
 											</div>
 										</div>
 									</div>
-									<div ng-switch-when="fieldFromRelation">field from relation</div>
-									<div ng-switch-when="view">view</div>
-									<div ng-switch-when="viewFromRelation">view from relation</div>
-									<div ng-switch-when="list">list</div>
-									<div ng-switch-when="listFromRelation">list from relation</div>
-									<div ng-switch-when="treeFromRelation">tree from relation</div>
-								</div>
-							</td>
-						</tr>
-						<tr ng-repeat="record in ngCtrl.list.data">
-							<td class="actions">
-								<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
-								<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
-									<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
-									<ul class="dropdown-menu" uib-dropdown-menu style="margin-top:10px;">
-										<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowDropdownActions track by actionItem.name"/>
-									</ul>
-								</span>
-							</td>
-							<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
-								<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
-									<div ng-switch-when="field">
-										<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
-									</div>
-									<div ng-switch-when="fieldFromRelation">
-										<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
-									</div>
-									<div ng-switch-when="view">
-										<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
-									</div>
-									<div ng-switch-when="viewFromRelation">
-										<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
-									</div>
-									<div ng-switch-when="list">
-										<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
-									</div>
-									<div ng-switch-when="listFromRelation">
-										<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
+									<div ng-if="::!column.meta.searchable">
+										not searchable
 									</div>
 								</div>
-								<div ng-if="::!ngCtrl.currentUserHasReadPermission(column)">
-									<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
+								<div ng-switch-when="fieldFromRelation">field from relation</div>
+								<div ng-switch-when="view">view</div>
+								<div ng-switch-when="viewFromRelation">view from relation</div>
+								<div ng-switch-when="list">list</div>
+								<div ng-switch-when="listFromRelation">list from relation</div>
+								<div ng-switch-when="treeFromRelation">tree from relation</div>
+							</div>
+						</td>
+					</tr>
+					<tr ng-repeat="record in ngCtrl.list.data">
+						<td class="actions">
+							<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowActions track by actionItem.name"></span>
+							<span uib-dropdown class="dropdown" ng-if="::ngCtrl.recordRowDropdownActions.length > 0">
+								<a class="btn btn-default btn-outline" uib-dropdown-toggle><i class="fa fa-fw fa-bars"></i></a>
+								<ul class="dropdown-menu" uib-dropdown-menu style="margin-top:10px;">
+									<li dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.recordRowDropdownActions track by actionItem.name" />
+								</ul>
+							</span>
+						</td>
+						<td class="wv-{{::column.meta.name}}" ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
+							<div ng-if="::ngCtrl.currentUserHasReadPermission(column)" ng-switch="::column.type">
+								<div ng-switch-when="field">
+									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
 								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="ng-hide" ng-show='::ngCtrl.list.data.length > 0' ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
-					<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
-				</div>
+								<div ng-switch-when="fieldFromRelation">
+									<div ng-bind-html="::ngCtrl.renderFieldValue(record[column.dataName],column.meta)"></div>
+								</div>
+								<div ng-switch-when="view">
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
+								</div>
+								<div ng-switch-when="viewFromRelation">
+									<recursive-view view-meta="::column" view-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-view>
+								</div>
+								<div ng-switch-when="list">
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
+								</div>
+								<div ng-switch-when="listFromRelation">
+									<recursive-list list-meta="::column" list-data="::record[column.dataName]" relations-list="::ngCtrl.relations"></recursive-list>
+								</div>
+							</div>
+							<div ng-if="::!ngCtrl.currentUserHasReadPermission(column)">
+								<span class="go-gray"><i class="fa fa-fw fa-lock"></i> hidden</span>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="ng-hide" ng-show='::ngCtrl.list.data.length > 0' ng-if="ngCtrl.list.meta.dynamicHtmlTemplate">
+				<dynamic-list template-url="ngCtrl.list.meta.dynamicHtmlTemplate" template-data="ngCtrl.list.data" template-meta="ngCtrl.list.meta"></dynamic-list>
+			</div>
 			<!--</div>-->
 
 			<div class="alert alert-info ng-hide" ng-show='::ngCtrl.list.data.length == 0'>

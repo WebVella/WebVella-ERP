@@ -2407,12 +2407,59 @@ table .btn-xs.btn-link {
 	vertical-align: middle;
 }
 
-
-
 .table.table-noborder,
 .table.table-noborder td {
 	border: none;
 }
+
+.sort-link em,
+.table .actions em {
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	display:block;
+}
+
+.sort-link em:hover,
+.table .actions em:hover{
+	background:rgba(0,0,0,0.02);
+}
+
+.sort-marker {
+    display: inline-block;
+    width: 12px;
+    height: 16px;
+    font-size: 13px;
+    line-height: 16px;
+    overflow: hidden;
+	position:relative;
+	top:2px;
+	color:#ccc;
+}
+
+	.sort-marker .fa {
+		position:absolute;
+		left:0;
+	}
+
+	.sort-marker .fa-caret-up {
+		top:0;
+	}
+
+	.sort-marker .fa-caret-down {
+		top:7px;
+	}
+
+	.sort-marker.ascending .fa-caret-up{
+		color:#F44336;
+	}
+
+	.sort-marker.descending .fa-caret-down{
+		color:#F44336;
+	}
+
 /*#endregion */
 
 /*#region << Colors >> */

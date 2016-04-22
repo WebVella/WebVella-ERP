@@ -281,7 +281,7 @@
 					if (selectedLookupList != null) {
 						defaultLookupList = selectedLookupList;
 					}
-					webvellaCoreService.getRecordsByListName(defaultLookupList.name, $scope.entity.name, 1, getListRecordsSuccessCallback, errorCallback);
+					webvellaCoreService.getRecordsByListName(defaultLookupList.name, $scope.entity.name, 1, null, getListRecordsSuccessCallback, errorCallback);
 				}
 			}
 
@@ -421,7 +421,7 @@
 
 			}
 
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, page, null, successCallback, errorCallback);
 		}
 
 		//#endregion
@@ -445,7 +445,7 @@
 					timeout: 7000
 				});
 			}
-			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, successCallback, errorCallback);
+			webvellaCoreService.getRecordsByListName(popupCtrl.relationLookupList.meta.name, popupCtrl.parentEntity.name, popupCtrl.currentPage, null, successCallback, errorCallback);
 
 		}
 		//#endregion

@@ -79,8 +79,8 @@
 		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast'];
-	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast) {
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast','$location'];
+	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast,$location) {
 		var defer = $q.defer();
 		function successCallback(response) {
 			defer.resolve(response.object);
@@ -88,7 +88,8 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, successCallback, errorCallback);
+ 		var searchParams = $location.search();
+		webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -229,7 +230,10 @@
 
 		ngCtrl.applyQueryFilter = function () {
 			//TODO - Convert percent into 0 < x < 1
-
+			for(var filter in ngCtrl.filterQuery){
+				$location.search(filter, ngCtrl.filterQuery[filter]);
+			}
+			$window.location.reload();
 		}
 
 		//#endregion
@@ -270,6 +274,44 @@
 		ngCtrl.saveStateParamsToSessionStorage = function () {
 			ngCtrl.$sessionStorage["last-list-params"] = $stateParams;
 		}
+
+		//#region << Sort >>
+		ngCtrl.sortObject = {}; // dataName = order // no property, "ascending" "descending"
+
+		//Init already sorted params
+		var preloadedSortBy =  $location.search().sortBy;
+		var preloadedSortOrder = $location.search().sortOrder;
+		if(preloadedSortBy && preloadedSortOrder && (preloadedSortOrder == "ascending" || preloadedSortOrder == "descending")){
+			ngCtrl.sortObject[preloadedSortBy] = preloadedSortOrder;
+		}
+		ngCtrl.toggleSort = function(column){
+			if(ngCtrl.sortObject[column.dataName]){
+				switch(ngCtrl.sortObject[column.dataName]){
+					case "ascending":
+						ngCtrl.sortObject[column.dataName] = "descending";
+						$location.search("sortBy", column.dataName);
+						$location.search("sortOrder", "descending");
+					break;
+					case "descending":
+						delete ngCtrl.sortObject[column.dataName];
+						$location.search("sortBy", null);
+						$location.search("sortOrder", null);
+					break;
+				}	
+			}
+			else{
+				ngCtrl.sortObject = {};
+				ngCtrl.sortObject[column.dataName] = "ascending";
+				$location.search("sortBy", column.dataName);
+				$location.search("sortOrder", "ascending");
+			}
+
+			$window.location.reload();
+
+		}
+
+		//#endregion
+
 		//#endregion
 
 		//#region << Modals >>

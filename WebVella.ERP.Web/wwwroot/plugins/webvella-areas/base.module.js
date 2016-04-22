@@ -50,7 +50,7 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsByListName("null","area", "null", successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
 		return defer.promise;
 	}
 

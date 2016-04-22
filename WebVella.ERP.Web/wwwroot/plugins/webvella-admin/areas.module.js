@@ -115,7 +115,7 @@
 			}
 		}
 
-		webvellaCoreService.getRecordsByListName("null","area", "null", successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -137,7 +137,7 @@
 			defer.reject(response.message);
 		}
 
-		webvellaCoreService.getRecordsByListName("null","role", "null", successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListName("null","role", "null",null, successCallback, errorCallback);
 
 		return defer.promise;
 	}

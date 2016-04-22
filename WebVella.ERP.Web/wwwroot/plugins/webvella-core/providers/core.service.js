@@ -11,10 +11,10 @@
         .module('webvellaCore')
         .service('webvellaCoreService', service);
 
-	service.$inject = ['$cookies','$q', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast', '$timeout', 'Upload', ];
+	service.$inject = ['$cookies', '$q', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast', '$timeout', 'Upload', ];
 
 
-	function service($cookies,$q, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast, $timeout, Upload) {
+	function service($cookies, $q, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast, $timeout, Upload) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -1047,28 +1047,28 @@
 				"serviceCode": null,
 				"actionItems": [
 					{
-					"name":"wv_record_delete",
-					"menu":"page-title-dropdown",
-					"weight":1,
-					"template":"<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+						"name": "wv_record_delete",
+						"menu": "page-title-dropdown",
+						"weight": 1,
+						"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
 					},
 					{
-					"name":"wv_create_and_list",
-					"menu":"create-bottom",
-					"weight":1,
-					"template":"<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
+						"name": "wv_create_and_list",
+						"menu": "create-bottom",
+						"weight": 1,
+						"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
 					},
 					{
-					"name":"wv_create_and_details",
-					"menu":"create-bottom",
-					"weight":2,
-					"template":"<a class=\"btn btn-default  btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
+						"name": "wv_create_and_details",
+						"menu": "create-bottom",
+						"weight": 2,
+						"template": "<a class=\"btn btn-default  btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
 					},
 					{
-					"name":"wv_create_cancel",
-					"menu":"create-bottom",
-					"weight":3,
-					"template":"<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
+						"name": "wv_create_cancel",
+						"menu": "create-bottom",
+						"weight": 3,
+						"template": "<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
 					}]
 			};
 			return view;
@@ -1478,28 +1478,28 @@
 					"serviceCode": null,
 					"actionItems": [
 						{
-						"name":"wv_create_record",
-						"menu":"page-title",
-						"weight":1,
-						"template":"<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
+							"name": "wv_create_record",
+							"menu": "page-title",
+							"weight": 1,
+							"template": "<a class=\"btn btn-default btn-outline hidden-xs\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate')\"\n ng-href=\"{{ngCtrl.actionService.getRecordCreateUrl(ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-plus\"></i> Add New\n</a>"
 						},
 						{
-						"name":"wv_import_records",
-						"menu":"page-title-dropdown",
-						"weight":10,
-						"template":"<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
+							"name": "wv_import_records",
+							"menu": "page-title-dropdown",
+							"weight": 10,
+							"template": "<a ng-click=\"ngCtrl.openImportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-upload\"></i> Import CSV\n</a>"
 						},
 						{
-						"name":"wv_export_records",
-						"menu":"page-title-dropdown",
-						"weight":11,
-						"template":"<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
+							"name": "wv_export_records",
+							"menu": "page-title-dropdown",
+							"weight": 11,
+							"template": "<a ng-click=\"ngCtrl.openExportModal()\" class=\"ng-hide\" ng-show=\"ngCtrl.userHasRecordPermissions('canCreate,canUpdate')\">\n\t<i class=\"fa fa-fw fa-download\"></i> Export CSV\n</a>"
 						},
 						{
-						"name":"wv_record_details",
-						"menu":"record-row",
-						"weight":1,
-						"template":"<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
+							"name": "wv_record_details",
+							"menu": "record-row",
+							"weight": 1,
+							"template": "<a class=\"btn btn-default btn-outline\" ng-href=\"{{ngCtrl.actionService.getRecordDetailsUrl(record, ngCtrl)}}\">\n\t<i class=\"fa fa-fw fa-eye\"></i>\n</a>"
 						}
 					],
 				}
@@ -1690,7 +1690,7 @@
 			postObject.fileTempPath = fileTempPath;
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/import', data: postObject }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
- 		///////////////////////
+		///////////////////////
 		function exportListRecords(entityName, listName, count, successCallback, errorCallback) {
 			$http({ method: 'POST', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + "/export?count=" + count }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
@@ -1707,10 +1707,21 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
-		function getRecordsByListName(listName, entityName, page, successCallback, errorCallback) {
+		function getRecordsByListName(listName, entityName, page, extraParams, successCallback, errorCallback) {
 			//submit listName = "null" to get unconfigured records list
 			//submit page = "null" to get all records
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			var extraParamQueryString = "";
+			if (extraParams != null) {
+				if (!isEmpty(extraParams)) {
+					extraParamQueryString = "?";
+					for (var param in extraParams) {
+						extraParamQueryString += param + "=" + extraParams[param] + "&";
+					}
+					//remove the last &
+					extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				}
+			}
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
 		function getRecordsByTreeName(treeName, entityName, successCallback, errorCallback) {
@@ -2213,7 +2224,7 @@
 			var requestedPermissionsArray = permissionsCsv.split(',');
 			var permissionChecks = {};
 			var createRolesArray = fastCopy(entityMeta.recordPermissions.canCreate);
-			if(getCurrentUser() == null){
+			if (getCurrentUser() == null) {
 				return false;
 			}
 
@@ -2261,76 +2272,76 @@
 
 			//#region << Get the selected create view in the area >>
 			for (var i = 0; i < siteAreas.length; i++) {
-			   if(siteAreas[i].name == currentAreaName){
-				  currentArea = siteAreas[i];
-				  break;
-			   }
+				if (siteAreas[i].name == currentAreaName) {
+					currentArea = siteAreas[i];
+					break;
+				}
 			}
-			if(currentArea == null){
+			if (currentArea == null) {
 				alert("Error: No area with such name found");
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
-				if(currentArea.attachments[i].name == currentEntityName){
-					targetCreateName =  currentArea.attachments[i].create.name;
+				if (currentArea.attachments[i].name == currentEntityName) {
+					targetCreateName = currentArea.attachments[i].create.name;
 					break;
 				}
 			}
-			if(targetCreateName == null){
+			if (targetCreateName == null) {
 				alert("Error: The current entity is either not attached to the area or the view name is missing");
 			}
 			//#endregion
 
 			//#region << Check if it target view exists >>
 			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-			   if(currentEntity.recordViews[i].name === targetCreateName){
-			   	   targetCreateExists = true;
-				   break;
-			   }
+				if (currentEntity.recordViews[i].name === targetCreateName) {
+					targetCreateExists = true;
+					break;
+				}
 			}
 			//#endregion
 
 			//#region << Calculate what the view name should be and return >>
-			if(targetCreateExists){
+			if (targetCreateExists) {
 				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
 			}
-			//The target name does not exist. Fallback to default
+				//The target name does not exist. Fallback to default
 			else {
-				targetCreateName = null;				
+				targetCreateName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({name:'weight', primer: parseInt, reverse:false}));
+				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				   if(currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general"){
-				   		targetCreateName = currentEntity.recordViews[i].name;
+					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
+						targetCreateName = currentEntity.recordViews[i].name;
 						break;
-				   }
+					}
 				}
-				if(targetCreateName != null){
+				if (targetCreateName != null) {
 					//there is a default and general view fallback option available
 					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
 				}
 				else {
 					//If there is default general take the first general
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					   if(currentEntity.recordViews[i].type == "general"){
-				   			targetCreateName = currentEntity.recordViews[i].name;
+						if (currentEntity.recordViews[i].type == "general") {
+							targetCreateName = currentEntity.recordViews[i].name;
 							break;
-					   }
+						}
 					}
-					if(targetCreateName != null){
-						 return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+					if (targetCreateName != null) {
+						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
 					}
 					else {
 						alert("Error: Cannot find suitable details view for this entity records");
 					}
-			   }
+				}
 			}
 			//#endregion
 
 		}
 
 		function listAction_getRecordDetailsUrl(record, ngCtrl) {
-			
+
 			//#region << Init >>
 			var currentRecord = fastCopy(record);
 			var siteAreas = fastCopy(ngCtrl.areas);
@@ -2344,222 +2355,222 @@
 
 			//#region << Get the selected view in the area >>
 			for (var i = 0; i < siteAreas.length; i++) {
-			   if(siteAreas[i].name == currentAreaName){
-				  currentArea = siteAreas[i];
-				  break;
-			   }
+				if (siteAreas[i].name == currentAreaName) {
+					currentArea = siteAreas[i];
+					break;
+				}
 			}
-			if(currentArea == null){
+			if (currentArea == null) {
 				alert("Error: No area with such name found");
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
-				if(currentArea.attachments[i].name == currentEntityName){
-					targetViewName =  currentArea.attachments[i].view.name;
+				if (currentArea.attachments[i].name == currentEntityName) {
+					targetViewName = currentArea.attachments[i].view.name;
 					break;
 				}
 			}
-			if(targetViewName == null){
+			if (targetViewName == null) {
 				alert("Error: The current entity is either not attached to the area or the view name is missing");
 			}
 			//#endregion
 
 			//#region << Check if it target view exists >>
 			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-			   if(currentEntity.recordViews[i].name === targetViewName){
-			   	   targetViewExists = true;
-				   break;
-			   }
+				if (currentEntity.recordViews[i].name === targetViewName) {
+					targetViewExists = true;
+					break;
+				}
 			}
 
 			//#endregion
-			
+
 			//#region << Calculate what the view name should be and return >>
-			if(targetViewExists){
+			if (targetViewExists) {
 				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
 			}
-			//The target name does not exist. Fallback to default
+				//The target name does not exist. Fallback to default
 			else {
-				targetViewName = null;				
+				targetViewName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({name:'weight', primer: parseInt, reverse:false}));
+				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				   if(currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general"){
-				   		targetViewName = currentEntity.recordViews[i].name;
+					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
+						targetViewName = currentEntity.recordViews[i].name;
 						break;
-				   }
+					}
 				}
-				if(targetViewName != null){
+				if (targetViewName != null) {
 					//there is a default and general view fallback option available
 					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
 				}
 				else {
 					//If there is default general take the first general
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					   if(currentEntity.recordViews[i].type == "general"){
-				   			targetViewName = currentEntity.recordViews[i].name;
+						if (currentEntity.recordViews[i].type == "general") {
+							targetViewName = currentEntity.recordViews[i].name;
 							break;
-					   }
+						}
 					}
-					if(targetViewName != null){
-						 return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+					if (targetViewName != null) {
+						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
 					}
 					else {
 						alert("Error: Cannot find suitable details view for this entity records");
 					}
-			   }
+				}
 			}
 			//#endregion
 		}
 
 		///////////////////////
-		function viewAction_fieldUpdate(item,data,ngCtrl) {
-				var defer = $q.defer();
-				var patchObject = {};
-				var validation = {
-					success: true,
-					message: "successful validation"
-				};
-				if (data != null) {
-					data = data.toString().trim();
-					switch (item.meta.fieldType) {
+		function viewAction_fieldUpdate(item, data, ngCtrl) {
+			var defer = $q.defer();
+			var patchObject = {};
+			var validation = {
+				success: true,
+				message: "successful validation"
+			};
+			if (data != null) {
+				data = data.toString().trim();
+				switch (item.meta.fieldType) {
 
+					//Auto increment number
+					case 1:
+						//Readonly
+						break;
+						//Checkbox
+					case 2:
+						data = (data === "true"); // convert string to boolean
+						break;
 						//Auto increment number
-						case 1:
-							//Readonly
-							break;
-							//Checkbox
-						case 2:
-							data = (data === "true"); // convert string to boolean
-							break;
-							//Auto increment number
-						case 3: //Currency
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkDecimal(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
-								return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
-							}
-							break;
-						case 4: //Date
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
-							
-							break;
-						case 5: //Datetime
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							data = moment(data,"ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
-							break;
-						case 6: //Email
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkEmail(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							break;
-						case 11: // Multiselect
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							//We need to convert data which is "2,3" comma separated string to string array
-							if (data !== '[object Array]') {
-								data = data.split(',');
-							}
-							break;
-							//Number
-						case 12:
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkDecimal(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (!data) {
-								data = null;
-							}
-							break;
-							//Percent
-						case 14:
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkPercent(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							if (!data) {
-								data = null;
-							}
-							break;
-						case 15: //Phone
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							validation = checkPhone(data);
-							if (!validation.success) {
-								return validation.message;
-							}
-							break;
-						case 17: // Dropdown
-							if (!data && item.meta.required) {
-								return "This is a required field";
-							}
-							break;
-					}
-				}
-				patchObject[item.meta.name] = data;
-
-				function patchSuccessCallback(response) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
-					});
- 
-					//we need to add a cache breaker for the browser to get the new version of files and images
-					switch (item.meta.fieldType) {
-					   case 7: //file
-						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
-						  response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+					case 3: //Currency
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkDecimal(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (decimalPlaces(data) > item.meta.currency.decimalDigits) {
+							return "Decimal places should be " + item.meta.currency.decimalDigits + " or less";
 						}
 						break;
-					   case 9: //image
-						if(response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != ""){
+					case 4: //Date
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
+
+						break;
+					case 5: //Datetime
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('minute').utc().toISOString();
+						break;
+					case 6: //Email
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkEmail(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						break;
+					case 11: // Multiselect
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						//We need to convert data which is "2,3" comma separated string to string array
+						if (data !== '[object Array]') {
+							data = data.split(',');
+						}
+						break;
+						//Number
+					case 12:
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkDecimal(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (!data) {
+							data = null;
+						}
+						break;
+						//Percent
+					case 14:
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkPercent(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						if (!data) {
+							data = null;
+						}
+						break;
+					case 15: //Phone
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						validation = checkPhone(data);
+						if (!validation.success) {
+							return validation.message;
+						}
+						break;
+					case 17: // Dropdown
+						if (!data && item.meta.required) {
+							return "This is a required field";
+						}
+						break;
+				}
+			}
+			patchObject[item.meta.name] = data;
+
+			function patchSuccessCallback(response) {
+				ngToast.create({
+					className: 'success',
+					content: '<span class="go-green">Success:</span> ' + response.message
+				});
+
+				//we need to add a cache breaker for the browser to get the new version of files and images
+				switch (item.meta.fieldType) {
+					case 7: //file
+						if (response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != "") {
 							response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
 						}
 						break;
-					}
-
-					defer.resolve();
+					case 9: //image
+						if (response.object.data[0][item.dataName] != null && response.object.data[0][item.dataName] != "") {
+							response.object.data[0][item.dataName] += "?cb=" + moment().toISOString();
+						}
+						break;
 				}
 
-				function patchFailedCallback(response) {
-					ngToast.create({
-						className: 'error',
-						content: '<span class="go-red">Error:</span> ' + response.message,
-						timeout: 7000
-					});
-					defer.resolve("validation error");
-				}
+				defer.resolve();
+			}
 
-				patchRecord(ngCtrl.stateParams.recordId, ngCtrl.entity.name, patchObject, patchSuccessCallback, patchFailedCallback);
+			function patchFailedCallback(response) {
+				ngToast.create({
+					className: 'error',
+					content: '<span class="go-red">Error:</span> ' + response.message,
+					timeout: 7000
+				});
+				defer.resolve("validation error");
+			}
 
-				return defer.promise;
+			patchRecord(ngCtrl.stateParams.recordId, ngCtrl.entity.name, patchObject, patchSuccessCallback, patchFailedCallback);
+
+			return defer.promise;
 
 		}
 
-		function viewAction_deleteRecord(ngCtrl){
+		function viewAction_deleteRecord(ngCtrl) {
 			function successCallback(response) {
 				ngToast.create({
 					className: 'success',
@@ -2588,14 +2599,14 @@
 				popupCtrl.hasError = true;
 				popupCtrl.errorMessage = response.message;
 			}
-			deleteRecord(ngCtrl.stateParams.recordId, ngCtrl.stateParams.entityName, successCallback, errorCallback);		
-		
+			deleteRecord(ngCtrl.stateParams.recordId, ngCtrl.stateParams.entityName, successCallback, errorCallback);
+
 		}
 
 		//#endregion
 
 		//#region << Helpers >>
-		function getFileContent(url,successCallback, errorCallback){
+		function getFileContent(url, successCallback, errorCallback) {
 			$http({ method: 'GET', url: url }).then(function getSuccessCallback(response) { successCallback(response); }, function getErrorCallback(response) { errorCallback(response); });
 		}
 
