@@ -36,7 +36,8 @@
 				'pageTitle': function () {
 					return "Webvella ERP";
 				},
-				resolvedCurrentUser: resolveCurrentUser
+				resolvedCurrentUser: resolveCurrentUser,
+				checkedAccessPermission: checkAccessPermission
 			},
 			'data': {
 				//Custom data is inherited by the parent state 'webvella-core', but it can be overwritten if necessary. Available for all child states in this plugin
@@ -54,7 +55,7 @@
 			var currentUser = webvellaCoreService.getCurrentUser();
 			if (currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") > -1) {
 
-				$translate(['ADMINISTRATION','ADMINISTRATION_ABBR']).then(function (translations) {
+				$translate(['ADMINISTRATION', 'ADMINISTRATION_ABBR']).then(function (translations) {
 					var item = {
 						"label": translations.ADMINISTRATION,
 						"stateName": "webvella-admin-entities",
@@ -87,6 +88,34 @@
 	};
 
 	// Resolve ///////////////////////////////////
+	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast', '$translate'];
+	
+	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast, $translate) {
+		var defer = $q.defer();
+		$translate(['NO_ACCESS_TO_AREA']).then(function (translations) {
+			var accessPermission = false;
+			for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
+				if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
+					accessPermission = true;
+				}
+			}
+
+			if (accessPermission) {
+				defer.resolve();
+			}
+			else {
+
+				ngToast.create({
+					className: 'error',
+					content: translations.NO_ACCESS_TO_AREA,
+				timeout: 7000
+			});
+			defer.reject("No access");
+		}
+		return defer.promise;
+	});
+}
+
 	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout'];
 
 	function resolveCurrentUser($q, $log, webvellaCoreService, $state, $stateParams, $timeout) {
@@ -107,10 +136,10 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$log', '$scope', '$state', '$rootScope', '$stateParams', 'webvellaCoreService', 'webvellaAdminSidebarFactory', '$timeout'];
+	controller.$inject = ['$log', '$scope', '$state', '$rootScope', '$stateParams', 'webvellaCoreService', 'webvellaAdminSidebarFactory', '$timeout', '$translate'];
 
 
-	function controller($log, $scope, $state, $rootScope, $stateParams, webvellaCoreService, webvellaAdminSidebarFactory, $timeout) {
+	function controller($log, $scope, $state, $rootScope, $stateParams, webvellaCoreService, webvellaAdminSidebarFactory, $timeout, $translate) {
 
 		var baseCtrl = this;
 		baseCtrl.sidebar = [];
@@ -133,32 +162,33 @@
 		});
 		////5. Bootstrap the pluggable element and cast the Ready hook
 		//Push the Regular menu items
-		var item = {
-			"label": "Entities",
-			"stateName": "webvella-admin-entities",
-			"stateParams": {},
-			"parentName": "",
-			"nodes": [],
-			"weight": 1.0,
-			"color": "red",
-			"iconName": "cog"
-		};
-		baseCtrl.sidebar.push(item);
-		item = {
-			"label": "Users",
-			"stateName": "webvella-admin-users",
-			"stateParams": {},
-			"parentName": "",
-			"nodes": [],
-			"weight": 2.0,
-			"color": "red",
-			"iconName": "cog"
-		};
-		baseCtrl.sidebar.push(item);
-		$timeout(function () {
-			$rootScope.$emit("webvellaAdmin-sidebar-ready");
-		}, 0);
-
+		$translate(['ENTITIES', 'USERS']).then(function (translations) {
+			var item = {
+				"label": translations.ENTITIES,
+				"stateName": "webvella-admin-entities",
+				"stateParams": {},
+				"parentName": "",
+				"nodes": [],
+				"weight": 1.0,
+				"color": "red",
+				"iconName": "cog"
+			};
+			baseCtrl.sidebar.push(item);
+			item = {
+				"label": translations.USERS,
+				"stateName": "webvella-admin-users",
+				"stateParams": {},
+				"parentName": "",
+				"nodes": [],
+				"weight": 2.0,
+				"color": "red",
+				"iconName": "cog"
+			};
+			baseCtrl.sidebar.push(item);
+			$timeout(function () {
+				$rootScope.$emit("webvellaAdmin-sidebar-ready");
+			}, 0);
+		});
 		activate();
 		function activate() {
 			// Change the body color to all child states to red

@@ -11,9 +11,9 @@
 	<div id="page-text">
 		<div class="record-details">
 			<div class="alert alert-warning" ng-if="::ngCtrl.createViewRegion == null">There is no default "create" view defined for this entity. Please contact your system integrator!</div>
-			<div class="alert alert-warning" ng-if="::!ngCtrl.checkUserEntityPermissions('canCreate')">You are not allowed to create records in this entity</div>
+			<div class="alert alert-warning" ng-if="::!ngCtrl.userHasRecordPermissions('canCreate')">You are not allowed to create records in this entity</div>
 			<div class="alert alert-danger" ng-if="ngCtrl.validation.hasError" ng-bind-html="ngCtrl.validation.errorMessage"></div>
-			<form name="createRecord" ng-if="ngCtrl.createViewRegion != null && ngCtrl.checkUserEntityPermissions('canCreate')">
+			<form name="createRecord" ng-if="ngCtrl.createViewRegion != null && ngCtrl.userHasRecordPermissions('canCreate')">
 				<div class="panel panel-default  {{section.cssClass}}" ng-repeat="section in ngCtrl.createViewRegion.sections track by section.id" ng-if="ngCtrl.createViewRegion != null">
 					<div class="panel-heading collapsable ng-hide" ng-show="section.showLabel">
 						<a href="javascript:void(0)" ng-click="ngCtrl.toggleSectionCollapse(section)">
@@ -605,7 +605,7 @@
 					</div>
 				</div>
 			</form>
-			<div class="page-buttons" ng-if="::ngCtrl.createViewRegion != null && ngCtrl.checkUserEntityPermissions('canCreate')">
+			<div class="page-buttons" ng-if="::ngCtrl.createViewRegion != null && ngCtrl.userHasRecordPermissions('canCreate')">
 				<span dynamic-html template="actionItem.template" ng-repeat="actionItem in ngCtrl.createBottomActions track by actionItem.name"></span>
 			</div>
 		</div>

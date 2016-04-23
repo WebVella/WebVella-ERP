@@ -39,7 +39,6 @@
                 }
             },
             resolve: {
-            	checkedAccessPermission: checkAccessPermission,
                 resolvedCurrentEntityMeta: resolveCurrentEntityMeta,
                 resolvedRolesList: resolveRolesList,
                 resolvedAreasList: resolveAreasList
@@ -52,46 +51,19 @@
 
 
 	// Resolve Function /////////////////////////
-    checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	
-    function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-    	var defer = $q.defer();
-    	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
-    	var accessPermission = false;
-    	for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-    		if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
-    			accessPermission = true;
-    		}
-    	}
 
-    	if (accessPermission) {
-    		defer.resolve();
-    	}
-    	else {
-
-    		ngToast.create({
-    			className: 'error',
-    			content: messageContent,
-    			timeout: 7000
-    		});
-    		defer.reject("No access");
-    	}
-
-    	return defer.promise;
-    }
-
-    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+    resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
     
-    function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+    function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
         // Initialize
         var defer = $q.defer();
 
         // Process
         function successCallback(response) {
             if (response.object == null) {
-                $timeout(function () {
-                    alert("error in response!")
-                }, 0);
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
+					alert("error in response!")
+				});
             }
             else {
                 defer.resolve(response.object);
@@ -100,9 +72,9 @@
 
         function errorCallback(response) {
             if (response.object == null) {
-                $timeout(function () {
-                    alert("error in response!")
-                }, 0);
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
+	                alert("error in response!")
+				});
             }
             else {
             	defer.reject(response.message);
@@ -160,22 +132,22 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'ngToast', 'resolvedCurrentEntityMeta', '$uibModal',
-        'resolvedRolesList', 'webvellaCoreService', 'resolvedAreasList', '$timeout'];
+        'resolvedRolesList', 'webvellaCoreService', 'resolvedAreasList', '$timeout','$translate'];
 
     
     function controller($scope, $log, $rootScope, $state, pageTitle, ngToast, resolvedCurrentEntityMeta, $uibModal,
-        resolvedRolesList, webvellaCoreService, resolvedAreasList, $timeout) {
+        resolvedRolesList, webvellaCoreService, resolvedAreasList, $timeout,$translate) {
         
         var ngCtrl = this;
         ngCtrl.entity = resolvedCurrentEntityMeta;
         //Update page title
-        ngCtrl.pageTitle = "Entity > " + ngCtrl.entity.label +" > Details | " + pageTitle;
-		$timeout(function(){
+		$translate(['ENTITY','DETAILS','ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.ENTITY + " > " + ngCtrl.entity.label +" > " + translations.DETAILS +" | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		//Hide Sidemenu
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 
 		ngCtrl.showSidebar = function(){
@@ -273,19 +245,23 @@
 
 
         function patchSuccessCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<span class="go-green">Success:</span> ' + response.message
-            });
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + ' ' + response.message
+				});
+			});
             webvellaCoreService.regenerateAllAreaAttachments();
             return true;
         }
         function patchFailedCallback(response) {
-            ngToast.create({
-                className: 'error',
-                content: '<span class="go-red">Error:</span> ' + response.message,
-                timeout: 7000
-            });
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
             return false;
         }
     }
@@ -310,10 +286,12 @@
 
         /// Aux
         function successCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<span class="go-green">Success:</span> ' + response.message
-            });
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + ' ' + response.message
+				});
+			});
             $uibModalInstance.close('success');
             $timeout(function() {
                 $state.go("webvella-admin-entities");

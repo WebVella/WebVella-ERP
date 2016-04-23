@@ -39,7 +39,6 @@
                 }
             },
             resolve: {
-            	checkedAccessPermission: checkAccessPermission,
                 resolvedEntityMetaList: resolveEntityMetaList,
                 resolvedRolesList:resolveRolesList
             },
@@ -50,34 +49,6 @@
     };
 
 	//#region << Resolve >>
-    checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	
-    function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-    	var defer = $q.defer();
-    	var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
-    	var accessPermission = false;
-    	for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-    		if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
-    			accessPermission = true;
-    		}
-    	}
-
-    	if (accessPermission) {
-    		defer.resolve();
-    	}
-    	else {
-
-    		ngToast.create({
-    			className: 'error',
-    			content: messageContent,
-    			timeout: 7000
-    		});
-    		defer.reject("No access");
-    	}
-
-    	return defer.promise;
-    }
-
 
     // Resolve EntityMetaList /////////////////////////
     resolveEntityMetaList.$inject = ['$rootScope','$q', '$log', 'webvellaCoreService','$timeout'];
@@ -131,18 +102,19 @@
 	//#endregion
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaCoreService','$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', 'pageTitle', 'resolvedEntityMetaList', '$uibModal', 'resolvedRolesList', 'webvellaCoreService',
+						'$timeout','$translate'];
 
     
-    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaCoreService,$timeout) {
+    function controller($log, $rootScope, $state, pageTitle, resolvedEntityMetaList, $uibModal, resolvedRolesList, webvellaCoreService,
+						$timeout,$translate) {
         
         var ngCtrl = this;
         //Update page title
-        ngCtrl.pageTitle = "Entities | " + pageTitle;
-		$timeout(function(){
+		$translate(['ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.ENTITIES + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-		},0);
-
+		});
         ngCtrl.entities = resolvedEntityMetaList.entities;
         ngCtrl.entities = ngCtrl.entities.sort(function (a, b) { 
             if(a.name < b.name) return -1;
@@ -173,10 +145,10 @@
 
 
     //// Modal Controllers
-    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+    createEntityController.$inject = ['$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl','$translate'];
 
     
-    function createEntityController($uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
+    function createEntityController($uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl,$translate) {
 
         
         var popupCtrl = this;
@@ -287,10 +259,12 @@
 
         /// Aux
         function successCallback(response) {
-            ngToast.create({
-                className: 'success',
-                content: '<span class="go-green">Success:</span> '+ 'The entity was successfully created'
-            });
+			$translate(['SUCCESS_MESSAGE_LABEL', 'ENTITY_CREATE_SUCCESS']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content:  translations.SUCCESS_MESSAGE_LABEL + " " + translations.ENTITY_CREATE_SUCCESS
+				});
+			});
             $uibModalInstance.close('success');
             $timeout(function () {
             	$state.go("webvella-admin-entity-details", { entityName: response.object.name}, { reload: true });

@@ -2,7 +2,7 @@
   "name": "webvella-base",
   "url": "http://webvella.com",
   "description": "WebVella ERP base plugin for bootstrapping the application",
-  "Version": "1.0",
+  "version": "1.0",
   "company": "WebVella",
   "companyUrl": "http://webvella.com",
   "author": "Bozhidar Zashev",

@@ -87,6 +87,7 @@
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
+							<p>Check if the list support filter by this field</p>
 							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate>
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
@@ -298,7 +299,7 @@
 					</tr>
 					<tr class="ng-hide" ng-show='::ngCtrl.list.data.length == 0'>
 						<td colspan="{{ngCtrl.list.meta.columns.length + 1}}">
-							<div class="alert alert-info">
+							<div class="alert alert-info" style="margin:0;">
 								There are no records matching your query
 							</div>
 						</td>

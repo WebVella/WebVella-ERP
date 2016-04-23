@@ -20,7 +20,7 @@
 
 	config.$inject = ['$stateProvider'];
 
-	
+
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-areas-lists', {
 			parent: 'webvella-admin-base',
@@ -43,7 +43,6 @@
 				}
 			},
 			resolve: {
-				checkedAccessPermission: checkAccessPermission,
 				resolvedAreaRecordsList: resolveAreaRecordsList,
 				resolvedRolesList: resolveRolesList,
 				resolvedEntityMetaList: resolveEntityMetaList
@@ -57,47 +56,15 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
-	checkAccessPermission.$inject = ['$q', '$log', 'resolvedCurrentUser', 'ngToast'];
-	
-	function checkAccessPermission($q, $log, resolvedCurrentUser, ngToast) {
-		var defer = $q.defer();
-		var messageContent = '<span class="go-red">No access:</span> You do not have access to the <span class="go-red">Admin</span> area';
-		var accessPermission = false;
-		for (var i = 0; i < resolvedCurrentUser.roles.length; i++) {
-			if (resolvedCurrentUser.roles[i] == "bdc56420-caf0-4030-8a0e-d264938e0cda") {
-				accessPermission = true;
-			}
-		}
+	resolveAreaRecordsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
 
-		if (accessPermission) {
-			defer.resolve();
-		}
-		else {
-
-			ngToast.create({
-				className: 'error',
-				content: messageContent,
-				timeout: 7000
-			});
-			defer.reject("No access");
-		}
-
-		return defer.promise;
-	}
-
-
-	resolveAreaRecordsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
-	function resolveAreaRecordsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveAreaRecordsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
 		// Initialize
 		var defer = $q.defer();
-
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
-					alert("error in response!")
-				}, 0);
+				alert(errorInResponseMessage)
 			}
 			else {
 				defer.resolve(response.object);
@@ -106,23 +73,23 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
-					alert("error in response!")
-				}, 0);
+				alert(errorInResponseMessage)
 			}
 			else {
 				defer.reject(response.message);
 			}
 		}
 
-		webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
-
+		$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
+			var errorInResponseMessage = translations.ERROR_IN_RESPONSE;
+			webvellaCoreService.getRecordsByListName("null", "area", "null", null, successCallback, errorCallback);
+		});
 		return defer.promise;
 	}
 
 	// Resolve Roles list /////////////////////////
 	resolveRolesList.$inject = ['$q', '$log', 'webvellaCoreService'];
-	
+
 	function resolveRolesList($q, $log, webvellaCoreService) {
 
 		// Initialize
@@ -137,7 +104,7 @@
 			defer.reject(response.message);
 		}
 
-		webvellaCoreService.getRecordsByListName("null","role", "null",null, successCallback, errorCallback);
+		webvellaCoreService.getRecordsByListName("null", "role", "null", null, successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -145,7 +112,7 @@
 	// Resolve EntityMetaList /////////////////////////
 	resolveEntityMetaList.$inject = ['$q', '$log', 'webvellaCoreService'];
 
-	
+
 	function resolveEntityMetaList($q, $log, webvellaCoreService) {
 		// Initialize
 		var defer = $q.defer();
@@ -169,19 +136,20 @@
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedAreaRecordsList',
 							'resolvedRolesList', 'resolvedEntityMetaList', '$uibModal',
-                            'webvellaCoreService', '$timeout'];
-	
+							'webvellaCoreService', '$timeout', '$translate'];
+
 	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedAreaRecordsList,
 						resolvedRolesList, resolvedEntityMetaList, $uibModal,
-                        webvellaCoreService, $timeout) {
-		
+						webvellaCoreService, $timeout, $translate) {
+
 		var ngCtrl = this;
 		ngCtrl.search = {};
 		//#region << Update page title >>
-		ngCtrl.pageTitle = "Areas List | " + pageTitle;
-		$timeout(function () {
+		ngCtrl.pageTitle = "";
+		$translate(['AREA_LIST']).then(function (translations) {
+			ngCtrl.pageTitle = translations.AREA_LIST + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-		}, 0);
+		});
 		//#endregion
 
 		ngCtrl.areas = fastCopy(resolvedAreaRecordsList.data);
@@ -221,19 +189,19 @@
 					}
 				}
 			});
-
 		}
-
 	}
 	//#endregion
 
 
 	//// Modal Controllers
-	manageAreaController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl'];
+	manageAreaController.$inject = ['$uibModalInstance', '$log', '$sce', '$uibModal', '$filter', 'webvellaCoreService', 'ngToast', '$timeout',
+									'$state', '$location', 'ngCtrl', '$translate'];
 
-	
-	function manageAreaController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl) {
-		
+
+	function manageAreaController($uibModalInstance, $log, $sce, $uibModal, $filter, webvellaCoreService, ngToast, $timeout,
+									$state, $location, ngCtrl, $translate) {
+
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
 		popupCtrl.area = fastCopy(ngCtrl.currentArea);
@@ -279,7 +247,6 @@
 		popupCtrl.isUpdate = true;
 		if (popupCtrl.area.id == null) {
 			popupCtrl.isUpdate = false;
-			popupCtrl.modalTitle = $sce.trustAsHtml("Create new area");
 			//Select "administrator" and "regular" roles by default
 			for (var i = 0; i < popupCtrl.roles.length; i++) {
 				switch (popupCtrl.roles[i].name) {
@@ -319,8 +286,6 @@
 				if (a.name > b.name) return 1;
 				return 0;
 			});
-
-			popupCtrl.modalTitle = $sce.trustAsHtml('Edit area <span class="go-green">' + popupCtrl.area.label + '</span>');
 		}
 
 		//Awesome font icon names array 
@@ -334,7 +299,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
-					 	if(selectedEntity.recordViews[k].type == "general"){
+						if (selectedEntity.recordViews[k].type == "general") {
 							views.push(selectedEntity.recordViews[k]);
 						}
 					}
@@ -365,7 +330,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
-					 	if(selectedEntity.recordViews[k].type == "create"){
+						if (selectedEntity.recordViews[k].type == "create") {
 							creates.push(selectedEntity.recordViews[k]);
 						}
 					}
@@ -396,7 +361,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordLists.length; k++) {
-					 	if(selectedEntity.recordLists[k].type == "general"){
+						if (selectedEntity.recordLists[k].type == "general") {
 							lists.push(selectedEntity.recordLists[k]);
 						}
 					}
@@ -500,7 +465,7 @@
 				weight: null,
 				view: null,
 				list: null,
-				create:null
+				create: null
 			};
 
 			urlAttachmentObj.label = popupCtrl.pendingUrlLabel;
@@ -552,7 +517,7 @@
 					popupCtrl.attachments.splice(attachmentIndex, 1);
 				}
 			}
-			//if URL
+				//if URL
 			else {
 				popupCtrl.attachments.splice(index, 1);
 			}
@@ -572,7 +537,9 @@
 			if (!popupCtrl.area.name || popupCtrl.area.name == "" || !popupCtrl.area.label || popupCtrl.area.label == "" ||
 				!popupCtrl.area.icon_name || popupCtrl.area.icon_name == "" || !popupCtrl.area.color || popupCtrl.area.color == "") {
 				popupCtrl.validation.hasError = true;
-				popupCtrl.validation.errorMessage = "Required fields are missing data";
+				$translate(['REQUIRED_FIELDS_MISSING']).then(function (translations) {
+					popupCtrl.validation.errorMessage = translations.REQUIRED_FIELDS_MISSING;
+				});
 			}
 			if (!popupCtrl.validation.hasError) {
 				if (!popupCtrl.isUpdate) {
@@ -594,9 +561,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + 'The area was successfully saved'
+			$translate(['SUCCESS_MESSAGE_LABEL', 'AREA_SAVE_SUCCESS']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.AREA_SAVE_SUCCESS
+				});
 			});
 			$uibModalInstance.close('success');
 			webvellaCoreService.GoToState($state.current.name, {});
@@ -629,15 +598,15 @@
 	//// Modal Controllers
 	DeleteAreaModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 
-	
+
 	function DeleteAreaModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
-		
+
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;
 
 		popupCtrl.ok = function () {
 
-			webvellaCoreService.deleteRecord(popupCtrl.parentData.area.id,"area", successCallback, errorCallback);
+			webvellaCoreService.deleteRecord(popupCtrl.parentData.area.id, "area", successCallback, errorCallback);
 
 		};
 
@@ -647,9 +616,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			$uibModalInstance.close('success');
 			popupCtrl.parentData.modalInstance.close('success');

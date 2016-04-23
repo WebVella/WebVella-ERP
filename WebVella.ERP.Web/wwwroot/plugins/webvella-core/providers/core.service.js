@@ -1887,7 +1887,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsByEntityName("area", "null", rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsByListName("null","area", "null", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {

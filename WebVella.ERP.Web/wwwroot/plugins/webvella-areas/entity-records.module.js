@@ -7,7 +7,7 @@
         .controller('WebVellaAreaEntityRecordsController', controller)
 		.controller('exportModalController', exportModalController)
 		.controller('importModalController', importModalController);
-  
+
 	//#region << Configuration /////////////////////////////////// >>
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
@@ -41,33 +41,33 @@
 			}
 		});
 	};
-	
+
 	//#endregion
 
 	//#region << Resolve Function >>
 
 	////////////////////////
- 	loadDependency.$inject = ['$ocLazyLoad','$q','$http','$stateParams','resolvedCurrentEntityMeta','wvAppConstants','$timeout'];
-	function loadDependency($ocLazyLoad, $q, $http,$stateParams,resolvedCurrentEntityMeta,wvAppConstants,$timeout){
-        var lazyDeferred = $q.defer();
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$stateParams', 'resolvedCurrentEntityMeta', 'wvAppConstants', '$timeout'];
+	function loadDependency($ocLazyLoad, $q, $http, $stateParams, resolvedCurrentEntityMeta, wvAppConstants, $timeout) {
+		var lazyDeferred = $q.defer();
 
-		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' +  $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 
 		var loadFilesArray = [];
 		loadFilesArray.push(listServiceJavascriptPath);
 
-        return $ocLazyLoad.load ({
-          cache: false,
-          files: loadFilesArray
-        }).then(function() {
+		return $ocLazyLoad.load({
+			cache: false,
+			files: loadFilesArray
+		}).then(function () {
 			return lazyDeferred.resolve("ready");
-        });	
-	
+		});
+
 	}
 
- 	loadPreloadScript.$inject = ['loadDependency','webvellaListActionService','$q','$http','$state'];
-	function loadPreloadScript(loadDependency,webvellaListActionService, $q, $http,$state){
-        var defer = $q.defer();
+	loadPreloadScript.$inject = ['loadDependency', 'webvellaListActionService', '$q', '$http', '$state'];
+	function loadPreloadScript(loadDependency, webvellaListActionService, $q, $http, $state) {
+		var defer = $q.defer();
 
 		if (webvellaListActionService.preload === undefined || typeof (webvellaListActionService.preload) != "function") {
 			console.log("No webvellaListActionService.preload function. Skipping");
@@ -75,12 +75,12 @@
 			return defer.promise;
 		}
 		else {
-			webvellaListActionService.preload(defer,$state);
+			webvellaListActionService.preload(defer, $state);
 		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast','$location'];
-	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast,$location) {
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location'];
+	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location) {
 		var defer = $q.defer();
 		function successCallback(response) {
 			defer.resolve(response.object);
@@ -88,7 +88,7 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
- 		var searchParams = $location.search();
+		var searchParams = $location.search();
 		webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
 		return defer.promise;
 	}
@@ -96,12 +96,12 @@
 	//#endregion
 
 	//#region << Controller /////////////////////////////// >>
-	controller.$inject = ['$log', '$uibModal', '$rootScope','$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta','webvellaListActionService','$timeout',
-		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window','$sce'];
+	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
+        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
+		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta,webvellaListActionService,$timeout,
+        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -118,7 +118,7 @@
 		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
 		//#endregion
-		
+
 		//#region << Initialize main objects >>
 		ngCtrl.list = {};
 		ngCtrl.list.data = fastCopy(resolvedListRecords.data);
@@ -136,10 +136,10 @@
 			$log.warn("No webvellaListActionService.onload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaListActionService.onload(ngCtrl,$rootScope,$state);
-			if(actionsOnLoadResult != true){
+			var actionsOnLoadResult = webvellaListActionService.onload(ngCtrl, $rootScope, $state);
+			if (actionsOnLoadResult != true) {
 				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
 			}
 		}
 		//#endregion
@@ -153,17 +153,17 @@
 		});
 		ngCtrl.generalLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
 		//#endregion
-  
+
 		//#region << Column widths from CSV >>
 		ngCtrl.columnWidths = [];
 		var columnWidthsArray = [];
-		if(ngCtrl.list.meta.columnWidthsCSV){
+		if (ngCtrl.list.meta.columnWidthsCSV) {
 			columnWidthsArray = ngCtrl.list.meta.columnWidthsCSV.split(',');
 		}
-		var visibleColumns =  ngCtrl.list.meta.visibleColumnsCount;
-		if(columnWidthsArray.length > 0){
-		   	for (var i = 0; i < visibleColumns; i++) {
-				if(columnWidthsArray.length >= i +1){
+		var visibleColumns = ngCtrl.list.meta.visibleColumnsCount;
+		if (columnWidthsArray.length > 0) {
+			for (var i = 0; i < visibleColumns; i++) {
+				if (columnWidthsArray.length >= i + 1) {
 					ngCtrl.columnWidths.push(columnWidthsArray[i]);
 				}
 				else {
@@ -180,7 +180,7 @@
 
 		//#endregion
 
-  		//#region << List filter row >>
+		//#region << List filter row >>
 		ngCtrl.filterQuery = {};
 		ngCtrl.listIsFiltered = false;
 		ngCtrl.columnDictionary = {};
@@ -225,22 +225,34 @@
 			for (var activeFilter in ngCtrl.filterQuery) {
 				$location.search(activeFilter, null);
 			}
-			$window.location.reload();
+			var searchParams = $location.search();
+			ngCtrl.filterQuery = {};
+			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.applyQueryFilter = function () {
 			//TODO - Convert percent into 0 < x < 1
 
 			//TODO - Convert date to ISO
-			for(var filter in ngCtrl.filterQuery){
-				if(ngCtrl.filterQuery[filter] == ""){
+			for (var filter in ngCtrl.filterQuery) {
+				if (ngCtrl.filterQuery[filter] == "") {
 					$location.search(filter, null);
 				}
 				else {
 					$location.search(filter, ngCtrl.filterQuery[filter]);
 				}
 			}
-			$window.location.reload();
+			//$window.location.reload();
+			var searchParams = $location.search();
+			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+		}
+
+		ngCtrl.ReloadRecordsSuccessCallback = function(response){
+			 ngCtrl.list.data = response.object.data;
+		}
+
+	   	ngCtrl.ReloadRecordsErrorCallback = function(response){
+			alert(response.message);
 		}
 
 		ngCtrl.checkForSearchEnter = function (e) {
@@ -253,7 +265,7 @@
 
 
 		//#endregion
-  
+
 		//#region << Logic >> 
 
 		ngCtrl.selectPage = function (page) {
@@ -283,7 +295,7 @@
 			return result;
 		}
 
- 		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
+		ngCtrl.userHasRecordPermissions = function (permissionsCsv) {
 			return webvellaCoreService.userHasRecordPermissions(ngCtrl.entity, permissionsCsv);
 		}
 
@@ -295,34 +307,35 @@
 		ngCtrl.sortObject = {}; // dataName = order // no property, "ascending" "descending"
 
 		//Init already sorted params
-		var preloadedSortBy =  $location.search().sortBy;
+		var preloadedSortBy = $location.search().sortBy;
 		var preloadedSortOrder = $location.search().sortOrder;
-		if(preloadedSortBy && preloadedSortOrder && (preloadedSortOrder == "ascending" || preloadedSortOrder == "descending")){
+		if (preloadedSortBy && preloadedSortOrder && (preloadedSortOrder == "ascending" || preloadedSortOrder == "descending")) {
 			ngCtrl.sortObject[preloadedSortBy] = preloadedSortOrder;
 		}
-		ngCtrl.toggleSort = function(column){
-			if(ngCtrl.sortObject[column.dataName]){
-				switch(ngCtrl.sortObject[column.dataName]){
+		ngCtrl.toggleSort = function (column) {
+			if (ngCtrl.sortObject[column.dataName]) {
+				switch (ngCtrl.sortObject[column.dataName]) {
 					case "ascending":
 						ngCtrl.sortObject[column.dataName] = "descending";
 						$location.search("sortBy", column.dataName);
 						$location.search("sortOrder", "descending");
-					break;
+						break;
 					case "descending":
 						delete ngCtrl.sortObject[column.dataName];
 						$location.search("sortBy", null);
 						$location.search("sortOrder", null);
-					break;
-				}	
+						break;
+				}
 			}
-			else{
+			else {
 				ngCtrl.sortObject = {};
 				ngCtrl.sortObject[column.dataName] = "ascending";
 				$location.search("sortBy", column.dataName);
 				$location.search("sortOrder", "ascending");
 			}
 
-			$window.location.reload();
+			var searchParams = $location.search();
+			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
 		}
 
@@ -393,9 +406,9 @@
 		ngCtrl.recordRowActions = [];
 		ngCtrl.recordRowDropdownActions = [];
 		ngCtrl.pageBottomActions = [];
-		ngCtrl.list.meta.actionItems.sort(sort_by('menu', {name:'weight', primer: parseInt, reverse: false}));
-		ngCtrl.list.meta.actionItems.forEach(function(actionItem){
-			switch(actionItem.menu){
+		ngCtrl.list.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
+		ngCtrl.list.meta.actionItems.forEach(function (actionItem) {
+			switch (actionItem.menu) {
 				case "page-title":
 					ngCtrl.pageTitleActions.push(actionItem);
 					break;
@@ -412,7 +425,7 @@
 					ngCtrl.pageBottomActions.push(actionItem);
 					break;
 			}
-		});		
+		});
 		//#endregion
 
 		//#region << Run  webvellaListActionService.postload >>
@@ -420,10 +433,10 @@
 			$log.warn("No webvellaListActionService.postload function. Skipping");
 		}
 		else {
-			var actionsOnLoadResult = webvellaListActionService.postload(ngCtrl,$rootScope,$state);
-			if(actionsOnLoadResult != true){
+			var actionsOnLoadResult = webvellaListActionService.postload(ngCtrl, $rootScope, $state);
+			if (actionsOnLoadResult != true) {
 				ngCtrl.validation.hasError = true;
-				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);				
+				ngCtrl.validation.errorMessage = $sce.trustAsHtml(actionsOnLoadResult);
 			}
 		}
 		//#endregion
@@ -480,7 +493,7 @@
 			$uibModalInstance.dismiss('cancel');
 		};
 	}
- 	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl'];
+	importModalController.$inject = ['$uibModalInstance', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'ngCtrl'];
 	function importModalController($uibModalInstance, webvellaCoreService, ngToast, $timeout, $state, ngCtrl) {
 		var popupCtrl = this;
 		popupCtrl.ngCtrl = fastCopy(ngCtrl);

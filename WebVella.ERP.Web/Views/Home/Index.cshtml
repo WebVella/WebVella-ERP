@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title ng-bind="::appData.pageTitle"></title>
+    <title ng-bind="appData.pageTitle"></title>
     <!--plugin:webvella-core-->
     <link href="~/plugins/webvella-core/lib/bootstrap/dist/css/bootstrap.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
     <link href="~/plugins/webvella-core/lib/ngtoast/dist/ngtoast.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
@@ -115,6 +115,15 @@
 		var htmlCacheBreaker = @ViewBag.CacheBreaker;		
 	</script>
 
+	<!-- translation -->
+	@{
+	var languageFile = "~/plugins/webvella-core/lang/" + ViewBag.Lang +".js?v=" + ViewBag.CacheBreaker;
+	}
+	<script src="@languageFile"></script>
+	<script>
+	var GlobalLanguage = '@ViewBag.Lang';
+	</script>
+
 	<!-- plugin:webvella-core -->
 	<script src="~/plugins/webvella-core/base.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-core/login.module.js?v=@ViewBag.CacheBreaker"></script>
@@ -139,7 +148,7 @@
 	<script src="~/plugins/webvella-admin/entity-view-manage-form.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/entity-view-manage-actions.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/entity-view-manage-sidebar.module.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js?v=@ViewBag.CacheBreaker"></script>
+	@*<script src="~/plugins/webvella-admin/directives/fixed-navigation.directive.js?v=@ViewBag.CacheBreaker"></script>*@
 	<script src="~/plugins/webvella-admin/entity-fields.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/entity-views.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/entity-lists.module.js?v=@ViewBag.CacheBreaker"></script>
@@ -153,7 +162,6 @@
 	<script src="~/plugins/webvella-admin/areas.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/users.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="~/plugins/webvella-admin/roles.module.js?v=@ViewBag.CacheBreaker"></script>
-	<script src="~/plugins/webvella-admin/providers/view-tree-manage.directive.js?v=@ViewBag.CacheBreaker"></script>
 
 	<!-- plugin:webvella-areas -->
 	<script src="~/plugins/webvella-areas/base.module.js?v=@ViewBag.CacheBreaker"></script>
@@ -180,16 +188,6 @@
 	<script src="http://localhost:2201/plugins/shop-base/migration-index.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/plugins/shop-base/migration-women-category.module.js?v=@ViewBag.CacheBreaker"></script>
 	<script src="http://localhost:2201/plugins/shop-base/migration-material-category.module.js?v=@ViewBag.CacheBreaker"></script>*@
-
-	<!-- translation -->
-	@{
-	var languageFile = "~/plugins/webvella-core/lang/" + ViewBag.Lang +".js?v=" + ViewBag.CacheBreaker;
-	}
-	<script src="@languageFile"></script>
-	<script>
-	var GlobalLanguage = '@ViewBag.Lang';
-	</script>
-
 
 	@ViewBag.PluginModulesJsFileStringArray
 
