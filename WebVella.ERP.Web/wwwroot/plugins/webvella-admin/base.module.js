@@ -55,9 +55,9 @@
 			var currentUser = webvellaCoreService.getCurrentUser();
 			if (currentUser.roles.indexOf("bdc56420-caf0-4030-8a0e-d264938e0cda") > -1) {
 
-				$translate(['ADMINISTRATION', 'ADMINISTRATION_ABBR']).then(function (translations) {
+				$translate(['ADMINISTRATION_CORE', 'ADMINISTRATION_ABBR']).then(function (translations) {
 					var item = {
-						"label": translations.ADMINISTRATION,
+						"label": translations.ADMINISTRATION_CORE,
 						"stateName": "webvella-admin-entities",
 						"stateParams": {},
 						"parentName": "",
