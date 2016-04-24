@@ -1079,7 +1079,7 @@
 		////////////////////////
 		function initViewSection() {
 			var section = {
-				"id": guid(),
+				"id": newGuid(),
 				"name": "section",
 				"label": "Section name",
 				"cssClass": "",
@@ -1094,7 +1094,7 @@
 		///////////////////////
 		function initViewRow(columnCount) {
 			var row = {
-				"id": guid(),
+			    "id": newGuid(),
 				"weight": 1,
 				"columns": []
 			}
