@@ -109,7 +109,7 @@
 				</select>
 			</td>-->
 			<td class="position-relative">
-				<div class="editable-wrapper input-group editable-updatable">
+				<div class="editable-wrapper input-group editable-updatable"  ng-dblclick="this['queryForm_' + queryIndex].$show()">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
 						   value="{{currentQuery.fieldValue}}"
 						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">

@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
 	service.$inject = ['$cookies', '$q', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate'];
+				'$timeout', 'Upload', '$translate','$filter'];
 
 
 	function service($cookies, $q, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate) {
+				$timeout, Upload, $translate,$filter) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -660,7 +660,7 @@
 				else {
 					for (var i = 0; i < data.length; i++) {
 						var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
-						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
+						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : '');
 					}
 					return generatedStringArray.join(', ');
 				}
@@ -820,7 +820,7 @@
 			}
 			else {
 				var selected = $filter('filter')(fieldMeta.options, { key: data });
-				return (data && selected.length) ? selected[0].value : 'empty';
+				return (data && selected.length) ? selected[0].value : '';
 			}
 		}
 		//18. Text
