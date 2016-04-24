@@ -42,31 +42,31 @@
 			</div>
 		</nav>
 		<div class="view-manage-section">
-			<h4 style="margin-bottom:1em">Query</h4>
-			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(null)">add query section</a></div>
+			<h4 style="margin-bottom:1em" translate="{{'QUERY'}}"></h4>
+			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(null)" translate="{{'QUERY_SECTION_ADD'}}"></a></div>
 			<div ng-if="ngCtrl.list.query != null">
 				<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
 			</div>
 
-			<h4 style="margin-top:2em;margin-bottom:1em">Sort</h4>
-			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()">add new sort</a></div>
+			<h4 style="margin-top:2em;margin-bottom:1em" translate="{{'SORT'}}"></h4>
+			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a></div>
 			<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
 				<div class="panel-heading clearfix">
 					<span class="pull-right">
-						<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()">add new sort</a>
+						<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a>
 					</span>
 				</div>
 				<div class="panel-body">
 					<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd;">
 						<tr ng-repeat="sortRule in ngCtrl.list.sorts">
-							<td style="width:60px"><span ng-if="$index == 0">first</span><span ng-if="$index != 0">than</span></td>
+							<td style="width:60px"><span ng-if="$index == 0" translate="{{'First'}}"></span><span ng-if="$index != 0" translate="{{'Than'}}"></span></td>
 							<td style="width:30px;">
 								<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
 							</td>
 							<td style="width:200px">
 								<select class="form-control" ng-model="sortRule.sortType" ng-change="ngCtrl.updateSorts()">
-									<option value="ascending">sort from low to high by</option>
-									<option value="descending">sort from high to low by</option>
+									<option value="ascending" translate="{{'SORT_ASCENDING'}}"></option>
+									<option value="descending" translate="{{'SORT_DESCENDING'}}"></option>
 								</select>
 							</td>
 							<td class="editable-field">
@@ -129,14 +129,14 @@
 		<div class="panel-heading clearfix">
 			<span class="pull-right">
 				<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)">add section</a>
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)">add rule</a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)" translate="{{'QUERY_SECTION_ADD'}}"></a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)" translate="{{'QUERY_RULE_ADD'}}"></a>
 			</span>
 			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
-				<option value="AND">all</option>
-				<option value="OR">any</option>
+				<option value="AND">{{'ALL' | translate}}</option>
+				<option value="OR">{{'ANY' | translate}}</option>
 			</select>
-			<span class="pull-left" style="line-height:30px;margin-left:5px;">of these rules should be true</span>
+			<span class="pull-left" style="line-height:30px;margin-left:5px;" translate="{{'QUERY_RULE_CONDITION_SUFIX'}}"></span>
 		</div>
 		<div class="panel-body">
 			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="ngCtrl.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
@@ -311,16 +311,16 @@
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a list</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this list deleted?</p>
+			<p translate="{{'RECORD_LIST_DELETE_MODAL_QUESTION'}}"></p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'RECORD_LIST_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>

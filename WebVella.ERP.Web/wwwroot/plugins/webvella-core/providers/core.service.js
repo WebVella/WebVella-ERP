@@ -99,7 +99,7 @@
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Helpers
 		serviceInstance.getListMenuOptions = getListMenuOptions
-
+		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields
 		//#endregion
 
 		//#region << Tree >>
@@ -1578,6 +1578,29 @@
 		///////////////////////
 		function deleteEntityList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		/////////////////////
+		function extractSupportedFilterFields(recordList){
+			var supportedFields = extractFieldsFromQuery(recordList.meta.query,[]);
+			return supportedFields;
+		}
+		function extractFieldsFromQuery(query,result){
+			if(query.fieldValue != null && query.fieldValue.startsWith("{")){
+				var queryObject = angular.fromJson(query.fieldValue, result);
+				if(queryObject.name	== "url_query" &&  queryObject.option){
+					//option should equal fieldName in order to preset field to work
+					if(queryObject.option == query.fieldName){
+						result.push(query.fieldName);
+					}
+				}
+			}
+			if (query.subQueries.length > 0) {
+			    for (var i = 0; i < query.subQueries.length; i++) {
+					extractFieldsFromQuery(query.subQueries[i],result);
+			    }
+			} 
+
+			return result;
 		}
 
 		//#endregion

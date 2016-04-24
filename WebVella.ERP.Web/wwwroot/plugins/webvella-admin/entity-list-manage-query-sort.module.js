@@ -219,59 +219,65 @@
 		//#endregion
 
 		//#region << Query comparison options >>
+		ngCtrl.allQueryComparisonList = [];
+		ngCtrl.basicQueryComparisonList = [];
+		$translate(['QUERY_RULE_EQ_LABEL','QUERY_RULE_NOT_LABEL','QUERY_RULE_LT_LABEL','QUERY_RULE_LTE_LABEL',
+					'QUERY_RULE_GT_LABEL','QUERY_RULE_GTE_LABEL','QUERY_RULE_CONTAINS_LABEL','QUERY_RULE_NOT_CONTAINS_LABEL',
+					'QUERY_RULE_STARTSWITH_LABEL','QUERY_RULE_NOT_STARTSWITH_LABEL']).then(function (translations) {
 		ngCtrl.allQueryComparisonList = [
 			{
 				key: "EQ",
-				value: "is equal to"
+				value: translations.QUERY_RULE_EQ_LABEL
 			},
 			{
 				key: "NOT",
-				value: "is not equal to"
+				value: translations.QUERY_RULE_NOT_LABEL
 			},
 			{
 				key: "LT",
-				value: "is less than"
+				value: translations.QUERY_RULE_LT_LABEL
 			},
 			{
 				key: "LTE",
-				value: "is less than or equal"
+				value: translations.QUERY_RULE_LTE_LABEL
 			},
 			{
 				key: "GT",
-				value: "is greater than"
+				value: translations.QUERY_RULE_GT_LABEL
 			},
 			{
 				key: "GTE",
-				value: "is greater than or equal"
+				value: translations.QUERY_RULE_GTE_LABEL
 			},
 			{
 				key: "CONTAINS",
-				value: "contains"
+				value: translations.QUERY_RULE_CONTAINS_LABEL
 			},
 			{
 				key: "NOTCONTAINS",
-				value: "does not contain"
+				value: translations.QUERY_RULE_NOT_CONTAINS_LABEL
 			},
 			{
 				key: "STARTSWITH",
-				value: "starts with"
+				value: translations.QUERY_RULE_STARTSWITH_LABEL
 			},
 			{
 				key: "NOTSTARTSWITH",
-				value: "does not start with"
+				value: translations.QUERY_RULE_NOT_STARTSWITH_LABEL
 			}
 		];
 
 		ngCtrl.basicQueryComparisonList = [
 			{
 				key: "EQ",
-				value: "is equal to"
+				value: translations.QUERY_RULE_EQ_LABEL
 			},
 			{
 				key: "NOT",
-				value: "is not equal to"
+				value: translations.QUERY_RULE_NOT_LABEL
 			}
 		];
+		});
 
 		ngCtrl.getQueryComparisonOptionsList = function (query) {
 			var field = {};
@@ -315,26 +321,32 @@
 		calculateDefaultSearchFieldName();
 
 		function patchFieldSuccessCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			webvellaCoreService.regenerateAllAreaAttachments();
 		}
 
 		function patchSuccessCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			ngCtrl.list = response.object;
 			ngCtrl.generateAlreadyUsed();
 		}
 		function patchErrorCallback(response) {
-			ngToast.create({
-				className: 'error',
-				content: '<span class="go-red">Error:</span> ' + response.message,
-				timeout: 7000
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
 			});
 		}
 
@@ -645,9 +657,9 @@
 
 
 	//#region << Modal Controllers >>
-	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 	
-	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.parentData = parentData;
@@ -664,9 +676,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			$uibModalInstance.close('success');
 			$timeout(function () {

@@ -34,9 +34,6 @@
 			</h4>
 		</div>
 	</div>
-	<div id="page-messages" class="hide">
-		<div class="alert alert-warning" role="alert">This is a plug-in message dynamically embedded in the page</div>
-	</div>
 </div>
 <div id="page-body">
 	<div id="page-text">
@@ -46,7 +43,7 @@
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-filter"></i>
 								<em></em>
 							</a>
@@ -54,7 +51,7 @@
 								<i class="fa fa-fw fa-times go-red"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="show_filter && !ngCtrl.listIsFiltered" ng-click="show_filter = !show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-times"></i>
 								<em></em>
 							</a>
@@ -80,15 +77,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="show_filter || ngCtrl.listIsFiltered">
+					<tr style="background:#ddd" class="query-filter-row ng-hide" ng-show="ngCtrl.show_filter || ngCtrl.listIsFiltered">
 						<td>
 							<a class="btn btn-default btn-sm btn-block" ng-click="ngCtrl.applyQueryFilter()">
 								<i class="fa fa-fw fa-filter"></i>
 							</a>
 						</td>
 						<td ng-repeat="column in ngCtrl.list.meta.columns | limitTo: ngCtrl.list.meta.visibleColumnsCount">
-							<p>Check if the list support filter by this field</p>
-							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate>
+							<form ng-switch="column.type" ng-submit="ngCtrl.applyQueryFilter()" novalidate ng-if="ngCtrl.checkIfFieldSetInQuery(column.dataName)">
 								<div ng-switch-when="field" ng-switch="column.meta.fieldType">
 									<div ng-switch="column.meta.fieldType" ng-if="::column.meta.searchable">
 										<div ng-switch-when="1">

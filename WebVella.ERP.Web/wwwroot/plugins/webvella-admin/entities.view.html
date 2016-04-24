@@ -62,7 +62,7 @@
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
                         <ng-messages for="createEntity.name.$error" ng-if="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupCtrl.nameError">
 							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
-							<ng-message when="pattern" class="error" translate="{{' VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE '}}"></ng-message>
+							<ng-message when="pattern" class="error" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></ng-message>
 							<ng-message when="maxlength" class="error" translate="{{' VALIDATION_LESS_THAN_50_CHARS '}}"></ng-message>
                         </ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.nameError">

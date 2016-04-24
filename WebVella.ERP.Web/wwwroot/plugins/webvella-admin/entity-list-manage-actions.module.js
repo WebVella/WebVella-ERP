@@ -55,18 +55,18 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -75,9 +75,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -90,18 +90,18 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -110,9 +110,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -124,18 +124,18 @@
 		return defer.promise;
 	}
 
-	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -144,9 +144,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -158,18 +158,18 @@
 		return defer.promise;
 	}
 
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -178,9 +178,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -194,23 +194,22 @@
 
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList'];
+						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate'];
 	
 	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList) {
+						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.entity = resolvedCurrentEntityMeta;
 
 		//#region << Update page title & hide the side menu >>
-		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
-		$timeout(function(){
+		$translate(['RECORD_LIST_TAB_ACTIONS_PAGE_TITLE','ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_LIST_TAB_ACTIONS_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+		
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -276,9 +275,9 @@
 
 
 	//#region << Modal Controllers >>
-	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 	
-	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.parentData = parentData;
@@ -295,9 +294,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			$uibModalInstance.close('success');
 			$timeout(function () {
@@ -314,9 +315,9 @@
 
 	};
 	
-	ManageListServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	ManageListServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 	
-	function ManageListServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function ManageListServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 
 		
 		var popupCtrl = this;
@@ -356,9 +357,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			parentData.list.serviceCode = response.object.serviceCode;
 			$uibModalInstance.close('success');
@@ -376,16 +379,19 @@
 		}
 
 		function getDefaultScriptErrorCallback(response) {
-			ngToast.create({
-				className: 'danger',
-				content: '<span class="go-green">Error:</span> ' + response.message
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
 			});
 		}
 	};
 
-	AddManageListActionItemModalController.$inject = ['parentData','actionItem', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	AddManageListActionItemModalController.$inject = ['parentData','actionItem', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 	
-	function AddManageListActionItemModalController(parentData,actionItem, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function AddManageListActionItemModalController(parentData,actionItem, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 
 		
 		var popupCtrl = this;
@@ -499,9 +505,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			parentData.list.actionItems = response.object.actionItems;
 			parentData.orderActionItems();

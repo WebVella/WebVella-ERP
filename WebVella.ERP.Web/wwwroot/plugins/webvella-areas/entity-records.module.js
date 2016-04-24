@@ -227,6 +227,8 @@
 			}
 			var searchParams = $location.search();
 			ngCtrl.filterQuery = {};
+			ngCtrl.listIsFiltered = false;
+			ngCtrl.show_filter = false;
 			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
@@ -234,16 +236,21 @@
 			//TODO - Convert percent into 0 < x < 1
 
 			//TODO - Convert date to ISO
+			var queryFieldsCount = 0;
 			for (var filter in ngCtrl.filterQuery) {
 				if (ngCtrl.filterQuery[filter] == "") {
 					$location.search(filter, null);
 				}
 				else {
+					queryFieldsCount++;
 					$location.search(filter, ngCtrl.filterQuery[filter]);
 				}
 			}
 			//$window.location.reload();
 			var searchParams = $location.search();
+			if(queryFieldsCount>0){
+				ngCtrl.listIsFiltered = true;
+			}
 			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
@@ -264,6 +271,18 @@
 
 
 
+		//#endregion
+
+		//#region << Extract fields that are supported in the query to be filters>>
+		var fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
+		ngCtrl.checkIfFieldSetInQuery = function(fieldName){
+			 if(fieldsInQueryArray.indexOf(fieldName) != -1){
+				return true;
+			 }
+			 else {
+				return false;
+			 }
+		}
 		//#endregion
 
 		//#region << Logic >> 
