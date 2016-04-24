@@ -1,10 +1,10 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> Delete list</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_LIST_DELETE'}}"></span></a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
+			<h4><span class="go-gray" translate="{{'RECORD_LIST_TITLE_PREFIX'}}"></span> {{ngCtrl.list.name}}</h4>
 		</div>
 	</div>
 
@@ -27,16 +27,16 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic Attributes</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}" translate="{{'RECORD_LIST_TAB_BASIC'}}"></a>
 					</li>
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns">Columns</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns" translate="{{'RECORD_LIST_TAB_COLUMNS'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort">Query & Sort</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort" translate="{{'RECORD_LIST_TAB_QUERY_SORT'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions">Actions</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions" translate="{{'RECORD_LIST_TAB_QUERY_ACTIONS'}}"></a>
 					</li>
 				</ul>
 			</div>
@@ -44,10 +44,10 @@
 		<div class="view-manage-section">
 			<div class="row">
 				<div class="col-xs-6">
-					<h5>Selected columns <small class="go-gray">| Record Id is always injected in the data. The first column is also the default search column</small></h5>
+					<h5 translate="{{'RECORD_LIST_COLUMNS_SECTION_NOTE'}}"></h5>
 				</div>
 				<div class="col-xs-6">
-					<h5>Library</h5>
+					<h5 translate="{{'LIBRARY'}}"></h5>
 				</div>
 			</div>
 			<div class="row">
@@ -62,7 +62,6 @@
 										<a href="javascript:void(0)" class="pull-right" ng-click="ngCtrl.moveToLibrary(item, $index)"><i class="fa fa-fw fa-arrow-right"></i></a>
 										<i class="fa fa-fw fa-table go-teal" style="margin-left:10px;"></i> {{::item.meta.name}} <i class="fa fa-fw fa-eye-slash go-red" ng-show="$index + 1 > ngCtrl.list.visibleColumnsCount"></i>
 										<i class="fa fa-database go-gray text-small tooltip-btn" tooltip-append-to-body="true" uib-tooltip-template="'dataBindTemplate.html'" tooltip-trigger="outsideClick" tooltip-placement="right" tooltip-class="wva-tooltip"></i>
-										<span class="note go-green" ng-show="ngCtrl.defaultFieldName == item.meta.name">(default search)</span>
 									</div>
 									<div ng-switch-when="fieldFromRelation" class="clearfix">
 										<i class="fa fa-fw fa-arrows go-gray pull-left" as-sortable-item-handle></i>
@@ -163,9 +162,9 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th class="go-bkg-white">relations</th>
-								<th width="90" class="go-bkg-white">in library</th>
-								<th width="115" class="go-bkg-white">direction</th>
+								<th class="go-bkg-white" translate="{{'RELATIONS'}}"></th>
+								<th width="90" class="go-bkg-white" translate="{{'IN_LIBRARY'}}"></th>
+								<th width="115" class="go-bkg-white" translate="{{'LIBRARY'}}"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -180,15 +179,15 @@
 								</td>
 								<td>
 									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
-										<span class="ng-hide" ng-show="relation.addedToLibrary">remove</span>
-										<span class="ng-hide" ng-show="!relation.addedToLibrary">add</span>
+										<span class="ng-hide" ng-show="relation.addedToLibrary" translate="{{'REMOVE'}}">remove</span>
+										<span class="ng-hide" ng-show="!relation.addedToLibrary" translate="{{'REMOVE'}}">add</span>
 									</a>
 								</td>
 								<td>
-									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="only when the origin and target entity is the same in a relation, you can manage the direction">origin ! = target</span>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="{{'RECORDS_RELATION_STATUS_TOOLTIP' | translate}}" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_NOT_TARGET'}}"></span>
 									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
-										<span class="ng-hide" ng-show="relation.direction == 'origin-target'">origin > target</span>
-										<span class="ng-hide" ng-show="relation.direction == 'target-origin'"><span class="go-red">target</span> > origin</span>
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_TO_TARGET'}}"></span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_FROM_TARGET'}}"></span>
 									</a>
 								</td>
 							</tr>
@@ -206,49 +205,32 @@
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a list</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this list deleted?</p>
+			<p translate="{{'RECORD_LIST_DELETE_MODAL_QUESTION'}}"></p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'RECORD_LIST_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 
 
 <script type="text/ng-template" id="dataBindTemplate.html">
-	<div class="tooltip-description">You can get this field data in a dynamic template by:</div>
+	<div class="tooltip-description" translate="{{'FIELD_DATABIND_NOTE_1'}}"></div>
 	<div class="tooltip-databind"><span>{</span>{templateData[0].{{item.dataName}}<span>}</span>}</div>
-	<div class="tooltip-description">[0] is the index of the record in the list. List meta is accessible via:</div>
+	<div class="tooltip-description" translate="{{'FIELD_DATABIND_NOTE_2'}}"></div>
 	<div class="tooltip-databind"><span>{</span>{templateMeta<span>}</span>}</div>
-</script>
-
-<script type="text/ng-template" id="deleteListModal.html">
-	<div class="modal-header" id="modal-top">
-		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a list</h3>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
-		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this list deleted?</p>
-		</div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
-	</div>
 </script>
 
 <script type="text/ng-template" id="manageFromRelationModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Relation Item settings</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_COLUMNS_RELATION_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.error">{{popupCtrl.errorMessage}}</div>
@@ -256,12 +238,10 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageForm.fieldLabel.$invalid && !manageForm.fieldLabel.$pristine || popupCtrl.fieldLabelError}">
-						<label class="control-label required">Label</label>
+						<label class="control-label required" translate="{{'LABEL'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.item.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required/>
 						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
-							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
-								required field
-							</small>
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.fieldLabelError">
 								{{popupCtrl.fieldLabelMessage}}
 							</small>
@@ -272,7 +252,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()">Save</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary ng-hide" ng-show="!popupCtrl.error" ng-click="popupCtrl.ok()" translate="{{'SAVE'}}">Save</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}">Cancel</button>
 	</div>
 </script>

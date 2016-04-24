@@ -1,10 +1,10 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> Delete list</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_LIST_DELETE'}}"></span></a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
+			<h4><span class="go-gray" translate="{{'RECORD_LIST_TITLE_PREFIX'}}"></span> {{ngCtrl.list.name}}</h4>
 		</div>
 	</div>
 
@@ -27,16 +27,16 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic Attributes</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}" translate="{{'RECORD_LIST_TAB_BASIC'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns">Columns</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns" translate="{{'RECORD_LIST_TAB_COLUMNS'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort">Query & Sort</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort" translate="{{'RECORD_LIST_TAB_QUERY_SORT'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions">Actions</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions" translate="{{'RECORD_LIST_TAB_QUERY_ACTIONS'}}"></a>
 					</li>
 				</ul>
 			</div>
@@ -49,7 +49,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Name</label>
+										<label class="control-label col-lg-2" translate="{{'NAME'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<input type="text" class="form-control" disabled value="{{::ngCtrl.list.name}}"></input>
@@ -62,7 +62,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Type</label>
+										<label class="control-label col-lg-2" translate="{{'TYPE'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
 												<input type="text" class="form-control" disabled editable-select="ngCtrl.list.type"
@@ -79,7 +79,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Label</label>
+										<label class="control-label col-lg-2" translate="{{'LABEL'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.label"
@@ -94,7 +94,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Weight</label>
+										<label class="control-label col-lg-2" translate="{{'WEIGHT'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.weight"
@@ -111,7 +111,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Default</label>
+										<label class="control-label col-lg-2" translate="{{'DEFAULT'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_default.$show()">
 												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.list.default && !fieldForm_default.$visible">
@@ -132,7 +132,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">System</label>
+										<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group first-background-transparent editable-readonly">
 												<span class="input-group-addon" ng-if="ngCtrl.list.system">
@@ -153,7 +153,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">CSS class</label>
+										<label class="control-label col-lg-2" translate="{{'CSS_CLASS'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.cssClass"
@@ -161,7 +161,7 @@
 													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
 												<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">e.g. "hide-header", "table-noborder", "width-2000", "width-2500","width-3000", "width-3500"</div>
+											<div class="form-description" translate="{{'RECORD_LIST_CSS_CLASS_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -169,7 +169,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Icon Name</label>
+										<label class="control-label col-lg-2" translate="{{'ICON_NAME'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.list.iconName}} fa-fw"></i></span>
@@ -178,7 +178,7 @@
 													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+											<div class="form-description" translate="{{'ICON_NAME_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -188,7 +188,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Visible columns #</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_LIST_VISIBLE_COLUMNS_COUNT'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_visibleColumnsCount.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.visibleColumnsCount"
@@ -203,7 +203,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Page size</label>
+										<label class="control-label col-lg-2" translate="{{'PAGE_SIZE'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_pageSize.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.pageSize"
@@ -211,7 +211,7 @@
 													   onbeforesave="ngCtrl.fieldUpdate('pageSize',$data)" e-form="fieldForm_pageSize">
 												<span class="input-group-addon" ng-click="fieldForm_pageSize.$show()" ng-hide="fieldForm_pageSize.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">zero for unlimited</div>
+											<div class="form-description" translate="{{'PAGE_SIZE_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -221,7 +221,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Columns width CSV</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_LIST_COLUMNS_WIDTH_CSV'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_columnWidthsCSV.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.columnWidthsCSV"
@@ -229,7 +229,7 @@
 													   onbeforesave="ngCtrl.fieldUpdate('columnWidthsCSV',$data)" e-form="fieldForm_columnWidthsCSV">
 												<span class="input-group-addon" ng-click="fieldForm_columnWidthsCSV.$show()" ng-hide="fieldForm_columnWidthsCSV.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">Note: the actions column is ignored. e.g. "25%,auto,100px".</div>
+											<div class="form-description" translate="{{'RECORD_LIST_COLUMNS_WIDTH_CSV_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -237,7 +237,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Custom Template</label>
+										<label class="control-label col-lg-2" translate="{{'CUSTOM_TEMPLATE'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dynamicHtmlTemplate.$show()">
 												<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
@@ -248,7 +248,7 @@
 													   onbeforesave="ngCtrl.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 												<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">URL to a customer HTML template file that should substitute the default view HTML template. It will be compiled by angular, and view data and meta are accessible.</div>
+											<div class="form-description" translate="{{'CUSTOM_TEMPLATE_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -267,17 +267,17 @@
 <script type="text/ng-template" id="deleteListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a list</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this list deleted?</p>
+			<p translate="{{'RECORD_LIST_DELETE_MODAL_QUESTION'}}"></p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete List</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'RECORD_LIST_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 

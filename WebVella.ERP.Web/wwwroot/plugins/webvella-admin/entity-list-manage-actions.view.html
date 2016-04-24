@@ -1,17 +1,17 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> Delete list</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_LIST_DELETE'}}"></span></a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' list:</span> {{ngCtrl.list.name}}</h4>
+			<h4><span class="go-gray" translate="{{'RECORD_LIST_TITLE_PREFIX'}}"></span> {{ngCtrl.list.name}}</h4>
 		</div>
 	</div>
 
 </div>
 <div id="page-body" style="padding-bottom:3em; ">
 	<div class="tabbable tabs-left spilled">
-		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}">Back</span></a>
+		<a class="back" href="#/admin/entities/{{::ngCtrl.entity.name}}/lists"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
@@ -27,16 +27,16 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}">Basic Attributes</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}" translate="{{'RECORD_LIST_TAB_BASIC'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns">Columns</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/columns" translate="{{'RECORD_LIST_TAB_COLUMNS'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort">Query & Sort</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/query-sort" translate="{{'RECORD_LIST_TAB_QUERY_SORT'}}"></a>
 					</li>
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions">Actions</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/lists/{{::ngCtrl.list.name}}/actions" translate="{{'RECORD_LIST_TAB_QUERY_ACTIONS'}}"></a>
 					</li>
 				</ul>
 			</div>

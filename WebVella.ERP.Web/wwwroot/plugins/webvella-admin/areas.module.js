@@ -145,7 +145,6 @@
 		var ngCtrl = this;
 		ngCtrl.search = {};
 		//#region << Update page title >>
-		ngCtrl.pageTitle = "";
 		$translate(['AREA_LIST']).then(function (translations) {
 			ngCtrl.pageTitle = translations.AREA_LIST + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);

@@ -394,7 +394,7 @@
         }
 
         ngCtrl.getFieldType = function (field) {
-        	var fieldTypes = getFieldTypes();
+        	var fieldTypes = webvellaCoreService.getFieldTypes();
         	for (var i = 0; i < fieldTypes.length; i++) {
         		if (fieldTypes[i].id == field.fieldType) {
         			return fieldTypes[i].label;

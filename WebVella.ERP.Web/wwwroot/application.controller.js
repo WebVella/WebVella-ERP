@@ -88,16 +88,8 @@
 		//#endregion
 
 		//#region << Translation >>
-		switch (GlobalLanguage) {
-			case "en":
-				$translateProvider.preferredLanguage("en");
-				$translateProvider.translations("en", translationsEN);
-				break;
-			case "bg":
-				$translateProvider.preferredLanguage("bg");
-				$translateProvider.translations("bg", translationsBG);
-				break;
-		}
+		$translateProvider.preferredLanguage(GlobalLanguage);
+		$translateProvider.translations(GlobalLanguage, translationsEN);
 		$translateProvider.useSanitizeValueStrategy(null);
 		//#endregion
 	}

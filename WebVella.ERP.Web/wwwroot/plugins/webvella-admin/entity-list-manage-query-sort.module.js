@@ -11,7 +11,10 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
 		.controller('DeleteListModalController', deleteListModalController)
-        .controller('WebVellaAdminEntityListManageQuerySortController', controller);
+        .controller('WebVellaAdminEntityListManageQuerySortController', controller)
+		.controller('ManageDataLinkModalController', ManageDataLinkModalController)
+		.directive('queryItem', queryItem)
+		.controller('queryItemController', queryItemController);		;
 
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
@@ -53,18 +56,18 @@
 
 	//#region << Resolve Functions >>/////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -73,9 +76,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -87,9 +90,9 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -97,9 +100,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -108,9 +111,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -122,18 +125,18 @@
 		return defer.promise;
 	}
 
-	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -142,9 +145,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -155,9 +158,9 @@
 		return defer.promise;
 	}
 
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -165,9 +168,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -176,9 +179,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -193,24 +196,25 @@
 
 	//#region << Controller >> ///////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$timeout', 'ngToast', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', 'resolvedCurrentEntityList',
-						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList'];
+						'resolvedViewLibrary', 'webvellaCoreService', 'resolvedEntityRelationsList','$translate'];
 	
 	function controller($scope, $log, $rootScope, $state, $timeout, ngToast, pageTitle, resolvedCurrentEntityMeta, $uibModal, resolvedCurrentEntityList,
-						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList) {
+						resolvedViewLibrary, webvellaCoreService, resolvedEntityRelationsList,$translate) {
 
 		
 		var ngCtrl = this;
 		ngCtrl.entity = resolvedCurrentEntityMeta;
 
 		//#region << Update page title & hide the side menu >>
-		ngCtrl.pageTitle = "Entity Details | " + pageTitle;
-		$timeout(function(){
+		$translate(['RECORD_LIST_TAB_QUERY_SORT_PAGE_TITLE','ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_LIST_TAB_QUERY_SORT_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		//Hide Sidemenu
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 
-		$rootScope.adminSectionName = "Entities";
+
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -677,6 +681,77 @@
 
 		}
 	};
+
+	ManageDataLinkModalController.$inject = ['$uibModalInstance', '$log'];
+	
+	function ManageDataLinkModalController($uibModalInstance, $log) {
+		
+		var popupCtrl = this;
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+	};
+
+	//#endregion
+
+	//#region << Query Directive >>
+	queryItem.$inject = ['$compile', '$templateRequest', 'RecursionHelper'];
+	
+	function queryItem($compile, $templateRequest, RecursionHelper) {
+		var directive = {
+			controller: queryItemController,
+			template: '<ng-include src="getTemplateUrl()"/>',
+			restrict: 'E',
+			scope: {
+				currentQuery: '=',
+				rootQuery: '=',
+				parentQuery: '=?',
+				pageScope: '=',
+				queryIndex: '='
+			},
+			compile: function (element) {
+				return RecursionHelper.compile(element, function (scope, iElement, iAttrs, controller, transcludeFn) {
+					// Define your normal link function here.
+					// Alternative: instead of passing a function,
+					// you can also pass an object with 
+					// a 'pre'- and 'post'-link function.
+				});
+			}
+		};
+		return directive;
+	}
+
+	queryItemController.$inject = ['$filter', '$log', '$state', '$scope', '$q', '$uibModal', 'ngToast', 'webvellaCoreService'];
+	
+	function queryItemController($filter, $log, $state, $scope, $q, $uibModal, ngToast, webvellaCoreService) {
+		$scope.ngCtrl = $scope.pageScope;
+		$scope.getTemplateUrl = function () {
+			switch ($scope.currentQuery.queryType) {
+				case "EQ":
+					return 'queryRule.html';
+				case "NOT":
+					return 'queryRule.html';
+				case "LT":
+					return 'queryRule.html';
+				case "LTE":
+					return 'queryRule.html';
+				case "GT":
+					return 'queryRule.html';
+				case "GTE":
+					return 'queryRule.html';
+				case "CONTAINS":
+					return 'queryRule.html';
+				case "STARTSWITH":
+					return 'queryRule.html';
+				case "AND":
+					return 'querySection.html';
+				case "OR":
+					return 'querySection.html';
+			}
+		}
+	}
 	//#endregion
 
 })();

@@ -1,11 +1,11 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createFieldModal()"><i class="fa fa-plus"></i> Add New</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createFieldModal()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.entity.fields.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="Field Name">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{'FIELD_NAME' | translate}}">
 				</div>
 			</div>
 		</div>
@@ -16,7 +16,7 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a ng-click="ngCtrl.showSidebar()"  class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a ng-click="ngCtrl.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
 			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
@@ -32,9 +32,9 @@
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th class="name">Name</th>
-					<th class="icon">Type</th>
-					<th class="meta">Info</th>
+					<th class="name" translate="{{'NAME'}}">Name</th>
+					<th class="icon" translate="{{'TYPE'}}">Type</th>
+					<th class="meta" translate="{{'INFO'}}">Info</th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="field in ngCtrl.entity.fields | filter: ngCtrl.search track by field.id">
@@ -51,10 +51,10 @@
 						{{ngCtrl.findFieldType(field.fieldType).label}}
 					</td>
 					<td class="meta">
-						<span ng-show="::field.required">required, </span>
-						<span ng-show="::field.unique">unique, </span>
-						<span ng-show="::field.searchable">searchable, </span>
-						<span ng-show="::field.auditable">auditable, </span>
+						<span ng-show="::field.required"><span translate="{{'REQUIRED'}}"></span>, </span>
+						<span ng-show="::field.unique"><span translate="{{'UNIQUE'}}"></span>, </span>
+						<span ng-show="::field.searchable"><span translate="{{'SEARCHABLE'}}"></span>, </span>
+						<span ng-show="::field.auditable"><span translate="{{'AUDITABLE'}}"></span>, </span>
 					</td>
 				</tr>
 			</tbody>
@@ -66,19 +66,16 @@
 <script type="text/ng-template" id="createFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">
-			Create <span class="go-red" ng-show="popupCtrl.wizard.selectedType != null"> {{popupCtrl.wizard.selectedType.label}}</span> field
-		</h3>
+		<h3 class="modal-title" translate="{{'FIELD_CREATE_MODAL_TITLE'}}" translate-value-label="{{popupCtrl.wizard.selectedType.label}}"></h3>
 	</div>
 	<div class="modal-body">
-
 		<div class="wizard" id="MyWizard">
 			<ul class="steps horizontal">
 				<li ng-class="{'active': popupCtrl.wizard.steps[1].active,'complete': popupCtrl.wizard.steps[1].completed}" ng-click="popupCtrl.setActiveStep(1)">
-					<span class="badge">1</span>Field type<span class="chevron"></span>
+					<span class="badge">1</span><span translate="{{'FIELD_TYPE'}}"></span><span class="chevron"></span>
 				</li>
 				<li ng-class="{'active': popupCtrl.wizard.steps[2].active,'complete': popupCtrl.wizard.steps[2].completed}" ng-click="popupCtrl.setActiveStep(2)">
-					<span class="badge">2</span>General settings<span class="chevron"></span>
+					<span class="badge">2</span><span translate="{{'GENERAL_SETTINGS'}}"></span><span class="chevron"></span>
 
 				</li>
 			</ul>
@@ -100,7 +97,7 @@
 				<tr ng-repeat="type in popupCtrl.fieldTypes | filter:popupCtrl.typeFilter">
 					<th style="width:200px;">{{type.id}}. {{type.label}}</th>
 					<td>{{type.description}}</td>
-					<td style="width:80px;"><a ng-click="popupCtrl.selectType(type.id)" class="btn btn-default">select</a></td>
+					<td style="width:80px;"><a ng-click="popupCtrl.selectType(type.id)" class="btn btn-default" translate="{{'SELECT'}}"></a></td>
 				</tr>
 			</table>
 		</div>
@@ -121,19 +118,13 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.name.$invalid && !createFieldStep2.name.$pristine || popupCtrl.nameError}">
-							<label class="control-label required">Name</label>
+							<label class="control-label required" translate="{{' NAME '}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.name" name="name" type="text" ng-model-options="{allowInvalid:true}"
-								   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="e.g. field_name or fieldName" />
+								   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="{{'FIELD_NAME_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.name.$touched && createFieldStep2.name.$dirty && createFieldStep2.name.$invalid || popupCtrl.nameError">
-								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.required && !popupCtrl.nameError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.pattern">
-									only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-								</small>
-								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.maxlength">
-									must be less than 50 chars
-								</small>
+								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.pattern" translate="{{' VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE '}}"></small>
+								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.maxlength" translate="{{' VALIDATION_LESS_THAN_50_CHARS '}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.nameError">
 									{{popupCtrl.nameMessage}}
 								</small>
@@ -142,13 +133,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.label.$invalid && !createFieldStep2.label.$pristine || popupCtrl.labelError}">
-							<label class="control-label required">Label</label>
+							<label class="control-label required" translate="{{'LABEL'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.label" name="label" type="text"
-								   required placeholder="e.g. Field Name" ng-model-options="{allowInvalid:true}" />
+								   required placeholder="{{'FIELD_LABEL_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.label.$touched && createFieldStep2.label.$dirty && createFieldStep2.label.$invalid || popupCtrl.labelError">
-								<small class="error ng-hide" ng-show="createFieldStep2.label.$error.required && !popupCtrl.labelError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="createFieldStep2.label.$error.required && !popupCtrl.labelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.labelError">
 									{{popupCtrl.labelMessage}}
 								</small>
@@ -159,7 +148,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.placeholderText.$invalid && !createFieldStep2.placeholderText.$pristine || popupCtrl.placeholderTextError}">
-							<label class="control-label">Placeholder text</label>
+							<label class="control-label" translate="{{'PLACEHOLDER_TEXT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.placeholderText.$touched && createFieldStep2.placeholderText.$dirty && createFieldStep2.placeholderText.$invalid || popupCtrl.placeholderTextError">
 								<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
@@ -170,11 +159,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label for="requiredStatus" class="control-label">Required</label>
+							<label for="requiredStatus" class="control-label" translate="{{'REQUIRED'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.required" type="checkbox" id="requiredStatus" value="true">
-									this is a required field
+									<span translate="{{'REQUIRED_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -183,7 +172,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.description.$invalid && !createFieldStep2.description.$pristine || popupCtrl.descriptionError}">
-							<label class="control-label">Description</label>
+							<label class="control-label" translate="{{'DESCRIPTION'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.description" name="description" type="text" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.description.$touched && createFieldStep2.description.$dirty && createFieldStep2.description.$invalid || popupCtrl.descriptionError">
 								<small class="error ng-hide" ng-show="popupCtrl.descriptionError">
@@ -194,11 +183,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label for="uniqueStatus" class="control-label">Unique status</label>
+							<label for="uniqueStatus" class="control-label" translate="{{'UNIQUE'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="popupCtrl.uniqueGuidPropertyChecked(popupCtrl.field.unique)">
-									all values of the field should be unique
+									<span translate="{{'UNIQUE_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -207,7 +196,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.helpText.$invalid && !createFieldStep2.helpText.$pristine || popupCtrl.helpTextError}">
-							<label class="control-label">Help text</label>
+							<label class="control-label" translate="{{'HELP_TEXT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.helpText" name="helpText" type="text" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.helpText.$touched && createFieldStep2.helpText.$dirty && createFieldStep2.helpText.$invalid || popupCtrl.helpTextError">
 								<small class="error ng-hide" ng-show="popupCtrl.helpTextError">
@@ -218,11 +207,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label for="systemStatus" class="control-label">System Status</label>
+							<label for="systemStatus" class="control-label" translate="{{'SYSTEM'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.system" type="checkbox" id="systemStatus" value="true">
-									this is a system field <span class="go-grey">(deletion is locked)</span>
+									<span translate="{{'SYSTEM_FIELD_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -231,24 +220,24 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label for="searchableStatus" class="control-label">Searchable</label>
+							<label for="searchableStatus" class="control-label" translate="{{'SEARCHABLE'}}"></label>
 							<div class="checkbox" ng-if="popupCtrl.field.fieldType != 13">
 								<label>
 									<input ng-model="popupCtrl.field.searchable" type="checkbox" id="searchableStatus" value="true">
-									the values of this field should be included in the search index
+									<span translate="{{'SEARCHABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
-							<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13">password cannot be searchable</div>
+							<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13" translate="{{'FIELD_TYPE_PASSWORD_NOT_SEARCHABLE_DESCRIPTION'}}"></div>
 						</div>
 
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label for="auditableStatus" class="control-label">Auditable</label>
+							<label for="auditableStatus" class="control-label" translate="{{'AUDITABLE'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
-									change history should be kept for this field
+									<span translate="{{'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -263,16 +252,12 @@
 						<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" placeholder="e.g. 1" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -281,16 +266,12 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.startingNumber.$invalid && !createFieldStep2.startingNumber.$pristine || popupCtrl.startingNumberError}">
-								<label class="control-label required">Starting number</label>
+								<label class="control-label required" translate="{{'STARTING_NUMBER'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.startingNumber" name="startingNumber" type="text"
 									   pattern="^[0-9]*$" required placeholder="increment starting point" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.startingNumber.$touched && createFieldStep2.startingNumber.$dirty && createFieldStep2.startingNumber.$invalid || popupCtrl.startingNumberError">
-									<small class="error ng-hide" ng-show="createFieldStep2.startingNumber.$error.pattern && !popupCtrl.startingNumberError">
-										only numbers
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.startingNumber.$error.required && !popupCtrl.startingNumberError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.startingNumber.$error.pattern && !popupCtrl.startingNumberError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.startingNumber.$error.required && !popupCtrl.startingNumberError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.startingNumberError">
 										{{popupCtrl.startingNumberMessage}}
 									</small>
@@ -301,7 +282,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.displayFormat.$invalid && !createFieldStep2.displayFormat.$pristine || popupCtrl.displayFormatError}">
-								<label class="control-label">Display format</label>
+								<label class="control-label" translate="{{'DISPLAY_FORMAT'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.displayFormat" name="displayFormat" type="text" placeholder="e.g. Order-{0}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.displayFormat.$touched && createFieldStep2.displayFormat.$dirty && createFieldStep2.displayFormat.$invalid || popupCtrl.displayFormatError">
 									<small class="error ng-hide" ng-show="popupCtrl.displayFormatError">
@@ -318,11 +299,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group">
-								<label class="control-label">Default value</label>
+								<label class="control-label" translate="{{'DEFAULT_VALUE'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="checkbox" />
-										make it checked by default
+										<span translate="{{'DEFAULT_VALUE_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -339,16 +320,12 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="number"
 									   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -362,13 +339,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
-								<label class="control-label">Minimum value</label>
+								<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 										{{popupCtrl.minValueMessage}}
 									</small>
@@ -377,13 +352,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
-								<label class="control-label">Maximum value</label>
-								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+								<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 										{{popupCtrl.maxValueMessage}}
 									</small>
@@ -394,7 +367,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Currency</label>
+								<label class="control-label" translate="{{'VALIDATION_DECIMAL'}}"></label>
 								<select class="form-control" ng-model="popupCtrl.selectedCurrencyMeta" ng-options="item.code as item.name for item in popupCtrl.ngCtrl.currencyMetas"></select>
 							</div>
 						</div>
@@ -408,10 +381,10 @@
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-										   ng-required="popupCtrl.field.required" placeholder="e.g. 2014-11-01" valid-date
+										   ng-required="popupCtrl.field.required" placeholder="{{'DATE_PLACEHOLDER' | translate}}" valid-date
 										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 										   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
@@ -419,12 +392,8 @@
 									</span>
 								</div>
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-										this string is not a valid date format
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -434,9 +403,9 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupCtrl.formatError}">
-								<label class="control-label" ng-class="{'required':true}">Presentation Format</label>
+								<label class="control-label" ng-class="{'required':true}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
-									   ng-required="true" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}" />
+									   ng-required="true" placeholder="{{'DATE_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupCtrl.formatError">
 									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError">
 										required field
@@ -451,11 +420,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Use Current Time as Default</label>
+								<label class="control-label" translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.useCurrentTimeAsDefaultValue" name="useCurrentTimeAsDefaultValue" type="checkbox" />
-										use the date of the record generation as default
+										<span translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -472,10 +441,10 @@
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<div class="input-group">
 									<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-										   ng-required="popupCtrl.field.required" placeholder="e.g. 2014-11-01" valid-date ng-model-options="{allowInvalid:true}"
+										   ng-required="popupCtrl.field.required" placeholder="{{'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
 										   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 										   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 									<span class="input-group-btn">
@@ -483,12 +452,8 @@
 									</span>
 								</div>
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-										this string is not a valid date format
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -498,13 +463,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupCtrl.formatError}">
-								<label class="control-label" ng-class="{'required':true}">Presentation Format</label>
+								<label class="control-label" ng-class="{'required':true}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
-									   ng-required="true" placeholder="e.g. dd MMM yyyy HH:mm" ng-model-options="{allowInvalid:true}" />
+									   ng-required="true" placeholder="{{'DATETIME_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupCtrl.formatError">
-									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.formatError">
 										{{popupCtrl.formatMessage}}
 									</small>
@@ -515,11 +478,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Use Current Time as Default</label>
+								<label class="control-label" translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.useCurrentTimeAsDefaultValue" name="useCurrentTimeAsDefaultValue" type="checkbox" />
-										use the date of the record generation as default
+										<span translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -536,16 +499,12 @@
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. email@domain.com" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
+									   ng-required="popupCtrl.field.required" placeholder="{{'EMAIL_PLACEHOLDER' | translate}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										not a valid email
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_EMAIL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -555,16 +514,12 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -579,13 +534,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" />
+									   ng-required="popupCtrl.field.required" placeholder="{{'FILE_PLACEHOLDER' | translate}}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -603,13 +556,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. some html" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" placeholder="{{'HTML_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -627,13 +578,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. /assets/image.png" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" placeholder="{{'IMAGE_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -651,13 +600,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. some text" ng-model-options="{allowInvalid:true}" />
+									   ng-required="popupCtrl.field.required" placeholder="{{'TEXTAREA_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -667,16 +614,12 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -684,55 +627,20 @@
 							</div>
 						</div>
 					</div>
-					<!--<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label">Line Numbers</label>
-								<div class="checkbox">
-									<label>
-										<input ng-model="popupCtrl.field.visibleLineNumber" name="visibleLineNumber" type="checkbox" />
-										make the textarea line numbers visible
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6">
-
-						</div>
-					</div>-->
 				</div>
 				<!--Multiple select 11 -->
 				<div ng-if="popupCtrl.wizard.selectedType.id == 11">
 					<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
-					<!--<div class="row">
-						<div class="col-sm-6">
-							
-							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default values</label>
-								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. 1,2,3" ng-model-options="{allowInvalid:true}" />
-								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
-										{{popupCtrl.defaultValueMessage}}
-									</small>
-								</div>
-							</div>
-
-						</div>
-					</div>-->
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
-								<label class="control-label">Options</label>
+								<label class="control-label" translate="{{'OPTIONS'}}"></label>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12" style="padding-bottom:1em;">
-							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()">add option</a>
+							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()" translate="{{'ADD_OPTION'}}"></a>
 						</div>
 					</div>
 					<div class="row">
@@ -740,10 +648,10 @@
 							<table class="table table-bordered" ng-hide="popupCtrl.field.options.length == 0">
 								<thead>
 									<tr>
-										<th>value</th>
-										<th>label</th>
-										<th style="width:60px;">default</th>
-										<th style="width:60px;">remove</th>
+										<th translate="{{'VALUE'}}"></th>
+										<th translate="{{'LABEL'}}"></th>
+										<th style="width:60px;" translate="{{'DEFAULT'}}"></th>
+										<th style="width:60px;" translate="{{'REMOVE'}}"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -765,16 +673,12 @@
 						<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -783,13 +687,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.decimalPlaces.$invalid && !createFieldStep2.decimalPlaces.$pristine || popupCtrl.decimalPlacesError}">
-								<label class="control-label">Decimal Places</label>
+								<label class="control-label" translate="{{'DECIMAL_PLACES'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.decimalPlaces" name="decimalPlaces" type="text"
 									   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$touched && createFieldStep2.decimalPlaces.$dirty && createFieldStep2.decimalPlaces.$invalid || popupCtrl.decimalPlacesError">
-									<small class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.decimalPlacesError">
 										{{popupCtrl.decimalPlacesMessage}}
 									</small>
@@ -800,13 +702,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
-								<label class="control-label">Minimum value</label>
+								<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 										{{popupCtrl.minValueMessage}}
 									</small>
@@ -815,13 +715,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
-								<label class="control-label">Maximum value</label>
-								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+								<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 										{{popupCtrl.maxValueMessage}}
 									</small>
@@ -836,16 +734,12 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -854,11 +748,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Encryption</label>
+								<label class="control-label" translate="{{'ENCRYPTION'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.encrypted" name="encrypted" type="checkbox" />
-										the data should be stored encrypted in the database
+										<span translate="{{'ENCRYPTION_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -867,15 +761,15 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Mask type</label>
+								<label class="control-label" translate="{{'PASSWORD_MASK_TYPE'}}"></label>
 								<select class="form-control" ng-model="popupCtrl.field.maskType" name="maskType">
-									<option value="0" selected>None</option>
-									<option value="1" selected>Mask all characters</option>
-									<option value="2" selected>Show only the last 4 chars</option>
-									<option value="3" selected>Credit Card Number</option>
-									<option value="4" selected>National Insurance Number</option>
-									<option value="5" selected>Social Security Number</option>
-									<option value="6" selected>Social Insurance Number</option>
+									<option value="0" selected>{{'PASSWORD_MASK_TYPE_NONE' | translate}}</option>
+									<option value="1">{{'PASSWORD_MASK_TYPE_ALL_CHARS' | translate}}</option>
+									<option value="2">{{'PASSWORD_MASK_TYPE_SHOW_LAST_4' | translate}}</option>
+									<option value="3">{{'PASSWORD_MASK_TYPE_CREDIT_CARD' | translate}}</option>
+									<option value="4">{{'PASSWORD_MASK_TYPE_INSURANCE_NUMBER' | translate}}</option>
+									<option value="5">{{'PASSWORD_MASK_TYPE_SSN' | translate}}</option>
+									<option value="6">{{'PASSWORD_MASK_TYPE_SIN' | translate}}</option>
 								</select>
 							</div>
 						</div>
@@ -890,16 +784,12 @@
 						<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -908,13 +798,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.decimalPlaces.$invalid && !createFieldStep2.decimalPlaces.$pristine || popupCtrl.decimalPlacesError}">
-								<label class="control-label">Decimal Places</label>
+								<label class="control-label" translate="{{'DECIMAL_PLACES'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.decimalPlaces" name="decimalPlaces" type="text"
 									   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$touched && createFieldStep2.decimalPlaces.$dirty && createFieldStep2.decimalPlaces.$invalid || popupCtrl.decimalPlacesError">
-									<small class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.decimalPlacesError">
 										{{popupCtrl.decimalPlacesMessage}}
 									</small>
@@ -925,13 +813,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.minValue.$invalid && !createFieldStep2.minValue.$pristine || popupCtrl.minValueError}">
-								<label class="control-label">Minimum value</label>
+								<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.minValue.$touched && createFieldStep2.minValue.$dirty && createFieldStep2.minValue.$invalid || popupCtrl.minValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 										{{popupCtrl.minValueMessage}}
 									</small>
@@ -940,13 +826,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxValue.$invalid && !createFieldStep2.maxValue.$pristine || popupCtrl.maxValueError}">
-								<label class="control-label">Maximum value</label>
-								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+								<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+								<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 									   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxValue.$touched && createFieldStep2.maxValue.$dirty && createFieldStep2.maxValue.$invalid || popupCtrl.maxValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError">
-										should be a valid decimal
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 										{{popupCtrl.maxValueMessage}}
 									</small>
@@ -962,16 +846,12 @@
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-										this string is not a valid date format
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -981,13 +861,11 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.format.$invalid && !createFieldStep2.format.$pristine || popupCtrl.formatError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Presentation Format</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
 									   ng-required="popupCtrl.field.required" placeholder="" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupCtrl.formatError">
-									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.formatError">
 										{{popupCtrl.formatMessage}}
 									</small>
@@ -998,16 +876,12 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -1025,17 +899,13 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError)  && popupCtrl.defaultValueTextboxEnabled}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 									   ng-required="popupCtrl.field.required" placeholder="{{popupCtrl.defaultValueTextboxPlaceholder}}"
 									   ng-disabled="!popupCtrl.defaultValueTextboxEnabled" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
 								<div class="error ng-hide" ng-show="(createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError) && popupCtrl.defaultValueTextboxEnabled">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-										should be a valid GUID
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_GUID'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -1045,13 +915,13 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">GUID Generation</label>
+								<label class="control-label" translate="{{'GUID_GENERATION'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.generateNewId" name="generateNewId" type="checkbox"
 											   ng-change='popupCtrl.uniqueGuidGenerateToggle(popupCtrl.field.generateNewId)'
 											   ng-disabled="!popupCtrl.uniqueGuidGenerateCheckboxEnabled" />
-										automatically generate new GUID as default
+											   <span translate="{{'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -1064,13 +934,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. email@domain.com" />
+									   ng-required="popupCtrl.field.required" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -1082,13 +950,13 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="form-group">
-								<label class="control-label">Options</label>
+								<label class="control-label" translate="{{'OPTIONS'}}"></label>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12" style="padding-bottom:1em;">
-							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()">add option</a>
+							<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()" translate="{{'ADD_OPTION'}}"></a>
 						</div>
 					</div>
 					<div class="row">
@@ -1096,8 +964,8 @@
 							<table class="table table-bordered" ng-hide="popupCtrl.field.options.length == 0">
 								<thead>
 									<tr>
-										<th>value</th>
-										<th>label</th>
+										<th translate="{{'VALUE'}}">value</th>
+										<th translate="{{'LABEL'}}">label</th>
 										<th style="width:60px;"></th>
 									</tr>
 								</thead>
@@ -1119,13 +987,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 									   ng-required="popupCtrl.field.required" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -1135,16 +1001,12 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -1159,13 +1021,11 @@
 						<div class="col-sm-6">
 							<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 									   ng-required="popupCtrl.field.required" />
 								<div class="error ng-hide" ng-show="createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError">
-									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 										{{popupCtrl.defaultValueMessage}}
 									</small>
@@ -1175,16 +1035,12 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.maxLength.$invalid && !createFieldStep2.maxLength.$pristine || popupCtrl.maxLengthError}">
-								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+								<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 								<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 									   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 								<div class="error ng-hide" ng-show="createFieldStep2.maxLength.$touched && createFieldStep2.maxLength.$dirty && createFieldStep2.maxLength.$invalid || popupCtrl.maxLengthError">
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError">
-										required field
-									</small>
-									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-										should be a valid number
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+									<small class="error ng-hide" ng-show="createFieldStep2.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 										{{popupCtrl.maxLengthMessage}}
 									</small>
@@ -1195,11 +1051,11 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label">Link target</label>
+								<label class="control-label" translate="{{'URL_LINK_TARGET'}}"></label>
 								<div class="checkbox">
 									<label>
 										<input ng-model="popupCtrl.field.openTargetInNewWindow" name="openTargetInNewWindow" type="checkbox" />
-										open the link in a new window/tab
+										<span translate="{{'URL_LINK_TARGET_CHECKBOX_LABEL'}}"></span>
 									</label>
 								</div>
 							</div>
@@ -1215,24 +1071,24 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label" for="name">Related Entity with the tree </label>
-								<select class="form-control" ng-model="popupCtrl.field.relatedEntityId" name="relatedEntityId" 
+								<label class="control-label" for="name" translate="{{'RECORD_TREE_RELATED_ENTITY'}}"></label>
+								<select class="form-control" ng-model="popupCtrl.field.relatedEntityId" name="relatedEntityId"
 										ng-options="s.id as s.name for s in popupCtrl.eligibleEntitiesForTree"></select>
-								<div class="form-description">entities that have 1:N or N:N relations as origin with the current and have existing trees</div>
+								<div class="form-description" translate="{{'RECORD_TREE_RELATED_ENTITY_DESCRIPTION'}}"></div>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label" for="name">Record tree </label>
-								<select class="form-control" ng-model="popupCtrl.field.selectedTreeId" name="selectedTreeId" 
+								<label class="control-label" for="name" translate="{{'RECORD_TREE'}}"></label>
+								<select class="form-control" ng-model="popupCtrl.field.selectedTreeId" name="selectedTreeId"
 										ng-options="s.id as s.name for s in popupCtrl.selectedEntityTrees"></select>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label" for="name">Relation between the current and target entity</label>
+								<label class="control-label" for="name" translate="{{'RECORD_TREE_RELATION_LABEL'}}"></label>
 								<select class="form-control" ng-model="popupCtrl.field.relationId" name="relationId"
 										ng-options="s.id as s.name for s in popupCtrl.selectedEntityRelations"></select>
 							</div>
@@ -1241,14 +1097,14 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label required">Selection type</label>
-								<select class="form-control" ng-model="popupCtrl.field.selectionType" name="selectionType" 
+								<label class="control-label required" translate="{{'RECORD_TREE_SELECTION_TYPE'}}"></label>
+								<select class="form-control" ng-model="popupCtrl.field.selectionType" name="selectionType"
 										ng-options="s.key as s.value for s in popupCtrl.selectionTypes"></select>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="control-label required">Selection target</label>
+								<label class="control-label required" translate="{{'RECORD_TREE_SELECTION_TARGET'}}"></label>
 								<select class="form-control" ng-model="popupCtrl.field.selectionTarget" name="selectionTarget" type="text"
 										ng-options="s.key as s.value for s in popupCtrl.selectionTargets"></select>
 							</div>
@@ -1259,10 +1115,11 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-label">Field Security</label>
+							<label class="control-label" translate="{{'FIELD_SECURITY'}}"></label>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true"> enable field security
+									<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true"> 
+									<span translate="{{'FIELD_SECURITY_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -1272,13 +1129,13 @@
 				<div class="row ng-hide" ng-show="popupCtrl.field.enableSecurity">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-label">Record permissions</label>
+							<label class="control-label" translate="{{'RECORD_PERMISSIONS'}}"></label>
 							<table class="table table-bordered table-permissions">
 								<thead>
 									<tr>
-										<th style="width:20%">role name</th>
-										<th style="width:20%">read</th>
-										<th style="width:20%">update</th>
+										<th style="width:20%" translate="{{'ROLE_NAME'}}"></th>
+										<th style="width:20%" translate="{{'READ'}}"></th>
+										<th style="width:20%" translate="{{'UPDATE'}}"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -1287,14 +1144,14 @@
 										<td>
 											<div class="checkbox">
 												<label>
-													<input type="checkbox" ng-model="role.canRead" ng-change="popupCtrl.togglePermissionRole('canRead',role.id)"> true
+													<input type="checkbox" ng-model="role.canRead" ng-change="popupCtrl.togglePermissionRole('canRead',role.id)"> <span translate="{{'TRUE'}}"></span>
 												</label>
 											</div>
 										</td>
 										<td class="position-relative">
 											<div class="checkbox">
 												<label>
-													<input type="checkbox" ng-model="role.canUpdate" ng-change="popupCtrl.togglePermissionRole('canUpdate',role.id)"> true
+													<input type="checkbox" ng-model="role.canUpdate" ng-change="popupCtrl.togglePermissionRole('canUpdate',role.id)"> <span translate="{{'TRUE'}}"></span>
 												</label>
 											</div>
 										</td>
@@ -1311,10 +1168,10 @@
 
 
 	<div class="modal-footer">
-		<p ng-show="popupCtrl.wizard.steps[1].active" class="ng-hide"><i class="fa fa-fw fa-info-circle"></i> To proceed, press the Select button of a filed type</p>
+		<p ng-show="popupCtrl.wizard.steps[1].active" class="ng-hide"><i class="fa fa-fw fa-info-circle"></i> <span translate="{{'FIELD_CREATE_MODAL_FOOTER_MESSAGE'}}"></span></p>
 		<div ng-show="popupCtrl.wizard.steps[2].active" class="ng-hide">
-			<button class="btn btn-default pull-left" ng-click="popupCtrl.setActiveStep(1)"><i class="fa fa-fw fa-backward"></i> Back</button>
-			<button class="btn btn-success pull-right ng-hide" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.createFieldStep2Error"><i class="fa fa-fw fa-plus"></i> Create Field</button>
+			<button class="btn btn-default pull-left" ng-click="popupCtrl.setActiveStep(1)"><i class="fa fa-fw fa-backward"></i> <span translate="{{'BACK'}}"></span></button>
+			<button class="btn btn-success pull-right ng-hide" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.createFieldStep2Error"><i class="fa fa-fw fa-plus"></i> <span translate="{{'FIELD_CREATE'}}"></span></button>
 		</div>
 	</div>
 </script>
@@ -1323,9 +1180,7 @@
 <script type="text/ng-template" id="manageFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">
-			Manage <span class="go-red"> {{popupCtrl.fieldType.label}}</span> field
-		</h3>
+		<h3 class="modal-title" translate="{{'FIELD_MANAGE_MODAL_TITLE'}}" translate-value-label="{{popupCtrl.fieldType.label}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-show="!popupCtrl.isEmpty(popupCtrl.validation)">
@@ -1339,19 +1194,17 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label required">Name</label>
+						<label class="control-label" translate="{{' NAME '}}"></label>
 						<p class="form-control-static">{{popupCtrl.field.name}}</p>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.label.$invalid && !manageFieldForm.label.$pristine || popupCtrl.labelError}">
-						<label class="control-label required">Label</label>
+						<label class="control-label required" translate="{{'LABEL'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.label" name="label" type="text" ng-model-options="{allowInvalid:true}"
 							   required />
 						<div class="error ng-hide" ng-show="manageFieldForm.label.$touched && manageFieldForm.label.$dirty && manageFieldForm.label.$invalid || popupCtrl.labelError">
-							<small class="error ng-hide" ng-show="manageFieldForm.label.$error.required && !popupCtrl.labelError">
-								required field
-							</small>
+							<small class="error ng-hide" ng-show="manageFieldForm.label.$error.required && !popupCtrl.labelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error ng-hide" ng-show="popupCtrl.labelError">
 								{{popupCtrl.labelMessage}}
 							</small>
@@ -1362,7 +1215,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.placeholderText.$invalid && !manageFieldForm.placeholderText.$pristine || popupCtrl.placeholderTextError}">
-						<label class="control-label">Placeholder text</label>
+						<label class="control-label" translate="{{'PLACEHOLDER_TEXT'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.placeholderText" name="placeholderText" type="text" ng-model-options="{allowInvalid:true}" />
 						<div class="error ng-hide" ng-show="manageFieldForm.placeholderText.$touched && manageFieldForm.placeholderText.$dirty && manageFieldForm.placeholderText.$invalid || popupCtrl.placeholderTextError">
 							<small class="error ng-hide" ng-show="popupCtrl.placeholderTextError">
@@ -1373,11 +1226,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="requiredStatus" class="control-label">Required</label>
+						<label for="requiredStatus" class="control-label" translate="{{'REQUIRED'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.required" type="checkbox" id="requiredStatus" value="true">
-								this is a required field
+								<span translate="{{'REQUIRED_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -1386,7 +1239,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.description.$invalid && !manageFieldForm.description.$pristine || popupCtrl.descriptionError}">
-						<label class="control-label">Description</label>
+						<label class="control-label" translate="{{'DESCRIPTION'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.description" name="description" type="text" ng-model-options="{allowInvalid:true}" />
 						<div class="error ng-hide" ng-show="manageFieldForm.description.$touched && manageFieldForm.description.$dirty && manageFieldForm.description.$invalid || popupCtrl.descriptionError">
 							<small class="error ng-hide" ng-show="popupCtrl.descriptionError">
@@ -1397,11 +1250,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="uniqueStatus" class="control-label">Unique status</label>
+						<label for="uniqueStatus" class="control-label" translate="{{'UNIQUE'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.unique" type="checkbox" id="uniqueStatus" value="true" ng-change="popupCtrl.uniqueGuidPropertyChecked(popupCtrl.field.unique)">
-								all values of the field should be unique
+								<span translate="{{'UNIQUE_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -1411,7 +1264,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.helpText.$invalid && !manageFieldForm.helpText.$pristine || popupCtrl.helpTextError}">
-						<label class="control-label">Help text</label>
+						<label class="control-label" translate="{{'HELP_TEXT'}}"></label>
 						<input class="form-control" ng-model="popupCtrl.field.helpText" name="helpText" type="text" ng-model-options="{allowInvalid:true}" />
 						<div class="error ng-hide" ng-show="manageFieldForm.helpText.$touched && manageFieldForm.helpText.$dirty && manageFieldForm.helpText.$invalid || popupCtrl.helpTextError">
 							<small class="error ng-hide" ng-show="popupCtrl.helpTextError">
@@ -1422,11 +1275,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="systemStatus" class="control-label">System Status</label>
+						<label for="systemStatus" class="control-label" translate="{{'SYSTEM'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.system" type="checkbox" id="systemStatus" value="true">
-								this is a system field <span class="go-grey">(deletion is locked)</span>
+								<span translate="{{'SYSTEM_FIELD_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -1435,24 +1288,24 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="searchableStatus" class="control-label">Searchable</label>
+						<label for="searchableStatus" class="control-label" translate="{{'SEARCHABLE'}}"></label>
 						<div class="checkbox" ng-if="popupCtrl.field.fieldType != 13">
 							<label>
 								<input ng-model="popupCtrl.field.searchable" type="checkbox" id="searchableStatus" value="true">
-								the values of this field should be included in the search index
+								<span translate="{{'SEARCHABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
-						<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13">password cannot be searchable</div>
+						<div class="form-control-static" ng-if="popupCtrl.field.fieldType == 13" translate="{{'FIELD_TYPE_PASSWORD_NOT_SEARCHABLE_DESCRIPTION'}}"></div>
 					</div>
 
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="auditableStatus" class="control-label">Auditable</label>
+						<label for="auditableStatus" class="control-label" translate="{{'AUDITABLE'}}"></label>
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.auditable" type="checkbox" id="auditableStatus" value="true">
-								change history should be kept for this field
+								<span translate="{{'AUDITABLE_FIELD_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -1465,16 +1318,12 @@
 					<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 								   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1483,7 +1332,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Starting number</label>
+							<label class="control-label" translate="{{'STARTING_NUMBER'}}"></label>
 							<input class="form-control disabled" value="{{popupCtrl.field.startingNumber}}" disabled />
 						</div>
 					</div>
@@ -1491,7 +1340,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.displayFormat.$invalid && !manageFieldForm.displayFormat.$pristine || popupCtrl.displayFormatError}">
-							<label class="control-label">Display format</label>
+							<label class="control-label" translate="{{'DISPLAY_FORMAT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.displayFormat" name="displayFormat" placeholder="e.g. Order-{0}" type="text" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.displayFormat.$touched && manageFieldForm.displayFormat.$dirty && manageFieldForm.displayFormat.$invalid || popupCtrl.displayFormatError">
 								<small class="error ng-hide" ng-show="popupCtrl.displayFormatError">
@@ -1508,11 +1357,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group">
-							<label class="control-label">Default value</label>
+							<label class="control-label" translate="{{'DEFAULT_VALUE'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="checkbox" />
-									make it checked by default
+									<span translate="{{'DEFAULT_VALUE_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -1529,16 +1378,12 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="number"
 								   ng-required="popupCtrl.field.required" pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1552,13 +1397,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
-							<label class="control-label">Minimum value</label>
+							<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 									{{popupCtrl.minValueMessage}}
 								</small>
@@ -1567,13 +1410,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
-							<label class="control-label">Maximum value</label>
-							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+							<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 									{{popupCtrl.maxValueMessage}}
 								</small>
@@ -1584,7 +1425,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Currency</label>
+							<label class="control-label" translate="{{'VALIDATION_DECIMAL'}}"></label>
 							<select class="form-control" ng-model="popupCtrl.selectedCurrencyMeta" ng-options="item.code as item.name for item in popupCtrl.ngCtrl.currencyMetas"></select>
 						</div>
 					</div>
@@ -1598,10 +1439,10 @@
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. 2014-11-01" valid-date ng-model-options="{allowInvalid:true}"
+									   ng-required="popupCtrl.field.required" placeholder="{{'DATE_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
 									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true"
 									   enable-time="false" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
@@ -1609,12 +1450,8 @@
 								</span>
 							</div>
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-									this string is not a valid date format
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1624,13 +1461,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupCtrl.formatError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Presentation Format</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="true" placeholder="e.g. yyyy-MM-dd" />
+								   ng-required="true" placeholder="{{'DATE_FORMAT_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupCtrl.formatError">
-								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.formatError">
 									{{popupCtrl.formatMessage}}
 								</small>
@@ -1641,11 +1476,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Use Current Time as Default</label>
+							<label class="control-label" translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.useCurrentTimeAsDefaultValue" name="useCurrentTimeAsDefaultValue" type="checkbox" />
-									use the date of the record generation as default
+									<span translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -1662,10 +1497,10 @@
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<div class="input-group">
 								<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
-									   ng-required="popupCtrl.field.required" placeholder="e.g. 2014-11-01 23:01" valid-date ng-model-options="{allowInvalid:true}"
+									   ng-required="popupCtrl.field.required" placeholder="{{'DATETIME_PLACEHOLDER' | translate}}" valid-date ng-model-options="{allowInvalid:true}"
 									   datetime-picker="{{popupCtrl.field.format || 'dd MMM yyyy HH:mm'}}" is-open="popupCtrl.calendars['defaultValue']" enable-date="true" enable-time="true"
 									   timepicker-options="{showMeridian:false}" ng-click="popupCtrl.openCalendar($event, 'defaultValue')" />
 								<span class="input-group-btn">
@@ -1673,12 +1508,8 @@
 								</span>
 							</div>
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-									this string is not a valid date format
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1688,13 +1519,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupCtrl.formatError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Presentation Format</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
-								   ng-required="true" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}" />
+								   ng-required="true" placeholder="{{'DATETIME_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupCtrl.formatError">
-								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.formatError">
 									{{popupCtrl.formatMessage}}
 								</small>
@@ -1705,11 +1534,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Use Current Time as Default</label>
+							<label class="control-label" translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.useCurrentTimeAsDefaultValue" name="useCurrentTimeAsDefaultValue" type="checkbox" />
-									use the date of the record generation as default
+									<span translate="{{'DATETIME_USER_CURRENT_AS_DEFAULT_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -1726,16 +1555,12 @@
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. email@domain.com" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'EMAIL_PLACEHOLDER' | translate}}" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									not a valid email
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_EMAIL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1745,16 +1570,12 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -1769,13 +1590,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. http://mydomain.com/file.pdf or /assets/file.pdf" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'FILE_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1793,13 +1612,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. some html" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'HTML_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1817,13 +1634,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. email@domain.com" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'IMAGE_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1841,13 +1656,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. some text" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'TEXTAREA_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1857,16 +1670,12 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -1874,54 +1683,19 @@
 						</div>
 					</div>
 				</div>
-				<!--<div class="row">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label class="control-label">Line Numbers</label>
-							<div class="checkbox">
-								<label>
-									<input ng-model="popupCtrl.field.visibleLineNumber" name="visibleLineNumber" type="checkbox" />
-									make the textarea line numbers visible
-								</label>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-
-					</div>
-				</div>-->
 			</div>
 			<!--Multiple select 11 -->
 			<div ng-if="popupCtrl.fieldType.id == 11">
-				<!--<div class="row">
-					<div class="col-sm-6">
-						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
-						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default values</label>
-							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. 1,2,3" />
-							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
-									{{popupCtrl.defaultValueMessage}}
-								</small>
-							</div>
-						</div>
-
-					</div>
-				</div>-->
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-label">Options</label>
+							<label class="control-label" translate="{{'OPTIONS'}}"></label>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12" style="padding-bottom:1em;">
-						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()">add option</a>
+						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()" translate="{{'ADD_OPTION'}}"></a>
 					</div>
 				</div>
 				<div class="row">
@@ -1931,10 +1705,10 @@
 								<tr>
 							<thead>
 								<tr>
-									<th>value</th>
-									<th>label</th>
-									<th style="width:60px;">default</th>
-									<th style="width:60px;">remove</th>
+									<th translate="{{'VALUE'}}"></th>
+									<th translate="{{'LABEL'}}"></th>
+									<th style="width:60px;" translate="{{'DEFAULT'}}"></th>
+									<th style="width:60px;" translate="{{'REMOVE'}}"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -1956,16 +1730,12 @@
 					<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -1974,13 +1744,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.decimalPlaces.$invalid && !manageFieldForm.decimalPlaces.$pristine || popupCtrl.decimalPlacesError}">
-							<label class="control-label">Decimal Places</label>
+							<label class="control-label" translate="{{'DECIMAL_PLACES'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.decimalPlaces" name="decimalPlaces" type="text"
 								   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$touched && manageFieldForm.decimalPlaces.$dirty && manageFieldForm.decimalPlaces.$invalid || popupCtrl.decimalPlacesError">
-								<small class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.decimalPlacesError">
 									{{popupCtrl.decimalPlacesMessage}}
 								</small>
@@ -1991,13 +1759,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
-							<label class="control-label">Minimum value</label>
+							<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 									{{popupCtrl.minValueMessage}}
 								</small>
@@ -2006,13 +1772,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
-							<label class="control-label">Maximum value</label>
-							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+							<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 									{{popupCtrl.maxValueMessage}}
 								</small>
@@ -2027,16 +1791,12 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -2045,11 +1805,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Encryption</label>
+							<label class="control-label" translate="{{'ENCRYPTION'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.encrypted" name="encrypted" type="checkbox" />
-									the data should be stored encrypted in the database
+									<span translate="{{'ENCRYPTION_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -2058,15 +1818,15 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Mask type</label>
+							<label class="control-label" translate="{{'PASSWORD_MASK_TYPE'}}"></label>
 							<select class="form-control" ng-model="popupCtrl.field.maskType" name="maskType">
-								<option value="0" selected>None</option>
-								<option value="1" selected>Mask all characters</option>
-								<option value="2" selected>Show only the last 4 chars</option>
-								<option value="3" selected>Credit Card Number</option>
-								<option value="4" selected>National Insurance Number</option>
-								<option value="5" selected>Social Security Number</option>
-								<option value="6" selected>Social Insurance Number</option>
+								<option value="0" selected>{{'PASSWORD_MASK_TYPE_NONE' | translate}}</option>
+								<option value="1">{{'PASSWORD_MASK_TYPE_ALL_CHARS' | translate}}</option>
+								<option value="2">{{'PASSWORD_MASK_TYPE_SHOW_LAST_4' | translate}}</option>
+								<option value="3">{{'PASSWORD_MASK_TYPE_CREDIT_CARD' | translate}}</option>
+								<option value="4">{{'PASSWORD_MASK_TYPE_INSURANCE_NUMBER' | translate}}</option>
+								<option value="5">{{'PASSWORD_MASK_TYPE_SSN' | translate}}</option>
+								<option value="6">{{'PASSWORD_MASK_TYPE_SIN' | translate}}</option>
 							</select>
 						</div>
 					</div>
@@ -2081,16 +1841,12 @@
 					<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 								   ng-required="popupCtrl.field.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2099,13 +1855,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.decimalPlaces.$invalid && !manageFieldForm.decimalPlaces.$pristine || popupCtrl.decimalPlacesError}">
-							<label class="control-label">Decimal Places</label>
+							<label class="control-label" translate="{{'DECIMAL_PLACES'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.decimalPlaces" name="decimalPlaces" type="text"
 								   pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$touched && manageFieldForm.decimalPlaces.$dirty && manageFieldForm.decimalPlaces.$invalid || popupCtrl.decimalPlacesError">
-								<small class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.decimalPlaces.$error.pattern && !popupCtrl.decimalPlacesError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.decimalPlacesError">
 									{{popupCtrl.decimalPlacesMessage}}
 								</small>
@@ -2116,13 +1870,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.minValue.$invalid && !manageFieldForm.minValue.$pristine || popupCtrl.minValueError}">
-							<label class="control-label">Minimum value</label>
+							<label class="control-label" translate="{{'MINIMUM_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.minValue" name="minValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.minValue.$touched && manageFieldForm.minValue.$dirty && manageFieldForm.minValue.$invalid || popupCtrl.minValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.minValue.$error.pattern && !popupCtrl.minValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.minValueError">
 									{{popupCtrl.minValueMessage}}
 								</small>
@@ -2131,13 +1883,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxValue.$invalid && !manageFieldForm.maxValue.$pristine || popupCtrl.maxValueError}">
-							<label class="control-label">Maximum value</label>
-							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="minValue" type="number"
+							<label class="control-label" translate="{{'MAXIMUM_VALUE'}}"></label>
+							<input class="form-control" ng-model="popupCtrl.field.maxValue" name="maxValue" type="number"
 								   pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxValue.$touched && manageFieldForm.maxValue.$dirty && manageFieldForm.maxValue.$invalid || popupCtrl.maxValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError">
-									should be a valid decimal
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxValue.$error.pattern && !popupCtrl.maxValueError" translate="{{'VALIDATION_DECIMAL'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxValueError">
 									{{popupCtrl.maxValueMessage}}
 								</small>
@@ -2153,16 +1903,12 @@
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 								   ng-required="popupCtrl.field.required" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError">
-									this string is not a valid date format
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.validDate && !popupCtrl.defaultValueError" translate="{{'VALIDATION_DATE_STRING'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2172,13 +1918,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.format.$invalid && !manageFieldForm.format.$pristine || popupCtrl.formatError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Presentation Format</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'PRESENTATION_FORMAT'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. yyyy-MM-dd" ng-model-options="{allowInvalid:true}" />
+								   ng-required="popupCtrl.field.required" placeholder="{{'DATE_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.format.$touched && manageFieldForm.format.$dirty && manageFieldForm.format.$invalid || popupCtrl.formatError">
-								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.format.$error.required && !popupCtrl.formatError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.formatError">
 									{{popupCtrl.formatMessage}}
 								</small>
@@ -2189,16 +1933,12 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" ng-model-options="{allowInvalid:true}" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -2216,17 +1956,13 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.wizard.selectedType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : (createFieldStep2.defaultValue.$invalid && !createFieldStep2.defaultValue.$pristine || popupCtrl.defaultValueError)  && popupCtrl.defaultValueTextboxEnabled}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text"
 								   ng-required="popupCtrl.field.required" placeholder="{{popupCtrl.defaultValueTextboxPlaceholder}}" ng-model-options="{allowInvalid:true}"
 								   ng-disabled="!popupCtrl.defaultValueTextboxEnabled || popupCtrl.field.name == 'id'" pattern="^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$" />
 							<div class="error ng-hide" ng-show="(createFieldStep2.defaultValue.$touched && createFieldStep2.defaultValue.$dirty && createFieldStep2.defaultValue.$invalid || popupCtrl.defaultValueError) && popupCtrl.defaultValueTextboxEnabled">
-								<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError">
-									should be a valid GUID
-								</small>
+								<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="createFieldStep2.defaultValue.$error.pattern && !popupCtrl.defaultValueError" translate="{{'VALIDATION_GUID'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2236,13 +1972,13 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">GUID Generation</label>
+							<label class="control-label" translate="{{'GUID_GENERATION'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.generateNewId" name="generateNewId" type="checkbox"
 										   ng-change='popupCtrl.uniqueGuidGenerateToggle(popupCtrl.field.generateNewId)'
 										   ng-disabled="!popupCtrl.uniqueGuidGenerateCheckboxEnabled" />
-									automatically generate new GUID as default
+											<span translate="{{'GUID_GENERATION_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -2255,13 +1991,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
-								   ng-required="popupCtrl.field.required" placeholder="e.g. email@domain.com" />
+								   ng-required="popupCtrl.field.required" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2272,13 +2006,13 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-label">Options</label>
+							<label class="control-label" translate="{{'OPTIONS'}}"></label>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-12" style="padding-bottom:1em;">
-						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()">add option</a>
+						<a href="javascript:void(0)" class="btn btn-success" ng-click="popupCtrl.addDropdownValue()" translate="{{'ADD_OPTION'}}"></a>
 					</div>
 				</div>
 				<div class="row">
@@ -2286,8 +2020,8 @@
 						<table class="table table-bordered" ng-hide="popupCtrl.field.options.length == 0">
 							<thead>
 								<tr>
-									<th>value</th>
-									<th>label</th>
+									<th translate="{{'VALUE'}}">value</th>
+									<th translate="{{'LABEL'}}">label</th>
 									<th style="width:60px;"></th>
 								</tr>
 							</thead>
@@ -2309,13 +2043,11 @@
 					<div class="col-sm-6">
 						<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.field.required" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2325,16 +2057,12 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -2349,13 +2077,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.defaultValue.$invalid && !manageFieldForm.defaultValue.$pristine || popupCtrl.defaultValueError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.field.required}">Default value</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.field.required}" translate="{{'DEFAULT_VALUE'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.defaultValue" name="defaultValue" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.field.required" />
 							<div class="error ng-hide" ng-show="manageFieldForm.defaultValue.$touched && manageFieldForm.defaultValue.$dirty && manageFieldForm.defaultValue.$invalid || popupCtrl.defaultValueError">
-								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError">
-									required field
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.defaultValue.$error.required && !popupCtrl.defaultValueError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.defaultValueError">
 									{{popupCtrl.defaultValueMessage}}
 								</small>
@@ -2365,16 +2091,12 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : manageFieldForm.maxLength.$invalid && !manageFieldForm.maxLength.$pristine || popupCtrl.maxLengthError}">
-							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}">Maximum Length</label>
+							<label class="control-label" ng-class="{'required':popupCtrl.maxLength.required}" translate="{{'MAXIMUM_LENGTH'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.maxLength" name="maxLength" type="text" ng-model-options="{allowInvalid:true}"
 								   ng-required="popupCtrl.maxLength.required" pattern="^[0-9]*$" />
 							<div class="error ng-hide" ng-show="manageFieldForm.maxLength.$touched && manageFieldForm.maxLength.$dirty && manageFieldForm.maxLength.$invalid || popupCtrl.maxLengthError">
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError">
-									required field
-								</small>
-								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError">
-									should be a valid number
-								</small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.required && !popupCtrl.maxLengthError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+								<small class="error ng-hide" ng-show="manageFieldForm.maxLength.$error.pattern && !popupCtrl.maxLengthError" translate="{{'VALIDATION_POSITIVE_INTEGER'}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.maxLengthError">
 									{{popupCtrl.maxLengthMessage}}
 								</small>
@@ -2385,11 +2107,11 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label">Link target</label>
+							<label class="control-label" translate="{{'URL_LINK_TARGET'}}"></label>
 							<div class="checkbox">
 								<label>
 									<input ng-model="popupCtrl.field.openTargetInNewWindow" name="openTargetInNewWindow" type="checkbox" />
-									open the link in a new window/tab
+									<span  translate="{{'URL_LINK_TARGET_CHECKBOX_LABEL'}}"></span>
 								</label>
 							</div>
 						</div>
@@ -2401,28 +2123,28 @@
 			</div>
 
 			<!--Reserved id 20 -->
-
 			<!--Tree select 21 -->
 			<div ng-if="popupCtrl.fieldType.id == 21">
 				<input type="hidden" value="{{popupCtrl.fieldType.id}}" name="fieldType" />
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="name">Related Entity with the tree </label>
+							<label class="control-label" for="name" translate="{{'RECORD_TREE_RELATED_ENTITY'}}"></label>
 							<p class="form-control-static" ng-bind-html="popupCtrl.getTreeSelectRelatedEntityName()"></p>
+							<div class="form-description" translate="{{'RECORD_TREE_RELATED_ENTITY_DESCRIPTION'}}"></div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="name">Record tree </label>
+							<label class="control-label" for="name" translate="{{'RECORD_TREE'}}"></label>
 							<p class="form-control-static" ng-bind-html="popupCtrl.getTreeSelectRecordTreeName()"></p>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label" for="name">Relation between the current and target entity</label>
+							<label class="control-label" for="name" translate="{{'RECORD_TREE_RELATION_LABEL'}}"></label>
 							<p class="form-control-static" ng-bind-html="popupCtrl.getTreeSelectRelationHtml()"></p>
 						</div>
 					</div>
@@ -2430,28 +2152,29 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label required">Selection type</label>
+							<label class="control-label required" translate="{{'RECORD_TREE_SELECTION_TYPE'}}"></label>
 							<select class="form-control" ng-model="popupCtrl.field.selectionType" name="selectionType"
 									ng-options="s.key as s.value for s in popupCtrl.selectionTypes"></select>
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="control-label required">Selection target</label>
+							<label class="control-label required" translate="{{'RECORD_TREE_SELECTION_TARGET'}}"></label>
 							<select class="form-control" ng-model="popupCtrl.field.selectionTarget" name="selectionTarget" type="text"
 									ng-options="s.key as s.value for s in popupCtrl.selectionTargets"></select>
 						</div>
 					</div>
-				</div>		
+				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<label class="control-label">Field Security</label>
+						<label class="control-label" translate="{{'FIELD_SECURITY'}}"></label>
 						<div class="checkbox">
 							<label>
-								<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true"> enable field security
+								<input type="checkbox" ng-model="popupCtrl.field.enableSecurity" value="true">
+								<span translate="{{'FIELD_SECURITY_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>
@@ -2461,13 +2184,13 @@
 			<div class="row ng-hide" ng-show="popupCtrl.field.enableSecurity">
 				<div class="col-sm-12">
 					<div class="form-group">
-						<label class="control-label">Record permissions</label>
+						<label class="control-label" translate="{{'RECORD_PERMISSIONS'}}"></label>
 						<table class="table table-bordered table-permissions">
 							<thead>
 								<tr>
-									<th style="width:20%">role name</th>
-									<th style="width:20%">read</th>
-									<th style="width:20%">update</th>
+									<th style="width:20%" translate="{{'ROLE_NAME'}}"></th>
+									<th style="width:20%" translate="{{'READ'}}"></th>
+									<th style="width:20%" translate="{{'UPDATE'}}"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -2476,14 +2199,14 @@
 									<td>
 										<div class="checkbox">
 											<label>
-												<input type="checkbox" ng-model="role.canRead" ng-change="popupCtrl.togglePermissionRole('canRead',role.id)"> true
+												<input type="checkbox" ng-model="role.canRead" ng-change="popupCtrl.togglePermissionRole('canRead',role.id)"> <span translate="{{'TRUE'}}"></span>
 											</label>
 										</div>
 									</td>
 									<td class="position-relative">
 										<div class="checkbox">
 											<label>
-												<input type="checkbox" ng-model="role.canUpdate" ng-change="popupCtrl.togglePermissionRole('canUpdate',role.id)"> true
+												<input type="checkbox" ng-model="role.canUpdate" ng-change="popupCtrl.togglePermissionRole('canUpdate',role.id)"> <span translate="{{'TRUE'}}"></span>
 											</label>
 										</div>
 									</td>
@@ -2496,30 +2219,26 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<p ng-show="popupCtrl.wizard.steps[1].active" class="ng-hide">
-			<i class="fa fa-fw fa-info-circle"></i>To proceed, press the Select button of a filed type</>
-			<div>
-				<button ng-show="!popupCtrl.field.system" class="btn btn-link pull-left go-red ng-hide" ng-click="popupCtrl.deleteFieldModal()">[ Delete field ]</button>
-				<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="!popupCtrl.hasError"><i class="fa fa-fw fa-save"></i> Save Field</button>
-				<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
-			</div>
+		<button ng-show="!popupCtrl.field.system" class="btn btn-link pull-left go-red ng-hide" ng-click="popupCtrl.deleteFieldModal()"><span translate="{{'FIELD_DELETE'}}"></span></button>
+		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="!popupCtrl.hasError"><i class="fa fa-fw fa-save"></i> <span translate="{{'FIELD_SAVE'}}"></span></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="deleteFieldModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a field</h3>
+		<h3 class="modal-title" translate="{{'FIELD_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<h4>Are you sure that you need this field deleted?</h4>
-			<div class="alert alert-warning">By deleting the <b>{{popupCtrl.parentData.field.label}}</b> field you will also <b>delete all its values</b>?</div>
+			<h4 translate="{{'FIELD_DELETE_MODAL_QUESTION'}}"></h4>
+			<div class="alert alert-warning" translate="{{'FIELD_DELETE_MODAL_WARNING'}}" translate-value-label="{{popupCtrl.parentData.field.label}}"></div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete Field</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'FIELD_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
