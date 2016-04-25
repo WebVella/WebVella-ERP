@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class QuerySortObject
+	[Serializable]
+	public class QuerySortObject
     {
         [JsonProperty(PropertyName = "fieldName")]
         public string FieldName { get; private set; }

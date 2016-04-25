@@ -283,6 +283,7 @@ namespace WebVella.ERP.Api.Models
 
 	#region << Default classes >>
 
+	[Serializable]
 	public class RecordList
 	{
 		[JsonProperty(PropertyName = "id")]
@@ -343,6 +344,7 @@ namespace WebVella.ERP.Api.Models
 		public string ServiceCode { get; set; }
 	}
 
+	[Serializable]
 	public class RecordListQuery
 	{
 		[JsonProperty(PropertyName = "queryType")]
@@ -382,6 +384,7 @@ namespace WebVella.ERP.Api.Models
 		}
 	}
 
+	[Serializable]
 	public class RecordListSort
 	{
 		[JsonProperty(PropertyName = "fieldName")]
@@ -391,6 +394,7 @@ namespace WebVella.ERP.Api.Models
 		public string SortType { get; set; }
 	}
 
+	[Serializable]
 	public abstract class RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "dataName")]
@@ -409,6 +413,7 @@ namespace WebVella.ERP.Api.Models
 		public string EntityLabelPlural { get; set; }
 	}
 
+	[Serializable]
 	public class RecordListFieldItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -425,6 +430,7 @@ namespace WebVella.ERP.Api.Models
 		public Field Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordListRelationFieldItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -466,7 +472,8 @@ namespace WebVella.ERP.Api.Models
         public string FieldLookupList { get; set; }
     }
 
-    public class RecordListViewItem : RecordListItemBase
+	[Serializable]
+	public class RecordListViewItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
 		public static string ItemType { get { return Enum.GetName(typeof(RecordListItemType), RecordListItemType.View).ToLower(); } }
@@ -482,6 +489,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordView Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordListRelationViewItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -526,6 +534,7 @@ namespace WebVella.ERP.Api.Models
         public string FieldManageView { get; set; }
     }
 
+	[Serializable]
 	public class RecordListListItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -542,6 +551,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordList Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordListRelationListItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -586,6 +596,7 @@ namespace WebVella.ERP.Api.Models
         public string FieldManageView { get; set; }
     }
 
+	[Serializable]
 	public class RecordListRelationTreeItem : RecordListItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -621,6 +632,7 @@ namespace WebVella.ERP.Api.Models
 
 	#endregion
 
+	[Serializable]
 	public class RecordListCollection
 	{
 		[JsonProperty(PropertyName = "recordLists")]

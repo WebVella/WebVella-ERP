@@ -15,6 +15,7 @@ namespace WebVella.ERP.Api.Models
         public int? MaxLength { get; set; }
     }
 
+	[Serializable]
 	public class EmailField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

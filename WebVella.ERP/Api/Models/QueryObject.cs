@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
+	[Serializable]
 	public class QueryObject
 	{
         [JsonProperty(PropertyName = "queryType")]

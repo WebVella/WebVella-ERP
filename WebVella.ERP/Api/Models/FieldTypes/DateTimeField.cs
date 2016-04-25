@@ -18,6 +18,7 @@ namespace WebVella.ERP.Api.Models
         public bool? UseCurrentTimeAsDefaultValue { get; set; }
     }
 
+	[Serializable]
 	public class DateTimeField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

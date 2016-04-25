@@ -473,6 +473,7 @@ namespace WebVella.ERP.Api.Models
 
 	#region << Default Classes >>
 
+	[Serializable]
 	public class RecordView 
 	{
 		public RecordView()
@@ -539,8 +540,9 @@ namespace WebVella.ERP.Api.Models
 		public string ServiceCode { get; set; }
 	}
 
-    ////////////////////////
-    public class RecordViewSidebar
+	////////////////////////
+	[Serializable]
+	public class RecordViewSidebar
 	{
 		public RecordViewSidebar()
 		{
@@ -560,6 +562,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public class RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "dataName")]
@@ -578,6 +581,7 @@ namespace WebVella.ERP.Api.Models
 		public string EntityLabelPlural { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewSidebarListItem : RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -593,6 +597,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordList Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewSidebarViewItem : RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -608,6 +613,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordView Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewSidebarRelationViewItem : RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -650,6 +656,7 @@ namespace WebVella.ERP.Api.Models
 		public string FieldManageView { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewSidebarRelationListItem : RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -692,6 +699,7 @@ namespace WebVella.ERP.Api.Models
 		public string FieldManageView { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewSidebarRelationTreeItem : RecordViewSidebarItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -726,6 +734,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public class RecordViewRegion
 	{
 		public RecordViewRegion()
@@ -750,6 +759,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public class RecordViewSection
 	{
 
@@ -796,6 +806,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public class RecordViewRow
 	{
 		public RecordViewRow()
@@ -817,6 +828,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public class RecordViewColumn
 	{
 		public RecordViewColumn()
@@ -833,6 +845,7 @@ namespace WebVella.ERP.Api.Models
 	}
 
 	////////////////////////
+	[Serializable]
 	public abstract class RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "dataName")]
@@ -851,6 +864,7 @@ namespace WebVella.ERP.Api.Models
 		public string EntityLabelPlural { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -866,6 +880,7 @@ namespace WebVella.ERP.Api.Models
 		public Field Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewListItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -881,6 +896,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordList Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewViewItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -896,6 +912,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordView Meta { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewRelationFieldItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -935,6 +952,7 @@ namespace WebVella.ERP.Api.Models
         public string FieldLookupList { get; set; }
     }
 
+	[Serializable]
 	public class RecordViewRelationViewItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -977,6 +995,7 @@ namespace WebVella.ERP.Api.Models
         public string FieldManageView { get; set; }
     }
 
+	[Serializable]
 	public class RecordViewRelationListItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -1019,6 +1038,7 @@ namespace WebVella.ERP.Api.Models
         public string FieldManageView { get; set; }
     }
 
+	[Serializable]
 	public class RecordViewRelationTreeItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -1052,6 +1072,7 @@ namespace WebVella.ERP.Api.Models
 		public bool FieldRequired { get; set; }
 	}
 
+	[Serializable]
 	public class RecordViewHtmlItem : RecordViewItemBase
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -1066,6 +1087,7 @@ namespace WebVella.ERP.Api.Models
 
 	#endregion
 
+	[Serializable]
 	public class RecordViewCollection
 	{
 		[JsonProperty(PropertyName = "recordViews")]

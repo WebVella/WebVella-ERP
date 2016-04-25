@@ -24,6 +24,7 @@ namespace WebVella.ERP.Api.Models
         }
     }
 
+	[Serializable]
 	public class GuidField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

@@ -66,6 +66,7 @@ namespace WebVella.ERP.Api.Models
 		}
 	}
 
+	[Serializable]
 	public class RecordTree
 	{
 		public RecordTree()
@@ -132,6 +133,7 @@ namespace WebVella.ERP.Api.Models
 
 	}
 
+	[Serializable]
 	public class RecordTreeNode
 	{
 		[JsonProperty(PropertyName = "id")]
@@ -153,12 +155,14 @@ namespace WebVella.ERP.Api.Models
 		public Guid RecordId { get; set; }
 	}
 
+	[Serializable]
 	public class RecordTreeRecordResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
 		public RecordTreeRecord Object { get; set; }
 	}
 
+	[Serializable]
 	public class RecordTreeRecord
 	{
 		[JsonProperty(PropertyName = "data")]
@@ -168,6 +172,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordTree Meta { get; set; }
 	}
 
+	[Serializable]
 	public class ResponseTreeNode
 	{
 		[JsonProperty(PropertyName = "recordId")]
@@ -192,6 +197,7 @@ namespace WebVella.ERP.Api.Models
 		public List<ResponseTreeNode> Nodes{ get; set; }
 	}
 
+	[Serializable]
 	public class RelationTreeItem
 	{
 		[JsonProperty(PropertyName = "type")]
@@ -246,18 +252,21 @@ namespace WebVella.ERP.Api.Models
 		public string FieldManageView { get; set; }
 	}
 
+	[Serializable]
 	public class RecordTreeCollection
 	{
 		[JsonProperty(PropertyName = "recordTrees")]
 		public List<RecordTree> RecordTrees { get; set; }
 	}
 
+	[Serializable]
 	public class RecordTreeResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]
 		public RecordTree Object { get; set; }
 	}
 
+	[Serializable]
 	public class RecordTreeCollectionResponse : BaseResponseModel
 	{
 		[JsonProperty(PropertyName = "object")]

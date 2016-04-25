@@ -19,6 +19,7 @@ namespace WebVella.ERP.Api.Models
 		public decimal? StartingNumber { get; set; }
 	}
 
+	[Serializable]
 	public class AutoNumberField : Field
     {
         [JsonProperty(PropertyName = "fieldType")]

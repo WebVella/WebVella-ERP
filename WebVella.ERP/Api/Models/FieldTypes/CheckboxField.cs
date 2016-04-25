@@ -12,6 +12,7 @@ namespace WebVella.ERP.Api.Models
 		public bool? DefaultValue { get; set; }
 	}
 
+	[Serializable]
 	public class CheckboxField : Field
     {
         [JsonProperty(PropertyName = "fieldType")]

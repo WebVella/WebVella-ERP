@@ -18,6 +18,7 @@ namespace WebVella.ERP.Api.Models
         public bool? Encrypted { get; set; }
     }
 
+	[Serializable]
 	public class PasswordField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

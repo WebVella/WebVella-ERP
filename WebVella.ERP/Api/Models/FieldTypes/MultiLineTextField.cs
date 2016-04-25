@@ -18,6 +18,7 @@ namespace WebVella.ERP.Api.Models
         public int? VisibleLineNumber { get; set; }
     }
 
+	[Serializable]
 	public class MultiLineTextField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]
