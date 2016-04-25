@@ -64,7 +64,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : manageArea.name.$invalid && !manageArea.name.$pristine || popupCtrl.nameError}">
-						<label class="required" for="areaName" translate="{{' NAME '}}"></label>
+						<label class="required" for="areaName" translate="{{'NAME'}}"></label>
 						<input ng-model="popupCtrl.area.name" name="name" type="text" class="form-control" id="areaName" placeholder="{{'AREA_NAME_PLACEHOLDER' | translate}}"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="manageArea.name.$error" ng-if="manageArea.name.$touched && manageArea.name.$dirty && manageArea.name.$invalid || popupCtrl.nameError">

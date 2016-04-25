@@ -212,15 +212,9 @@
 						<input ng-model="popupCtrl.section.name" name="name" type="text" class="form-control" id="sectionName" placeholder="e.g. details"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}" autofocus ng-disabled="popupCtrl.isUpdate">
 						<div class="error ng-hide" ng-show="manageSection.name.$dirty && manageSection.name.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.name.$error.required">
-								required field
-							</small>
-							<small class="error ng-hide" ng-show="manageSection.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error ng-hide" ng-show="manageSection.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.name.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error ng-hide" ng-show="manageSection.name.$error.unique">
 								should be unique for this view
 							</small>
@@ -233,12 +227,8 @@
 						<input ng-model="popupCtrl.section.label" name="label" type="text" class="form-control" id="label" placeholder="e.g. Details"
 							   required maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.label.$dirty && manageSection.label.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.label.$error.required">
-								required field
-							</small>
-							<small class="error ng-hide" ng-show="manageSection.label.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error ng-hide" ng-show="manageSection.label.$error.required" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error ng-hide" ng-show="manageSection.label.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 						</div>
 					</div>
 				</div>
@@ -250,9 +240,7 @@
 						<input ng-model="popupCtrl.section.cssClass" name="cssClass" type="text" class="form-control" id="cssClass"
 							   maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="manageSection.cssClass.$dirty && manageSection.cssClass.$invalid">
-							<small class="error ng-hide" ng-show="manageSection.cssClass.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error ng-hide" ng-show="manageSection.cssClass.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 						</div>
 						<div class="form-description">no-labels, col-lg-3, padding-left-zero, padding-right-zero</div>
 					</div>
@@ -364,9 +352,7 @@
 						<label class="control-label required">Label</label>
 						<input class="form-control" ng-model="popupCtrl.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required/>
 						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
-							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
-								required field
-							</small>
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.fieldLabelError">
 								{{popupCtrl.fieldLabelMessage}}
 							</small>
@@ -379,7 +365,7 @@
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.fieldRequired" type="checkbox" value="true">
-								this is a required field
+								<span translate="{{'REQUIRED_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>

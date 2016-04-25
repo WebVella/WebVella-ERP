@@ -156,9 +156,7 @@
 						<label class="control-label required">Label</label>
 						<input class="form-control" ng-model="popupCtrl.field.fieldLabel" name="fieldLabel" type="text" ng-model-options="{allowInvalid:true}" required />
 						<div class="error ng-hide" ng-show="manageForm.fieldLabel.$touched && manageForm.fieldLabel.$dirty && manageForm.fieldLabel.$invalid || popupCtrl.fieldLabelError">
-							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError">
-								required field
-							</small>
+							<small class="error ng-hide" ng-show="manageForm.fieldLabel.$error.required && !popupCtrl.fieldLabelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.fieldLabelError">
 								{{popupCtrl.fieldLabelMessage}}
 							</small>
@@ -171,7 +169,7 @@
 						<div class="checkbox">
 							<label>
 								<input ng-model="popupCtrl.field.fieldRequired" type="checkbox" value="true">
-								this is a required field
+								<span translate="{{'REQUIRED_CHECKBOX_LABEL'}}"></span>
 							</label>
 						</div>
 					</div>

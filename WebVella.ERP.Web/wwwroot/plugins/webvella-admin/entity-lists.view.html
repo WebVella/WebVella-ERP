@@ -1,11 +1,11 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createListModal()"><i class="fa fa-plus"></i> Add New</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createListModal()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.lists.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="searchFilter" type="text" class="form-control" placeholder="List Name">
+					<input ng-model="searchFilter" type="text" class="form-control" placeholder="{{'RECORD_LIST_NAME' | translate}}">
 				</div>
 			</div>
         </div>
@@ -32,9 +32,9 @@
             <thead>
                 <tr>
                     <th class="actions"></th>
-                    <th class="name">Name</th>
-                    <th class="type">Type</th>
-					<th class="stats" style="width:100px;">Stats</th>
+                    <th class="name" translate="{{'NAME'}}"></th>
+                    <th class="type" translate="{{'TYPE'}}">Type</th>
+					<th class="stats" style="width:100px;" translate="{{'STATISTICS_ABBR'}}"></th>
             </thead>
             <tbody>
                 <tr ng-repeat="list in ngCtrl.lists | filter: {name: searchFilter} track by list.id">
@@ -53,13 +53,14 @@
 						<div class="go-gray"><small>{{::list.label}}</small></div>
                     </td>
                     <td>{{::list.type}}</td>
-					<td class="stats" ng-bind-html="ngCtrl.calculateStats(list)"></td>
+					<td class="stats">
+						<span ng-if="::list.columns.length > 0"><span class='go-green'>{{list.columns.length}}</span> <span translate="{{'COLUMNS'}}" style="text-transform:lowercase"></span></span>
+						<span class='go-grey' ng-if="::list.columns.length == 0" translate="{{'EMPTY'}}" style="text-transform:lowercase"></span>
+					</td>
                 </tr>
             </tbody>
         </table>
-		<div class="alert alert-info" ng-show="::ngCtrl.lists.length == 0">
-			No items found.
-		</div>
+		<div class="alert alert-info" ng-show="::ngCtrl.lists.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
     </div>
 
 
@@ -69,26 +70,20 @@
 <script type="text/ng-template" id="createListModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Create list</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="createListForm">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createListForm.name.$invalid && !createListForm.name.$pristine || popupCtrl.nameError}">
-						<label class="required" for="name">Name</label>
-						<input ng-model="popupCtrl.list.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+						<label class="required" for="name" translate="{{'NAME'}}"></label>
+						<input ng-model="popupCtrl.list.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_LIST_NAME_PLACEHOLDER'}}"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createListForm.name.$touched && createListForm.name.$dirty && createListForm.name.$invalid || popupCtrl.nameError">
-							<small class="error" ng-show="createListForm.name.$error.required && !popupCtrl.nameError">
-								required field
-							</small>
-							<small class="error" ng-show="createListForm.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error" ng-show="createListForm.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error" ng-show="createListForm.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createListForm.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error" ng-show="createListForm.name.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error" ng-show="popupCtrl.nameError">
 								{{popupCtrl.nameMessage}}
 							</small>
@@ -97,13 +92,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createListForm.label.$invalid && !createListForm.label.$pristine || popupCtrl.labelError }">
-						<label class="required" for="label">Label</label>
-						<input ng-model="popupCtrl.list.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<label class="required" for="label" translate="{{'LABEL'}}"></label>
+						<input ng-model="popupCtrl.list.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_LIST_LABEL_PLACEHOLDER'}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createListForm.label.$touched && createListForm.label.$dirty && createListForm.label.$invalid || popupCtrl.labelError">
-							<small class="error" ng-show="createListForm.label.$error.required && !popupCtrl.labelError">
-								Area label is required.
-							</small>
+							<small class="error" ng-show="createListForm.label.$error.required && !popupCtrl.labelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.labelError">
 								{{popupCtrl.labelMessage}}
 							</small>
@@ -117,15 +110,15 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Create List</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'RECORD_LIST_CREATE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="copyModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Copy list</h3>
+		<h3 class="modal-title" translate="{{'RECORD_LIST_COPY_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<table class="form" style="width:100%">
@@ -134,7 +127,7 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> Clone as new
+						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_LIST_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
 						</label>
 					  </div>
 					</div>
@@ -142,9 +135,7 @@
 				<td>
 					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.listNameValidationError}">
 					  <input type="text" class="form-control" placeholder="List name" ng-model="popupCtrl.listName">
-					  <div class="error ng-hide" ng-show="popupCtrl.listNameValidationError">
-							required
-					  </div>
+					  <div class="error ng-hide" ng-show="popupCtrl.listNameValidationError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></div>
 					</div>
 				</td>
 			</tr>
@@ -153,7 +144,7 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> Clone in existing
+						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_LIST_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span> 
 						</label>
 					  </div>
 					</div>
@@ -167,7 +158,7 @@
 		</table>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Copy list</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'RECORD_LIST_COPY'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>

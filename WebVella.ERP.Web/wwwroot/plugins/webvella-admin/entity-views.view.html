@@ -83,15 +83,9 @@
 						<input ng-model="popupCtrl.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupCtrl.nameError">
-							<small class="error" ng-show="createView.name.$error.required && !popupCtrl.nameError">
-								required field
-							</small>
-							<small class="error" ng-show="createView.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error" ng-show="createView.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error" ng-show="createView.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createView.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error" ng-show="createView.name.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error" ng-show="popupCtrl.nameError">
 								{{popupCtrl.nameMessage}}
 							</small>

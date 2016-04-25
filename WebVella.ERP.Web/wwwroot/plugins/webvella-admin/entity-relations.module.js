@@ -75,9 +75,9 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -85,9 +85,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -96,9 +96,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -135,10 +135,10 @@
 
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal','$timeout'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta', 'resolvedEntityList', '$uibModal','$timeout','$translate'];
 
 	
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal,$timeout) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta, resolvedEntityList, $uibModal,$timeout,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.search = {};
@@ -188,14 +188,16 @@
 			}
 		}
 
-		//Update page title
-		ngCtrl.pageTitle = "Entity Relations | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['ENTITY_RELATIONS','ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.ENTITY_RELATIONS + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+		//#endregion
+
+		//Update page title
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
@@ -235,10 +237,10 @@
 
 
 	//// Modal Controllers
-	ManageRelationModalController.$inject = ['$uibModalInstance', '$uibModal', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'managedRelation'];
+	ManageRelationModalController.$inject = ['$uibModalInstance', '$uibModal', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'managedRelation','$translate'];
 
 	
-	function ManageRelationModalController($uibModalInstance, $uibModal, $log, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl, managedRelation) {
+	function ManageRelationModalController($uibModalInstance, $uibModal, $log, webvellaCoreService, ngToast, $timeout, $state, $location, ngCtrl, managedRelation,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.validation = {};
@@ -539,9 +541,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + 'The entity was successfully created'
+			$translate(['SUCCESS_MESSAGE_LABEL','ENTITY_CREATE_SUCCESS']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.ENTITY_CREATE_SUCCESS
+				});
 			});
 			$uibModalInstance.close('success');
 			webvellaCoreService.GoToState($state.current.name, {});
@@ -572,10 +576,10 @@
 
 
 	//// Modal Controllers
-	DeleteRelationModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+	DeleteRelationModalController.$inject = ['parentpopupCtrl', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 
 	
-	function DeleteRelationModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+	function DeleteRelationModalController(parentpopupCtrl, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.parentData = parentpopupCtrl;
@@ -590,9 +594,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			$uibModalInstance.close('success');
 			popupCtrl.parentData.modalInstance.close('success');

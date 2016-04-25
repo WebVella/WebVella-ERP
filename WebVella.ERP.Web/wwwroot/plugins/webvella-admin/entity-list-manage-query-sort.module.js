@@ -13,6 +13,7 @@
 		.controller('DeleteListModalController', deleteListModalController)
         .controller('WebVellaAdminEntityListManageQuerySortController', controller)
 		.controller('ManageDataLinkModalController', ManageDataLinkModalController)
+		.controller('ManageSortLinkModalController', ManageSortLinkModalController)
 		.directive('queryItem', queryItem)
 		.controller('queryItemController', queryItemController);		;
 
@@ -513,11 +514,22 @@
 		//#region << Logic >>
 
 		//#region << Query & Sort>>
-		ngCtrl.manageQueryDataLink = function(selectedQuery){
+		ngCtrl.manageQueryDataLink = function(){
 			var modalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'manageDataLinkModal.html',
 				controller: 'ManageDataLinkModalController',
+				controllerAs: "popupCtrl",
+				size: "lg",
+				resolve: {}
+			});
+		}
+
+		ngCtrl.manageSortDataLink = function(){
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageSortLinkModal.html',
+				controller: 'ManageSortLinkModalController',
 				controllerAs: "popupCtrl",
 				size: "lg",
 				resolve: {}
@@ -699,6 +711,18 @@
 	ManageDataLinkModalController.$inject = ['$uibModalInstance', '$log'];
 	
 	function ManageDataLinkModalController($uibModalInstance, $log) {
+		
+		var popupCtrl = this;
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+	};
+
+	ManageSortLinkModalController.$inject = ['$uibModalInstance', '$log'];
+	
+	function ManageSortLinkModalController($uibModalInstance, $log) {
 		
 		var popupCtrl = this;
 

@@ -16,7 +16,7 @@
 	// Configuration ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 
-	
+
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-tree-nodes-manage', {
 			parent: 'webvella-admin-base',
@@ -53,7 +53,7 @@
 	//#region << Resolve Function >>/////////////////////////
 
 	resolveRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$timeout'];
-	
+
 	function resolveRelationsList($q, $log, webvellaCoreService, $state, $timeout) {
 		// Initialize
 		var defer = $q.defer();
@@ -72,18 +72,18 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
+
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -92,9 +92,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -106,7 +106,7 @@
 	}
 
 	resolveCurrentEntityRecordTree.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$timeout', '$stateParams'];
-	
+
 	function resolveCurrentEntityRecordTree($q, $log, webvellaCoreService, $state, $timeout, $stateParams) {
 		// Initialize
 		var defer = $q.defer();
@@ -128,11 +128,11 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$sce', '$log', '$q', '$rootScope', '$state', '$timeout', '$stateParams', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta',
-					'$uibModal', 'resolvedCurrentEntityRecordTree', 'webvellaCoreService', 'ngToast'];
-	
+					'$uibModal', 'resolvedCurrentEntityRecordTree', 'webvellaCoreService', 'ngToast', '$translate'];
+
 	function controller($scope, $sce, $log, $q, $rootScope, $state, $timeout, $stateParams, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta,
-					$uibModal, resolvedCurrentEntityRecordTree, webvellaCoreService, ngToast) {
-		
+					$uibModal, resolvedCurrentEntityRecordTree, webvellaCoreService, ngToast, $translate) {
+
 		var ngCtrl = this;
 
 		//#region << Init >>
@@ -143,14 +143,14 @@
 		ngCtrl.tree = fastCopy(resolvedCurrentEntityRecordTree);
 		//Awesome font icon names array 
 		ngCtrl.icons = getFontAwesomeIconNames();
-		//Update page title
-		ngCtrl.pageTitle = "Entity Trees | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['RECORD_TREE_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_TREE_MANAGE_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+		//#endregion  
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#region << Init selected relation >>
 		ngCtrl.selectedRelation = {};
@@ -196,10 +196,12 @@
 			var defer = $q.defer();
 			// Process
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				defer.reject();
 			}
@@ -246,19 +248,23 @@
 		var changeRecordParentAndRefreshTree = function (selectedRecordId, parentId) {
 
 			function getTreeSuccessCallback(response) {
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> Tree refreshed'
+				$translate(['SUCCESS_MESSAGE_LABEL', 'RECORD_TREE_REFRESHED']).then(function (translations) {
+					ngToast.create({
+						className: 'success',
+						content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.RECORD_TREE_REFRESHED
+					});
 				});
 				//Get the whole tree data again to refresh as there could be sub-children
 				ngCtrl.tree = response.object;
 			}
 
 			function getTreeErrorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> Cannot reinitialize the tree, due to ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL','RECORD_TREE_CANNOT_REINIT_DUE_TO']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.RECORD_TREE_CANNOT_REINIT_DUE_TO + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 			}
 
@@ -269,10 +275,12 @@
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> Cannot set the selected record as parent, due to ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL','RECORD_TREE_CANNOT_SET_AS_PARENT_DUE_TO']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.RECORD_TREE_CANNOT_SET_AS_PARENT_DUE_TO + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 			}
 
@@ -299,7 +307,7 @@
 					parentSwitched = true;
 				}
 				if (parentSwitched) {
-					changeRecordParentAndRefreshTree(event.source.nodeScope.$modelValue.id,event.dest.nodesScope.$parent.$modelValue.id)
+					changeRecordParentAndRefreshTree(event.source.nodeScope.$modelValue.id, event.dest.nodesScope.$parent.$modelValue.id)
 				}
 			}
 		}
@@ -311,11 +319,11 @@
 
 	AddNewTreeNodeModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'resolvedLookupRecords',
         'resolvedAllRootNodeIds', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
-	
-	function AddNewTreeNodeModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
-       resolvedAllRootNodeIds,webvellaCoreService, ngToast, $timeout, $state) {
 
-		
+	function AddNewTreeNodeModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, resolvedLookupRecords,
+       resolvedAllRootNodeIds, webvellaCoreService, ngToast, $timeout, $state) {
+
+
 		var popupCtrl = this;
 		//#region << Init >>
 		popupCtrl.currentPage = 1;
@@ -373,14 +381,14 @@
 			if (popupCtrl.ngCtrl.selectedRelation.targetFieldId == popupCtrl.ngCtrl.entity.fields[i].id) {
 				targetFieldName = popupCtrl.ngCtrl.entity.fields[i].name;
 			}
-		}		
-		
+		}
+
 		//Only nodes that has no parents or not already root nodes to a tree can be selected
-		popupCtrl.canSelectRecord = function(record) {
-				if (record[targetFieldName] != null || resolvedAllRootNodeIds.indexOf(record.id) > -1) {
-					return false;
-				}
-				return true;
+		popupCtrl.canSelectRecord = function (record) {
+			if (record[targetFieldName] != null || resolvedAllRootNodeIds.indexOf(record.id) > -1) {
+				return false;
+			}
+			return true;
 		}
 
 		popupCtrl.selectSingleRecord = function (record) {

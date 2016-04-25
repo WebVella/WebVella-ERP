@@ -103,9 +103,9 @@
 						<input ng-model="popupCtrl.actionItem.name" name="name" type="text" class="form-control" id="itemName" placeholder="e.g. print_record"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.name.$error" ng-if="formName.name.$touched && formName.name.$dirty && formName.name.$invalid || popupCtrl.nameError">
-							<ng-message when="required" class="error">required field</ng-message>
-							<ng-message when="pattern" class="error">only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars</ng-message>
-							<ng-message when="maxlength" class="error">must be less than 50 chars</ng-message>
+							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
+							<ng-message when="pattern" class="error" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></ng-message>
+							<ng-message when="maxlength" class="error" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></ng-message>
 						</ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.nameError">
 							{{popupCtrl.nameMessage}}
@@ -117,7 +117,7 @@
 						<input ng-model="popupCtrl.actionItem.weight" type="number" class="form-control" id="weight" name="weight" placeholder="e.g. 2"
 							   required pattern="^\d+(\.\d{1,5})?$" ng-model-options="{allowInvalid:true}">
 						<ng-messages for="formName.weight.$error" ng-if="formName.weight.$touched && formName.weight.$dirty && formName.weight.$invalid || popupCtrl.weightError">
-							<ng-message when="required" class="error">required field</ng-message>
+							<ng-message when="required" class="error" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></ng-message>
 							<ng-message when="pattern" class="error">weight should be a positive integer or decimal number, with two decimal places after the dot</ng-message>
 						</ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.weightError">

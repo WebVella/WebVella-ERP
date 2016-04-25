@@ -41,52 +41,59 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="view-manage-section">
-			<h4 style="margin-bottom:1em" translate="{{'QUERY'}}"></h4>
-			<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(null)" translate="{{'QUERY_SECTION_ADD'}}"></a></div>
-			<div ng-if="ngCtrl.list.query != null">
-				<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
-			</div>
 
-			<h4 style="margin-top:2em;margin-bottom:1em" translate="{{'SORT'}}"></h4>
-			<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a></div>
-			<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
-				<div class="panel-heading clearfix">
-					<span class="pull-right">
-						<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a>
-					</span>
-				</div>
-				<div class="panel-body">
-					<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd;">
-						<tr ng-repeat="sortRule in ngCtrl.list.sorts">
-							<td style="width:60px"><span ng-if="$index == 0" translate="{{'First'}}"></span><span ng-if="$index != 0" translate="{{'Than'}}"></span></td>
-							<td style="width:30px;">
-								<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
-							</td>
-							<td style="width:200px">
-								<select class="form-control" ng-model="sortRule.sortType" ng-change="ngCtrl.updateSorts()">
-									<option value="ascending" translate="{{'SORT_ASCENDING'}}"></option>
-									<option value="descending" translate="{{'SORT_DESCENDING'}}"></option>
-								</select>
-							</td>
-							<td class="editable-field">
-								<!--<select class="form-control" ng-model="sortRule.fieldName" ng-change="ngCtrl.updateSorts()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>-->
-								<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldForm_sortRule' + $index].$show()">
-								<input type="text" class="form-control" disabled editable-text="sortRule.fieldName"
-										   value="{{sortRule.fieldName}}" onbeforesave="ngCtrl.updateSorts()" e-form="{{'fieldForm_sortRule' + $index}}"
-										   e-uib-typeahead="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items | filter:$viewValue | limitTo:8">
-									<span class="input-group-addon" ng-click="this['fieldForm_sortRule' + $index].$show()" ng-hide="this['fieldForm_sortRule' + $index].$visible"><i class="fa fa-pencil fa-fw"></i></span>
-								</div>
-							</td>
-							<td style="width:60px;">
-								<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-
+		<h4 style="margin-bottom:1em" translate="{{'QUERY'}}"></h4>
+		<div ng-if="ngCtrl.list.query == null"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(null)" translate="{{'QUERY_SECTION_ADD'}}"></a></div>
+		<div ng-if="ngCtrl.list.query != null">
+			<query-item current-query="ngCtrl.list.query" parent-query="null" root-query="ngCtrl.list.query" page-scope="ngCtrl" query-index="0"></query-item>
 		</div>
+
+		<h4 style="margin-top:2em;margin-bottom:1em" translate="{{'SORT'}}"></h4>
+		<div ng-show="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0" class="ng-hide"><a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a></div>
+		<div class="panel panel-default" ng-hide="ngCtrl.list.sorts == null || ngCtrl.list.sorts.length == 0">
+			<div class="panel-heading row">
+				<div class="col-sm-8"><p translate="{{'SORT_RULE_DESCRIPTION'}}"></p></div>
+				<div class="col-sm-4" style="text-align:right;">
+					<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSortRule()" translate="{{'SORT_RULE_ADD'}}"></a>
+				</div>
+			</div>
+			<div class="panel-body">
+				<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd;">
+					<tr ng-repeat="sortRule in ngCtrl.list.sorts">
+						<td style="width:60px"><span ng-if="$index == 0" translate="{{'First'}}"></span><span ng-if="$index != 0" translate="{{'Than'}}"></span></td>
+						<td style="width:30px;">
+							<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageSortDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
+						</td>
+						<td style="width:200px">
+							<select class="form-control" ng-model="sortRule.sortType" ng-change="ngCtrl.updateSorts()">
+								<option value="ascending" translate="{{'SORT_ASCENDING'}}"></option>
+								<option value="descending" translate="{{'SORT_DESCENDING'}}"></option>
+							</select>
+						</td>
+						<td class="editable-field">
+							<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['fieldForm_sortRule' + $index].$show()">
+								<input type="text" class="form-control" disabled editable-text="sortRule.fieldName"
+									   value="{{sortRule.fieldName}}" onbeforesave="ngCtrl.updateSorts()" e-form="{{'fieldForm_sortRule' + $index}}"
+									   e-uib-typeahead="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items | filter:$viewValue | limitTo:8">
+								<span class="input-group-addon" ng-click="this['fieldForm_sortRule' + $index].$show()" ng-hide="this['fieldForm_sortRule' + $index].$visible"><i class="fa fa-pencil fa-fw"></i></span>
+							</div>
+						</td>
+						<td style="width:60px;">
+							<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteSortRule($index)"><i class="fa fa-fw fa-close"></i></a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<h4 style="margin-top:2em;margin-bottom:1em" translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_TITLE'}}"></h4>
+		<div>
+			<p translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_INTRO'}}"></p>
+			<p><span translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_FILTER_PREFIX'}}"></span> <a href="javascript:void(0)" ng-click="ngCtrl.manageQueryDataLink()" class="btn btn-default btn-outline btn-xs"><i class="fa fa-fw fa-database"></i></a> <span translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_FILTER_SUFIX'}}"></span></p>
+			<p><span translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_SORT_PREFIX'}}"></span> <a href="javascript:void(0)" ng-click="ngCtrl.manageSortDataLink()" class="btn btn-default btn-outline btn-xs"><i class="fa fa-fw fa-database"></i></a> <span translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_SORT_SUFIX'}}"></span></p>
+			<p translate="{{'RECORD_LIST_TAB_COLUMNS_INFO_INTRO'}}"></p>
+		</div>
+
 
 	</div>
 </div>
@@ -95,21 +102,16 @@
 	<table class="table table-noborder table-vertical-align-middle" style="border:1px solid #ddd">
 		<tr>
 			<td style="width:30px;">
-				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink(currentQuery)"><i class="fa fa-fw fa-database"></i></a>
+				<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageQueryDataLink()"><i class="fa fa-fw fa-database"></i></a>
 			</td>
-			<td  width="250">
+			<td width="250">
 				<select class="form-control" ng-model="currentQuery.fieldName" ng-change="ngCtrl.updateQuery()" ng-options="item.fieldName as item.meta.name for item in ngCtrl.onlyFieldsLibrary.items"></select>
 			</td>
-			<td  width="200">
+			<td width="200">
 				<select class="form-control" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()" ng-options="item.key as item.value for item in ngCtrl.getQueryComparisonOptionsList(currentQuery)"></select>
 			</td>
-			<!--<td  width="130">
-				<select class="form-control" disabled>
-					<option value="val" selected="">the value</option>
-				</select>
-			</td>-->
 			<td class="position-relative">
-				<div class="editable-wrapper input-group editable-updatable"  ng-dblclick="this['queryForm_' + queryIndex].$show()">
+				<div class="editable-wrapper input-group editable-updatable" ng-dblclick="this['queryForm_' + queryIndex].$show()">
 					<input type="text" class="form-control" disabled editable-text="currentQuery.fieldValue"
 						   value="{{currentQuery.fieldValue}}"
 						   onaftersave="ngCtrl.updateQuery()" e-form="{{'queryForm_' + queryIndex}}">
@@ -126,20 +128,21 @@
 
 <script type="text/ng-template" id="querySection.html">
 	<div class="panel panel-default">
-		<div class="panel-heading clearfix">
-			<span class="pull-right">
+		<div class="panel-heading row">
+			<div class="col-sm-8">
+				<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
+					<option value="AND">{{'ALL' | translate}}</option>
+					<option value="OR">{{'ANY' | translate}}</option>
+				</select>
+				<p style="line-height:30px;padding-left:90px;" translate="{{'QUERY_RULE_CONDITION_SUFIX'}}"></p>
+			</div>
+			<div class="col-sm-4" style="text-align:right;">
 				<a class="btn btn-default go-red btn-outline" ng-click="ngCtrl.DeleteItem(parentQuery, queryIndex)"><i class="fa fa-fw fa-close"></i></a>
 				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddSection(currentQuery)" translate="{{'QUERY_SECTION_ADD'}}"></a>
 				<a class="btn btn-default btn-outline" ng-click="ngCtrl.AddRule(currentQuery)" translate="{{'QUERY_RULE_ADD'}}"></a>
-			</span>
-			<select class="form-control pull-left" style="width:80px;" ng-model="currentQuery.queryType" ng-change="ngCtrl.updateQuery()">
-				<option value="AND">{{'ALL' | translate}}</option>
-				<option value="OR">{{'ANY' | translate}}</option>
-			</select>
-			<span class="pull-left" style="line-height:30px;margin-left:5px;" translate="{{'QUERY_RULE_CONDITION_SUFIX'}}"></span>
+			</div>
 		</div>
 		<div class="panel-body">
-			<!--<div ng-repeat="query in parentQuery.subQueries" ng-include="ngCtrl.getIncludeFile(query)" onload="parent = parentQuery; parentQuery = query"></div>-->
 			<query-item ng-repeat="queryItem in currentQuery.subQueries"
 						current-query="queryItem" parent-query="currentQuery"
 						root-query="ngCtrl.list.query" page-scope="ngCtrl"
@@ -152,19 +155,19 @@
 <script type="text/ng-template" id="manageDataLinkModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Manage data link for the rule</h3>
+		<h3 class="modal-title" translate="{{'DATA_LINK_QUERY_MODAL_TITLE'}}">Manage data link for the rule</h3>
 	</div>
 	<div class="modal-body">
-		<p>In the most right input of this query rule row, you can set a static value or a dynamic one. The static value will be used as is. You can dynamically pass values to the query rule by using predefined data-link JSON objects.</p>
+		<p translate="{{'DATA_LINK_QUERY_MODAL_INTRO'}}"></p>
 		<h4>current_user</h4>
 		<pre class="ng-binding">Example: {"name":"current_user", "option": "id", "default": null, "settings":{}}</pre>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th width="100">attributes</th>
-					<th width="80">type</th>
-					<th width="150">value</th>
-					<th>description</th>
+					<th width="100" translate="{{'ATTRIBUTES'}}"></th>
+					<th width="80" translate="{{'TYPE'}}"></th>
+					<th width="150" translate="{{'VALUE'}}"></th>
+					<th translate="{{'DESCRIPTION'}}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -172,13 +175,13 @@
 					<td><span class="go-green">name</span></td>
 					<td><span class="go-grey">string</span></td>
 					<td><span class="go-blue">current_user</span></td>
-					<td>Check the currently authenticated user, if there is such.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_USER_NAME_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">option</span></td>
 					<td><span class="go-grey">string</span></td>
 					<td><span class="go-blue">id</span></td>
-					<td>The "id" field of the current user is the only option available for now</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_USER_OPTION_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">default</span></td>
@@ -189,13 +192,13 @@
 							<li><span class="go-blue">"valid guid"</span></li>
 						</ul>
 					</td>
-					<td>if there is no authenticated user, the returned null value can be replaces with "guid" of your own. Set 'null', if you do not want a default value</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_USER_DEFAULT_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">settings</span></td>
 					<td><span class="go-grey">object</span></td>
 					<td><span class="go-blue">{}</span></td>
-					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_USER_SETTINGS_DESCRIPTION'}}"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -204,10 +207,10 @@
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th width="100">attributes</th>
-					<th width="80">type</th>
-					<th width="150">value</th>
-					<th>description</th>
+					<th width="100" translate="{{'ATTRIBUTES'}}"></th>
+					<th width="80" translate="{{'TYPE'}}"></th>
+					<th width="150" translate="{{'VALUE'}}"></th>
+					<th translate="{{'DESCRIPTION'}}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -215,7 +218,7 @@
 					<td><span class="go-green">name</span></td>
 					<td><span class="go-grey">string</span></td>
 					<td><span class="go-blue">current_date</span></td>
-					<td>Get and manipulates the current date in UTC.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_DATE_NAME_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">option</span></td>
@@ -226,7 +229,7 @@
 							<li><span class="go-blue">datetime</span></li>
 						</ul>
 					</td>
-					<td>Sets the ZERO HOUR date or the exact current date and hour in UTC</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_DATE_OPTION_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">default</span></td>
@@ -234,23 +237,23 @@
 					<td>
 						<span class="go-blue">null</span>
 					</td>
-					<td>No need for default value as current date is always available.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_DATE_DEFAULT_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">settings</span></td>
 					<td><span class="go-grey">object</span></td>
 					<td>
-					<span class="go-blue">
-						{<br/>
-						"year":null,<br/>
-						"month":null,<br/>
-						"day":null,<br/>
-						"hour":null,<br/>
-						"minute":null,<br/>
-						}
-					</span>
+						<span class="go-blue">
+							{<br />
+							"year":null,<br />
+							"month":null,<br />
+							"day":null,<br />
+							"hour":null,<br />
+							"minute":null,<br />
+							}
+						</span>
 					</td>
-					<td>with the settings object you can manipulate the current date or datetime, by subtracting or adding periods to it.<br/> Example: "year":-1, will mean that you want the result date or datetime to be the current one minus 1 year.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_CURRENT_DATE_SETTINGS_DESCRIPTION'}}"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -259,10 +262,10 @@
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					<th width="100">attributes</th>
-					<th width="80">type</th>
-					<th width="150">value</th>
-					<th>description</th>
+					<th width="100" translate="{{'ATTRIBUTES'}}"></th>
+					<th width="80" translate="{{'TYPE'}}"></th>
+					<th width="150" translate="{{'VALUE'}}"></th>
+					<th translate="{{'DESCRIPTION'}}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -270,15 +273,13 @@
 					<td><span class="go-green">name</span></td>
 					<td><span class="go-grey">string</span></td>
 					<td><span class="go-blue">url_query</span></td>
-					<td>The list controller will check the query parameters for keys that match the set string in the "options" attribute. If no match is found, it will use the default value. 
-					More than one rule can match the same query parameter key. <strong>The query parameter value should be encoded.</strong> The same value needs to be converted without an error 
-					to the data format of the selected rule field. If an error occurs the default value will be returned instead.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_URL_QUERY_NAME_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">option</span></td>
 					<td><span class="go-grey">string</span></td>
 					<td><span class="go-gray">user defined string</span></td>
-					<td>The query key that needs to be matched. t needs to comply with the rules for the url strings.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_URL_QUERY_OPTION_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">default</span></td>
@@ -289,22 +290,75 @@
 							<li><span class="go-blue">"string"</span></li>
 						</ul>
 					</td>
-					<td>If not "null", the value needs to be converted without an error to the data format of the selected rule field. If an error occurs, it will not be used by the system, and will be 
-					equivalent to "null". The data and DateTime value format is expected to be in ISO 8601 format, in UTC and without timezone (e.g. '2016-04-13T12:23:46Z')</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_URL_QUERY_DEFAULT_DESCRIPTION'}}"></td>
 				</tr>
 				<tr>
 					<td><span class="go-green">settings</span></td>
 					<td><span class="go-grey">object</span></td>
 					<td><span class="go-blue">{}</span></td>
-					<td>there are not settings for this data-link object currently, so you need to set an empty object.</td>
+					<td translate="{{'DATA_LINK_QUERY_MODAL_URL_QUERY_SETTINGS_DESCRIPTION'}}"></td>
 				</tr>
 			</tbody>
 		</table>
-		<h4>url_sort</h4>
-		<pre class="ng-binding">Example: {"name":"url_sort", "option": "some_field_name", "default": "some_field_name", "settings":{order:"some_query_key"}}</pre>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="manageSortLinkModal.html">
+	<div class="modal-header" id="modal-top">
+		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h3 class="modal-title" translate="{{'DATA_LINK_SORT_MODAL_TITLE'}}"></h3>
+	</div>
+	<div class="modal-body">
+		<p translate="{{'DATA_LINK_SORT_MODAL_INTRO'}}"></p>
+		<h4>url_sort</h4>
+		<pre class="ng-binding">Example: {"name":"url_sort", "option": "sortBy", "default": "some_field_name", "settings":{order:"sortOrder"}}</pre>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th width="100" translate="{{'ATTRIBUTES'}}"></th>
+					<th width="80" translate="{{'TYPE'}}"></th>
+					<th width="150" translate="{{'VALUE'}}"></th>
+					<th translate="{{'DESCRIPTION'}}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="go-green">name</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-blue">url_sort</span></td>
+					<td translate="{{'DATA_LINK_SORT_MODAL_NAME_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">option</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td><span class="go-gray">user defined string</span></td>
+					<td translate="{{'DATA_LINK_SORT_MODAL_OPTION_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">default</span></td>
+					<td><span class="go-grey">string</span></td>
+					<td>
+						<ul style="margin:0;padding-left:16px;">
+							<li><span class="go-blue">null</span></li>
+							<li><span class="go-blue">"string"</span></li>
+						</ul>
+					</td>
+					<td translate="{{'DATA_LINK_SORT_MODAL_DEFAULT_DESCRIPTION'}}"></td>
+				</tr>
+				<tr>
+					<td><span class="go-green">settings</span></td>
+					<td><span class="go-grey">object</span></td>
+					<td><span class="go-blue">{order:"sortOrder"}</span></td>
+					<td translate="{{'DATA_LINK_SORT_MODAL_SETTINGS_DESCRIPTION'}}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 

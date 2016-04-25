@@ -118,7 +118,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group" ng-class="{ 'has-error' : createFieldStep2.name.$invalid && !createFieldStep2.name.$pristine || popupCtrl.nameError}">
-							<label class="control-label required" translate="{{' NAME '}}"></label>
+							<label class="control-label required" translate="{{'NAME'}}"></label>
 							<input class="form-control" ng-model="popupCtrl.field.name" name="name" type="text" ng-model-options="{allowInvalid:true}"
 								   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="{{'FIELD_NAME_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.name.$touched && createFieldStep2.name.$dirty && createFieldStep2.name.$invalid || popupCtrl.nameError">
@@ -407,9 +407,7 @@
 								<input class="form-control" ng-model="popupCtrl.field.format" name="format" type="text"
 									   ng-required="true" placeholder="{{'DATE_FORMAT_PLACEHOLDER' | translate}}" ng-model-options="{allowInvalid:true}" />
 								<div class="error ng-hide" ng-show="createFieldStep2.format.$touched && createFieldStep2.format.$dirty && createFieldStep2.format.$invalid || popupCtrl.formatError">
-									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError">
-										required field
-									</small>
+									<small class="error ng-hide" ng-show="createFieldStep2.format.$error.required && !popupCtrl.formatError"  translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 									<small class="error ng-hide" ng-show="popupCtrl.formatError">
 										{{popupCtrl.formatMessage}}
 									</small>
@@ -1194,7 +1192,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label class="control-label" translate="{{' NAME '}}"></label>
+						<label class="control-label" translate="{{'NAME'}}"></label>
 						<p class="form-control-static">{{popupCtrl.field.name}}</p>
 					</div>
 				</div>
