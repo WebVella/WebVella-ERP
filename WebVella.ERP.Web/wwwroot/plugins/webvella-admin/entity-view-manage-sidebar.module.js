@@ -51,18 +51,18 @@
 
 	//#region << Resolve >> ///////////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'.'$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -71,9 +71,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -85,9 +85,9 @@
 		return defer.promise;
 	}
 
-	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -95,9 +95,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				//Remove the current view from the list to avoid loop
@@ -119,9 +119,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -132,9 +132,9 @@
 		return defer.promise;
 	}
 
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -142,9 +142,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -153,9 +153,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -172,22 +172,20 @@
 
 	//#region << Controller >> ////////////////////////////
 	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal','$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
+                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList','$translate'];
 	
 	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal,$timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
+                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList,$translate) {
 
 		
 		var ngCtrl = this;
-		//#region << General init >>
-		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_VIEW_MANAGE_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide side menu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -262,9 +260,9 @@
 								ngCtrl.library.items.push(item);
 							}
 							break;
-						//case "list":
-						//	ngCtrl.library.items.push(item);
-						//	break;
+							//case "list":
+							//	ngCtrl.library.items.push(item);
+							//	break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
@@ -277,16 +275,16 @@
 								ngCtrl.library.relations.push(item);
 							}
 							break;
-						//case "viewFromRelation":
-						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-						//		ngCtrl.library.items.push(item);
-						//	}
-						//	break;
-						//case "listFromRelation":
-						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-						//		ngCtrl.library.items.push(item);
-						//	}
-						//	break;
+							//case "viewFromRelation":
+							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							//		ngCtrl.library.items.push(item);
+							//	}
+							//	break;
+							//case "listFromRelation":
+							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							//		ngCtrl.library.items.push(item);
+							//	}
+							//	break;
 					}
 				}
 			});
@@ -334,10 +332,12 @@
 				}
 			}
 			if (relation == null) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> item relation not found',
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL','VALIDATION_RELATION_NOT_FOUND']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.VALIDATION_RELATION_NOT_FOUND,
+						timeout: 7000
+					});
 				});
 				moveFailure();
 				return;
@@ -361,9 +361,11 @@
 
 			function successCallback(response) {
 				if (response.success) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
+					$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+						ngToast.create({
+							className: 'success',
+							content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
@@ -383,10 +385,12 @@
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				if (eventObj != null) {
 					moveFailure();
@@ -426,344 +430,360 @@
 			}
 
 			function getRelatedEntityMetaErrorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> could not get the related entity meta - ' + response.message,
-					timeout: 7000
-				});
-				moveFailure();
-				return;
-			}
-
-			//Get the correct related entityMeta
-
-			if (droppedItem.entityName == ngCtrl.entity.name) {
-				//the dropped item has relation to the current entity so no reason to make http request
-				var response = {};
-				response.success = true;
-				response.object = ngCtrl.entity;
-				getRelatedEntityMetaSuccessCallback(response);
-			}
-			else {
-				var relatedEntityName = null;
-				webvellaCoreService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
-			}
-		};
-		//#endregion
-
-		//#region << Drag & Drop Management >>
-
-		function executeDragViewChange(eventObj, orderChangedOnly) {
-			//#region << 1.Define functions >>
-			var moveSuccess, moveFailure, successCallback, errorCallback;
-
-			function successCallback(response) {
-				if (response.success) {
+				$translate(['ERROR_MESSAGE_LABEL','VALIDATION_ENTITY_NOT_FOUND']).then(function (translations) {
 					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
-					});
-					ngCtrl.view.sidebar.items = response.object.sidebar.items;
-					ngCtrl.regenerateLibrary();
-				}
-				else {
-					errorCallback(response);
-					moveFailure();
-				}
-			}
-
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' translations.VALIDATION_ENTITY_NOT_FOUND + ' ' + response.message,
+						timeout: 7000
 				});
-				ngCtrl.regenerateLibrary();
-			}
-			//#endregion
-
-			if ((eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") && !orderChangedOnly) {
-				openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
-			}
-			else {
-				//1. Clean ngCtrl.view from system properties like $$hashKey
-				ngCtrl.view.sidebar.items = fastCopy(ngCtrl.view.sidebar.items);
-				//ngCtrl.view = angular.fromJson(angular.toJson(ngCtrl.view));
-				////2. Call the service
-				webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
-			}
+			});
+			moveFailure();
+			return;
 		}
 
-		ngCtrl.dragControlListeners = {
-			accept: function (sourceItemHandleScope, destSortableScope) {
-				return true
-			},
-			itemMoved: function (eventObj) {
-				//Item is moved from one column to another
-				executeDragViewChange(eventObj, true);
-			},
-			orderChanged: function (eventObj) {
-				//Item is moved within the same column
-				executeDragViewChange(eventObj, true);
-			}
-		};
+		//Get the correct related entityMeta
 
-		ngCtrl.libraryDragControlListeners = {
-			accept: function (sourceItemHandleScope, destSortableScope) {
-				if (sourceItemHandleScope.itemScope.element[0].id != "library" && destSortableScope.element[0].id == "library") {
-					return false;
-				}
-				return true;
-			},
-			itemMoved: function (eventObj) {
-				//Item is moved from one column to another
-				executeDragViewChange(eventObj, false);
-			},
-			orderChanged: function (eventObj) {
-				//Item is moved within the same column
-				executeDragViewChange(eventObj, true);
-			}
-		};
-
-		ngCtrl.dragItemRemove = function (itemDataName) {
-			ngCtrl.itemScheduledForRemoval = null;
-			var index = -1;
-			for (var i = 0; i < ngCtrl.view.sidebar.items.length; i++) {
-				if (ngCtrl.view.sidebar.items[i].dataName === itemDataName) {
-					ngCtrl.itemScheduledForRemoval = ngCtrl.view.sidebar.items[i];
-					index = i;
-				}
-			}
-
-
-			function successCallback(response) {
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> ' + response.message
-				});
-				ngCtrl.regenerateLibrary();
-			}
-
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				$state.reload();
-			}
-			ngCtrl.view.sidebar.items.splice(index, 1);
-			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
-		}
-
-
-
-		//#endregion
-
-		//#region << Relations >>
-
-		ngCtrl.changeRelationDirection = function (relation) {
-			if (relation.direction == "origin-target") {
-				relation.direction = "target-origin";
-			}
-			else {
-				relation.direction = "origin-target";
-			}
-			ngCtrl.view.relationOptions = [];
-
-			for (var i = 0; i < ngCtrl.library.relations.length; i++) {
-				var relation = fastCopy(ngCtrl.library.relations[i]);
-				delete relation.addedToLibrary;
-				delete relation.sameOriginTargetEntity;
-				ngCtrl.view.relationOptions.push(relation);
-			}
-
-			function successCallback(response) {
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> ' + response.message
-				});
-			}
-
-			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
-				});
-				//Undo change
-				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
-					if (ngCtrl.library.relations[j].relationName == relation.relationName) {
-						if (ngCtrl.library.relations[j].direction == "origin-target") {
-							ngCtrl.library.relations[j].direction = "target-origin";
-						}
-						else {
-							ngCtrl.library.relations[j].direction = "origin-target";
-						}
-					}
-				}
-			}
-			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
-		}
-
-		ngCtrl.toggleRelationToLibrary = function (relation) {
-			if (!relation.addedToLibrary) {
-				ngCtrl.fullLibrary.items.forEach(function (item) {
-					if (item.relationName && item.relationName == relation.relationName) {
-						switch (item.type) {
-							//case "fieldFromRelation":
-							//	ngCtrl.library.items.push(item);
-							//	break;
-							case "viewFromRelation":
-								if (item.viewId != ngCtrl.view.id) {
-									ngCtrl.library.items.push(item);
-								}
-								break;
-							case "listFromRelation":
-								ngCtrl.library.items.push(item);
-								break;
-							case "treeFromRelation":
-								ngCtrl.library.items.push(item);
-								break;
-						}
-					}
-				});
-				relation.addedToLibrary = true;
-			}
-			else {
-				var tempRelationChangeLibrary = [];
-				ngCtrl.library.items.forEach(function (item) {
-					if (!item.relationName) {
-						tempRelationChangeLibrary.push(item);
-					}
-					else if (item.relationName != relation.relationName) {
-						tempRelationChangeLibrary.push(item);
-					}
-				});
-				ngCtrl.library.items = tempRelationChangeLibrary;
-				relation.addedToLibrary = false;
-			}
-			sortLibrary();
-		}
-
-		ngCtrl.getRelationType = function (relationId) {
-			for (var i = 0; i < ngCtrl.relationsList.length; i++) {
-				if (ngCtrl.relationsList[i].id == relationId) {
-					return ngCtrl.relationsList[i].relationType;
-				}
-			}
-			return 0;
-		}
-
-		ngCtrl.manageFieldFromRelation = function (item) {
-			openFromRelationSettingsModal(item, null);
-		}
-		//#endregion
-
-	}
-	//#endregion
-
-	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
-	
-	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
-		
-		var popupCtrl = this;
-		popupCtrl.parentData = fastCopy(parentData);
-		popupCtrl.field = fastCopy(fieldObj);
-		popupCtrl.entity = fastCopy(relatedEntityMeta);
-		popupCtrl.quickCreateViews = [];
-		popupCtrl.quickCreateDefaultIndex = -1;
-		popupCtrl.lookupLists = [];
-		popupCtrl.lookupDefaultIndex = -1;
-
-		popupCtrl.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-		popupCtrl.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
-
-		//Lookup
-		var index = 0;
-		for (var i = 0; i < popupCtrl.entity.recordLists.length; i++) {
-			if (popupCtrl.entity.recordLists[i].type == "lookup") {
-				if (popupCtrl.entity.recordLists[i].default && popupCtrl.lookupDefaultIndex == -1) {
-					popupCtrl.lookupDefaultIndex = index;
-				}
-				popupCtrl.lookupLists.push(popupCtrl.entity.recordLists[i]);
-				index++;
-			}
-		}
-
-		if (popupCtrl.field.fieldLookupList && popupCtrl.field.fieldLookupList != "") {
-			//should stick with the selected value
-		}
-		else if (popupCtrl.quickCreateDefaultIndex > -1 && popupCtrl.lookupLists.length > 0) {
-			//no selected so we should preselect the first default;
-			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[popupCtrl.quickCreateDefaultIndex].name;
-		}
-		else if (popupCtrl.lookupLists.length > 0) {
-			popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[0].name;
+		if (droppedItem.entityName == ngCtrl.entity.name) {
+			//the dropped item has relation to the current entity so no reason to make http request
+			var response = {};
+			response.success = true;
+			response.object = ngCtrl.entity;
+			getRelatedEntityMetaSuccessCallback(response);
 		}
 		else {
-			//should alert for error
-			popupCtrl.error = true;
-			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'lookup' lists. It should have at least one";
+			var relatedEntityName = null;
+			webvellaCoreService.getEntityMeta(droppedItem.entityName, getRelatedEntityMetaSuccessCallback, getRelatedEntityMetaErrorCallback);
 		}
+	};
+	//#endregion
 
-		//Quick create
-		index = 0;
-		for (var i = 0; i < popupCtrl.entity.recordViews.length; i++) {
-			if (popupCtrl.entity.recordViews[i].type == "quick_create") {
-				if (popupCtrl.entity.recordViews[i].default && popupCtrl.quickCreateDefaultIndex == -1) {
-					popupCtrl.quickCreateDefaultIndex = index;
-				}
-				popupCtrl.quickCreateViews.push(popupCtrl.entity.recordViews[i]);
-				index++;
-			}
-		}
-		if (popupCtrl.field.fieldManageView && popupCtrl.field.fieldManageView != "") {
-			//should stick with the selected value
-		}
-		else if (popupCtrl.lookupDefaultIndex > -1 && popupCtrl.quickCreateViews.length > 0) {
-			//no selected so we should preselect the first default;
-			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[popupCtrl.lookupDefaultIndex].name;
-		}
-		else if (popupCtrl.quickCreateViews.length > 0) {
-			popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[0].name;
-		}
-		else if (popupCtrl.field.type == "listFromRelation" || popupCtrl.field.type == "viewFromRelation") {
+	//#region << Drag & Drop Management >>
 
-			//should alert for error if it is list or view
-			popupCtrl.error = true;
-			popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'quick_create' views. It should have at least one";
-		}
+	function executeDragViewChange(eventObj, orderChangedOnly) {
+		//#region << 1.Define functions >>
+		var moveSuccess, moveFailure, successCallback, errorCallback;
 
-
-		popupCtrl.ok = function () {
-			$uibModalInstance.close(popupCtrl.field);
-		};
-
-		popupCtrl.cancel = function () {
-			if (eventObj != null) {
-				eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
-				//we are currently copying so no need to return it back
-				//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
-			}
-			$uibModalInstance.dismiss('cancel');
-		};
-
-		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
-			});
-			$uibModalInstance.close('success');
+			if (response.success) {
+				$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'success',
+						content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+					});
+				});
+				ngCtrl.view.sidebar.items = response.object.sidebar.items;
+				ngCtrl.regenerateLibrary();
+			}
+			else {
+				errorCallback(response);
+				moveFailure();
+			}
 		}
 
 		function errorCallback(response) {
-			popupCtrl.hasError = true;
-			popupCtrl.errorMessage = response.message;
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
+			ngCtrl.regenerateLibrary();
+		}
+		//#endregion
 
+		if ((eventObj.source.itemScope.item.type == "viewFromRelation" || eventObj.source.itemScope.item.type == "listFromRelation") && !orderChangedOnly) {
+			openFromRelationSettingsModal(eventObj.source.itemScope.modelValue, eventObj, orderChangedOnly);
+		}
+		else {
+			//1. Clean ngCtrl.view from system properties like $$hashKey
+			ngCtrl.view.sidebar.items = fastCopy(ngCtrl.view.sidebar.items);
+			//ngCtrl.view = angular.fromJson(angular.toJson(ngCtrl.view));
+			////2. Call the service
+			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+		}
+	}
+
+	ngCtrl.dragControlListeners = {
+		accept: function (sourceItemHandleScope, destSortableScope) {
+			return true
+		},
+		itemMoved: function (eventObj) {
+			//Item is moved from one column to another
+			executeDragViewChange(eventObj, true);
+		},
+		orderChanged: function (eventObj) {
+			//Item is moved within the same column
+			executeDragViewChange(eventObj, true);
 		}
 	};
+
+	ngCtrl.libraryDragControlListeners = {
+		accept: function (sourceItemHandleScope, destSortableScope) {
+			if (sourceItemHandleScope.itemScope.element[0].id != "library" && destSortableScope.element[0].id == "library") {
+				return false;
+			}
+			return true;
+		},
+		itemMoved: function (eventObj) {
+			//Item is moved from one column to another
+			executeDragViewChange(eventObj, false);
+		},
+		orderChanged: function (eventObj) {
+			//Item is moved within the same column
+			executeDragViewChange(eventObj, true);
+		}
+	};
+
+	ngCtrl.dragItemRemove = function (itemDataName) {
+		ngCtrl.itemScheduledForRemoval = null;
+		var index = -1;
+		for (var i = 0; i < ngCtrl.view.sidebar.items.length; i++) {
+			if (ngCtrl.view.sidebar.items[i].dataName === itemDataName) {
+				ngCtrl.itemScheduledForRemoval = ngCtrl.view.sidebar.items[i];
+				index = i;
+			}
+		}
+
+
+		function successCallback(response) {
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
+			});
+			ngCtrl.regenerateLibrary();
+		}
+
+		function errorCallback(response) {
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
+			$state.reload();
+		}
+		ngCtrl.view.sidebar.items.splice(index, 1);
+		webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+	}
+
+
+
+	//#endregion
+
+	//#region << Relations >>
+
+	ngCtrl.changeRelationDirection = function (relation) {
+		if (relation.direction == "origin-target") {
+			relation.direction = "target-origin";
+		}
+		else {
+			relation.direction = "origin-target";
+		}
+		ngCtrl.view.relationOptions = [];
+
+		for (var i = 0; i < ngCtrl.library.relations.length; i++) {
+			var relation = fastCopy(ngCtrl.library.relations[i]);
+			delete relation.addedToLibrary;
+			delete relation.sameOriginTargetEntity;
+			ngCtrl.view.relationOptions.push(relation);
+		}
+
+		function successCallback(response) {
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
+			});
+		}
+
+		function errorCallback(response) {
+			$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'error',
+					content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+					timeout: 7000
+				});
+			});
+			//Undo change
+			for (var j = 0; j < ngCtrl.library.relations.length; j++) {
+				if (ngCtrl.library.relations[j].relationName == relation.relationName) {
+					if (ngCtrl.library.relations[j].direction == "origin-target") {
+						ngCtrl.library.relations[j].direction = "target-origin";
+					}
+					else {
+						ngCtrl.library.relations[j].direction = "origin-target";
+					}
+				}
+			}
+		}
+		webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
+	}
+
+	ngCtrl.toggleRelationToLibrary = function (relation) {
+		if (!relation.addedToLibrary) {
+			ngCtrl.fullLibrary.items.forEach(function (item) {
+				if (item.relationName && item.relationName == relation.relationName) {
+					switch (item.type) {
+						//case "fieldFromRelation":
+						//	ngCtrl.library.items.push(item);
+						//	break;
+						case "viewFromRelation":
+							if (item.viewId != ngCtrl.view.id) {
+								ngCtrl.library.items.push(item);
+							}
+							break;
+						case "listFromRelation":
+							ngCtrl.library.items.push(item);
+							break;
+						case "treeFromRelation":
+							ngCtrl.library.items.push(item);
+							break;
+					}
+				}
+			});
+			relation.addedToLibrary = true;
+		}
+		else {
+			var tempRelationChangeLibrary = [];
+			ngCtrl.library.items.forEach(function (item) {
+				if (!item.relationName) {
+					tempRelationChangeLibrary.push(item);
+				}
+				else if (item.relationName != relation.relationName) {
+					tempRelationChangeLibrary.push(item);
+				}
+			});
+			ngCtrl.library.items = tempRelationChangeLibrary;
+			relation.addedToLibrary = false;
+		}
+		sortLibrary();
+	}
+
+	ngCtrl.getRelationType = function (relationId) {
+		for (var i = 0; i < ngCtrl.relationsList.length; i++) {
+			if (ngCtrl.relationsList[i].id == relationId) {
+				return ngCtrl.relationsList[i].relationType;
+			}
+		}
+		return 0;
+	}
+
+	ngCtrl.manageFieldFromRelation = function (item) {
+		openFromRelationSettingsModal(item, null);
+	}
+	//#endregion
+
+}
+	//#endregion
+
+	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta','$translate'];
+	
+function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta,$translate) {
+		
+	var popupCtrl = this;
+	popupCtrl.parentData = fastCopy(parentData);
+	popupCtrl.field = fastCopy(fieldObj);
+	popupCtrl.entity = fastCopy(relatedEntityMeta);
+	popupCtrl.quickCreateViews = [];
+	popupCtrl.quickCreateDefaultIndex = -1;
+	popupCtrl.lookupLists = [];
+	popupCtrl.lookupDefaultIndex = -1;
+
+	popupCtrl.entity.recordViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+	popupCtrl.entity.recordLists.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+
+	//Lookup
+	var index = 0;
+	for (var i = 0; i < popupCtrl.entity.recordLists.length; i++) {
+		if (popupCtrl.entity.recordLists[i].type == "lookup") {
+			if (popupCtrl.entity.recordLists[i].default && popupCtrl.lookupDefaultIndex == -1) {
+				popupCtrl.lookupDefaultIndex = index;
+			}
+			popupCtrl.lookupLists.push(popupCtrl.entity.recordLists[i]);
+			index++;
+		}
+	}
+
+	if (popupCtrl.field.fieldLookupList && popupCtrl.field.fieldLookupList != "") {
+		//should stick with the selected value
+	}
+	else if (popupCtrl.quickCreateDefaultIndex > -1 && popupCtrl.lookupLists.length > 0) {
+		//no selected so we should preselect the first default;
+		popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[popupCtrl.quickCreateDefaultIndex].name;
+	}
+	else if (popupCtrl.lookupLists.length > 0) {
+		popupCtrl.field.fieldLookupList = popupCtrl.lookupLists[0].name;
+	}
+	else {
+		//should alert for error
+		popupCtrl.error = true;
+		popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'lookup' lists. It should have at least one";
+	}
+
+	//Quick create
+	index = 0;
+	for (var i = 0; i < popupCtrl.entity.recordViews.length; i++) {
+		if (popupCtrl.entity.recordViews[i].type == "quick_create") {
+			if (popupCtrl.entity.recordViews[i].default && popupCtrl.quickCreateDefaultIndex == -1) {
+				popupCtrl.quickCreateDefaultIndex = index;
+			}
+			popupCtrl.quickCreateViews.push(popupCtrl.entity.recordViews[i]);
+			index++;
+		}
+	}
+	if (popupCtrl.field.fieldManageView && popupCtrl.field.fieldManageView != "") {
+		//should stick with the selected value
+	}
+	else if (popupCtrl.lookupDefaultIndex > -1 && popupCtrl.quickCreateViews.length > 0) {
+		//no selected so we should preselect the first default;
+		popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[popupCtrl.lookupDefaultIndex].name;
+	}
+	else if (popupCtrl.quickCreateViews.length > 0) {
+		popupCtrl.field.fieldManageView = popupCtrl.quickCreateViews[0].name;
+	}
+	else if (popupCtrl.field.type == "listFromRelation" || popupCtrl.field.type == "viewFromRelation") {
+
+		//should alert for error if it is list or view
+		popupCtrl.error = true;
+		popupCtrl.errorMessage = "The target entity '" + popupCtrl.entity.name + "' has no 'quick_create' views. It should have at least one";
+	}
+
+
+	popupCtrl.ok = function () {
+		$uibModalInstance.close(popupCtrl.field);
+	};
+
+	popupCtrl.cancel = function () {
+		if (eventObj != null) {
+			eventObj.dest.sortableScope.removeItem(eventObj.dest.index);
+			//we are currently copying so no need to return it back
+			//eventObj.source.itemScope.sortableScope.insertItem(eventObj.source.index, eventObj.source.itemScope.task);
+		}
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	/// Aux
+	function successCallback(response) {
+		$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+			ngToast.create({
+				className: 'success',
+				content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+			});
+		});
+		$uibModalInstance.close('success');
+	}
+
+	function errorCallback(response) {
+		popupCtrl.hasError = true;
+		popupCtrl.errorMessage = response.message;
+
+	}
+};
 
 
 })();

@@ -1,10 +1,10 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o go-red"></i> Delete view</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_VIEW_DELETE'}}"></span></a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">View name: </span> {{ngCtrl.view.name}}</h4>
+			<h4><span class="go-gray"><span translate="{{'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
 		</div>
 	</div>
 </div>
@@ -27,16 +27,16 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation" class="active">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}">Basic Attributes</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}" translate="{{'RECORD_VIEW_TAB_BASIC'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form">Main Form</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/form" translate="{{'RECORD_VIEW_TAB_MAIN_FORM'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar">Sidebar Forms</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/sidebar" translate="{{'RECORD_VIEW_TAB_SIDEBAR_FORM'}}"></a>
 					</li>
 					<li role="presentation">
-						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions">Actions</a>
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions" translate="{{'RECORD_VIEW_TAB_ACTIONS'}}"></a>
 					</li>
 				</ul>
 			</div>
@@ -48,7 +48,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2" for="name">Name</label>
+								<label class="control-label col-lg-2" for="name" translate="{{'NAME'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_name.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.name"
@@ -63,7 +63,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">Type</label>
+								<label class="control-label col-lg-2" translate="{{'TYPE'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_type.$show()">
 										<input type="text" class="form-control" disabled editable-select="ngCtrl.view.type"
@@ -80,7 +80,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">Label</label>
+								<label class="control-label col-lg-2" translate="{{'LABEL'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.label"
@@ -95,7 +95,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">Weight</label>
+								<label class="control-label col-lg-2" translate="{{'WEIGHT'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_weight.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.weight"
@@ -112,7 +112,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">Default</label>
+								<label class="control-label col-lg-2" translate="{{'DEFAULT'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_default.$show()">
 										<span class="input-group-addon hidden-xs" ng-if="ngCtrl.view.default && !fieldForm_default.$visible">
@@ -122,7 +122,7 @@
 											<i class="fa fa-times fa-fw go-red"></i>
 										</span>
 										<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.view.default"
-											   e-title="Make this default view?" value="{{ngCtrl.view.default}}"
+											   e-title="{{'RECORD_VIEW_DEFAULT_CHECKBOX_LABEL' | translate}}" value="{{ngCtrl.view.default}}"
 											   onbeforesave="ngCtrl.fieldUpdate('default',$data)" e-form="fieldForm_default">
 										<span class="input-group-addon" ng-click="fieldForm_default.$show()" ng-hide="fieldForm_default.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
@@ -133,7 +133,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">System</label>
+								<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group first-background-transparent editable-readonly">
 										<span class="input-group-addon" ng-if="ngCtrl.view.system">
@@ -154,7 +154,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">CSS class</label>
+								<label class="control-label col-lg-2" translate="{{'CSS_CLASS'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.cssClass"
@@ -169,7 +169,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-2">Icon Name</label>
+								<label class="control-label col-lg-2" translate="{{'ICON_NAME'}}"></label>
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 										<span class="input-group-addon"><i class="fa fa-{{ngCtrl.view.iconName}} fa-fw"></i></span>
@@ -178,7 +178,7 @@
 											   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 										<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
-									<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+									<div class="form-description" translate="{{'ICON_NAME_DESCRIPTION'}}"></div>
 								</div>
 							</div>
 						</div>
@@ -188,7 +188,7 @@
 					<div class="col-sm-12">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-1">Custom Template</label>
+								<label class="control-label col-lg-1" translate="{{'CUSTOM_TEMPLATE'}}"></label>
 								<div class="col-lg-11">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dynamicHtmlTemplate.$show()">
 										<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
@@ -199,7 +199,7 @@
 											   onbeforesave="ngCtrl.fieldUpdate('dynamicHtmlTemplate', $data)" e-form="fieldForm_dynamicHtmlTemplate">
 										<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
-									<div class="form-description">URL to a customer html template file that should substitute the default view html template. It will be compiled by angular, and view data and meta are accessible.</div>
+									<div class="form-description" translate="{{'CUSTOM_TEMPLATE_DESCRIPTION'}}"></div>
 								</div>
 							</div>
 						</div>
@@ -213,17 +213,17 @@
 <script type="text/ng-template" id="deleteViewModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a view</h3>
+		<h3 class="modal-title" translate="{{'RECORD_VIEW_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this view deleted?</p>
+			<p translate="{{'RECORD_VIEW_DELETE_MODAL_QUESTION'}}"></p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete View</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'RECORD_VIEW_DELETE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 

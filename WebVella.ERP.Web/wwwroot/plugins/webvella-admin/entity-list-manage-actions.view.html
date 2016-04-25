@@ -126,7 +126,8 @@
 						</ng-messages>
 						<small class="error ng-hide" ng-show="popupCtrl.nameError">
 							{{popupCtrl.nameMessage}}
-						</small>						
+						</small>	
+						<div class="description ng-hide" ng-show="!popupCtrl.nameError" translate="{{'RECORD_LIST_TAB_ACTIONS_NAME_UNIQUE_DESCRIPTION'}}"></div>					
 					</div>
 					<label class="control-label col-sm-1" translate="{{'WEIGHT'}}"></label>
 					<div class="col-sm-3">
