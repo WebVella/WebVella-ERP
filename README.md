@@ -35,7 +35,11 @@ We will greatly appriciate your support of the project by:
 11. Do not forget to play with the API too. There are a lot nice methods already present in the APIController.
 
 ### Translations
-* Translation support pending
+* Translation support is implemented and translation is under way. To check the available translations go to the the [lang folder of the webvella-core plugin](https://github.com/WebVella/WebVella-ERP/tree/master/WebVella.ERP.Web/wwwroot/plugins/webvella-core/lang). To test one of the available ones, change the lang setting of the config.json file, to the corresponding language abbreviation value. For more about how the translation works, check out the awsome [angular-translate project](https://angular-translate.github.io/).
+Current translation status:
+1. English - 80%
+2. Spanish - underway thanks to @Sefirost
+
 
 ### Third party libraries
 * see [LIBRARIES](https://github.com/WebVella/WebVella-ERP/blob/master/LIBRARIES.md) files
@@ -44,7 +48,7 @@ We will greatly appriciate your support of the project by:
 * see [LICENSE](https://github.com/WebVella/WebVella-ERP/blob/master/LICENSE.txt) file
 
 ## Version 
-* Version Pre-production
+* Soon to be in beta
 
 ## Contact
 #### Developer/Company
