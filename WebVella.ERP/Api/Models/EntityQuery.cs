@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class EntityQuery
+	[Serializable]
+	public class EntityQuery
     {
 		public string EntityName { get; set; }
 		public string Fields { get; set; }

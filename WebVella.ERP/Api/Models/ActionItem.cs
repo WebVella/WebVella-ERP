@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class ActionItem
+	[Serializable]
+	public class ActionItem
     {
 		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; }

@@ -31,6 +31,7 @@ namespace WebVella.ERP.Api.Models
 		public RecordPermissions RecordPermissions { get; set; }
 	}
 
+	[Serializable]
 	public class Entity
 	{
 		public Entity()
@@ -79,6 +80,7 @@ namespace WebVella.ERP.Api.Models
 		public string Hash { get; internal set; }
 	}
 
+	[Serializable]
 	public class RecordPermissions
 	{
 		[JsonProperty(PropertyName = "canRead")]

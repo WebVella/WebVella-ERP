@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using WebVella.ERP.Database;
 
@@ -16,6 +17,7 @@ namespace WebVella.ERP.Api.Models
 		public List<SelectFieldOption> Options { get; set; }
 	}
 
+	[Serializable]
 	public class SelectField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]
@@ -28,6 +30,7 @@ namespace WebVella.ERP.Api.Models
 		public List<SelectFieldOption> Options { get; set; }
 	}
 
+	[Serializable]
 	public class SelectFieldOption
 	{
 		[JsonProperty(PropertyName = "key")]

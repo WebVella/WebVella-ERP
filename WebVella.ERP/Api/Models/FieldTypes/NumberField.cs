@@ -21,6 +21,7 @@ namespace WebVella.ERP.Api.Models
         public byte? DecimalPlaces { get; set; }
     }
 
+	[Serializable]
 	public class NumberField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

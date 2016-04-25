@@ -12,6 +12,7 @@ namespace WebVella.ERP.Api.Models
         public string DefaultValue { get; set; }
     }
 
+	[Serializable]
 	public class ImageField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

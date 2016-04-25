@@ -12,6 +12,7 @@ namespace WebVella.ERP.Api.Models
         public string DefaultValue { get; set; }
     }
 
+	[Serializable]
 	public class HtmlField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

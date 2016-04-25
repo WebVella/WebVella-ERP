@@ -1031,6 +1031,8 @@ namespace WebVella.ERP.Web.Controllers
 			//TODO remove default values and options and all not needed data
 			if (field is SelectField)
 				((SelectField)field).Options = new List<SelectFieldOption>();
+			else if(field is MultiSelectField)
+				((MultiSelectField)field).Options = new List<MultiSelectFieldOption>();
 
 			return field;
 		}

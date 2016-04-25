@@ -5,7 +5,8 @@ using WebVella.ERP.Utilities.Dynamic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class EntityRecord : Expando
+	[Serializable]
+	public class EntityRecord : Expando
     {
     }
 }

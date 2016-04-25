@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public enum EntityRelationType
+	[Serializable]
+	public enum EntityRelationType
     {
         /// <summary>
         /// 1. Origin field should be an unique, required Guid field
@@ -27,7 +28,8 @@ namespace WebVella.ERP.Api.Models
         ManyToMany = 3
     }
 
-    public class EntityRelation
+	[Serializable]
+	public class EntityRelation
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -60,7 +62,8 @@ namespace WebVella.ERP.Api.Models
         public Guid TargetFieldId { get; set; }
     }
 
-    public class EntityRelationOptionsItem
+	[Serializable]
+	public class EntityRelationOptionsItem
     {
         [JsonProperty(PropertyName = "type")]
         public static string ItemType { get { return "relationOptions"; } }
@@ -75,14 +78,15 @@ namespace WebVella.ERP.Api.Models
         public string Direction { get; set; }
     }
 
-
-    public class EntityRelationResponse : BaseResponseModel
+	[Serializable]
+	public class EntityRelationResponse : BaseResponseModel
     {
         [JsonProperty(PropertyName = "object")]
         public EntityRelation Object { get; set; }
     }
 
-    public class EntityRelationListResponse : BaseResponseModel
+	[Serializable]
+	public class EntityRelationListResponse : BaseResponseModel
     {
         [JsonProperty(PropertyName = "object")]
         public List<EntityRelation> Object { get; set; }
@@ -103,6 +107,7 @@ namespace WebVella.ERP.Api.Models
         public List<Guid> DetachTargetFieldRecordIds { get; set; }
     }
 
+	[Serializable]
 	public class EntityRelationOptions
 	{
 		[JsonProperty(PropertyName = "relationId")]

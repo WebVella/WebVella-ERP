@@ -26,6 +26,7 @@ namespace WebVella.ERP.Api.Models
 
 	}
 
+	[Serializable]
 	public class TreeSelectField : Field
     {
         [JsonProperty(PropertyName = "fieldType")]

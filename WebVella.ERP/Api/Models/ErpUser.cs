@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class ErpUser
+	[Serializable]
+	public class ErpUser
     {
         public ErpUser()
         {

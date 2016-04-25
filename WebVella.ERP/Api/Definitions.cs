@@ -60,7 +60,8 @@ namespace WebVella.ERP.Api
         After
     }
 
-    public class CurrencyType
+	[Serializable]
+	public class CurrencyType
     {
         [JsonProperty(PropertyName = "symbol")]
         public string Symbol { get; set; }

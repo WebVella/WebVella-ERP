@@ -223,7 +223,8 @@ namespace WebVella.ERP
         }
     }
 
-    public abstract class Field
+	[Serializable]
+	public abstract class Field
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
@@ -403,7 +404,8 @@ namespace WebVella.ERP
         }
     }
 
-    public class FieldList
+	[Serializable]
+	public class FieldList
     {
         [JsonProperty(PropertyName = "fields")]
         public List<Field> Fields { get; set; }
@@ -414,19 +416,22 @@ namespace WebVella.ERP
         }
     }
 
-    public class FieldResponse : BaseResponseModel
+	[Serializable]
+	public class FieldResponse : BaseResponseModel
     {
         [JsonProperty(PropertyName = "object")]
         public Field Object { get; set; }
     }
 
-    public class FieldListResponse : BaseResponseModel
+	[Serializable]
+	public class FieldListResponse : BaseResponseModel
     {
         [JsonProperty(PropertyName = "object")]
         public FieldList Object { get; set; }
     }
 
-    public class FieldPermissions
+	[Serializable]
+	public class FieldPermissions
     {
         [JsonProperty(PropertyName = "canRead")]
         public List<Guid> CanRead { get; set; }

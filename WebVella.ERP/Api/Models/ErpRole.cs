@@ -3,7 +3,8 @@ using System;
 
 namespace WebVella.ERP.Api.Models
 {
-    public class ErpRole
+	[Serializable]
+	public class ErpRole
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }

@@ -17,6 +17,7 @@ namespace WebVella.ERP.Api.Models
 		public List<MultiSelectFieldOption> Options { get; set; }
 	}
 
+	[Serializable]
 	public class MultiSelectField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]
@@ -29,6 +30,7 @@ namespace WebVella.ERP.Api.Models
 		public List<MultiSelectFieldOption> Options { get; set; }
 	}
 
+	[Serializable]
 	public class MultiSelectFieldOption
 	{
 		[JsonProperty(PropertyName = "key")]

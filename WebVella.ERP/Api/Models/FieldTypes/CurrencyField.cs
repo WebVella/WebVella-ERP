@@ -21,6 +21,7 @@ namespace WebVella.ERP.Api.Models
 		public CurrencyType Currency { get; set; }
 	}
 
+	[Serializable]
 	public class CurrencyField : Field
     {
         [JsonProperty(PropertyName = "fieldType")]

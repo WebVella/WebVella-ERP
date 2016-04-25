@@ -18,6 +18,7 @@ namespace WebVella.ERP.Api.Models
         public bool? OpenTargetInNewWindow { get; set; }
     }
 
+	[Serializable]
 	public class UrlField : Field
 	{
 		[JsonProperty(PropertyName = "fieldType")]

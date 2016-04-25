@@ -1,6 +1,6 @@
 ﻿namespace WebVella.ERP.Api.Models
 {
-    public enum FieldType
+	public enum FieldType
     {
         AutoNumberField = 1,
         CheckboxField = 2,
