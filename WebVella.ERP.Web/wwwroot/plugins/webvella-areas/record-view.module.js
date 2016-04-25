@@ -47,6 +47,35 @@
 					return "";
 				}
 			}
+		})
+		.state('webvella-areas-record-view-single-page', {
+			parent: 'webvella-areas-base',
+			url: '/:recordId/:viewName/:auxPageName/:page/single-page',
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasSidebarController',
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreasRecordViewController',
+					templateUrl: '/plugins/webvella-areas/record-view.view.html',
+					controllerAs: 'ngCtrl'
+				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				resolvedCurrentView: resolveCurrentView,
+				pluginAuxPageName: function () {
+					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
+					return "";
+				}
+			}
 		});
 	};
 

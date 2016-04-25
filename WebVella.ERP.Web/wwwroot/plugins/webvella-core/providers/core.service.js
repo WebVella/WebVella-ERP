@@ -12,11 +12,11 @@
         .service('webvellaCoreService', service);
 
 	service.$inject = ['$cookies', '$q', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate'];
+				'$timeout', 'Upload', '$translate','$filter'];
 
 
 	function service($cookies, $q, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate) {
+				$timeout, Upload, $translate,$filter) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@
 		serviceInstance.deleteEntityList = deleteEntityList;
 		//Helpers
 		serviceInstance.getListMenuOptions = getListMenuOptions
-
+		serviceInstance.extractSupportedFilterFields = extractSupportedFilterFields
 		//#endregion
 
 		//#region << Tree >>
@@ -660,7 +660,7 @@
 				else {
 					for (var i = 0; i < data.length; i++) {
 						var selected = $filter('filter')(fieldMeta.options, { key: data[i] });
-						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : 'empty');
+						generatedStringArray.push((data[i] && selected.length) ? selected[0].value : '');
 					}
 					return generatedStringArray.join(', ');
 				}
@@ -820,7 +820,7 @@
 			}
 			else {
 				var selected = $filter('filter')(fieldMeta.options, { key: data });
-				return (data && selected.length) ? selected[0].value : 'empty';
+				return (data && selected.length) ? selected[0].value : '';
 			}
 		}
 		//18. Text
@@ -1578,6 +1578,29 @@
 		///////////////////////
 		function deleteEntityList(listName, entityName, successCallback, errorCallback) {
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		/////////////////////
+		function extractSupportedFilterFields(recordList){
+			var supportedFields = extractFieldsFromQuery(recordList.meta.query,[]);
+			return supportedFields;
+		}
+		function extractFieldsFromQuery(query,result){
+			if(query.fieldValue != null && query.fieldValue.startsWith("{")){
+				var queryObject = angular.fromJson(query.fieldValue, result);
+				if(queryObject.name	== "url_query" &&  queryObject.option){
+					//option should equal fieldName in order to preset field to work
+					if(queryObject.option == query.fieldName){
+						result.push(query.fieldName);
+					}
+				}
+			}
+			if (query.subQueries.length > 0) {
+			    for (var i = 0; i < query.subQueries.length; i++) {
+					extractFieldsFromQuery(query.subQueries[i],result);
+			    }
+			} 
+
+			return result;
 		}
 
 		//#endregion

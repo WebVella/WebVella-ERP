@@ -123,7 +123,7 @@
 								   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" placeholder="{{'FIELD_NAME_PLACEHOLDER' | translate}}" />
 							<div class="error ng-hide" ng-show="createFieldStep2.name.$touched && createFieldStep2.name.$dirty && createFieldStep2.name.$invalid || popupCtrl.nameError">
 								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
-								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.pattern" translate="{{' VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE '}}"></small>
+								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
 								<small class="error ng-hide" ng-show="createFieldStep2.name.$error.maxlength" translate="{{' VALIDATION_LESS_THAN_50_CHARS '}}"></small>
 								<small class="error ng-hide" ng-show="popupCtrl.nameError">
 									{{popupCtrl.nameMessage}}
