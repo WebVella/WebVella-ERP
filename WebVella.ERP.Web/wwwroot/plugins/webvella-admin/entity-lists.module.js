@@ -139,6 +139,7 @@
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
 		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
 		//#region << Initialize the lists >>

@@ -89,7 +89,7 @@
             menuItem.color = area.color;
             menuItem.iconName = area.icon_name;
 			menuItem.folder = area.folder;
-            menuItem.stateName = "webvella-entity-records";
+            menuItem.stateName = "webvella-area-list-general";
             var areaAttachments = angular.fromJson(area.attachments);
             //Safety check - if area has attachments. 
             if (areaAttachments == null || areaAttachments.length == 0) {

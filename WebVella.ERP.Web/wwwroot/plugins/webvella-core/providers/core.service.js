@@ -1588,8 +1588,8 @@
 			return supportedFields;
 		}
 		function extractFieldsFromQuery(query,result){
-			if(query.fieldValue != null && query.fieldValue.startsWith("{")){
-				var queryObject = angular.fromJson(query.fieldValue, result);
+			if(query.fieldValue != null && query.fieldValue.trim().startsWith("{")){
+				var queryObject = angular.fromJson(query.fieldValue);
 				if(queryObject.name	== "url_query" &&  queryObject.option){
 					//option should equal fieldName in order to preset field to work
 					if(queryObject.option == query.fieldName){
@@ -2332,7 +2332,7 @@
 
 			//#region << Calculate what the view name should be and return >>
 			if (targetCreateExists) {
-				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
 			}
 				//The target name does not exist. Fallback to default
 			else {
@@ -2621,7 +2621,7 @@
 				}
 				//#endregion
 
-				GoToState("webvella-entity-records", { listName: ngCtrl.defaultEntityAreaListName, page: 1 });
+				GoToState("webvella-area-list-general", { listName: ngCtrl.defaultEntityAreaListName, page: 1 });
 			}
 
 			function errorCallback(response) {

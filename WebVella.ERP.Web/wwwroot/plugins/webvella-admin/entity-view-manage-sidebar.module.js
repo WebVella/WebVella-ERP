@@ -261,9 +261,9 @@
 								ngCtrl.library.items.push(item);
 							}
 							break;
-							//case "list":
-							//	ngCtrl.library.items.push(item);
-							//	break;
+							case "list":
+								ngCtrl.library.items.push(item);
+								break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
@@ -276,16 +276,16 @@
 								ngCtrl.library.relations.push(item);
 							}
 							break;
-							//case "viewFromRelation":
-							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-							//		ngCtrl.library.items.push(item);
-							//	}
-							//	break;
-							//case "listFromRelation":
-							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-							//		ngCtrl.library.items.push(item);
-							//	}
-							//	break;
+							case "viewFromRelation":
+								if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+									ngCtrl.library.items.push(item);
+								}
+								break;
+							case "listFromRelation":
+								if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+									ngCtrl.library.items.push(item);
+								}
+								break;
 					}
 				}
 			});
