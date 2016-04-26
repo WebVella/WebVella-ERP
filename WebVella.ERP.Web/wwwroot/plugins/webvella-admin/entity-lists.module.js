@@ -201,10 +201,10 @@
 	//#endregion
 
 	//// Modal Controllers
-	createListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'webvellaCoreService'];
+	createListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'webvellaCoreService','$translate'];
 
 	
-	function createListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, webvellaCoreService) {
+	function createListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, webvellaCoreService,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
@@ -248,9 +248,9 @@
 
 	};
 
-	copyListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'list', 'webvellaCoreService'];
+	copyListModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl', 'list', 'webvellaCoreService','$translate'];
 	
-	function copyListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, list, webvellaCoreService) {
+	function copyListModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl, list, webvellaCoreService,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
