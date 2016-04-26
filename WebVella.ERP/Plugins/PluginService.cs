@@ -45,7 +45,7 @@ namespace WebVella.ERP.Plugins
 				plugin.Assemblies = new List<Assembly>();
 
 
-				var binDir = new DirectoryInfo(Path.Combine(pluginDir.PhysicalPath, "bin"));
+				var binDir = new DirectoryInfo(Path.Combine(pluginDir.PhysicalPath, "binaries"));
 				if (!binDir.Exists)
 					continue;
 
