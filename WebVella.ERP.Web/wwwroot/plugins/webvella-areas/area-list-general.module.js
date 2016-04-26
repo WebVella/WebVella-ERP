@@ -11,9 +11,9 @@
 	//#region << Configuration /////////////////////////////////// >>
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
-		$stateProvider.state('webvella-entity-records', {
-			parent: 'webvella-areas-base',
-			url: '/:listName/:page',
+		$stateProvider.state('webvella-area-list-general', {
+			parent: 'webvella-area-base',
+			url: '/list-general/:listName/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -27,7 +27,7 @@
 				},
 				"contentView": {
 					controller: 'WebVellaAreaEntityRecordsController',
-					templateUrl: '/plugins/webvella-areas/entity-records.view.html',
+					templateUrl: '/plugins/webvella-areas/area-list-general.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
@@ -110,6 +110,7 @@
 		ngCtrl.validation.hasError = false;
 		ngCtrl.validation.errorMessage = "";
 		ngCtrl.currentPage = parseInt($stateParams.page);
+		ngCtrl.canSortList = false;
 		//#endregion
 
 		//#region << Set Page meta >>
@@ -283,6 +284,20 @@
 				return false;
 			 }
 		}
+		//#endregion
+
+		//#region << List sort >>
+		//Check if the list has a sort rule with the needed data-link object for sorting through the url
+		var listSortRules = fastCopy(ngCtrl.list.meta.sorts);
+		for (var i = 0; i < listSortRules.length; i++) {
+			if(listSortRules[i].fieldName != null && listSortRules[i].fieldName.trim().startsWith("{")){
+				var dataLinkObject = angular.fromJson(listSortRules[i].fieldName);
+				if(dataLinkObject.name == "url_sort" && dataLinkObject.option == "sortBy" && dataLinkObject.settings.order == "sortOrder"){
+					ngCtrl.canSortList = true;
+				}
+			}
+		}
+
 		//#endregion
 
 		//#region << Logic >> 

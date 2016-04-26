@@ -268,10 +268,10 @@
 
 
     //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+    deleteEntityController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 
     
-    function deleteEntityController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+    function deleteEntityController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
         
         var popupCtrl = this;
         popupCtrl.entity = parentData.entity;

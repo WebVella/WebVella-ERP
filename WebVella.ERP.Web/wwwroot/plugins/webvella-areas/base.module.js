@@ -15,7 +15,7 @@
 	//#region << Configuration >>
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
-		$stateProvider.state('webvella-areas-base', {
+		$stateProvider.state('webvella-area-base', {
 			abstract: true,
 			url: '/areas/:areaName/:entityName',
 			views: {

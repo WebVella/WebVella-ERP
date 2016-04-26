@@ -54,7 +54,7 @@
         for (var i = 0; i < sidebarData.view.sidebar.items.length; i++) {
         	var item = {};
         	item.name = sidebarData.view.sidebar.items[i].dataName;
-        	item.label = sidebarData.view.sidebar.items[i].meta.label;
+        	item.label = sidebarData.view.sidebar.items[i].fieldLabel;
         	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
         		item.iconName = "file-text-o";
         		if (sidebarData.view.sidebar.items[i].meta.iconName) {
@@ -94,7 +94,7 @@
 			
 			if(useSessionBackUrl){
 				$timeout(function () {
-                    $state.go('webvella-entity-records',sidebarData.$sessionStorage["last-list-params"]);
+                    $state.go('webvella-area-list-general',sidebarData.$sessionStorage["last-list-params"]);
                 }, 0);
 			}
 			else {
@@ -105,7 +105,7 @@
 				defaultParams.page = 1;
 
 			   	$timeout(function () {
-                    $state.go('webvella-entity-records',defaultParams);
+                    $state.go('webvella-area-list-general',defaultParams);
                 }, 0);
 			}
 			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"

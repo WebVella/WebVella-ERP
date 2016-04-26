@@ -20,7 +20,7 @@
 
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-record-view', {
-			parent: 'webvella-areas-base',
+			parent: 'webvella-area-base',
 			url: '/:recordId/:viewName/:auxPageName/:page',
 			views: {
 				"topnavView": {
@@ -49,7 +49,7 @@
 			}
 		})
 		.state('webvella-areas-record-view-single-page', {
-			parent: 'webvella-areas-base',
+			parent: 'webvella-area-base',
 			url: '/:recordId/:viewName/:auxPageName/:page/single-page',
 			views: {
 				"topnavView": {

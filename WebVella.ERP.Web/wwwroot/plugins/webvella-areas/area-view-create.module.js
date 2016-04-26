@@ -16,9 +16,9 @@
 	//#region << Configuration >> ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
-		$stateProvider.state('webvella-areas-record-create', {
-			parent: 'webvella-areas-base',
-			url: '/:viewName?listName&filter&page',
+		$stateProvider.state('webvella-area-view-create', {
+			parent: 'webvella-area-base',
+			url: '/view-create/:viewName?listName&filter&page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -32,7 +32,7 @@
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordCreateController',
-					templateUrl: '/plugins/webvella-areas/record-create.view.html',
+					templateUrl: '/plugins/webvella-areas/area-view-create.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
@@ -492,7 +492,7 @@
 
 		ngCtrl.cancel = function () {
 			$timeout(function () {
-				$state.go("webvella-entity-records", {
+				$state.go("webvella-area-list-general", {
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
 					listName: $stateParams.listName,
@@ -530,7 +530,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				$state.go("webvella-entity-records", {
+				$state.go("webvella-area-list-general", {
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
 					listName: $stateParams.listName,
