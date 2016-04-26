@@ -298,7 +298,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
-						if (selectedEntity.recordViews[k].type == "general") {
+						if (selectedEntity.recordViews[k].type == "general" || selectedEntity.recordViews[k].type == "hidden") {
 							views.push(selectedEntity.recordViews[k]);
 						}
 					}
@@ -360,7 +360,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordLists.length; k++) {
-						if (selectedEntity.recordLists[k].type == "general") {
+						if (selectedEntity.recordLists[k].type == "general" || selectedEntity.recordLists[k].type == "hidden") {
 							lists.push(selectedEntity.recordLists[k]);
 						}
 					}

@@ -100,7 +100,7 @@
 													<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarItem.data[item.dataName]"
 														   e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-														   value='{{ngCtrl.selectedSidebarItem.data[item.dataName] | date:"dd MMM yyyy"}}'
+														   value='{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)}}'
 														   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 												</div>
@@ -116,7 +116,7 @@
 															<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarItem.data[item.dataName]"
 																   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 																   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-																   value='{{ngCtrl.selectedSidebarItem.data[item.dataName] | date:"dd MMM yyyy"}}'
+																   value='{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],{fieldType:4})}}'
 																   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 															<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
@@ -293,7 +293,7 @@
 												</div>
 												<!-- If type 18 - textbox -->
 												<div class="editable-wrapper input-group editable-updatable" ng-switch-when="18" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
-													 ng-dblclick="this['fieldForm_' + item.dataName].$show();$event.preventDefault()">
+													 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 													<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarItem.data[item.dataName]"
 														   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)}}"
 														   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
@@ -305,12 +305,13 @@
 												</div>
 												<!-- If type 19 - url -->
 												<div class="editable-wrapper input-group editable-updatable" ng-switch-when="19" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)"
-													 onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
+													 ng-dblclick="this['fieldForm_' + item.dataName].$show()">
 													<span class="input-group-addon" ng-if="!this['fieldForm_' + item.dataName].$visible">
 														<a href="{{ngCtrl.selectedSidebarItem.data[item.dataName]}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
 													</span>
 													<input type="text" class="form-control" disabled editable-text="ngCtrl.selectedSidebarItem.data[item.dataName]"
-														   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)}}">
+														   value="{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)}}"
+														   onbeforesave="ngCtrl.fieldUpdate(item, $data)"  e-form="{{'fieldForm_' + item.dataName}}">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-pencil fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-switch-when="19" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)">
@@ -832,8 +833,8 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'">Save changes</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'" translate="{{'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 

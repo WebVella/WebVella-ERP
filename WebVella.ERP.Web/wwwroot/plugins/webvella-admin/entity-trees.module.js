@@ -72,18 +72,18 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -92,9 +92,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -128,10 +128,10 @@
 
 	// Controller ///////////////////////////////
 	controller.$inject = ['$scope', '$sce', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedRelationsList', 'resolvedCurrentEntityMeta',
-					'$uibModal', 'resolvedEntityRecordTrees','$timeout'];
+					'$uibModal', 'resolvedEntityRecordTrees','$timeout','$translate'];
 	
 	function controller($scope, $sce, $log, $rootScope, $state, pageTitle, resolvedRelationsList, resolvedCurrentEntityMeta,
-					$uibModal, resolvedEntityRecordTrees,$timeout) {
+					$uibModal, resolvedEntityRecordTrees,$timeout,$translate) {
 
 		
 		var ngCtrl = this;
@@ -143,19 +143,16 @@
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.trees = fastCopy(resolvedEntityRecordTrees.recordTrees);
 		//Update page title
-		ngCtrl.pageTitle = "Entity Trees | " + pageTitle;
-		$timeout(function(){
+		$translate(['RECORD_TREE_LIST_PAGE_TITLE','ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_TREE_LIST_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
-			$timeout(function(){
 			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-			},0);
 		}
 
 		//#endregion
@@ -217,10 +214,10 @@
 
 	//#region << Modal Controllers >>
 	createTreeModalController.$inject = ['$uibModalInstance', '$log', 'ngToast', '$timeout', '$state', '$location', 'ngCtrl',
-						'resolvedEligibleRelationsList', 'webvellaCoreService'];
+						'resolvedEligibleRelationsList', 'webvellaCoreService','$translate'];
 	
 	function createTreeModalController($uibModalInstance, $log, ngToast, $timeout, $state, $location, ngCtrl,
-						resolvedEligibleRelationsList, webvellaCoreService) {
+						resolvedEligibleRelationsList, webvellaCoreService,$translate) {
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
@@ -241,9 +238,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + 'The tree was successfully saved'
+			$translate(['SUCCESS_MESSAGE_LABEL','RECORD_TREE_SAVE_SUCCESS_MESSAGE']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + translations.RECORD_TREE_SAVE_SUCCESS_MESSAGE
+				});
 			});
 			$uibModalInstance.close('success');
 			webvellaCoreService.GoToState($state.current.name, {});

@@ -1,16 +1,16 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createTreeModal()"><i class="fa fa-plus"></i> Add New</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createTreeModal()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.trees.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="List Name">
+					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{'RECORD_TREE_NAME' | translate}}">
 				</div>
 			</div>
 		</div>
 		<div class="meta-label">
-			<h4 class="no-link" translate="{{'RECORD_TREES'}}"></h4>
+			<h4 class="no-link" translate="{{'RECORD_TREE_LIST_PAGE_TITLE'}}"></h4>
 		</div>
 	</div>
 </div>
@@ -30,14 +30,14 @@
 
 
 	<div id="page-text">
-		<div class="alert alert-info" ng-show="::ngCtrl.trees.length == 0">This entity does not have any trees that match your query!</div>
+		<div class="alert alert-info" ng-show="::ngCtrl.trees.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
 		<table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.trees.length != 0">
 			<thead>
 				<tr>
 					<th class="actions"></th>
-					<th>Name</th>
-					<th>Relation</th>
-					<th>Root nodes</th>
+					<th translate="{{'NAME'}}"></th>
+					<th translate="{{'RELATION'}}"></th>
+					<th translate="{{'RECORD_TREE_ROOT_NODES'}}"></th>
 			</thead>
 			<tbody>
 				<tr ng-repeat="tree in ngCtrl.trees | filter: ngCtrl.search track by tree.id">
@@ -63,29 +63,21 @@
 <script type="text/ng-template" id="createTreeModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Create tree</h3>
+		<h3 class="modal-title" translate="{{'RECORD_TREE_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
-		<div class="alert alert-danger ng-hide" ng-show="::popupCtrl.eligibleRelations.length == 0">
-			There needs to be at least one relation matching the condition:<br/> - Only 1:N and N:N relations, where the current entity is both origin and target
-		</div>
+		<div class="alert alert-danger ng-hide" ng-show="::popupCtrl.eligibleRelations.length == 0" translate="{{'RECORD_TREE_CREATE_MODAL_ERROR'}}"></div>
 		<form name="createFrom" class="ng-hide" ng-show="::popupCtrl.eligibleRelations.length > 0">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.name.$invalid && !createFrom.name.$pristine || popupCtrl.validation.name.state}">
-						<label class="required" for="name">Name</label>
-						<input ng-model="popupCtrl.tree.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+						<label class="required" for="name" translate="{{'NAME'}}"></label>
+						<input ng-model="popupCtrl.tree.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_TREE_NAME_PLACEHOLDER' | translate}}"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createFrom.name.$touched && createFrom.name.$dirty && createFrom.name.$invalid || popupCtrl.validation.name.state">
-							<small class="error" ng-show="createFrom.name.$error.required && !popupCtrl.validation.name.state">
-								required field
-							</small>
-							<small class="error" ng-show="createFrom.name.$error.pattern && !popupCtrl.validation.name.state">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupCtrl.validation.name.state">
-								must be less than 50 chars
-							</small>
+							<small class="error" ng-show="createFrom.name.$error.required && !popupCtrl.validation.name.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createFrom.name.$error.pattern && !popupCtrl.validation.name.state" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error" ng-show="createFrom.name.$error.maxlength && !popupCtrl.validation.name.state" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error" ng-show="popupCtrl.validation.name.state">
 								{{popupCtrl.validation.name.message}}
 							</small>
@@ -94,13 +86,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.label.$invalid && !createFrom.label.$pristine || popupCtrl.validation.label.state }">
-						<label class="required" for="label">Label</label>
-						<input ng-model="popupCtrl.tree.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<label class="required" for="label" translate="{{'LABEL'}}"></label>
+						<input ng-model="popupCtrl.tree.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_TREE_LABEL_PLACEHOLDER' | translate}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createFrom.label.$touched && createFrom.label.$dirty && createFrom.label.$invalid || popupCtrl.validation.label.state">
-							<small class="error" ng-show="createFrom.label.$error.required && !popupCtrl.validation.label.state">
-								Tree label is required.
-							</small>
+							<small class="error" ng-show="createFrom.label.$error.required && !popupCtrl.validation.label.state" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.validation.label.state">
 								{{popupCtrl.validation.label.message}}
 							</small>
@@ -111,16 +101,16 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group" ng-class="{ 'has-error' : createFrom.relationId.$invalid && !createFrom.relationId.$pristine || popupCtrl.validation.relationId.state}">
-						<label class="required" for="name">Used Entity Relation</label>
+						<label class="required" translate="{{'RECORD_TREE_USED_RELATION'}}"></label>
 						<select class="form-control" ng-model="popupCtrl.tree.relationId" ng-options="relation.id as relation.name for relation in popupCtrl.eligibleRelations"></select>
-						<div class="form-description">allowed are 1:N relations, where the current entity is both origin and target</div>
+						<div class="form-description" translate="{{'RECORD_TREE_USED_RELATION_DESCRIPTION'}}"></div>
 					</div>
 				</div>
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="::popupCtrl.eligibleRelations.length > 0">Create Tree</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary ng-hide" ng-click="popupCtrl.ok()" ng-show="::popupCtrl.eligibleRelations.length > 0" translate="{{'RECORD_TREE_CREATE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>

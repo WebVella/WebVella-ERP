@@ -687,8 +687,8 @@ var $$UMFP; // reference to $UrlMatcherFactoryProvider
  *
  * * `':'` name - colon placeholder
  * * `'*'` name - catch-all placeholder
- * * `'{' name '}'` - curly placeholder
- * * `'{' name ':' regexp|type '}'` - curly placeholder with regexp or type name. Should the
+ * * `'{'NAME'}'` - curly placeholder
+ * * `'{'NAME':' regexp|type '}'` - curly placeholder with regexp or type name. Should the
  *   regexp itself contain curly braces, they must be in matched pairs or escaped with a backslash.
  *
  * Parameter names may contain only word characters (latin letters, digits, and underscore) and
@@ -742,8 +742,8 @@ function UrlMatcher(pattern, config, parentMatcher) {
   // Find all placeholders and create a compiled pattern, using either classic or curly syntax:
   //   '*' name
   //   ':' name
-  //   '{' name '}'
-  //   '{' name ':' regexp '}'
+  //   '{'NAME'}'
+  //   '{'NAME':' regexp '}'
   // The regular expression is somewhat complicated due to the need to allow curly braces
   // inside the regular expression. The placeholder regexp breaks down as follows:
   //    ([:*])([\w\[\]]+)              - classic placeholder ($1 / $2) (search version has - for snake-case)

@@ -3,7 +3,7 @@
 		<div class="aux-actions">
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' tree: </span>{{ngCtrl.tree.meta.label}}</h4>
+			<h4><span class="go-gray"><span translate="{{'RECORD_TREE_PAGE_TITLE'}}"></span>: </span>{{ngCtrl.tree.meta.label}}</h4>
 		</div>
 	</div>
 </div>
@@ -30,9 +30,7 @@
 					ng-class="{parent_li:node.nodes.length > 0, hovered: ngCtrl.attachHoverEffectClass[node.id]}"></li>
 			</ol>
 		</div>
-		<div class="alert alert-info" ng-if="ngCtrl.tree.data.length == 0">
-			No tree nodes found. If there are existing records for this entity, check the root tree nodes configuration			
-		</div>
+		<div class="alert alert-info" ng-if="ngCtrl.tree.data.length == 0" translate="{{'RECORD_TREE_MANAGE_NODES_NO_ITEMS_ALERT'}}"></div>
 	</div>
 </div>
 <script type="text/ng-template" id="nodes_renderer.html">
@@ -57,7 +55,7 @@
 <script type="text/ng-template" id="addNewTreeNodeModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Select <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
+		<h3 class="modal-title" translate="{{'SELECT'}}"><span></span> <span class="go-green">{{popupCtrl.getRelationLabel(popupCtrl.selectedItem.relationName)}}</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger ng-hide" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
@@ -100,20 +98,18 @@
 						</tr>
 					</tbody>
 				</table>
-				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0">
-					No records found
-				</div>
+				<div class="alert alert-info" ng-show="popupCtrl.relationLookupList.data.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
 				<ul class="pager" ng-if="popupCtrl.relationLookupList.meta.pageSize > 0">
 					<!--<li ng-if="popupCtrl.currentPage == 1" class="disabled previous"><a href="javascript:void(0)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>-->
-					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> Previous</a></li>
-					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>
+					<li ng-if="popupCtrl.currentPage != 1" class="previous"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage - 1, $event)"><i class="fa fa-fw fa-chevron-left"></i> <span  translate="{{'PREVIOUS'}}"></span></a></li>
+					<li ng-if="popupCtrl.relationLookupList.meta.pageSize <= popupCtrl.relationLookupList.data.length" class="next"><a href="javascript:void(0)" ng-click="popupCtrl.selectPage(popupCtrl.currentPage + 1, $event)"><span  translate="{{'NEXT'}}"></span> <i class="fa fa-fw fa-chevron-right"></i></a></li>
 					<!--<li ng-if="popupCtrl.relationLookupList.meta.pageSize > popupCtrl.relationLookupList.data.length" class="disabled next"><a href="javascript:void(0)">Next <i class="fa fa-fw fa-chevron-right"></i></a></li>-->
 				</ul>
 			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'">Save changes</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.saveRelationChanges()" ng-hide="popupCtrl.hasError" ng-if="popupCtrl.modalMode == 'multi-selection'"  translate="{{'SAVE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{'CANCEL'}}"></button>
 	</div>
 </script>

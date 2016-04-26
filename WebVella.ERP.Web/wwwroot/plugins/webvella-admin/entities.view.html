@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group has-feedback" ng-class="{ 'has-error' : createEntity.name.$invalid && !createEntity.name.$pristine || popupCtrl.nameError}">
-                        <label class="required" for="entityName" translate="{{' NAME '}}"></label>
+                        <label class="required" for="entityName" translate="{{'NAME'}}"></label>
                         <input ng-model="popupCtrl.entity.name" name="name" type="text" class="form-control" id="entityName" placeholder="{{'ENTITY_NAME_PLACEHOLDER' | translate}}"
                                required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
                         <ng-messages for="createEntity.name.$error" ng-if="createEntity.name.$touched && createEntity.name.$dirty && createEntity.name.$invalid || popupCtrl.nameError">

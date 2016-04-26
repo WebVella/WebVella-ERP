@@ -51,18 +51,18 @@
 
 	// Resolve Function /////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -71,9 +71,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -86,10 +86,10 @@
 	}
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', '$timeout'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', '$timeout','$translate'];
 
 	
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
@@ -103,14 +103,17 @@
 			return 0;
 		});
 
-		//Update page title
-		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
-		$timeout(function () {
+		//#region << Update page title & hide the side menu >>
+		$translate(['RECORD_VIEW_LIST_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_VIEW_LIST_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		}, 0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
+    	//#endregion
+
+		//Update page title
 		ngCtrl.showSidebar = function () {
 			//Show Sidemenu
 			$timeout(function () {

@@ -15,7 +15,7 @@
 
 	//#region << Configuration >> /////////////////////////
 	config.$inject = ['$stateProvider'];
-	
+
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-view-manage-sidebar', {
 			parent: 'webvella-admin-base',
@@ -51,18 +51,18 @@
 
 	//#region << Resolve >> ///////////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
+
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -71,9 +71,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -85,9 +85,9 @@
 		return defer.promise;
 	}
 
-	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
-	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	resolveViewLibrary.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
+
+	function resolveViewLibrary($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -95,9 +95,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				//Remove the current view from the list to avoid loop
@@ -119,9 +119,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -132,9 +132,9 @@
 		return defer.promise;
 	}
 
-	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
-	
-	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	resolveEntityRelationsList.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', '$translate'];
+
+	function resolveEntityRelationsList($q, $log, webvellaCoreService, $stateParams, $state, $timeout, $translate) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -142,9 +142,9 @@
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -153,9 +153,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -171,23 +171,22 @@
 	//#endregion
 
 	//#region << Controller >> ////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal','$timeout',
-                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList'];
-	
-	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal,$timeout,
-                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList) {
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', '$stateParams', 'pageTitle', '$uibModal', '$timeout',
+                            'resolvedCurrentEntityMeta', 'webvellaCoreService', 'ngToast', 'resolvedViewLibrary', 'resolvedEntityRelationsList', '$translate'];
 
-		
+	function controller($scope, $log, $rootScope, $state, $stateParams, pageTitle, $uibModal, $timeout,
+                        resolvedCurrentEntityMeta, webvellaCoreService, ngToast, resolvedViewLibrary, resolvedEntityRelationsList, $translate) {
+
+
 		var ngCtrl = this;
-		//#region << General init >>
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
-		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
-		$timeout(function(){
+		//#region << Update page title & hide the side menu >>
+		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_VIEW_MANAGE_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide side menu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		},0);
-		$rootScope.adminSectionName = "Entities";
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -262,9 +261,9 @@
 								ngCtrl.library.items.push(item);
 							}
 							break;
-						//case "list":
-						//	ngCtrl.library.items.push(item);
-						//	break;
+							//case "list":
+							//	ngCtrl.library.items.push(item);
+							//	break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
@@ -277,16 +276,16 @@
 								ngCtrl.library.relations.push(item);
 							}
 							break;
-						//case "viewFromRelation":
-						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-						//		ngCtrl.library.items.push(item);
-						//	}
-						//	break;
-						//case "listFromRelation":
-						//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-						//		ngCtrl.library.items.push(item);
-						//	}
-						//	break;
+							//case "viewFromRelation":
+							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							//		ngCtrl.library.items.push(item);
+							//	}
+							//	break;
+							//case "listFromRelation":
+							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+							//		ngCtrl.library.items.push(item);
+							//	}
+							//	break;
 					}
 				}
 			});
@@ -314,7 +313,7 @@
 		});
 
 		//#endregion
- 
+
 		//#region << Regenerate library >>
 		ngCtrl.regenerateLibrary = function () {
 			ngCtrl.generateAlreadyUsed();
@@ -334,10 +333,12 @@
 				}
 			}
 			if (relation == null) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> item relation not found',
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL', 'VALIDATION_RELATION_NOT_FOUND']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.VALIDATION_RELATION_NOT_FOUND,
+						timeout: 7000
+					});
 				});
 				moveFailure();
 				return;
@@ -361,9 +362,11 @@
 
 			function successCallback(response) {
 				if (response.success) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
+					$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+						ngToast.create({
+							className: 'success',
+							content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
 						if (response.object.regions[i].name === "content") {
@@ -383,10 +386,12 @@
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				if (eventObj != null) {
 					moveFailure();
@@ -426,10 +431,12 @@
 			}
 
 			function getRelatedEntityMetaErrorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> could not get the related entity meta - ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL', 'VALIDATION_ENTITY_NOT_FOUND']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.VALIDATION_ENTITY_NOT_FOUND + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				moveFailure();
 				return;
@@ -459,9 +466,11 @@
 
 			function successCallback(response) {
 				if (response.success) {
-					ngToast.create({
-						className: 'success',
-						content: '<span class="go-green">Success:</span> ' + response.message
+					$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+						ngToast.create({
+							className: 'success',
+							content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+						});
 					});
 					ngCtrl.view.sidebar.items = response.object.sidebar.items;
 					ngCtrl.regenerateLibrary();
@@ -473,10 +482,12 @@
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				ngCtrl.regenerateLibrary();
 			}
@@ -537,18 +548,22 @@
 
 
 			function successCallback(response) {
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> ' + response.message
+				$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'success',
+						content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+					});
 				});
 				ngCtrl.regenerateLibrary();
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				$state.reload();
 			}
@@ -579,17 +594,21 @@
 			}
 
 			function successCallback(response) {
-				ngToast.create({
-					className: 'success',
-					content: '<span class="go-green">Success:</span> ' + response.message
+				$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'success',
+						content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+					});
 				});
 			}
 
 			function errorCallback(response) {
-				ngToast.create({
-					className: 'error',
-					content: '<span class="go-red">Error:</span> ' + response.message,
-					timeout: 7000
+				$translate(['ERROR_MESSAGE_LABEL']).then(function (translations) {
+					ngToast.create({
+						className: 'error',
+						content: translations.ERROR_MESSAGE_LABEL + ' ' + response.message,
+						timeout: 7000
+					});
 				});
 				//Undo change
 				for (var j = 0; j < ngCtrl.library.relations.length; j++) {
@@ -663,10 +682,10 @@
 	}
 	//#endregion
 
-	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta'];
-	
-	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta) {
-		
+	ManageFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'eventObj', 'fieldObj', 'relatedEntityMeta', '$translate'];
+
+	function ManageFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, eventObj, fieldObj, relatedEntityMeta, $translate) {
+
 		var popupCtrl = this;
 		popupCtrl.parentData = fastCopy(parentData);
 		popupCtrl.field = fastCopy(fieldObj);
@@ -751,9 +770,11 @@
 
 		/// Aux
 		function successCallback(response) {
-			ngToast.create({
-				className: 'success',
-				content: '<span class="go-green">Success:</span> ' + response.message
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
 			});
 			$uibModalInstance.close('success');
 		}

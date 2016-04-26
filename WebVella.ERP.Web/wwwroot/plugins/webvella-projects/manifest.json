@@ -2,15 +2,14 @@
   "name": "webvella-core",
   "url": "http://webvella.com",
   "description": "WebVella ERP base plugin for bootstrapping the application",
-  "version": 1,
+  "version": "1.0",
   "company": "WebVella",
-  "company_url": "http://webvella.com",
+  "companyUrl": "http://webvella.com",
   "author": "Bozhidar Zashev",
-  "repository": "git://github.com/github-username/repository-name.git",
+  "repository":   "git://github.com/github-username/repository-name.git",
   "license": "Apache License 2.0",
-  "load_priority": 1,
-  "libraries": {
-    "css": [
+  "loadPriority": 1.0,
+  "libCss": [
     "/plugins/webvella-base/lib/bootstrap/dist/css/bootstrap.css",
     "/plugins/webvella-base/lib/ngtoast/dist/ngtoast.css",
     "/plugins/webvella-base/lib/font-awesome/css/font-awesome.css",
@@ -19,7 +18,12 @@
     "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.css",
     "http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic"
   ],
-    "js": [
+  //Included after all vendor libraries from vendors from all plugins are included
+  "moduleCss": [
+    "/plugins/webvella-base/css/webvella-base.module.css"
+  ],
+  //Included before Angular application initialization. Usually 3rd party libraries
+  "libJs": [
     "/plugins/webvella-base/lib/angular/angular.js",
     "/plugins/webvella-base/lib/angular-animate/angular-animate.js",
     "/plugins/webvella-base/lib/angular-sanitize/angular-sanitize.js",
@@ -37,10 +41,9 @@
   "moduleJs": [
     "/plugins/webvella-base/webvella-base.module.js"
   ],
-  "inludeInAppDependencies": [ "webvella-base" ],
-  "pluginDependencies": {
-    "<name>": "<version>",
-    "<name>": "<folder>",
-    "<name>": "<package>"
-  }
+  "inludeInAppDependencies": [ "webvella-core" ],
+  "pluginDependencies": [{
+    "name": "webvella-core",
+    "version": "1.0+"
+  }]
 }

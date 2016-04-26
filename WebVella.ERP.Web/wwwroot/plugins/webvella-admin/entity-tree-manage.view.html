@@ -1,10 +1,10 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a ng-click="ngCtrl.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i> Delete tree</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteTreeModal()"><i class="fa fa-fw fa-trash-o go-red"></i>  <span translate="{{'RECORD_TREE_DELETE'}}"></span></a>
 		</div>
 		<div class="meta-label">
-			<h4><span class="go-gray">Records' tree: </span>{{ngCtrl.tree.meta.label}}</h4>
+			<h4><span class="go-gray"><span translate="{{'RECORD_TREE_PAGE_TITLE'}}"></span>: </span>{{ngCtrl.tree.label}}</h4>
 		</div>
 	</div>
 </div>
@@ -24,7 +24,7 @@
 
 	<div id="page-text">
 		<div class="view-manage-section">
-			<h4 class="page-header">Basic info</h4>
+			<h4 class="page-header" translate="{{'RECORD_TREE_MANAGE_BASIC_HEADING'}}"></h4>
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<div class="form-horizontal">
@@ -32,7 +32,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Name</label>
+										<label class="control-label col-lg-2" translate="{{'NAME'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<input type="text" class="form-control" disabled value="{{::ngCtrl.tree.name}}"></input>
@@ -45,7 +45,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Label</label>
+										<label class="control-label col-lg-2" translate="{{'LABEL'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_label.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.label"
@@ -62,7 +62,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Default</label>
+										<label class="control-label col-lg-2" translate="{{'DEFAULT'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_default.$show()">
 												<span class="input-group-addon hidden-xs" ng-if="ngCtrl.tree.default && !fieldForm_default.$visible">
@@ -83,7 +83,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">System</label>
+										<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<span class="input-group-addon" ng-if="ngCtrl.tree.system">
@@ -104,12 +104,11 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">CSS class</label>
+										<label class="control-label col-lg-2" translate="{{'CSS_CLASS'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_cssClass.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.cssClass"
-													   value="{{ngCtrl.tree.cssClass}}"
-													   onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
+													   value="{{ngCtrl.tree.cssClass}}"  onbeforesave="ngCtrl.fieldUpdate('cssClass', $data)" e-form="fieldForm_cssClass">
 												<span class="input-group-addon" ng-click="fieldForm_cssClass.$show()" ng-hide="fieldForm_cssClass.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
 										</div>
@@ -119,7 +118,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Icon Name</label>
+										<label class="control-label col-lg-2" translate="{{'ICON_NAME'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.tree.iconName}} fa-fw"></i></span>
@@ -128,7 +127,7 @@
 													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description">review all icons in <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">Font Awesome site</a> </div>
+											<div class="form-description" translate="{{'ICON_NAME_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -139,7 +138,7 @@
 				</div>
 			</div>
 
-			<h4 class="page-header">Tree options</h4>
+			<h4 class="page-header" translate="{{'RECORD_TREE_OPTIONS'}}"></h4>
 			<div class="panel panel-default">
 				<div class="panel-body">
 					<div class="form-horizontal">
@@ -147,7 +146,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Entity Relation</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_USED_RELATION'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<span class="input-group-addon hidden-xs" ng-bind-html="::ngCtrl.getRelationBadgeHtml(ngCtrl.tree)"></span>
@@ -161,7 +160,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Depth limit</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_DEPTH_LIMIT'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_depthLimit.$show()">
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.tree.depthLimit"
@@ -178,13 +177,13 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Node Id field</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_NODE_ID_FIELD'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<input type="text" class="form-control" disabled value="{{::ngCtrl.nodeIdField.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
-											<div class="form-description">relation's origin field</div>
+											<div class="form-description" translate="{{'RECORD_TREE_NODE_ID_FIELD_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -192,13 +191,13 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Node Parent Id field</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_NODE_PARENT_ID_FIELD'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-readonly">
 												<input type="text" class="form-control" disabled value="{{::ngCtrl.nodeParentIdField.name}}"></input>
 												<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 											</div>
-											<div class="form-description">relation's target field</div>
+											<div class="form-description" translate="{{'RECORD_TREE_NODE_PARENT_ID_FIELD_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -208,7 +207,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Node name field</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_NODE_NAME_FIELD'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0"
 												ng-dblclick="fieldForm_nodeNameField.$show()">
@@ -217,8 +216,8 @@
 													   onbeforesave="ngCtrl.nodeNameUpdate($data)" e-form="fieldForm_nodeNameField">
 												<span class="input-group-addon" ng-click="fieldForm_nodeNameField.$show()" ng-hide="fieldForm_nodeNameField.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
-											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length == 0">There are no eligible field.  only required "auto increment", "unique identifier" and "text" fields. Used for URL generation</div>
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length > 0"></div>
+											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeNameEligibleFields.length == 0"></div>
 										</div>
 									</div>
 								</div>
@@ -226,7 +225,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Node label field</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_NODE_LABEL_FIELD'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0"
 											ng-dblclick="fieldForm_nodeLabelField.$show()">
@@ -235,7 +234,7 @@
 													   onbeforesave="ngCtrl.nodeLabelUpdate($data)" e-form="fieldForm_nodeLabelField">
 												<span class="input-group-addon" ng-click="fieldForm_nodeLabelField.$show()" ng-hide="fieldForm_nodeLabelField.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0">only required "auto increment", "unique identifier" and "text" fields.</div>
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeLabelEligibleFields.length > 0" translate="{{'RECORD_TREE_NODE_LABEL_FIELD_DESCRIPTION'}}"></div>
 										</div>
 									</div>
 								</div>
@@ -245,7 +244,7 @@
 							<div class="col-sm-6">
 								<div class="form-group">
 									<div class="row editable-field field">
-										<label class="control-label col-lg-2">Node weight field</label>
+										<label class="control-label col-lg-2" translate="{{'RECORD_TREE_NODE_WEIGHT_FIELD'}}"></label>
 										<div class="col-lg-10">
 											<div class="editable-wrapper input-group editable-updatable ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0"
 											 ng-dblclick="fieldForm_nodeWeightUpdate.$show()">
@@ -254,8 +253,8 @@
 													   onbeforesave="ngCtrl.nodeWeightUpdate($data)" e-form="fieldForm_nodeWeightUpdate">
 												<span class="input-group-addon" ng-click="fieldForm_nodeWeightUpdate.$show()" ng-hide="fieldForm_nodeWeightUpdate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>
-											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0">only required "auto increment" and "number" fields. Sort is ascending</div>
-											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length == 0">There are no eligible field.  Only required "auto increment" and "number" fields. Sort is ascending</div>											
+											<div class="form-description ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length > 0" translate="{{'RECORD_TREE_NODE_WEIGHT_FIELD_DESCRIPTION'}}"></div>
+											<div class="alert alert-danger ng-hide" ng-show="::ngCtrl.nodeWeightEligibleFields.length == 0" translate="{{'RECORD_TREE_NODE_WEIGHT_FIELD_ALERT'}}"></div>											
 										</div>
 									</div>
 								</div>
@@ -267,13 +266,13 @@
 				</div>
 			</div>
 
-			<h4 class="page-header" style="margin-top:2em">Branches Root nodes</h4>
+			<h4 class="page-header" style="margin-top:2em" translate="{{'RECORD_TREE_ROOT_NODES_HEADING'}}"></h4>
 			<div class="row" style="margin:0;">
 				<div class="form-group col-sm-6" style="padding-left:0;">
 					<div class="input-group">
 						<input ng-model="ngCtrl.addRecordId" type="text" class="form-control" placeholder="record id" ng-keydown="ngCtrl.checkForAddEnter($event)">
 						<span class="input-group-btn">
-							<a href="javascript:void(0)" class="btn btn-default" ng-click="ngCtrl.addNewRootNodeById()"><i class="fa fa-fw fa-plus"></i> Add</a>
+							<a href="javascript:void(0)" class="btn btn-default" ng-click="ngCtrl.addNewRootNodeById()"><i class="fa fa-fw fa-plus"></i> <span translate="{{'ADD'}}"></span></a>
 						</span>
 					</div>
 				</div>
@@ -281,12 +280,12 @@
 			<table class="table table-bordered ng-hide table-hover" ng-show="ngCtrl.tree.rootNodes.length>0">
 				<thead>
 					<tr>
-						<th width="60">action</th>
-						<th>record id</th>
-						<th>id</th>
-						<th>name</th>
-						<th>label</th>
-						<th>parent id</th>
+						<th width="60" translate="{{'ACTION'}}"></th>
+						<th translate="{{'RECORD_ID'}}"></th>
+						<th translate="{{'ID'}}"></th>
+						<th translate="{{'NAME'}}"></th>
+						<th translate="{{'LABEL'}}"></th>
+						<th translate="{{'PARENT_ID'}}"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -300,15 +299,15 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="alert alert-info ng-hide" ng-show="ngCtrl.tree.rootNodes.length==0">No records are selected as root nodes yet</div>
+			<div class="alert alert-info ng-hide" ng-show="ngCtrl.tree.rootNodes.length==0" translate="{{'RECORD_TREE_ROOT_NODES_MISSING_ALERT'}}"></div>
 
-			<h4 class="page-header" style="margin-top:2em">Node object properties</h4>
+			<h4 class="page-header" style="margin-top:2em" translate="{{'RECORD_TREE_NODE_OBJECT_PROPERTIES_HEADING'}}"></h4>
 			<table class="table table-bordered table-hover">
 				<thead>
 					<tr>
-						<th width="60">action</th>
-						<th>field</th>
-						<th>type</th>
+						<th width="60" translate="{{'ACTION'}}">action</th>
+						<th translate="{{'FIELD'}}">field</th>
+						<th translate="{{'TYPE'}}">type</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -339,17 +338,17 @@
 <script type="text/ng-template" id="deleteTreeModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Delete a tree</h3>
+		<h3 class="modal-title" translate="{{'RECORD_TREE_DELETE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<div class="alert alert-danger" ng-bind="popupCtrl.errorMessage" ng-show="popupCtrl.hasError"></div>
 		<div ng-hide="popupCtrl.hasError">
-			<p>Are you sure that you need this tree deleted?</p>
+			<p translate="{{'RECORD_TREE_DELETE_MODAL_QUESTION'}}"></p>
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError">Delete Tree</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-danger" ng-click="popupCtrl.ok()" ng-hide="popupCtrl.hasError" translate="{{'RECORD_TREE_DELETE'}}">/button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 

@@ -1,16 +1,16 @@
 <div id="page-title">
     <div id="page-meta">
         <div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createView()"><i class="fa fa-plus"></i> Add New</a>
+			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createView()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.views.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
-					<input ng-model="searchFilter" type="text" class="form-control" placeholder="View Name">
+					<input ng-model="searchFilter" type="text" class="form-control" placeholder="{{'RECORD_VIEW_NAME' | translate}}">
 				</div>
 			</div>
         </div>
         <div class="meta-label">
-            <h4>Entity record views</h4>
+            <h4 translate="{{'RECORD_VIEW_LIST_PAGE_TITLE'}}"></h4>
         </div>
     </div>
 </div>
@@ -30,14 +30,14 @@
 
  
 	<div id="page-text">
-        <div class="alert alert-info ng-hide" ng-show="ngCtrl.views.length == 0">No records found!</div>
+        <div class="alert alert-info ng-hide" ng-show="ngCtrl.views.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
         <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="ngCtrl.views.length == 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
-                    <th class="name">Name</th>
-                    <th class="type">Type</th>
-					<th class="stats" style="width:200px;">Stats</th>
+                    <th class="name" translate="{{'Name'}}"></th>
+                    <th class="type" translate="{{'Type'}}"></th>
+					<th class="stats" style="width:200px;"  translate="{{'STATISTICS_ABBR'}}"></th>
             </thead>
             <tbody>
                 <tr ng-repeat="view in ngCtrl.views | filter: {name: searchFilter} track by view.id">
@@ -72,26 +72,20 @@
 <script type="text/ng-template" id="createViewModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Create view</h3>
+		<h3 class="modal-title" translate="{{'RECORD_VIEW_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<form name="createView">
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createView.name.$invalid && !createView.name.$pristine || popupCtrl.nameError}">
-						<label class="required" for="name">Name</label>
-						<input ng-model="popupCtrl.view.name" name="name" type="text" class="form-control" id="name" placeholder="e.g. short-details"
+						<label class="required" for="name" translate="{{'NAME'}}"></label>
+						<input ng-model="popupCtrl.view.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_VIEW_NAME_PLACEHOLDER' | translate}}"
 							   required pattern="^[a-z~](?!.*__)[a-z0-9_~]*[a-z0-9~]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error ng-hide" ng-show="createView.name.$touched && createView.name.$dirty && createView.name.$invalid || popupCtrl.nameError">
-							<small class="error" ng-show="createView.name.$error.required && !popupCtrl.nameError">
-								required field
-							</small>
-							<small class="error" ng-show="createView.name.$error.pattern">
-								only lowercase alphanumeric characters or underscore, must start with a letter, at least two chars
-							</small>
-							<small class="error" ng-show="createView.name.$error.maxlength">
-								must be less than 50 chars
-							</small>
+							<small class="error" ng-show="createView.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createView.name.$error.pattern" translate="{{'VALIDATION_ONLY_ALPHANUMERIC_AND_UNDERSCODE'}}"></small>
+							<small class="error" ng-show="createView.name.$error.maxlength" translate="{{'VALIDATION_LESS_THAN_50_CHARS'}}"></small>
 							<small class="error" ng-show="popupCtrl.nameError">
 								{{popupCtrl.nameMessage}}
 							</small>
@@ -100,13 +94,11 @@
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createView.label.$invalid && !createView.label.$pristine || popupCtrl.labelError }">
-						<label class="required" for="label">Label</label>
-						<input ng-model="popupCtrl.view.label" type="text" class="form-control" id="label" name="label" placeholder="e.g. Short details"
+						<label class="required" for="label" translate="{{'LABEL'}}"></label>
+						<input ng-model="popupCtrl.view.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_VIEW_LABEL_PLACEHOLDER' | translate}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createView.label.$touched && createView.label.$dirty && createView.label.$invalid || popupCtrl.labelError">
-							<small class="error" ng-show="createView.label.$error.required && !popupCtrl.labelError">
-								Area label is required.
-							</small>
+							<small class="error" ng-show="createView.label.$error.required && !popupCtrl.labelError"  translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.labelError">
 								{{popupCtrl.labelMessage}}
 							</small>
@@ -120,15 +112,15 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Create View</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'RECORD_VIEW_CREATE'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
 
 <script type="text/ng-template" id="copyModal.html">
 	<div class="modal-header" id="modal-top">
 		<button type="button" class="close" ng-click="popupCtrl.cancel('cancel')" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<h3 class="modal-title">Copy view</h3>
+		<h3 class="modal-title" translate="{{'RECORD_VIEW_COPY_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
 		<table class="form" style="width:100%">
@@ -137,7 +129,7 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> Clone as new
+						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
 						</label>
 					  </div>
 					</div>
@@ -156,7 +148,7 @@
 					<div class="form-group">
 					  <div class="radio checkbox">
 						<label>
-						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> Clone in existing
+						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span>
 						</label>
 					  </div>
 					</div>
@@ -170,7 +162,7 @@
 		</table>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="popupCtrl.ok()">Copy view</button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()">Cancel</button>
+		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'RECORD_VIEW_COPY'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
