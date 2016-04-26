@@ -184,8 +184,10 @@
 										<div ng-switch-when="11">
 											<!--multiselect field-->
 											<div class="form-group form-group-sm">
-												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-														ng-options="option.value as option.key for option in column.meta.options"></select>
+												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<option value=""></option>
+														<option value="{{option.key}}" ng-repeat="option in column.meta.options">{{option.value}}</option>
+												</select>
 											</div>
 										</div>
 										<div ng-switch-when="12">
@@ -224,8 +226,10 @@
 										<div ng-switch-when="17">
 											<!--dropdown field-->
 											<div class="form-group form-group-sm">
-												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]"
-														ng-options="option.value as option.key for option in column.meta.options"></select>
+												<select class="form-control" ng-model="ngCtrl.filterQuery[column.dataName]">
+														<option value=""></option>
+														<option value="{{option.key}}" ng-repeat="option in column.meta.options">{{option.value}}</option>
+												</select>
 											</div>
 										</div>
 										<div ng-switch-when="18">

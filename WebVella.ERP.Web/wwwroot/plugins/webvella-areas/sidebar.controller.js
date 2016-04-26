@@ -34,7 +34,7 @@
 					return false;
 				}
 			}
-			else if (attachment.name == $stateParams.entityName && $state.current.name == "webvella-entity-records") {
+			else if (attachment.name == $stateParams.entityName && ($state.current.name == "webvella-entity-records" || $state.current.name ==  "webvella-areas-record-create")) {
 				return true;
 			}
 			else {

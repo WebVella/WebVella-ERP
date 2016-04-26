@@ -1,5 +1,5 @@
 {
-  "name": "webvella-base",
+  "name": "webvella-core",
   "url": "http://webvella.com",
   "description": "WebVella ERP base plugin for bootstrapping the application",
   "version": "1.0",
@@ -41,10 +41,9 @@
   "moduleJs": [
     "/plugins/webvella-base/webvella-base.module.js"
   ],
-  "inludeInAppDependencies": [ "webvella-base" ],
-  "pluginDependencies": {
-    "<name>": "<version>",
-    "<name>": "<folder>",
-    "<name>": "<package>"
-  }
+  "inludeInAppDependencies": [ "webvella-core" ],
+  "pluginDependencies": [{
+    "name": "webvella-core",
+    "version": "1.0+"
+  }]
 }
