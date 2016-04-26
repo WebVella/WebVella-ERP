@@ -24,5 +24,4 @@
     "js": [ "/plugins/webvella-sample-plugin/webvella-sample.module.js" ],
     "wvApp_injects": [ "webvella-sample-module" ]
   }
-
 }

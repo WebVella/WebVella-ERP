@@ -36,12 +36,14 @@ namespace WebVella.ERP.Plugins
 				try
 				{
 					plugin = JsonConvert.DeserializeObject<Plugin>(manifestJson);
+					plugins.Add(plugin);
 				}
 				catch (Exception ex)
 				{
 					throw new Exception("An exception is thrown while parsing plugin manifest file: '" + manifestFilePath +"'", ex);
 				}
 				plugin.Assemblies = new List<Assembly>();
+
 
 				var binDir = new DirectoryInfo(Path.Combine(pluginDir.PhysicalPath, "bin"));
 				if (!binDir.Exists)
