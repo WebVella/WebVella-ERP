@@ -6,41 +6,37 @@
   "company": "WebVella",
   "company_url": "http://webvella.com",
   "author": "Bozhidar Zashev",
-  "repository": "git://github.com/github-username/repository-name.git",
+  "repository": "",
   "license": "Apache License 2.0",
   "load_priority": 1,
   "libraries": {
     "css": [
-    "/plugins/webvella-base/lib/bootstrap/dist/css/bootstrap.css",
-    "/plugins/webvella-base/lib/ngtoast/dist/ngtoast.css",
-    "/plugins/webvella-base/lib/font-awesome/css/font-awesome.css",
-    "/plugins/webvella-base/lib/offline/themes/offline-theme-default.css",
-    "/plugins/webvella-base/lib/offline/themes/offline-language-english.css",
-    "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.css",
-    "http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic"
-  ],
+      "/plugins/webvella-base/lib/bootstrap/dist/css/bootstrap.css",
+      "/plugins/webvella-base/lib/ngtoast/dist/ngtoast.css",
+      "/plugins/webvella-base/lib/font-awesome/css/font-awesome.css",
+      "/plugins/webvella-base/lib/offline/themes/offline-theme-default.css",
+      "/plugins/webvella-base/lib/offline/themes/offline-language-english.css",
+      "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.css",
+      "http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic"
+    ],
     "js": [
-    "/plugins/webvella-base/lib/angular/angular.js",
-    "/plugins/webvella-base/lib/angular-animate/angular-animate.js",
-    "/plugins/webvella-base/lib/angular-sanitize/angular-sanitize.js",
-    "/plugins/webvella-base/lib/angular-aria/angular-aria.js",
-    "/plugins/webvella-base/lib/angular-messages/angular-messages.js",
-    "/plugins/webvella-base/lib/angular-touch/angular-touch.js",
-    "/plugins/webvella-base/lib/angular-ui-router/release/angular-ui-router.js",
-    "/plugins/webvella-base/lib/ngtoast/dist/ngToast.js",
-    "/plugins/webvella-base/lib/offline/offline.min.js",
-    "/plugins/webvella-base/lib/angular-bootstrap/ui-bootstrap-tpls.js",
-    "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.js",
-    "/plugins/webvella-base/lib/vendor-init.js"
-  ],
-  //Included after Angular application initialization
-  "moduleJs": [
-    "/plugins/webvella-base/webvella-base.module.js"
-  ],
-  "inludeInAppDependencies": [ "webvella-base" ],
-  "pluginDependencies": {
-    "<name>": "<version>",
-    "<name>": "<folder>",
-    "<name>": "<package>"
+      "/plugins/webvella-base/lib/angular/angular.js",
+      "/plugins/webvella-base/lib/angular-animate/angular-animate.js",
+      "/plugins/webvella-base/lib/angular-sanitize/angular-sanitize.js",
+      "/plugins/webvella-base/lib/angular-aria/angular-aria.js",
+      "/plugins/webvella-base/lib/angular-messages/angular-messages.js",
+      "/plugins/webvella-base/lib/angular-touch/angular-touch.js",
+      "/plugins/webvella-base/lib/angular-ui-router/release/angular-ui-router.js",
+      "/plugins/webvella-base/lib/ngtoast/dist/ngToast.js",
+      "/plugins/webvella-base/lib/offline/offline.min.js",
+      "/plugins/webvella-base/lib/angular-bootstrap/ui-bootstrap-tpls.js",
+      "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.js",
+      "/plugins/webvella-base/lib/vendor-init.js"
+    ]
+  },
+  "module": {
+    "css": [ ],
+    "js": [ "/plugins/webvella-base/webvella-base.module.js" ],
+    "wvApp_injects": [ "webvella-base" ]
   }
 }
