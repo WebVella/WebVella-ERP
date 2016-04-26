@@ -1885,12 +1885,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/System.Numerics.Vectors.dll": {},
-          "ref/net46/_._": {}
+          "ref/net46/_._": {},
+          "ref/net46/System.Numerics.Vectors.dll": {}
         },
         "runtime": {
-          "lib/net46/System.Numerics.Vectors.dll": {},
-          "lib/net46/_._": {}
+          "lib/net46/_._": {},
+          "lib/net46/System.Numerics.Vectors.dll": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -2015,6 +2015,7 @@
           "AutoMapper": "3.3.1",
           "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
           "Microsoft.CSharp": "4.0.1-beta-23516",
           "Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
@@ -3924,12 +3925,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/System.Numerics.Vectors.dll": {},
-          "ref/net46/_._": {}
+          "ref/net46/_._": {},
+          "ref/net46/System.Numerics.Vectors.dll": {}
         },
         "runtime": {
-          "lib/net46/System.Numerics.Vectors.dll": {},
-          "lib/net46/_._": {}
+          "lib/net46/_._": {},
+          "lib/net46/System.Numerics.Vectors.dll": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -4054,6 +4055,7 @@
           "AutoMapper": "3.3.1",
           "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
           "Microsoft.CSharp": "4.0.1-beta-23516",
           "Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
@@ -5963,12 +5965,12 @@
           "System.Numerics"
         ],
         "compile": {
-          "ref/net46/System.Numerics.Vectors.dll": {},
-          "ref/net46/_._": {}
+          "ref/net46/_._": {},
+          "ref/net46/System.Numerics.Vectors.dll": {}
         },
         "runtime": {
-          "lib/net46/System.Numerics.Vectors.dll": {},
-          "lib/net46/_._": {}
+          "lib/net46/_._": {},
+          "lib/net46/System.Numerics.Vectors.dll": {}
         }
       },
       "System.Reflection/4.0.0": {
@@ -6093,6 +6095,7 @@
           "AutoMapper": "3.3.1",
           "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
           "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
+          "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
           "Microsoft.CSharp": "4.0.1-beta-23516",
           "Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
           "Microsoft.Extensions.Configuration": "1.0.0-rc1-final",
@@ -8499,6 +8502,9 @@
       "Microsoft.AspNet.Server.WebListener >= 1.0.0-rc1-final",
       "Microsoft.AspNet.StaticFiles >= 1.0.0-rc1-final",
       "Microsoft.AspNet.Tooling.Razor >= 1.0.0-rc1-final",
+      "Microsoft.AspNet.Mvc.Abstractions >= 6.0.0-rc1-final",
+      "Microsoft.AspNet.Mvc.ViewFeatures >= 6.0.0-rc1-final",
+      "Microsoft.AspNet.Mvc.Core >= 6.0.0-rc1-final",
       "Microsoft.CSharp >= 4.0.1-beta-23516",
       "Microsoft.Extensions.Caching.Memory >= 1.0.0-rc1-final",
       "Microsoft.Extensions.Configuration >= 1.0.0-rc1-final",
