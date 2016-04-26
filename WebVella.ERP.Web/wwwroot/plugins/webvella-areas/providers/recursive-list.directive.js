@@ -578,7 +578,7 @@
 		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "content") {
+			if (popupCtrl.viewMeta.regions[j].name === "default") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}
@@ -882,7 +882,7 @@
 		
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "content") {
+			if (popupCtrl.viewMeta.regions[j].name === "default") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}

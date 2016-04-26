@@ -21,7 +21,10 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-areas-view-general', {
 			parent: 'webvella-area-base',
-			url: '/view-general/:viewName/:recordId',
+			url: '/view-general/:viewName/:recordId/:regionName',
+			params:{
+				regionName:{value:"default",squash:true}
+			},
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -512,6 +515,10 @@
 			section.collapsed = !section.collapsed;
 		}
 		//#endregion
+
+		ngCtrl.goToRegion = function(regionName){
+			webvellaCoreService.GoToState('webvella-areas-view-general',{areaName:ngCtrl.stateParams.areaName,entityName:ngCtrl.stateParams.entityName,viewName:ngCtrl.stateParams.viewName,recordId:ngCtrl.stateParams.recordId,regionName: regionName})
+		}
 
 		//#region << When Edit Inits >>
 		if (ngCtrl.isEdit) {

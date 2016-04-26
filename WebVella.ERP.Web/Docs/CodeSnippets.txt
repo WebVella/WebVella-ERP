@@ -666,7 +666,7 @@ TREE SELECT
 	//Save section
 	foreach (var region in updateViewInput.Regions)
 	{
-		if (region.Name == "content")
+		if (region.Name == "default")
 		{
 			region.Sections.Add(viewSection);
 		}

@@ -125,7 +125,7 @@
 			var itemsCount = 0;
 			var sectionsCount = 0;
 			for (var i = 0; i < view.regions.length; i++) {
-				if (view.regions[i].name == "content") {
+				if (view.regions[i].name == "default") {
 					sectionsCount = view.regions[i].sections.length;
 					var sections = view.regions[i].sections;
 					for (var j = 0; j < sections.length; j++) {

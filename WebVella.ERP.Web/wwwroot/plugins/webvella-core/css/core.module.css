@@ -186,6 +186,10 @@ span.divider {
 	display: block !important;
 }
 
+.display-inline-block {
+	display: inline-block  !important;
+}
+
 .navbar.desktop {
 	border-radius: 0;
 	background: #212121;
@@ -197,7 +201,13 @@ span.divider {
 	min-height: 40px;
 }
 
-	.navbar.navbar-default.navbar-erp li > a {
+.navbar.navbar-default.navbar-erp .navbar-brand{
+	height:40px;
+	color:#999;
+}
+
+	.navbar.navbar-default.navbar-erp li > a,
+	.navbar.navbar-default.navbar-erp .navbar-header > span {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
@@ -205,6 +215,11 @@ span.divider {
 	.navbar.navbar-default.navbar-erp li.active > a {
 		background-color: #ddd;
 	}
+	
+	.navbar.navbar-default.navbar-erp li > a.action:hover {
+		color:#F44336 !important;
+	}
+
 
 .text-center {
 	text-align: center;

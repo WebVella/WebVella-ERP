@@ -122,7 +122,7 @@
 			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
 				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
 				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.entity.recordViews[i].regions[j].name === "content") {
+					if (ngCtrl.entity.recordViews[i].regions[j].name === "default") {
 						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
 					}
 				}
