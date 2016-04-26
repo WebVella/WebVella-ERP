@@ -100,7 +100,7 @@
 													<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarItem.data[item.dataName]"
 														   e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 														   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-														   value='{{ngCtrl.selectedSidebarItem.data[item.dataName] | date:"dd MMM yyyy"}}'
+														   value='{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],item.meta)}}'
 														   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 													<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 												</div>
@@ -116,7 +116,7 @@
 															<input type="text" class="form-control" disabled editable-bsdate="ngCtrl.selectedSidebarItem.data[item.dataName]"
 																   data-e-datepicker-popup="yyyy-MMM-dd" e-is-open="ngCtrl.opened[item.dataName]" e-init-date="false"
 																   onshow="ngCtrl.open(item.dataName,true)" onhide="ngCtrl.open(item.dataName,false)"
-																   value='{{ngCtrl.selectedSidebarItem.data[item.dataName] | date:"dd MMM yyyy"}}'
+																   value='{{ngCtrl.renderFieldValue(ngCtrl.selectedSidebarItem.data[item.dataName],{fieldType:4})}}'
 																   onbeforesave="ngCtrl.fieldUpdate(item, $data)" e-form="{{'fieldForm_' + item.dataName}}">
 															<span class="input-group-addon" ng-click="this['fieldForm_' + item.dataName].$show()" ng-hide="this['fieldForm_' + item.dataName].$visible"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>

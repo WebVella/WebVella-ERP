@@ -484,7 +484,7 @@
 				}
 			}
 			else {
-				return moment(data).format("DD MMM YYYY");;
+				return moment(data).format("DD MMM YYYY"); //should be first converted to local format
 			}
 		}
 		//5.Datetime
@@ -2490,7 +2490,7 @@
 							return "This is a required field";
 						}
 						//Tue Feb 02 2016 02:00:00 GMT+0200 (FLE Standard Time)
-						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").startOf('day').utc().toISOString();
+						data = moment(data, "ddd MMM DD YYYY HH:mm:ss [GMT]ZZ").utc().toISOString();
 
 						break;
 					case 5: //Datetime
