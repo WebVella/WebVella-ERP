@@ -834,10 +834,7 @@
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
 		popupCtrl.currentlyAttachedIds = [];
-		if (popupCtrl.parentData.entityData[idFieldPrefix + "id"] && popupCtrl.parentData.entityData[idFieldPrefix + "id"].length > 0) {
-			popupCtrl.currentlyAttachedIds = popupCtrl.parentData.entityData[idFieldPrefix + "id"];
-		}
-		popupCtrl.getRelationLabel = ngCtrl.getRelationLabel;
+		popupCtrl.getRelationLabel = popupCtrl.parentData.getRelationLabel;
 
 
 		//Get the default lookup list for the entity
