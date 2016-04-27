@@ -6,9 +6,10 @@
 	</div>
 </div>
 <div class="tabbable tabs-left spilled">
-	<!--<a class="back clearfix" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>-->
-	<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
+	<!--<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>-->
+
 	<ul class="nav nav-tabs">
+		<li dynamic-html template="actionItem.template" ng-repeat="actionItem in sidebarData.sidebarTopActions track by actionItem.name" />
 		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items" ng-switch="item.type">
 			<a ng-switch-when="view" ng-if="item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.name}}/{{::sidebarData.stateParams.recordId}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>

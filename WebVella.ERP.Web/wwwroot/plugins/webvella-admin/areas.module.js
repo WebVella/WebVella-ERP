@@ -220,7 +220,7 @@
 			var hasDefaultList = false;
 			//check if has default view
 			for (var v = 0; v < popupCtrl.entities[i].recordViews.length; v++) {
-				if (popupCtrl.entities[i].recordViews[v].default && popupCtrl.entities[i].recordViews[v].type === "general") {
+				if (popupCtrl.entities[i].recordViews[v].default && (popupCtrl.entities[i].recordViews[v].type === "general" || popupCtrl.entities[i].recordViews[v].type === "hidden" )) {
 					hasDefaultView = true;
 				}
 			}
@@ -329,7 +329,7 @@
 				if (popupCtrl.entities[i].name == entityName) {
 					var selectedEntity = popupCtrl.entities[i];
 					for (var k = 0; k < selectedEntity.recordViews.length; k++) {
-						if (selectedEntity.recordViews[k].type == "create") {
+						if (selectedEntity.recordViews[k].type == "create" || selectedEntity.recordViews[k].type == "hidden") {
 							creates.push(selectedEntity.recordViews[k]);
 						}
 					}
@@ -418,19 +418,19 @@
 					selectedEntity.iconName = popupCtrl.cleanEntities[i].iconName;
 					selectedEntity.weight = popupCtrl.cleanEntities[i].weight;
 					for (var j = 0; j < popupCtrl.cleanEntities[i].recordViews.length; j++) {
-						if (popupCtrl.cleanEntities[i].recordViews[j].default && popupCtrl.cleanEntities[i].recordViews[j].type == "general") {
+						if (popupCtrl.cleanEntities[i].recordViews[j].default && (popupCtrl.cleanEntities[i].recordViews[j].type == "general" || popupCtrl.cleanEntities[i].recordViews[j].type == "hidden")) {
 							selectedEntity.view.name = popupCtrl.cleanEntities[i].recordViews[j].name;
 							selectedEntity.view.label = popupCtrl.cleanEntities[i].recordViews[j].label;
 						}
 					}
 					for (var j = 0; j < popupCtrl.cleanEntities[i].recordViews.length; j++) {
-						if (popupCtrl.cleanEntities[i].recordViews[j].default && popupCtrl.cleanEntities[i].recordViews[j].type == "create") {
+						if (popupCtrl.cleanEntities[i].recordViews[j].default && (popupCtrl.cleanEntities[i].recordViews[j].type == "create" || popupCtrl.cleanEntities[i].recordViews[j].type == "hidden")) {
 							selectedEntity.create.name = popupCtrl.cleanEntities[i].recordViews[j].name;
 							selectedEntity.create.label = popupCtrl.cleanEntities[i].recordViews[j].label;
 						}
 					}
 					for (var m = 0; m < popupCtrl.cleanEntities[i].recordLists.length; m++) {
-						if (popupCtrl.cleanEntities[i].recordLists[m].default && popupCtrl.cleanEntities[i].recordLists[m].type == "general") {
+						if (popupCtrl.cleanEntities[i].recordLists[m].default && (popupCtrl.cleanEntities[i].recordLists[m].type == "general" || popupCtrl.cleanEntities[i].recordLists[m].type == "hidden")) {
 							selectedEntity.list.name = popupCtrl.cleanEntities[i].recordLists[m].name;
 							selectedEntity.list.label = popupCtrl.cleanEntities[i].recordLists[m].label;
 						}

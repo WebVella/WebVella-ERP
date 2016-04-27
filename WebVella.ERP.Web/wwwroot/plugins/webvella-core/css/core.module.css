@@ -67,8 +67,7 @@ form.form-signin {
 
 .page-buttons {
 	border: 1px solid #ccc;
-	margin-top: 4em;
-	padding-top: 1em;
+	margin-top: 1em;
 	background: white;
 	padding: 10px;
 }
@@ -2783,7 +2782,7 @@ table .btn-xs.btn-link {
 
 #sidebar .tabbable.spilled {
 	left: -26px;
-	top: 67px;
+	top: 49px;
 }
 
 	#sidebar .tabbable.spilled .back {
@@ -2918,8 +2917,7 @@ table .btn-xs.btn-link {
 
 .mini-sidebar #sidebar .tabbable.spilled {
 	left: 0;
-	top: 120px;
-	top: 105px;
+	top: 81px;
 }
 
 .mini-sidebar .tabbable.spilled ul {
@@ -3129,6 +3127,10 @@ table .btn-xs.btn-link {
 	margin-top: 10px;
 	width: 90px;
 	float: right;
+}
+
+#sidebar li a.back {
+	line-height:20px;
 }
 
 .mini-sidebar #sidebar a.back {

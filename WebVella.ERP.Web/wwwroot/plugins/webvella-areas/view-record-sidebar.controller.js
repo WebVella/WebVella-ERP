@@ -54,14 +54,14 @@
 
     	//Generate menu items list
         sidebarData.items = [];
-
+		sidebarData.sidebarTopActions = [];
 		if(resolvedCurrentParentView == null){
 			var generalItem = {
 				is_parent: true,
 				parentViewName: null,
         		name: sidebarData.view.name,
-        		label: "Details",
-        		iconName: "info-circle",
+        		label: sidebarData.view.label,
+        		iconName: sidebarData.view.iconName,
 				type:"view"
 			};
 			sidebarData.items.push(generalItem);
@@ -95,14 +95,22 @@
 
 			});
 
+			sidebarData.view.actionItems.forEach(function (actionItem) {
+				switch (actionItem.menu) {
+					case "sidebar-top":
+						sidebarData.sidebarTopActions.push(actionItem);
+						break;
+				}
+			});
+
 		}
 		else {
 			var generalItem = {
 				is_parent: true,
         		name: sidebarData.parentView.name,
 				parentViewName: null,
-        		label: "Details",
-        		iconName: "info-circle",
+        		label: sidebarData.parentView.label,
+        		iconName: sidebarData.parentView.iconName,
 				type:"view"
 			};
 			sidebarData.items.push(generalItem);
@@ -135,7 +143,15 @@
         		sidebarData.items.push(item);
 
 			});		
-		
+			
+			sidebarData.parentView.actionItems.forEach(function (actionItem) {
+				switch (actionItem.menu) {
+					case "sidebar-top":
+						sidebarData.sidebarTopActions.push(actionItem);
+						break;
+				}
+			});		
+
 		}
 
         sidebarData.isItemActive = function (item) {

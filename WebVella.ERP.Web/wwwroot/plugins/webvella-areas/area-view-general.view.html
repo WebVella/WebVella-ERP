@@ -36,7 +36,7 @@
 
 <div id="page-body" ng-mousedown="ngCtrl.checkMouseButton($event)">
 	<div id="page-text" class="record-details" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'>
-		<nav class="navbar navbar-default navbar-erp" ng-if="ngCtrl.view.meta.regions.length > 1">
+		<nav class="navbar navbar-default navbar-erp" ng-if="ngCtrl.view.meta.regions.length > 1" >
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true} track by region.name">
