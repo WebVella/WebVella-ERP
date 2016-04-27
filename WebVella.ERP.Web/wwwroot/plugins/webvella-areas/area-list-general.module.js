@@ -39,6 +39,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView:function () { return null; },
 				resolvedCurrentParentView: function () { return null; },
 				resolvedListRecords: resolveListRecords
 			},
@@ -73,6 +74,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView: resolveCurrentParentView,	//for the sidebar to render
 				resolvedCurrentParentView: resolveCurrentParentView,
 				resolvedListRecords: resolveListRecordsFromView
 			},
@@ -204,8 +206,8 @@
 		return defer.promise;
 	}
 
-	resolveListRecordsFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentView'];
-	function resolveListRecordsFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentView) {
+	resolveListRecordsFromView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentParentView'];
+	function resolveListRecordsFromView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentParentView) {
 		//Temporary method will be replaced when the proper API is ready
 		// Initialize
 		var defer = $q.defer();
@@ -214,9 +216,9 @@
 		var list = {};
 		list.meta = null;
 		list.data = null
-		resolvedCurrentView.meta.sidebar.items.forEach(function (item) {
+		resolvedCurrentParentView.meta.sidebar.items.forEach(function (item) {
 			if (item.dataName == $stateParams.listName) {
-				list.data = resolvedCurrentView.data[0][item.dataName];
+				list.data = resolvedCurrentParentView.data[0][item.dataName];
 				list.meta = item.meta;
 			}
 		});

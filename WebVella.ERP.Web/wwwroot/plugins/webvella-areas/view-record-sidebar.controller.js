@@ -13,20 +13,26 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentParentView','resolvedCurrentView', 'resolvedCurrentEntityMeta', 
 						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout'];
 
     
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, 
+    function controller($log, $rootScope, $state, $stateParams,resolvedCurrentParentView, resolvedCurrentView, resolvedCurrentEntityMeta, 
 						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
         
 		var pluginAuxPageName = ""; //temp
 
         var sidebarData = this;
-        sidebarData.view = resolvedCurrentView.meta;
+        sidebarData.view = fastCopy(resolvedCurrentView.meta);
+		if(resolvedCurrentParentView == null){
+		   sidebarData.parentView = null;
+		}
+		else{
+			sidebarData.parentView = fastCopy(resolvedCurrentParentView.meta);
+		}
         sidebarData.stateParams = fastCopy($stateParams);
-        sidebarData.entity = resolvedCurrentEntityMeta;
-        sidebarData.currentUser = angular.copy(resolvedCurrentUser);
+        sidebarData.entity = fastCopy(resolvedCurrentEntityMeta);
+        sidebarData.currentUser = fastCopy(resolvedCurrentUser);
 		sidebarData.$sessionStorage	= $sessionStorage;
 
     	//#region << Select default list >>
@@ -46,10 +52,15 @@
 
     	//Generate menu items list
         sidebarData.items = [];
+		var viewName = 	sidebarData.view.name;
+		if(sidebarData.parentView != null){
+			viewName = 	sidebarData.parentView.name
+		}
         var generalItem = {
-        	name: "*",
+        	name: viewName,
         	label: "Details",
-        	iconName: "info-circle"
+        	iconName: "info-circle",
+			type:"view"
         };
         sidebarData.items.push(generalItem);
 
@@ -74,6 +85,22 @@
         }
 
         sidebarData.isItemActive = function (item) {
+			if(item.type == "view"){
+				if(sidebarData.parentView == null && item.name == sidebarData.view.name ){ //the main details
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
+			if(item.type == "viewFromRelation"){
+				if(item.name == sidebarData.view.name){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
 			if(item.type == "list" || item.type == "listFromRelation"){
 				if(item.name == sidebarData.stateParams.listName){
 					return true;
