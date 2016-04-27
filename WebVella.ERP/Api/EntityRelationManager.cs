@@ -247,12 +247,12 @@ namespace WebVella.ERP.Api
 
             try
             {
-                DbEntityRelation storageRelation = DbContext.Current.RelationRepository.Read(name);
-                response.Success = false;
+				relations = Read().Object;
+				response.Object = relations.SingleOrDefault(x => x.Name == name);
+				response.Success = false;
 
-                if (storageRelation != null)
+                if (response.Object != null)
                 {
-                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was successfully returned!";
                 }
@@ -292,11 +292,11 @@ namespace WebVella.ERP.Api
 						response.Message = string.Format("The entity relation with id '{0}' does not exist!", relationId);
 					return response;
 				}
-
-				var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
-                if (storageRelation != null)
+				
+				relations = Read().Object;
+				response.Object = relations.SingleOrDefault( x=>x.Id == relationId);
+                if (response.Object != null)
                 {
-                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Message = "The entity relation was successfully returned!";
                 }
                 else
