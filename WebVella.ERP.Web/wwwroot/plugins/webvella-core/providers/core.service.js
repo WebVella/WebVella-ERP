@@ -1075,6 +1075,12 @@
 						"menu": "create-bottom",
 						"weight": 3,
 						"template": "<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
+					},
+					{
+						"name": "wv_back_button",
+						"menu": "sidebar-top",
+						"weight": 1,
+						"template": "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>"
 					}]
 			};
 			return view;
@@ -1162,6 +1168,11 @@
 				{
 					key: "page-title-dropdown",
 					value: "page-title-dropdown",
+					description: ""
+				},
+				{
+					key: "sidebar-top",
+					value: "sidebar-top",
 					description: ""
 				}
 			];
@@ -2322,7 +2333,8 @@
 				}
 			}
 			if (currentArea == null) {
-				alert("Error: No area with such name found");
+				console.log("Error: No area with such name found");
+				return null;
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
@@ -2332,7 +2344,8 @@
 				}
 			}
 			if (targetCreateName == null) {
-				alert("Error: The current entity is either not attached to the area or the view name is missing");
+				console.log("Error: The current entity is either not attached to the area or the view name is missing");
+				return null;
 			}
 			//#endregion
 
@@ -2376,7 +2389,8 @@
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
 					}
 					else {
-						alert("Error: Cannot find suitable details view for this entity records");
+						console.log("Error: Cannot find suitable details view for this entity records");
+						return null;
 					}
 				}
 			}
@@ -2405,7 +2419,8 @@
 				}
 			}
 			if (currentArea == null) {
-				alert("Error: No area with such name found");
+				console.log("Error: No area with such name found");
+				return null;
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
@@ -2415,7 +2430,8 @@
 				}
 			}
 			if (targetViewName == null) {
-				alert("Error: The current entity is either not attached to the area or the view name is missing");
+				console.log("Error: The current entity is either not attached to the area or the view name is missing");
+				return null;
 			}
 			//#endregion
 
@@ -2460,7 +2476,8 @@
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
 					}
 					else {
-						alert("Error: Cannot find suitable details view for this entity records");
+						console.log("Error: Cannot find suitable details view for this entity records");
+						return null;
 					}
 				}
 			}

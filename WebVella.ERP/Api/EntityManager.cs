@@ -6006,6 +6006,13 @@ namespace WebVella.ERP.Api
 					actionItem.Template = "" +
 @"<a class=""btn btn-default btn-outline"" ng-click=""ngCtrl.cancel()"">Cancel</a>";
 					break;
+				case "wv_back_button":
+					actionItem.Name = "wv_back_button";
+					actionItem.Menu = "sidebar-top";
+					actionItem.Weight = 1;
+					actionItem.Template = "" +
+@"<a class=""back clearfix"" href=""javascript:void(0)"" ng-click=""sidebarData.goBack()""><i class=""fa fa-fw fa-arrow-left""></i> <span class=""text"">Back</span></a>";
+					break;
 				default:
 					throw new Exception("no such action type");
 			}
@@ -6095,6 +6102,7 @@ namespace WebVella.ERP.Api
 			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			recordViewList.Add(general);
 
 
