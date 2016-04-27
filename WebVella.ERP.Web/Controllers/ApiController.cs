@@ -2803,7 +2803,7 @@ namespace WebVella.ERP.Web.Controllers
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							foreach (var relatedRecord in relatedRecords)
 							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, relField.Name, relatedRecord[relField.Name]));
+								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
 							}
 							dataRecord[((RecordViewRelationViewItem)item).DataName] = subViewResult;
 
@@ -2877,7 +2877,7 @@ namespace WebVella.ERP.Web.Controllers
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							foreach (var relatedRecord in relatedRecords)
 							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewSidebarRelationViewItem)item).ViewName, relField.Name, relatedRecord[relField.Name]));
+								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewSidebarRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
 							}
 							dataRecord[((RecordViewSidebarRelationViewItem)item).DataName] = subViewResult;
 						}
