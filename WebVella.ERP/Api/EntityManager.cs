@@ -6051,12 +6051,12 @@ namespace WebVella.ERP.Api
 			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(contentRegion);
-			create.ServiceCode = null;
-			create.ActionItems = new List<ActionItem>();
-			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			quickCreate.ServiceCode = null;
+			quickCreate.ActionItems = new List<ActionItem>();
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(quickCreate);
 
 			var quickView = new RecordView();
@@ -6070,12 +6070,12 @@ namespace WebVella.ERP.Api
 			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(contentRegion);
-			create.ServiceCode = null;
-			create.ActionItems = new List<ActionItem>();
-			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			quickView.ServiceCode = null;
+			quickView.ActionItems = new List<ActionItem>();
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(quickView);
 
 			var general = new RecordView();
@@ -6089,12 +6089,12 @@ namespace WebVella.ERP.Api
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(contentRegion);
-			create.ServiceCode = null;
-			create.ActionItems = new List<ActionItem>();
-			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
-			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			general.ServiceCode = null;
+			general.ActionItems = new List<ActionItem>();
+			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
+			general.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			recordViewList.Add(general);
 
 

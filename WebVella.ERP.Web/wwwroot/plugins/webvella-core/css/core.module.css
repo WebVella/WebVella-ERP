@@ -1069,6 +1069,7 @@ body.hidden-sidebar #page-topnav {
 	max-width: 200px;
 	overflow: hidden;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav #entity-label {
@@ -1083,6 +1084,7 @@ body.hidden-sidebar #page-topnav {
 	max-width: 200px;
 	overflow: hidden;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav .divider-box {
@@ -1092,6 +1094,7 @@ body.hidden-sidebar #page-topnav {
 	float: left;
 	max-width: 20px;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav .aux-actions {
@@ -1165,12 +1168,12 @@ body.hidden-sidebar #page-topnav {
 	background: #FAFBFD;
 	border-bottom: 1px solid #ECEFF1;
 	padding: 7px 10px 7px 30px;
-	height: 44px;
+	height: 46px;
 }
 
 #page-meta .meta-label h4 {
 	margin: 0;
-	line-height: 28px;
+	line-height: 30px;
 	font-size: 19px;
 	text-transform: capitalize;
 }

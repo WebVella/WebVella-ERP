@@ -74,7 +74,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: resolveCurrentParentView,	//for the sidebar to render
+				resolvedCurrentView: function(){return null},	//for the sidebar to render
 				resolvedCurrentParentView: resolveCurrentParentView,
 				resolvedListRecords: resolveListRecordsFromView
 			},

@@ -47,8 +47,10 @@
 					<span class="navbar-brand">regions:</span>
 				</div>
 				<ul class="nav navbar-nav">
-					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions | filter: {render:true} track by region.name">
-						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>{{region.label}}</a>
+					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.regions track by region.name">
+						<a class="display-inline-block" style="padding-right:5px" ui-sref='webvella-admin-entity-view-manage({entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}", regionName:"{{region.name}}"})'>
+							<i class="fa fa-fw fa-eye-slash go-red" ng-if="!region.render"></i> {{region.label}}
+						</a>
 						<a class="action display-inline-block" style="padding-left:0;margin-left:-5px;padding-right:10px;" ng-click="ngCtrl.manageRegion(region)"><i class="fa fa-fw fa-cog"></i></a>
 					</li>
 				</ul>

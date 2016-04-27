@@ -10,7 +10,7 @@
 	angular
         .module('webvellaAreas') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-        .controller('WebVellaAreaViewGeneralController', controller)
+        .controller('WebVellaAreasRecordViewController', controller)
         .controller('ManageRelationFieldModalController', ManageRelationFieldModalController)
 		.controller('SelectTreeNodesModalController', SelectTreeNodesModalController);
 
@@ -19,14 +19,9 @@
 
 
 	function config($stateProvider) {
-		$stateProvider
-		//general view in an area with view sidebar
-		.state('webvella-areas-view-general', {
+		$stateProvider.state('webvella-areas-record-view', {
 			parent: 'webvella-area-base',
-			url: '/view-general/sb/:viewName/:recordId/:regionName',
-			params:{
-				regionName:{value:"default",squash:true}
-			},
+			url: '/:recordId/:viewName/:auxPageName/:page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -39,24 +34,23 @@
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
-					controller: 'WebVellaAreaViewGeneralController',
-					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
+					controller: 'WebVellaAreasRecordViewController',
+					templateUrl: '/plugins/webvella-areas/record-view.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
-				resolvedCurrentView: resolveCurrentView
+				resolvedCurrentView: resolveCurrentView,
+				pluginAuxPageName: function () {
+					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
+					return "";
+				}
 			}
 		})
-		//general view in an area with the area sidebar
-		.state('webvella-areas-view-general-no-sidebar', {
+		.state('webvella-areas-record-view-single-page', {
 			parent: 'webvella-area-base',
-			url: '/view-general/nsb/:viewName/:recordId/:regionName',
-			params:{
-				regionName:{value:"default",squash:true}
-			},
+			url: '/:recordId/:viewName/:auxPageName/:page/single-page',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -69,90 +63,27 @@
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
-					controller: 'WebVellaAreaViewGeneralController',
-					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
+					controller: 'WebVellaAreasRecordViewController',
+					templateUrl: '/plugins/webvella-areas/record-view.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				resolvedCurrentParentView: function () { return null; },
-				resolvedCurrentView: resolveCurrentView
-			}
-		})
-		.state('webvella-areas-view-general-in-view', {
-			parent: 'webvella-area-base',
-			url: '/view-general/sb/:parentViewName/:recordId/view-general/:viewName/:regionName',
-			params:{
-				regionName:{value:"default",squash:true}
-			},
-			views: {
-				"topnavView": {
-					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html',
-					controllerAs: 'topnavData'
-				},
-				"sidebarView": {
-					controller: 'WebVellaAreasRecordViewSidebarController',
-					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
-					controllerAs: 'sidebarData'
-				},
-				"contentView": {
-					controller: 'WebVellaAreaViewGeneralController',
-					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
-					controllerAs: 'ngCtrl'
+				resolvedCurrentView: resolveCurrentView,
+				pluginAuxPageName: function () {
+					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
+					return "";
 				}
-			},
-			resolve: {
-				loadDependency: loadDependency,
-				resolvedCurrentParentView: resolveCurrentParentView,
-				resolvedCurrentView: resolveCurrentView
 			}
 		});
 	};
 
 	//#region << Resolve Function >> /////////////////////////
-	resolveCurrentParentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
-	function resolveCurrentParentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
 
-		// Initialize
-		var defer = $q.defer();
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
 
-		// Process
-		function successCallback(response) {
-			if (response.object === null) {
-				alert("error in response!");
-			}
-			else if (response.object.meta === null) {
-				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
-			} else {
-				defer.resolve(response.object);
-			}
-		}
-
-		function errorCallback(response) {
-			if (response.object === null) {
-				alert("error in response!");
-			}
-			else {
-				defer.reject(response.message);
-			}
-		}
-
-		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
-		if (!userHasUpdateEntityPermission) {
-			alert("you do not have permissions to view records from this entity!");
-			defer.reject("you do not have permissions to view records from this entity");
-		}
-
-		webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.parentViewName, $stateParams.entityName, successCallback, errorCallback);
-
-		return defer.promise;
-	}
-
-	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta','resolvedCurrentParentView'];
-
-	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta,resolvedCurrentParentView) {
+	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
 
 		// Initialize
 		var defer = $q.defer();
@@ -183,53 +114,16 @@
 			alert("you do not have permissions to view records from this entity!");
 			defer.reject("you do not have permissions to view records from this entity");
 		}
-		var parentView = fastCopy(resolvedCurrentParentView);
-		if(parentView == null){
-			webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
-		}
-		else{
-			var currentView = {};
-			currentView.meta = null;
-			currentView.data = [];
-			if($stateParams.viewName.startsWith("$view$")){
-				//View from the same entity
-				parentView.meta.sidebar.items.forEach(function(sidebarItem){
-					if(sidebarItem.dataName == $stateParams.viewName){
-					  currentView.meta = sidebarItem.meta;
-					  currentView.data = parentView.data[0][$stateParams.viewName];
-					}	
-				});
-				defer.resolve(currentView);
-			}
-			else{
-			
-			}
-			
-		}
+
+		webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.viewName, $stateParams.entityName, successCallback, errorCallback);
 
 		return defer.promise;
 	}
 
-	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta','resolvedCurrentParentView'];
-	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta,resolvedCurrentParentView) {
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta'];
+	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta) {
 		var lazyDeferred = $q.defer();
-		var listServiceJavascriptPath = "";
-		if(resolvedCurrentParentView == null){
-			//Parent view is reviewed
-			listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
-		}
-		else {
-		   //A view in another view is reviewed
-			var dataNameArray = fastCopy($stateParams.viewName).split('$');		
-			if(dataNameArray.length == 3){
-				//it is view from the current entity  e.g. $view$second
-				var realViewName = 	dataNameArray[2];
-				listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + realViewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
-			}
-		}
-		
-		
-		
+		var listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + $stateParams.viewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		var loadFilesArray = [];
 		loadFilesArray.push(listServiceJavascriptPath);
 
@@ -254,14 +148,25 @@
 
 	// Controller ///////////////////////////////
 
+	function multiplyDecimals(val1, val2, decimalPlaces, $scope) {
+		var helpNumber = 100;
+		for (var i = 0; i < decimalPlaces; i++) {
+			helpNumber = helpNumber * 10;
+		}
+		var temp1 = $scope.Math.round(val1 * helpNumber);
+		var temp2 = $scope.Math.round(val2 * helpNumber);
+		return (temp1 * temp2) / (helpNumber * helpNumber);
+	}
+
+
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
         'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
-		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage','resolvedCurrentParentView'];
+		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
         resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
-		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage,resolvedCurrentParentView) {
+		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage) {
 
 		//#region << ngCtrl initialization >>
 		var ngCtrl = this;
@@ -272,26 +177,15 @@
 		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
 		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
-		ngCtrl.currentState = $state.current;
 		//#endregion
 
 		//#region << Initialize main objects >>
+		ngCtrl.selectedSidebarItem = {}; //will be initialized based on the selected sidebar item
+		ngCtrl.selectedSidebarItem.data = {};
+		ngCtrl.selectedSidebarItem.meta = {};
 		ngCtrl.view = {};
 		ngCtrl.view.meta = fastCopy(resolvedCurrentView.meta);
-		if(resolvedCurrentView.data.length == 1){
-			ngCtrl.view.data = fastCopy(resolvedCurrentView.data[0]);		
-		}
-		else{
-			ngCtrl.view.data = fastCopy(resolvedCurrentView.data);
-		}
-		if(resolvedCurrentParentView == null){
-			ngCtrl.parentView = null;		
-		}
-		else{
-			ngCtrl.parentView = {};
-			ngCtrl.parentView.meta = fastCopy(resolvedCurrentParentView.meta);
-			ngCtrl.parentView.data = fastCopy(resolvedCurrentParentView.data[0]);
-		}
+		ngCtrl.view.data = fastCopy(resolvedCurrentView.data[0]);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.areas = fastCopy(resolvedAreas.data);
@@ -301,6 +195,8 @@
 		//#endregion
 
 		//#region << Init aux objects >>
+		ngCtrl.isView = true;
+		ngCtrl.isEdit = true;
 		ngCtrl.currentUserEntityPermissions = fastCopy(resolvedCurrentUserEntityPermissions);
 		//#endregion
 
@@ -312,6 +208,79 @@
 			}
 		});
 		ngCtrl.generalViews.sort(function (a, b) { return parseFloat(a.weight) - parseFloat(b.weight) });
+		//#endregion
+
+		//#region << Get data and meta of the selected view from the sidebar>>
+		function getViewOrListMetaAndData(name) {
+			var returnObject = {
+				data: null,
+				meta: null,
+				templateMeta: null,
+				isView: true,
+				isEdit: true
+			};
+
+			if (name === "") {
+				returnObject.isView = true;
+				returnObject.isEdit = true;
+				returnObject.data = fastCopy(ngCtrl.view.data);
+				returnObject.meta = fastCopy(ngCtrl.view.meta);
+			} else {
+				returnObject.isEdit = false;
+				for (var i = 0; i < ngCtrl.view.meta.sidebar.items.length; i++) {
+					if (ngCtrl.view.meta.sidebar.items[i].dataName === name) {
+						//Set meta
+						// If in edit mode (view from the current entity) the data should be different -> we need the content region meta, not the view meta as in recursive-view directive
+						if (ngCtrl.view.meta.sidebar.items[i].type === "view") {
+							returnObject.isEdit = true;
+							returnObject.meta = fastCopy(ngCtrl.view.meta.sidebar.items[i].meta);
+						}
+						else {
+							returnObject = ngCtrl.view.meta.sidebar.items[i];
+						}
+
+						//Set data
+						if (ngCtrl.view.meta.sidebar.items[i].type === "view") {
+							returnObject.isView = true;
+							returnObject.data = fastCopy(ngCtrl.view.data[name][0]);
+						}
+						else if (ngCtrl.view.meta.sidebar.items[i].type === "viewFromRelation") {
+							returnObject.isView = true;
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
+						} else if (ngCtrl.view.meta.sidebar.items[i].type === "list") {
+							returnObject.isView = false;
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
+						} else if (ngCtrl.view.meta.sidebar.items[i].type === "listFromRelation") {
+							returnObject.isView = false;
+							returnObject.data = fastCopy(ngCtrl.view.data[name]);
+						}
+					}
+				}
+
+			}
+
+			return returnObject;
+		};
+
+		var returnObject = {};
+		if ($stateParams.auxPageName === "*") {
+			//The default view meta is active
+			returnObject = getViewOrListMetaAndData("");
+			ngCtrl.selectedSidebarItem.meta = returnObject.meta;
+			ngCtrl.selectedSidebarItem.data = returnObject.data;
+			ngCtrl.isView = returnObject.isView;
+			ngCtrl.isEdit = returnObject.isEdit;
+		}
+		else {
+			//One of the sidebar view or lists is active
+			//Load the data
+			returnObject = getViewOrListMetaAndData($stateParams.auxPageName);
+			ngCtrl.selectedSidebarItem.meta = returnObject.meta;
+			ngCtrl.selectedSidebarItem.data = returnObject.data;
+			ngCtrl.isView = returnObject.isView;
+			ngCtrl.isEdit = returnObject.isEdit;
+		}
+
 		//#endregion
 
 		//#region << Run  webvellaViewActionService.onload >>
@@ -642,8 +611,8 @@
 		}
 		//Date & DateTime 
 		ngCtrl.getTimeString = function (item) {
-			if (item && item.dataName && ngCtrl.view.data[item.dataName]) {
-				var fieldValue = ngCtrl.view.data[item.dataName];
+			if (item && item.dataName && ngCtrl.selectedSidebarItem.data[item.dataName]) {
+				var fieldValue = ngCtrl.selectedSidebarItem.data[item.dataName];
 				if (!fieldValue) {
 					return "";
 				} else {
@@ -661,10 +630,6 @@
 			section.collapsed = !section.collapsed;
 		}
 		//#endregion
-
-		ngCtrl.goToRegion = function(regionName){
-			webvellaCoreService.GoToState(ngCtrl.currentState.name,{areaName:ngCtrl.stateParams.areaName,entityName:ngCtrl.stateParams.entityName,viewName:ngCtrl.stateParams.viewName,recordId:ngCtrl.stateParams.recordId,regionName: regionName})
-		}
 
 		//#region << When Edit Inits >>
 		if (ngCtrl.isEdit) {
@@ -697,9 +662,9 @@
 			};
 
 			//on #content check if mouse is clicked outside the editor, so to perform a possible field update
-			ngCtrl.checkMouseButton = function ($event) {
+			ngCtrl.selectedSidebarItemCheckMouseButton = function ($event) {
 				if (ngCtrl.lastEnabledHtmlField != null) {
-					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.selectedSidebarItem.data[ngCtrl.lastEnabledHtmlField.dataName]);
 					ngCtrl.lastEnabledHtmlFieldData = null;
 					ngCtrl.lastEnabledHtmlField = null;
 				}
@@ -722,7 +687,7 @@
 
 							CKEDITOR.instances[property].editable().$.blur();
 							//reinit the field
-							ngCtrl.view.data[item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
+							ngCtrl.selectedSidebarItem.data[item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
 							ngCtrl.lastEnabledHtmlField = null;
 							ngCtrl.lastEnabledHtmlFieldData = null;
 							return false;
@@ -740,7 +705,7 @@
 
 							$event.preventDefault();
 							$timeout(function () {
-								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.selectedSidebarItem.data[ngCtrl.lastEnabledHtmlField.dataName]);
 							}, 500);
 							return false;
 							break;
@@ -753,7 +718,7 @@
 			ngCtrl.lastEnabledHtmlFieldData = null;
 			ngCtrl.htmlFieldIsEnabled = function ($event, item) {
 				ngCtrl.lastEnabledHtmlField = item;
-				ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.view.data[item.dataName]);
+				ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.selectedSidebarItem.data[item.dataName]);
 			}
 
 			//#endregion
@@ -770,14 +735,14 @@
 			ngCtrl.progress = {}; //data wrapper for the progress percentage for each upload
 
 			/////////Register variables
-			for (var regionIndex = 0; regionIndex < ngCtrl.view.meta.regions.length; regionIndex++) {
-				for (var sectionIndex = 0; sectionIndex < ngCtrl.view.meta.regions[regionIndex].sections.length; sectionIndex++) {
-					for (var rowIndex = 0; rowIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-						for (var columnIndex = 0; columnIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-							for (var itemIndex = 0; itemIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-								if (ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
-									|| ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
-									var item = ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
+			for (var regionIndex = 0; regionIndex < ngCtrl.selectedSidebarItem.meta.regions.length; regionIndex++) {
+				for (var sectionIndex = 0; sectionIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections.length; sectionIndex++) {
+					for (var rowIndex = 0; rowIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
+						for (var columnIndex = 0; columnIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
+							for (var itemIndex = 0; itemIndex < ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
+								if (ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
+									|| ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
+									var item = ngCtrl.selectedSidebarItem.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
 									var FieldName = item.dataName;
 									ngCtrl.progress[FieldName] = 0;
 								}
@@ -796,7 +761,7 @@
 					ngCtrl.uploadedFileName = item.dataName;
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
-							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
+							ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName] = response.object.url;
 							ngCtrl.fieldUpdate(item, response.object.url);
 						}, 1);
 					}
@@ -824,10 +789,10 @@
 			ngCtrl.updateFileUpload = function (file, item) {
 				if (file != null) {
 					ngCtrl.uploadedFileName = item.dataName;
-					var oldFileName = ngCtrl.view.data[ngCtrl.uploadedFileName];
+					var oldFileName = ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName];
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
-							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
+							ngCtrl.selectedSidebarItem.data[ngCtrl.uploadedFileName] = response.object.url;
 							ngCtrl.fieldUpdate(item, response.object.url);
 							ngCtrl.cacheBreakers[item.dataName] = "?v=" + moment().toISOString();
 						}, 1);
@@ -854,11 +819,11 @@
 
 			ngCtrl.deleteFileUpload = function (item) {
 				var fieldName = item.dataName;
-				var filePath = ngCtrl.view.data[fieldName];
+				var filePath = ngCtrl.selectedSidebarItem.data[fieldName];
 
 				function deleteSuccessCallback(response) {
 					$timeout(function () {
-						ngCtrl.view.data[fieldName] = null;
+						ngCtrl.selectedSidebarItem.data[fieldName] = null;
 						ngCtrl.progress[fieldName] = 0;
 						ngCtrl.fieldUpdate(item, null);
 					}, 0);
@@ -901,7 +866,7 @@
 					}
 				}
 				if (itemObject.meta != null && !itemObject.meta.required) {
-					ngCtrl.view.data[item.dataName] = [];
+					ngCtrl.selectedSidebarItem.data[item.dataName] = [];
 					ngCtrl.fieldUpdate(itemObject, null);
 				}
 			}
@@ -955,8 +920,8 @@
 					// Initialize
 					var displayedRecordId = $stateParams.recordId;
 					var oldRelationRecordId = null;
-					if (ngCtrl.view.data["$field$" + returnObject.relationName + "$id"]) {
-						oldRelationRecordId = ngCtrl.view.data["$field$" + returnObject.relationName + "$id"][0];
+					if (ngCtrl.selectedSidebarItem.data["$field$" + returnObject.relationName + "$id"]) {
+						oldRelationRecordId = ngCtrl.selectedSidebarItem.data["$field$" + returnObject.relationName + "$id"][0];
 					}
 
 					function successCallback(response) {
@@ -1210,7 +1175,7 @@
 						return item;
 					},
 					selectedItemData: function () {
-						return ngCtrl.view.data[item.dataName];
+						return ngCtrl.selectedSidebarItem.data[item.dataName];
 					},
 					resolvedTree: resolveTree(item),
 					resolvedTreeRelation: resolveTreeRelation(item),
@@ -1272,8 +1237,8 @@
 		ngCtrl.pageTitleDropdownActions = [];
 		ngCtrl.createBottomActions = [];
 		ngCtrl.pageBottomActions = [];
-		ngCtrl.view.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
-		ngCtrl.view.meta.actionItems.forEach(function (actionItem) {
+		ngCtrl.selectedSidebarItem.meta.actionItems.sort(sort_by('menu', { name: 'weight', primer: parseInt, reverse: false }));
+		ngCtrl.selectedSidebarItem.meta.actionItems.forEach(function (actionItem) {
 			switch (actionItem.menu) {
 				case "page-title":
 					ngCtrl.pageTitleActions.push(actionItem);

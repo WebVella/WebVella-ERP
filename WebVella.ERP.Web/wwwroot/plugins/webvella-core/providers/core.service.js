@@ -1039,7 +1039,7 @@
                     {
                     	"name": "default",
 						"label": "Default",
-                    	"render": false,
+                    	"render": true,
                     	"cssClass": "",
 						"weight": 1,
                     	"sections": []
@@ -2431,7 +2431,7 @@
 
 			//#region << Calculate what the view name should be and return >>
 			if (targetViewExists) {
-				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
 			}
 				//The target name does not exist. Fallback to default
 			else {
@@ -2446,7 +2446,7 @@
 				}
 				if (targetViewName != null) {
 					//there is a default and general view fallback option available
-					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
 				}
 				else {
 					//If there is default general take the first general
@@ -2457,7 +2457,7 @@
 						}
 					}
 					if (targetViewName != null) {
-						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + currentRecord.id + "/" + targetViewName + "/*/*";
+						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
 					}
 					else {
 						alert("Error: Cannot find suitable details view for this entity records");

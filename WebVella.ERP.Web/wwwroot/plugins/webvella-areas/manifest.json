@@ -25,7 +25,6 @@
 			"/plugins/webvella-areas/area-list-general.module.js",
 			"/plugins/webvella-areas/area-view-create.module.js",
 			"/plugins/webvella-areas/area-view-general.module.js",
-			"/plugins/webvella-areas/record-view.module.js",
 			"/plugins/webvella-areas/view-record-sidebar.controller.js",
 			"/plugins/webvella-areas/providers/recursive-view.directive.js",
 			"/plugins/webvella-areas/providers/recursive-list.directive.js",

@@ -19,11 +19,13 @@
     
     function controller($log, $rootScope, $state, $stateParams,resolvedCurrentParentView, resolvedCurrentView, resolvedCurrentEntityMeta, 
 						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
-        
-		var pluginAuxPageName = ""; //temp
-
         var sidebarData = this;
-        sidebarData.view = fastCopy(resolvedCurrentView.meta);
+		if(resolvedCurrentView == null){
+			sidebarData.view = null; //list in view page		
+		}
+		else {
+			sidebarData.view = fastCopy(resolvedCurrentView.meta);
+		}
 		if(resolvedCurrentParentView == null){
 		   sidebarData.parentView = null;
 		}
@@ -52,43 +54,92 @@
 
     	//Generate menu items list
         sidebarData.items = [];
-		var viewName = 	sidebarData.view.name;
-		if(sidebarData.parentView != null){
-			viewName = 	sidebarData.parentView.name
-		}
-        var generalItem = {
-        	name: viewName,
-        	label: "Details",
-        	iconName: "info-circle",
-			type:"view"
-        };
-        sidebarData.items.push(generalItem);
 
-        for (var i = 0; i < sidebarData.view.sidebar.items.length; i++) {
-        	var item = {};
-        	item.name = sidebarData.view.sidebar.items[i].dataName;
-        	item.label = sidebarData.view.sidebar.items[i].fieldLabel;
-			item.type = sidebarData.view.sidebar.items[i].type;
-        	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
-        		item.iconName = "file-text-o";
-        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
-        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+		if(resolvedCurrentParentView == null){
+			var generalItem = {
+				is_parent: true,
+				parentViewName: null,
+        		name: sidebarData.view.name,
+        		label: "Details",
+        		iconName: "info-circle",
+				type:"view"
+			};
+			sidebarData.items.push(generalItem);
+
+			sidebarData.view.sidebar.items.forEach(function(sidebarItem){
+        		var item = {};
+        		item.name = sidebarItem.dataName;
+        		item.label = sidebarItem.fieldLabel;
+				item.is_parent = false;
+				item.type = sidebarItem.type;
+				item.parentViewName = sidebarData.view.name;
+        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if(sidebarItem.type === "view"){
+						 item.label = sidebarItem.meta.label;
+					}
+        			item.iconName = "file-text-o";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName =sidebarItem.meta.iconName;
+        			}
         		}
-        	}
-        	else if (sidebarData.view.sidebar.items[i].type === "list" || sidebarData.view.sidebar.items[i].type === "listFromRelation") {
-        		item.iconName = "list";
-        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
-        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+        			item.iconName = "list";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName = sidebarItem.meta.iconName;
+        			}
         		}
-        	}
-        	sidebarData.items.push(item);
-        }
+        		sidebarData.items.push(item);
+
+			});
+
+		}
+		else {
+			var generalItem = {
+				is_parent: true,
+        		name: sidebarData.parentView.name,
+				parentViewName: null,
+        		label: "Details",
+        		iconName: "info-circle",
+				type:"view"
+			};
+			sidebarData.items.push(generalItem);
+
+			sidebarData.parentView.sidebar.items.forEach(function(sidebarItem){
+        		var item = {};
+        		item.name = sidebarItem.dataName;
+        		item.label = sidebarItem.fieldLabel;
+				item.is_parent = false;
+				item.type = sidebarItem.type;
+				item.parentViewName = sidebarData.parentView.name;
+        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if(sidebarItem.type === "view"){
+						 item.label = sidebarItem.meta.label;
+					}
+        			item.iconName = "file-text-o";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName =sidebarItem.meta.iconName;
+        			}
+        		}
+        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+        			item.iconName = "list";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName = sidebarItem.meta.iconName;
+        			}
+        		}
+        		sidebarData.items.push(item);
+
+			});		
+		
+		}
 
         sidebarData.isItemActive = function (item) {
 			if(item.type == "view"){
-				if(sidebarData.parentView == null && item.name == sidebarData.view.name ){ //the main details
+				if(item.is_parent && sidebarData.view != null &&  item.name == sidebarData.view.name ){ //the main details
 					return true;
 				} 
+				else if(item.name == $stateParams.viewName)	{
+					return true;
+				}
 				else {
 					return false;
 				}

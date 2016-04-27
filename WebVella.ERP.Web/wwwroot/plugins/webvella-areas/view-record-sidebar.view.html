@@ -10,10 +10,13 @@
 	<a class="back clearfix" href="javascript:void(0)" ng-click="sidebarData.goBack()"><i class="fa fa-fw fa-arrow-left"></i> <span class="text">Back</span></a>
 	<ul class="nav nav-tabs">
 		<li role="presentation" ng-class="::{active: sidebarData.isItemActive(item)}" ng-repeat="item in sidebarData.items" ng-switch="item.type">
-			<a ng-switch-when="view" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.name}}/{{::sidebarData.stateParams.recordId}}">
+			<a ng-switch-when="view" ng-if="item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.name}}/{{::sidebarData.stateParams.recordId}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
-			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::sidebarData.stateParams.viewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
+			<a ng-switch-when="view" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+			</a>
+			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
 		</li>
