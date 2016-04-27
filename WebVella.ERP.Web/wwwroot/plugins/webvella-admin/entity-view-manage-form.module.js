@@ -11,7 +11,8 @@
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
         .controller('WebVellaAdminEntityViewManageController', controller)
-        .controller('ManageSectionModalController', ManageSectionModalController)
+        .controller('ManageRegionModalController', ManageRegionModalController)
+		.controller('ManageSectionModalController', ManageSectionModalController)
         .controller('ManageRowModalController', ManageRowModalController)
 		.controller('ManageFromRelationModalController', ManageFromRelationModalController);
 
@@ -21,7 +22,10 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-admin-entity-view-manage', {
 			parent: 'webvella-admin-base',
-			url: '/entities/:entityName/views/:viewName/form',
+			url: '/entities/:entityName/views/:viewName/form/:regionName',
+			params: {
+				regionName: { value: "default", squash: true }
+			},
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAdminTopnavController',
@@ -30,7 +34,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -177,6 +181,8 @@
 		var ngCtrl = this;
 		//#region << General init >>
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
+		ngCtrl.stateParams = $stateParams;
+		//#endregion
 
 		//#region << Update page title & hide the side menu >>
 		$translate(['RECORD_VIEW_MANAGE_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
@@ -184,7 +190,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -195,10 +200,10 @@
 				ngCtrl.view = fastCopy(ngCtrl.entity.recordViews[i]);
 			}
 		}
-		ngCtrl.viewContentRegion = {};
+		ngCtrl.viewSelectedRegion = {};
 		for (var i = 0; i < ngCtrl.view.regions.length; i++) {
-			if (ngCtrl.view.regions[i].name === "content") {
-				ngCtrl.viewContentRegion = ngCtrl.view.regions[i];
+			if (ngCtrl.view.regions[i].name === ngCtrl.stateParams.regionName) {
+				ngCtrl.viewSelectedRegion = ngCtrl.view.regions[i];
 			}
 		}
 		//#endregion
@@ -208,12 +213,12 @@
 		//Get all items from the view and add their dataNames in the already used 
 		ngCtrl.generateAlreadyUsed = function () {
 			alreadyUsedItemDataNames = [];
-			for (var i = 0; i < ngCtrl.viewContentRegion.sections.length; i++) {
-				for (var j = 0; j < ngCtrl.viewContentRegion.sections[i].rows.length; j++) {
-					for (var k = 0; k < ngCtrl.viewContentRegion.sections[i].rows[j].columns.length; k++) {
-						for (var m = 0; m < ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items.length; m++) {
-							if (ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items[m].meta) {
-								alreadyUsedItemDataNames.push(ngCtrl.viewContentRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
+			for (var i = 0; i < ngCtrl.viewSelectedRegion.sections.length; i++) {
+				for (var j = 0; j < ngCtrl.viewSelectedRegion.sections[i].rows.length; j++) {
+					for (var k = 0; k < ngCtrl.viewSelectedRegion.sections[i].rows[j].columns.length; k++) {
+						for (var m = 0; m < ngCtrl.viewSelectedRegion.sections[i].rows[j].columns[k].items.length; m++) {
+							if (ngCtrl.viewSelectedRegion.sections[i].rows[j].columns[k].items[m].meta) {
+								alreadyUsedItemDataNames.push(ngCtrl.viewSelectedRegion.sections[i].rows[j].columns[k].items[m].dataName); //dataName should be used instead meta.id to cover the case with same items from different relations (or no relation and with relation)
 							}
 						}
 					}
@@ -335,6 +340,24 @@
 
 		//#endregion
 
+		//#region << Region Management >>
+
+		ngCtrl.manageRegion = function (region) {
+			var modalInstance = $uibModal.open({
+				animation: false,
+				templateUrl: 'manageRegionModal.html',
+				controller: 'ManageRegionModalController',
+				controllerAs: "popupCtrl",
+				size: "",
+				resolve: {
+					parentData: function () { return ngCtrl; },
+					region: function () { return region }
+				}
+			});
+		}
+
+		//#endregion
+
 		//#region << Section Management >>
 
 		//Create or Update view section
@@ -363,12 +386,12 @@
 			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
 				tempCopyView = fastCopy(ngCtrl.view);
-				tempCopyViewRegion = fastCopy(ngCtrl.viewContentRegion);
+				tempCopyViewRegion = fastCopy(ngCtrl.viewSelectedRegion);
 				// 2. Apply the change to the temp object
 				tempCopyViewRegion.sections = webvellaCoreService.safeRemoveArrayPlace(tempCopyViewRegion.sections, id);
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
 				for (var i = 0; i < tempCopyView.regions.length; i++) {
-					if (tempCopyView.regions[i].name === "content") {
+					if (tempCopyView.regions[i].name === ngCtrl.stateParams.regionName) {
 						tempCopyView.regions[i] = tempCopyViewRegion;
 					}
 				}
@@ -388,7 +411,7 @@
 
 			//Initialize both view and the content region with the new value
 			ngCtrl.view = tempCopyView;
-			ngCtrl.viewContentRegion = tempCopyViewRegion;
+			ngCtrl.viewSelectedRegion = tempCopyViewRegion;
 			ngCtrl.regenerateLibrary();
 		}
 		function errorSectionRemoveCallback(response) {
@@ -430,7 +453,7 @@
 			if (isConfirmed === true) {
 				// 1. Copy the view and contentRegion in a temp object
 				var tempCopyView = fastCopy(ngCtrl.view);
-				var tempCopyViewRegion = fastCopy(ngCtrl.viewContentRegion);
+				var tempCopyViewRegion = fastCopy(ngCtrl.viewSelectedRegion);
 				// 2. Apply the change to the temp object
 				for (var m = 0; m < tempCopyViewRegion.sections.length; m++) {
 					if (tempCopyViewRegion.sections[m].id === sectionId) {
@@ -439,7 +462,7 @@
 				}
 				// 3. Apply the changes of the temp ContentViewRegion to the temp view object
 				for (var i = 0; i < tempCopyView.regions.length; i++) {
-					if (tempCopyView.regions[i].name === "content") {
+					if (tempCopyView.regions[i].name === ngCtrl.stateParams.regionName) {
 						tempCopyView.regions[i] = tempCopyViewRegion;
 					}
 				}
@@ -460,8 +483,8 @@
 
 			ngCtrl.view = response.object;
 			for (var i = 0; i < response.object.regions.length; i++) {
-				if (response.object.regions[i].name === "content") {
-					ngCtrl.viewContentRegion = response.object.regions[i];
+				if (response.object.regions[i].name === ngCtrl.stateParams.regionName) {
+					ngCtrl.viewSelectedRegion = response.object.regions[i];
 				}
 			}
 			ngCtrl.regenerateLibrary();
@@ -565,32 +588,32 @@
 				});
 
 				modalInstance.result.then(function (fieldObject) {
-					for (var k = 0; k < ngCtrl.viewContentRegion.sections.length; k++) {
-						for (var l = 0; l < ngCtrl.viewContentRegion.sections[k].rows.length; l++) {
-							for (var m = 0; m < ngCtrl.viewContentRegion.sections[k].rows[l].columns.length; m++) {
-								for (var n = 0; n < ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items.length; n++) {
-									if (fieldObject.type === "fieldFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+					for (var k = 0; k < ngCtrl.viewSelectedRegion.sections.length; k++) {
+						for (var l = 0; l < ngCtrl.viewSelectedRegion.sections[k].rows.length; l++) {
+							for (var m = 0; m < ngCtrl.viewSelectedRegion.sections[k].rows[l].columns.length; m++) {
+								for (var n = 0; n < ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items.length; n++) {
+									if (fieldObject.type === "fieldFromRelation" && ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
 									}
-									else if (fieldObject.type === "viewFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									else if (fieldObject.type === "viewFromRelation" && ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
-									else if (fieldObject.type === "listFromRelation" && ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
-										ngCtrl.viewContentRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
+									else if (fieldObject.type === "listFromRelation" && ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].dataName === fieldObject.dataName) {
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLabel = fieldObject.fieldLabel;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldPlaceholder = fieldObject.fieldPlaceholder;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldHelpText = fieldObject.fieldHelpText;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldRequired = fieldObject.fieldRequired;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldLookupList = fieldObject.fieldLookupList;
+										ngCtrl.viewSelectedRegion.sections[k].rows[l].columns[m].items[n].fieldManageView = fieldObject.fieldManageView;
 									}
 								}
 							}
@@ -599,8 +622,8 @@
 
 					var tempView = fastCopy(ngCtrl.view);
 					for (var i = 0; i < tempView.regions.length; i++) {
-						if (tempView.regions[i].name == "content") {
-							tempView.regions[i] = ngCtrl.viewContentRegion;
+						if (tempView.regions[i].name == ngCtrl.stateParams.regionName) {
+							tempView.regions[i] = ngCtrl.viewSelectedRegion;
 						}
 					}
 					////2. Call the service
@@ -615,7 +638,7 @@
 			}
 
 			function getRelatedEntityMetaErrorCallback(response) {
-				$translate(['ERROR_MESSAGE_LABEL','VALIDATION_ENTITY_NOT_FOUND']).then(function (translations) {
+				$translate(['ERROR_MESSAGE_LABEL', 'VALIDATION_ENTITY_NOT_FOUND']).then(function (translations) {
 					ngToast.create({
 						className: 'error',
 						content: translations.ERROR_MESSAGE_LABEL + ' ' + translations.VALIDATION_ENTITY_NOT_FOUND,
@@ -667,8 +690,8 @@
 					});
 					//ngCtrl.library.items = fastCopy(ngCtrl.originalLibrary);
 					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "content") {
-							ngCtrl.viewContentRegion = response.object.regions[i];
+						if (response.object.regions[i].name === ngCtrl.stateParams.regionName) {
+							ngCtrl.viewSelectedRegion = response.object.regions[i];
 						}
 					}
 					moveSuccess();
@@ -703,8 +726,8 @@
 			else {
 				//cannot be managed
 				for (var i = 0; i < ngCtrl.view.regions.length; i++) {
-					if (ngCtrl.view.regions[i].name === "content") {
-						ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
+					if (ngCtrl.view.regions[i].name === ngCtrl.stateParams.regionName) {
+						ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewSelectedRegion);
 					}
 				}
 				webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
@@ -785,8 +808,8 @@
 
 			column.items.splice(index, 1);
 			for (var i = 0; i < ngCtrl.view.regions.length; i++) {
-				if (ngCtrl.view.regions[i].name === "content") {
-					ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewContentRegion);
+				if (ngCtrl.view.regions[i].name === ngCtrl.stateParams.regionName) {
+					ngCtrl.view.regions[i] = fastCopy(ngCtrl.viewSelectedRegion);
 				}
 			}
 			webvellaCoreService.updateEntityView(ngCtrl.view, ngCtrl.entity.name, successCallback, errorCallback);
@@ -906,10 +929,105 @@
 
 	//#region << Modal Controllers >> /////////////////////
 
-	//Section Modal
-	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$scope','$translate'];
+	//Region modal
 
-	function ManageSectionModalController(parentData, section, weight, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $scope,$translate) {
+	ManageRegionModalController.$inject = ['parentData', 'region', '$uibModalInstance', '$log', 'webvellaCoreService',
+				'ngToast', '$translate'];
+
+	function ManageRegionModalController(parentData, region, $uibModalInstance, $log, webvellaCoreService,
+				ngToast, $translate) {
+
+		var popupCtrl = this;
+
+		popupCtrl.isUpdate = true;
+		if (region === null) {
+			popupCtrl.isUpdate = false;
+			popupCtrl.region = webvellaCoreService.initViewRegion();
+		}
+		else {
+			popupCtrl.region = fastCopy(region);
+		}
+
+		popupCtrl.ok = function () {
+			popupCtrl.view = fastCopy(parentData.view);
+			if (popupCtrl.isUpdate) {
+				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+					if (popupCtrl.view.regions[i].name === popupCtrl.region.name) {
+						popupCtrl.view.regions[i].label = popupCtrl.region.label;
+						popupCtrl.view.regions[i].render = popupCtrl.region.render;
+						popupCtrl.view.regions[i].cssClass = popupCtrl.region.cssClass;
+						popupCtrl.view.regions[i].weight = popupCtrl.region.weight;
+					}
+				}
+			}
+			else {
+				popupCtrl.view.regions.push(popupCtrl.region);
+			}
+			popupCtrl.view.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+			webvellaCoreService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
+		};
+
+		popupCtrl.delete = function () {
+			popupCtrl.view = fastCopy(parentData.view);
+			if (popupCtrl.isUpdate && popupCtrl.region.name != "default") {
+				var deletedRegionIndex = -1;
+				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
+					if (popupCtrl.view.regions[i].name === popupCtrl.region.name) {
+						deletedRegionIndex = i;
+					}
+				}
+				popupCtrl.view.regions.splice(deletedRegionIndex, 1);
+				popupCtrl.view.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+				webvellaCoreService.updateEntityView(popupCtrl.view, parentData.entity.name, successCallback, errorCallback);
+			}
+			else {
+				$uibModalInstance.dismiss('cancel');
+			}
+		}
+
+		popupCtrl.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
+
+		/// Aux
+		function successCallback(response) {
+			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
+				ngToast.create({
+					className: 'success',
+					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
+				});
+			});
+			//check if current region exists
+			var regionExists = false;
+			for (var i = 0; i < response.object.regions.length; i++) {
+				if (response.object.regions[i].name === parentData.stateParams.regionName) {
+					regionExists = true;
+					break;
+				}
+			}
+
+			//if the current regionName is not existing any more (deleted) redirect after the close
+			if (regionExists) {
+				parentData.view = response.object;
+				$uibModalInstance.close('success');
+			}
+			else {
+				webvellaCoreService.GoToState('webvella-admin-entity-view-manage',{entityName:parentData.stateParams.entityName,viewName: parentData.stateParams.viewName, regionName:"default"});
+				$uibModalInstance.dismiss('cancel');
+			}
+		}
+
+		function errorCallback(response) {
+			popupCtrl.hasError = true;
+			popupCtrl.errorMessage = response.message;
+
+		}
+	};
+
+	//Section Modal
+	ManageSectionModalController.$inject = ['parentData', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$scope', '$translate'];
+
+	function ManageSectionModalController(parentData, section, weight, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, $scope, $translate) {
 
 
 
@@ -931,20 +1049,20 @@
 		popupCtrl.ok = function () {
 			popupCtrl.view = fastCopy(parentData.view);
 			//Find the content region, which is subject of this screen
-			popupCtrl.viewContentRegion = {};
+			popupCtrl.viewSelectedRegion = {};
 			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
-				if (popupCtrl.view.regions[i].name === "content") {
-					popupCtrl.viewContentRegion = popupCtrl.view.regions[i];
+				if (popupCtrl.view.regions[i].name === parentData.stateParams.regionName) {
+					popupCtrl.viewSelectedRegion = popupCtrl.view.regions[i];
 				}
 			}
 			// Validate unique username on add. It cannot be managed on update
 			if (!popupCtrl.isUpdate) {
 				popupCtrl.isValid = true;
-				if (!popupCtrl.viewContentRegion.sections) {
-					popupCtrl.viewContentRegion.sections = []; //If the view was newly created the viewContentRegion will be an empty object
+				if (!popupCtrl.viewSelectedRegion.sections) {
+					popupCtrl.viewSelectedRegion.sections = []; //If the view was newly created the viewSelectedRegion will be an empty object
 				}
-				for (var i = 0; i < popupCtrl.viewContentRegion.sections.length; i++) {
-					if (popupCtrl.viewContentRegion.sections[i].name === popupCtrl.section.name) {
+				for (var i = 0; i < popupCtrl.viewSelectedRegion.sections.length; i++) {
+					if (popupCtrl.viewSelectedRegion.sections[i].name === popupCtrl.section.name) {
 						popupCtrl.isValid = false;
 					}
 				}
@@ -957,18 +1075,18 @@
 			}
 			//#region << Update the temporary view object for submission >>
 			if (popupCtrl.isUpdate && popupCtrl.isValid) {
-				popupCtrl.viewContentRegion.sections = webvellaCoreService.safeUpdateArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
+				popupCtrl.viewSelectedRegion.sections = webvellaCoreService.safeUpdateArrayPlace(popupCtrl.section, popupCtrl.viewSelectedRegion.sections);
 			}
 			else if (popupCtrl.isValid) {
-				popupCtrl.viewContentRegion.sections = webvellaCoreService.safeAddArrayPlace(popupCtrl.section, popupCtrl.viewContentRegion.sections);
+				popupCtrl.viewSelectedRegion.sections = webvellaCoreService.safeAddArrayPlace(popupCtrl.section, popupCtrl.viewSelectedRegion.sections);
 			}
 			//#endregion
 
 			if (popupCtrl.isValid) {
 				//Update the view with the correct values for the content region
 				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
-					if (popupCtrl.view.regions[i].name === "content") {
-						popupCtrl.view.regions[i] = popupCtrl.viewContentRegion;
+					if (popupCtrl.view.regions[i].name === parentData.stateParams.regionName) {
+						popupCtrl.view.regions[i] = popupCtrl.viewSelectedRegion;
 					}
 				}
 
@@ -992,8 +1110,8 @@
 			//Initialize both view and the content region
 			parentData.view = fastCopy(response.object);
 			for (var i = 0; i < parentData.view.regions.length; i++) {
-				if (parentData.view.regions[i].name === "content") {
-					parentData.viewContentRegion = parentData.view.regions[i];
+				if (parentData.view.regions[i].name === parentData.stateParams.regionName) {
+					parentData.viewSelectedRegion = parentData.view.regions[i];
 				}
 			}
 
@@ -1009,10 +1127,10 @@
 
 	//Row Modal
 	ManageRowModalController.$inject = ['parentData', 'row', 'section', 'weight', '$uibModalInstance', '$log', 'webvellaCoreService',
-				'ngToast','$translate'];
+				'ngToast', '$translate'];
 
 	function ManageRowModalController(parentData, row, section, weight, $uibModalInstance, $log, webvellaCoreService,
-				ngToast,$translate) {
+				ngToast, $translate) {
 
 		var popupCtrl = this;
 		popupCtrl.section = fastCopy(section);
@@ -1040,10 +1158,10 @@
 			//#region << 1. Get the current view and currentContentRegion >>
 			popupCtrl.view = fastCopy(parentData.view);
 			//Find the content region, which is subject of this screen
-			popupCtrl.viewContentRegion = {};
+			popupCtrl.viewSelectedRegion = {};
 			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
-				if (popupCtrl.view.regions[i].name === "content") {
-					popupCtrl.viewContentRegion = popupCtrl.view.regions[i];
+				if (popupCtrl.view.regions[i].name === parentData.stateParams.regionName) {
+					popupCtrl.viewSelectedRegion = popupCtrl.view.regions[i];
 				}
 			}
 			//#endregion
@@ -1051,11 +1169,11 @@
 			if (popupCtrl.isUpdate) {
 				//A. Check if the row's column differ from the original number
 				var originalRowColumns = 0;
-				for (var i = 0; i < parentData.viewContentRegion.sections.length; i++) {
-					if (parentData.viewContentRegion.sections[i].name === popupCtrl.section.name) {
-						for (var j = 0; j < parentData.viewContentRegion.sections[i].rows.length; j++) {
-							if (parseInt(parentData.viewContentRegion.sections[i].rows[j].weight) === parseInt(row.weight)) {
-								originalRowColumns = parentData.viewContentRegion.sections[i].rows[j].columns.length;
+				for (var i = 0; i < parentData.viewSelectedRegion.sections.length; i++) {
+					if (parentData.viewSelectedRegion.sections[i].name === popupCtrl.section.name) {
+						for (var j = 0; j < parentData.viewSelectedRegion.sections[i].rows.length; j++) {
+							if (parseInt(parentData.viewSelectedRegion.sections[i].rows[j].weight) === parseInt(row.weight)) {
+								originalRowColumns = parentData.viewSelectedRegion.sections[i].rows[j].columns.length;
 							}
 						}
 					}
@@ -1091,14 +1209,14 @@
 			}
 			//#endregion
 			//#region << 3. Update the contentRegion & Feed in the updated ContentRegion in the view>>
-			for (var i = 0; i < popupCtrl.viewContentRegion.sections.length; i++) {
-				if (popupCtrl.viewContentRegion.sections[i].id === popupCtrl.section.id) {
-					popupCtrl.viewContentRegion.sections[i] = popupCtrl.section;
+			for (var i = 0; i < popupCtrl.viewSelectedRegion.sections.length; i++) {
+				if (popupCtrl.viewSelectedRegion.sections[i].id === popupCtrl.section.id) {
+					popupCtrl.viewSelectedRegion.sections[i] = popupCtrl.section;
 				}
 			}
 			for (var i = 0; i < popupCtrl.view.regions.length; i++) {
-				if (popupCtrl.view.regions[i].name === "content") {
-					popupCtrl.view.regions[i] = popupCtrl.viewContentRegion;
+				if (popupCtrl.view.regions[i].name === parentData.stateParams.regionName) {
+					popupCtrl.view.regions[i] = popupCtrl.viewSelectedRegion;
 				}
 			}
 
@@ -1124,8 +1242,8 @@
 			//Initialize both view and the content region
 			parentData.view = fastCopy(response.object);
 			for (var i = 0; i < parentData.view.regions.length; i++) {
-				if (parentData.view.regions[i].name === "content") {
-					parentData.viewContentRegion = parentData.view.regions[i];
+				if (parentData.view.regions[i].name === parentData.stateParams.regionName) {
+					parentData.viewSelectedRegion = parentData.view.regions[i];
 				}
 			}
 			parentData.regenerateLibrary();

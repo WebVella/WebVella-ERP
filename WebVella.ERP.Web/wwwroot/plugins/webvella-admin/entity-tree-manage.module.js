@@ -29,7 +29,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -167,7 +167,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		//#endregion        
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#region << Init selected relation >>

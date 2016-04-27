@@ -28,7 +28,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -186,7 +186,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -369,7 +368,7 @@
 						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "content") {
+						if (response.object.regions[i].name === "default") {
 							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}

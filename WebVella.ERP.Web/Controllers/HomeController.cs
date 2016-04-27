@@ -18,6 +18,7 @@ namespace WebVella.ERP.Web.Controllers
         public IActionResult Index()
         {
 			ViewBag.CacheBreaker = 20150920;
+			//pluginService.
 			ViewBag.Lang = Settings.Lang;
             return View();
         }

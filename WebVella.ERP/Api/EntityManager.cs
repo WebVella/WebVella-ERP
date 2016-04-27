@@ -6017,7 +6017,8 @@ namespace WebVella.ERP.Api
 			List<RecordView> recordViewList = new List<RecordView>();
 
 			var contentRegion = new RecordViewRegion();
-			contentRegion.Name = "content";
+			contentRegion.Name = "default";
+			contentRegion.Label = "Default";
 			contentRegion.Sections = new List<RecordViewSection>();
 
 			var create = new RecordView();

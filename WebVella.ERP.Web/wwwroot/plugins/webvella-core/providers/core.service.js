@@ -56,6 +56,7 @@
 
 		//Init
 		serviceInstance.initView = initView;
+		serviceInstance.initViewRegion = initViewRegion;
 		serviceInstance.initViewSection = initViewSection;
 		serviceInstance.initViewRow = initViewRow;
 		serviceInstance.initViewRowColumn = initViewRowColumn;
@@ -1036,9 +1037,11 @@
 				"iconName": "file-text-o",
 				"regions": [
                     {
-                    	"name": "content",
+                    	"name": "default",
+						"label": "Default",
                     	"render": false,
                     	"cssClass": "",
+						"weight": 1,
                     	"sections": []
                     }
 				],
@@ -1075,6 +1078,18 @@
 					}]
 			};
 			return view;
+		}
+		////////////////////////
+		function initViewRegion() {
+			var region = {
+                    	"name": "",
+						"label": "",
+                    	"render": true,
+                    	"cssClass": "",
+						"weight": 10,
+                    	"sections": []
+                    }
+			return region;
 		}
 		////////////////////////
 		function initViewSection() {

@@ -116,7 +116,7 @@
                         <label class="required" for="label" translate="{{'ICON_NAME'}}"></label>
                         <div class="input-group clean-addon">
                             <span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupCtrl.entity.iconName}}"></i></span>
-                            <input ng-model="popupCtrl.entity.iconName" type="text" class="form-control" id="iconName" name="iconName" placeholder="{{'ICON_NAME_PLACEHOLDER' | translate}}"
+                            <input ng-model="popupCtrl.entity.iconName" type="text" class="form-control" id="iconName" name="iconName" placeholder="{{'ICON_NAME_PLACEHOLDER' | translate}}" autocomplete="off"
                                    required uib-typeahead="icon for icon in popupCtrl.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html" ng-model-options="{allowInvalid:true}">
                             <span class="input-group-addon"><i class="fa fa-bars"></i></span>
                         </div>

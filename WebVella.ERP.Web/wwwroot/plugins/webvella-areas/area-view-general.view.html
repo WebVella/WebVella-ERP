@@ -33,9 +33,21 @@
 	</div>
 </div>
 
+
 <div id="page-body" ng-mousedown="ngCtrl.checkMouseButton($event)">
 	<div id="page-text" class="record-details" ng-if='!ngCtrl.view.meta.dynamicHtmlTemplate'>
-		<div class="region" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true} track by region.name">
+		<nav class="navbar navbar-default navbar-erp">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true} track by region.name">
+						<a ui-sref='{{ngCtrl.currentState.name}}({areaName:"{{ngCtrl.stateParams.areaName}}" ,entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}" ,recordId:"{{ngCtrl.stateParams.recordId}}",regionName:"{{region.name}}"})'
+							ng-click="ngCtrl.goToRegion(region.name)">{{region.label}}</a>
+					</li>
+				</ul>
+			</div>
+		</nav>		
+
+		<div class="region" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true,name:ngCtrl.stateParams.regionName} track by region.name">
 			<div class="panel panel-default panel-section  {{::section.cssClass}}" ng-repeat="section in region.sections track by section.id">
 				<div class="panel-heading collapsable ng-hide" ng-show="::section.showLabel">
 					<a href="javascript:void(0)" ng-click="ngCtrl.toggleSectionCollapse(section)">

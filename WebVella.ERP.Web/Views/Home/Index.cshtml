@@ -17,7 +17,7 @@
 	<link href="~/plugins/webvella-core/lib/ng-ckeditor/ng-ckeditor.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />   
     <link href="~/plugins/webvella-core/css/core.module.css?v=@ViewBag.CacheBreaker" rel="stylesheet" />
 </head>
-<body class="theme-{{appData.bodyColor}}"  ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar, 'not-visible-side-menu': !appData.sideMenuIsVisible}">
+<body class="theme-{{appData.bodyColor}}"  ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
 	<toast></toast>
 
 	<!-- here is injected the webvella-core state, which should be inherited by all plugins -->

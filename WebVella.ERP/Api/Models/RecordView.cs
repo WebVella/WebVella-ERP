@@ -229,11 +229,17 @@ namespace WebVella.ERP.Api.Models
 		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; }
 
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
+
 		[JsonProperty(PropertyName = "render")]
 		public bool? Render { get; set; }
 
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
 
 		[JsonProperty(PropertyName = "sections")]
 		public List<InputRecordViewSection> Sections { get; set; }
@@ -739,20 +745,28 @@ namespace WebVella.ERP.Api.Models
 	{
 		public RecordViewRegion()
 		{
+			Label = "";
 			Name = "";
 			Render = true;
 			CssClass = "";
 			Sections = new List<RecordViewSection>();
+			Weight = 10;
 		}
 
 		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+		public string Label { get; set; }
 
 		[JsonProperty(PropertyName = "render")]
 		public bool Render { get; set; }
 
 		[JsonProperty(PropertyName = "cssClass")]
 		public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
 
 		[JsonProperty(PropertyName = "sections")]
 		public List<RecordViewSection> Sections { get; set; }

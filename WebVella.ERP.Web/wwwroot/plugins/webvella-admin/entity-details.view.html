@@ -11,7 +11,7 @@
 </div>
 <div id="page-body">
 	<div class="tabbable tabs-left spilled">
-		<a ng-click="ngCtrl.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
@@ -104,7 +104,7 @@
 								<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 									<span class="input-group-addon" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-{{ngCtrl.entity.iconName}} fa-fw"></i></span>
 									<input type="text" class="form-control" disabled editable-text="ngCtrl.entity.iconName"
-										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"
+										   value="{{ngCtrl.entity.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName',$data)" e-form="fieldForm_iconName"  autocomplete="off"
 										   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:8">
 									<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 								</div>
