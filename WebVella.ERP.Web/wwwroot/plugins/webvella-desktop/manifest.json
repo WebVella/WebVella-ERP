@@ -1,0 +1,25 @@
+{
+	"name": "webvella-desktop",
+	"url": "http://webvella.com",
+	"description": "WebVella ERP plugin for managing the desktop",
+	"version": 20160427,
+	"company": "WebVella",
+	"company_url": "http://webvella.com",
+	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
+	"repository": "",
+	"license": "Apache License 2.0",
+	"load_priority": 12,
+	"libraries": {
+		"css": [],
+		"js": []
+	},
+	"module": {
+		"css": [],
+		"js": [
+			"/plugins/webvella-desktop/base.module.js",
+			"/plugins/webvella-desktop/browse.module.js",
+			"/plugins/webvella-desktop/providers/desktop.factory.js"
+		],
+		"wvApp_injects": [ "webvellaDesktop" ]
+	}
+}

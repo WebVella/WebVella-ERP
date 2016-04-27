@@ -1,42 +1,72 @@
 {
-  "name": "webvella-core",
-  "url": "http://webvella.com",
-  "description": "WebVella ERP base plugin for bootstrapping the application",
-  "version": 1,
-  "company": "WebVella",
-  "company_url": "http://webvella.com",
-  "author": "Bozhidar Zashev",
-  "repository": "",
-  "license": "Apache License 2.0",
-  "load_priority": 1,
-  "libraries": {
-    "css": [
-      "/plugins/webvella-base/lib/bootstrap/dist/css/bootstrap.css",
-      "/plugins/webvella-base/lib/ngtoast/dist/ngtoast.css",
-      "/plugins/webvella-base/lib/font-awesome/css/font-awesome.css",
-      "/plugins/webvella-base/lib/offline/themes/offline-theme-default.css",
-      "/plugins/webvella-base/lib/offline/themes/offline-language-english.css",
-      "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.css",
-      "http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,cyrillic"
-    ],
-    "js": [
-      "/plugins/webvella-base/lib/angular/angular.js",
-      "/plugins/webvella-base/lib/angular-animate/angular-animate.js",
-      "/plugins/webvella-base/lib/angular-sanitize/angular-sanitize.js",
-      "/plugins/webvella-base/lib/angular-aria/angular-aria.js",
-      "/plugins/webvella-base/lib/angular-messages/angular-messages.js",
-      "/plugins/webvella-base/lib/angular-touch/angular-touch.js",
-      "/plugins/webvella-base/lib/angular-ui-router/release/angular-ui-router.js",
-      "/plugins/webvella-base/lib/ngtoast/dist/ngToast.js",
-      "/plugins/webvella-base/lib/offline/offline.min.js",
-      "/plugins/webvella-base/lib/angular-bootstrap/ui-bootstrap-tpls.js",
-      "/plugins/webvella-base/lib/angular-loading-bar/build/loading-bar.js",
-      "/plugins/webvella-base/lib/vendor-init.js"
-    ]
-  },
-  "module": {
-    "css": [ ],
-    "js": [ "/plugins/webvella-base/webvella-base.module.js" ],
-    "wvApp_injects": [ "webvella-base" ]
-  }
+	"name": "webvella-core",
+	"url": "http://webvella.com",
+	"description": "WebVella ERP core plugin for bootstrapping the application",
+	"version": 20160427,
+	"company": "WebVella",
+	"company_url": "http://webvella.com",
+	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
+	"repository": "",
+	"license": "Apache License 2.0",
+	"load_priority": 11,
+	"libraries": {
+		"css": [
+			"/plugins/webvella-core/lib/bootstrap/dist/css/bootstrap.css",
+			"/plugins/webvella-core/lib/ngtoast/dist/ngtoast.css",
+			"/plugins/webvella-core/lib/angular-loading-bar/build/loading-bar.css",
+			"/plugins/webvella-core/lib/font-awesome/css/font-awesome.css",
+			"/plugins/webvella-core/lib/offline/themes/offline-theme-default.css",
+			"/plugins/webvella-core/lib/offline/themes/offline-language-english.css",
+			"/plugins/webvella-core/lib/angular-xeditable/dist/css/xeditable.css",
+			"/plugins/webvella-core/lib/ng-sortable/dist/ng-sortable.css",
+			"/plugins/webvella-core/lib/ng-ckeditor/ng-ckeditor.css"
+		],
+		"js": [
+			"/plugins/webvella-core/lib/ckeditor/ckeditor.js",
+			"/plugins/webvella-core/lib/angular/angular.js",
+			"/plugins/webvella-core/lib/angular-i18n/angular-locale_en-us.js",
+			"/plugins/webvella-core/lib/angular-animate/angular-animate.js",
+			"/plugins/webvella-core/lib/angular-sanitize/angular-sanitize.js",
+			"/plugins/webvella-core/lib/angular-aria/angular-aria.js",
+			"/plugins/webvella-core/lib/angular-messages/angular-messages.js",
+			"/plugins/webvella-core/lib/fastclick/lib/fastclick.js",
+			"/plugins/webvella-core/lib/angular-cookies/angular-cookies.js",
+			"/plugins/webvella-core/lib/angular-ui-router/release/angular-ui-router.js",
+			"/plugins/webvella-core/lib/ngtoast/dist/ngToast.js",
+			"/plugins/webvella-core/lib/angular-bootstrap/ui-bootstrap-tpls.js",
+			"/plugins/webvella-core/lib/angular-xeditable/dist/js/xeditable.js",
+			"/plugins/webvella-core/lib/moment/min/moment-with-locales.js",
+			"/plugins/webvella-core/lib/ng-sortable/dist/ng-sortable.js",
+			"/plugins/webvella-core/lib/checklist-model/checklist-model.js",
+			"/plugins/webvella-core/lib/ng-file-upload/ng-file-upload-shim.js",
+			"/plugins/webvella-core/lib/ng-file-upload/ng-file-upload.js",
+			"/plugins/webvella-core/lib/offline/offline.min.js",
+			"/plugins/webvella-core/lib/vendor-init.js",
+			"/plugins/webvella-core/lib/ng-ckeditor/ng-ckeditor.js",
+			"/plugins/webvella-core/lib/libphonenumber/libphonenumber.js",
+			"/plugins/webvella-core/lib/ngstorage/ngstorage.js",
+			"/plugins/webvella-core/lib/bootstrap-ui-datetime-picker/dist/datetime-picker.js",
+			"/plugins/webvella-core/lib/angular-recursion/angular-recursion.js",
+			"/plugins/webvella-core/lib/angular-loading-bar/build/loading-bar.js",
+			"/plugins/webvella-core/lib/angular-ui-tree/dist/angular-ui-tree.js",
+			"/plugins/webvella-core/lib/angular-bind-html-compile/angular-bind-html-compile.js",
+			"/plugins/webvella-core/lib/oclazyload/dist/oclazyload.js",
+			"/plugins/webvella-core/lib/ace-builds/src-min-noconflict/ace.js",
+			"/plugins/webvella-core/lib/angular-ui-ace/ui-ace.js",
+			"/plugins/webvella-core/lib/angular-translate/angular-translate.js"
+		]
+	},
+	"module": {
+		"css": [
+			"/plugins/webvella-core/css/core.module.css"
+		],
+		"js": [
+			"/plugins/webvella-core/base.module.js",
+			"/plugins/webvella-core/login.module.js",
+			"/plugins/webvella-core/error.module.js",
+			"/plugins/webvella-core/providers/core.service.js",
+			"/plugins/webvella-core/providers/core.directive.js"
+		],
+		"wvApp_injects": [ "webvellaCore" ]
+	}
 }
