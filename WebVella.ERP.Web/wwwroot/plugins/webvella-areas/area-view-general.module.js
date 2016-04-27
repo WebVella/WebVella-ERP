@@ -304,12 +304,7 @@
 		//#region << Initialize main objects >>
 		ngCtrl.view = {};
 		ngCtrl.view.meta = fastCopy(resolvedCurrentView.meta);
-		if(resolvedCurrentView.data.length == 1){
-			ngCtrl.view.data = fastCopy(resolvedCurrentView.data[0]);		
-		}
-		else{
-			ngCtrl.view.data = fastCopy(resolvedCurrentView.data);
-		}
+		ngCtrl.view.data = fastCopy(resolvedCurrentView.data);
 		if(resolvedCurrentParentView == null){
 			ngCtrl.parentView = null;		
 		}

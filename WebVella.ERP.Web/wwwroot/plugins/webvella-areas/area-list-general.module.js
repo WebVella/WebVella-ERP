@@ -422,9 +422,9 @@
 		//#endregion
 
 		//#region << Extract fields that are supported in the query to be filters>>
-		var fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
+		ngCtrl.fieldsInQueryArray = webvellaCoreService.extractSupportedFilterFields(ngCtrl.list);
 		ngCtrl.checkIfFieldSetInQuery = function (fieldName) {
-			if (fieldsInQueryArray.indexOf(fieldName) != -1) {
+			if (ngCtrl.fieldsInQueryArray.indexOf(fieldName) != -1) {
 				return true;
 			}
 			else {

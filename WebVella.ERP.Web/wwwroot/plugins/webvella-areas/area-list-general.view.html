@@ -43,15 +43,15 @@
 				<thead>
 					<tr>
 						<th class="actions text-center position-relative" style="padding:0;vertical-align:middle;padding-top:5px;">
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="!ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-filter"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && fieldsInQueryArray.length > 0" ng-click="ngCtrl.clearQueryFilter()">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#999;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.clearQueryFilter()">
 								<i class="fa fa-fw fa-times go-red"></i>
 								<em></em>
 							</a>
-							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
+							<a class="btn btn-link btn-sm btn-block ng-hide" style="color:#ccc;margin-top:0;" href="javascript:void(0)" ng-show="ngCtrl.show_filter && !ngCtrl.listIsFiltered && ngCtrl.fieldsInQueryArray.length > 0" ng-click="ngCtrl.show_filter = !ngCtrl.show_filter">
 								<i class="fa fa-fw fa-times"></i>
 								<em></em>
 							</a>
