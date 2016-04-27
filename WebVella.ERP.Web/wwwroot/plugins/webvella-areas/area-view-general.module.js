@@ -210,8 +210,8 @@
 		return defer.promise;
 	}
 
-	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta','resolvedCurrentParentView'];
-	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta,resolvedCurrentParentView) {
+	loadDependency.$inject = ['$ocLazyLoad', '$q', '$http', '$state', '$timeout', '$stateParams', 'wvAppConstants', 'resolvedCurrentEntityMeta','resolvedCurrentParentView','resolvedEntityRelationsList'];
+	function loadDependency($ocLazyLoad, $q, $http, $state, $timeout, $stateParams, wvAppConstants, resolvedCurrentEntityMeta,resolvedCurrentParentView,resolvedEntityRelationsList) {
 		var lazyDeferred = $q.defer();
 		var listServiceJavascriptPath = "";
 		if(resolvedCurrentParentView == null){
@@ -221,10 +221,36 @@
 		else {
 		   //A view in another view is reviewed
 			var dataNameArray = fastCopy($stateParams.viewName).split('$');		
-			if(dataNameArray.length == 3){
+			if(dataNameArray.length < 3 || dataNameArray.length > 4){
+				lazyDeferred.reject("The view dataName is not correct");
+			}
+			else if(dataNameArray.length == 3){
 				//it is view from the current entity  e.g. $view$second
 				var realViewName = 	dataNameArray[2];
 				listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/view/' + realViewName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
+			}
+			else {
+				//e.g. "$view$project_1_n_ticket$general"
+				//extract the real view name
+				var viewRealName = dataNameArray[3];
+				//find the other entity in the relation so we can include it in the request
+				var viewRealEntity = null;
+				resolvedEntityRelationsList.forEach(function (relation) {
+					if (relation.name == dataNameArray[2]) {
+						if (relation.originEntityName == $stateParams.entityName) {
+							viewRealEntity = relation.targetEntityName;
+						}
+						else if (relation.targetEntityName == $stateParams.entityName) {
+							viewRealEntity = relation.originEntityName;
+						}
+					}
+				});
+				if (viewRealEntity == null) {
+					lazyDeferred.reject("Cannot find the list real entity name");
+				}
+				else {
+					listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + viewRealEntity + '/view/' + viewRealName + '/service.js?v=' + moment().toISOString();	//do not have the hash of the real entity here
+				}
 			}
 		}
 		
@@ -699,7 +725,7 @@
 			//on #content check if mouse is clicked outside the editor, so to perform a possible field update
 			ngCtrl.checkMouseButton = function ($event) {
 				if (ngCtrl.lastEnabledHtmlField != null) {
-					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+					ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName],ngCtrl.view.data["id"]);
 					ngCtrl.lastEnabledHtmlFieldData = null;
 					ngCtrl.lastEnabledHtmlField = null;
 				}
@@ -740,7 +766,7 @@
 
 							$event.preventDefault();
 							$timeout(function () {
-								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName]);
+								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName],ngCtrl.view.data["id"]);
 							}, 500);
 							return false;
 							break;
@@ -797,7 +823,7 @@
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
 							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
-							ngCtrl.fieldUpdate(item, response.object.url);
+							ngCtrl.fieldUpdate(item, response.object.url,ngCtrl.view.data["id"]);
 						}, 1);
 					}
 
@@ -828,7 +854,7 @@
 					ngCtrl.moveSuccessCallback = function (response) {
 						$timeout(function () {
 							ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
-							ngCtrl.fieldUpdate(item, response.object.url);
+							ngCtrl.fieldUpdate(item, response.object.url,ngCtrl.view.data["id"]);
 							ngCtrl.cacheBreakers[item.dataName] = "?v=" + moment().toISOString();
 						}, 1);
 					}
@@ -860,7 +886,7 @@
 					$timeout(function () {
 						ngCtrl.view.data[fieldName] = null;
 						ngCtrl.progress[fieldName] = 0;
-						ngCtrl.fieldUpdate(item, null);
+						ngCtrl.fieldUpdate(item, null,ngCtrl.view.data["id"]);
 					}, 0);
 					return true;
 				}
@@ -882,8 +908,9 @@
 		//#endregion
 
 		// Update field
-		ngCtrl.fieldUpdate = function (item, data) {
-			webvellaViewActionService.fieldUpdate(item, data, ngCtrl);
+		ngCtrl.fieldUpdate = function (item, data, recordId) {
+			//alert("need to pass the recordId too so we can manage and viewFromRelation");
+			webvellaViewActionService.fieldUpdate(item, data, recordId, ngCtrl);
 		}
 
 		//#region << Remove relation >>
@@ -902,7 +929,7 @@
 				}
 				if (itemObject.meta != null && !itemObject.meta.required) {
 					ngCtrl.view.data[item.dataName] = [];
-					ngCtrl.fieldUpdate(itemObject, null);
+					ngCtrl.fieldUpdate(itemObject, null,ngCtrl.view.data["id"]);
 				}
 			}
 		}
@@ -1719,9 +1746,7 @@
 				iterateCanBeSelected(popupCtrl.tree.data[i], 0, popupCtrl.tree.data[i], isInitial);
 			}
 		}
-
-
-
+  
 		popupCtrl.toggleNodeSelection = function (node) {
 			var nodeIndex = popupCtrl.selectedTreeRecords.indexOf(node.recordId);
 			var recordsToBeAttached = [];

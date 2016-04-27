@@ -2468,7 +2468,7 @@
 		}
 
 		///////////////////////
-		function viewAction_fieldUpdate(item, data, ngCtrl) {
+		function viewAction_fieldUpdate(item, data, recordId, ngCtrl) {
 			var defer = $q.defer();
 			var patchObject = {};
 			var validation = {
@@ -2608,10 +2608,14 @@
 				defer.resolve("validation error");
 			}
 
-			patchRecord(ngCtrl.stateParams.recordId, ngCtrl.entity.name, patchObject, patchSuccessCallback, patchFailedCallback);
-
+			if(!item.entityName){
+				alert("item.entityName is missing, fixed this");
+				return defer.reject("error");				
+			}
+			else {
+				patchRecord(recordId, item.entityName, patchObject, patchSuccessCallback, patchFailedCallback);
+			}
 			return defer.promise;
-
 		}
 
 		function viewAction_deleteRecord(ngCtrl) {

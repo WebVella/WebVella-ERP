@@ -5959,12 +5959,12 @@ namespace WebVella.ERP.Api
 			lookup.PageSize = 10;
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
-			create.ServiceCode = null;
-			create.ActionItems = new List<ActionItem>();
-			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
-			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
-			create.ActionItems.Add(GenerateListActionItem("wv_export_records"));
-			create.ActionItems.Add(GenerateListActionItem("wv_record_details"));
+			lookup.ServiceCode = null;
+			lookup.ActionItems = new List<ActionItem>();
+			lookup.ActionItems.Add(GenerateListActionItem("wv_create_record"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_export_records"));
+			lookup.ActionItems.Add(GenerateListActionItem("wv_record_details"));
 			recordLists.Add(lookup);
 
 			return recordLists;

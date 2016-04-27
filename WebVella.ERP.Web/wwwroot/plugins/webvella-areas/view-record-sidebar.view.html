@@ -16,6 +16,12 @@
 			<a ng-switch-when="view" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>
+			<a ng-switch-when="viewFromRelation" ng-if="!item.is_parent" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/view-general/{{::item.name}}">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+			</a>
+			<a ng-switch-when="list" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
+				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
+			</a>
 			<a ng-switch-when="listFromRelation" href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/view-general/sb/{{::item.parentViewName}}/{{::sidebarData.stateParams.recordId}}/list-general/{{::item.name}}">
 				<i class="fa fa-{{::item.iconName}} fa-fw"></i><span class="text ng-binding">{{::item.label}}</span>
 			</a>

@@ -83,7 +83,10 @@
         			}
         		}
         		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
-        			item.iconName = "list";
+					if(sidebarItem.type === "list"){
+						 item.label = sidebarItem.meta.label;
+					}        			
+					item.iconName = "list";
         			if (sidebarItem.meta.iconName) {
         				item.iconName = sidebarItem.meta.iconName;
         			}
@@ -121,6 +124,9 @@
         			}
         		}
         		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+					if(sidebarItem.type === "list"){
+						 item.label = sidebarItem.meta.label;
+					}
         			item.iconName = "list";
         			if (sidebarItem.meta.iconName) {
         				item.iconName = sidebarItem.meta.iconName;
@@ -134,7 +140,7 @@
 
         sidebarData.isItemActive = function (item) {
 			if(item.type == "view"){
-				if(item.is_parent && sidebarData.view != null &&  item.name == sidebarData.view.name ){ //the main details
+				if(item.is_parent && sidebarData.view != null &&  item.name == $stateParams.viewName ){ //the main details
 					return true;
 				} 
 				else if(item.name == $stateParams.viewName)	{
@@ -145,15 +151,23 @@
 				}
 			}
 			if(item.type == "viewFromRelation"){
-				if(item.name == sidebarData.view.name){
+				if(item.name == $stateParams.viewName){
 					return true;
 				} 
 				else {
 					return false;
 				}
 			}
-			if(item.type == "list" || item.type == "listFromRelation"){
-				if(item.name == sidebarData.stateParams.listName){
+			if(item.type == "list"){
+				if(item.name == $stateParams.listName){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
+			if(item.type == "listFromRelation"){
+				if(item.name == $stateParams.listName){
 					return true;
 				} 
 				else {

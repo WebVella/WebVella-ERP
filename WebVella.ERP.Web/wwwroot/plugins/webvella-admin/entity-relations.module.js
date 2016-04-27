@@ -143,48 +143,14 @@
 		var ngCtrl = this;
 		ngCtrl.search = {};
 		ngCtrl.allRelations = fastCopy(resolvedRelationsList);
-		ngCtrl.currentEntityRelation = [];
+		ngCtrl.currentEntityRelations = [];
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityList = fastCopy(resolvedEntityList.entities);
 
 		//Initialize relations in the scope of this entity
 		for (var i = 0; i < ngCtrl.allRelations.length; i++) {
 			if (ngCtrl.allRelations[i].originEntityId == ngCtrl.entity.id || ngCtrl.allRelations[i].targetEntityId == ngCtrl.entity.id) {
-				ngCtrl.currentEntityRelation.push(ngCtrl.allRelations[i]);
-			}
-		}
-		for (var j = 0; j < ngCtrl.currentEntityRelation.length; j++) {
-			for (var k = 0; k < ngCtrl.entityList.length; k++) {
-				if (ngCtrl.currentEntityRelation[j].originEntityId == ngCtrl.entityList[k].id) {
-					//add origin Name 
-					ngCtrl.currentEntityRelation[j].originEntityName = ngCtrl.entityList[k].name;
-					//add origin label 
-					ngCtrl.currentEntityRelation[j].originEntityLabel = ngCtrl.entityList[k].label;
-
-					for (var m = 0; m < ngCtrl.entityList[k].fields.length; m++) {
-						if (ngCtrl.entityList[k].fields[m].id == ngCtrl.currentEntityRelation[j].originFieldId) {
-							//add target Name 
-							ngCtrl.currentEntityRelation[j].originFieldName = ngCtrl.entityList[k].fields[m].name;
-							//add target Label 
-							ngCtrl.currentEntityRelation[j].originFieldLabel = ngCtrl.entityList[k].fields[m].label;
-						}
-					}
-				}
-				if (ngCtrl.currentEntityRelation[j].targetEntityId == ngCtrl.entityList[k].id) {
-					//add target Name 
-					ngCtrl.currentEntityRelation[j].targetEntityName = ngCtrl.entityList[k].name;
-					//add target Label 
-					ngCtrl.currentEntityRelation[j].targetEntityLabel = ngCtrl.entityList[k].label
-
-					for (var m = 0; m < ngCtrl.entityList[k].fields.length; m++) {
-						if (ngCtrl.entityList[k].fields[m].id == ngCtrl.currentEntityRelation[j].targetFieldId) {
-							//add target Name 
-							ngCtrl.currentEntityRelation[j].targetFieldName = ngCtrl.entityList[k].fields[m].name;
-							//add target Label 
-							ngCtrl.currentEntityRelation[j].targetFieldLabel = ngCtrl.entityList[k].fields[m].label;
-						}
-					}
-				}
+				ngCtrl.currentEntityRelations.push(ngCtrl.allRelations[i]);
 			}
 		}
 

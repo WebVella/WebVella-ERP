@@ -2,7 +2,7 @@
     <div id="page-meta">
         <div class="aux-actions">
 			<a class="btn btn-default btn-outline" ng-click="ngCtrl.manageRelationModal(null)"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
-			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.currentEntityRelation.length > 0">
+			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.currentEntityRelations.length > 0">
 				<div class="left-inner-addon">
 					<i class="fa fa-search"></i>
 					<input ng-model="ngCtrl.search.name" type="text" class="form-control" placeholder="{{'RELATION_NAME' | translate}}">
@@ -29,8 +29,8 @@
     </div>
 
     <div id="page-text">
-        <div class="alert alert-info" ng-show="::ngCtrl.currentEntityRelation.length == 0" translate="{{'RELATIONS_EMPTY_MESSAGE'}}"></div>
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.currentEntityRelation.length != 0">
+        <div class="alert alert-info" ng-show="::ngCtrl.currentEntityRelations.length == 0" translate="{{'RELATIONS_EMPTY_MESSAGE'}}"></div>
+        <table class="table table-bordered table-hover table-vertical-align-middle" ng-show="::ngCtrl.currentEntityRelations.length != 0">
             <thead>
                 <tr>
                     <th class="actions"></th>
@@ -39,7 +39,7 @@
                     <th class="icon" translate="{{'TARGET'}}"></th>
             </thead>
             <tbody>
-                <tr ng-repeat="relation in ngCtrl.currentEntityRelation | filter: ngCtrl.search track by relation.id">
+                <tr ng-repeat="relation in ngCtrl.currentEntityRelations | filter: ngCtrl.search track by relation.id">
                     <td class="actions">
                         <a class="btn btn-default btn-outline" ng-click="ngCtrl.manageRelationModal(relation)">
                             <i class="fa fa-eye"></i>

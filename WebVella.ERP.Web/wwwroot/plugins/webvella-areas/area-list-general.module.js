@@ -39,7 +39,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView:function () { return null; },
+				resolvedCurrentView: function () { return null; },
 				resolvedCurrentParentView: function () { return null; },
 				resolvedListRecords: resolveListRecords
 			},
@@ -74,7 +74,7 @@
 			resolve: {
 				loadDependency: loadDependency,
 				loadPreloadScript: loadPreloadScript,
-				resolvedCurrentView: function(){return null},	//for the sidebar to render
+				resolvedCurrentView: function () { return null },	//for the sidebar to render
 				resolvedCurrentParentView: resolveCurrentParentView,
 				resolvedListRecords: resolveListRecordsFromView
 			},
@@ -98,30 +98,38 @@
 			listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/list/' + $stateParams.listName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;
 		}
 		else {
-			//Case 2. List is in a view and the listName is a dataName	e.g. "$list$project_1_n_ticket$general"
+			//Case 2. List is in a view and the listName is a dataName	
 			var dataNameArray = fastCopy($stateParams.listName).split('$');
-			if(dataNameArray.length < 4){
+			if (dataNameArray.length < 3 || dataNameArray.length > 4) {
 				lazyDeferred.reject("The list dataName is not correct");
 			}
-			//extract the real list name
-			var listRealName = dataNameArray[3];
-			//find the other entity in the relation so we can include it in the request
-			var listRealEntity = null;
-			resolvedEntityRelationsList.forEach(function (relation) {
-				if (relation.name == dataNameArray[2]) {
-					if (relation.originEntityName == $stateParams.entityName) {
-						listRealEntity = relation.targetEntityName;
-					}
-					else if (relation.targetEntityName == $stateParams.entityName) {
-						listRealEntity = relation.originEntityName;
-					}
-				}
-			});
-			if(listRealEntity == null){
-				lazyDeferred.reject("Cannot find the list real entity name");
+			else if (dataNameArray.length == 3) {
+				//e.g. "$list$lookup"
+				var listRealName = dataNameArray[2];
+				listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + $stateParams.entityName + '/list/' + listRealName + '/service.js?v=' + resolvedCurrentEntityMeta.hash;	//do not have the hash of the real entity here
 			}
 			else {
-				listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + listRealEntity + '/list/' + listRealName + '/service.js?v=' + moment().toISOString();	//do not have the hash of the real entity here
+				//e.g. "$list$project_1_n_ticket$general"
+				//extract the real list name
+				var listRealName = dataNameArray[3];
+				//find the other entity in the relation so we can include it in the request
+				var listRealEntity = null;
+				resolvedEntityRelationsList.forEach(function (relation) {
+					if (relation.name == dataNameArray[2]) {
+						if (relation.originEntityName == $stateParams.entityName) {
+							listRealEntity = relation.targetEntityName;
+						}
+						else if (relation.targetEntityName == $stateParams.entityName) {
+							listRealEntity = relation.originEntityName;
+						}
+					}
+				});
+				if (listRealEntity == null) {
+					lazyDeferred.reject("Cannot find the list real entity name");
+				}
+				else {
+					listServiceJavascriptPath = wvAppConstants.apiBaseUrl + 'meta/entity/' + listRealEntity + '/list/' + listRealName + '/service.js?v=' + moment().toISOString();	//do not have the hash of the real entity here
+				}
 			}
 
 		}
