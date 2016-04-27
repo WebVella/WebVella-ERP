@@ -247,12 +247,12 @@ namespace WebVella.ERP.Api
 
             try
             {
-                DbEntityRelation storageRelation = DbContext.Current.RelationRepository.Read(name);
-                response.Success = false;
+				relations = Read().Object;
+				response.Object = relations.SingleOrDefault(x => x.Name == name);
+				response.Success = false;
 
-                if (storageRelation != null)
+                if (response.Object != null)
                 {
-                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Success = true;
                     response.Message = "The entity relation was successfully returned!";
                 }
@@ -292,11 +292,11 @@ namespace WebVella.ERP.Api
 						response.Message = string.Format("The entity relation with id '{0}' does not exist!", relationId);
 					return response;
 				}
-
-				var storageRelation = DbContext.Current.RelationRepository.Read(relationId);
-                if (storageRelation != null)
+				
+				relations = Read().Object;
+				response.Object = relations.SingleOrDefault( x=>x.Id == relationId);
+                if (response.Object != null)
                 {
-                    response.Object = storageRelation.MapTo<EntityRelation>();
                     response.Message = "The entity relation was successfully returned!";
                 }
                 else
@@ -332,11 +332,23 @@ namespace WebVella.ERP.Api
 					return response;
 				}
 
-				response.Object = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
-				
-				if( response.Object != null )
-					Cache.AddRelations(response.Object);
+				relations = DbContext.Current.RelationRepository.Read().Select(x => x.MapTo<EntityRelation>()).ToList();
+				List<DbEntity> dbEntities = new DbEntityRepository().Read();
+				foreach( EntityRelation relation in relations )
+				{
+					var originEntity = dbEntities.Single(x => x.Id == relation.OriginEntityId);
+					var targetEntity = dbEntities.Single(x => x.Id == relation.TargetEntityId);
+					relation.OriginEntityName = originEntity.Name;
+					relation.TargetEntityName = targetEntity.Name;
+					relation.OriginFieldName = originEntity.Fields.Single(x => x.Id == relation.OriginFieldId).Name;
+					relation.TargetFieldName = targetEntity.Fields.Single(x => x.Id == relation.TargetFieldId).Name;
+				}
 
+				if( relations != null )
+					Cache.AddRelations(relations);
+
+				//we use instance from cache as return value, because in cache we deepcopy collection
+				response.Object = Cache.GetRelations();
 				response.Success = true;
                 response.Message = null;
                 return response;
