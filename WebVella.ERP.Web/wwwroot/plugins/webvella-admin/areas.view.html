@@ -97,7 +97,7 @@
 						<label class="required" for="label" translate="{{'ICON_NAME'}}"></label>
 						<div class="input-group clean-addon">
 							<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupCtrl.area.icon_name}}"></i></span>
-							<input ng-model="popupCtrl.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'ICON_NAME_PLACEHOLDER' | translate}}"
+							<input ng-model="popupCtrl.area.icon_name" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'ICON_NAME_PLACEHOLDER' | translate}}" autocomplete="off"
 								   required uib-typeahead="icon for icon in popupCtrl.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
 								   ng-model-options="{allowInvalid:true}">
 							<span class="input-group-addon"><i class="fa fa-bars"></i></span>
@@ -193,7 +193,7 @@
 										<span class="input-group-addon"><i class="fa fa-warning go-red"></i></span>
 									</div>
 									<div class="input-group clean-addon fluid-dropdown ng-hide" ng-show="popupCtrl.cleanEntities.length > 0" style="margin-bottom:0;">
-										<input ng-model="popupCtrl.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'AREA_ATTACH_ENTITY_REQUIREMENTS_PLACEHOLDER' | translate}}"
+										<input ng-model="popupCtrl.pendingEntity" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'AREA_ATTACH_ENTITY_REQUIREMENTS_PLACEHOLDER' | translate}}" autocomplete="off"
 											   required uib-typeahead="entity.name for entity in popupCtrl.cleanEntities | filter: {name:$viewValue} | limitTo:5" typeahead-template-url="entityTypeaheadTemplate.html">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>
 									</div>
@@ -225,7 +225,7 @@
 								<div class="form-group" style="margin-bottom:0;">
 									<div class="input-group clean-addon">
 										<span class="input-group-addon"><i class="go-red fa-fw fa fa-{{popupCtrl.pendingUrlIconName}}"></i></span>
-										<input ng-model="popupCtrl.pendingUrlIconName" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'AREA_ATTACH_URL_ICON_PLACEHOLDER' | translate}}"
+										<input ng-model="popupCtrl.pendingUrlIconName" type="text" class="form-control" id="icon_name" name="icon_name" placeholder="{{'AREA_ATTACH_URL_ICON_PLACEHOLDER' | translate}}" autocomplete="off"
 											   required uib-typeahead="icon for icon in popupCtrl.icons | filter:$viewValue | limitTo:8" typeahead-template-url="iconTypeaheadTemplate.html"
 											   ng-model-options="{allowInvalid:true}">
 										<span class="input-group-addon"><i class="fa fa-bars"></i></span>

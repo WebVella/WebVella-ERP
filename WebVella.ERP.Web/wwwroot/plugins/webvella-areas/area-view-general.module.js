@@ -19,9 +19,11 @@
 
 
 	function config($stateProvider) {
-		$stateProvider.state('webvella-areas-view-general', {
+		$stateProvider
+		//general view in an area with view sidebar
+		.state('webvella-areas-view-general', {
 			parent: 'webvella-area-base',
-			url: '/view-general/:viewName/:recordId/:regionName',
+			url: '/view-general/sb/:viewName/:recordId/:regionName',
 			params:{
 				regionName:{value:"default",squash:true}
 			},
@@ -45,10 +47,66 @@
 			resolve: {
 				loadDependency: loadDependency,
 				resolvedCurrentView: resolveCurrentView,
-				pluginAuxPageName: function () {
-					//The pluginAuxPageName is used from plugins in order to properly set the active navigation menu item in the sidebar
-					return "";
+				resolvedCurrentParentView: function () { return null; }
+			}
+		})
+		//general view in an area with the area sidebar
+		.state('webvella-areas-view-general-no-sidebar', {
+			parent: 'webvella-area-base',
+			url: '/view-general/nsb/:viewName/:recordId/:regionName',
+			params:{
+				regionName:{value:"default",squash:true}
+			},
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasSidebarController',
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreaViewGeneralController',
+					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
+					controllerAs: 'ngCtrl'
 				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				resolvedCurrentView: resolveCurrentView,
+				resolvedCurrentParentView: function () { return null; }
+			}
+		})
+		.state('webvella-areas-view-general-in-view', {
+			parent: 'webvella-area-base',
+			url: '/view-general/sb/:parentViewName/:recordId/view-general/:viewName/:regionName',
+			params:{
+				regionName:{value:"default",squash:true}
+			},
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasRecordViewSidebarController',
+					templateUrl: '/plugins/webvella-areas/view-record-sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreaViewGeneralController',
+					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
+					controllerAs: 'ngCtrl'
+				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				resolvedCurrentView: resolveCurrentView,
+				resolvedCurrentParentView: function () { return null; }
 			}
 		});
 	};
@@ -117,6 +175,44 @@
 
 	}
 
+	resolveCurrentParentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
+	function resolveCurrentParentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
+
+		// Initialize
+		var defer = $q.defer();
+
+		// Process
+		function successCallback(response) {
+			if (response.object === null) {
+				alert("error in response!");
+			}
+			else if (response.object.meta === null) {
+				alert("The view with name: " + $stateParams.parentViewName + " does not exist");
+			} else {
+				defer.resolve(response.object);
+			}
+		}
+
+		function errorCallback(response) {
+			if (response.object === null) {
+				alert("error in response!");
+			}
+			else {
+				defer.reject(response.message);
+			}
+		}
+
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canRead");
+		if (!userHasUpdateEntityPermission) {
+			alert("you do not have permissions to view records from this entity!");
+			defer.reject("you do not have permissions to view records from this entity");
+		}
+
+		webvellaCoreService.getRecordByViewName($stateParams.recordId, $stateParams.parentViewName, $stateParams.entityName, successCallback, errorCallback);
+
+		return defer.promise;
+	}
+
 	//#endregion
 
 
@@ -140,6 +236,7 @@
 		webvellaCoreService.setPageTitle(ngCtrl.pageTitle);
 		ngCtrl.currentArea = webvellaCoreService.getCurrentAreaFromAreaList($stateParams.areaName, resolvedAreas.data);
 		webvellaCoreService.setBodyColorClass(ngCtrl.currentArea.color);
+		ngCtrl.currentState = $state.current;
 		//#endregion
 
 		//#region << Initialize main objects >>
@@ -517,7 +614,7 @@
 		//#endregion
 
 		ngCtrl.goToRegion = function(regionName){
-			webvellaCoreService.GoToState('webvella-areas-view-general',{areaName:ngCtrl.stateParams.areaName,entityName:ngCtrl.stateParams.entityName,viewName:ngCtrl.stateParams.viewName,recordId:ngCtrl.stateParams.recordId,regionName: regionName})
+			webvellaCoreService.GoToState(ngCtrl.currentState.name,{areaName:ngCtrl.stateParams.areaName,entityName:ngCtrl.stateParams.entityName,viewName:ngCtrl.stateParams.viewName,recordId:ngCtrl.stateParams.recordId,regionName: regionName})
 		}
 
 		//#region << When Edit Inits >>

@@ -14,15 +14,17 @@
 
     // Controller ///////////////////////////////
     controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 
-						'resolvedAreas', 'resolvedCurrentUser', 'pluginAuxPageName','$sessionStorage','$timeout'];
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout'];
 
     
     function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, 
-						resolvedAreas, resolvedCurrentUser, pluginAuxPageName,$sessionStorage,$timeout) {
+						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
         
+		var pluginAuxPageName = ""; //temp
+
         var sidebarData = this;
         sidebarData.view = resolvedCurrentView.meta;
-        sidebarData.stateParams = $stateParams;
+        sidebarData.stateParams = fastCopy($stateParams);
         sidebarData.entity = resolvedCurrentEntityMeta;
         sidebarData.currentUser = angular.copy(resolvedCurrentUser);
 		sidebarData.$sessionStorage	= $sessionStorage;
@@ -55,6 +57,7 @@
         	var item = {};
         	item.name = sidebarData.view.sidebar.items[i].dataName;
         	item.label = sidebarData.view.sidebar.items[i].fieldLabel;
+			item.type = sidebarData.view.sidebar.items[i].type;
         	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
         		item.iconName = "file-text-o";
         		if (sidebarData.view.sidebar.items[i].meta.iconName) {
@@ -71,14 +74,14 @@
         }
 
         sidebarData.isItemActive = function (item) {
-        	if (!$stateParams.auxPageName) {
-        		if (item.name == pluginAuxPageName) {
-        		return true;
-        		}
-        	}
-        	if (item.name == $stateParams.auxPageName) {
-        		return true;
-        	}
+			if(item.type == "list" || item.type == "listFromRelation"){
+				if(item.name == sidebarData.stateParams.listName){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
         	return false;
         }
 

@@ -177,7 +177,7 @@
 											<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 												<span class="input-group-addon"><i class="fa fa-{{ngCtrl.list.iconName}} fa-fw"></i></span>
 												<input type="text" class="form-control" disabled editable-text="ngCtrl.list.iconName"
-													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
+													   value="{{ngCtrl.list.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"  autocomplete="off"
 													   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 												<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 											</div>

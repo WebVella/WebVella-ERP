@@ -148,10 +148,6 @@
 	controller.$inject = ['$log', '$rootScope','$timeout'];
 	function controller($log, $rootScope, $timeout) {
 		var baseCtrl = this;
-		//Show Sidemenu	always
-		$timeout(function () {
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-		}, 0);
 	}
 	//#endregion
 

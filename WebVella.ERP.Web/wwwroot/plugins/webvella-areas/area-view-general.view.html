@@ -40,7 +40,7 @@
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">
 					<li role="presentation" ui-sref-active="active" ng-repeat="region in ngCtrl.view.meta.regions | filter: {render:true} track by region.name">
-						<a ui-sref='webvella-areas-view-general({areaName:"{{ngCtrl.stateParams.areaName}}" ,entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}" ,recordId:"{{ngCtrl.stateParams.recordId}}",regionName:"{{region.name}}"})'
+						<a ui-sref='{{ngCtrl.currentState.name}}({areaName:"{{ngCtrl.stateParams.areaName}}" ,entityName:"{{ngCtrl.stateParams.entityName}}" ,viewName:"{{ngCtrl.stateParams.viewName}}" ,recordId:"{{ngCtrl.stateParams.recordId}}",regionName:"{{region.name}}"})'
 							ng-click="ngCtrl.goToRegion(region.name)">{{region.label}}</a>
 					</li>
 				</ul>
