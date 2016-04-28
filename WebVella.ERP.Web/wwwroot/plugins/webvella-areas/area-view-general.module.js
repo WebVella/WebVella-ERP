@@ -701,7 +701,8 @@
 			toolbarLocation: 'top',
 			toolbar: 'full',
 			toolbar_full: [
-				{ name: 'basicstyles', items: ['Save', 'Bold', 'Italic', 'Strike', 'Underline'] },
+				{ name: 'save', items: ['Save'] },
+				{ name: 'basicstyles', items: ['Bold', 'Italic', 'Strike', 'Underline'] },
 				{ name: 'paragraph', items: ['BulletedList', 'NumberedList', 'Blockquote'] },
 				{ name: 'editing', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
 				{ name: 'links', items: ['Link', 'Unlink'] },
@@ -714,9 +715,17 @@
 		//on #content check if mouse is clicked outside the editor, so to perform a possible field update
 		ngCtrl.checkMouseButton = function ($event) {
 			if (ngCtrl.lastEnabledHtmlField != null) {
-				ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.view.data["id"]);
+
+				//Find the proper data for the recordId	in the view data array
+				for (var i = 0; i < ngCtrl.view.data.length; i++) {
+					if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
+						ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.lastEnabledHtmlRecordId);
+						break;
+					}
+				}
 				ngCtrl.lastEnabledHtmlFieldData = null;
 				ngCtrl.lastEnabledHtmlField = null;
+				ngCtrl.lastEnabledHtmlRecordId = null;
 			}
 			else {
 				//Do nothing as this is a normal mouse click
@@ -736,10 +745,17 @@
 					if (CKEDITOR.instances[property].container.$.id == item.meta.name) {
 
 						CKEDITOR.instances[property].editable().$.blur();
-						//reinit the field
-						ngCtrl.view.data[item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
+						//Find the proper data for the recordId	in the view data array
+						for (var i = 0; i < ngCtrl.view.data.length; i++) {
+							if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
+								//reinit the field
+								ngCtrl.view.data[i][item.dataName] = fastCopy(ngCtrl.lastEnabledHtmlFieldData);
+								break;
+							}
+						}
 						ngCtrl.lastEnabledHtmlField = null;
 						ngCtrl.lastEnabledHtmlFieldData = null;
+						ngCtrl.lastEnabledHtmlRecordId = null;
 						return false;
 					}
 				}
@@ -754,9 +770,13 @@
 					case 's':
 
 						$event.preventDefault();
-						$timeout(function () {
-							ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.view.data["id"]);
-						}, 500);
+						for (var i = 0; i < ngCtrl.view.data.length; i++) {
+							if (ngCtrl.view.data[i].id == ngCtrl.lastEnabledHtmlRecordId) {
+								ngCtrl.fieldUpdate(ngCtrl.lastEnabledHtmlField, ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName], ngCtrl.lastEnabledHtmlRecordId);
+								ngCtrl.lastEnabledHtmlFieldData = ngCtrl.view.data[i][ngCtrl.lastEnabledHtmlField.dataName];
+								break;
+							}
+						}
 						return false;
 						break;
 				}
@@ -766,9 +786,18 @@
 
 		ngCtrl.lastEnabledHtmlField = null;
 		ngCtrl.lastEnabledHtmlFieldData = null;
-		ngCtrl.htmlFieldIsEnabled = function ($event, item) {
+		ngCtrl.lastEnabledHtmlRecordId = null;
+		ngCtrl.htmlFieldIsEnabled = function ($event, item, recordId) {
 			ngCtrl.lastEnabledHtmlField = item;
-			ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.view.data[item.dataName]);
+			ngCtrl.lastEnabledHtmlRecordId = recordId;
+			ngCtrl.lastEnabledHtmlFieldData = null;
+			//Find the proper data for the recordId	in the view data array
+			for (var i = 0; i < ngCtrl.view.data.length; i++) {
+				if (ngCtrl.view.data[i].id == recordId) {
+					ngCtrl.lastEnabledHtmlFieldData = fastCopy(ngCtrl.view.data[i][item.dataName]);
+					break;
+				}
+			}
 		}
 
 		//#endregion
@@ -784,36 +813,23 @@
 		ngCtrl.files = {}; // this is the data wrapper for the temporary upload objects that will be used in the html and for which we will generate watches below
 		ngCtrl.progress = {}; //data wrapper for the progress percentage for each upload
 
-		/////////Register variables
-		for (var regionIndex = 0; regionIndex < ngCtrl.view.meta.regions.length; regionIndex++) {
-			for (var sectionIndex = 0; sectionIndex < ngCtrl.view.meta.regions[regionIndex].sections.length; sectionIndex++) {
-				for (var rowIndex = 0; rowIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows.length; rowIndex++) {
-					for (var columnIndex = 0; columnIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns.length; columnIndex++) {
-						for (var itemIndex = 0; itemIndex < ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items.length; itemIndex++) {
-							if (ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 7
-								|| ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex].meta.fieldType === 9) {
-								var item = ngCtrl.view.meta.regions[regionIndex].sections[sectionIndex].rows[rowIndex].columns[columnIndex].items[itemIndex];
-								var FieldName = item.dataName;
-								ngCtrl.progress[FieldName] = 0;
-							}
-						}
-					}
-				}
-			}
-		}
 		ngCtrl.getProgressStyle = function (name) {
 			return "width: " + ngCtrl.progress[name] + "%;";
 		}
 
 		ngCtrl.uploadedFileName = "";
-		ngCtrl.upload = function (file, item) {
+		ngCtrl.upload = function (file, item, recordId) {
 			if (file != null) {
-				ngCtrl.uploadedFileName = item.dataName;
+				ngCtrl.uploadedFileName = item.dataName + "-" + recordId;
+
 				ngCtrl.moveSuccessCallback = function (response) {
-					$timeout(function () {
-						ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
-						ngCtrl.fieldUpdate(item, response.object.url, ngCtrl.view.data["id"]);
-					}, 1);
+					for (var i = 0; i < ngCtrl.view.data.length; i++) {
+						if (ngCtrl.view.data[i].id == recordId) {
+							ngCtrl.fieldUpdate(item, response.object.url, recordId);
+							ngCtrl.view.data[i][item.dataName] = response.object.url;
+							ngCtrl.progress[item.dataName][recordId] = 0;
+						}
+					}
 				}
 
 				ngCtrl.uploadSuccessCallback = function (response) {
@@ -827,25 +843,33 @@
 					alert(response.message);
 				}
 				ngCtrl.uploadProgressCallback = function (response) {
-					$timeout(function () {
-						ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
-					}, 1);
+					ngCtrl.progress[item.dataName][recordId] = parseInt(100.0 * response.loaded / response.total);
 				}
-				webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+
+				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadedFileName, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
 		ngCtrl.cacheBreakers = {};
-		ngCtrl.updateFileUpload = function (file, item) {
+		ngCtrl.updateFileUpload = function (file, item, recordId) {
 			if (file != null) {
-				ngCtrl.uploadedFileName = item.dataName;
-				var oldFileName = ngCtrl.view.data[ngCtrl.uploadedFileName];
+				ngCtrl.uploadedFileName = item.dataName + "-" + recordId;
+				var oldFileName = null;
+				for (var i = 0; i < ngCtrl.view.data.length; i++) {
+					if (ngCtrl.view.data[i].id == recordId) {
+						oldFileName = ngCtrl.view.data[i][ngCtrl.uploadedFileName];
+					}
+				}
+
 				ngCtrl.moveSuccessCallback = function (response) {
-					$timeout(function () {
-						ngCtrl.view.data[ngCtrl.uploadedFileName] = response.object.url;
-						ngCtrl.fieldUpdate(item, response.object.url, ngCtrl.view.data["id"]);
-						ngCtrl.cacheBreakers[item.dataName] = "?v=" + moment().toISOString();
-					}, 1);
+					for (var i = 0; i < ngCtrl.view.data.length; i++) {
+						if (ngCtrl.view.data[i].id == recordId) {
+							ngCtrl.view.data[i][item.dataName] = response.object.url;
+							ngCtrl.fieldUpdate(item, response.object.url, recordId);
+							ngCtrl.cacheBreakers[item.dataName][recordId] = "?v=" + moment().toISOString();
+							ngCtrl.progress[item.dataName][recordId] = 0;
+						}
+					}
 				}
 
 				ngCtrl.uploadSuccessCallback = function (response) {
@@ -859,25 +883,23 @@
 					alert(response.message);
 				}
 				ngCtrl.uploadProgressCallback = function (response) {
-					$timeout(function () {
-						ngCtrl.progress[ngCtrl.uploadedFileName] = parseInt(100.0 * response.loaded / response.total);
-					}, 1);
+					ngCtrl.progress[item.dataName][recordId] = parseInt(100.0 * response.loaded / response.total);
 				}
-				webvellaCoreService.uploadFileToTemp(file, item.meta.name, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
+				webvellaCoreService.uploadFileToTemp(file, ngCtrl.uploadedFileName, ngCtrl.uploadProgressCallback, ngCtrl.uploadSuccessCallback, ngCtrl.uploadErrorCallback);
 			}
 		};
 
-		ngCtrl.deleteFileUpload = function (item) {
-			var fieldName = item.dataName;
-			var filePath = ngCtrl.view.data[fieldName];
+		ngCtrl.deleteFileUpload = function (item, recordId) {
 
 			function deleteSuccessCallback(response) {
-				$timeout(function () {
-					ngCtrl.view.data[fieldName] = null;
-					ngCtrl.progress[fieldName] = 0;
-					ngCtrl.fieldUpdate(item, null, ngCtrl.view.data["id"]);
-				}, 0);
-				return true;
+				for (var i = 0; i < ngCtrl.view.data.length; i++) {
+					if (ngCtrl.view.data[i].id == recordId) {
+						ngCtrl.view.data[i][item.dataName] = null;
+						ngCtrl.progress[item.dataName][recordId] = 0;
+						ngCtrl.fieldUpdate(item, null, recordId);
+						return true;
+					}
+				}
 			}
 
 			function deleteFailedCallback(response) {
@@ -889,7 +911,14 @@
 				return "validation error";
 			}
 
-			webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+			for (var i = 0; i < ngCtrl.view.data.length; i++) {
+				if (ngCtrl.view.data[i].id == recordId) {
+					var filePath = ngCtrl.view.data[i][item.dataName];
+					webvellaCoreService.deleteFileFromFS(filePath, deleteSuccessCallback, deleteFailedCallback);
+				}
+			}
+
+
 
 		}
 		//#endregion

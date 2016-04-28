@@ -222,11 +222,7 @@
 		ngCtrl.library.items = [];
 
 		ngCtrl.sortLibrary = function () {
-			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
-				if (a.dataName < b.dataName) return -1;
-				if (a.dataName > b.dataName) return 1;
-				return 0;
-			});
+			ngCtrl.library.items.sort(sort_by("type","fieldName"));
 		}
 
 		ngCtrl.checkIfRelationAddedToLibrary = function (relationName) {

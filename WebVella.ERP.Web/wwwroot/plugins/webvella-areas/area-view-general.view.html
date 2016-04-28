@@ -165,41 +165,41 @@
 														<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
 													</div>
 													<!-- If type 7 - fileupload -->
-													<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-														<a ng-if='!viewData[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'>Browse</a>
-														<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
-															<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
-																<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
-																<span ng-if="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+													<div ng-switch-when="7" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0; ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
+														<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href="javascript:void(0)" class="btn btn-default btn-outline" ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false'>Browse</a>
+														<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
+															<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
+																<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
+																<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100">almost done...</span>
 															</div>
 														</div>
 														<div class="editable-wrapper input-group file-upload" ng-if='viewData[item.dataName]'>
 															<span class="form-control" ng-bind-html="ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
-															<a class="input-group-addon update" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
-															<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+															<a class="input-group-addon delete" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+															<a class="input-group-addon update" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false'><i class="fa fa-fw fa-refresh"></i></a>
 														</div>
 													</div>
 													<span ng-switch-when="7" class="not-editable" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></span>
 													<!-- If type 8 - html -->
 													<div ng-switch-when="8" class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
 														<div ng-attr-id="{{::item.meta.name}}" class="form-control control-cke-editor" ng-model="viewData[item.dataName]" ckeditor="editorOptions" contenteditable="true"
-															 ng-focus="ngCtrl.htmlFieldIsEnabled($event,item)" ng-keydown="ngCtrl.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="ngCtrl.preventMouseSave($event)"></div>
+															 ng-focus="ngCtrl.htmlFieldIsEnabled($event,item,viewData['id'])" ng-keydown="ngCtrl.htmlFieldCheckEscapeKey($event,item)" ng-mousedown="ngCtrl.preventMouseSave($event)"></div>
 
 													</div>
 													<div ng-switch-when="8" class="not-editable" readonly ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-bind-html="::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)"></div>
 													<!-- If type 9 - image -->
-													<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)">
-														<a ng-if='!viewData[item.dataName] && ngCtrl.progress[item.dataName] == 0' href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*">Browse</a>
-														<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName] > 0 && ngCtrl.progress[item.dataName] <= 100">
-															<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName]+'%'}">
-																<span ng-if="ngCtrl.progress[item.dataName] < 100">{{ngCtrl.progress[item.dataName] || '0'}}%</span>
-																<span ng-if="ngCtrl.progress[item.dataName] == 100">almost done...</span>
+													<div ng-switch-when="9" ng-if="::ngCtrl.currentUserHasUpdatePermission(item)" ng-init="ngCtrl.progress[item.dataName] ={}; ngCtrl.progress[item.dataName][viewData['id']] = 0;  ngCtrl.files[item.dataName]={}; ngCtrl.cacheBreakers[item.dataName]={};">
+														<a ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] == 0" href='javascript:void(0)' class='btn btn-default btn-outline' ngf-select="ngCtrl.upload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*">Browse</a>
+														<div class="progress" ng-if="!viewData[item.dataName] && ngCtrl.progress[item.dataName][viewData['id']] > 0 && ngCtrl.progress[item.dataName][viewData['id']] <= 100">
+															<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="{{ngCtrl.progress[item.dataName][viewData['id']]}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': ngCtrl.progress[item.dataName][viewData['id']]+'%'}">
+																<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] < 100">{{ngCtrl.progress[item.dataName][viewData['id']] || '0'}}%</span>
+																<span ng-if="ngCtrl.progress[item.dataName][viewData['id']] == 100">almost done...</span>
 															</div>
 														</div>
 														<div class="image-upload" ng-if='viewData[item.dataName]'>
-															<img class="img-thumbnail" ng-src="{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName]}}" style="width:120px" />
-															<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName],item)" ngf-max-size="20MB" ng-model='ngCtrl.files[item.dataName]' ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
-															<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item)" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+															<img class="img-thumbnail" ng-src="{{viewData[item.dataName] + ngCtrl.cacheBreakers[item.dataName][viewData['id']]}}" style="width:120px" />
+															<a class="delete-link" href="javascript:void(0)" confirmed-click="ngCtrl.deleteFileUpload(item,viewData['id'])" ng-confirm-click="Are you sure?" title="delete file"><i class="fa fa-fw fa-trash-o"></i></a>
+															<a class="update-link" href='javascript:void(0)' ngf-select="ngCtrl.updateFileUpload(ngCtrl.files[item.dataName][viewData['id']],item,viewData['id'])" ngf-max-size="20MB" ng-model="ngCtrl.files[item.dataName][viewData['id']]" ngf-multiple='false' accept="image/*"><i class="fa fa-fw fa-refresh"></i></a>
 														</div>
 													</div>
 													<img ng-switch-when="9" class="img-thumbnail" ng-if="::!ngCtrl.currentUserHasUpdatePermission(item)" ng-src="{{viewData[item.dataName]}}" />
