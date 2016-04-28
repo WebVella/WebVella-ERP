@@ -26,8 +26,8 @@
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
-					controller: 'WebVellaAreasRecordCreateSidebarController',
-					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
+					controller: 'WebVellaAreasSidebarController',
+					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -179,7 +179,7 @@
 			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
 				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
 				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.entity.recordViews[i].regions[j].name === "default") {
+					if (ngCtrl.entity.recordViews[i].regions[j].name === "header") {
 						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
 					}
 				}
