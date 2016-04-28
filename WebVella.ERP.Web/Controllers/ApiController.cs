@@ -1986,20 +1986,16 @@ namespace WebVella.ERP.Web.Controllers
 
 		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, int? pageSize = null, bool export = false)
 		{
+			if (entity == null)
+				throw new Exception($"Entity '{entity.Name}' do not exist");
+
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
 				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-
-			//Boz -> I removed the search parameter as it is obsolete
-			//var searchQuery = CreateSearchQuery(search, list, entity);
-			//if (searchQuery != null)
-			//{
-			//	if (queryObj != null)
-			//		queryObj = EntityQuery.QueryAND(queryObj, searchQuery);
-			//	else
-			//		queryObj = searchQuery;
-			//}
-
+			
+			if (list == null)
+				throw new Exception($"Entity '{entity.Name}' do not have list named '{listName}'");
+			
 			List<KeyValuePair<string, string>> queryStringOverwriteParameters = new List<KeyValuePair<string, string>>();
 			foreach (var key in Request.Query.Keys)
 				queryStringOverwriteParameters.Add(new KeyValuePair<string, string>(key, Request.Query[key]));
