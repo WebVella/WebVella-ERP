@@ -23,7 +23,7 @@ namespace WebVella.ERP.Api
 
 		#region << Validation methods >>
 
-		private List<ErrorModel> ValidateEntity(Entity entity, bool checkId = false)
+		private List<ErrorModel> ValidateEntity(Entity entity, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -84,7 +84,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateFields(Guid entityId, List<InputField> fields, bool checkId = false)
+		private List<ErrorModel> ValidateFields(Guid entityId, List<InputField> fields, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -118,7 +118,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateField(Entity entity, InputField field, bool checkId = false)
+		private List<ErrorModel> ValidateField(Entity entity, InputField field, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -370,7 +370,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordLists(Guid entityId, List<InputRecordList> recordLists, bool checkId = false)
+		private List<ErrorModel> ValidateRecordLists(Guid entityId, List<InputRecordList> recordLists, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -385,7 +385,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordList(Entity entity, InputRecordList recordlist, bool checkId = false)
+		private List<ErrorModel> ValidateRecordList(Entity entity, InputRecordList recordlist, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -416,12 +416,12 @@ namespace WebVella.ERP.Api
 			{
 				int listSameIdCount = entity.RecordLists.Where(f => f.Id == recordlist.Id).Count();
 
-				if (listSameIdCount > 1)
+				if (listSameIdCount > 0)
 					errorList.Add(new ErrorModel("id", null, "There is already a list with such Id!"));
 
-				int listSameNameCount = entity.Fields.Where(f => f.Name == recordlist.Name).Count();
+				int listSameNameCount = entity.RecordLists.Where(f => f.Name == recordlist.Name).Count();
 
-				if (listSameNameCount > 1)
+				if (listSameNameCount > 0)
 					errorList.Add(new ErrorModel("name", null, "There is already a list with such Name!"));
 			}
 
@@ -913,7 +913,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordViews(Guid entityId, List<InputRecordView> recordViewList, bool checkId = false)
+		private List<ErrorModel> ValidateRecordViews(Guid entityId, List<InputRecordView> recordViewList, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -928,7 +928,7 @@ namespace WebVella.ERP.Api
 			return errorList;
 		}
 
-		private List<ErrorModel> ValidateRecordView(Entity entity, InputRecordView recordView, bool checkId = false)
+		private List<ErrorModel> ValidateRecordView(Entity entity, InputRecordView recordView, bool checkId = true)
 		{
 			List<ErrorModel> errorList = new List<ErrorModel>();
 
@@ -946,14 +946,14 @@ namespace WebVella.ERP.Api
 
 			if (checkId)
 			{
-				int viewSameIdCount = entity.RecordLists.Where(f => f.Id == recordView.Id).Count();
+				int viewSameIdCount = entity.RecordViews.Where(f => f.Id == recordView.Id).Count();
 
-				if (viewSameIdCount > 1)
+				if (viewSameIdCount > 0)
 					errorList.Add(new ErrorModel("id", null, "There is already a view with such Id!"));
 
-				int viewSameNameCount = entity.Fields.Where(f => f.Name == recordView.Name).Count();
+				int viewSameNameCount = entity.RecordViews.Where(f => f.Name == recordView.Name).Count();
 
-				if (viewSameNameCount > 1)
+				if (viewSameNameCount > 0)
 					errorList.Add(new ErrorModel("name", null, "There is already a view with such Name!"));
 			}
 
@@ -1706,7 +1706,7 @@ namespace WebVella.ERP.Api
 			{
 				response.Object = entity;
 
-				response.Errors = ValidateEntity(entity, false);
+				response.Errors = ValidateEntity(entity, true);
 
 				if (response.Errors.Count > 0)
 				{
@@ -3618,7 +3618,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, inputRecordList, false);
+				response.Errors = ValidateRecordList(entity, inputRecordList, true);
 
 				recordList = inputRecordList.MapTo<RecordList>();
 
@@ -4352,7 +4352,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, inputRecordView, false);
+				response.Errors = ValidateRecordView(entity, inputRecordView, true);
 
 				recordView = inputRecordView.MapTo<RecordView>();
 
@@ -4461,7 +4461,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordView;
-				response.Errors = ValidateRecordView(entity, inputRecordView, true);
+				response.Errors = ValidateRecordView(entity, inputRecordView, false);
 
 				recordView = inputRecordView.MapTo<RecordView>();
 
@@ -6041,7 +6041,7 @@ namespace WebVella.ERP.Api
 			create.Regions.Add(contentRegion);
 			create.ServiceCode = null;
 			create.ActionItems = new List<ActionItem>();
-			create.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
@@ -6060,7 +6060,7 @@ namespace WebVella.ERP.Api
 			quickCreate.Regions.Add(contentRegion);
 			quickCreate.ServiceCode = null;
 			quickCreate.ActionItems = new List<ActionItem>();
-			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
+			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
@@ -6080,9 +6080,7 @@ namespace WebVella.ERP.Api
 			quickView.ServiceCode = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
-			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
-			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
-			quickView.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
+			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			recordViewList.Add(quickView);
 
 			var general = new RecordView();
@@ -6099,9 +6097,6 @@ namespace WebVella.ERP.Api
 			general.ServiceCode = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
-			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
-			general.ActionItems.Add(GenerateViewActionItem("wv_create_and_details"));
-			general.ActionItems.Add(GenerateViewActionItem("wv_create_cancel"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			recordViewList.Add(general);
 

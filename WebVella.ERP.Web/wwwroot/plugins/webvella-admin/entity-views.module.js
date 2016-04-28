@@ -190,11 +190,54 @@
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
-		popupCtrl.view = webvellaCoreService.initView();
+		popupCtrl.validation = {};
+		popupCtrl.validation.hasError = false;
+		popupCtrl.validation.errorMessage = false;
+		popupCtrl.view = webvellaCoreService.initView("general");
 		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
+		popupCtrl.existingViews = fastCopy(ngCtrl.views);
+        popupCtrl.viewTypes = [
+		{
+			name: "general",
+			label: "general"
+		},
+		{
+			name: "quick_view",
+			label: "quick view"
+		},
+		{
+			name: "create",
+			label: "create"
+		},
+		{
+			name: "quick_create",
+			label: "quick create"
+		},
+		{
+			name: "hidden",
+			label: "hidden"
+		}
+        ];
+
+		popupCtrl.regenActionItems = function(){
+			var templateView = webvellaCoreService.initView(popupCtrl.view.type);
+			popupCtrl.view.actionItems = templateView.actionItems;
+		}
 
 		popupCtrl.ok = function () {
-			webvellaCoreService.createEntityView(popupCtrl.view, popupCtrl.currentEntity.name, successCallback, errorCallback);
+			//Validate if there is not already a view with this name
+			popupCtrl.validation = {};
+			popupCtrl.validation.hasError = false;
+			popupCtrl.validation.errorMessage = false;
+			for (var i = 0; i < popupCtrl.existingViews.length; i++) {
+				if(popupCtrl.existingViews[i].name == popupCtrl.view.name){
+					popupCtrl.validation.hasError = true;
+					popupCtrl.validation.errorMessage = "This view name is already used";
+				}
+			}
+			if(!popupCtrl.validation.hasError){
+				webvellaCoreService.createEntityView(popupCtrl.view, popupCtrl.currentEntity.name, successCallback, errorCallback);
+			}
 		};
 
 		popupCtrl.cancel = function () {

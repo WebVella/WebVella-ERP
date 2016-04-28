@@ -11,11 +11,11 @@
         .module('webvellaCore')
         .service('webvellaCoreService', service);
 
-	service.$inject = ['$cookies', '$q', '$http', '$log','$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
+	service.$inject = ['$cookies', '$q', '$http', '$log', '$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
 				'$timeout', 'Upload', '$translate', '$filter'];
 
 
-	function service($cookies, $q, $http, $log,$location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
+	function service($cookies, $q, $http, $log, $location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
 				$timeout, Upload, $translate, $filter) {
 		var serviceInstance = this;
 
@@ -1022,7 +1022,38 @@
 		//#region << Views >>
 
 		///////////////////////
-		function initView() {
+		function initView(type) {
+			var deleteAction = {
+				"name": "wv_record_delete",
+				"menu": "page-title-dropdown",
+				"weight": 1,
+				"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
+			};
+			var createListAction = {
+				"name": "wv_create_and_list",
+				"menu": "create-bottom",
+				"weight": 1,
+				"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
+			};
+			var createDetailsAction = {
+				"name": "wv_create_and_details",
+				"menu": "create-bottom",
+				"weight": 2,
+				"template": "<a class=\"btn btn-default  btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
+			};
+			var createCancelAction = {
+				"name": "wv_create_cancel",
+				"menu": "create-bottom",
+				"weight": 3,
+				"template": "<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
+			};
+			var backButtonAction = {
+				"name": "wv_back_button",
+				"menu": "sidebar-top",
+				"weight": 1,
+				"template": "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>"
+			};
+
 			var view = {
 				"id": null,
 				"name": "",
@@ -1051,38 +1082,41 @@
 					"items": []
 				},
 				"serviceCode": null,
-				"actionItems": [
-					{
-						"name": "wv_record_delete",
-						"menu": "page-title-dropdown",
-						"weight": 1,
-						"template": "<a href=\"javascript:void(0)\" confirmed-click=\"ngCtrl.deleteRecord(ngCtrl)\" ng-confirm-click=\"Are you sure?\" \n\t\t ng-if=\"ngCtrl.userHasRecordPermissions('canDelete')\"> \n\t <i class=\"fa fa-trash go-red\"></i> Delete Record \n </a>"
-					},
-					{
-						"name": "wv_create_and_list",
-						"menu": "create-bottom",
-						"weight": 1,
-						"template": "<a class=\"btn btn-primary\" ng-click='ngCtrl.create(\"list\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & List</a>"
-					},
-					{
-						"name": "wv_create_and_details",
-						"menu": "create-bottom",
-						"weight": 2,
-						"template": "<a class=\"btn btn-default  btn-outline\" ng-click='ngCtrl.create(\"details\")' ng-if=\"ngCtrl.createViewRegion != null\">Create & Details</a>"
-					},
-					{
-						"name": "wv_create_cancel",
-						"menu": "create-bottom",
-						"weight": 3,
-						"template": "<a class=\"btn btn-default  btn-outline\" ng-click=\"ngCtrl.cancel()\">Cancel</a>"
-					},
-					{
-						"name": "wv_back_button",
-						"menu": "sidebar-top",
-						"weight": 1,
-						"template": "<a class=\"back clearfix\" href=\"javascript:void(0)\" ng-click=\"sidebarData.goBack()\"><i class=\"fa fa-fw fa-arrow-left\"></i> <span class=\"text\">Back</span></a>"
-					}]
+				"actionItems": []
 			};
+
+			switch(type){
+				case "general":
+					view.actionItems.push(backButtonAction);
+					view.actionItems.push(deleteAction);
+					break;
+				case "create":
+					view.actionItems.push(backButtonAction);
+					view.actionItems.push(createListAction);
+					view.actionItems.push(createDetailsAction);
+					view.actionItems.push(createCancelAction);
+					break;	
+				case "quick_view":
+					view.actionItems.push(backButtonAction);
+					view.actionItems.push(deleteAction);
+					break;					
+				case "quick_create":
+					view.actionItems.push(backButtonAction);
+					view.actionItems.push(createListAction);
+					view.actionItems.push(createDetailsAction);
+					view.actionItems.push(createCancelAction);
+					break;		
+				case "hidden":
+					view.actionItems.push(backButtonAction);
+					view.actionItems.push(createListAction);
+					view.actionItems.push(createDetailsAction);
+					view.actionItems.push(createCancelAction);
+					view.actionItems.push(deleteAction);
+					break;
+				default:
+					break;
+			}
+
 			return view;
 		}
 		////////////////////////
@@ -2337,19 +2371,19 @@
 					currentListName = dataNameArray[3];
 					var relationExists = false;
 					for (var j = 0; j < ngCtrl.entityRelations.length; j++) {
-						if(ngCtrl.entityRelations[j].name == currentRelationName){
-							 relationExists = true;
-							 var currentRelation = ngCtrl.entityRelations[j];
-							 if(currentRelation.originEntityName == currentEntityName){
-								 targetEntityName =  currentRelation.targetEntityName;
-							 }
-							 else if(currentRelation.targetEntityName == currentEntityName){
-								 targetEntityName =  currentRelation.originEntityName;
-							 }
+						if (ngCtrl.entityRelations[j].name == currentRelationName) {
+							relationExists = true;
+							var currentRelation = ngCtrl.entityRelations[j];
+							if (currentRelation.originEntityName == currentEntityName) {
+								targetEntityName = currentRelation.targetEntityName;
+							}
+							else if (currentRelation.targetEntityName == currentEntityName) {
+								targetEntityName = currentRelation.originEntityName;
+							}
 						}
 					}
 					//if the relation name is not found in the existing one, null it.
-					if(!relationExists || targetEntityName == null){
+					if (!relationExists || targetEntityName == null) {
 						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
 						currentRelationName = null;
 					}
@@ -2401,7 +2435,7 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					 return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 				}
 
 			}
@@ -2422,9 +2456,9 @@
 					if (currentRelationName == null) {
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?returnUrl=" + encodeURI($location.path());
 					}
-					//Case 2: - this is a list with relation
+						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
 				}
@@ -2443,7 +2477,7 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-						   return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {

@@ -1,6 +1,6 @@
 <div id="page-title">
-    <div id="page-meta">
-        <div class="aux-actions">
+	<div id="page-meta">
+		<div class="aux-actions">
 			<a class="btn btn-default btn-outline" ng-click="ngCtrl.createView()"><i class="fa fa-plus"></i> <span translate="{{'ADD_NEW'}}"></span></a>
 			<div class="form-group form-group-sm ng-hide" ng-show="ngCtrl.views.length > 0">
 				<div class="left-inner-addon">
@@ -8,14 +8,14 @@
 					<input ng-model="searchFilter" type="text" class="form-control" placeholder="{{'RECORD_VIEW_NAME' | translate}}">
 				</div>
 			</div>
-        </div>
-        <div class="meta-label">
-            <h4 translate="{{'RECORD_VIEW_LIST_PAGE_TITLE'}}"></h4>
-        </div>
-    </div>
+		</div>
+		<div class="meta-label">
+			<h4 translate="{{'RECORD_VIEW_LIST_PAGE_TITLE'}}"></h4>
+		</div>
+	</div>
 </div>
 <div id="page-body">
-    <div class="tabbable tabs-left spilled">
+	<div class="tabbable tabs-left spilled">
 		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
@@ -26,43 +26,43 @@
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/relations"><i class="fa fa-fw fa-link"></i> <span class="text" translate="{{'RELATIONS'}}"></span></a></li>
 		</ul>
 
-    </div>
+	</div>
 
- 
+
 	<div id="page-text">
-        <div class="alert alert-info ng-hide" ng-show="ngCtrl.views.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
-        <table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="ngCtrl.views.length == 0">
-            <thead>
-                <tr>
-                    <th class="actions"></th>
-                    <th class="name" translate="{{'Name'}}"></th>
-                    <th class="type" translate="{{'Type'}}"></th>
-					<th class="stats" style="width:200px;"  translate="{{'STATISTICS_ABBR'}}"></th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="view in ngCtrl.views | filter: {name: searchFilter} track by view.id">
-                    <td class="actions">
-                        <a class="btn btn-default btn-outline" href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::view.name}}">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.copyView(view)">
-                            <i class="fa fa-files-o"></i>
-                        </a>
-                    </td>
-                    <td class="name">
-                        {{::view.name}} 
-                        <span class="badge badge-danger badge-inverse" ng-show="::view.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
-                        <span class="badge badge-primary badge-inverse" ng-show="::view.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
+		<div class="alert alert-info ng-hide" ng-show="ngCtrl.views.length == 0" translate="{{'LIST_EMPTY_MESSAGE'}}"></div>
+		<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="ngCtrl.views.length == 0">
+			<thead>
+				<tr>
+					<th class="actions"></th>
+					<th class="name" translate="{{'Name'}}"></th>
+					<th class="type" translate="{{'Type'}}"></th>
+					<th class="stats" style="width:200px;" translate="{{'STATISTICS_ABBR'}}"></th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="view in ngCtrl.views | filter: {name: searchFilter} track by view.id">
+					<td class="actions">
+						<a class="btn btn-default btn-outline" href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::view.name}}">
+							<i class="fa fa-eye"></i>
+						</a>
+						<a class="btn btn-default btn-outline" href="javascript:void(0)" ng-click="ngCtrl.copyView(view)">
+							<i class="fa fa-files-o"></i>
+						</a>
+					</td>
+					<td class="name">
+						{{::view.name}}
+						<span class="badge badge-danger badge-inverse" ng-show="::view.system" title="system item" style="margin-left:5px;"><i class="fa fa-fw fa-lock"></i></span>
+						<span class="badge badge-primary badge-inverse" ng-show="::view.default" title="default item" style="margin-left:5px;"><i class="fa fa-fw fa-thumb-tack"></i></span>
 						<div class="go-gray"><small>{{::view.label}}</small></div>
-                    </td>
-                    <td class="type">
-                        {{::view.type}}
-                    </td>
-                    <td class="stats" ng-bind-html="ngCtrl.calculateStats(view)"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+					</td>
+					<td class="type">
+						{{::view.type}}
+					</td>
+					<td class="stats" ng-bind-html="ngCtrl.calculateStats(view)"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 
 </div>
@@ -75,6 +75,7 @@
 		<h3 class="modal-title" translate="{{'RECORD_VIEW_CREATE_MODAL_TITLE'}}"></h3>
 	</div>
 	<div class="modal-body">
+		<div class="alert alert-danger ng-hide" ng-show="popupCtrl.validation.hasError" ng-bind="popupCtrl.validation.errorMessage"></div>
 		<form name="createView">
 			<div class="row">
 				<div class="col-sm-6">
@@ -98,16 +99,26 @@
 						<input ng-model="popupCtrl.view.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_VIEW_LABEL_PLACEHOLDER' | translate}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createView.label.$touched && createView.label.$dirty && createView.label.$invalid || popupCtrl.labelError">
-							<small class="error" ng-show="createView.label.$error.required && !popupCtrl.labelError"  translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
+							<small class="error" ng-show="createView.label.$error.required && !popupCtrl.labelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
 							<small class="error" ng-show="popupCtrl.labelError">
 								{{popupCtrl.labelMessage}}
 							</small>
 						</div>
 					</div>
 				</div>
-				<div class="ng-hide">
-					<input ng-model="popupCtrl.view.iconName" type="hidden" value="file-text-o">
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="required" for="name" translate="{{'TYPE'}}"></label>
+						<select class="form-control" ng-model="popupCtrl.view.type" ng-options="type.name as type.label for type in popupCtrl.viewTypes" ng-change="popupCtrl.regenActionItems()"></select>
+					</div>
 				</div>
+				<div class="col-sm-6">
+				</div>
+			</div>
+			<div class="ng-hide">
+				<input ng-model="popupCtrl.view.iconName" type="hidden" value="file-text-o">
 			</div>
 		</form>
 	</div>
@@ -127,35 +138,35 @@
 			<tr>
 				<td style="width:200px">
 					<div class="form-group">
-					  <div class="radio checkbox">
-						<label>
-						  <input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
-						</label>
-					  </div>
+						<div class="radio checkbox">
+							<label>
+								<input type="radio" name="alternative" value="new" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_NEW_CHECKBOX_LABEL'}}"></span>
+							</label>
+						</div>
 					</div>
 				</td>
 				<td>
-					<div class="form-group"  ng-class="{ 'has-error' : popupCtrl.viewNameValidationError}">
-					  <input type="text" class="form-control" placeholder="View name" ng-model="popupCtrl.viewName">
-					  <div class="error ng-hide" ng-show="popupCtrl.viewNameValidationError">
+					<div class="form-group" ng-class="{ 'has-error' : popupCtrl.viewNameValidationError}">
+						<input type="text" class="form-control" placeholder="View name" ng-model="popupCtrl.viewName">
+						<div class="error ng-hide" ng-show="popupCtrl.viewNameValidationError">
 							required
-					  </div>
+						</div>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="form-group">
-					  <div class="radio checkbox">
-						<label>
-						  <input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span>
-						</label>
-					  </div>
+						<div class="radio checkbox">
+							<label>
+								<input type="radio" name="alternative" value="copy" ng-model="popupCtrl.alternative"> <span translate="{{'RECORD_VIEW_CLONE_AS_EXISTING_CHECKBOX_LABEL'}}"></span>
+							</label>
+						</div>
 					</div>
 				</td>
 				<td>
 					<div class="form-group">
-					  <select class="form-control" ng-model="popupCtrl.selectedView" ng-options="view as view.name for view in popupCtrl.entityViews"></select>
+						<select class="form-control" ng-model="popupCtrl.selectedView" ng-options="view as view.name for view in popupCtrl.entityViews"></select>
 					</div>
 				</td>
 			</tr>
@@ -163,6 +174,6 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="popupCtrl.ok()" translate="{{'RECORD_VIEW_COPY'}}"></button>
-		<button class="btn btn-default" ng-click="popupCtrl.cancel()"  translate="{{'CANCEL'}}"></button>
+		<button class="btn btn-default" ng-click="popupCtrl.cancel()" translate="{{'CANCEL'}}"></button>
 	</div>
 </script>
