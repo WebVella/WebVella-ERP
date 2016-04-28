@@ -84,7 +84,7 @@
             }
         }
 
-        webvellaCoreService.getRecordsWithLimitations("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList("","$user_role.id,$user_role.name,id,email,first_name,last_name,enabled,verified,image","user",successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -105,7 +105,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsByListName("null","role", "null", null, successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
 
         return defer.promise;
     }

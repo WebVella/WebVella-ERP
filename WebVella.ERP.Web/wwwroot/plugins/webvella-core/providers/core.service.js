@@ -145,7 +145,7 @@
 		//Read
 		serviceInstance.getRecord = getRecord;
 		serviceInstance.getRecordByViewName = getRecordByViewName;
-		serviceInstance.getRecordsWithLimitations = getRecordsWithLimitations;
+		serviceInstance.getRecordsWithoutList = getRecordsWithoutList;
 		serviceInstance.getRecordsByListName = getRecordsByListName;
 		serviceInstance.getRecordsByTreeName = getRecordsByTreeName;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
@@ -1792,7 +1792,7 @@
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		/////////////////////
-		function getRecordsWithLimitations(recordIds, fieldNames, entityName, successCallback, errorCallback) {
+		function getRecordsWithoutList(recordIds, fieldNames, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
@@ -1976,7 +1976,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsByListName("null", "area", "null", null, rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsWithoutList(null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {

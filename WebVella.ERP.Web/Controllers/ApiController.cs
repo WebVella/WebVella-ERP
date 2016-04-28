@@ -1874,7 +1874,7 @@ namespace WebVella.ERP.Web.Controllers
 			var recordIdList = new List<Guid>();
 			var fieldList = new List<string>();
 
-			if(!String.IsNullOrWhiteSpace(ids)) {
+			if(!String.IsNullOrWhiteSpace(ids) && ids != "null") {
 				var idStringList = ids.Split(',');
 				var outGuid = Guid.Empty;
 				foreach(var idString in idStringList) {
@@ -1890,7 +1890,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 			}
 
-			if(!String.IsNullOrWhiteSpace(fields)) {
+			if(!String.IsNullOrWhiteSpace(fields) && ids != "null") {
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
 				foreach(var fieldName in fieldsArray) {
@@ -1915,10 +1915,15 @@ namespace WebVella.ERP.Web.Controllers
 				recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
 			}
 			
-			if(!fieldList.Contains("id")) {
-				fieldList.Add("id");
+			var columns = "*";
+			if(fieldList.Count > 0) {
+				if(!fieldList.Contains("id")) {
+					fieldList.Add("id");
+				}
+				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
-			var columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
+
+
 
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
 			var queryResponse = recMan.Find(query);
