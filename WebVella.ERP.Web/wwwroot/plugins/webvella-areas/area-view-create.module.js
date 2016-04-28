@@ -46,7 +46,7 @@
 			}
 		}).state('webvella-area-view-create-with-relation', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName/:relationName/:targetRecordId?returnUrl',
+			url: '/view-create/:viewName/relation/:relationName/:targetRecordId?returnUrl',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -54,8 +54,8 @@
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
-					controller: 'WebVellaAreasRecordCreateSidebarController',
-					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
+					controller: 'WebVellaAreasDetachedItemSidebarController',
+					templateUrl: '/plugins/webvella-areas/detached-item-sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {

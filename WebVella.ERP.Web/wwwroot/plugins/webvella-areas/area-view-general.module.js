@@ -108,6 +108,35 @@
 				resolvedCurrentParentView: resolveCurrentParentView,
 				resolvedCurrentView: resolveCurrentView
 			}
+		})
+		.state('webvella-areas-view-general-with-relation', {
+			parent: 'webvella-area-base',
+			url: '/view-general/:viewName/:recordId/:regionName/relation/:relationName/:targetRecordId?returnUrl',
+			params: {
+				regionName: { value: "default", squash: true }
+			},
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasDetachedItemSidebarController',
+					templateUrl: '/plugins/webvella-areas/detached-item-sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreaViewGeneralController',
+					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
+					controllerAs: 'ngCtrl'
+				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				resolvedCurrentParentView:  function () { return null; },
+				resolvedCurrentView: resolveCurrentView
+			}
 		});
 	};
 
@@ -281,12 +310,12 @@
 	// Controller ///////////////////////////////
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants','resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
 		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedCurrentParentView'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
-        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants,resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
 		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedCurrentParentView) {
 
 		//#region << ngCtrl initialization >>
@@ -313,6 +342,7 @@
 			ngCtrl.parentView.meta = fastCopy(resolvedCurrentParentView.meta);
 			ngCtrl.parentView.data = fastCopy(resolvedCurrentParentView.data[0]);
 		}
+		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.areas = fastCopy(resolvedAreas.data);

@@ -244,11 +244,11 @@
 
 	//#region << Controller /////////////////////////////// >>
 	controller.$inject = ['$log', '$uibModal', '$rootScope', '$state', '$stateParams', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', 'resolvedListRecords', 'resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
+        'resolvedAreas', 'resolvedListRecords', 'resolvedEntityList','resolvedCurrentEntityMeta', 'webvellaListActionService', '$timeout',
 		'resolvedEntityRelationsList', 'resolvedCurrentUser', '$sessionStorage', '$location', '$window', '$sce'];
 
 	function controller($log, $uibModal, $rootScope, $state, $stateParams, pageTitle, webvellaCoreService,
-        resolvedAreas, resolvedListRecords, resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
+        resolvedAreas, resolvedListRecords, resolvedEntityList,resolvedCurrentEntityMeta, webvellaListActionService, $timeout,
 		resolvedEntityRelationsList, resolvedCurrentUser, $sessionStorage, $location, $window, $sce) {
 
 		//#region << ngCtrl initialization >>
@@ -271,6 +271,7 @@
 		ngCtrl.list = {};
 		ngCtrl.list.data = fastCopy(resolvedListRecords.data);
 		ngCtrl.list.meta = fastCopy(resolvedListRecords.meta);
+		ngCtrl.entityList = fastCopy(resolvedEntityList);
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
 		ngCtrl.entityRelations = fastCopy(resolvedEntityRelationsList);
 		ngCtrl.areas = fastCopy(resolvedAreas.data);
@@ -399,7 +400,17 @@
 			if (queryFieldsCount > 0) {
 				ngCtrl.listIsFiltered = true;
 			}
-			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			//Find the entity of the list. It could not be the current one as it could be listFromRelation case
+			var listEntityName = $stateParams.entityName;
+			for (var i = 0; i < ngCtrl.entityList.length; i++) {
+				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
+					 if(ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id){
+						  listEntityName = fastCopy(ngCtrl.entityList[i].name);
+					 }
+				}
+			}
+
+			webvellaCoreService.getRecordsByListName(ngCtrl.list.meta.name, listEntityName, 1, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 		}
 
 		ngCtrl.ReloadRecordsSuccessCallback = function (response) {
@@ -516,7 +527,15 @@
 			}
 
 			var searchParams = $location.search();
-			webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
+			var listEntityName = $stateParams.entityName;
+			for (var i = 0; i < ngCtrl.entityList.length; i++) {
+				for (var j = 0; j < ngCtrl.entityList[i].recordLists.length; j++) {
+					 if(ngCtrl.entityList[i].recordLists[j].id == ngCtrl.list.meta.id){
+						  listEntityName = fastCopy(ngCtrl.entityList[i].name);
+					 }
+				}
+			}
+			webvellaCoreService.getRecordsByListName(ngCtrl.list.meta.name, listEntityName, 1, searchParams, ngCtrl.ReloadRecordsSuccessCallback, ngCtrl.ReloadRecordsErrorCallback);
 
 		}
 

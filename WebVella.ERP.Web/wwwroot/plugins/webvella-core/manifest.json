@@ -62,8 +62,8 @@
 		],
 		"js": [
 			"/plugins/webvella-core/base.module.js",
-			"/plugins/webvella-core/login.module.js",
 			"/plugins/webvella-core/error.module.js",
+			"/plugins/webvella-core/login.module.js",
 			"/plugins/webvella-core/providers/core.service.js",
 			"/plugins/webvella-core/providers/core.directive.js"
 		],

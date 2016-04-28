@@ -29,6 +29,7 @@
 				pageTitle: function () {
 					return "Webvella ERP";
 				},
+				resolvedEntityList: resolveEntityList,
 				resolvedAreas: resolveAreas,
 				resolvedCurrentUser: resolveCurrentUser,
 				resolvedCurrentUserEntityPermissions: resolveCurrentUserEntityPermissions,
@@ -54,6 +55,19 @@
 		return defer.promise;
 	}
 
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object.entities);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
+		return defer.promise;
+	}
+
 	resolveCurrentUser.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
 	function resolveCurrentUser($q, $log, webvellaCoreService, $state, $stateParams) {
 		var defer = $q.defer();
@@ -67,16 +81,15 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $state, $stateParams) {
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', '$state', '$stateParams','resolvedEntityList'];
+	function resolveCurrentEntityMeta($q, $log, $state, $stateParams,resolvedEntityList) {
 		var defer = $q.defer();
-		function successCallback(response) {
-			defer.resolve(response.object);
+		for (var i = 0; i < resolvedEntityList.length; i++) {
+			if(resolvedEntityList[i].name == $stateParams.entityName){
+				defer.resolve(resolvedEntityList[i]);	
+				break;
+			}
 		}
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 

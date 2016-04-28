@@ -3724,7 +3724,7 @@ namespace WebVella.ERP.Api
 			try
 			{
 				response.Object = recordList;
-				response.Errors = ValidateRecordList(entity, inputRecordList, true);
+				response.Errors = ValidateRecordList(entity, inputRecordList, false);
 
 				recordList = inputRecordList.MapTo<RecordList>();
 

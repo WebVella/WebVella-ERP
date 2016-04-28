@@ -19,6 +19,7 @@ using CsvHelper;
 using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
+using WebVella.ERP.Plugins;
 
 
 
@@ -43,6 +44,18 @@ namespace WebVella.ERP.Web.Controllers
 			secMan = new SecurityManager();
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
+		}
+
+
+		[AllowAnonymous]
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/show-plugins")]
+		public IActionResult ShowPlugins()
+		{
+			var responseObj = new ResponseModel();
+			responseObj.Object = new PluginService().Plugins;
+			responseObj.Success = true;
+			responseObj.Timestamp = DateTime.UtcNow;
+			return DoResponse(responseObj);
 		}
 
 		[AllowAnonymous]

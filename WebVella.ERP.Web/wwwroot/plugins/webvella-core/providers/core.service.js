@@ -1085,7 +1085,7 @@
 				"actionItems": []
 			};
 
-			switch(type){
+			switch (type) {
 				case "general":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(deleteAction);
@@ -1095,17 +1095,17 @@
 					view.actionItems.push(createListAction);
 					view.actionItems.push(createDetailsAction);
 					view.actionItems.push(createCancelAction);
-					break;	
+					break;
 				case "quick_view":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(deleteAction);
-					break;					
+					break;
 				case "quick_create":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(createListAction);
 					view.actionItems.push(createDetailsAction);
 					view.actionItems.push(createCancelAction);
-					break;		
+					break;
 				case "hidden":
 					view.actionItems.push(backButtonAction);
 					view.actionItems.push(createListAction);
@@ -2349,13 +2349,14 @@
 		function listAction_getRecordCreateUrl(ngCtrl) {
 			//#region << Init >>
 			var siteAreas = fastCopy(ngCtrl.areas);
+			var entityList = fastCopy(ngCtrl.entityList);
 			var currentEntity = fastCopy(ngCtrl.entity);
 			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
 			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
 			var currentListName = fastCopy(ngCtrl.stateParams.listName);
 			var currentRelationName = null; // when the list is listFromRelation
 			var targetEntityName = null;
-			var currentPage = fastCopy(ngCtrl.stateParams.page);
+			var targetEntity = null;
 			var currentArea = null;
 			var targetCreateName = null;
 			var targetCreateExists = false;
@@ -2387,7 +2388,20 @@
 						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
 						currentRelationName = null;
 					}
+					else {
+						//Get the target entity details
+						for (var i = 0; i < entityList.length; i++) {
+							if (entityList[i].name == targetEntityName) {
+								targetEntity = entityList[i];
+							}
+						}
+					}
 				}
+			}
+
+			if (currentRelationName != null && targetEntity == null) {
+				console.log("cannot find the target entity");
+				return null;
 			}
 
 			//#endregion
@@ -2406,9 +2420,18 @@
 			else {
 				currentArea.attachments = angular.fromJson(currentArea.attachments);
 				for (var i = 0; i < currentArea.attachments.length; i++) {
-					if (currentArea.attachments[i].name == currentEntityName) {
-						targetCreateName = currentArea.attachments[i].create.name;
-						break;
+					//If it is not listFromRelation 
+					if (currentRelationName == null) {
+						if (currentArea.attachments[i].name == currentEntityName) {
+							targetCreateName = currentArea.attachments[i].create.name;
+							break;
+						}
+					}
+					else {
+						if (currentArea.attachments[i].name == targetEntityName) {
+							targetCreateName = currentArea.attachments[i].create.name;
+							break;
+						}
 					}
 				}
 				if (targetCreateName == null) {
@@ -2419,10 +2442,22 @@
 			//#endregion
 
 			//#region << Check if it target view exists >>
-			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				if (currentEntity.recordViews[i].name === targetCreateName) {
-					targetCreateExists = true;
-					break;
+			if (targetCreateName != null) {
+				if (currentRelationName == null) {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].name === targetCreateName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
+				}
+				else {
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].name === targetCreateName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
 				}
 			}
 			//#endregion
@@ -2435,7 +2470,7 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 				}
 
 			}
@@ -2443,11 +2478,22 @@
 			else {
 				targetCreateName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
-				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "create") {
-						targetCreateName = currentEntity.recordViews[i].name;
-						break;
+				if (currentRelationName == null) {
+					currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "create") {
+							targetCreateName = currentEntity.recordViews[i].name;
+							break;
+						}
+					}
+				}
+				else {
+					targetEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "create") {
+							targetCreateName = targetEntity.recordViews[i].name;
+							break;
+						}
 					}
 				}
 				if (targetCreateName != null) {
@@ -2458,16 +2504,26 @@
 					}
 						//Case 2: - this is a list with relation
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 					}
 
 				}
 				else {
 					//If there is default general take the first general
-					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-						if (currentEntity.recordViews[i].type == "create") {
-							targetCreateName = currentEntity.recordViews[i].name;
-							break;
+					if (currentRelationName == null) {
+						for (var i = 0; i < currentEntity.recordViews.length; i++) {
+							if (currentEntity.recordViews[i].type == "create") {
+								targetCreateName = currentEntity.recordViews[i].name;
+								break;
+							}
+						}
+					}
+					else {
+						for (var i = 0; i < targetEntity.recordViews.length; i++) {
+							if (targetEntity.recordViews[i].type == "create") {
+								targetCreateName = targetEntity.recordViews[i].name;
+								break;
+							}
 						}
 					}
 					if (targetCreateName != null) {
@@ -2477,7 +2533,7 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {
@@ -2495,12 +2551,61 @@
 			//#region << Init >>
 			var currentRecord = fastCopy(record);
 			var siteAreas = fastCopy(ngCtrl.areas);
+			var entityList = fastCopy(ngCtrl.entityList);
 			var currentEntity = fastCopy(ngCtrl.entity);
 			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
 			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
+			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentRelationName = null; // when the list is listFromRelation
+			var targetEntityName = null;
+			var targetEntity = null
 			var currentArea = null;
 			var targetViewName = null;
 			var targetViewExists = false;
+			//#endregion
+
+			//#region << Check if viewFromRelation, get the relationName if so >>
+			//Example listFromRelation name: "$list$project_1_n_ticket$general"
+			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
+				var dataNameArray = fastCopy(currentListName).split('$');
+				if (dataNameArray.length == 4) {
+					//this is a proper listFromRelation format
+					currentRelationName = dataNameArray[2];
+					currentListName = dataNameArray[3];
+					var relationExists = false;
+					for (var j = 0; j < ngCtrl.entityRelations.length; j++) {
+						if (ngCtrl.entityRelations[j].name == currentRelationName) {
+							relationExists = true;
+							var currentRelation = ngCtrl.entityRelations[j];
+							if (currentRelation.originEntityName == currentEntityName) {
+								targetEntityName = currentRelation.targetEntityName;
+							}
+							else if (currentRelation.targetEntityName == currentEntityName) {
+								targetEntityName = currentRelation.originEntityName;
+							}
+						}
+					}
+					//if the relation name is not found in the existing one, null it.
+					if (!relationExists || targetEntityName == null) {
+						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
+						currentRelationName = null;
+					}
+					else {
+						//Get the target entity details
+						for (var i = 0; i < entityList.length; i++) {
+							if (entityList[i].name == targetEntityName) {
+								targetEntity = entityList[i];
+							}
+						}
+					}
+				}
+			}
+
+			if (currentRelationName != null && targetEntity == null) {
+				console.log("cannot find the target entity");
+				return null;
+			}
+
 			//#endregion
 
 			//#region << Get the selected view in the area >>
@@ -2511,61 +2616,122 @@
 				}
 			}
 			if (currentArea == null) {
-				console.log("Error: No area with such name found");
-				return null;
+				//The list is presented in an URL attachment - the target create name is the first default create for the entity
+				//To select that we just leave the process below to do that
 			}
 			currentArea.attachments = angular.fromJson(currentArea.attachments);
 			for (var i = 0; i < currentArea.attachments.length; i++) {
-				if (currentArea.attachments[i].name == currentEntityName) {
-					targetViewName = currentArea.attachments[i].view.name;
-					break;
+				//If it is not listFromRelation 
+				if (currentRelationName == null) {
+					if (currentArea.attachments[i].name == currentEntityName) {
+						targetViewName = currentArea.attachments[i].create.name;
+						break;
+					}
+				}
+				else {
+					if (currentArea.attachments[i].name == targetEntityName) {
+						targetViewName = currentArea.attachments[i].create.name;
+						break;
+					}
 				}
 			}
 			if (targetViewName == null) {
-				console.log("Error: The current entity is either not attached to the area or the view name is missing");
-				return null;
+				//The list is presented in an URL attachment - the target create name is the first default create for the entity
+				//To select that we just leave the process below to do that
 			}
 			//#endregion
 
 			//#region << Check if it target view exists >>
-			for (var i = 0; i < currentEntity.recordViews.length; i++) {
-				if (currentEntity.recordViews[i].name === targetViewName) {
-					targetViewExists = true;
-					break;
+			if (targetViewName != null) {
+				if (currentRelationName == null) {
+					for (var i = 0; i < currentEntity.recordViews.length; i++) {
+						if (currentEntity.recordViews[i].name === targetViewName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
+				}
+				else {
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].name === targetViewName) {
+							targetCreateExists = true;
+							break;
+						}
+					}
 				}
 			}
-
 			//#endregion
 
 			//#region << Calculate what the view name should be and return >>
 			if (targetViewExists) {
-				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+				//Case 1: - list is not from relation
+				if (currentRelationName == null) {
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+				}
+					//Case 2: - this is a list with relation
+				else {
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+				}
 			}
 				//The target name does not exist. Fallback to default
 			else {
 				targetViewName = null;
 				//If not sort and get the first default and general
-				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
-				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
-						targetViewName = currentEntity.recordViews[i].name;
-						break;
-					}
-				}
-				if (targetViewName != null) {
-					//there is a default and general view fallback option available
-					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
-				}
-				else {
-					//If there is default general take the first general
+				if (currentRelationName == null) {
+					currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-						if (currentEntity.recordViews[i].type == "general") {
+						if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
 							targetViewName = currentEntity.recordViews[i].name;
 							break;
 						}
 					}
-					if (targetViewName != null) {
+				}
+				else {
+					targetEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+					for (var i = 0; i < targetEntity.recordViews.length; i++) {
+						if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "general") {
+							targetViewName = targetEntity.recordViews[i].name;
+							break;
+						}
+					}
+				}
+				if (targetViewName != null) {
+					//there is a default and general view fallback option available
+					//Case 1: - list is not from relation
+					if (currentRelationName == null) {
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+					}
+					else {
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					}
+				}
+				else {
+					//If there is default general take the first general
+					if (currentRelationName == null) {
+						for (var i = 0; i < currentEntity.recordViews.length; i++) {
+							if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "hidden") {
+								targetViewName = currentEntity.recordViews[i].name;
+								break;
+							}
+						}
+					}
+					else{
+						for (var i = 0; i < targetEntity.recordViews.length; i++) {
+							if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "hidden") {
+								targetViewName = targetEntity.recordViews[i].name;
+								break;
+							}
+						}					
+					}
+					if (targetViewName != null) {
+						//Case 1: - list is not from relation
+						if (currentRelationName == null) {
+							return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
+						}
+							//Case 2: - this is a list with relation
+						else {
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						}
 					}
 					else {
 						console.log("Error: Cannot find suitable details view for this entity records");

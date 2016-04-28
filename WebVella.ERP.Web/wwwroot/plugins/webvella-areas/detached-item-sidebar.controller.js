@@ -9,7 +9,7 @@
 
     angular
         .module('webvellaAreas')
-        .controller('WebVellaAreasRecordCreateSidebarController', controller);
+        .controller('WebVellaAreasDetachedItemSidebarController', controller);
 
 
     // Controller ///////////////////////////////
@@ -22,6 +22,7 @@
 		sidebarData.currentUser = angular.copy(resolvedCurrentUser);
     	//Generate menu items list
         sidebarData.items = [];
+		sidebarData.stateParams = $stateParams;
 		sidebarData.sidebarTopActions = [];
 		sidebarData.onlyBackButton = true;
 		resolvedCurrentView.meta.actionItems.forEach(function (actionItem) {
