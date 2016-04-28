@@ -57,12 +57,6 @@
     function resolveEntityMetaList($rootScope,$q, $log, webvellaCoreService,$timeout) {
         // Initialize
         var defer = $q.defer();
-
-        //Show sidemenu
-		$timeout(function(){
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-		},0);
-
         // Process
         function successCallback(response) {
             defer.resolve(response.object);
@@ -94,7 +88,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsByListName("null","role", "null", null, successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }

@@ -1,7 +1,8 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_VIEW_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline" ng-if="!ngCtrl.view.system" ng-click="ngCtrl.deleteViewModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_VIEW_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline disabled" ng-if="ngCtrl.view.system" href="javascript:void(0)"><i class="fa fa-lock"></i> <span translate="{{'DELETE_LOCKED'}}"></span></a>
 		</div>
 		<div class="meta-label">
 			<h4><span class="go-gray"><span translate="{{'RECORD_VIEW_MANAGE_PAGE_TITLE_PREFIX'}}"></span>: </span> {{ngCtrl.view.name}}</h4>
@@ -135,15 +136,17 @@
 							<div class="row editable-field field">
 								<label class="control-label col-lg-2" translate="{{'SYSTEM'}}"></label>
 								<div class="col-lg-10">
-									<div class="editable-wrapper input-group first-background-transparent editable-readonly">
-										<span class="input-group-addon" ng-if="ngCtrl.view.system">
+									<div class="editable-wrapper input-group first-background-transparent editable-updatable"  ng-dblclick="fieldForm_system.$show()">
+										<span class="input-group-addon" ng-if="ngCtrl.view.system && !fieldForm_system.$visible">
 											<i class="fa fa-check fa-fw go-green"></i>
 										</span>
-										<span class="input-group-addon" ng-if="!ngCtrl.view.system">
+										<span class="input-group-addon" ng-if="!ngCtrl.view.system && !fieldForm_system.$visible">
 											<i class="fa fa-times fa-fw go-red"></i>
 										</span>
-										<input type="text" class="form-control" disabled value="{{::ngCtrl.view.system}}"></input>
-										<span class="input-group-addon"><i class="fa fa-lock fa-fw"></i></span>
+												<input type="text" class="form-control" disabled editable-checkbox="ngCtrl.view.system"
+														e-title="{{'CHECKBOX_TRUE_LABEL' | translate}}" value="{{ngCtrl.renderFieldValue(ngCtrl.view.system,{fieldType:2})}}"
+														onbeforesave="ngCtrl.fieldUpdate('system',$data)" e-form="fieldForm_system">
+												<span class="input-group-addon" ng-click="fieldForm_system.$show()" ng-hide="fieldForm_system.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 								</div>
 							</div>
@@ -173,7 +176,7 @@
 								<div class="col-lg-10">
 									<div class="editable-wrapper input-group first-background-transparent editable-updatable" ng-dblclick="fieldForm_iconName.$show()">
 										<span class="input-group-addon"><i class="fa fa-{{ngCtrl.view.iconName}} fa-fw"></i></span>
-										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.iconName"
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.iconName"  autocomplete="off"
 											   value="{{ngCtrl.view.iconName}}" onbeforesave="ngCtrl.fieldUpdate('iconName', $data)" e-form="fieldForm_iconName"
 											   e-typeahead-template-url="iconTypeaheadTemplate.html" e-uib-typeahead="icon for icon in ngCtrl.icons | filter:$viewValue | limitTo:10">
 										<span class="input-group-addon" ng-click="fieldForm_iconName.$show()" ng-hide="fieldForm_iconName.$visible"><i class="fa fa-pencil fa-fw"></i></span>

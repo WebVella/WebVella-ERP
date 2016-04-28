@@ -30,7 +30,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -105,7 +105,7 @@
 			defer.reject(response.message);
 		}
 
-		webvellaCoreService.getRecordsByListName("null", "role", "null", null, successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null, "role", successCallback, errorCallback);
 
 		return defer.promise;
 	}
@@ -172,14 +172,7 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
-		ngCtrl.showSidebar = function () {
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-		}
-
 		//#endregion
 
 		ngCtrl.fieldTypes = [];

@@ -60,7 +60,19 @@ namespace WebVella.ERP.Api.Models
 
         [JsonProperty(PropertyName = "targetFieldId")]
         public Guid TargetFieldId { get; set; }
-    }
+
+		[JsonProperty(PropertyName = "originEntityName")]
+		public string OriginEntityName { get; set; }
+
+		[JsonProperty(PropertyName = "originFieldName")]
+		public string OriginFieldName { get; set; }
+
+		[JsonProperty(PropertyName = "targetEntityName")]
+		public string TargetEntityName { get; set; }
+
+		[JsonProperty(PropertyName = "targetFieldName")]
+		public string TargetFieldName { get; set; }
+	}
 
 	[Serializable]
 	public class EntityRelationOptionsItem

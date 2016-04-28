@@ -1,7 +1,8 @@
 <div id="page-title">
 	<div id="page-meta">
 		<div class="aux-actions">
-			<a class="btn btn-default btn-outline" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_LIST_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline" ng-if="!ngCtrl.list.system" ng-click="ngCtrl.deleteListModal()"><i class="fa fa-trash-o go-red"></i> <span translate="{{'RECORD_LIST_DELETE'}}"></span></a>
+			<a class="btn btn-default btn-outline disabled" ng-if="ngCtrl.list.system" href="javascript:void(0)"><i class="fa fa-lock"></i> <span translate="{{'DELETE_LOCKED'}}"></span></a>
 		</div>
 		<div class="meta-label">
 			<h4><span class="go-gray" translate="{{'RECORD_LIST_TITLE_PREFIX'}}"></span> {{ngCtrl.list.name}}</h4>

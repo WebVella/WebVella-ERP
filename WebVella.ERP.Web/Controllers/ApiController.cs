@@ -19,6 +19,7 @@ using CsvHelper;
 using Microsoft.AspNet.StaticFiles;
 using WebVella.ERP.Utilities;
 using System.Dynamic;
+using WebVella.ERP.Plugins;
 
 
 
@@ -43,6 +44,18 @@ namespace WebVella.ERP.Web.Controllers
 			secMan = new SecurityManager();
 			entityManager = new EntityManager();
 			entityRelationManager = new EntityRelationManager();
+		}
+
+
+		[AllowAnonymous]
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/show-plugins")]
+		public IActionResult ShowPlugins()
+		{
+			var responseObj = new ResponseModel();
+			responseObj.Object = new PluginService().Plugins;
+			responseObj.Success = true;
+			responseObj.Timestamp = DateTime.UtcNow;
+			return DoResponse(responseObj);
 		}
 
 		[AllowAnonymous]
@@ -810,7 +823,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			var code = list.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
-				return File("/plugins/webvella-core/assets/list_default_service_script.js", "text/javascript");
+				return File("/plugins/webvella-core/providers/list_default_service_script.js", "text/javascript");
 
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript" );
@@ -1083,7 +1096,7 @@ namespace WebVella.ERP.Web.Controllers
 
 			var code = view.Object.ServiceCode;
 			if (string.IsNullOrWhiteSpace(code) || defaultScript)
-				return File("/plugins/webvella-core/assets/view_default_service_script.js", "text/javascript");
+				return File("/plugins/webvella-core/providers/view_default_service_script.js", "text/javascript");
 
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(code);
 			return File(bytes, "text/javascript");
@@ -1861,7 +1874,7 @@ namespace WebVella.ERP.Web.Controllers
 			var recordIdList = new List<Guid>();
 			var fieldList = new List<string>();
 
-			if(!String.IsNullOrWhiteSpace(ids)) {
+			if(!String.IsNullOrWhiteSpace(ids) && ids != "null") {
 				var idStringList = ids.Split(',');
 				var outGuid = Guid.Empty;
 				foreach(var idString in idStringList) {
@@ -1877,7 +1890,7 @@ namespace WebVella.ERP.Web.Controllers
 				}
 			}
 
-			if(!String.IsNullOrWhiteSpace(fields)) {
+			if(!String.IsNullOrWhiteSpace(fields) && ids != "null") {
 				var fieldsArray = fields.Split(',');
 				var hasId = false;
 				foreach(var fieldName in fieldsArray) {
@@ -1902,10 +1915,15 @@ namespace WebVella.ERP.Web.Controllers
 				recordsFilterObj = EntityQuery.QueryOR(QueryList.ToArray());
 			}
 			
-			if(!fieldList.Contains("id")) {
-				fieldList.Add("id");
+			var columns = "*";
+			if(fieldList.Count > 0) {
+				if(!fieldList.Contains("id")) {
+					fieldList.Add("id");
+				}
+				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
-			var columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
+
+
 
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
 			var queryResponse = recMan.Find(query);
@@ -1986,20 +2004,16 @@ namespace WebVella.ERP.Web.Controllers
 
 		private List<EntityRecord> GetListRecords(List<Entity> entities, Entity entity, string listName, int? page = null, QueryObject queryObj = null, int? pageSize = null, bool export = false)
 		{
+			if (entity == null)
+				throw new Exception($"Entity '{entity.Name}' do not exist");
+
 			RecordList list = null;
 			if (entity != null && entity.RecordLists != null)
 				list = entity.RecordLists.FirstOrDefault(l => l.Name == listName);
-
-			//Boz -> I removed the search parameter as it is obsolete
-			//var searchQuery = CreateSearchQuery(search, list, entity);
-			//if (searchQuery != null)
-			//{
-			//	if (queryObj != null)
-			//		queryObj = EntityQuery.QueryAND(queryObj, searchQuery);
-			//	else
-			//		queryObj = searchQuery;
-			//}
-
+			
+			if (list == null)
+				throw new Exception($"Entity '{entity.Name}' do not have list named '{listName}'");
+			
 			List<KeyValuePair<string, string>> queryStringOverwriteParameters = new List<KeyValuePair<string, string>>();
 			foreach (var key in Request.Query.Keys)
 				queryStringOverwriteParameters.Add(new KeyValuePair<string, string>(key, Request.Query[key]));
@@ -2803,7 +2817,7 @@ namespace WebVella.ERP.Web.Controllers
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							foreach (var relatedRecord in relatedRecords)
 							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, relField.Name, relatedRecord[relField.Name]));
+								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
 							}
 							dataRecord[((RecordViewRelationViewItem)item).DataName] = subViewResult;
 
@@ -2877,7 +2891,7 @@ namespace WebVella.ERP.Web.Controllers
 							var relatedRecords = record["$" + relation.Name] as List<EntityRecord>;
 							foreach (var relatedRecord in relatedRecords)
 							{
-								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewSidebarRelationViewItem)item).ViewName, relField.Name, relatedRecord[relField.Name]));
+								subViewResult.AddRange(GetViewRecords(entities, relEntity, ((RecordViewSidebarRelationViewItem)item).ViewName, "id", relatedRecord["id"]));
 							}
 							dataRecord[((RecordViewSidebarRelationViewItem)item).DataName] = subViewResult;
 						}

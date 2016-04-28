@@ -30,7 +30,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -51,18 +51,18 @@
 
 	// Resolve Function /////////////////////////
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout'];
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout','$translate'];
 	
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout) {
+	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $stateParams, $state, $timeout,$translate) {
 		// Initialize
 		var defer = $q.defer();
 
 		// Process
 		function successCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.resolve(response.object);
@@ -71,9 +71,9 @@
 
 		function errorCallback(response) {
 			if (response.object == null) {
-				$timeout(function () {
+				$translate(['ERROR_IN_RESPONSE']).then(function (translations) {
 					alert("error in response!")
-				}, 0);
+				});
 			}
 			else {
 				defer.reject(response.message);
@@ -86,10 +86,10 @@
 	}
 
 	// Controller ///////////////////////////////
-	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', '$timeout'];
+	controller.$inject = ['$scope', '$log', '$rootScope', '$state', 'pageTitle', 'resolvedCurrentEntityMeta', '$uibModal', '$timeout','$translate'];
 
 	
-	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout) {
+	function controller($scope, $log, $rootScope, $state, pageTitle, resolvedCurrentEntityMeta, $uibModal, $timeout,$translate) {
 		
 		var ngCtrl = this;
 		ngCtrl.entity = fastCopy(resolvedCurrentEntityMeta);
@@ -103,26 +103,20 @@
 			return 0;
 		});
 
-		//Update page title
-		ngCtrl.pageTitle = "Entity Views | " + pageTitle;
-		$timeout(function () {
+		//#region << Update page title & hide the side menu >>
+		$translate(['RECORD_VIEW_LIST_PAGE_TITLE', 'ENTITIES']).then(function (translations) {
+			ngCtrl.pageTitle = translations.RECORD_VIEW_LIST_PAGE_TITLE + " | " + pageTitle;
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
-			//Hide Sidemenu
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		}, 0);
-		$rootScope.adminSectionName = "Entities";
-		ngCtrl.showSidebar = function () {
-			//Show Sidemenu
-			$timeout(function () {
-				$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-			}, 0);
-		}
+			$rootScope.adminSectionName = translations.ENTITIES;
+		});
+		$rootScope.adminSubSectionName = ngCtrl.entity.label;
+    	//#endregion
 
 		ngCtrl.calculateStats = function (view) {
 			var itemsCount = 0;
 			var sectionsCount = 0;
 			for (var i = 0; i < view.regions.length; i++) {
-				if (view.regions[i].name == "content") {
+				if (view.regions[i].name == "default") {
 					sectionsCount = view.regions[i].sections.length;
 					var sections = view.regions[i].sections;
 					for (var j = 0; j < sections.length; j++) {
@@ -196,11 +190,54 @@
 		
 		var popupCtrl = this;
 		popupCtrl.modalInstance = $uibModalInstance;
-		popupCtrl.view = webvellaCoreService.initView();
+		popupCtrl.validation = {};
+		popupCtrl.validation.hasError = false;
+		popupCtrl.validation.errorMessage = false;
+		popupCtrl.view = webvellaCoreService.initView("general");
 		popupCtrl.currentEntity = fastCopy(ngCtrl.entity);
+		popupCtrl.existingViews = fastCopy(ngCtrl.views);
+        popupCtrl.viewTypes = [
+		{
+			name: "general",
+			label: "general"
+		},
+		{
+			name: "quick_view",
+			label: "quick view"
+		},
+		{
+			name: "create",
+			label: "create"
+		},
+		{
+			name: "quick_create",
+			label: "quick create"
+		},
+		{
+			name: "hidden",
+			label: "hidden"
+		}
+        ];
+
+		popupCtrl.regenActionItems = function(){
+			var templateView = webvellaCoreService.initView(popupCtrl.view.type);
+			popupCtrl.view.actionItems = templateView.actionItems;
+		}
 
 		popupCtrl.ok = function () {
-			webvellaCoreService.createEntityView(popupCtrl.view, popupCtrl.currentEntity.name, successCallback, errorCallback);
+			//Validate if there is not already a view with this name
+			popupCtrl.validation = {};
+			popupCtrl.validation.hasError = false;
+			popupCtrl.validation.errorMessage = false;
+			for (var i = 0; i < popupCtrl.existingViews.length; i++) {
+				if(popupCtrl.existingViews[i].name == popupCtrl.view.name){
+					popupCtrl.validation.hasError = true;
+					popupCtrl.validation.errorMessage = "This view name is already used";
+				}
+			}
+			if(!popupCtrl.validation.hasError){
+				webvellaCoreService.createEntityView(popupCtrl.view, popupCtrl.currentEntity.name, successCallback, errorCallback);
+			}
 		};
 
 		popupCtrl.cancel = function () {

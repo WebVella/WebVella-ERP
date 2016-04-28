@@ -191,18 +191,26 @@ namespace WebVella.ERP.Database
         public DbRecordViewRegion()
         {
             Name = "";
+			Label = "";
             Render = true;
             CssClass = "";
+			Weight = 10;
         }
 
 		[JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+
+		[JsonProperty(PropertyName = "label")]
+        public string Label { get; set; }
 
 		[JsonProperty(PropertyName = "render")]
         public bool Render { get; set; }
 
 		[JsonProperty(PropertyName = "css_class")]
         public string CssClass { get; set; }
+
+		[JsonProperty(PropertyName = "weight")]
+		public decimal? Weight { get; set; }
 
 		[JsonProperty(PropertyName = "sections")]
         public List<DbRecordViewSection> Sections { get; set; }

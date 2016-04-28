@@ -101,6 +101,39 @@
 							</div>
 						</div>
 					</div>
+					<br />
+					<table class="table table-bordered ng-hide" ng-show="ngCtrl.library.relations.length > 0">
+						<thead>
+							<tr>
+								<th class="go-bkg-white" translate="{{'RELATIONS'}}"></th>
+								<th width="90" class="go-bkg-white" translate="{{'IN_LIBRARY'}}"></th>
+								<th width="125" class="go-bkg-white" translate="{{'DIRECTION'}}"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="relation in ngCtrl.library.relations track by relation.relationId">
+								<td><div style="overflow-x:hidden;text-overflow:ellipsis;">
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 1" class="badge badge-primary badge-inverse ng-hide" title="One to One" style="margin-right:5px;font-size:10px;">1 : 1</span>
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 2" class="badge badge-primary badge-inverse ng-hide" title="One to Many" style="margin-right:5px;font-size:10px;">1 : N</span>
+									<span ng-show="::ngCtrl.getRelationType(relation.relationId) == 3" class="badge badge-primary badge-inverse ng-hide" title="Many to Many" style="margin-right:5px;font-size:10px;">N : N</span>
+									{{::relation.relationName}}
+								</div></td>
+								<td>
+									<a ng-click="ngCtrl.toggleRelationToLibrary(relation)" href="javascript:void(0)" style="color:#2196F3 !important">
+										<span class="ng-hide" ng-show="relation.addedToLibrary" translate="{{'REMOVE'}}"></span>
+										<span class="ng-hide" ng-show="!relation.addedToLibrary" translate="{{'ADD'}}"></span>
+									</a>
+								</td>
+								<td>
+									<span class="go-gray" ng-if="!relation.sameOriginTargetEntity" title="{{'RECORDS_RELATION_STATUS_TOOLTIP' | translate}}" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_NOT_TARGET'}}"></span>
+									<a ng-click="ngCtrl.changeRelationDirection(relation)" href="javascript:void(0)" style="color:#2196F3 !important" ng-if="relation.sameOriginTargetEntity">
+										<span class="ng-hide" ng-show="relation.direction == 'origin-target'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_TO_TARGET'}}"></span>
+										<span class="ng-hide" ng-show="relation.direction == 'target-origin'" translate="{{'RECORDS_RELATION_STATUS_ORIGIN_FROM_TARGET'}}"></span>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 

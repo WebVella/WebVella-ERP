@@ -67,8 +67,7 @@ form.form-signin {
 
 .page-buttons {
 	border: 1px solid #ccc;
-	margin-top: 4em;
-	padding-top: 1em;
+	margin-top: 1em;
 	background: white;
 	padding: 10px;
 }
@@ -186,6 +185,10 @@ span.divider {
 	display: block !important;
 }
 
+.display-inline-block {
+	display: inline-block  !important;
+}
+
 .navbar.desktop {
 	border-radius: 0;
 	background: #212121;
@@ -197,7 +200,13 @@ span.divider {
 	min-height: 40px;
 }
 
-	.navbar.navbar-default.navbar-erp li > a {
+.navbar.navbar-default.navbar-erp .navbar-brand{
+	height:40px;
+	color:#999;
+}
+
+	.navbar.navbar-default.navbar-erp li > a,
+	.navbar.navbar-default.navbar-erp .navbar-header > span {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
@@ -205,6 +214,11 @@ span.divider {
 	.navbar.navbar-default.navbar-erp li.active > a {
 		background-color: #ddd;
 	}
+	
+	.navbar.navbar-default.navbar-erp li > a.action:hover {
+		color:#F44336 !important;
+	}
+
 
 .text-center {
 	text-align: center;
@@ -430,6 +444,11 @@ ngToast
 		margin: 1em 0;
 	}
 
+		#sidebar .nav.only-back {
+			background: transparent;
+			border-left: none;
+		}
+
 		#sidebar .nav.nav-pills > li.header {
 			color: #9E9E9E;
 			text-transform: uppercase;
@@ -631,9 +650,9 @@ body.hidden-sidebar #page-topnav {
 	}
 
 	#userbox .avatar {
-		width: 40px;
-		height: 40px;
-		border-radius: 40px;
+		width: 30px;
+		height: 30px;
+		border-radius: 30px;
 		float: left;
 		margin-right: 10px;
 		display: block;
@@ -648,8 +667,8 @@ body.hidden-sidebar #page-topnav {
 		/*max-width: 185px;
 		display: inline-block;*/
 		display: block;
-		height: 2.5em;
-		line-height: 2.5em;
+		height: 20px;
+		line-height: 20px;
 		-ms-text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
 		text-overflow: ellipsis;
@@ -1054,6 +1073,7 @@ body.hidden-sidebar #page-topnav {
 	max-width: 200px;
 	overflow: hidden;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav #entity-label {
@@ -1068,6 +1088,7 @@ body.hidden-sidebar #page-topnav {
 	max-width: 200px;
 	overflow: hidden;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav .divider-box {
@@ -1077,6 +1098,7 @@ body.hidden-sidebar #page-topnav {
 	float: left;
 	max-width: 20px;
 	color: #999;
+	line-height: 20px;
 }
 
 #page-topnav .aux-actions {
@@ -1150,12 +1172,12 @@ body.hidden-sidebar #page-topnav {
 	background: #FAFBFD;
 	border-bottom: 1px solid #ECEFF1;
 	padding: 7px 10px 7px 30px;
-	height: 44px;
+	height: 46px;
 }
 
 #page-meta .meta-label h4 {
 	margin: 0;
-	line-height: 28px;
+	line-height: 30px;
 	font-size: 19px;
 	text-transform: capitalize;
 }
@@ -1979,6 +2001,7 @@ body.mini-sidebar #loading-bar-spinner {
 body #loading-bar-spinner {
 	top: 5px;
 	left: 15px;
+	display:none;
 }
 
 #loading-bar-spinner .spinner-icon {
@@ -2764,7 +2787,7 @@ table .btn-xs.btn-link {
 
 #sidebar .tabbable.spilled {
 	left: -26px;
-	top: 67px;
+	top: 49px;
 }
 
 	#sidebar .tabbable.spilled .back {
@@ -2899,8 +2922,7 @@ table .btn-xs.btn-link {
 
 .mini-sidebar #sidebar .tabbable.spilled {
 	left: 0;
-	top: 120px;
-	top: 105px;
+	top: 81px;
 }
 
 .mini-sidebar .tabbable.spilled ul {
@@ -3091,7 +3113,7 @@ table .btn-xs.btn-link {
 	height: 40px;
 	top: -64px;
 	right: 18px;
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.3);
 	width: 90px;
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
@@ -3102,7 +3124,7 @@ table .btn-xs.btn-link {
 #sidebar a.back {
 	line-height: 40px;
 	height: 40px;
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.3);
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
 	display: block;
@@ -3112,6 +3134,10 @@ table .btn-xs.btn-link {
 	float: right;
 }
 
+#sidebar li a.back {
+	line-height:20px;
+}
+
 .mini-sidebar #sidebar a.back {
 	width: 100%;
 	float: none;
@@ -3119,14 +3145,14 @@ table .btn-xs.btn-link {
 
 .tabbable.spilled .back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.08);
+	background: rgba(255,255,255,0.4);
 	text-decoration: none;
 	color: #eee;
 }
 
 #sidebar a.back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.08);
+	background: rgba(255,255,255,0.4);
 	text-decoration: none;
 	color: #eee;
 }

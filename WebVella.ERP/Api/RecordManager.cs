@@ -566,6 +566,9 @@ namespace WebVella.ERP.Api
 					var oldRecordResponse = Find(new EntityQuery(entity.Name, "*", filterObj, null, null, null));
 					if (!oldRecordResponse.Success)
 						throw new Exception(oldRecordResponse.Message);
+					else if(oldRecordResponse.Object.Data.Count == 0) {
+						throw new Exception("Record with such Id is not found");
+					}
 					var oldRecord = oldRecordResponse.Object.Data[0];
 
 					List<KeyValuePair<string, object>> storageRecordData = new List<KeyValuePair<string, object>>();

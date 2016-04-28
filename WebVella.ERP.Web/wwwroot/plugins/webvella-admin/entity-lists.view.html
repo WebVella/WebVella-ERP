@@ -16,7 +16,7 @@
 </div>
 <div id="page-body">
     <div class="tabbable tabs-left spilled">
-		<a ng-click="ngCtrl.showSidebar()" class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
+		<a class="back" href="#/admin/entities"><i class="fa fa-fw fa-arrow-left"></i> <span class="text" translate="{{'BACK'}}"></span></a>
 		<ul class="nav nav-tabs">
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}"><i class="fa fa-fw fa-info-circle"></i> <span class="text" translate="{{'DETAILS'}}"></span></a></li>
 			<li><a href="#/admin/entities/{{::ngCtrl.entity.name}}/fields"><i class="fa fa-fw fa-table"></i> <span class="text" translate="{{'FIELDS'}}"></span></a></li>
@@ -78,7 +78,7 @@
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createListForm.name.$invalid && !createListForm.name.$pristine || popupCtrl.nameError}">
 						<label class="required" for="name" translate="{{'NAME'}}"></label>
-						<input ng-model="popupCtrl.list.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_LIST_NAME_PLACEHOLDER'}}"
+						<input ng-model="popupCtrl.list.name" name="name" type="text" class="form-control" id="name" placeholder="{{'RECORD_LIST_NAME_PLACEHOLDER' | translate}}"
 							   required pattern="^[a-z](?!.*__)[a-z0-9_]*[a-z0-9]$" maxlength="50" ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createListForm.name.$touched && createListForm.name.$dirty && createListForm.name.$invalid || popupCtrl.nameError">
 							<small class="error" ng-show="createListForm.name.$error.required && !popupCtrl.nameError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>
@@ -93,7 +93,7 @@
 				<div class="col-sm-6">
 					<div class="form-group" ng-class="{ 'has-error' : createListForm.label.$invalid && !createListForm.label.$pristine || popupCtrl.labelError }">
 						<label class="required" for="label" translate="{{'LABEL'}}"></label>
-						<input ng-model="popupCtrl.list.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_LIST_LABEL_PLACEHOLDER'}}"
+						<input ng-model="popupCtrl.list.label" type="text" class="form-control" id="label" name="label" placeholder="{{'RECORD_LIST_LABEL_PLACEHOLDER' | translate}}"
 							   required ng-model-options="{allowInvalid:true}">
 						<div class="error" ng-show="createListForm.label.$touched && createListForm.label.$dirty && createListForm.label.$invalid || popupCtrl.labelError">
 							<small class="error" ng-show="createListForm.label.$error.required && !popupCtrl.labelError" translate="{{'VALIDATION_REQUIRED_FIELD'}}"></small>

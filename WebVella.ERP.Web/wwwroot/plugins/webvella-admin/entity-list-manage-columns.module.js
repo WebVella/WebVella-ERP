@@ -10,7 +10,6 @@
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-		.controller('DeleteListModalController', deleteListModalController)
 		.controller('ManageListItemFromRelationModalController', ManageListItemFromRelationModalController)
         .controller('WebVellaAdminEntityListManageColumnsController', controller);
 
@@ -30,7 +29,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -210,8 +209,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -294,11 +291,7 @@
 		ngCtrl.library.items = [];
 
 		ngCtrl.sortLibrary = function () {
-			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
-				if (a.fieldName < b.fieldName) return -1;
-				if (a.fieldName > b.fieldName) return 1;
-				return 0;
-			});
+			ngCtrl.library.items.sort(sort_by("type","fieldName"));
 		}
 		ngCtrl.sortOnlyFieldsLibrary = function () {
 			ngCtrl.onlyFieldsLibrary.items = ngCtrl.onlyFieldsLibrary.items.sort(function (a, b) {
@@ -619,45 +612,6 @@
 	//#endregion
 
 	//#region << Modal Controllers >>
-	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
-
-	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
-
-		var popupCtrl = this;
-		popupCtrl.parentData = parentData;
-
-		popupCtrl.ok = function () {
-
-			webvellaCoreService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
-
-		};
-
-		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-
-		/// Aux
-		function successCallback(response) {
-			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
-				ngToast.create({
-					className: 'success',
-					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
-				});
-			});
-			$uibModalInstance.close('success');
-			$timeout(function () {
-				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
-			}, 0);
-		}
-
-		function errorCallback(response) {
-			popupCtrl.hasError = true;
-			popupCtrl.errorMessage = response.message;
-
-
-		}
-	};
-
 	ManageListItemFromRelationModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state', 'selectedColumn'];
 
 	function ManageListItemFromRelationModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state, selectedColumn) {

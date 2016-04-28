@@ -10,7 +10,6 @@
 	angular
         .module('webvellaAdmin') //only gets the module, already initialized in the base.module of the plugin. The lack of dependency [] makes the difference.
         .config(config)
-		.controller('DeleteListModalController', deleteListModalController)
 		.controller('ManageListServiceCodeModalController', ManageListServiceCodeModalController)
 		.controller('AddManageListActionItemModalController', AddManageListActionItemModalController)
         .controller('WebVellaAdminEntityListManageMenuController', controller);
@@ -31,7 +30,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -208,8 +207,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
-		
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -275,46 +272,7 @@
 
 
 	//#region << Modal Controllers >>
-	deleteListModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
-	
-	function deleteListModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
-		
-		var popupCtrl = this;
-		popupCtrl.parentData = parentData;
 
-		popupCtrl.ok = function () {
-
-			webvellaCoreService.deleteEntityList(popupCtrl.parentData.list.name, popupCtrl.parentData.entity.name, successCallback, errorCallback);
-
-		};
-
-		popupCtrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-		};
-
-		/// Aux
-		function successCallback(response) {
-			$translate(['SUCCESS_MESSAGE_LABEL']).then(function (translations) {
-				ngToast.create({
-					className: 'success',
-					content: translations.SUCCESS_MESSAGE_LABEL + " " + response.message
-				});
-			});
-			$uibModalInstance.close('success');
-			$timeout(function () {
-				$state.go("webvella-admin-entity-lists", { entityName: popupCtrl.parentData.entity.name }, { reload: true });
-			}, 0);
-		}
-
-		function errorCallback(response) {
-			popupCtrl.hasError = true;
-			popupCtrl.errorMessage = response.message;
-
-
-		}
-
-	};
-	
 	ManageListServiceCodeModalController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 	
 	function ManageListServiceCodeModalController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {

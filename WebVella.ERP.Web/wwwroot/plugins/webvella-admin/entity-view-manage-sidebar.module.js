@@ -28,7 +28,7 @@
 				},
 				"sidebarView": {
 					controller: 'WebVellaAdminSidebarController',
-					templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+					templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -186,7 +186,6 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
 		//#endregion
 
@@ -223,11 +222,7 @@
 		ngCtrl.library.items = [];
 
 		ngCtrl.sortLibrary = function () {
-			ngCtrl.library.items = ngCtrl.library.items.sort(function (a, b) {
-				if (a.dataName < b.dataName) return -1;
-				if (a.dataName > b.dataName) return 1;
-				return 0;
-			});
+			ngCtrl.library.items.sort(sort_by("type","fieldName"));
 		}
 
 		ngCtrl.checkIfRelationAddedToLibrary = function (relationName) {
@@ -261,9 +256,9 @@
 								ngCtrl.library.items.push(item);
 							}
 							break;
-							//case "list":
-							//	ngCtrl.library.items.push(item);
-							//	break;
+							case "list":
+								ngCtrl.library.items.push(item);
+								break;
 						case "relationOptions":
 							if (generateRelationOptions) {
 								item.addedToLibrary = false;
@@ -276,16 +271,16 @@
 								ngCtrl.library.relations.push(item);
 							}
 							break;
-							//case "viewFromRelation":
-							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-							//		ngCtrl.library.items.push(item);
-							//	}
-							//	break;
-							//case "listFromRelation":
-							//	if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
-							//		ngCtrl.library.items.push(item);
-							//	}
-							//	break;
+							case "viewFromRelation":
+								if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+									ngCtrl.library.items.push(item);
+								}
+								break;
+							case "listFromRelation":
+								if(ngCtrl.checkIfRelationAddedToLibrary(item.relationName)){
+									ngCtrl.library.items.push(item);
+								}
+								break;
 					}
 				}
 			});
@@ -369,7 +364,7 @@
 						});
 					});
 					for (var i = 0; i < response.object.regions.length; i++) {
-						if (response.object.regions[i].name === "content") {
+						if (response.object.regions[i].name === "default") {
 							ngCtrl.viewContentRegion = response.object.regions[i];
 						}
 					}

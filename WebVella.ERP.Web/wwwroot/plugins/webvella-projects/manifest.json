@@ -1,0 +1,25 @@
+{
+	"name": "webvella-projects",
+	"url": "http://webvella.com",
+	"description": "WebVella ERP plugin for the projects web application",
+	"version": 20160427,
+	"company": "WebVella",
+	"company_url": "http://webvella.com",
+	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
+	"repository": "",
+	"license": "Apache License 2.0",
+	"load_priority": 15,
+	"libraries": {
+		"css": [
+		],
+		"js": [
+		]
+	},
+	"module": {
+		"css": [
+		],
+		"js": [
+		],
+		"wvApp_injects": []
+	}
+}

@@ -89,7 +89,14 @@
 
 		//#region << Translation >>
 		$translateProvider.preferredLanguage(GlobalLanguage);
-		$translateProvider.translations(GlobalLanguage, translationsEN);
+		switch(GlobalLanguage){
+			case "en":
+				$translateProvider.translations(GlobalLanguage, translationsEN);
+				break;
+			case "es":
+				$translateProvider.translations(GlobalLanguage, translationsES);
+				break;
+		}
 		$translateProvider.useSanitizeValueStrategy(null);
 		//#endregion
 	}
@@ -115,14 +122,6 @@
 		if (!appData.$storage.isMiniSidebar) {
 			appData.$storage.isMiniSidebar = false;
 		}
-
-		//Side menu visibility
-		appData.sideMenuIsVisible = true;
-		$rootScope.$on("application-body-sidebar-menu-isVisible-update", function (event, isVisible) {
-			$timeout(function () {
-				appData.sideMenuIsVisible = isVisible;
-			}, 10);
-		});
 
 		//Redirect State (usefull when you need to redirect from resolve)
 		$rootScope.$on("state-change-needed", function (event, redirectObject) {

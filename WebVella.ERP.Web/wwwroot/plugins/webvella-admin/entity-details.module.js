@@ -29,7 +29,7 @@
                 },
                 "sidebarView": {
                     controller: 'WebVellaAdminSidebarController',
-                    templateUrl: '/plugins/webvella-admin/sidebar.view.html',
+                    templateUrl: '/plugins/webvella-admin/sidebar-avatar-only.view.html',
                     controllerAs: 'sidebarData'
                 },
                 "contentView": {
@@ -102,7 +102,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsByListName("null","role", "null",null, successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }
@@ -125,7 +125,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
 
         return defer.promise;
     }
@@ -146,17 +146,7 @@
 			$rootScope.$emit("application-pageTitle-update", ngCtrl.pageTitle);
 			$rootScope.adminSectionName = translations.ENTITIES;
 		});
-		//Hide Sidemenu
-		$rootScope.$emit("application-body-sidebar-menu-isVisible-update", false);
 		$rootScope.adminSubSectionName = ngCtrl.entity.label;
-
-		ngCtrl.showSidebar = function(){
-		        //Show Sidemenu
-				$timeout(function(){
-					$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-				},0);
-		}
-
         //Create new entity modal
         ngCtrl.openDeleteEntityModal = function () {
         	var modalInstance = $uibModal.open({
@@ -268,10 +258,10 @@
 
 
     //// Modal Controllers
-    deleteEntityController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
+    deleteEntityController.$inject = ['parentData', '$uibModalInstance', '$log', 'webvellaCoreService', 'ngToast', '$timeout', '$state','$translate'];
 
     
-    function deleteEntityController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state) {
+    function deleteEntityController(parentData, $uibModalInstance, $log, webvellaCoreService, ngToast, $timeout, $state,$translate) {
         
         var popupCtrl = this;
         popupCtrl.entity = parentData.entity;

@@ -13,18 +13,28 @@
 
 
     // Controller ///////////////////////////////
-    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentView', 'resolvedCurrentEntityMeta', 
-						'resolvedAreas', 'resolvedCurrentUser', 'pluginAuxPageName','$sessionStorage','$timeout'];
+    controller.$inject = ['$log', '$rootScope', '$state', '$stateParams', 'resolvedCurrentParentView','resolvedCurrentView', 'resolvedCurrentEntityMeta', 
+						'resolvedAreas', 'resolvedCurrentUser', '$sessionStorage','$timeout'];
 
     
-    function controller($log, $rootScope, $state, $stateParams, resolvedCurrentView, resolvedCurrentEntityMeta, 
-						resolvedAreas, resolvedCurrentUser, pluginAuxPageName,$sessionStorage,$timeout) {
-        
+    function controller($log, $rootScope, $state, $stateParams,resolvedCurrentParentView, resolvedCurrentView, resolvedCurrentEntityMeta, 
+						resolvedAreas, resolvedCurrentUser, $sessionStorage,$timeout) {
         var sidebarData = this;
-        sidebarData.view = resolvedCurrentView.meta;
-        sidebarData.stateParams = $stateParams;
-        sidebarData.entity = resolvedCurrentEntityMeta;
-        sidebarData.currentUser = angular.copy(resolvedCurrentUser);
+		if(resolvedCurrentView == null){
+			sidebarData.view = null; //list in view page		
+		}
+		else {
+			sidebarData.view = fastCopy(resolvedCurrentView.meta);
+		}
+		if(resolvedCurrentParentView == null){
+		   sidebarData.parentView = null;
+		}
+		else{
+			sidebarData.parentView = fastCopy(resolvedCurrentParentView.meta);
+		}
+        sidebarData.stateParams = fastCopy($stateParams);
+        sidebarData.entity = fastCopy(resolvedCurrentEntityMeta);
+        sidebarData.currentUser = fastCopy(resolvedCurrentUser);
 		sidebarData.$sessionStorage	= $sessionStorage;
 
     	//#region << Select default list >>
@@ -44,41 +54,142 @@
 
     	//Generate menu items list
         sidebarData.items = [];
-        var generalItem = {
-        	name: "*",
-        	label: "Details",
-        	iconName: "info-circle"
-        };
-        sidebarData.items.push(generalItem);
+		sidebarData.sidebarTopActions = [];
+		if(resolvedCurrentParentView == null){
+			var generalItem = {
+				is_parent: true,
+				parentViewName: null,
+        		name: sidebarData.view.name,
+        		label: sidebarData.view.label,
+        		iconName: sidebarData.view.iconName,
+				type:"view"
+			};
+			sidebarData.items.push(generalItem);
 
-        for (var i = 0; i < sidebarData.view.sidebar.items.length; i++) {
-        	var item = {};
-        	item.name = sidebarData.view.sidebar.items[i].dataName;
-        	item.label = sidebarData.view.sidebar.items[i].meta.label;
-        	if (sidebarData.view.sidebar.items[i].type === "view" || sidebarData.view.sidebar.items[i].type === "viewFromRelation") {
-        		item.iconName = "file-text-o";
-        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
-        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+			sidebarData.view.sidebar.items.forEach(function(sidebarItem){
+        		var item = {};
+        		item.name = sidebarItem.dataName;
+        		item.label = sidebarItem.fieldLabel;
+				item.is_parent = false;
+				item.type = sidebarItem.type;
+				item.parentViewName = sidebarData.view.name;
+        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if(sidebarItem.type === "view"){
+						 item.label = sidebarItem.meta.label;
+					}
+        			item.iconName = "file-text-o";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName =sidebarItem.meta.iconName;
+        			}
         		}
-        	}
-        	else if (sidebarData.view.sidebar.items[i].type === "list" || sidebarData.view.sidebar.items[i].type === "listFromRelation") {
-        		item.iconName = "list";
-        		if (sidebarData.view.sidebar.items[i].meta.iconName) {
-        			item.iconName = sidebarData.view.sidebar.items[i].meta.iconName;
+        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+					if(sidebarItem.type === "list"){
+						 item.label = sidebarItem.meta.label;
+					}        			
+					item.iconName = "list";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName = sidebarItem.meta.iconName;
+        			}
         		}
-        	}
-        	sidebarData.items.push(item);
-        }
+        		sidebarData.items.push(item);
+
+			});
+
+			sidebarData.view.actionItems.forEach(function (actionItem) {
+				switch (actionItem.menu) {
+					case "sidebar-top":
+						sidebarData.sidebarTopActions.push(actionItem);
+						break;
+				}
+			});
+
+		}
+		else {
+			var generalItem = {
+				is_parent: true,
+        		name: sidebarData.parentView.name,
+				parentViewName: null,
+        		label: sidebarData.parentView.label,
+        		iconName: sidebarData.parentView.iconName,
+				type:"view"
+			};
+			sidebarData.items.push(generalItem);
+
+			sidebarData.parentView.sidebar.items.forEach(function(sidebarItem){
+        		var item = {};
+        		item.name = sidebarItem.dataName;
+        		item.label = sidebarItem.fieldLabel;
+				item.is_parent = false;
+				item.type = sidebarItem.type;
+				item.parentViewName = sidebarData.parentView.name;
+        		if (sidebarItem.type === "view" || sidebarItem.type === "viewFromRelation") {
+					if(sidebarItem.type === "view"){
+						 item.label = sidebarItem.meta.label;
+					}
+        			item.iconName = "file-text-o";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName =sidebarItem.meta.iconName;
+        			}
+        		}
+        		else if (sidebarItem.type === "list" || sidebarItem.type === "listFromRelation") {
+					if(sidebarItem.type === "list"){
+						 item.label = sidebarItem.meta.label;
+					}
+        			item.iconName = "list";
+        			if (sidebarItem.meta.iconName) {
+        				item.iconName = sidebarItem.meta.iconName;
+        			}
+        		}
+        		sidebarData.items.push(item);
+
+			});		
+			
+			sidebarData.parentView.actionItems.forEach(function (actionItem) {
+				switch (actionItem.menu) {
+					case "sidebar-top":
+						sidebarData.sidebarTopActions.push(actionItem);
+						break;
+				}
+			});		
+
+		}
 
         sidebarData.isItemActive = function (item) {
-        	if (!$stateParams.auxPageName) {
-        		if (item.name == pluginAuxPageName) {
-        		return true;
-        		}
-        	}
-        	if (item.name == $stateParams.auxPageName) {
-        		return true;
-        	}
+			if(item.type == "view"){
+				if(item.is_parent && sidebarData.view != null &&  item.name == $stateParams.viewName ){ //the main details
+					return true;
+				} 
+				else if(item.name == $stateParams.viewName)	{
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			if(item.type == "viewFromRelation"){
+				if(item.name == $stateParams.viewName){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
+			if(item.type == "list"){
+				if(item.name == $stateParams.listName){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
+			if(item.type == "listFromRelation"){
+				if(item.name == $stateParams.listName){
+					return true;
+				} 
+				else {
+					return false;
+				}
+			}
         	return false;
         }
 
@@ -94,7 +205,7 @@
 			
 			if(useSessionBackUrl){
 				$timeout(function () {
-                    $state.go('webvella-entity-records',sidebarData.$sessionStorage["last-list-params"]);
+                    $state.go('webvella-area-list-general',sidebarData.$sessionStorage["last-list-params"]);
                 }, 0);
 			}
 			else {
@@ -105,7 +216,7 @@
 				defaultParams.page = 1;
 
 			   	$timeout(function () {
-                    $state.go('webvella-entity-records',defaultParams);
+                    $state.go('webvella-area-list-general',defaultParams);
                 }, 0);
 			}
 			//href="#/areas/{{::sidebarData.stateParams.areaName}}/{{::sidebarData.stateParams.entityName}}/{{::sidebarData.defaultEntityAreaListName}}/1"

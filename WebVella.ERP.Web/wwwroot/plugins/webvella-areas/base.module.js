@@ -15,7 +15,7 @@
 	//#region << Configuration >>
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
-		$stateProvider.state('webvella-areas-base', {
+		$stateProvider.state('webvella-area-base', {
 			abstract: true,
 			url: '/areas/:areaName/:entityName',
 			views: {
@@ -29,6 +29,7 @@
 				pageTitle: function () {
 					return "Webvella ERP";
 				},
+				resolvedEntityList: resolveEntityList,
 				resolvedAreas: resolveAreas,
 				resolvedCurrentUser: resolveCurrentUser,
 				resolvedCurrentUserEntityPermissions: resolveCurrentUserEntityPermissions,
@@ -50,7 +51,20 @@
 		function errorCallback(response) {
 			defer.reject(response.message);
 		}
-		webvellaCoreService.getRecordsByListName("null","area", "null", null, successCallback, errorCallback);
+		webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
+		return defer.promise;
+	}
+
+	resolveEntityList.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
+	function resolveEntityList($q, $log, webvellaCoreService, $state, $stateParams) {
+		var defer = $q.defer();
+		function successCallback(response) {
+			defer.resolve(response.object.entities);
+		}
+		function errorCallback(response) {
+			defer.reject(response.message);
+		}
+		webvellaCoreService.getEntityMetaList(successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -67,16 +81,15 @@
 		return defer.promise;
 	}
 
-	resolveCurrentEntityMeta.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams'];
-	function resolveCurrentEntityMeta($q, $log, webvellaCoreService, $state, $stateParams) {
+	resolveCurrentEntityMeta.$inject = ['$q', '$log', '$state', '$stateParams','resolvedEntityList'];
+	function resolveCurrentEntityMeta($q, $log, $state, $stateParams,resolvedEntityList) {
 		var defer = $q.defer();
-		function successCallback(response) {
-			defer.resolve(response.object);
+		for (var i = 0; i < resolvedEntityList.length; i++) {
+			if(resolvedEntityList[i].name == $stateParams.entityName){
+				defer.resolve(resolvedEntityList[i]);	
+				break;
+			}
 		}
-		function errorCallback(response) {
-			defer.reject(response.message);
-		}
-		webvellaCoreService.getEntityMeta($stateParams.entityName, successCallback, errorCallback);
 		return defer.promise;
 	}
 
@@ -148,10 +161,6 @@
 	controller.$inject = ['$log', '$rootScope','$timeout'];
 	function controller($log, $rootScope, $timeout) {
 		var baseCtrl = this;
-		//Show Sidemenu	always
-		$timeout(function () {
-			$rootScope.$emit("application-body-sidebar-menu-isVisible-update", true);
-		}, 0);
 	}
 	//#endregion
 

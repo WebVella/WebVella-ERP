@@ -16,9 +16,9 @@
 	//#region << Configuration >> ///////////////////////////////////
 	config.$inject = ['$stateProvider'];
 	function config($stateProvider) {
-		$stateProvider.state('webvella-areas-record-create', {
-			parent: 'webvella-areas-base',
-			url: '/:viewName?listName&filter&page',
+		$stateProvider.state('webvella-area-view-create', {
+			parent: 'webvella-area-base',
+			url: '/view-create/:viewName?returnUrl',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -26,19 +26,48 @@
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
-					controller: 'WebVellaAreasSidebarController',
-					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+					controller: 'WebVellaAreasRecordCreateSidebarController',
+					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
 					controller: 'WebVellaAreasRecordCreateController',
-					templateUrl: '/plugins/webvella-areas/record-create.view.html',
+					templateUrl: '/plugins/webvella-areas/area-view-create.view.html',
 					controllerAs: 'ngCtrl'
 				}
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,			
+				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView: resolveCurrentView
+			},
+			data: {
+
+			}
+		}).state('webvella-area-view-create-with-relation', {
+			parent: 'webvella-area-base',
+			url: '/view-create/:viewName/relation/:relationName/:targetRecordId?returnUrl',
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasDetachedItemSidebarController',
+					templateUrl: '/plugins/webvella-areas/detached-item-sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreasRecordCreateController',
+					templateUrl: '/plugins/webvella-areas/area-view-create.view.html',
+					controllerAs: 'ngCtrl'
+				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView: resolveCurrentView
 			},
 			data: {
 
@@ -82,6 +111,34 @@
 		}
 	}
 
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
+
+	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
+
+		// Initialize
+		var defer = $q.defer();
+
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canCreate");
+		if (!userHasUpdateEntityPermission) {
+			alert("you do not have permissions to create records from this entity!");
+			defer.reject("you do not have permissions to create records from this entity");
+		}
+
+		var view = {};
+		view.data = null;
+		view.meta = null;
+
+		for (var i = 0; i < resolvedCurrentEntityMeta.recordViews.length; i++) {
+		   if(resolvedCurrentEntityMeta.recordViews[i].name == $stateParams.viewName){
+			view.meta = resolvedCurrentEntityMeta.recordViews[i];
+		   }
+		}
+
+		defer.resolve(view);
+
+		return defer.promise;
+	}
+
 	//#endregion
 
 	//#region << Controller  >> ///////////////////////////////
@@ -122,7 +179,7 @@
 			if (ngCtrl.entity.recordViews[i].name === $stateParams.viewName) {
 				ngCtrl.view.meta = ngCtrl.entity.recordViews[i];
 				for (var j = 0; j < ngCtrl.entity.recordViews[i].regions.length; j++) {
-					if (ngCtrl.entity.recordViews[i].regions[j].name === "content") {
+					if (ngCtrl.entity.recordViews[i].regions[j].name === "default") {
 						ngCtrl.createViewRegion = ngCtrl.entity.recordViews[i].regions[j];
 					}
 				}
@@ -325,14 +382,11 @@
 		// << Html >>
 		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
-			language: 'en',
-			'skin': 'moono',
+			language: GlobalLanguage,
+			skin: 'moono',
 			height: '160',
-			'extraPlugins': "sourcedialog",//"imagebrowser",//"imagebrowser,mediaembed",
-			//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
-			//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
-			//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
-			//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+			contentsCss: '/plugins/webvella-core/css/editor.css',
+			extraPlugins: "sourcedialog",
 			allowedContent: true,
 			toolbarLocation: 'top',
 			toolbar: 'full',
@@ -469,13 +523,21 @@
 				}
 				ngCtrl.view.data["created_on"] = moment().utc().toISOString();
 				//popupCtrl.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-				switch (redirectTarget) {
-					case "details":
-						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
-						break;
-					case "list":
-						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
-						break;
+
+				if($stateParams.returnUrl){
+					var returnUrl = decodeURI($stateParams.returnUrl);
+					$location.search("returnUrl",null);
+					$location.path(returnUrl);
+				}				
+				else{				
+					switch (redirectTarget) {
+						case "details":
+							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
+							break;
+						case "list":
+							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
+							break;
+					}
 				}
 			}
 			else {
@@ -491,15 +553,22 @@
 		};
 
 		ngCtrl.cancel = function () {
-			$timeout(function () {
-				$state.go("webvella-entity-records", {
-					areaName: $stateParams.areaName,
-					entityName: $stateParams.entityName,
-					listName: $stateParams.listName,
-					page: $stateParams.page
+			if($stateParams.returnUrl){
+				var returnUrl = decodeURI($stateParams.returnUrl);
+				$location.search("returnUrl",null);
+				$location.path(returnUrl);
+			}
+			else {
+				$timeout(function () {
+					$state.go("webvella-area-list-general", {
+						areaName: $stateParams.areaName,
+						entityName: $stateParams.entityName,
+						listName: $stateParams.listName,
+						page: $stateParams.page
 
-				}, { reload: true });
-			}, 0);
+					}, { reload: true });
+				}, 0);
+			}
 		};
 
 		/// Aux
@@ -530,7 +599,7 @@
 				content: '<span class="go-green">Success:</span> ' + response.message
 			});
 			$timeout(function () {
-				$state.go("webvella-entity-records", {
+				$state.go("webvella-area-list-general", {
 					areaName: $stateParams.areaName,
 					entityName: $stateParams.entityName,
 					listName: $stateParams.listName,
@@ -675,7 +744,7 @@
 					else {
 						var recordIdCSV = returnObject.selectedRecordIdArray.join(',');
 						var fieldCSV = fieldsArray.join(',');
-						webvellaCoreService.getRecordsWithLimitations(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
+						webvellaCoreService.getRecordsWithoutList(recordIdCSV, fieldCSV, item.entityName, modalCase1SuccessCallback, modalCase1ErrorCallback);
 					}
 				});
 			}
@@ -834,10 +903,7 @@
 		var dummyFieldName = selectedItem.dataName.slice(index, selectedItem.dataName.length);
 		var idFieldPrefix = selectedItem.dataName.slice(0, index);
 		popupCtrl.currentlyAttachedIds = [];
-		if (popupCtrl.parentData.entityData[idFieldPrefix + "id"] && popupCtrl.parentData.entityData[idFieldPrefix + "id"].length > 0) {
-			popupCtrl.currentlyAttachedIds = popupCtrl.parentData.entityData[idFieldPrefix + "id"];
-		}
-		popupCtrl.getRelationLabel = ngCtrl.getRelationLabel;
+		popupCtrl.getRelationLabel = popupCtrl.parentData.getRelationLabel;
 
 
 		//Get the default lookup list for the entity

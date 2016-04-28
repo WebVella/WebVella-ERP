@@ -112,7 +112,7 @@
 
 		$scope.selectedRegion = null;
 		for (var i = 0; i < $scope.viewMeta.meta.regions.length; i++) {
-			if ($scope.viewMeta.meta.regions[i].name === "content") {
+			if ($scope.viewMeta.meta.regions[i].name === "default") {
 				$scope.selectedRegion = $scope.viewMeta.meta.regions[i];
 			}
 		}
@@ -513,7 +513,7 @@
 		popupCtrl.viewMeta = fastCopy(resolvedManagedRecordQuickCreateView.meta);
 		popupCtrl.contentRegion = {};
 		for (var j = 0; j < popupCtrl.viewMeta.regions.length; j++) {
-			if (popupCtrl.viewMeta.regions[j].name === "content") {
+			if (popupCtrl.viewMeta.regions[j].name === "default") {
 				popupCtrl.contentRegion = popupCtrl.viewMeta.regions[j];
 			}
 		}
@@ -703,14 +703,11 @@
 		//#region << Html >>
 		//Should use scope as it is not working with ngCtrl
 		$scope.editorOptions = {
-			language: 'en',
-			'skin': 'moono',
+			language: GlobalLanguage,
+			skin: 'moono',
 			height: '160',
-			'extraPlugins': "sourcedialog",//"imagebrowser",//"imagebrowser,mediaembed",
-			//imageBrowser_listUrl: '/api/v1/ckeditor/gallery',
-			//filebrowserBrowseUrl: '/api/v1/ckeditor/files',
-			//filebrowserImageUploadUrl: '/api/v1/ckeditor/images',
-			//filebrowserUploadUrl: '/api/v1/ckeditor/files',
+			contentsCss: '/plugins/webvella-core/css/editor.css',
+			extraPlugins: "sourcedialog",
 			allowedContent: true,
 			toolbarLocation: 'top',
 			toolbar: 'full',
