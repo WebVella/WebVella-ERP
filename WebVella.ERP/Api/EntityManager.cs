@@ -1706,7 +1706,7 @@ namespace WebVella.ERP.Api
 			{
 				response.Object = entity;
 
-				response.Errors = ValidateEntity(entity, true);
+				response.Errors = ValidateEntity(entity, false);
 
 				if (response.Errors.Count > 0)
 				{
