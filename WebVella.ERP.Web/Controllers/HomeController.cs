@@ -29,7 +29,6 @@ namespace WebVella.ERP.Web.Controllers
 
 			#region << Get and init plugin data >>
 			var pluginManifests = pluginService.Plugins;
-			pluginManifests.Sort((plugin1,plugin2) => plugin1.LoadPriority.CompareTo(plugin2.LoadPriority));
 			foreach(var manifest in pluginManifests) {
 				foreach(var cssFile in manifest.Libraries.Css) {
 					libraryCssFileList.Add(cssFile);
