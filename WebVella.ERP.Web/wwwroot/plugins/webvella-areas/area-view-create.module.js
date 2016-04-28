@@ -18,7 +18,7 @@
 	function config($stateProvider) {
 		$stateProvider.state('webvella-area-view-create', {
 			parent: 'webvella-area-base',
-			url: '/view-create/:viewName?listName&filter&page',
+			url: '/view-create/:viewName?returnUrl',
 			views: {
 				"topnavView": {
 					controller: 'WebVellaAreasTopnavController',
@@ -26,8 +26,8 @@
 					controllerAs: 'topnavData'
 				},
 				"sidebarView": {
-					controller: 'WebVellaAreasSidebarController',
-					templateUrl: '/plugins/webvella-areas/sidebar.view.html',
+					controller: 'WebVellaAreasRecordCreateSidebarController',
+					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
 					controllerAs: 'sidebarData'
 				},
 				"contentView": {
@@ -38,7 +38,36 @@
 			},
 			resolve: {
 				loadDependency: loadDependency,
-				loadPreloadScript: loadPreloadScript,			
+				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView: resolveCurrentView
+			},
+			data: {
+
+			}
+		}).state('webvella-area-view-create-with-relation', {
+			parent: 'webvella-area-base',
+			url: '/view-create/:viewName/:relationName/:targetRecordId?returnUrl',
+			views: {
+				"topnavView": {
+					controller: 'WebVellaAreasTopnavController',
+					templateUrl: '/plugins/webvella-areas/topnav.view.html',
+					controllerAs: 'topnavData'
+				},
+				"sidebarView": {
+					controller: 'WebVellaAreasRecordCreateSidebarController',
+					templateUrl: '/plugins/webvella-areas/create-record-sidebar.view.html',
+					controllerAs: 'sidebarData'
+				},
+				"contentView": {
+					controller: 'WebVellaAreasRecordCreateController',
+					templateUrl: '/plugins/webvella-areas/area-view-create.view.html',
+					controllerAs: 'ngCtrl'
+				}
+			},
+			resolve: {
+				loadDependency: loadDependency,
+				loadPreloadScript: loadPreloadScript,
+				resolvedCurrentView: resolveCurrentView
 			},
 			data: {
 
@@ -80,6 +109,34 @@
 		else {
 			webvellaViewActionService.preload(defer,$state);
 		}
+	}
+
+	resolveCurrentView.$inject = ['$q', '$log', 'webvellaCoreService', '$stateParams', '$state', '$timeout', 'resolvedCurrentEntityMeta'];
+
+	function resolveCurrentView($q, $log, webvellaCoreService, $stateParams, $state, $timeout, resolvedCurrentEntityMeta) {
+
+		// Initialize
+		var defer = $q.defer();
+
+		var userHasUpdateEntityPermission = webvellaCoreService.userHasRecordPermissions(resolvedCurrentEntityMeta, "canCreate");
+		if (!userHasUpdateEntityPermission) {
+			alert("you do not have permissions to create records from this entity!");
+			defer.reject("you do not have permissions to create records from this entity");
+		}
+
+		var view = {};
+		view.data = null;
+		view.meta = null;
+
+		for (var i = 0; i < resolvedCurrentEntityMeta.recordViews.length; i++) {
+		   if(resolvedCurrentEntityMeta.recordViews[i].name == $stateParams.viewName){
+			view.meta = resolvedCurrentEntityMeta.recordViews[i];
+		   }
+		}
+
+		defer.resolve(view);
+
+		return defer.promise;
 	}
 
 	//#endregion
@@ -466,13 +523,21 @@
 				}
 				ngCtrl.view.data["created_on"] = moment().utc().toISOString();
 				//popupCtrl.entityData["created_by"] = ""; //TODO: put the current user id after the users are implemented
-				switch (redirectTarget) {
-					case "details":
-						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
-						break;
-					case "list":
-						webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
-						break;
+
+				if($stateParams.returnUrl){
+					var returnUrl = decodeURI($stateParams.returnUrl);
+					$location.search("returnUrl",null);
+					$location.path(returnUrl);
+				}				
+				else{				
+					switch (redirectTarget) {
+						case "details":
+							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallback, errorCallback);
+							break;
+						case "list":
+							webvellaCoreService.createRecord(ngCtrl.entity.name, ngCtrl.view.data, successCallbackList, errorCallback);
+							break;
+					}
 				}
 			}
 			else {
@@ -488,15 +553,22 @@
 		};
 
 		ngCtrl.cancel = function () {
-			$timeout(function () {
-				$state.go("webvella-area-list-general", {
-					areaName: $stateParams.areaName,
-					entityName: $stateParams.entityName,
-					listName: $stateParams.listName,
-					page: $stateParams.page
+			if($stateParams.returnUrl){
+				var returnUrl = decodeURI($stateParams.returnUrl);
+				$location.search("returnUrl",null);
+				$location.path(returnUrl);
+			}
+			else {
+				$timeout(function () {
+					$state.go("webvella-area-list-general", {
+						areaName: $stateParams.areaName,
+						entityName: $stateParams.entityName,
+						listName: $stateParams.listName,
+						page: $stateParams.page
 
-				}, { reload: true });
-			}, 0);
+					}, { reload: true });
+				}, 0);
+			}
 		};
 
 		/// Aux

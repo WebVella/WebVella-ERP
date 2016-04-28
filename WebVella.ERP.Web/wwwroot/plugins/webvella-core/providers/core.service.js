@@ -11,12 +11,12 @@
         .module('webvellaCore')
         .service('webvellaCoreService', service);
 
-	service.$inject = ['$cookies', '$q', '$http', '$log', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
-				'$timeout', 'Upload', '$translate','$filter'];
+	service.$inject = ['$cookies', '$q', '$http', '$log','$location', 'wvAppConstants', '$rootScope', '$anchorScroll', 'ngToast',
+				'$timeout', 'Upload', '$translate', '$filter'];
 
 
-	function service($cookies, $q, $http, $log, wvAppConstants, $rootScope, $anchorScroll, ngToast,
-				$timeout, Upload, $translate,$filter) {
+	function service($cookies, $q, $http, $log,$location, wvAppConstants, $rootScope, $anchorScroll, ngToast,
+				$timeout, Upload, $translate, $filter) {
 		var serviceInstance = this;
 
 		//#region << Include functions >> ///////////////////////////////////////////////////////////////////////////////////
@@ -1038,10 +1038,10 @@
 				"regions": [
                     {
                     	"name": "default",
-						"label": "Default",
+                    	"label": "Default",
                     	"render": true,
                     	"cssClass": "",
-						"weight": 1,
+                    	"weight": 1,
                     	"sections": []
                     }
 				],
@@ -1088,13 +1088,13 @@
 		////////////////////////
 		function initViewRegion() {
 			var region = {
-                    	"name": "",
-						"label": "",
-                    	"render": true,
-                    	"cssClass": "",
-						"weight": 10,
-                    	"sections": []
-                    }
+				"name": "",
+				"label": "",
+				"render": true,
+				"cssClass": "",
+				"weight": 10,
+				"sections": []
+			}
 			return region;
 		}
 		////////////////////////
@@ -1115,7 +1115,7 @@
 		///////////////////////
 		function initViewRow(columnCount) {
 			var row = {
-			    "id": newGuid(),
+				"id": newGuid(),
 				"weight": 1,
 				"columns": []
 			}
@@ -1606,28 +1606,28 @@
 			$http({ method: 'DELETE', url: wvAppConstants.apiBaseUrl + 'meta/entity/' + entityName + '/list/' + listName }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		/////////////////////
-		function extractSupportedFilterFields(recordList){
-			if(recordList.meta.query == null || recordList.meta.query.length == 0){
+		function extractSupportedFilterFields(recordList) {
+			if (recordList.meta.query == null || recordList.meta.query.length == 0) {
 				return [];
 			}
-			var supportedFields = extractFieldsFromQuery(recordList.meta.query,[]);
+			var supportedFields = extractFieldsFromQuery(recordList.meta.query, []);
 			return supportedFields;
 		}
-		function extractFieldsFromQuery(query,result){
-			if(query.fieldValue != null && query.fieldValue.trim().startsWith("{")){
+		function extractFieldsFromQuery(query, result) {
+			if (query.fieldValue != null && query.fieldValue.trim().startsWith("{")) {
 				var queryObject = angular.fromJson(query.fieldValue);
-				if(queryObject.name	== "url_query" &&  queryObject.option){
+				if (queryObject.name == "url_query" && queryObject.option) {
 					//option should equal fieldName in order to preset field to work
-					if(queryObject.option == query.fieldName){
+					if (queryObject.option == query.fieldName) {
 						result.push(query.fieldName);
 					}
 				}
 			}
 			if (query.subQueries.length > 0) {
-			    for (var i = 0; i < query.subQueries.length; i++) {
-					extractFieldsFromQuery(query.subQueries[i],result);
-			    }
-			} 
+				for (var i = 0; i < query.subQueries.length; i++) {
+					extractFieldsFromQuery(query.subQueries[i], result);
+				}
+			}
 
 			return result;
 		}
@@ -1942,7 +1942,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsByListName("null", "area", "null",null, rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsByListName("null", "area", "null", null, rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {
@@ -2319,11 +2319,44 @@
 			var currentAreaName = fastCopy(ngCtrl.stateParams.areaName);
 			var currentEntityName = fastCopy(ngCtrl.stateParams.entityName);
 			var currentListName = fastCopy(ngCtrl.stateParams.listName);
+			var currentRelationName = null; // when the list is listFromRelation
+			var targetEntityName = null;
 			var currentPage = fastCopy(ngCtrl.stateParams.page);
 			var currentArea = null;
 			var targetCreateName = null;
 			var targetCreateExists = false;
 			//#endregion		
+
+			//#region << Check if listFromRelation, get the relationName if so >>
+			//Example listFromRelation name: "$list$project_1_n_ticket$general"
+			if (currentListName.indexOf('$') > -1 && currentListName.startsWith("$list")) {
+				var dataNameArray = fastCopy(currentListName).split('$');
+				if (dataNameArray.length == 4) {
+					//this is a proper listFromRelation format
+					currentRelationName = dataNameArray[2];
+					currentListName = dataNameArray[3];
+					var relationExists = false;
+					for (var j = 0; j < ngCtrl.entityRelations.length; j++) {
+						if(ngCtrl.entityRelations[j].name == currentRelationName){
+							 relationExists = true;
+							 var currentRelation = ngCtrl.entityRelations[j];
+							 if(currentRelation.originEntityName == currentEntityName){
+								 targetEntityName =  currentRelation.targetEntityName;
+							 }
+							 else if(currentRelation.targetEntityName == currentEntityName){
+								 targetEntityName =  currentRelation.originEntityName;
+							 }
+						}
+					}
+					//if the relation name is not found in the existing one, null it.
+					if(!relationExists || targetEntityName == null){
+						console.log("the relation name in the listFromRelation is not found or the current entity is not participating in this relation");
+						currentRelationName = null;
+					}
+				}
+			}
+
+			//#endregion
 
 			//#region << Get the selected create view in the area >>
 			for (var i = 0; i < siteAreas.length; i++) {
@@ -2333,19 +2366,21 @@
 				}
 			}
 			if (currentArea == null) {
-				console.log("Error: No area with such name found");
-				return null;
+				//The list is presented in an URL attachment - the target create name is the first default create for the entity
+				//To select that we just leave the process below to do that
 			}
-			currentArea.attachments = angular.fromJson(currentArea.attachments);
-			for (var i = 0; i < currentArea.attachments.length; i++) {
-				if (currentArea.attachments[i].name == currentEntityName) {
-					targetCreateName = currentArea.attachments[i].create.name;
-					break;
+			else {
+				currentArea.attachments = angular.fromJson(currentArea.attachments);
+				for (var i = 0; i < currentArea.attachments.length; i++) {
+					if (currentArea.attachments[i].name == currentEntityName) {
+						targetCreateName = currentArea.attachments[i].create.name;
+						break;
+					}
 				}
-			}
-			if (targetCreateName == null) {
-				console.log("Error: The current entity is either not attached to the area or the view name is missing");
-				return null;
+				if (targetCreateName == null) {
+					//The list is presented in an URL attachment - the target create name is the first default create for the entity
+					//To select that we just leave the process below to do that
+				}
 			}
 			//#endregion
 
@@ -2360,7 +2395,15 @@
 
 			//#region << Calculate what the view name should be and return >>
 			if (targetCreateExists) {
-				return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+				//Case 1: - list is not from relation
+				if (currentRelationName == null) {
+					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?returnUrl=" + encodeURI($location.path());
+				}
+					//Case 2: - this is a list with relation
+				else {
+					 return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+				}
+
 			}
 				//The target name does not exist. Fallback to default
 			else {
@@ -2368,28 +2411,43 @@
 				//If not sort and get the first default and general
 				currentEntity.recordViews.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
 				for (var i = 0; i < currentEntity.recordViews.length; i++) {
-					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "general") {
+					if (currentEntity.recordViews[i].default && currentEntity.recordViews[i].type == "create") {
 						targetCreateName = currentEntity.recordViews[i].name;
 						break;
 					}
 				}
 				if (targetCreateName != null) {
 					//there is a default and general view fallback option available
-					return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+					//Case 1: - list is not from relation
+					if (currentRelationName == null) {
+						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?returnUrl=" + encodeURI($location.path());
+					}
+					//Case 2: - this is a list with relation
+					else {
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+					}
+
 				}
 				else {
 					//If there is default general take the first general
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
-						if (currentEntity.recordViews[i].type == "general") {
+						if (currentEntity.recordViews[i].type == "create") {
 							targetCreateName = currentEntity.recordViews[i].name;
 							break;
 						}
 					}
 					if (targetCreateName != null) {
-						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/" + targetCreateName + "?listName=" + currentListName + "&page=" + currentPage;
+						//Case 1: - list is not from relation
+						if (currentRelationName == null) {
+							return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-create/" + targetCreateName + "?returnUrl=" + encodeURI($location.path());
+						}
+							//Case 2: - this is a list with relation
+						else {
+						   return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-create/" + targetCreateName + "/" +  currentRelationName + "/" + ngCtrl.stateParams.recordId +"?returnUrl=" + encodeURI($location.path());
+						}
 					}
 					else {
-						console.log("Error: Cannot find suitable details view for this entity records");
+						console.log("Error: Cannot find suitable create view for this entity records");
 						return null;
 					}
 				}
@@ -2625,9 +2683,9 @@
 				defer.resolve("validation error");
 			}
 
-			if(!item.entityName){
+			if (!item.entityName) {
 				alert("item.entityName is missing, fixed this");
-				return defer.reject("error");				
+				return defer.reject("error");
 			}
 			else {
 				patchRecord(recordId, item.entityName, patchObject, patchSuccessCallback, patchFailedCallback);
@@ -2677,150 +2735,150 @@
 
 		function getFieldTypes(successCallback) {
 			$translate(['FIELD_TYPE_AUTONUMBER_LABEL', 'FIELD_TYPE_AUTONUMBER_DESCRIPTION',
-						'FIELD_TYPE_CHECKBOX_LABEL','FIELD_TYPE_CHECKBOX_DESCRIPTION',
-						'FIELD_TYPE_CURRENCY_LABEL','FIELD_TYPE_CURRENCY_DESCRIPTION',
-						'FIELD_TYPE_DATE_LABEL','FIELD_TYPE_DATE_DESCRIPTION',
-						'FIELD_TYPE_DATETIME_LABEL','FIELD_TYPE_DATETIME_DESCRIPTION',
-						'FIELD_TYPE_EMAIL_LABEL','FIELD_TYPE_EMAIL_DESCRIPTION',
-						'FIELD_TYPE_FILE_LABEL','FIELD_TYPE_FILE_DESCRIPTION',
-						'FIELD_TYPE_HTML_LABEL','FIELD_TYPE_HTML_DESCRIPTION',
-						'FIELD_TYPE_IMAGE_LABEL','FIELD_TYPE_IMAGE_DESCRIPTION',
-						'FIELD_TYPE_TEXTAREA_LABEL','FIELD_TYPE_TEXTAREA_DESCRIPTION',
-						'FIELD_TYPE_MULTISELECT_LABEL','FIELD_TYPE_MULTISELECT_DESCRIPTION',
-						'FIELD_TYPE_NUMBER_LABEL','FIELD_TYPE_NUMBER_DESCRIPTION',
-						'FIELD_TYPE_PASSWORD_LABEL','FIELD_TYPE_PASSWORD_DESCRIPTION',
-						'FIELD_TYPE_PERCENT_LABEL','FIELD_TYPE_PERCENT_DESCRIPTION',
-						'FIELD_TYPE_PHONE_LABEL','FIELD_TYPE_PHONE_DESCRIPTION',
-						'FIELD_TYPE_GUID_LABEL','FIELD_TYPE_GUID_DESCRIPTION',
-						'FIELD_TYPE_DROPDOWN_LABEL','FIELD_TYPE_DROPDOWN_DESCRIPTION',
-						'FIELD_TYPE_TEXT_LABEL','FIELD_TYPE_TEXT_DESCRIPTION',
-						'FIELD_TYPE_URL_LABEL','FIELD_TYPE_URL_DESCRIPTION',
-						'FIELD_TYPE_TREESELECT_LABEL','FIELD_TYPE_TREESELECT_DESCRIPTION']).then(function (translations) {
-				var types = [
-					{
-						"id": 1,
-						"name": "AutoNumberField",
-						"label": translations.FIELD_TYPE_AUTONUMBER_LABEL,
-						"description": translations.FIELD_TYPE_AUTONUMBER_DESCRIPTION
-					},
-					{
-						"id": 2,
-						"name": "CheckboxField",
-						"label": translations.FIELD_TYPE_CHECKBOX_LABEL,
-						"description": translations.FIELD_TYPE_CHECKBOX_DESCRIPTION
-					},
-					{
-						"id": 3,
-						"name": "CurrencyField",
-						"label": translations.FIELD_TYPE_CURRENCY_LABEL,
-						"description": translations.FIELD_TYPE_CURRENCY_DESCRIPTION
-					},
-					{
-						"id": 4,
-						"name": "DateField",
-						"label": translations.FIELD_TYPE_DATE_LABEL,
-						"description": translations.FIELD_TYPE_DATE_DESCRIPTION
-					},
-					{
-						"id": 5,
-						"name": "DateTimeField",
-						"label": translations.FIELD_TYPE_DATETIME_LABEL,
-						"description": translations.FIELD_TYPE_DATETIME_DESCRIPTION
-					},
-					{
-						"id": 6,
-						"name": "EmailField",
-						"label": translations.FIELD_TYPE_EMAIL_LABEL,
-						"description": translations.FIELD_TYPE_EMAIL_DESCRIPTION
-					},
-					{
-						"id": 7,
-						"name": "FileField",
-						"label": translations.FIELD_TYPE_FILE_LABEL,
-						"description": translations.FIELD_TYPE_FILE_DESCRIPTION
-					},
-					{
-						"id": 8,
-						"name": "HtmlField",
-						"label": translations.FIELD_TYPE_HTML_LABEL,
-						"description": translations.FIELD_TYPE_HTML_DESCRIPTION
-					},
-					{
-						"id": 9,
-						"name": "ImageField",
-						"label": translations.FIELD_TYPE_IMAGE_LABEL,
-						"description": translations.FIELD_TYPE_IMAGE_DESCRIPTION
-					},
-					{
-						"id": 10,
-						"name": "MultiLineTextField",
-						"label": translations.FIELD_TYPE_TEXTAREA_LABEL,
-						"description": translations.FIELD_TYPE_TEXTAREA_DESCRIPTION
-					},
-					{
-						"id": 11,
-						"name": "MultiSelectField",
-						"label": translations.FIELD_TYPE_MULTISELECT_LABEL,
-						"description": translations.FIELD_TYPE_MULTISELECT_DESCRIPTION
-					},
-					{
-						"id": 12,
-						"name": "NumberField",
-						"label": translations.FIELD_TYPE_NUMBER_LABEL,
-						"description": translations.FIELD_TYPE_NUMBER_DESCRIPTION
-					},
-					{
-						"id": 13,
-						"name": "PasswordField",
-						"label": translations.FIELD_TYPE_PASSWORD_LABEL,
-						"description": translations.FIELD_TYPE_PASSWORD_DESCRIPTION
-					},
-					{
-						"id": 14,
-						"name": "PercentField",
-						"label": translations.FIELD_TYPE_PERCENT_LABEL,
-						"description": translations.FIELD_TYPE_PERCENT_DESCRIPTION
-					},
-					{
-						"id": 15,
-						"name": "PhoneField",
-						"label": translations.FIELD_TYPE_PHONE_LABEL,
-						"description": translations.FIELD_TYPE_PHONE_DESCRIPTION
-					},
-					{
-						"id": 16,
-						"name": "GuidField",
-						"label": translations.FIELD_TYPE_GUID_LABEL,
-						"description": translations.FIELD_TYPE_GUID_DESCRIPTION
-					},
-					{
-						"id": 17,
-						"name": "SelectField",
-						"label": translations.FIELD_TYPE_DROPDOWN_LABEL,
-						"description": translations.FIELD_TYPE_DROPDOWN_DESCRIPTION
-					},
-					{
-						"id": 18,
-						"name": "TextField",
-						"label": translations.FIELD_TYPE_TEXT_LABEL,
-						"description": translations.FIELD_TYPE_TEXT_DESCRIPTION
-					},
-					{
-						"id": 19,
-						"name": "UrlField",
-						"label": translations.FIELD_TYPE_URL_LABEL,
-						"description": translations.FIELD_TYPE_URL_DESCRIPTION
-					},
-					//20 is missing because it is relation field 
-					{
-						"id": 21,
-						"name": "TreeSelect",
-						"label": translations.FIELD_TYPE_TREESELECT_LABEL,
-						"description": translations.FIELD_TYPE_TREESELECT_DESCRIPTION
-					}
-				];
-				successCallback(types);
-			});
+						'FIELD_TYPE_CHECKBOX_LABEL', 'FIELD_TYPE_CHECKBOX_DESCRIPTION',
+						'FIELD_TYPE_CURRENCY_LABEL', 'FIELD_TYPE_CURRENCY_DESCRIPTION',
+						'FIELD_TYPE_DATE_LABEL', 'FIELD_TYPE_DATE_DESCRIPTION',
+						'FIELD_TYPE_DATETIME_LABEL', 'FIELD_TYPE_DATETIME_DESCRIPTION',
+						'FIELD_TYPE_EMAIL_LABEL', 'FIELD_TYPE_EMAIL_DESCRIPTION',
+						'FIELD_TYPE_FILE_LABEL', 'FIELD_TYPE_FILE_DESCRIPTION',
+						'FIELD_TYPE_HTML_LABEL', 'FIELD_TYPE_HTML_DESCRIPTION',
+						'FIELD_TYPE_IMAGE_LABEL', 'FIELD_TYPE_IMAGE_DESCRIPTION',
+						'FIELD_TYPE_TEXTAREA_LABEL', 'FIELD_TYPE_TEXTAREA_DESCRIPTION',
+						'FIELD_TYPE_MULTISELECT_LABEL', 'FIELD_TYPE_MULTISELECT_DESCRIPTION',
+						'FIELD_TYPE_NUMBER_LABEL', 'FIELD_TYPE_NUMBER_DESCRIPTION',
+						'FIELD_TYPE_PASSWORD_LABEL', 'FIELD_TYPE_PASSWORD_DESCRIPTION',
+						'FIELD_TYPE_PERCENT_LABEL', 'FIELD_TYPE_PERCENT_DESCRIPTION',
+						'FIELD_TYPE_PHONE_LABEL', 'FIELD_TYPE_PHONE_DESCRIPTION',
+						'FIELD_TYPE_GUID_LABEL', 'FIELD_TYPE_GUID_DESCRIPTION',
+						'FIELD_TYPE_DROPDOWN_LABEL', 'FIELD_TYPE_DROPDOWN_DESCRIPTION',
+						'FIELD_TYPE_TEXT_LABEL', 'FIELD_TYPE_TEXT_DESCRIPTION',
+						'FIELD_TYPE_URL_LABEL', 'FIELD_TYPE_URL_DESCRIPTION',
+						'FIELD_TYPE_TREESELECT_LABEL', 'FIELD_TYPE_TREESELECT_DESCRIPTION']).then(function (translations) {
+							var types = [
+								{
+									"id": 1,
+									"name": "AutoNumberField",
+									"label": translations.FIELD_TYPE_AUTONUMBER_LABEL,
+									"description": translations.FIELD_TYPE_AUTONUMBER_DESCRIPTION
+								},
+								{
+									"id": 2,
+									"name": "CheckboxField",
+									"label": translations.FIELD_TYPE_CHECKBOX_LABEL,
+									"description": translations.FIELD_TYPE_CHECKBOX_DESCRIPTION
+								},
+								{
+									"id": 3,
+									"name": "CurrencyField",
+									"label": translations.FIELD_TYPE_CURRENCY_LABEL,
+									"description": translations.FIELD_TYPE_CURRENCY_DESCRIPTION
+								},
+								{
+									"id": 4,
+									"name": "DateField",
+									"label": translations.FIELD_TYPE_DATE_LABEL,
+									"description": translations.FIELD_TYPE_DATE_DESCRIPTION
+								},
+								{
+									"id": 5,
+									"name": "DateTimeField",
+									"label": translations.FIELD_TYPE_DATETIME_LABEL,
+									"description": translations.FIELD_TYPE_DATETIME_DESCRIPTION
+								},
+								{
+									"id": 6,
+									"name": "EmailField",
+									"label": translations.FIELD_TYPE_EMAIL_LABEL,
+									"description": translations.FIELD_TYPE_EMAIL_DESCRIPTION
+								},
+								{
+									"id": 7,
+									"name": "FileField",
+									"label": translations.FIELD_TYPE_FILE_LABEL,
+									"description": translations.FIELD_TYPE_FILE_DESCRIPTION
+								},
+								{
+									"id": 8,
+									"name": "HtmlField",
+									"label": translations.FIELD_TYPE_HTML_LABEL,
+									"description": translations.FIELD_TYPE_HTML_DESCRIPTION
+								},
+								{
+									"id": 9,
+									"name": "ImageField",
+									"label": translations.FIELD_TYPE_IMAGE_LABEL,
+									"description": translations.FIELD_TYPE_IMAGE_DESCRIPTION
+								},
+								{
+									"id": 10,
+									"name": "MultiLineTextField",
+									"label": translations.FIELD_TYPE_TEXTAREA_LABEL,
+									"description": translations.FIELD_TYPE_TEXTAREA_DESCRIPTION
+								},
+								{
+									"id": 11,
+									"name": "MultiSelectField",
+									"label": translations.FIELD_TYPE_MULTISELECT_LABEL,
+									"description": translations.FIELD_TYPE_MULTISELECT_DESCRIPTION
+								},
+								{
+									"id": 12,
+									"name": "NumberField",
+									"label": translations.FIELD_TYPE_NUMBER_LABEL,
+									"description": translations.FIELD_TYPE_NUMBER_DESCRIPTION
+								},
+								{
+									"id": 13,
+									"name": "PasswordField",
+									"label": translations.FIELD_TYPE_PASSWORD_LABEL,
+									"description": translations.FIELD_TYPE_PASSWORD_DESCRIPTION
+								},
+								{
+									"id": 14,
+									"name": "PercentField",
+									"label": translations.FIELD_TYPE_PERCENT_LABEL,
+									"description": translations.FIELD_TYPE_PERCENT_DESCRIPTION
+								},
+								{
+									"id": 15,
+									"name": "PhoneField",
+									"label": translations.FIELD_TYPE_PHONE_LABEL,
+									"description": translations.FIELD_TYPE_PHONE_DESCRIPTION
+								},
+								{
+									"id": 16,
+									"name": "GuidField",
+									"label": translations.FIELD_TYPE_GUID_LABEL,
+									"description": translations.FIELD_TYPE_GUID_DESCRIPTION
+								},
+								{
+									"id": 17,
+									"name": "SelectField",
+									"label": translations.FIELD_TYPE_DROPDOWN_LABEL,
+									"description": translations.FIELD_TYPE_DROPDOWN_DESCRIPTION
+								},
+								{
+									"id": 18,
+									"name": "TextField",
+									"label": translations.FIELD_TYPE_TEXT_LABEL,
+									"description": translations.FIELD_TYPE_TEXT_DESCRIPTION
+								},
+								{
+									"id": 19,
+									"name": "UrlField",
+									"label": translations.FIELD_TYPE_URL_LABEL,
+									"description": translations.FIELD_TYPE_URL_DESCRIPTION
+								},
+								//20 is missing because it is relation field 
+								{
+									"id": 21,
+									"name": "TreeSelect",
+									"label": translations.FIELD_TYPE_TREESELECT_LABEL,
+									"description": translations.FIELD_TYPE_TREESELECT_DESCRIPTION
+								}
+							];
+							successCallback(types);
+						});
 		}
 
 		function currencyMetas() {

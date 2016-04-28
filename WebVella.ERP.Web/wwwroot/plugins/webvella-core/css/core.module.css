@@ -444,6 +444,11 @@ ngToast
 		margin: 1em 0;
 	}
 
+		#sidebar .nav.only-back {
+			background: transparent;
+			border-left: none;
+		}
+
 		#sidebar .nav.nav-pills > li.header {
 			color: #9E9E9E;
 			text-transform: uppercase;
@@ -3108,7 +3113,7 @@ table .btn-xs.btn-link {
 	height: 40px;
 	top: -64px;
 	right: 18px;
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.3);
 	width: 90px;
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
@@ -3119,7 +3124,7 @@ table .btn-xs.btn-link {
 #sidebar a.back {
 	line-height: 40px;
 	height: 40px;
-	background: rgba(255,255,255,0.05);
+	background: rgba(255,255,255,0.3);
 	border-radius: 5px 0 0 5px;
 	color: #ccc;
 	display: block;
@@ -3140,14 +3145,14 @@ table .btn-xs.btn-link {
 
 .tabbable.spilled .back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.08);
+	background: rgba(255,255,255,0.4);
 	text-decoration: none;
 	color: #eee;
 }
 
 #sidebar a.back:hover {
 	background: #ffffff;
-	background: rgba(255,255,255,0.08);
+	background: rgba(255,255,255,0.4);
 	text-decoration: none;
 	color: #eee;
 }
