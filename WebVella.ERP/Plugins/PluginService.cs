@@ -83,6 +83,7 @@ namespace WebVella.ERP.Plugins
 					}
 				}
 			}
+			plugins = plugins.OrderBy(x => x.LoadPriority).ToList();
 		}
 
 		private IEnumerable<Assembly> GetAssembliesInFolder(DirectoryInfo binPath)

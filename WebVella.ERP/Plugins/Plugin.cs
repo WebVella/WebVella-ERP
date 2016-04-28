@@ -69,5 +69,10 @@ namespace WebVella.ERP.Plugins
 
 		[JsonIgnore]
 		internal List<Assembly> Assemblies { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }
