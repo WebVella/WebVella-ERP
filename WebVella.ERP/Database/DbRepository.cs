@@ -23,7 +23,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"CREATE TABLE {name} ();";
+				string sql = $"CREATE TABLE \"{name}\" ();";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -35,7 +35,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {name} RENAME TO {newName};";
+				string sql = $"ALTER TABLE \"{name}\" RENAME TO \"{newName}\";";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -48,7 +48,7 @@ namespace WebVella.ERP.Database
 			using (var connection = DbContext.Current.CreateConnection())
 			{
 				string cascadeCommand = cascade ? " CASCADE" : "";
-				string sql = $"DROP TABLE IF EXISTS {name}{cascadeCommand};";
+				string sql = $"DROP TABLE IF EXISTS \"{name}\"{cascadeCommand};";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -71,7 +71,7 @@ namespace WebVella.ERP.Database
 				NpgsqlCommand command = connection.CreateCommand("");
 
 				string canBeNull = isNullable && !isPrimaryKey ? "NULL" : "NOT NULL";
-				string sql = $"ALTER TABLE {tableName} ADD COLUMN {name} {pgType} {canBeNull}";
+				string sql = $"ALTER TABLE \"{tableName}\" ADD COLUMN \"{name}\" {pgType} {canBeNull}";
 
 				if (defaultValue != null && !(defaultValue is Guid && (Guid)defaultValue == Guid.Empty))
 				{
@@ -108,7 +108,7 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				NpgsqlCommand command = connection.CreateCommand($"ALTER TABLE {tableName} ADD COLUMN {name} {pgType};");
+				NpgsqlCommand command = connection.CreateCommand($"ALTER TABLE \"{tableName}\" ADD COLUMN \"{name}\" {pgType};");
 				command.ExecuteNonQuery();
 			}
 		}
@@ -117,7 +117,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} RENAME COLUMN {name} TO {newName};";
+				string sql = $"ALTER TABLE \"{tableName}\" RENAME COLUMN \"{name}\" TO \"{newName}\";";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -129,7 +129,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} DROP COLUMN IF EXISTS {name};";
+				string sql = $"ALTER TABLE \"{tableName}\" DROP COLUMN IF EXISTS \"{name}\";";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -145,13 +145,13 @@ namespace WebVella.ERP.Database
 			string keyNames = "";
 			foreach (var col in columns)
 			{
-				keyNames += col + ", ";
+				keyNames += $"\"{col}\", ";
 			}
 			keyNames = keyNames.Remove(keyNames.Length - 2, 2);
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} ADD PRIMARY KEY ({keyNames});";
+				string sql = $"ALTER TABLE \"{tableName}\" ADD PRIMARY KEY ({keyNames});";
 
 				NpgsqlCommand command = connection.CreateCommand(sql);
 
@@ -167,17 +167,17 @@ namespace WebVella.ERP.Database
 			string colNames = "";
 			foreach (var col in columns)
 			{
-				colNames += col + ", ";
+				colNames += $"\"{col}\", ";
 			}
 			colNames = colNames.Remove(colNames.Length - 2, 2);
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {constraintName};";
+				string sql = $"ALTER TABLE \"{tableName}\" DROP CONSTRAINT IF EXISTS \"{constraintName}\";";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 
-				sql = $"ALTER TABLE {tableName} ADD CONSTRAINT {constraintName} UNIQUE ({colNames});";
+				sql = $"ALTER TABLE \"{tableName}\" ADD CONSTRAINT \"{constraintName}\" UNIQUE ({colNames});";
 				command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -187,7 +187,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {constraintName}";
+				string sql = $"ALTER TABLE \"{tableName}\" DROP CONSTRAINT IF EXISTS \"{constraintName}\"";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -200,7 +200,7 @@ namespace WebVella.ERP.Database
 				string operation = "SET";
 				if (nullable)
 					operation = "DROP";
-				string sql = $"ALTER TABLE {tableName} ALTER COLUMN {columnName} {operation} NOT NULL";
+				string sql = $"ALTER TABLE \"{tableName}\" ALTER COLUMN \"{columnName}\" {operation} NOT NULL";
 				var command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -216,7 +216,7 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {targetTableName} ADD CONSTRAINT {relName} FOREIGN KEY ({targetFieldName}) REFERENCES {originTableName} ({originFieldName});";
+				string sql = $"ALTER TABLE \"{targetTableName}\" ADD CONSTRAINT \"{relName}\" FOREIGN KEY (\"{targetFieldName}\") REFERENCES \"{originTableName}\" (\"{originFieldName}\");";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -256,7 +256,7 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"ALTER TABLE {tableName} DROP CONSTRAINT IF EXISTS {relName};";
+				string sql = $"ALTER TABLE \"{tableName}\" DROP CONSTRAINT IF EXISTS \"{relName}\";";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -280,9 +280,9 @@ namespace WebVella.ERP.Database
 
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"CREATE INDEX IF NOT EXISTS {indexName} ON {tableName} ({columnName}";
+				string sql = $"CREATE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
 				if ( unique )
-					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS {indexName} ON {tableName} ({columnName}";
+					sql = $"CREATE UNIQUE INDEX IF NOT EXISTS \"{indexName}\" ON \"{tableName}\" (\"{columnName}\"";
 
 				if( !ascending )
 					sql = sql + " DESC";
@@ -298,7 +298,7 @@ namespace WebVella.ERP.Database
 		{
 			using (var connection = DbContext.Current.CreateConnection())
 			{
-				string sql = $"DROP INDEX IF EXISTS {indexName}";
+				string sql = $"DROP INDEX IF EXISTS \"{indexName}\"";
 				NpgsqlCommand command = connection.CreateCommand(sql);
 				command.ExecuteNonQuery();
 			}
@@ -321,14 +321,14 @@ namespace WebVella.ERP.Database
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 
-					columns += $"{param.Name}, ";
+					columns += $"\"{param.Name}\", ";
 					values += $"@{param.Name}, ";
 				}
 
 				columns = columns.Remove(columns.Length - 2, 2);
 				values = values.Remove(values.Length - 2, 2);
 
-				command.CommandText = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
+				command.CommandText = $"INSERT INTO \"{tableName}\" ({columns}) VALUES ({values})";
 
 				return command.ExecuteNonQuery() > 0;
 			}
@@ -350,12 +350,12 @@ namespace WebVella.ERP.Database
 					parameter.NpgsqlDbType = param.Type;
 					command.Parameters.Add(parameter);
 
-					values += $"{param.Name}=@{param.Name}, ";
+					values += $"\"{param.Name}\"=@{param.Name}, ";
 				}
 
 				values = values.Remove(values.Length - 2, 2);
 
-				command.CommandText = $"UPDATE {tableName} SET {values} WHERE id=@id";
+				command.CommandText = $"UPDATE \"{tableName}\" SET {values} WHERE id=@id";
 
 				return command.ExecuteNonQuery() > 0;
 			}
@@ -373,7 +373,7 @@ namespace WebVella.ERP.Database
 				parameter.NpgsqlDbType = NpgsqlDbType.Uuid;
 				command.Parameters.Add(parameter);
 
-				command.CommandText = $"DELETE FROM {tableName} WHERE id=@id";
+				command.CommandText = $"DELETE FROM \"{tableName}\" WHERE id=@id";
 
 				return command.ExecuteNonQuery() > 0;
 			}
