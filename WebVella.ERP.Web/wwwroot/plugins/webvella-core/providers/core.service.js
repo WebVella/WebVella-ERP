@@ -2670,7 +2670,7 @@
 				}
 					//Case 2: - this is a list with relation
 				else {
-					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+					return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
 				}
 			}
 				//The target name does not exist. Fallback to default
@@ -2702,7 +2702,7 @@
 						return "#/areas/" + currentAreaName + "/" + currentEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id;
 					}
 					else {
-						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+						return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
 					}
 				}
 				else {
@@ -2730,7 +2730,7 @@
 						}
 							//Case 2: - this is a list with relation
 						else {
-							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/" + targetViewName + "/" + currentRecord.id + "/default/relation/" + currentRelationName + "/" + ngCtrl.stateParams.recordId + "?returnUrl=" + encodeURI($location.path());
+							return "#/areas/" + currentAreaName + "/" + targetEntityName + "/view-general/sb/" + targetViewName + "/" + currentRecord.id + "?returnUrl=" + encodeURI($location.path());
 						}
 					}
 					else {

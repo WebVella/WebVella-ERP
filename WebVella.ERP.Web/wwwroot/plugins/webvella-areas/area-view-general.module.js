@@ -23,7 +23,7 @@
 		//general view in an area with view sidebar
 		.state('webvella-areas-view-general', {
 			parent: 'webvella-area-base',
-			url: '/view-general/sb/:viewName/:recordId/:regionName',
+			url: '/view-general/sb/:viewName/:recordId/:regionName?returnUrl',
 			params: {
 				regionName: { value: "default", squash: true }
 			},
@@ -106,35 +106,6 @@
 			resolve: {
 				loadDependency: loadDependency,
 				resolvedCurrentParentView: resolveCurrentParentView,
-				resolvedCurrentView: resolveCurrentView
-			}
-		})
-		.state('webvella-areas-view-general-with-relation', {
-			parent: 'webvella-area-base',
-			url: '/view-general/:viewName/:recordId/:regionName/relation/:relationName/:targetRecordId?returnUrl',
-			params: {
-				regionName: { value: "default", squash: true }
-			},
-			views: {
-				"topnavView": {
-					controller: 'WebVellaAreasTopnavController',
-					templateUrl: '/plugins/webvella-areas/topnav.view.html',
-					controllerAs: 'topnavData'
-				},
-				"sidebarView": {
-					controller: 'WebVellaAreasDetachedItemSidebarController',
-					templateUrl: '/plugins/webvella-areas/detached-item-sidebar.view.html',
-					controllerAs: 'sidebarData'
-				},
-				"contentView": {
-					controller: 'WebVellaAreaViewGeneralController',
-					templateUrl: '/plugins/webvella-areas/area-view-general.view.html',
-					controllerAs: 'ngCtrl'
-				}
-			},
-			resolve: {
-				loadDependency: loadDependency,
-				resolvedCurrentParentView:  function () { return null; },
 				resolvedCurrentView: resolveCurrentView
 			}
 		});
