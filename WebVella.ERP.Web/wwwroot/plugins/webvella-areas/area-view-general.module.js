@@ -25,7 +25,7 @@
 			parent: 'webvella-area-base',
 			url: '/view-general/sb/:viewName/:recordId/:regionName?returnUrl',
 			params: {
-				regionName: { value: "default", squash: true }
+				regionName: { value: "header", squash: true }
 			},
 			views: {
 				"topnavView": {
@@ -55,7 +55,7 @@
 			parent: 'webvella-area-base',
 			url: '/view-general/nsb/:viewName/:recordId/:regionName',
 			params: {
-				regionName: { value: "default", squash: true }
+				regionName: { value: "header", squash: true }
 			},
 			views: {
 				"topnavView": {
@@ -84,7 +84,7 @@
 			parent: 'webvella-area-base',
 			url: '/view-general/sb/:parentViewName/:recordId/view-general/:viewName/:regionName',
 			params: {
-				regionName: { value: "default", squash: true }
+				regionName: { value: "header", squash: true }
 			},
 			views: {
 				"topnavView": {
@@ -646,6 +646,26 @@
 		//#endregion
 
 		//#region << Render >>
+		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
+		ngCtrl.view.meta.regions.sort(sort_by({name:'weight', primer: parseInt, reverse: false}));
+		if(ngCtrl.activeTabName == "header"){
+			//Set the first tab as active
+			if(ngCtrl.view.meta.regions[0].name != "header"){
+				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
+			}
+			else {
+				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
+			}
+
+		}
+		ngCtrl.renderTabBar = false;
+		ngCtrl.view.meta.regions.forEach(function(region){
+			if(region.render && region.name != "header"){
+				ngCtrl.renderTabBar = true;		
+			}		
+		});
+
+
 		ngCtrl.renderFieldValue = webvellaCoreService.renderFieldValue;
 		ngCtrl.getRelationLabel = function (item) {
 			if (item.fieldLabel) {

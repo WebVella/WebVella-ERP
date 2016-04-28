@@ -13,6 +13,7 @@ var translationsEN = {
 	ADD: 'Add',
 	ADD_ACTION: 'Add action',
 	ADD_NEW: 'Add New',
+	ADD_NEW_TAB: 'Add New Tab',
 	ADD_OPTION: 'Add Option',
 	ADMINISTRATION_ABBR: 'Admin',
 	ADMINISTRATION: 'Administration',

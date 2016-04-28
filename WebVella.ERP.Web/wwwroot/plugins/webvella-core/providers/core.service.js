@@ -1068,8 +1068,8 @@
 				"iconName": "file-text-o",
 				"regions": [
                     {
-                    	"name": "default",
-                    	"label": "Default",
+                    	"name": "header",
+                    	"label": "Header",
                     	"render": true,
                     	"cssClass": "",
                     	"weight": 1,
@@ -2624,13 +2624,13 @@
 				//If it is not listFromRelation 
 				if (currentRelationName == null) {
 					if (currentArea.attachments[i].name == currentEntityName) {
-						targetViewName = currentArea.attachments[i].create.name;
+						targetViewName = currentArea.attachments[i].view.name;
 						break;
 					}
 				}
 				else {
 					if (currentArea.attachments[i].name == targetEntityName) {
-						targetViewName = currentArea.attachments[i].create.name;
+						targetViewName = currentArea.attachments[i].view.name;
 						break;
 					}
 				}
@@ -2646,7 +2646,7 @@
 				if (currentRelationName == null) {
 					for (var i = 0; i < currentEntity.recordViews.length; i++) {
 						if (currentEntity.recordViews[i].name === targetViewName) {
-							targetCreateExists = true;
+							targetViewExists = true;
 							break;
 						}
 					}
@@ -2654,7 +2654,7 @@
 				else {
 					for (var i = 0; i < targetEntity.recordViews.length; i++) {
 						if (targetEntity.recordViews[i].name === targetViewName) {
-							targetCreateExists = true;
+							targetViewExists = true;
 							break;
 						}
 					}

@@ -6023,10 +6023,10 @@ namespace WebVella.ERP.Api
 		{
 			List<RecordView> recordViewList = new List<RecordView>();
 
-			var contentRegion = new RecordViewRegion();
-			contentRegion.Name = "default";
-			contentRegion.Label = "Default";
-			contentRegion.Sections = new List<RecordViewSection>();
+			var headerRegion = new RecordViewRegion();
+			headerRegion.Name = "header";
+			headerRegion.Label = "Header";
+			headerRegion.Sections = new List<RecordViewSection>();
 
 			var create = new RecordView();
 			create.Id = Guid.NewGuid();
@@ -6038,7 +6038,7 @@ namespace WebVella.ERP.Api
 			create.Weight = 10;
 			create.IconName = "file-text-o";
 			create.Regions = new List<RecordViewRegion>();
-			create.Regions.Add(contentRegion);
+			create.Regions.Add(headerRegion);
 			create.ServiceCode = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6057,7 +6057,7 @@ namespace WebVella.ERP.Api
 			quickCreate.IconName = "file-text-o";
 			quickCreate.Weight = 10;
 			quickCreate.Regions = new List<RecordViewRegion>();
-			quickCreate.Regions.Add(contentRegion);
+			quickCreate.Regions.Add(headerRegion);
 			quickCreate.ServiceCode = null;
 			quickCreate.ActionItems = new List<ActionItem>();
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6076,7 +6076,7 @@ namespace WebVella.ERP.Api
 			quickView.IconName = "file-text-o";
 			quickView.Weight = 10;
 			quickView.Regions = new List<RecordViewRegion>();
-			quickView.Regions.Add(contentRegion);
+			quickView.Regions.Add(headerRegion);
 			quickView.ServiceCode = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
@@ -6093,7 +6093,7 @@ namespace WebVella.ERP.Api
 			general.Weight = 10;
 			general.IconName = "file-text-o";
 			general.Regions = new List<RecordViewRegion>();
-			general.Regions.Add(contentRegion);
+			general.Regions.Add(headerRegion);
 			general.ServiceCode = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));

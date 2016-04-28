@@ -24,7 +24,7 @@
 			parent: 'webvella-admin-base',
 			url: '/entities/:entityName/views/:viewName/form/:regionName',
 			params: {
-				regionName: { value: "default", squash: true }
+				regionName: { value: "header", squash: true }
 			},
 			views: {
 				"topnavView": {
@@ -965,7 +965,7 @@
 
 		popupCtrl.delete = function () {
 			popupCtrl.view = fastCopy(parentData.view);
-			if (popupCtrl.isUpdate && popupCtrl.region.name != "default") {
+			if (popupCtrl.isUpdate && popupCtrl.region.name != "header") {
 				var deletedRegionIndex = -1;
 				for (var i = 0; i < popupCtrl.view.regions.length; i++) {
 					if (popupCtrl.view.regions[i].name === popupCtrl.region.name) {
