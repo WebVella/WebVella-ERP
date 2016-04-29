@@ -8,13 +8,15 @@
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 12,
 	"libraries": {
-		"css": [],
-		"js": []
+		"css": [ ],
+		"js": [ ]
 	},
 	"module": {
-		"css": [],
+		"css": [ ],
 		"js": [
 			"/plugins/webvella-desktop/base.module.js",
 			"/plugins/webvella-desktop/browse.module.js",

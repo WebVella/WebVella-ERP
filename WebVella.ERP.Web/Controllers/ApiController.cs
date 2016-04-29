@@ -48,17 +48,6 @@ namespace WebVella.ERP.Web.Controllers
 
 
 		[AllowAnonymous]
-		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/show-plugins")]
-		public IActionResult ShowPlugins()
-		{
-			var responseObj = new ResponseModel();
-			responseObj.Object = new PluginService().Plugins;
-			responseObj.Success = true;
-			responseObj.Timestamp = DateTime.UtcNow;
-			return DoResponse(responseObj);
-		}
-
-		[AllowAnonymous]
 		[AcceptVerbs(new[] { "POST" }, Route = "api/v1/en_US/user/login")]
 		public IActionResult Login([FromBody]JObject submitObj)
 		{
@@ -3657,6 +3646,18 @@ namespace WebVella.ERP.Web.Controllers
 			}
 		}
 
+		#endregion
+
+		#region << Plugins >>
+		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/plugin/list")]
+		public IActionResult GetPlugins()
+		{
+			var responseObj = new ResponseModel();
+			responseObj.Object = new PluginService().Plugins;
+			responseObj.Success = true;
+			responseObj.Timestamp = DateTime.UtcNow;
+			return DoResponse(responseObj);
+		}
 		#endregion
 
 	}

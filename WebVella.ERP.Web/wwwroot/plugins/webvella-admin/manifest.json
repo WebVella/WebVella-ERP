@@ -8,13 +8,15 @@
 	"author": "Iglika Raykova,Bozhidar Zashev,George Raykov,Rumen Yankov,Todor Uzunov",
 	"repository": "",
 	"license": "Apache License 2.0",
+	"settings_url": "",
+	"icon_url": "",
 	"load_priority": 13,
 	"libraries": {
-		"css": [],
-		"js": []
+		"css": [ ],
+		"js": [ ]
 	},
 	"module": {
-		"css": [],
+		"css": [ ],
 		"js": [
 			"/plugins/webvella-admin/base.module.js",
 			"/plugins/webvella-admin/entities.module.js",
@@ -41,7 +43,8 @@
 			"/plugins/webvella-admin/entity-tree-nodes-manage.module.js",
 			"/plugins/webvella-admin/areas.module.js",
 			"/plugins/webvella-admin/users.module.js",
-			"/plugins/webvella-admin/roles.module.js"
+			"/plugins/webvella-admin/roles.module.js",
+			"/plugins/webvella-admin/plugins.module.js"
 		],
 		"wvApp_injects": [ "webvellaAdmin" ]
 	}

@@ -205,6 +205,9 @@
 		serviceInstance.currencyMetas = currencyMetas;
 		//#endregion
 
+		//#region << Plugins >>
+		serviceInstance.getPluginsList = getPluginsList;
+		//#endregion
 
 		//#endregion
 
@@ -4213,6 +4216,14 @@
 			];
 			return meta;
 		}
+		//#endregion
+
+		//#region << Plugins >>
+		///////////////////////
+		function getPluginsList(successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'plugin/list/' }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+
 		//#endregion
 
 		//#endregion
