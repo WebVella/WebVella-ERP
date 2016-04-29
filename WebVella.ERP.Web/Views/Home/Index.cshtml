@@ -19,12 +19,12 @@
 	<!-- library > css -->
 	@foreach (var cssFile in libraryCssFileList)
 	{
-		<link href="@cssFile?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+		<link href="@cssFile" rel="stylesheet" />
 	}
 	<!-- module > css -->
 	@foreach (var cssFile in moduleCssFileList)
 	{
-		<link href="@cssFile?v=@ViewBag.CacheBreaker" rel="stylesheet" />
+		<link href="@cssFile" rel="stylesheet" />
 	}
 </head>
 <body class="theme-{{appData.bodyColor}}" ng-cloak ng-class="{'mini-sidebar':appData.$storage.isMiniSidebar}">
@@ -33,7 +33,7 @@
 	<!-- library > js -->
 	@foreach (var jsFile in libraryJsFileList)
 	{
-		<script src="@jsFile?v=@ViewBag.CacheBreaker"></script>
+		<script src="@jsFile"></script>
 	}
 
 	@* Core Application module definition *@
@@ -96,7 +96,7 @@
 	<!-- module > js -->
 	@foreach (var jsFile in moduleJsFileList)
 	{
-		<script src="@jsFile?v=@ViewBag.CacheBreaker"></script>
+		<script src="@jsFile"></script>
 	}
 
 	@ViewBag.PluginModulesJsFileStringArray
