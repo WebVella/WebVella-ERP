@@ -102,7 +102,7 @@
     		defer.reject(response.message);
     	}
 
-    	webvellaCoreService.getRecordsWithoutList(null,null,"role", successCallback, errorCallback);
+    	webvellaCoreService.getRecordsWithoutList(null,null,null,"role", successCallback, errorCallback);
 
     	return defer.promise;
     }
@@ -125,7 +125,7 @@
         	defer.reject(response.message);
         }
 
-        webvellaCoreService.getRecordsWithoutList(null,null,"area", successCallback, errorCallback);
+        webvellaCoreService.getRecordsWithoutList(null,null,null,"area", successCallback, errorCallback);
 
         return defer.promise;
     }

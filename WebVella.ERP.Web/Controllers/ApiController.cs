@@ -1872,7 +1872,7 @@ namespace WebVella.ERP.Web.Controllers
 
 		// GET: api/v1/en_US/record/{entityName}/list
 		[AcceptVerbs(new[] { "GET" }, Route = "api/v1/en_US/record/{entityName}/list")]
-		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "")
+		public IActionResult GetRecordsByEntityName(string entityName, string ids = "", string fields = "", int? limit = null)
 		{
 			var response = new QueryResponse();
 			var recordIdList = new List<Guid>();
@@ -1927,9 +1927,11 @@ namespace WebVella.ERP.Web.Controllers
 				columns = String.Join(",", fieldList.Select(x => x.ToString()).ToArray());
 			}
 
-
-
 			EntityQuery query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, null);
+			if(limit != null && limit >0) {
+				query = new EntityQuery(entityName, columns, recordsFilterObj, null, null, limit);
+			}
+
 			var queryResponse = recMan.Find(query);
 			if (!queryResponse.Success)
 			{

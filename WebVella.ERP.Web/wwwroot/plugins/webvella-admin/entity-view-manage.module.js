@@ -127,6 +127,13 @@
 		
 
         ngCtrl.fieldUpdate = function (key, data) {
+			if(key == "dataSourceUrl" && data == ""){
+				data = null;
+			}
+			if(key == "dynamicHtmlTemplate" && data == ""){
+				data = null;
+			}
+
         	ngCtrl.nameIsChanged = false;
         	ngCtrl.patchObject = {};
         	ngCtrl.patchObject[key] = data;

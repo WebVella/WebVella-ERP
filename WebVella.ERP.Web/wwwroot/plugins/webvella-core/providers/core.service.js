@@ -1,4 +1,5 @@
-﻿/* core.service.js */
+﻿/// <reference path="../../webvella-admin/entity-relations.module.js" />
+/* core.service.js */
 
 /**
 * @desc Javascript API core service
@@ -145,7 +146,9 @@
 		//Read
 		serviceInstance.getRecord = getRecord;
 		serviceInstance.getRecordByViewName = getRecordByViewName;
+		serviceInstance.getRecordByViewMeta = getRecordByViewMeta;
 		serviceInstance.getRecordsWithoutList = getRecordsWithoutList;
+		serviceInstance.getRecordsByListMeta = getRecordsByListMeta;
 		serviceInstance.getRecordsByListName = getRecordsByListName;
 		serviceInstance.getRecordsByTreeName = getRecordsByTreeName;
 		serviceInstance.getRecordsByFieldAndRegex = getRecordsByFieldAndRegex;
@@ -265,7 +268,20 @@
 			}
 
 		}
+		function handleSuccessResultWithCustomMeta(data,metaObject, status, successCallback, errorCallback) {
+			if (successCallback === undefined || typeof (successCallback) != "function") {
+				alert("The successCallback argument is not a function or missing");
+				return;
+			}
 
+			var response = {};
+			response.success = true;
+			response.message = "Data is received from custom defined data source url"
+			response.object = {};
+			response.object.data = data;
+ 			response.object.meta = metaObject;
+			successCallback(response);
+		}
 		//#endregion
 
 		//#region << Entity >>
@@ -1063,6 +1079,7 @@
 				"weight": 1,
 				"cssClass": "",
 				"dynamicHtmlTemplate": null,
+				"dataSourceUrl": null,
 				"relationOptions": [],
 				"type": "general",
 				"iconName": "file-text-o",
@@ -1536,6 +1553,7 @@
 					"query": null,
 					"sorts": null,
 					"dynamicHtmlTemplate": null,
+					"dataSourceUrl": null,
 					"columnWidthsCSV": null,
 					"relationOptions": [],
 					"serviceCode": null,
@@ -1791,14 +1809,27 @@
 		function getRecordByViewName(recordId, viewName, entityName, successCallback, errorCallback) {
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewName + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
+
+ 		///////////////////////
+		function getRecordByViewMeta(recordId, viewMeta, entityName, successCallback, errorCallback) {
+			if (viewMeta.dataSourceUrl == null) {
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/view/' + viewMeta.name + '/' + recordId }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + viewMeta.name + "&";
+				extraParamQueryString += "recordId=" + recordId;
+				$http({ method: 'GET', url: viewMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,viewMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+		}
 		/////////////////////
-		function getRecordsWithoutList(recordIds, fieldNames, entityName, successCallback, errorCallback) {
-			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		function getRecordsWithoutList(recordIds, fieldNames, limit, entityName, successCallback, errorCallback) {
+			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list?ids=' + recordIds + "&fields=" + fieldNames + "&limit=" + limit }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
 		}
 		///////////////////////
 		function getRecordsByListName(listName, entityName, page, extraParams, successCallback, errorCallback) {
-			//submit listName = "null" to get unconfigured records list
-			//submit page = "null" to get all records
 			var extraParamQueryString = "";
 			if (extraParams != null) {
 				if (!isEmpty(extraParams)) {
@@ -1811,6 +1842,40 @@
 				}
 			}
 			$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listName + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+		}
+		///////////////////////
+		function getRecordsByListMeta(listMeta, entityName, page, extraParams, successCallback, errorCallback) {
+			if (listMeta.dataSourceUrl == null) {
+				var extraParamQueryString = "";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						extraParamQueryString = "?";
+						for (var param in extraParams) {
+							extraParamQueryString += param + "=" + extraParams[param] + "&";
+						}
+						//remove the last &
+						extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+					}
+				}
+				$http({ method: 'GET', url: wvAppConstants.apiBaseUrl + 'record/' + entityName + '/list/' + listMeta.name + '/' + page + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResult(response.data, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
+			else {
+				var extraParamQueryString = "";
+				extraParamQueryString = "?";
+				extraParamQueryString += "entityName=" + entityName + "&";
+				extraParamQueryString += "listName=" + listMeta.name + "&";
+				extraParamQueryString += "page=" + page + "&";
+				if (extraParams != null) {
+					if (!isEmpty(extraParams)) {
+						for (var param in extraParams) {
+							extraParamQueryString += param + "=" + extraParams[param] + "&";
+						}
+					}
+				}
+				//remove the last &
+				extraParamQueryString = extraParamQueryString.substring(0, extraParamQueryString.length - 1);
+				$http({ method: 'GET', url: listMeta.dataSourceUrl + extraParamQueryString }).then(function getSuccessCallback(response) { handleSuccessResultWithCustomMeta(response.data,listMeta, response.status, successCallback, errorCallback); }, function getErrorCallback(response) { handleErrorResult(response.data, response.status, errorCallback); });
+			}
 		}
 		///////////////////////
 		function getRecordsByTreeName(treeName, entityName, successCallback, errorCallback) {
@@ -1976,7 +2041,7 @@
 			function rasGetEntityMetaListSuccessCallback(data, status) {
 				entities = data.object.entities;
 				//Get all areas
-				getRecordsWithoutList(null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
+				getRecordsWithoutList(null, null,null, "area", rasGetAreasListSuccessCallback, rasErrorCallback);
 			}
 
 			function rasGetAreasListSuccessCallback(data, status) {
@@ -2715,13 +2780,13 @@
 							}
 						}
 					}
-					else{
+					else {
 						for (var i = 0; i < targetEntity.recordViews.length; i++) {
 							if (targetEntity.recordViews[i].default && targetEntity.recordViews[i].type == "hidden") {
 								targetViewName = targetEntity.recordViews[i].name;
 								break;
 							}
-						}					
+						}
 					}
 					if (targetViewName != null) {
 						//Case 1: - list is not from relation

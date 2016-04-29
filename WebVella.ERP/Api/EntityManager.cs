@@ -5941,6 +5941,8 @@ namespace WebVella.ERP.Api
 			create.Weight = 10;
 			create.VisibleColumnsCount = 5;
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			create.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -5960,6 +5962,8 @@ namespace WebVella.ERP.Api
 			lookup.Weight = 10;
 			lookup.VisibleColumnsCount = 5;
 			lookup.ServiceCode = null;
+			lookup.DynamicHtmlTemplate = null;
+			lookup.DataSourceUrl = null;
 			lookup.ActionItems = new List<ActionItem>();
 			lookup.ActionItems.Add(GenerateListActionItem("wv_create_record"));
 			lookup.ActionItems.Add(GenerateListActionItem("wv_import_records"));
@@ -6040,6 +6044,8 @@ namespace WebVella.ERP.Api
 			create.Regions = new List<RecordViewRegion>();
 			create.Regions.Add(headerRegion);
 			create.ServiceCode = null;
+			create.DynamicHtmlTemplate = null;
+			create.DataSourceUrl = null;
 			create.ActionItems = new List<ActionItem>();
 			create.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			create.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6059,6 +6065,8 @@ namespace WebVella.ERP.Api
 			quickCreate.Regions = new List<RecordViewRegion>();
 			quickCreate.Regions.Add(headerRegion);
 			quickCreate.ServiceCode = null;
+			quickCreate.DynamicHtmlTemplate = null;
+			quickCreate.DataSourceUrl = null;
 			quickCreate.ActionItems = new List<ActionItem>();
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
 			quickCreate.ActionItems.Add(GenerateViewActionItem("wv_create_and_list"));
@@ -6078,6 +6086,8 @@ namespace WebVella.ERP.Api
 			quickView.Regions = new List<RecordViewRegion>();
 			quickView.Regions.Add(headerRegion);
 			quickView.ServiceCode = null;
+			quickView.DynamicHtmlTemplate = null;
+			quickView.DataSourceUrl = null;
 			quickView.ActionItems = new List<ActionItem>();
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			quickView.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
@@ -6095,6 +6105,8 @@ namespace WebVella.ERP.Api
 			general.Regions = new List<RecordViewRegion>();
 			general.Regions.Add(headerRegion);
 			general.ServiceCode = null;
+			general.DynamicHtmlTemplate = null;
+			general.DataSourceUrl = null;
 			general.ActionItems = new List<ActionItem>();
 			general.ActionItems.Add(GenerateViewActionItem("wv_record_delete"));
 			general.ActionItems.Add(GenerateViewActionItem("wv_back_button"));
