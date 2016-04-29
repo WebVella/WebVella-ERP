@@ -162,8 +162,8 @@
 		}
 	}
 
-	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location'];
-	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location) {
+	resolveListRecords.$inject = ['$q', '$log', 'webvellaCoreService', '$state', '$stateParams', '$timeout', 'ngToast', '$location','resolvedEntityList'];
+	function resolveListRecords($q, $log, webvellaCoreService, $state, $stateParams, $timeout, ngToast, $location,resolvedEntityList) {
 		var defer = $q.defer();
 		function successCallback(response) {
 			defer.resolve(response.object);
@@ -172,7 +172,19 @@
 			defer.reject(response.message);
 		}
 		var searchParams = $location.search();
-		webvellaCoreService.getRecordsByListName($stateParams.listName, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
+
+		var list = null;
+		for (var i = 0; i < resolvedEntityList.length; i++) {
+			 if(resolvedEntityList[i].name == $stateParams.entityName){
+			 	for (var j = 0; j < resolvedEntityList[i].recordLists.length; j++) {
+					if(resolvedEntityList[i].recordLists[j].name == $stateParams.listName){
+						list = resolvedEntityList[i].recordLists[j];
+					}
+			 	}
+			 }
+		}
+
+		webvellaCoreService.getRecordsByListMeta(list, $stateParams.entityName, $stateParams.page, searchParams, successCallback, errorCallback);
 		return defer.promise;
 	}
 

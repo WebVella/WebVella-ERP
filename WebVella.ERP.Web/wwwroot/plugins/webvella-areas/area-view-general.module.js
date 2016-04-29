@@ -281,12 +281,12 @@
 	// Controller ///////////////////////////////
 
 	controller.$inject = ['$filter', '$uibModal', '$log', '$q', '$rootScope', '$state', '$stateParams', '$scope', '$window', 'pageTitle', 'webvellaCoreService',
-        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants','resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
+        'resolvedAreas', '$timeout', 'resolvedCurrentView', 'ngToast', 'wvAppConstants', 'resolvedEntityList', 'resolvedCurrentEntityMeta', 'resolvedEntityRelationsList', 'resolvedCurrentUser',
 		'resolvedCurrentUserEntityPermissions', 'webvellaViewActionService', '$sessionStorage', 'resolvedCurrentParentView'];
 
 
 	function controller($filter, $uibModal, $log, $q, $rootScope, $state, $stateParams, $scope, $window, pageTitle, webvellaCoreService,
-        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants,resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
+        resolvedAreas, $timeout, resolvedCurrentView, ngToast, wvAppConstants, resolvedEntityList, resolvedCurrentEntityMeta, resolvedEntityRelationsList, resolvedCurrentUser,
 		resolvedCurrentUserEntityPermissions, webvellaViewActionService, $sessionStorage, resolvedCurrentParentView) {
 
 		//#region << ngCtrl initialization >>
@@ -647,13 +647,13 @@
 
 		//#region << Render >>
 		ngCtrl.activeTabName = ngCtrl.stateParams.regionName;
-		ngCtrl.view.meta.regions.sort(sort_by({name:'weight', primer: parseInt, reverse: false}));
-		if(ngCtrl.activeTabName == "header"){
+		ngCtrl.view.meta.regions.sort(sort_by({ name: 'weight', primer: parseInt, reverse: false }));
+		if (ngCtrl.activeTabName == "header") {
 			//Set the first tab as active
-			if(ngCtrl.view.meta.regions[0].name != "header"){
+			if (ngCtrl.view.meta.regions[0].name != "header") {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[0].name;
 			}
-			else if(ngCtrl.view.meta.regions.length > 1) {
+			else if (ngCtrl.view.meta.regions.length > 1) {
 				ngCtrl.activeTabName = ngCtrl.view.meta.regions[1].name;
 			}
 			else {
@@ -662,10 +662,10 @@
 
 		}
 		ngCtrl.renderTabBar = false;
-		ngCtrl.view.meta.regions.forEach(function(region){
-			if(region.render && region.name != "header"){
-				ngCtrl.renderTabBar = true;		
-			}		
+		ngCtrl.view.meta.regions.forEach(function (region) {
+			if (region.render && region.name != "header") {
+				ngCtrl.renderTabBar = true;
+			}
 		});
 
 
@@ -984,7 +984,7 @@
 
 		////////////////////
 		// Single selection modal used in 1:1 relation and in 1:N when the currently viewed entity is a target in this relation
-		ngCtrl.openManageRelationFieldModal = function (item, relationType, dataKind) {
+		ngCtrl.openManageRelationFieldModal = function (item, relationType, dataKind, viewData) {
 			//relationType = 1 (one-to-one) , 2(one-to-many), 3(many-to-many)
 			//dataKind - target, origin, origin-target
 
@@ -999,6 +999,9 @@
 					resolve: {
 						ngCtrl: function () {
 							return ngCtrl;
+						},
+						viewData: function () {
+							return viewData;
 						},
 						selectedItem: function () {
 							return item;
@@ -1082,6 +1085,9 @@
 						ngCtrl: function () {
 							return ngCtrl;
 						},
+						viewData: function(){
+							return viewData;
+						},
 						selectedItem: function () {
 							return item;
 						},
@@ -1148,6 +1154,9 @@
 					resolve: {
 						ngCtrl: function () {
 							return ngCtrl;
+						},
+						viewData: function(){
+							return viewData;
 						},
 						selectedItem: function () {
 							return item;
@@ -1262,7 +1271,7 @@
 		//#endregion
 
 		//#region << Tree select field >>
-		ngCtrl.openSelectTreeNodesModal = function (item) {
+		ngCtrl.openSelectTreeNodesModal = function (item,viewData) {
 			var treeSelectModalInstance = $uibModal.open({
 				animation: false,
 				templateUrl: 'selectTreeNodesModal.html',
@@ -1273,6 +1282,9 @@
 				resolve: {
 					ngCtrl: function () {
 						return ngCtrl;
+					},
+					viewData: function(){
+						return viewData;
 					},
 					selectedItem: function () {
 						return item;
@@ -1374,19 +1386,19 @@
 
 	}
 
-	//#region < Modal Controllers >
+	//#region << Modal Controllers >>
 
-	//#region << Manage relation Modal >>
 	//Test to unify all modals - Single select, multiple select, click to select
-	ManageRelationFieldModalController.$inject = ['ngCtrl', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
+	ManageRelationFieldModalController.$inject = ['ngCtrl','viewData', '$uibModalInstance', '$log', '$q', '$stateParams', 'modalMode', 'resolvedLookupRecords',
         'selectedDataKind', 'selectedItem', 'selectedRelationType', 'webvellaCoreService', 'ngToast', '$timeout', '$state'];
 
-	function ManageRelationFieldModalController(ngCtrl, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
+	function ManageRelationFieldModalController(ngCtrl,viewData, $uibModalInstance, $log, $q, $stateParams, modalMode, resolvedLookupRecords,
         selectedDataKind, selectedItem, selectedRelationType, webvellaCoreService, ngToast, $timeout, $state) {
 
 		var popupCtrl = this;
 		popupCtrl.currentPage = 1;
 		popupCtrl.parentData = fastCopy(ngCtrl);
+		popupCtrl.parentData.view.data = viewData;
 		popupCtrl.selectedItem = fastCopy(selectedItem);
 		popupCtrl.modalMode = fastCopy(modalMode);
 		popupCtrl.hasWarning = false;
@@ -1638,13 +1650,11 @@
 
 		//#endregion
 	};
-	//#endregion 
 
-	//#region << Select Tree >>
-	SelectTreeNodesModalController.$inject = ['ngCtrl', '$uibModalInstance', '$rootScope', '$scope', '$log', '$q', '$stateParams', 'resolvedTree',
+	SelectTreeNodesModalController.$inject = ['ngCtrl', 'viewData', '$uibModalInstance', '$rootScope', '$scope', '$log', '$q', '$stateParams', 'resolvedTree',
         'selectedItem', 'resolvedTreeRelation', 'selectedItemData', 'webvellaCoreService', 'ngToast', '$timeout', '$state', '$uibModal',
 		'resolvedCurrentUserPermissions'];
-	function SelectTreeNodesModalController(ngCtrl, $uibModalInstance, $rootScope, $scope, $log, $q, $stateParams, resolvedTree,
+	function SelectTreeNodesModalController(ngCtrl, viewData, $uibModalInstance, $rootScope, $scope, $log, $q, $stateParams, resolvedTree,
 			selectedItem, resolvedTreeRelation, selectedItemData, webvellaCoreService, ngToast, $timeout, $state, $uibModal,
 			resolvedCurrentUserPermissions) {
 		var popupCtrl = this;
@@ -1858,7 +1868,6 @@
 
 
 	};
-	//#endregion
 
 	//#endregion
 

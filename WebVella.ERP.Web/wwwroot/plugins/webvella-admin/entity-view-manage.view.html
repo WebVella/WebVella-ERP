@@ -39,6 +39,9 @@
 					<li role="presentation">
 						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/actions" translate="{{'RECORD_VIEW_TAB_ACTIONS'}}"></a>
 					</li>
+					<li role="presentation">
+						<a href="#/admin/entities/{{::ngCtrl.entity.name}}/views/{{::ngCtrl.view.name}}/data" translate="{{'RECORD_VIEW_TAB_DATA'}}"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -188,11 +191,11 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-6">
 						<div class="form-group">
 							<div class="row editable-field field">
-								<label class="control-label col-lg-1" translate="{{'CUSTOM_TEMPLATE'}}"></label>
-								<div class="col-lg-11">
+								<label class="control-label col-lg-2" translate="{{'CUSTOM_TEMPLATE'}}"></label>
+								<div class="col-lg-10">
 									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dynamicHtmlTemplate.$show()">
 										<span class="input-group-addon" ng-if="!fieldForm_dynamicHtmlTemplate.$visible">
 											<a href="{{ngCtrl.view.dynamicHtmlTemplate}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
@@ -203,6 +206,25 @@
 										<span class="input-group-addon" ng-click="fieldForm_dynamicHtmlTemplate.$show()" ng-hide="fieldForm_dynamicHtmlTemplate.$visible"><i class="fa fa-pencil fa-fw"></i></span>
 									</div>
 									<div class="form-description" translate="{{'CUSTOM_TEMPLATE_DESCRIPTION'}}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<div class="row editable-field field">
+								<label class="control-label col-lg-2" translate="{{'CUSTOM_DATA_SOURCE'}}"></label>
+								<div class="col-lg-10">
+									<div class="editable-wrapper input-group editable-updatable" ng-dblclick="fieldForm_dataSourceUrl.$show()">
+										<span class="input-group-addon" ng-if="!fieldForm_dataSourceUrl.$visible">
+											<a href="{{ngCtrl.view.dataSourceUrl}}" target="_blank"><i class="fa fa-globe fa-fw"></i></a>
+										</span>
+										<input type="text" class="form-control" disabled editable-text="ngCtrl.view.dataSourceUrl"
+											   value="{{ngCtrl.renderFieldValue(ngCtrl.view.dataSourceUrl,{fieldType:18})}}"
+											   onbeforesave="ngCtrl.fieldUpdate('dataSourceUrl', $data)" e-form="fieldForm_dataSourceUrl">
+										<span class="input-group-addon" ng-click="fieldForm_dataSourceUrl.$show()" ng-hide="fieldForm_dataSourceUrl.$visible"><i class="fa fa-pencil fa-fw"></i></span>
+									</div>
+									<div class="form-description" translate="{{'CUSTOM_DATA_SOURCE_DESCRIPTION'}}"></div>
 								</div>
 							</div>
 						</div>

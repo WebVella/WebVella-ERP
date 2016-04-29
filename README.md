@@ -39,7 +39,7 @@ We will greatly appriciate your support of the project by:
 Current translation status:
 1. English - 80%
 2. Spanish - underway thanks to @Sefirost
-
+3. Russion - underway thanks to @IManakhov
 
 ### Third party libraries
 * see [LIBRARIES](https://github.com/WebVella/WebVella-ERP/blob/master/LIBRARIES.md) files

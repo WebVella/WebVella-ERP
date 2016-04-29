@@ -283,6 +283,12 @@
 		}
 
 		ngCtrl.fieldUpdate = function (fieldName, data) {
+			if(fieldName == "dataSourceUrl" && data == ""){
+				data = null;
+			}
+			if(fieldName == "dynamicHtmlTemplate" && data == ""){
+				data = null;
+			}
 			var postObj = {};
 			postObj[fieldName] = data;
 			webvellaCoreService.patchEntityList(postObj, ngCtrl.list.name, ngCtrl.entity.name, patchFieldSuccessCallback, patchErrorCallback)

@@ -377,11 +377,11 @@
 											<!-- Case 2 - Current Entity is Target -->
 											<div ng-switch-when="2">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
 														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,1,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
@@ -400,12 +400,12 @@
 											<!-- Case 1 - Current Entity is Origin -->
 											<div ng-switch-when="1" class="position-relative">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 													<input type="text" class="form-control" disabled value=""></input>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 													<table class="table table-bordered editable origin lookup">
 														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
 															<td>{{relationDataRecord}}</td>
@@ -414,7 +414,7 @@
 															<td style="padding: 16px"></td>
 														</tr>
 													</table>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
@@ -431,11 +431,11 @@
 											<!-- Case 2 - Current Entity is Target -->
 											<div ng-switch-when="2">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 													<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 													<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
 														  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
@@ -446,12 +446,12 @@
 											<div ng-switch-when="3" class="position-relative">
 												<div ng-if="item.relationDirection == 'origin-target'">
 													<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 														<input type="text" class="form-control" disabled value=""></input>
-														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin')">
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)">
 														<table class="table table-bordered editable origin lookup">
 															<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
 																<td>{{relationDataRecord}}</td>
@@ -460,7 +460,7 @@
 																<td style="padding: 16px"></td>
 															</tr>
 														</table>
-														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<table class="table table-bordered editable origin lookup">
@@ -476,11 +476,11 @@
 												</div>
 												<div ng-if="item.relationDirection == 'target-origin'">
 													<div class="editable-wrapper input-group editable-updatable" ng-if="::ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target')">
+														 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)">
 														<input type="text" class="form-control" disabled value="{{ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
 														<span class="input-group-addon remove-addon ng-hide" ng-show="viewData[item.dataName].length > 0"
 															  confirmed-click="ngCtrl.removeRelation(item)" ng-confirm-click="Are you sure?"><i class="fa fa-trash-o fa-fw"></i></span>
-														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target')"><i class="fa fa-indent fa-fw"></i></span>
+														<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,2,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 													</div>
 													<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 														<input type="text" class="form-control" disabled value="{{::ngCtrl.renderFieldValue(viewData[item.dataName],item.meta)}}"></input>
@@ -496,10 +496,10 @@
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
 													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
 													<input type="text" class="form-control" disabled value=""></input>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)">
-													<table class="table table-bordered editable origin lookup" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
+													<table class="table table-bordered editable origin lookup" ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)">
 														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
 															<td>{{relationDataRecord}}</td>
 														</tr>
@@ -507,7 +507,7 @@
 															<td style="padding: 16px"></td>
 														</tr>
 													</table>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
@@ -525,12 +525,12 @@
 											<!-- Case 2 - Current Entity is Target -->
 											<div ng-switch-when="2" class="position-relative">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target',viewData)">
 													<input type="text" class="form-control" disabled value=""></input>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'target',viewData)">
 													<table class="table table-bordered editable origin lookup">
 														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
 															<td>{{relationDataRecord}}</td>
@@ -539,7 +539,7 @@
 															<td style="padding: 16px"></td>
 														</tr>
 													</table>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'target',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
@@ -557,12 +557,12 @@
 											<!-- Case 3 - Current Entity is both Origin and Target -->
 											<div ng-switch-when="3" class="position-relative">
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length == 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)">
 													<input type="text" class="form-control" disabled value=""></input>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-updatable" ng-if="viewData[item.dataName].length > 0 && ngCtrl.currentUserHasUpdatePermissionRelation(item)"
-													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin')">
+													 ng-dblclick="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)">
 													<table class="table table-bordered editable origin lookup">
 														<tr ng-repeat="relationDataRecord in viewData[item.dataName]">
 															<td>{{relationDataRecord}}</td>
@@ -571,7 +571,7 @@
 															<td style="padding: 16px"></td>
 														</tr>
 													</table>
-													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin')"><i class="fa fa-indent fa-fw"></i></span>
+													<span class="input-group-addon" ng-click="ngCtrl.openManageRelationFieldModal(item,3,'origin',viewData)"><i class="fa fa-indent fa-fw"></i></span>
 												</div>
 												<div class="editable-wrapper input-group editable-readonly" ng-if="::!ngCtrl.currentUserHasUpdatePermissionRelation(item)">
 													<table class="table table-bordered editable origin lookup">
@@ -701,7 +701,7 @@
 							<div class="field" ng-switch-when="treeFromRelation">
 								<label class="control-label">{{::item.fieldLabel}}</label>
 								<div ng-if="::ngCtrl.currentUserHasReadPermission(item)" class="position-relative>
-									<span class="editable editable-click tree" ng-click="ngCtrl.openSelectTreeNodesModal(item)">
+									<span class="editable editable-click tree" ng-click="ngCtrl.openSelectTreeNodesModal(item,viewData)">
 										<span ng-repeat="treeDataRow in viewData[item.dataName]">{{treeDataRow.label}}<span ng-if="!$last">,</span> </span>
 									</span>
 									<div ng-if="::item.meta.helpText" class="form-description">
@@ -735,7 +735,7 @@
 				<div class="alert alert-warning">{{popupCtrl.warningMessage}}</div>
 			</div>
 			<div ng-if="!popupCtrl.hasWarning">
-				<form id="filters" class="form-inline">
+				<!--<form id="filters" class="form-inline">
 					<div class="form-group">
 						<div class="input-group">
 							<input ng-model="popupCtrl.searchQuery" type="text" class="form-control" placeholder="{{::popupCtrl.relationLookupList.meta.columns[0].meta.label}}" ng-keydown="popupCtrl.checkForSearchEnter($event)">
@@ -744,7 +744,7 @@
 							</span>
 						</div>
 					</div>
-				</form>
+				</form>-->
 
 				<table class="table table-bordered table-hover table-vertical-align-middle" ng-hide="popupCtrl.relationLookupList.data.length == 0">
 					<thead>
